@@ -12,7 +12,7 @@
 export * from './server-only';
 
 // Layout utilities (shared layout helpers for responsive design)
-export * from './layout-utils';
+// layout-utils removed - use @/lib/shared/utils/layout instead
 
 // Core organism components (alphabetized for consistency)
 

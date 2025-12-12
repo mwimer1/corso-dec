@@ -39,7 +39,8 @@ pnpm quality:local             # typecheck + lint + test + remaining AST-Grep
 
 # Individual checks
 pnpm typecheck                 # TypeScript validation
-pnpm lint                      # ESLint validation
+pnpm lint                      # ESLint validation (uses cache for faster reruns)
+pnpm lint:full                 # Full lint (rebuilds plugin + lint scripts + lint) - use for CI/pre-commit
 pnpm test                      # Vitest test suite
 pnpm validate:cursor-rules     # Custom security rules
 ```
@@ -182,8 +183,11 @@ pnpm add -D <tool-name>
 #### Cache Issues
 ```bash
 # Clear caches
-pnpm clean:all
+pnpm cleanup:all
 pnpm install
+
+# Clear ESLint cache (if rules/config changed)
+pnpm lint:clear-cache
 
 # Reset TypeScript cache
 pnpm typecheck:clean
@@ -197,6 +201,7 @@ chmod +x scripts/**/*.sh
 
 ### Performance Optimization
 - **Incremental Builds**: TypeScript and Vite use caching
+- **ESLint Cache**: `pnpm lint` uses ESLint cache (`node_modules/.cache/eslint/.eslintcache`) for faster reruns
 - **Selective Testing**: Run only affected tests with `pnpm test --run`
 - **Parallel Execution**: CI runs checks in parallel when possible
 

@@ -13,7 +13,7 @@ const ProjectsFile = z.array(ProjectRowSchema);
 const CompaniesFile = z.array(CompanyRowSchema);
 const AddressesFile = z.array(AddressRowSchema);
 
-export type QueryParams = {
+type QueryParams = {
   page: number;
   pageSize: number;
   sort: { column: string; direction: 'asc' | 'desc' };
@@ -25,9 +25,9 @@ export type QueryParams = {
   search?: string;
 };
 
-export type Filter = QueryParams['filters'] extends readonly (infer T)[] ? T : never;
-export type Sort = QueryParams['sort'];
-export interface QueryResult<T> {
+type Filter = QueryParams['filters'] extends readonly (infer T)[] ? T : never;
+type Sort = QueryParams['sort'];
+interface QueryResult<T> {
   data: T[];
   total: number;
   page: number;

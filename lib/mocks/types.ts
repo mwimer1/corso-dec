@@ -1,21 +1,5 @@
 // Minimal mock types for remaining dependencies
-export type Sort = { column: string; direction: 'asc' | 'desc' };
-export type Filter = { field: string; op: 'eq' | 'contains' | 'gt' | 'lt' | 'gte' | 'lte' | 'in' | 'between' | 'bool'; value: unknown };
-
-export interface QueryParams {
-  page: number;
-  pageSize: number;
-  sort: Sort;
-  filters?: Filter[];
-  search?: string;
-}
-
-export interface QueryResult<T> {
-  data: T[];
-  total: number;
-  page: number;
-  pageSize: number;
-}
+// Note: Sort, Filter, QueryParams, QueryResult are not exported - use MockSort, MockFilter, MockQueryParams from ./shared instead
 
 // Additional types for mappers
 export type Stringish = string | number | null | undefined;

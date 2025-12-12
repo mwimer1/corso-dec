@@ -24,6 +24,7 @@ const ignores = [
   'eslint-plugin-corso/dist/**',
   'eslint-plugin-corso/src/**',
   'dev-tools/coverage/**',
+  'coverage/**',
   'reports/**',
   '*.js',
   'scripts/**/*.js',
@@ -38,6 +39,8 @@ const ignores = [
   '**/*.d.ts',
   '.githooks/**', // Prevent duplicate .githooks directory
   'var/**', // Build artifacts and inventory files
+  '.cache/**', // ESLint and other tool caches
+  '.turbo/**', // Turborepo cache
 
   'docs/index.ts', // generated docs index
   'docs/examples/**', // Example files for documentation

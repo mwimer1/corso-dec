@@ -24,6 +24,7 @@ summary: Keep agent/rules artifacts versioned, indexed, and validated in CI.
 - **Setup**: Run `pnpm install`, then `pnpm run verify:ai-tools`, then `pnpm run setup:branch` (each sequentially).
 - **Development**: Use `pnpm typecheck` for fast feedback on type errors; avoid using `pnpm -s` (silent) so you don't miss output. For UI changes, run `pnpm dev` in a separate terminal to get instant feedback on edits.
 - **Quality gates**: Run `pnpm typecheck → pnpm lint → pnpm test → pnpm validate:cursor-rules` sequentially (don't chain with &&) to ensure all standards pass.
+- **Lint performance**: `pnpm lint` uses ESLint cache for faster reruns. Use `pnpm lint:full` for CI-grade validation (rebuilds plugin + lint scripts + lint).
 - **Environment**: Use the provided `getEnv()` helper for config (never access `process.env` directly in app code).
 - **Windows-safe**: Favor Windows-compatible commands (no Unix-only pipes, use `git --no-pager`, etc.) and run tasks from the repo root without relying on `cd` for navigation.
 - **Git Workflow**: Use conventional commits, feature branches, and rebase workflow

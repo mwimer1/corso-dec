@@ -1,15 +1,15 @@
 // components/molecules/empty-state.tsx
 import { cn } from "@/styles";
 import {
-    emptyStateActionsVariants,
-    emptyStateDescriptionVariants,
-    emptyStateHeadingVariants,
-    emptyStateIconVariants,
+  emptyStateActionsVariants,
+  emptyStateDescriptionVariants,
+  emptyStateHeadingVariants,
+  emptyStateIconVariants,
 } from "@/styles/ui/molecules";
 import * as React from "react";
 
 /** Subcomponents for composing empty states consistently */
-export function EmptyStateIcon({
+function _EmptyStateIcon({
   children,
   size = "md",
   context = "default",
@@ -27,7 +27,7 @@ export function EmptyStateIcon({
   );
 }
 
-export function EmptyStateTitle({
+function _EmptyStateTitle({
   children,
   size = "md",
   context = "default",
@@ -45,7 +45,7 @@ export function EmptyStateTitle({
   );
 }
 
-export function EmptyStateDescription({
+function _EmptyStateDescription({
   children,
   size = "md",
   context = "default",
@@ -63,7 +63,7 @@ export function EmptyStateDescription({
   );
 }
 
-export function EmptyStateActions({
+function _EmptyStateActions({
   children,
   size = "md",
   className,

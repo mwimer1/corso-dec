@@ -1,13 +1,13 @@
 // lib/marketing/roi.ts
 // Pure, edge-safe ROI calculation utilities (no window/process usage)
 
-export interface RoiInput {
+interface RoiInput {
   leads: number;
   closeRate: number; // percent, 0-100
   dealSize: number; // dollars
 }
 
-export interface RoiOutput {
+interface RoiOutput {
   newDeals: number;
   workdaysSaved: number;
   sleepHours: number;
@@ -16,7 +16,7 @@ export interface RoiOutput {
 
 export const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n));
 
-export const parseIntStrict = (s: string) => {
+const parseIntStrict = (s: string) => {
   const n = Number(s);
   return Number.isFinite(n) ? Math.trunc(n) : 0;
 };
@@ -31,9 +31,7 @@ export function calcRoi({ leads, closeRate, dealSize }: RoiInput): RoiOutput {
 // Prefer shared compact currency formatter from '@/lib/shared'
 import { formatCurrencyCompact } from '@/lib/shared';
 
-export function formatCompactCurrency(n: number): string {
-  return formatCurrencyCompact(n);
-}
+// formatCompactCurrency removed - use formatCurrencyCompact from @/lib/shared directly
 
 
 
