@@ -1,0 +1,85 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		},
+		{
+			"path": "../../../../../Downloads/db"
+		}
+	],
+	"settings": {
+		"task.quickOpen.history": 20,
+		"task.quickOpen.detail": true,
+		"task.problemMatchers.neverPrompt": {
+			"$tsc": true,
+			"$eslint-stylish": true
+		},
+		"task.allowAutomaticTasks": "off",
+		"task.autoDetect": "off",
+		"task.slowProviderWarning": false,
+		"typescript.preferences.includePackageJsonAutoImports": "on",
+		"typescript.disableAutomaticTypeAcquisition": true,
+		"typescript.tsdk": "node_modules/typescript/lib",
+		"typescript.tsserver.useSeparateSyntaxServer": true,
+		"typescript.tsserver.experimental.enableProjectDiagnostics": false,
+		"typescript.tsserver.watchOptions": {
+			"watchFile": "useFsEventsOnParentDirectory",
+			"watchDirectory": "useFsEvents",
+			"fallbackPolling": "dynamicPriority",
+			"synchronousWatchDirectory": false
+		},
+		"files.associations": {
+			"*.css": "tailwindcss"
+		},
+		"terminal.integrated.enableMultiLinePasteWarning": "auto",
+		"terminal.integrated.rightClickBehavior": "paste",
+		"terminal.integrated.defaultProfile.windows": "Git Bash (fast)",
+		"terminal.integrated.profiles.windows": {
+			"Git Bash": {
+				"path": "C:\\Program Files\\Git\\bin\\bash.exe",
+				"args": [
+					"--login"
+				],
+				"icon": "terminal-bash"
+			},
+			"Git Bash (fast)": {
+				"path": "C:\\Program Files\\Git\\bin\\bash.exe",
+				"args": [
+					"--noprofile",
+					"--norc"
+				],
+				"icon": "terminal-bash"
+			},
+			"PowerShell": {
+				"path": "powershell.exe",
+				"args": [
+					"-NoLogo"
+				],
+				"icon": "terminal-powershell"
+			},
+			"Command Prompt": {
+				"path": "cmd.exe",
+				"args": [
+					"/k",
+					"cd /d ${workspaceFolder}"
+				],
+				"icon": "terminal-cmd"
+			}
+		},
+		"terminal.integrated.scrollback": 4000,
+		"terminal.integrated.gpuAcceleration": "off",
+		"terminal.integrated.fastScrollSensitivity": 5,
+		"terminal.integrated.mouseWheelScrollSensitivity": 3,
+		"terminal.integrated.enablePersistentSessions": false,
+		"terminal.integrated.shellIntegration.enabled": false,
+		"explorer.autoReveal": false,
+		"workbench.editor.enablePreview": false,
+		"workbench.editor.enablePreviewFromQuickOpen": false,
+		"workbench.editor.closeOnFileDelete": true,
+		"workbench.editor.limit.enabled": true,
+		"workbench.editor.limit.value": 8,
+		"workbench.editor.limit.perEditorGroup": true,
+		"breadcrumbs.enabled": false,
+		"git.autorefresh": false
+	}
+}
