@@ -215,8 +215,9 @@ Examples:
 }
 
 // Run CLI when executed directly
-// tsx provides import.meta.main, otherwise always run for CLI scripts
-if (typeof import.meta.main === 'undefined' || import.meta.main) {
+// Only run if import.meta.main is explicitly true (tsx/vitest set it to false when importing)
+// This prevents the CLI from running when the module is imported in tests
+if (import.meta.main === true) {
   runCli().catch(err => {
     console.error('❌ Script failed:', (err as Error).message);
     process.exit(1);
