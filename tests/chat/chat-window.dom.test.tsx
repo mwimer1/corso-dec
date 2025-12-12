@@ -3,9 +3,6 @@ import * as useChatModule from '@/hooks/chat/use-chat';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
-// Note: ChatComposer Enter key functionality is tested separately in chat-composer.client.dom.test.tsx
-// This integration test is complex due to dynamic imports, so we skip the Enter key test here
-
 describe('ChatWindow', () => {
   it('renders header with CorsoAI and empty-state greeting', () => {
     vi.spyOn(useChatModule, 'useChat').mockReturnValue({
@@ -93,12 +90,6 @@ describe('ChatWindow', () => {
       expect(screen.getByLabelText('Chat message input')).toBeInTheDocument();
     });
     expect(screen.getByPlaceholderText(/Ask anything about projects/)).toBeInTheDocument();
-  });
-
-  it.skip('sends a message when pressing Enter in chat input', async () => {
-    // Skipped due to dynamic import complexity in tests
-    // Enter key functionality is tested in chat-composer.client.dom.test.tsx
-    expect(true).toBe(true);
   });
 
   it('disables input while processing', async () => {

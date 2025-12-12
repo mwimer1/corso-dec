@@ -40,15 +40,9 @@ vi.mock('@/lib/services/entity/config', () => ({
 describe('Entity Service Actions', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockGetEntityPage.mockResolvedValue({
-      data: [
-        { id: 1, name: 'Test Project', status: 'active' },
-        { id: 2, name: 'Another Project', status: 'inactive' },
-      ],
-      total: 150,
-      page: 0,
-      pageSize: 10,
-    });
+    // Make getEntityPage fail so the code falls through to the real DB path
+    // This allows us to test the ClickHouse query path
+    mockGetEntityPage.mockRejectedValue(new Error('Mock DB not available'));
     mockQueryEntityData.mockResolvedValue([
       { id: 1, name: 'Test Project', status: 'active' },
       { id: 2, name: 'Another Project', status: 'inactive' },
@@ -133,6 +127,8 @@ describe('Entity Service Actions', () => {
     });
 
     it('should handle database errors gracefully', async () => {
+      // Reset the mock to fail so we hit the real DB path
+      mockGetEntityPage.mockRejectedValue(new Error('Mock DB not available'));
       mockQueryEntityData.mockRejectedValue(new Error('Database connection failed'));
 
       const { fetchEntityData } = await import('@/lib/services/entity/actions');
@@ -147,6 +143,8 @@ describe('Entity Service Actions', () => {
     });
 
     it('should handle count query failures gracefully', async () => {
+      // Reset the mock to fail so we hit the real DB path
+      mockGetEntityPage.mockRejectedValue(new Error('Mock DB not available'));
       mockQueryEntityCount.mockRejectedValue(new Error('Count query failed'));
 
       const { fetchEntityData } = await import('@/lib/services/entity/actions');
