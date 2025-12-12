@@ -1,0 +1,366 @@
+id_contractor,permits_total,permits_recent,permits_prior,latest_permit_date,earliest_permit_date,total_value,avg_value,top_permit_types,Synthetic
+nan,202,202,0,2000-12-28,2000-01-07,2930840.0,38062.857142857145,"Mechanical (34), Parent (31), Electrical (26)",False
+o5OnW8,37,37,0,2000-12-29,2000-02-10,0.0,0.0,"Plumbing (28), plumbing (9)",False
+5LbLpk,27,27,0,2000-12-19,2000-01-03,5336799.0,197659.22222222222,"Single family residence (new) (26), Fence cvt: conversion type (1)",False
+8G49g9,23,23,0,2000-10-16,2000-01-13,649921.0,72213.44444444444,"plumbing - residential (11), Plmg-res alt: alteration (4), Fence - commercial (3)",False
+K5pK9B,15,15,0,2000-12-07,2000-02-15,1821016.0,140078.15384615384,"Single family residence (new) (13), Fence - commercial (2)",False
+2Km3dP,11,11,0,2000-11-10,2000-01-17,2176947.0,197904.27272727274,Single family residence (new) (11),False
+YZ5Yb8,11,11,0,2000-11-22,2000-01-04,1713873.0,155806.63636363635,"Single family residence v-n (6), Single family residence (new) (5)",False
+p7LyY6,11,11,0,2000-08-28,2000-02-28,186500.0,23312.5,"Parent (3), Residential building (3), plumbing - residential (3)",False
+EgN4bb,10,10,0,2000-12-27,2000-04-04,1131598.0,113159.8,"Single family residence (new) (9), Single family residence v-n (1)",False
+9NWZg9,9,9,0,2000-08-07,2000-03-03,135193.0,22532.166666666668,"Swimming pool - commercial (6), Electrical (2), Electrical - residential (1)",False
+KkyrV6,9,9,0,2000-09-22,2000-02-14,212500.0,23611.11111111111,"Swimming pool - commercial (7), Pool new: new construction (2)",False
+NDZ7rr,9,9,0,2000-11-01,2000-01-26,1700.0,1700.0,"plumbing (8), Parent (1)",False
+o3pkg6,9,9,0,2000-06-05,2000-03-08,141800.0,23633.333333333332,"Parent (6), Residential building (3)",False
+0yKZb3,8,8,0,2000-10-09,2000-05-01,,,Mechanical (8),False
+6bl1xl,8,8,0,2000-10-26,2000-04-06,28000.0,7000.0,"Residential building (2), Plmg-res alt: alteration (1), Mechanical (1)",False
+K5ry1l,8,8,0,2000-10-09,2000-05-01,161000.0,26833.333333333332,"Swimming pool - commercial (5), Electrical (2), Pool alt: alteration (1)",False
+ZVppNa,8,8,0,2000-12-20,2000-01-27,0.0,0.0,"plumbing - residential (5), Plmg-res alt: alteration (2), Fence - commercial (1)",False
+aDyDYy,8,8,0,2000-08-11,2000-02-01,1265522.0,158190.25,Single family residence (new) (8),False
+m7q6l2,8,8,0,2000-08-22,2000-02-08,134800.0,26960.0,"Swimming pool - commercial (4), Electrical (3), Pool alt: alteration (1)",False
+n9l92P,8,8,0,2000-11-16,2000-04-04,149500.0,29900.0,"Parent (5), Residential building (3)",False
+BDZZA9,7,7,0,2000-12-12,2000-07-17,1041588.0,148798.2857142857,Single family residence (new) (7),False
+Eg4y6A,7,7,0,2000-08-09,2000-04-03,,,Electrical (7),False
+GrmY7q,6,6,0,2000-09-11,2000-02-28,122550.0,24510.0,"Swimming pool - commercial (4), plumbing (2)",False
+KWEJOd,6,6,0,2000-12-29,2000-02-10,549072.0,109814.4,"Single family residence (new) (3), Residential building (1), Electrical - residential; Elec-res alt: alteration (1)",False
+VaOVEY,6,6,0,2000-08-21,2000-04-06,865973.0,144328.83333333334,Single family residence (new) (6),False
+ZrbNnX,6,6,0,2000-11-27,2000-02-16,,,"plumbing (5), Mechanical (1)",False
+ZrbNpn,6,6,0,2000-05-24,2000-01-11,89000.0,22250.0,"Swimming pool - commercial (2), Residential building (2), Pool alt: alteration (1)",False
+ZvWlPn,6,6,0,2000-12-06,2000-04-17,,,Electrical (6),False
+bqk9w9,6,6,0,2000-10-20,2000-06-19,,,plumbing (6),False
+d3Pz5x,6,6,0,2000-04-03,2000-02-24,130000.0,43333.333333333336,"Parent (3), Residential building (3)",False
+yO56qV,6,6,0,2000-12-06,2000-04-06,114517.0,57258.5,"plumbing - residential (4), Single family residence (new) (1), Plmg-res alt: alteration (1)",False
+5w1kGO,5,5,0,2000-07-31,2000-03-21,74449.0,24816.333333333332,"Parent (3), Residential building (2)",False
+JBo92K,5,5,0,2000-09-18,2000-01-13,5000.0,5000.0,"plumbing (2), Electrical (2), Parent (1)",False
+KNrGD7,5,5,0,2000-12-19,2000-01-25,203000.0,101500.0,"plumbing (3), Misc cvt: conversion type (1), Building permit (1)",False
+kL3dXB,5,5,0,2000-11-13,2000-02-17,13100.0,4366.666666666667,"Parent (3), Residential building (2)",False
+lAZeWW,5,5,0,2000-09-11,2000-05-18,18764.0,6254.666666666667,"Parent (3), Residential building (2)",False
+yLe0rp,5,5,0,2000-12-15,2000-04-17,36802000.0,9200500.0,"Parent (3), Co (1), Commercial building (1)",False
+9B7E5W,4,4,0,2000-07-20,2000-02-09,24000.0,24000.0,"Electrical (2), Parent (1), Residential building (1)",False
+DKA7m2,4,4,0,2000-11-14,2000-06-13,0.0,0.0,"Electrical - commercial; Elec-com alt: alteration (1), Electrical - residential (1), Elec-res cvt: conversion type (1)",False
+ELG4pq,4,4,0,2000-09-19,2000-02-08,179097.0,89548.5,"plumbing - residential (2), Single family residence (new) (1), Fence cvt: conversion type (1)",False
+KNAWBl,4,4,0,2000-11-14,2000-05-17,100000.0,50000.0,"Parent (2), Residential building (2)",False
+Wykovq,4,4,0,2000-02-28,2000-02-04,806226.0,201556.5,Single family residence (new) (4),False
+ZV7ENa,4,4,0,2000-09-25,2000-05-26,,,Electrical (4),False
+Zrn1Ak,4,4,0,2000-05-15,2000-03-01,32000.0,8000.0,"Sfr-add v-n (2), Accessory building - residential; Accbldg xx v-n: type five n do not use (1), Electrical - residential; Elec-res alt: alteration (1)",False
+aBmBYp,4,4,0,2000-09-25,2000-02-16,2000.0,1000.0,"plumbing (2), Residential building (1), Mechanical (1)",False
+lAZPOZ,4,4,0,2000-10-03,2000-04-18,744863.0,186215.75,Single family residence (new) (4),False
+n8Xe9P,4,4,0,2000-08-04,2000-06-30,59166.0,19722.0,"Single family residence addition (1), Sfr-add v-n (1), Parent (1)",False
+xzW16r,4,4,0,2000-11-14,2000-02-09,16592.0,5530.666666666667,"Parent (3), Residential building (1)",False
+yO50o8,4,4,0,2000-11-10,2000-03-07,303780.0,75945.0,"Single family residence (new) (2), Fence cvt: conversion type (1), Single family residence cvt: conversion type (1)",False
+2AvNEw,3,3,0,2000-06-06,2000-05-17,,,Electrical (3),False
+4rYlXv,3,3,0,2000-08-31,2000-05-02,0.0,0.0,"plumbing - residential (2), Plmg-res alt: alteration (1)",False
+4rZVDn,3,3,0,2000-07-11,2000-04-10,24000.0,24000.0,"plumbing (2), Swimming pool - commercial (1)",False
+7BgnmE,3,3,0,2000-12-15,2000-04-03,,,Electrical (3),False
+EgOdkX,3,3,0,2000-11-27,2000-05-24,0.0,0.0,Electrical (3),False
+GwpmND,3,3,0,2000-11-07,2000-07-10,233917.0,116958.5,"Accessory building - residential (1), Single family residence (new) (1), Electrical - commercial (1)",False
+KNdrve,3,3,0,2000-11-09,2000-01-18,0.0,0.0,"Foundation repair - residential (2), Fdrepair v-n (1)",False
+OPaagk,3,3,0,2000-02-19,2000-02-17,600.0,600.0,"Electrical (1), Parent (1), Residential building (1)",False
+Y5vJW5,3,3,0,2000-11-17,2000-02-22,,,"Electrical - residential (2), Electrical - commercial (1)",False
+Y7d1bY,3,3,0,2000-10-11,2000-01-18,518016.0,172672.0,Single family residence (new) (3),False
+bB0Gyv,3,3,0,2000-07-21,2000-05-25,1100.0,366.6666666666667,"Sign cvt: conversion type (2), Sign alt: alteration (1)",False
+bBE6Z9,3,3,0,2000-12-15,2000-08-14,,,Electrical (3),False
+bqVD09,3,3,0,2000-11-20,2000-11-20,4000.0,1333.3333333333333,Sign cvt: conversion type (3),False
+e2g3E3,3,3,0,2000-11-01,2000-10-02,,,"Mechanical (2), Electrical (1)",False
+g2Bepa,3,3,0,2000-12-11,2000-11-10,,,Electrical (3),False
+gq3Jwn,3,3,0,2000-08-11,2000-04-06,30000.0,10000.0,"Parent (2), Residential building (1)",False
+n9VzvX,3,3,0,2000-10-18,2000-02-01,8000.0,2666.6666666666665,"Mechanical (2), Sfr-add v-n (1)",False
+o79LwY,3,3,0,2000-08-29,2000-04-28,,,Fence - commercial (3),False
+r4AzDv,3,3,0,2000-12-12,2000-07-27,,,plumbing (3),False
+04VB13,2,2,0,2000-01-20,2000-01-20,9000.0,9000.0,"Parent (1), Residential building (1)",False
+07EZG0,2,2,0,2000-05-12,2000-05-12,26500.0,26500.0,"Parent (1), Residential building (1)",False
+0yxnDe,2,2,0,2000-12-06,2000-06-29,,,plumbing (2),False
+2KmNgw,2,2,0,2000-11-10,2000-06-08,,,plumbing (2),False
+3NWqYB,2,2,0,2000-10-25,2000-10-25,,,"Mechanical (1), Residential building (1)",False
+3gWrGn,2,2,0,2000-12-04,2000-11-10,,,Electrical (2),False
+477P7v,2,2,0,2000-12-19,2000-03-20,4016.0,2008.0,Sign cvt: conversion type (2),False
+4y90rx,2,2,0,2000-07-13,2000-03-08,0.0,0.0,Electrical - commercial; Elec-com alt: alteration (2),False
+4yEk12,2,2,0,2000-04-07,2000-03-13,,,Residential building (2),False
+5k9bo9,2,2,0,2000-12-28,2000-05-16,,,plumbing (2),False
+5lxJre,2,2,0,2000-07-06,2000-07-06,1000.0,1000.0,"Parent (1), Residential building (1)",False
+5y6pEk,2,2,0,2000-05-02,2000-05-02,,,"Mechanical permit (1), Structural permit (1)",False
+6qmO2J,2,2,0,2000-09-25,2000-04-13,22700.0,11350.0,"Commercial building (1), plumbing (1)",False
+74Lm0D,2,2,0,2000-08-04,2000-07-12,50000.0,25000.0,"Pool alt: alteration (1), Swimming pool - commercial (1)",False
+7BLBXZ,2,2,0,2000-03-31,2000-03-20,10611.0,5305.5,Miscellaneous - residential (2),False
+8or0aw,2,2,0,2000-08-24,2000-08-24,,,Electrical (2),False
+8orgxD,2,2,0,2000-08-14,2000-05-31,0.0,0.0,"Elec-res alt: alteration; Electrical - residential (1), Electrical - residential; Elec-res alt: alteration (1)",False
+98zvp8,2,2,0,2000-10-26,2000-10-19,45000.0,45000.0,"Parent (1), Residential building (1)",False
+Anl8Yg,2,2,0,2000-12-28,2000-12-07,34617.0,34617.0,"Parent (1), Residential building (1)",False
+DK2Ka2,2,2,0,2000-06-12,2000-05-03,50000.0,25000.0,Pool cvt: conversion type (2),False
+EKe16x,2,2,0,2000-10-03,2000-06-29,125000.0,62500.0,"Parent (1), Miscellaneous - residential (1)",False
+EX2po1,2,2,0,2000-10-23,2000-02-03,,,Foundation repair - residential (2),False
+EX6yJ7,2,2,0,2000-04-27,2000-04-27,11391.0,11391.0,"Parent (1), Residential building (1)",False
+EXAJWx,2,2,0,2000-04-25,2000-04-10,,,"Electrical (1), Electrical - residential (1)",False
+EZp6d6,2,2,0,2000-04-07,2000-03-13,50500.0,25250.0,Parent (2),False
+GrJx8D,2,2,0,2000-12-01,2000-11-02,,,Residential building (2),False
+JBLDd1,2,2,0,2000-07-12,2000-04-17,0.0,0.0,"Electrical - residential (1), Electrical - commercial; Elec-com alt: alteration (1)",False
+JEvwqK,2,2,0,2000-03-29,2000-03-29,6500.0,6500.0,"Parent (1), Residential building (1)",False
+Jwgv8L,2,2,0,2000-04-18,2000-04-18,6000.0,3000.0,Sign alt: alteration (2),False
+KAPYkJ,2,2,0,2000-10-16,2000-02-07,,,Foundation repair - residential (2),False
+KNgWlJ,2,2,0,2000-12-01,2000-08-15,1600.0,1600.0,"Parent (1), plumbing (1)",False
+L2qV0d,2,2,0,2000-05-03,2000-05-03,3000.0,3000.0,"Electrical (1), Parent (1)",False
+N8BJGG,2,2,0,2000-03-02,2000-02-23,0.0,0.0,plumbing (2),False
+NmpaNp,2,2,0,2000-03-31,2000-03-31,4000.0,2000.0,Sign alt: alteration (2),False
+O7yaG9,2,2,0,2000-05-12,2000-05-12,32000.0,32000.0,"Parent (1), Residential building (1)",False
+OWd2mp,2,2,0,2000-04-19,2000-04-19,19935.0,19935.0,"Parent (1), Residential building (1)",False
+Peo2e9,2,2,0,2000-03-09,2000-03-09,21000.0,21000.0,"Parent (1), Commercial building (1)",False
+PmAZzP,2,2,0,2000-03-21,2000-03-21,25000.0,25000.0,"Parent (1), Residential building (1)",False
+X56z2l,2,2,0,2000-04-26,2000-04-17,15000.0,7500.0,"Parent (1), Electrical (1)",False
+XA410q,2,2,0,2000-10-13,2000-02-14,,,plumbing (2),False
+Y5vW0g,2,2,0,2000-05-24,2000-02-09,,,Electrical (2),False
+Y7ge4g,2,2,0,2000-02-09,2000-02-09,35000.0,35000.0,"Parent (1), Residential building (1)",False
+ZJdByr,2,2,0,2000-07-19,2000-06-29,131212.0,65606.0,Single family residence (new) (2),False
+ZVN1Og,2,2,0,2000-07-17,2000-05-22,224845.0,224845.0,"plumbing - residential (1), Single family residence (new) (1)",False
+ZVeGmq,2,2,0,2000-12-21,2000-02-03,,,Foundation repair - residential (2),False
+ZVqxP2,2,2,0,2000-05-24,2000-05-24,20000.0,20000.0,"Parent (1), Residential building (1)",False
+aBn3Pr,2,2,0,2000-11-01,2000-07-18,0.0,0.0,plumbing (2),False
+aDdm1x,2,2,0,2000-06-12,2000-01-24,24950.0,24950.0,"plumbing - residential (1), Swimming pool - commercial (1)",False
+bBEB2X,2,2,0,2000-05-04,2000-01-14,11490.0,11490.0,"Sfr-add v-n (1), Electrical (1)",False
+bBzg29,2,2,0,2000-11-16,2000-03-20,40000.0,20000.0,Parent (2),False
+bVyOvx,2,2,0,2000-10-11,2000-07-20,,,"Electrical (1), Residential building (1)",False
+e2gEaG,2,2,0,2000-12-13,2000-06-26,175000.0,175000.0,"Parent (1), Residential building (1)",False
+gqgzY3,2,2,0,2000-04-25,2000-04-25,220000.0,220000.0,"Parent (1), Residential building (1)",False
+n5Y7bJ,2,2,0,2000-04-03,2000-01-27,,,plumbing - residential (2),False
+n84vYX,2,2,0,2000-11-16,2000-01-19,0.0,0.0,Electrical (2),False
+o3vnOl,2,2,0,2000-12-14,2000-08-04,,,"Church alterations (1), Electrical - residential (1)",False
+p37gr6,2,2,0,2000-10-04,2000-03-21,,,Mechanical (2),False
+q3vWYN,2,2,0,2000-05-31,2000-05-31,2000.0,2000.0,"Parent (1), Residential building (1)",False
+qb8o31,2,2,0,2000-08-18,2000-08-18,2665.0,2665.0,"Parent (1), Residential building (1)",False
+w5VYq1,2,2,0,2000-04-06,2000-01-24,,,Foundation repair - residential (2),False
+wbLWx5,2,2,0,2000-09-13,2000-05-26,1400.0,1400.0,"Mechanical (1), Electrical (1)",False
+wmxZpv,2,2,0,2000-09-18,2000-06-29,49790.0,24895.0,Parent (2),False
+x4ylAr,2,2,0,2000-12-27,2000-08-07,929000.0,464500.0,"Sign com: commercial (1), Government alterations (1)",False
+xzZBeB,2,2,0,2000-10-02,2000-10-02,600.0,600.0,"Parent (1), Commercial building (1)",False
+y87wx3,2,2,0,2000-12-04,2000-10-18,,,plumbing (2),False
+y8Dzd5,2,2,0,2000-03-09,2000-03-09,42000.0,21000.0,Single family residence addition (2),False
+yObv7G,2,2,0,2000-03-02,2000-03-02,350.0,350.0,"Parent (1), Residential building (1)",False
+ybe11D,2,2,0,2000-11-22,2000-10-09,82000.0,82000.0,"Electrical - residential (1), Miscellaneous - residential (1)",False
+zvqzZl,2,2,0,2000-02-01,2000-01-10,,,"Electrical (1), Residential building (1)",False
+00x2bX,1,1,0,2000-09-18,2000-09-18,,,Residential building (1),False
+00xGw3,1,1,0,2000-10-25,2000-10-25,500.0,500.0,Parent (1),False
+1L2rBX,1,1,0,2000-04-07,2000-04-07,6200.0,6200.0,Sfr-add v-n (1),False
+21lXzP,1,1,0,2000-06-19,2000-06-19,,,Electrical (1),False
+2A43rq,1,1,0,2000-01-14,2000-01-14,0.0,0.0,Misc cvt: conversion type (1),False
+2AnJ6N,1,1,0,2000-03-02,2000-03-02,3500.0,3500.0,Sfr-add v-n (1),False
+2Av7yw,1,1,0,2000-12-07,2000-12-07,,,Electrical (1),False
+2AvJJY,1,1,0,2000-03-24,2000-03-24,,,Electrical (1),False
+2Avezq,1,1,0,2000-12-22,2000-12-22,,,Mechanical (1),False
+2yAobq,1,1,0,2000-08-02,2000-08-02,15000.0,15000.0,Parent (1),False
+347nxn,1,1,0,2000-09-05,2000-09-05,19000.0,19000.0,Sfr-misc v-n (1),False
+347qoB,1,1,0,2000-09-27,2000-09-27,5000.0,5000.0,Sfr-misc xx v-n: type five n do not use (1),False
+3N5wZD,1,1,0,2000-12-06,2000-12-06,,,Structural permit (1),False
+3mELKe,1,1,0,2000-07-17,2000-07-17,5000.0,5000.0,Parent (1),False
+3mbAql,1,1,0,2000-10-05,2000-10-05,0.0,0.0,Sfr-misc cvt: conversion type (1),False
+3mvZx4,1,1,0,2000-12-19,2000-12-19,0.0,0.0,Electrical (1),False
+3qOX5K,1,1,0,2000-09-15,2000-09-15,229980.0,229980.0,Parent (1),False
+3y6AxE,1,1,0,2000-05-05,2000-05-05,30000.0,30000.0,Swimming pool - commercial (1),False
+47wLGv,1,1,0,2000-02-24,2000-02-24,189897.0,189897.0,Single family residence (new) (1),False
+4rKweN,1,1,0,2000-06-12,2000-06-12,1000.0,1000.0,Parent (1),False
+50w4xk,1,1,0,2000-10-19,2000-10-19,0.0,0.0,Gar-car cvt: conversion type (1),False
+5kJxr4,1,1,0,2000-09-20,2000-09-20,0.0,0.0,Electrical - residential; Elec-res alt: alteration (1),False
+5kJyvW,1,1,0,2000-06-07,2000-06-07,1000.0,1000.0,Mechanical (1),False
+5lDeLZ,1,1,0,2000-01-25,2000-01-25,4662.0,4662.0,Gar-car xx v-n: type five n do not use (1),False
+5w10x9,1,1,0,2000-12-04,2000-12-04,,,Mechanical (1),False
+5w1kOk,1,1,0,2000-06-26,2000-06-26,,,Mechanical (1),False
+5w1lwP,1,1,0,2000-09-08,2000-09-08,2000.0,2000.0,nan (1),False
+68G0EJ,1,1,0,2000-01-31,2000-01-31,700.0,700.0,Sign (1),False
+6B9WZd,1,1,0,2000-03-02,2000-03-02,,,Mechanical permit (1),False
+6b5lpB,1,1,0,2000-10-03,2000-10-03,,,Electrical (1),False
+6nGK5z,1,1,0,2000-04-10,2000-04-10,,,Commercial alterations (1),False
+74L1Ve,1,1,0,2000-12-04,2000-12-04,12844.0,12844.0,Sfr-add v-n (1),False
+7BrXae,1,1,0,2000-07-13,2000-07-13,,,Electrical (1),False
+7PpnBo,1,1,0,2000-01-07,2000-01-07,7000.0,7000.0,Parent (1),False
+7awdVD,1,1,0,2000-03-10,2000-03-10,8000.0,8000.0,Parent (1),False
+7mOX2o,1,1,0,2000-08-15,2000-08-15,212162.0,212162.0,Single family residence (new) (1),False
+84BZee,1,1,0,2000-08-21,2000-08-21,34000.0,34000.0,Government alterations (1),False
+84DB6V,1,1,0,2000-01-31,2000-01-31,,,Mechanical (1),False
+88qbNE,1,1,0,2000-08-17,2000-08-17,,,plumbing - residential (1),False
+8Gx8YD,1,1,0,2000-08-30,2000-08-30,0.0,0.0,Fence - commercial; Fence cvt: conversion type (1),False
+8olPpx,1,1,0,2000-10-05,2000-10-05,186066.0,186066.0,Single family residence (new) (1),False
+8olkLG,1,1,0,2000-09-19,2000-09-19,35000.0,35000.0,Commercial alterations (1),False
+8or2qE,1,1,0,2000-05-24,2000-05-24,25000.0,25000.0,Sfr-misc xx v-n: type five n do not use (1),False
+8or3wx,1,1,0,2000-06-06,2000-06-06,,,Electrical (1),False
+9KLZzk,1,1,0,2000-01-10,2000-01-10,,,Commercial building (1),False
+9Kb64z,1,1,0,2000-08-28,2000-08-28,350.0,350.0,Parent (1),False
+9NanlP,1,1,0,2000-02-08,2000-02-08,0.0,0.0,Co (1),False
+AOBwa3,1,1,0,2000-09-22,2000-09-22,160924.0,160924.0,Parent (1),False
+AOWkag,1,1,0,2000-01-10,2000-01-10,15000.0,15000.0,Parent (1),False
+AOe1zD,1,1,0,2000-10-04,2000-10-04,,,Foundation repair - residential (1),False
+AYL67D,1,1,0,2000-11-16,2000-11-16,,,Mechanical (1),False
+BD652w,1,1,0,2000-11-15,2000-11-15,500.0,500.0,Parent (1),False
+BadLBx,1,1,0,2000-07-27,2000-07-27,92455.0,92455.0,Commercial (new) (1),False
+Badyk5,1,1,0,2000-06-01,2000-06-01,,,General (1),False
+DGbWD7,1,1,0,2000-07-12,2000-07-12,,,plumbing (1),False
+DKArex,1,1,0,2000-02-22,2000-02-22,0.0,0.0,Tempsale cvt: conversion type (1),False
+DKAy62,1,1,0,2000-12-01,2000-12-01,,,Mechanical (1),False
+DKO4bx,1,1,0,2000-06-12,2000-06-12,,,Misc review (1),False
+DNZwV2,1,1,0,2000-11-28,2000-11-28,51500.0,51500.0,Sfr-misc v-n (1),False
+Dw6706,1,1,0,2000-06-28,2000-06-28,300.0,300.0,Sign alt: alteration (1),False
+E6Ggvq,1,1,0,2000-01-24,2000-01-24,,,Mechanical (1),False
+ELvkY4,1,1,0,2000-01-21,2000-01-21,4800.0,4800.0,Single family residence addition (1),False
+EZKP32,1,1,0,2000-06-28,2000-06-28,23000.0,23000.0,Swimming pool - commercial (1),False
+EZpgXX,1,1,0,2000-03-15,2000-03-15,0.0,0.0,Electrical - commercial; Elec-com alt: alteration (1),False
+EgNlOx,1,1,0,2000-09-19,2000-09-19,20000.0,20000.0,Parent (1),False
+EgOZGX,1,1,0,2000-08-15,2000-08-15,,,Electrical (1),False
+EgOxl1,1,1,0,2000-08-28,2000-08-28,0.0,0.0,Electrical - residential; Elec-res alt: alteration (1),False
+EgW096,1,1,0,2000-11-21,2000-11-21,,,plumbing (1),False
+Gk5Zdg,1,1,0,2000-05-16,2000-05-16,60000.0,60000.0,Commercial alterations (1),False
+Gkv9mv,1,1,0,2000-11-15,2000-11-15,,,Residential building (1),False
+Gkx7Zp,1,1,0,2000-09-22,2000-09-22,200000.0,200000.0,Parent (1),False
+Gkxvdx,1,1,0,2000-07-24,2000-07-24,,,Electrical (1),False
+GlDWAv,1,1,0,2000-06-26,2000-06-26,1500.0,1500.0,Parent (1),False
+GlDpND,1,1,0,2000-01-19,2000-01-19,20000.0,20000.0,Commercial alterations (1),False
+GlDwPB,1,1,0,2000-03-21,2000-03-21,,,Miscellaneous - residential (1),False
+GlGzGD,1,1,0,2000-12-13,2000-12-13,183507.0,183507.0,Single family residence (new) (1),False
+J82qK5,1,1,0,2000-04-12,2000-04-12,349832.0,349832.0,Parent (1),False
+JBkdzG,1,1,0,2000-04-26,2000-04-26,0.0,0.0,Electrical (1),False
+K5vAEd,1,1,0,2000-03-29,2000-03-29,15000.0,15000.0,Parent (1),False
+KAPG36,1,1,0,2000-02-09,2000-02-09,,,Electrical (1),False
+KAqNBe,1,1,0,2000-10-17,2000-10-17,16500.0,16500.0,Swimming pool - commercial (1),False
+KNdZD6,1,1,0,2000-10-25,2000-10-25,0.0,0.0,Mechanical (1),False
+KNgLXD,1,1,0,2000-12-01,2000-12-01,45826.0,45826.0,plumbing (1),False
+KW75od,1,1,0,2000-10-09,2000-10-09,9000.0,9000.0,Parent (1),False
+KWEKVe,1,1,0,2000-12-22,2000-12-22,,,Parent (1),False
+KWnzrl,1,1,0,2000-04-18,2000-04-18,20000.0,20000.0,Swimming pool - commercial (1),False
+KdV2KD,1,1,0,2000-03-17,2000-03-17,180109.0,180109.0,Single family residence (new) (1),False
+Kg6vzA,1,1,0,2000-03-10,2000-03-10,0.0,0.0,Residential building (1),False
+Kk7kdn,1,1,0,2000-09-27,2000-09-27,,,Mechanical (1),False
+L2A3Ze,1,1,0,2000-04-07,2000-04-07,261115.0,261115.0,Single family residence (new) (1),False
+L2qNWL,1,1,0,2000-01-20,2000-01-20,42000.0,42000.0,Miscellaneous - residential (1),False
+L2qXe4,1,1,0,2000-08-04,2000-08-04,380378.0,380378.0,Commercial (new) (1),False
+LNbvx6,1,1,0,2000-02-23,2000-02-23,0.0,0.0,Mechanical (1),False
+LOWw9L,1,1,0,2000-12-15,2000-12-15,,,plumbing (1),False
+Lwg41e,1,1,0,2000-10-30,2000-10-30,,,Electrical (1),False
+N4e0wb,1,1,0,2000-11-28,2000-11-28,43200.0,43200.0,Single family residence addition (1),False
+ND0bmb,1,1,0,2000-10-12,2000-10-12,,,Mechanical (1),False
+NDzxrv,1,1,0,2000-09-06,2000-09-06,,,General (1),False
+OBeWay,1,1,0,2000-02-24,2000-02-24,,,plumbing (1),False
+Oa8Nzy,1,1,0,2000-09-22,2000-09-22,,,plumbing (1),False
+PG670P,1,1,0,2000-06-05,2000-06-05,0.0,0.0,Residential building (1),False
+Pee0d2,1,1,0,2000-01-27,2000-01-27,203288.0,203288.0,Single family residence (new) (1),False
+PeomyP,1,1,0,2000-03-30,2000-03-30,26000.0,26000.0,Swimming pool above ground - residential (1),False
+PxwoB9,1,1,0,2000-08-11,2000-08-11,2500.0,2500.0,Parent (1),False
+PxymB5,1,1,0,2000-06-01,2000-06-01,31000.0,31000.0,Swimming pool - commercial (1),False
+PxymDb,1,1,0,2000-07-07,2000-07-07,38000.0,38000.0,Miscellaneous - residential (1),False
+VJ5y8b,1,1,0,2000-11-21,2000-11-21,,,Foundation repair - residential (1),False
+VJr3q9,1,1,0,2000-04-24,2000-04-24,0.0,0.0,plumbing (1),False
+Vw4J25,1,1,0,2000-02-07,2000-02-07,0.0,0.0,Mechanical (1),False
+W6Z8KJ,1,1,0,2000-12-21,2000-12-21,,,Electrical (1),False
+WkbYZq,1,1,0,2000-05-18,2000-05-18,,,General (1),False
+WqKbeO,1,1,0,2000-05-30,2000-05-30,659282.0,659282.0,Commercial alterations (1),False
+Wygllw,1,1,0,2000-08-29,2000-08-29,3500.0,3500.0,Miscellaneous - residential (1),False
+Wyxoyr,1,1,0,2000-03-10,2000-03-10,,,Electrical permit - remodel (1),False
+X56Orl,1,1,0,2000-09-13,2000-09-13,0.0,0.0,Elec-com alt: alteration (1),False
+X5Lrwp,1,1,0,2000-12-29,2000-12-29,10000.0,10000.0,Parent (1),False
+X5rYYl,1,1,0,2000-09-28,2000-09-28,101787.0,101787.0,Ofc v-n (1),False
+X7Y4JA,1,1,0,2000-10-09,2000-10-09,,,plumbing (1),False
+X7YE06,1,1,0,2000-07-11,2000-07-11,187930.0,187930.0,Single family residence (new) (1),False
+XK81BV,1,1,0,2000-06-01,2000-06-01,,,Swimming pool - commercial (1),False
+Y5Gk4x,1,1,0,2000-09-20,2000-09-20,,,Electrical (1),False
+Y5ve6l,1,1,0,2000-04-05,2000-04-05,9675.0,9675.0,Sfr-misc v-n (1),False
+Y746VK,1,1,0,2000-12-29,2000-12-29,,,General (1),False
+YZVel5,1,1,0,2000-11-13,2000-11-13,,,Electrical permit (1),False
+Yg52Jy,1,1,0,2000-06-28,2000-06-28,,,plumbing - residential (1),False
+Ygw36g,1,1,0,2000-08-24,2000-08-24,400.0,400.0,Electrical (1),False
+ZVgn8B,1,1,0,2000-05-31,2000-05-31,,,Misc review (1),False
+ZVn71a,1,1,0,2000-11-30,2000-11-30,,,Residential building (1),False
+Zq9ePX,1,1,0,2000-05-31,2000-05-31,0.0,0.0,Pool cvt: conversion type (1),False
+Zrbzaa,1,1,0,2000-10-06,2000-10-06,,,Commercial building (1),False
+ZrwwEa,1,1,0,2000-10-25,2000-10-25,147580.0,147580.0,Single family residence (new) (1),False
+ZvW8zB,1,1,0,2000-04-10,2000-04-10,0.0,0.0,Fence - commercial; Fence cvt: conversion type (1),False
+ZvWVXk,1,1,0,2000-12-20,2000-12-20,24000.0,24000.0,Parent (1),False
+ZvWxbq,1,1,0,2000-03-17,2000-03-17,,,Mechanical (1),False
+aB651G,1,1,0,2000-11-27,2000-11-27,2000.0,2000.0,Parent (1),False
+aB6VOG,1,1,0,2000-12-11,2000-12-11,500.0,500.0,Electrical (1),False
+aBgAex,1,1,0,2000-05-18,2000-05-18,0.0,0.0,Mechanical (1),False
+aBm8Yl,1,1,0,2000-02-21,2000-02-21,,,Building (1),False
+aBn72q,1,1,0,2000-03-13,2000-03-13,0.0,0.0,Mechanical (1),False
+aD4ABm,1,1,0,2000-10-12,2000-10-12,,,Electrical (1),False
+abLlwG,1,1,0,2000-01-10,2000-01-10,56652.0,56652.0,Parent (1),False
+apJNar,1,1,0,2000-04-05,2000-04-05,,,Residential building (1),False
+bVNeYx,1,1,0,2000-09-26,2000-09-26,,,Foundation repair - residential (1),False
+bqVvAX,1,1,0,2000-12-01,2000-12-01,,,plumbing (1),False
+bxAxy9,1,1,0,2000-04-21,2000-04-21,6540.0,6540.0,Gar-car v-n (1),False
+d3P74p,1,1,0,2000-03-23,2000-03-23,83703.0,83703.0,Single family residence (new) (1),False
+dEy3lY,1,1,0,2000-11-30,2000-11-30,172106.0,172106.0,Single family residence (new) (1),False
+dJK7e4,1,1,0,2000-06-28,2000-06-28,3000.0,3000.0,Parent (1),False
+dJKLyl,1,1,0,2000-08-09,2000-08-09,,,Mechanical (1),False
+dXao2G,1,1,0,2000-09-21,2000-09-21,0.0,0.0,Co (1),False
+eEd1BV,1,1,0,2000-11-03,2000-11-03,0.0,0.0,Co (1),False
+eo21W3,1,1,0,2000-07-11,2000-07-11,,,Electrical (1),False
+eo2vrG,1,1,0,2000-08-10,2000-08-10,90126.0,90126.0,Single family residence (new) (1),False
+eoBDdB,1,1,0,2000-12-11,2000-12-11,,,Residential building (1),False
+g2Baoa,1,1,0,2000-10-09,2000-10-09,0.0,0.0,Commercial (new) (1),False
+g2BwGW,1,1,0,2000-05-08,2000-05-08,500.0,500.0,Parent (1),False
+g2Bwn6,1,1,0,2000-06-01,2000-06-01,0.0,0.0,Mechanical (1),False
+g2LX19,1,1,0,2000-02-25,2000-02-25,30000.0,30000.0,Single family residence addition (1),False
+g2Lvop,1,1,0,2000-04-25,2000-04-25,,,Electrical (1),False
+g2l7b6,1,1,0,2000-02-04,2000-02-04,,,Mechanical (1),False
+g2lyap,1,1,0,2000-04-28,2000-04-28,10000.0,10000.0,Commercial alterations (1),False
+g72qDW,1,1,0,2000-06-19,2000-06-19,0.0,0.0,Parent (1),False
+gO64N9,1,1,0,2000-02-21,2000-02-21,184661.0,184661.0,Single family residence (new) (1),False
+gO6dY3,1,1,0,2000-09-18,2000-09-18,0.0,0.0,Mechanical (1),False
+gqONgn,1,1,0,2000-03-14,2000-03-14,0.0,0.0,plumbing (1),False
+gqg79D,1,1,0,2000-01-18,2000-01-18,,,Demolition - residential (1),False
+k8poBB,1,1,0,2000-05-03,2000-05-03,,,Foundation repair - residential (1),False
+kL993q,1,1,0,2000-09-18,2000-09-18,900000.0,900000.0,Parent (1),False
+kLovoq,1,1,0,2000-11-02,2000-11-02,3000.0,3000.0,Parent (1),False
+kbxJBB,1,1,0,2000-04-24,2000-04-24,0.0,0.0,plumbing (1),False
+l8J1Ao,1,1,0,2000-11-15,2000-11-15,,,Mechanical (1),False
+lAZeGv,1,1,0,2000-12-12,2000-12-12,8000.0,8000.0,Miscellaneous - residential (1),False
+lLvpLY,1,1,0,2000-08-09,2000-08-09,0.0,0.0,Elec-com alt: alteration (1),False
+lbdWAp,1,1,0,2000-12-22,2000-12-22,,,Electrical (1),False
+lbdk9v,1,1,0,2000-08-04,2000-08-04,500.0,500.0,Parent (1),False
+lekvL2,1,1,0,2000-02-24,2000-02-24,,,Foundation repair - residential (1),False
+m7lNXO,1,1,0,2000-04-03,2000-04-03,0.0,0.0,Fence - commercial; Fence cvt: conversion type (1),False
+mVDZD2,1,1,0,2000-08-21,2000-08-21,30000.0,30000.0,Single family residence addition (1),False
+n71Kbe,1,1,0,2000-10-16,2000-10-16,1900.0,1900.0,Sign alt: alteration (1),False
+n7L8Ym,1,1,0,2000-07-31,2000-07-31,19000.0,19000.0,Single family residence addition (1),False
+n84vym,1,1,0,2000-10-27,2000-10-27,80000.0,80000.0,Miscellaneous - residential (1),False
+n8mydK,1,1,0,2000-10-25,2000-10-25,,,Plumbing (1),False
+n92N2P,1,1,0,2000-06-24,2000-06-24,10000.0,10000.0,Govt-alt v-n (1),False
+n92yJK,1,1,0,2000-07-19,2000-07-19,,,Fence - commercial (1),False
+n9nn4m,1,1,0,2000-08-15,2000-08-15,,,Electrical - residential (1),False
+n9ny4l,1,1,0,2000-09-02,2000-09-02,,,Single family residence addition (1),False
+o32eGY,1,1,0,2000-05-16,2000-05-16,,,Electrical permit (1),False
+o5Yw2w,1,1,0,2000-04-05,2000-04-05,3200.0,3200.0,Parent (1),False
+o6x8W5,1,1,0,2000-07-12,2000-07-12,0.0,0.0,Electrical - residential; Elec-res alt: alteration (1),False
+o71mKK,1,1,0,2000-01-28,2000-01-28,0.0,0.0,Commercial building (1),False
+o72b34,1,1,0,2000-09-15,2000-09-15,75000.0,75000.0,Parent (1),False
+o8mwxl,1,1,0,2000-03-13,2000-03-13,,,Foundation repair - residential (1),False
+oJ2kEK,1,1,0,2000-06-26,2000-06-26,,,Electrical (1),False
+oJDGPL,1,1,0,2000-05-30,2000-05-30,,,A3 additional HVAC permit (1),False
+oJl0nY,1,1,0,2000-04-11,2000-04-11,23000.0,23000.0,Swimming pool - commercial (1),False
+oz5V65,1,1,0,2000-01-06,2000-01-06,,,plumbing (1),False
+p0PDOw,1,1,0,2000-03-10,2000-03-10,8000.0,8000.0,Single family residence addition (1),False
+p0VrA0,1,1,0,2000-11-20,2000-11-20,0.0,0.0,Fdrepair v-n (1),False
+pLJLdN,1,1,0,2000-07-19,2000-07-19,248779.0,248779.0,Single family residence (new) (1),False
+pmXzA0,1,1,0,2000-07-12,2000-07-12,,,Single family residence addition (1),False
+q7ELoY,1,1,0,2000-03-21,2000-03-21,,,Fence - commercial (1),False
+qBm92L,1,1,0,2000-09-15,2000-09-15,0.0,0.0,Mechanical (1),False
+r322a6,1,1,0,2000-08-04,2000-08-04,2000.0,2000.0,Sfr-misc xx v-n: type five n do not use (1),False
+r80n26,1,1,0,2000-09-20,2000-09-20,,,Commercial building (1),False
+v6dpNK,1,1,0,2000-03-09,2000-03-09,0.0,0.0,Residential building (1),False
+w5KvDV,1,1,0,2000-02-16,2000-02-16,,,Electrical (1),False
+w6eX9L,1,1,0,2000-11-27,2000-11-27,,,plumbing - residential (1),False
+wbpEG0,1,1,0,2000-05-01,2000-05-01,,,Miscellaneous - commercial (1),False
+wmq0Yv,1,1,0,2000-12-18,2000-12-18,600.0,600.0,Parent (1),False
+wmq555,1,1,0,2000-04-26,2000-04-26,26174.0,26174.0,Ofc-alt iin (1),False
+x47oqo,1,1,0,2000-09-02,2000-09-02,18000.0,18000.0,Sfr-add v-n (1),False
+xG4vao,1,1,0,2000-07-19,2000-07-19,8500.0,8500.0,Sign alt: alteration (1),False
+xGlB3B,1,1,0,2000-12-27,2000-12-27,8000.0,8000.0,Sign new: new construction (1),False
+xmBOor,1,1,0,2000-07-13,2000-07-13,50000.0,50000.0,Parent (1),False
+xmo928,1,1,0,2000-07-03,2000-07-03,900.0,900.0,Parent (1),False
+xz2re9,1,1,0,2000-03-30,2000-03-30,249895.0,249895.0,Single family residence (new) (1),False
+y801e5,1,1,0,2000-04-12,2000-04-12,,,Electrical (1),False
+y80YD8,1,1,0,2000-11-08,2000-11-08,2000000.0,2000000.0,Parent (1),False
+y848Da,1,1,0,2000-10-04,2000-10-04,,,plumbing (1),False
+yDJzYp,1,1,0,2000-12-18,2000-12-18,24000.0,24000.0,Miscellaneous - residential (1),False
+yLEKOV,1,1,0,2000-05-09,2000-05-09,0.0,0.0,Elec-com alt: alteration (1),False
+yLXJbp,1,1,0,2000-09-28,2000-09-28,42000.0,42000.0,Sfr-add v-n (1),False
+yLZ6Y3,1,1,0,2000-11-01,2000-11-01,,,plumbing (1),False
+yO0El7,1,1,0,2000-10-04,2000-10-04,,,Electrical (1),False
+yO56PD,1,1,0,2000-09-21,2000-09-21,,,Mechanical (1),False
+ybeK4b,1,1,0,2000-06-13,2000-06-13,475000.0,475000.0,Parent (1),False
+z7aKvp,1,1,0,2000-05-15,2000-05-15,283920.0,283920.0,Parent (1),False
+zbogpm,1,1,0,2000-12-11,2000-12-11,,,Electrical (1),False
