@@ -6,7 +6,6 @@ import { getEnv } from '@/lib/server/env';
 declare global {
   // Singleton to avoid multiple TCP pools in dev/test
   // (augments the global type; safe on server-only modules)
-  // eslint-disable-next-line no-var
   var __corso_clickhouse__: ClickHouseClient | undefined;
 }
 

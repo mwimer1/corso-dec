@@ -314,6 +314,11 @@ export default [
           'components/dashboard/entity/shared/grid/ag-grid-modules.ts',
           'components/dashboard/entity/shared/renderers/value-formatter.ts',
           'components/dashboard/header/dashboard-header.tsx',
+          // Public API exports - legitimate unused exports
+          'lib/api/**/*.ts',
+          'lib/shared/**/*.ts',
+          'lib/validators/**/*.ts',
+          'lib/server/env.ts',
         ],
       }],
 

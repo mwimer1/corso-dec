@@ -1,0 +1,2 @@
+// Suggested allowlist entries for eslint.config.mjs
+// Add to ignoreExports array in import/no-unused-modules rule
