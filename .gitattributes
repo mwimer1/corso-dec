@@ -1,0 +1,23 @@
+# treat AI prompt injection test as text for diffs
+/tests/security/ai-prompt-injection.test.ts text diff
+# Ensure generated files use LF line endings consistently
+scripts/utils/*.md text eol=lf
+scripts/utils/*.ts text eol=lf
+scripts/** text eol=lf
+# Enforce LF for common text files across the repo
+*.{ts,tsx,js,jsx,cjs,mjs} text eol=lf
+*.{json,md,mdx,yml,yaml} text eol=lf
+*.{css,scss,html} text eol=lf
+*.{sh,bash,ps1} text eol=lf
+# Treat images as binary
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.jpeg filter=lfs diff=lfs merge=lfs -text
+*.gif filter=lfs diff=lfs merge=lfs -text
+*.ico binary
+*.pdf filter=lfs diff=lfs merge=lfs -text
+*.mp4 filter=lfs diff=lfs merge=lfs -text
+*.mov filter=lfs diff=lfs merge=lfs -text
+*.sqlite filter=lfs diff=lfs merge=lfs -text
+*.webp filter=lfs diff=lfs merge=lfs -text
+*.psd filter=lfs diff=lfs merge=lfs -text
+*.zip filter=lfs diff=lfs merge=lfs -text

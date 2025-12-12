@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./tsconfig.json",
+  "display": "Tooling (scripts/*) typecheck",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node"],
+    "tsBuildInfoFile": "../../.cache/tsconfig.tooling.tsbuildinfo"
+  },
+  "include": [
+    "../../scripts/**/*.ts",
+    "../../scripts/**/*.tsx",
+    "../../components/**/*.ts",
+    "../../components/**/*.tsx",
+    "../../contexts/**/*.ts",
+    "../../contexts/**/*.tsx",
+    "../../hooks/**/*.ts",
+    "../../hooks/**/*.tsx",
+    "../../lib/**/*.ts",
+    "../../lib/**/*.tsx",
+    "../../types/**/*.ts",
+    "../../config/**/*.ts",
+    "../../styles/**/*.ts",
+    "../../styles/**/*.tsx",
+    "../../tools/**/*.ts",
+    "../../app/**/*.ts",
+    "../../app/**/*.tsx",
+    "../../actions/**/*.ts",
+    "../../actions/**/*.tsx"
+  ],
+  "exclude": [
+    "../../scripts/tmp/**",
+    "../../node_modules",
+    "../../.next",
+    "../../dist",
+    "../../out",
+    "../../coverage",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/__tests__/**",
+    "../../tests/**"
+  ]
+}

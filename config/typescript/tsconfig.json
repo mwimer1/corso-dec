@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./tsconfig.base.json",
+  "display": "Main Project Configuration",
+  "compilerOptions": {
+    "composite": true,
+    "tsBuildInfoFile": "../../.cache/tsconfig.project.tsbuildinfo"
+  },
+  "references": [
+    { "path": "./tsconfig.types.json" },
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.components.json" },
+    { "path": "./tsconfig.lib.json" },
+    { "path": "./tsconfig.styles.json" },
+    { "path": "./tsconfig.tooling.json" },
+    { "path": "./tsconfig.stories.json" }
+  ],
+  "include": [],
+  "files": []
+}
+

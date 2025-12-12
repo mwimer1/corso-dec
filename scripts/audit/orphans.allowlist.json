@@ -1,0 +1,24 @@
+{
+  "description": "Allowlist for orphaned files audit - files that should never be deleted even if they appear unused",
+  "files": [
+    "lib/shared/index.ts",
+    "lib/shared/client.ts",
+    "lib/shared/server.ts",
+    "lib/api/index.ts",
+    "components/index.ts",
+    "components/ui/index.ts",
+    "components/ui/atoms/index.ts",
+    "components/ui/molecules/index.ts",
+    "components/ui/organisms/index.ts",
+    "hooks/index.ts",
+    "types/shared/index.ts",
+    "types/api/index.ts",
+    "types/api/openapi.d.ts",
+    "lib/marketing/index.ts",
+    "lib/server/index.ts",
+    "styles/tailwind.config.ts",
+    "styles/ui/shared/index.ts",
+    "types/security/index.ts"
+  ]
+}
+

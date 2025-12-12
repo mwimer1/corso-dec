@@ -1,0 +1,230 @@
+---
+rule_id: documentation-standards
+title: Documentation Standards & References (Consolidated)
+owners:
+  - docs@corso.io
+  - platform@corso.io
+last_reviewed: "2025-10-13"
+status: active
+domains: [docs]
+enforcement: warn
+related_rules: []
+alwaysApply: false
+globs: ["docs/**", "**/README.md"]
+---
+
+# Documentation Standards & References (Consolidated)
+
+**Comprehensive guide to documentation consistency, canonical references, and maintenance standards for the Corso platform.**
+
+## TL;DR
+- **Consolidation**: Prefer single authoritative READMEs at domain roots
+- **Canonical References**: Use official Next.js docs via `docs/indexing/sources/nextjs-urls.json`
+- **Consistency**: Standard sections and templates across all documentation
+- **Maintenance**: Keep docs aligned with current code (no stale placeholders)
+- **Reusability**: Reference shared examples from `_snippets.mdc` instead of duplicating
+
+## 📚 Documentation Structure & Consolidation
+
+### Domain Documentation Policy
+- **Marketing**: `app/(marketing)/README.md` consolidates pricing, contact, insights, and legal
+- **Marketing Theming**: Primary details in `app/(marketing)/README.md` and `app/README.md`
+- **API**: `app/api/README.md` is the primary API reference (consolidates `v1`, `user`, `test`)
+- **Dashboard Entities**: Authoritative docs live in `app/(protected)/dashboard/(entities)/README.md` and reflect a single dynamic route `[entity]` covering `addresses`, `companies`, and `projects` (Projects: fully implemented; Companies/Addresses: server-configured, client-side pending)
+- **Dashboard Chat**: Consolidated under dashboard domain with API at `/api/v1/dashboard/chat/process` and components in `components/dashboard/chat/`
+
+### README Templates
+
+#### Domain README Template
+```markdown
+# [Domain] README
+
+## Overview
+Brief description of the domain's purpose and scope.
+
+## Routes / Usage
+Documentation of routes, endpoints, and usage patterns.
+
+## Components (if applicable)
+Component documentation and usage examples.
+
+## Security & Rate Limiting (if applicable)
+Security considerations and rate limiting policies.
+
+## Testing / Local Dev
+How to test and develop locally.
+
+## Related
+Links to related documentation and resources.
+```
+
+#### Subsection README Template
+```markdown
+# [Subsection]
+This documentation is consolidated in the parent domain README.
+See: ../../README.md
+```
+
+## 🔗 Canonical References
+
+### Next.js Documentation
+Prefer official, versionless Next.js App Router docs. If a local index exists, reference it; otherwise link directly to nextjs.org.
+
+#### Usage Guidelines
+- Use these links when citing or searching Next.js features (App Router, runtimes, caching, middleware, streaming, Link/Image, redirects, codemods, instrumentation, ESLint)
+- Use Vercel docs only when Next.js defers (OTel, function duration)
+
+#### Example References
+```text
+app-router: https://nextjs.org/docs/app
+runtimes: https://nextjs.org/docs/app/building-your-application/deploying/runtime
+middleware: https://nextjs.org/docs/app/building-your-application/routing/middleware
+streaming: https://nextjs.org/docs/app/building-your-application/routing/loading-ui-and-streaming
+```
+
+## 📝 Content Standards
+
+### Consistency Requirements
+- Use consistent sections where applicable: Overview, Routes/Usage, Components, Security, Testing, Related
+- Keep docs aligned with current code (no stale placeholders)
+- Prefer a single authoritative `README.md` at the domain root; subfolders may link to the parent instead of duplicating
+
+### Reusability via Canonical Snippets
+- Prefer referencing shared examples from `_snippets.mdc` instead of duplicating code blocks across multiple docs
+- When content must appear in multiple places, link to the single source of truth rather than copying
+- Use current component structure references: auth/, billing/, dashboard/, forms/, landing/, marketing/, onboarding/, ui/
+
+### Import Boundaries Documentation
+- Reflect import boundaries in domain docs: inside `components/**`, note that root barrels (`@/components`, `@/components/ui`) are forbidden; consumers outside may use barrels
+
+## 🛠️ Documentation Maintenance
+
+### Verification Commands
+```bash
+# Comprehensive documentation validation
+pnpm docs:validate
+
+# Documentation linting
+pnpm docs:lint
+
+# Spell checking
+pnpm docs:spellcheck
+
+# README freshness checks
+pnpm docs:readmes:check
+
+# Link validation
+pnpm docs:check
+
+# URL accessibility validation
+pnpm docs:urls:validate
+```
+
+### File-Scoped Validation
+For single-file iterations, prefer file-scoped checks:
+```bash
+# Lint specific file
+pnpm exec eslint path/to/file.{ts,tsx}
+
+# Format specific file
+pnpm exec prettier --write path/to/file
+
+# Check specific documentation
+pnpm docs:validate --file path/to/README.md
+```
+
+### Documentation Freshness
+- Check for stale documentation (>90 days old)
+- Update `last_updated` timestamps in frontmatter
+- Ensure examples reflect current code patterns
+- Validate that links point to existing resources
+
+## 📊 Documentation Metrics
+
+### Quality Indicators
+- **Freshness**: Documentation updated within 90 days
+- **Link Integrity**: All internal links resolve correctly
+- **Consistency**: Standard sections and templates used
+- **Accuracy**: Examples match current code patterns
+- **Completeness**: All public APIs documented
+
+### Maintenance Scripts
+```bash
+# Generate documentation metrics
+pnpm docs:metrics
+
+# Check for stale documentation
+pnpm docs:stale-check
+
+# Validate documentation structure
+pnpm docs:structure-check
+
+# Generate documentation index
+pnpm docs:index
+```
+
+## 🎯 Best Practices
+
+### Content Guidelines
+- **Concise**: Keep documentation focused and to the point
+- **Accurate**: Ensure examples work with current code
+- **Complete**: Document all public interfaces
+- **Consistent**: Use standard templates and sections
+- **Maintainable**: Link to single sources of truth
+
+### Cross-References
+- Use relative links for internal documentation
+- Link to canonical Next.js docs for framework features
+- Reference `_snippets.mdc` for reusable code examples
+- Maintain consistent link formatting
+
+### Version Control
+- Update documentation with code changes
+- Use conventional commit messages for doc updates
+- Include documentation in PR reviews
+- Maintain changelog for breaking changes
+
+## Enforcement
+
+### AST-Grep Rules
+```yaml
+# Detect stale documentation links
+rule: |
+  \[([^\]]+)\]\(([^)]+)\)
+  where:
+    regex: "^docs/"
+    not inside: "<!-- skip-link-check -->"
+```
+
+### ESLint Integration
+```javascript
+// .eslintrc.mjs
+{
+  rules: {
+    '@corso/docs-consistency': 'error',
+    '@corso/docs-freshness': 'warning',
+    '@corso/docs-links': 'error'
+  }
+}
+```
+
+### Quality Gates
+- **Development**: `pnpm docs:validate`
+- **CI**: `pnpm docs:check && pnpm docs:urls:validate`
+- **Freshness**: `pnpm docs:stale-check`
+- **Structure**: `pnpm docs:structure-check`
+
+## Windows-First Tips
+
+- Avoid Unix-only pagers/pipes in examples; show plain commands
+- Keep sequences linear (one command per line) for copy-paste friendliness
+- Access Next.js docs via browser from Windows development environment
+- Use canonical Next.js URLs (or a local index if present) for consistent documentation references
+- Prefer explicit file paths over glob patterns in documentation examples
+
+## Related Resources
+
+- **Canonical Snippets**: `_snippets.mdc` for reusable code examples
+- **Next.js URLs**: canonical Next.js docs (or local index if present)
+- **Documentation Index**: `docs/index.ts` for navigation
+- **Component Structure**: Current structure references in domain docs

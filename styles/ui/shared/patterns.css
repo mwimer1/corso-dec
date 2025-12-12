@@ -1,0 +1,67 @@
+/* Token knobs (tuned defaults) */
+:root {
+  --pattern-alpha: 0.06;               /* main opacity control */
+  --pattern-grid-size: 14px;
+  --pattern-grid-color: hsl(var(--border));        /* uses design token */
+  --pattern-brand: hsl(var(--brand-500));
+  --pattern-surface: hsl(var(--background));
+}
+
+/* Dark mode: slightly higher alpha to read on dark neutrals */
+@media (prefers-color-scheme: dark) {
+  :root { --pattern-alpha: 0.08; }
+}
+
+/* Base wrapper applied by the atom */
+.section-surface { 
+  position: absolute; 
+  inset: 0; 
+}
+
+/* 1) Radial vignette — gentle brand-tinted glow from top-center */
+.section-surface--radial::before {
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(1200px 420px at 50% 0%,
+      color-mix(in hsl, var(--pattern-brand) calc(var(--pattern-alpha) * 100%), transparent),
+      transparent 70%);
+  mask-image: radial-gradient(160% 100% at 50% -10%, black 40%, transparent 70%);
+}
+
+/* Include additional pattern modules (imports are placed at top of this file) */
+
+/* 2) Dot grid — hairline dots using border color */
+.section-surface--grid::after {
+  content: "";
+  position: absolute; inset: 0;
+  background-image:
+    radial-gradient(var(--pattern-grid-color) 0.6px, transparent 0.7px);
+  background-size: var(--pattern-grid-size) var(--pattern-grid-size);
+  opacity: calc(var(--pattern-alpha) + 0.02);
+  mask-image: radial-gradient(140% 90% at 50% 5%, black 45%, transparent 85%);
+}
+
+/* 3) Angle bands — a single ultra-low alpha diagonal wash */
+.section-surface--bands::before {
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(100deg,
+      color-mix(in hsl, var(--pattern-brand) calc(var(--pattern-alpha) * 100%), transparent) 0%,
+      transparent 35% 65%,
+      color-mix(in hsl, var(--pattern-brand) calc(var(--pattern-alpha) * 60%), transparent) 100%);
+  mask-image: radial-gradient(140% 90% at 50% 0%, black 40%, transparent 85%);
+}
+
+/* Optional noise overlay — keep off by default; add `section-surface--noise` to enable */
+.section-surface--noise::after {
+  content: "";
+  position: absolute; inset: 0;
+  background-image: url('/images/noise-64.png');
+  background-size: 64px 64px;
+  opacity: 0.025;  /* ~2.5% */
+  mix-blend-mode: multiply;
+}
+
+

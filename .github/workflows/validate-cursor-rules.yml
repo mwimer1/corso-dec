@@ -1,0 +1,35 @@
+name: Validate Cursor Rules
+
+on:
+  pull_request:
+    paths:
+      - ".cursor/rules/**.mdc"
+      - "scripts/validate-cursor-rules.ts"
+      - "docs/**"
+  push:
+    branches: [ main ]
+    paths:
+      - ".cursor/rules/**.mdc"
+      - "scripts/validate-cursor-rules.ts"
+      - "docs/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup-node-pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm validate:cursor-rules
+
+
+

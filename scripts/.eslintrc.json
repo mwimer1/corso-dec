@@ -1,0 +1,15 @@
+{
+  "env": { "node": true, "es2022": true },
+  "rules": {
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "MemberExpression[object.name='process'][property.name='env'][computed=false]",
+        "message": "Use bracket notation for env: process.env['NAME']"
+      }
+    ]
+  }
+}
+
+
+

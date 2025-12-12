@@ -1,0 +1,29 @@
+# Minimal local Spectral ruleset for OAS3 validation
+formats: [oas3]
+rules:
+  # Require servers
+  oas3-servers: 
+    description: OpenAPI document should specify at least one server
+    given: "$"
+    then:
+      field: servers
+      function: truthy
+    severity: warn
+
+  # Each operation should have 2xx response
+  operation-has-2xx:
+    description: Operation should define a 2xx success response
+    given: "$.paths[*][*]"
+    then:
+      function: schema
+      functionOptions:
+        schema:
+          type: object
+          required: [responses]
+          properties:
+            responses:
+              type: object
+              patternProperties:
+                "^2\\d\\d$": {}
+    severity: warn
+

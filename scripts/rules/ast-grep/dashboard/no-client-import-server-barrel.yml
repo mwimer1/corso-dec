@@ -1,0 +1,20 @@
+id: dashboard.no-client-import-server-barrel
+language: ts
+rule:
+  all:
+    - pattern: import $X from "@/lib/server/dashboard"
+    - not:
+        pattern: import 'server-only'
+message: >
+  Client/edge code must not import from "@/lib/server/dashboard".
+  Import server APIs only within server files (with `import 'server-only'`).
+severity: error
+paths:
+  include:
+    - components/dashboard/**
+    - app/**
+  exclude:
+    - components/dashboard/server.ts
+
+
+

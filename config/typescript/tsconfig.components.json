@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Isolated Components Layer",
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "isolatedModules": false,
+    "types": ["react", "react-dom"],
+    "noEmit": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationMap": true,
+    "outDir": "../../.typegen/components",
+    "rootDir": "../..",
+    "tsBuildInfoFile": "../../.cache/tsconfig.components.tsbuildinfo"
+  },
+  "references": [
+    { "path": "./tsconfig.types.json" },
+    { "path": "./tsconfig.styles.json" },
+    { "path": "./tsconfig.lib.json" }
+  ],
+  "include": [
+    "../../components/**/*.ts",
+    "../../components/**/*.tsx",
+    "../../types/**/*.d.ts"
+  ],
+  "exclude": [
+    "../../node_modules",
+    "../../**/*.stories.ts",
+    "../../**/*.stories.tsx",
+    "../../**/*.stories.mdx",
+    "../../**/*.spec.tsx",
+    "../../**/*.spec.ts",
+    "../../**/*.test.tsx",
+    "../../**/*.test.ts"
+  ]
+} 

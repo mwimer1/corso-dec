@@ -1,0 +1,8 @@
+# pnpm-specific configurations for workspace management
+# These settings ensure proper dependency hoisting and Windows compatibility
+
+# Use hoisted node_modules structure for better Windows compatibility
+node-linker=hoisted
+
+# Allow hoisting of dependencies to root node_modules
+shamefully-hoist=true

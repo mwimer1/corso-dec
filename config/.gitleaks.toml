@@ -1,0 +1,56 @@
+# Gitleaks configuration for Corso app
+# https://github.com/zricethezav/gitleaks
+
+title = "Corso App Secret Scanning"
+
+[extend]
+# Use the default gitleaks rules
+useDefault = true
+
+# Additional rules for common secrets
+[[rules]]
+id = "stripe-secret-key"
+description = "Stripe Secret Key"
+regex = '''sk_live_[0-9a-zA-Z]{24}'''
+keywords = ["sk_live_"]
+
+[[rules]]
+id = "openai-api-key"
+description = "OpenAI API Key"
+regex = '''sk-[a-zA-Z0-9]{20,}'''
+keywords = ["sk-"]
+
+[[rules]]
+id = "supabase-anon-key"
+description = "Supabase Anon Key"
+regex = '''eyJ[A-Za-z0-9_/+-]*={0,2}'''
+keywords = ["eyJ"]
+
+# Allow certain patterns that are false positives
+[allowlist]
+description = "Allowlist for common false positives"
+paths = [
+    ".env.example",
+    "docs/",
+    "README.md",
+    "**/*.md",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.stories.tsx"
+]
+
+regexes = [
+    # Allow example/dummy keys in documentation
+    '''sk_test_[0-9a-zA-Z]{24}''',
+    '''pk_test_[0-9a-zA-Z]{24}''',
+    # Allow placeholder values
+    '''your-.*-key''',
+    '''<your-.*>''',
+    '''example\.com''',
+    '''localhost''',
+    '''127\.0\.0\.1''',
+    # Allow common test patterns
+    '''test-.*''',
+    '''mock-.*''',
+    '''fake-.*'''
+] 

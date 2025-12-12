@@ -1,0 +1,27 @@
+# Global code ownership - All files require approval from team leads
+* @Corso222/team-leads
+
+# Critical configuration files require additional review
+/.github/ @Corso222/team-leads @Corso222/devops
+/.github/actions/ @Corso222/team-leads @Corso222/devops
+/.github/workflows/ @Corso222/team-leads @Corso222/devops
+/config/ @Corso222/team-leads @Corso222/devops
+/middleware*.ts @Corso222/team-leads @Corso222/security
+/next.config.mjs @Corso222/team-leads @Corso222/devops
+
+# Security-sensitive areas
+/lib/auth/ @Corso222/team-leads @Corso222/security
+/lib/integrations/ @Corso222/team-leads @Corso222/security
+/app/(protected)/ @Corso222/team-leads @Corso222/security
+/app/api/ @Corso222/team-leads @Corso222/security
+/actions/ @Corso222/team-leads @Corso222/security
+/components/auth/ @Corso222/team-ui @Corso222/security
+
+# Database and infrastructure
+/supabase/ @Corso222/team-leads @Corso222/database
+/lib/integrations/clickhouse/ @Corso222/team-leads @Corso222/database
+/lib/integrations/stripe/ @Corso222/team-leads @Corso222/payments
+
+# Documentation
+/docs/ @Corso222/team-leads @Corso222/documentation
+README.md @Corso222/team-leads @Corso222/documentation 

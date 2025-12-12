@@ -1,0 +1,18 @@
+# Reduce dev-server file watching on Windows (Git Bash) for faster pnpm dev
+
+# Tests
+**/*.test.*
+**/*.spec.*
+**/__tests__/**
+tests/**
+
+# Stories
+**/*.stories.*
+**/*.story.*
+**/__mocks__/**
+stories/**
+
+# Misc large, non-runtime folders (docs/reports are not imported by Next)
+reports/**
+**/*.md
+

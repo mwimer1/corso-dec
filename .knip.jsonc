@@ -1,0 +1,44 @@
+{
+  // Entries that represent what actually runs/ships/tests in this monorepo
+  "entry": [
+    "app/**/*",
+    "scripts/**/*",
+    "tools/**/*",
+    "components/**/*",
+    "lib/**/*",
+    "types/**/*",
+    "styles/**/*",
+    "tests/**/*",
+    "vitest.config.*",
+    "eslint.config.*",
+    "next.config.*",
+    "package.json"
+  ],
+  "ignoreExports": [
+    // Next.js framework exports & route handlers
+    "runtime",
+    "dynamic",
+    "revalidate",
+    "metadata",
+    "viewport",
+    "generateMetadata",
+    "generateStaticParams",
+    "dynamicParams",
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS",
+    "HEAD"
+  ],
+  "tsConfigFile": "tsconfig.json",
+  // Treat public types as API; they'll be allowlisted here over time.
+  "ignore": [
+    "types/**"
+  ],
+  "reporter": [
+    "json"
+  ]
+}
+

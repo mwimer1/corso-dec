@@ -1,0 +1,173 @@
+/* Main CSS entry point for Corso design system */
+
+/* IMPORTS MUST BE FIRST (besides @charset / empty @layer) */
+@import './tokens/index.css' layer(tokens);
+@import './ui/shared/patterns.css' layer(components);
+
+:root {
+  --nav-border: hsl(var(--border));
+  --nav-shadow: 0 1px 3px hsl(0deg 0% 0% / 5%);
+
+  /* Optional button palette mapping (kept here for future alignment) */
+  --btn-outline-bg:    hsl(var(--background));
+  --btn-outline-border:hsl(var(--border));
+  --btn-outline-text:  hsl(var(--text-high));
+  --btn-outline-bg-hover:    hsl(var(--muted));
+  --btn-outline-border-hover:hsl(var(--border));
+  --btn-outline-text-hover:  hsl(var(--text-high));
+  --btn-primary-bg:    hsl(var(--primary));
+  --btn-primary-border:hsl(var(--primary));
+  --btn-primary-text:  hsl(var(--primary-foreground));
+  --btn-primary-bg-hover:    hsl(var(--primary) / 90%);
+  --btn-primary-border-hover:hsl(var(--primary) / 90%);
+  --btn-primary-text-hover:  hsl(var(--primary-foreground));
+  --btn-link-bg: transparent;
+  --btn-link-border: transparent;
+  --btn-link-text: hsl(var(--text-high));
+  --btn-link-bg-hover: hsl(var(--muted));
+  --btn-link-border-hover: transparent;
+  --btn-link-text-hover: hsl(var(--text-high));
+  --radius-default: 11px;
+  --radius-link: 13px;
+  --radius-cta: 14px;
+}
+
+/* Component overrides moved into Tailwind components layer */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* Hide native number input spinners to avoid overlap with custom steppers */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    /* stylelint-disable-next-line property-no-vendor-prefix */
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    /* stylelint-disable-next-line property-no-vendor-prefix */
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+
+  /* Button reset with proper vendor prefix ordering
+   * NOTE: Do not reset button borders in @layer components — allow Tailwind utilities
+   * (e.g., `border-2 border-border`) to control borders. Removing `border: 0` here
+   * prevents this rule from overriding utility classes in components like PricingCard.
+   */
+  button {
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+    background: none;
+    appearance: none;
+  }
+
+  /* Clerk component styling integration */
+  [data-clerk-input] {
+    border-color: hsl(var(--border));
+    border-radius: 0.375rem;
+    border-width: 1px;
+    padding: var(--space-sm) var(--space-ms);
+    width: 100%;
+  }
+
+}
+
+/* Base reset and foundational styles */
+html, body {
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+  font-feature-settings: 'rlig' 1, 'calt' 1;
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
+
+  /* Text size adjustment for mobile */
+  text-size-adjust: 100%;
+}
+
+/* Global focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Note: Avoid global element resets that affect third‑party widgets (e.g., Clerk) */
+
+/* Scrollbar styles */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* User select utilities */
+.dev-tools-indicator-item {
+  user-select: none;
+}
+
+/* Background clip utilities with vendor prefixes */
+.nextjs-container-build-error-version-status > .turbopack-text {
+  background: linear-gradient( to right,var(--color-turbopack-text-red) 0%,var(--color-turbopack-text-blue) 100% );
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Data attributes user select utilities */
+[data-nextjs-call-stack-frame] {
+  display: block;
+  box-sizing: border-box;
+  user-select: text;
+  padding: 6px 8px;
+  border-radius: var(--rounded-lg);
+}
+
+/* Dialog backdrop filter with vendor prefixes */
+[data-nextjs-dialog-backdrop] {
+  backdrop-filter: blur(10px);
+}
+
+/* Container errors mask image with vendor prefixes */
+.nextjs-container-errors-component-stack code {
+  mask-image: linear-gradient(to bottom,rgb(0 0 0 / 0%) 0%,black 10%);
+}
+
+/* Animation utilities */
+@keyframes accordion-down {
+  from { height: 0 }
+  to { height: var(--radix-accordion-content-height) }
+}
+
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height) }
+  to { height: 0 }
+}
+
+/* Missing keyframes used by animated-pill sheen */
+@keyframes sheen-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Navbar scroll shadow class toggle */
+.navbar.scrolled {
+  box-shadow: var(--nav-shadow);
+  border-bottom: 1px solid var(--nav-border);
+}
+
+/* Hide FAQ under 901px (CSS-only) */
+@media (width <= 900px) {
+  .hide-faq-901 { display: none !important; }
+}
+
+/* Ensure mobile overlay item borders use nav token color */
+.mobile-menu .border-b {
+  border-color: var(--nav-border) !important;
+} 

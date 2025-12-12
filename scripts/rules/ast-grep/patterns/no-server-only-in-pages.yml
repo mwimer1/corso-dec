@@ -1,0 +1,15 @@
+id: no-server-only-in-pages
+message: Importing "server-only" is not allowed in the legacy pages/ router. Use a .rsc.ts split and import via '@/lib/<domain>' barrel.
+severity: error
+language: TypeScript
+paths:
+  include:
+    - pages/**/*.ts
+    - pages/**/*.tsx
+rule:
+  any:
+    - pattern: "import 'server-only'"
+    - pattern: "import $_ from 'server-only'"
+
+
+

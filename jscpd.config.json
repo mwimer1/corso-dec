@@ -1,0 +1,66 @@
+{
+  "$schema": "https://raw.githubusercontent.com/kucherenko/jscpd/master/packages/config/schema.json",
+  "threshold": 2,
+  "reporters": ["console", "json"],
+  "output": "reports/",
+  "ignore": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/.next/**",
+    "**/coverage/**",
+    "**/reports/**",
+    "**/*.d.ts",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/*.stories.ts",
+    "**/*.stories.tsx"
+  ],
+  "absolute": true,
+  "format": ["typescript", "javascript"],
+  "minLines": 10,
+  "minTokens": 50,
+  "paths": [
+    "scripts/",
+    "lib/",
+    "components/",
+    "hooks/",
+    "types/",
+    "styles/",
+    "actions/",
+    "contexts/",
+    "config/"
+  ],
+  "blame": false,
+  "cache": true,
+  "exitCode": 1,
+  "silent": false,
+  "reportersOptions": {
+    "console": {
+      "colors": true,
+      "format": "text"
+    },
+    "json": {
+      "format": "json"
+    }
+  },
+  "patterns": [
+    {
+      "pattern": "scripts/",
+      "threshold": 10,
+      "minLines": 5,
+      "minTokens": 25,
+      "description": "Scripts directory - higher threshold due to shared utilities and patterns"
+    },
+    {
+      "pattern": "tests/",
+      "threshold": 20,
+      "minLines": 5,
+      "minTokens": 25,
+      "description": "Tests directory - higher threshold for test utilities and fixtures"
+    }
+  ]
+}
+

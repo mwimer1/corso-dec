@@ -1,0 +1,192 @@
+name: Force delete all workflow runs (manual)
+permissions:
+  contents: read
+  actions: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: "Type IRREVOCABLE_DELETE to confirm permanent deletion of all workflow runs."
+        required: true
+        default: ""
+      dry_run:
+        description: "If true, list run IDs only (no deletions)."
+        required: false
+        default: "false"
+      pace_seconds:
+        description: "Delay between DELETE calls (seconds, can be fractional like 0.5)."
+        required: false
+        default: "0.5"
+      page_size:
+        description: "Page size when listing runs (max 100)."
+        required: false
+        default: "100"
+      min_remaining:
+        description: "Pause when core rate_limit remaining < this value."
+        required: false
+        default: "150"
+
+jobs:
+  delete-runs:
+    name: Delete workflow runs (irreversible)
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      contents: read
+      actions: write
+
+    steps:
+      - name: Validate confirmation
+        if: ${{ github.event.inputs.confirm != 'IRREVOCABLE_DELETE' }}
+        run: |
+          echo "Confirmation did not match 'IRREVOCABLE_DELETE'. Aborting." >&2
+          exit 1
+
+      - name: Checkout (satisfy CI workflow lint)
+        uses: actions/checkout@v4
+
+      - name: Ensure jq is available
+        run: |
+          if ! command -v jq >/dev/null 2>&1; then
+            sudo apt-get update && sudo apt-get install -y jq
+          fi
+          jq --version
+
+      - name: Enumerate and delete (slow API mode with backoff)
+        env:
+          # Prefer a PAT to avoid installation-scoped limits; otherwise fallback to the GITHUB_TOKEN.
+          TOKEN: ${{ secrets.REPO_RW_PAT || github.token }}
+          REPO: ${{ github.repository }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+          PACE: ${{ github.event.inputs.pace_seconds }}
+          PAGE_SIZE: ${{ github.event.inputs.page_size }}
+          MIN_REMAINING: ${{ github.event.inputs.min_remaining }}
+        run: |
+          set -Eeuo pipefail
+
+          api() {
+            local method="${1:-GET}"
+            local path="$2"
+            shift 2 || true
+            curl -sS -X "$method" \
+              -H "Authorization: Bearer ${TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com${path}" "$@"
+          }
+
+          get_remaining() {
+            api GET "/rate_limit" | jq -r '.resources.core.remaining'
+          }
+
+          get_reset_epoch() {
+            api GET "/rate_limit" | jq -r '.resources.core.reset'
+          }
+
+          wait_for_budget() {
+            local remaining reset now wait_s
+            remaining="$(get_remaining || echo 0)"
+            reset="$(get_reset_epoch || echo 0)"
+            now="$(date +%s)"
+            if [ -z "$remaining" ] || [ "$remaining" -lt 0 ]; then remaining=0; fi
+            if [ -z "$reset" ] || [ "$reset" -lt "$now" ]; then reset=$((now+30)); fi
+            if [ "$remaining" -lt "${MIN_REMAINING}" ]; then
+              wait_s=$(( reset - now + 5 ))
+              if [ "$wait_s" -lt 5 ]; then wait_s=30; fi
+              echo "Rate budget low (remaining=$remaining). Sleeping ${wait_s}s until reset..."
+              sleep "$wait_s"
+            fi
+          }
+
+          delete_run() {
+            local id="$1"
+            # Try delete; if 403/429, sleep to reset and retry a few times
+            local attempt=0
+            local max_attempts=8
+            while :; do
+              status="$(curl -sS -o /dev/null -w "%{http_code}" \
+                -H "Authorization: Bearer ${TOKEN}" \
+                -H "Accept: application/vnd.github+json" \
+                -X DELETE "https://api.github.com/repos/${REPO}/actions/runs/${id}")"
+              case "$status" in
+                204|200)
+                  echo "OK delete run ${id}"
+                  return 0
+                  ;;
+                404)
+                  echo "Skip (not found) run ${id}"
+                  return 0
+                  ;;
+                403|429)
+                  echo "Rate limited (HTTP $status) while deleting ${id}. Waiting for reset..."
+                  wait_for_budget
+                  ;;
+                *)
+                  attempt=$((attempt+1))
+                  if [ "$attempt" -ge "$max_attempts" ]; then
+                    echo "FAILED delete run ${id} (HTTP $status) after ${max_attempts} attempts" >&2
+                    return 1
+                  fi
+                  sleep_seconds=$(( 2 ** attempt ))
+                  if [ "$sleep_seconds" -gt 60 ]; then sleep_seconds=60; fi
+                  echo "Retry ${attempt} for run ${id} in ${sleep_seconds}s (HTTP $status)..."
+                  sleep "$sleep_seconds"
+                  ;;
+              esac
+            done
+          }
+
+          echo "Repository: ${REPO}"
+          echo "Dry run: ${DRY_RUN}"
+          echo "Pace between deletes (s): ${PACE}"
+          echo "Page size: ${PAGE_SIZE}"
+          echo "Min remaining threshold: ${MIN_REMAINING}"
+
+          page=1
+          total_deleted=0
+          total_listed=0
+
+          while :; do
+            wait_for_budget
+            echo "Fetching page ${page}..."
+            runs_json="$(api GET "/repos/${REPO}/actions/runs?per_page=${PAGE_SIZE}&page=${page}")"
+            ids="$(echo "$runs_json" | jq -r '.workflow_runs[].id')"
+            if [ -z "$ids" ]; then
+              echo "No more runs found."
+              break
+            fi
+
+            count_on_page="$(printf "%s\n" "$ids" | grep -c '^[0-9]\+$' || true)"
+            total_listed=$(( total_listed + count_on_page ))
+            echo "Page ${page}: found ${count_on_page} run(s)."
+
+            if [ "${DRY_RUN}" = "true" ]; then
+              printf "%s\n" "$ids" | head -n 200
+              page=$((page+1))
+              continue
+            fi
+
+            # Delete one-by-one with pacing and backoff
+            while IFS= read -r id; do
+              [ -z "$id" ] && continue
+              delete_run "$id" || true
+              total_deleted=$(( total_deleted + 1 ))
+              # Pace between calls to avoid spiking the API
+              # Supports fractional (e.g. 0.5)
+              python3 - <<PY
+import time
+time.sleep(float("${PACE}"))
+PY
+            done <<< "$ids"
+
+            # If less than a full page, we reached the end
+            if [ "$count_on_page" -lt "${PAGE_SIZE}" ]; then
+              echo "Reached the last page."
+              break
+            fi
+
+            page=$((page+1))
+          done
+
+          echo "Listed: ${total_listed}, Deleted: ${total_deleted} (note: the current run cannot delete itself)."
+

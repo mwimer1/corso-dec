@@ -1,0 +1,236 @@
+diff --git a/styles/ui/shared/article-content.ts b/styles/ui/shared/article-content.ts
+deleted file mode 100644
+index 1a2b3c4..0000000
+--- a/styles/ui/shared/article-content.ts
++++ /dev/null
+@@ -1,200 +0,0 @@
+-// legacy article content variants (unused)
+-export const articleContentVariants = /* cva(...) */ null as any;
+-export const articleHeaderVariants = /* cva(...) */ null as any;
+-export const articleMetadataVariants = /* cva(...) */ null as any;
+-export type ArticleContentVariantProps = any;
+-export type ArticleHeaderVariantProps = any;
+-export type ArticleMetadataVariantProps = any;
+
+diff --git a/styles/ui/shared/callout.ts b/styles/ui/shared/callout.ts
+deleted file mode 100644
+index 1a2b3c4..0000000
+--- a/styles/ui/shared/callout.ts
++++ /dev/null
+@@ -1,80 +0,0 @@
+-// legacy callout (unused)
+-export const calloutVariants = /* cva(...) */ null as any;
+-export type CalloutVariantProps = any;
+
+diff --git a/styles/ui/shared/card-container.ts b/styles/ui/shared/card-container.ts
+deleted file mode 100644
+index 1a2b3c4..0000000
+--- a/styles/ui/shared/card-container.ts
++++ /dev/null
+@@ -1,60 +0,0 @@
+-// legacy card container (unused)
+-export const cardContainerVariants = /* cva(...) */ null as any;
+
+diff --git a/styles/ui/shared/chart-container.ts b/styles/ui/shared/chart-container.ts
+deleted file mode 100644
+index 1a2b3c4..0000000
+--- a/styles/ui/shared/chart-container.ts
++++ /dev/null
+@@ -1,80 +0,0 @@
+-// legacy chart container (unused)
+-export const chartContainerBaseVariants = /* cva(...) */ null as any;
+-export type ChartContainerBaseVariantProps = any;
+
+diff --git a/styles/ui/shared/cta-base.ts b/styles/ui/shared/cta-base.ts
+deleted file mode 100644
+index 1a2b3c4..0000000
+--- a/styles/ui/shared/cta-base.ts
++++ /dev/null
+@@ -1,60 +0,0 @@
+-// legacy cta base (unused)
+-export const ctaBaseVariants = /* cva(...) */ null as any;
+
+diff --git a/styles/ui/shared/dialog-base.ts b/styles/ui/shared/dialog-base.ts
+deleted file mode 100644
+index 1a2b3c4..0000000
+--- a/styles/ui/shared/dialog-base.ts
++++ /dev/null
+@@ -1,140 +0,0 @@
+-// legacy dialog base (unused)
+-export const dialogOverlayBaseVariants = /* cva(...) */ null as any;
+-export const dialogContentBaseVariants = /* cva(...) */ null as any;
+-export const dialogHeaderBaseVariants = /* cva(...) */ null as any;
+-export const dialogFooterBaseVariants = /* cva(...) */ null as any;
+-export type DialogOverlayBaseVariantProps = any;
+-export type DialogContentBaseVariantProps = any;
+-export type DialogHeaderBaseVariantProps = any;
+-export type DialogFooterBaseVariantProps = any;
+
+diff --git a/styles/ui/shared/form-input-base.ts b/styles/ui/shared/form-input-base.ts
+deleted file mode 100644
+index 1a2b3c4..0000000
+--- a/styles/ui/shared/form-input-base.ts
++++ /dev/null
+@@ -1,80 +0,0 @@
+-// legacy form input base (unused)
+-export const formInputBaseVariants = /* cva(...) */ null as any;
+-export type FormInputBaseVariantProps = any;
+
+diff --git a/styles/ui/shared/interactive-base.ts b/styles/ui/shared/interactive-base.ts
+deleted file mode 100644
+index 1a2b3c4..0000000
+--- a/styles/ui/shared/interactive-base.ts
++++ /dev/null
+@@ -1,120 +0,0 @@
+-// legacy interactive base (unused)
+-export const interactiveBase = /* cva(...) */ null as any;
+-export const interactiveSizeVariants = /* cva(...) */ null as any;
+-export const interactiveThumbVariants = /* cva(...) */ null as any;
+-export type InteractiveBaseVariantProps = any;
+-export type InteractiveSizeVariantProps = any;
+-export type InteractiveThumbVariantProps = any;
+
+diff --git a/styles/ui/shared/index.ts b/styles/ui/shared/index.ts
+new file mode 100644
+index 0000000..abcd123
+--- /dev/null
++++ b/styles/ui/shared/index.ts
+@@ -0,0 +1,22 @@
++/**
++ * Public surface for shared UI primitives.
++ * Keep minimal and stable. Add /** @public *\/ to exports in leaf files.
++ */
++export * from './navbar-sizes';
++export * from './responsive-image-sizes';
++export * from './typography-variants';
++export * from './underline-accent';
++export * from './surface-interactive';
++export * from './focus-ring';
++export * from './header-base';
++export * from './container-helpers';
++// Only expose the prop type from container-base as part of the public API
++export type { ContainerMaxWidthVariantProps } from './container-base';
+
+diff --git a/styles/ui/shared/navbar-sizes.ts b/styles/ui/shared/navbar-sizes.ts
+index 1234abc..5678def 100644
+--- a/styles/ui/shared/navbar-sizes.ts
++++ b/styles/ui/shared/navbar-sizes.ts
+@@ -1,20 +1,36 @@
+-// geometry + helpers for navbar
+-export const NAV_ITEM = { /* ...legacy internal token... */ };
++// geometry + helpers for navbar
+
++// (Removed) NAV_ITEM was internal and unused across domains. Avoid leaking as public API.
++// const NAV_ITEM = { /* internal */ };
+
+-export const navDesktopClasses = (...args: any[]) => { /* ... */ };
+-export const navMobileItemClasses = (...args: any[]) => { /* ... */ };
+-export const navMobileCtaClasses = (...args: any[]) => { /* ... */ };
++/** @public — used across navbar component family */
++export const navDesktopClasses = (...args: any[]) => { /* ... */ };
+
++/** @public — used across navbar component family */
++export const navMobileItemClasses = (...args: any[]) => { /* ... */ };
+
++/** @public — used across navbar component family */
++export const navMobileCtaClasses = (...args: any[]) => { /* ... */ };
+
+diff --git a/styles/ui/shared/responsive-image-sizes.ts b/styles/ui/shared/responsive-image-sizes.ts
+index 2233abc..7788def 100644
+--- a/styles/ui/shared/responsive-image-sizes.ts
++++ b/styles/ui/shared/responsive-image-sizes.ts
+@@ -1,12 +1,16 @@
+-export const responsiveImageSizes = { /* ... */ };
+-export function getResponsiveImageSize(key: string) { /* ... */ }
++/** @public — consumed by content-card and docs */
++export const responsiveImageSizes = { /* ... */ };
+
++/** @public — consumed by content-card and docs */
++export function getResponsiveImageSize(key: string) { /* ... */ }
+
+diff --git a/styles/ui/shared/typography-variants.ts b/styles/ui/shared/typography-variants.ts
+index 3344abc..8899def 100644
+--- a/styles/ui/shared/typography-variants.ts
++++ b/styles/ui/shared/typography-variants.ts
+@@ -1,10 +1,16 @@
+-import type { VariantProps } from 'class-variance-authority';
++import type { VariantProps } from 'class-variance-authority';
+
+-export const headingVariants = /* cva(...) */ null as any;
+-export type HeadingVariantProps = VariantProps<typeof headingVariants>;
+-export const dashedUnderline = 'underline underline-offset-4 decoration-dashed';
++/** @public — design-system typography primitive */
++export const headingVariants = /* cva(...) */ null as any;
+
++/** @public */
++export type HeadingVariantProps = VariantProps<typeof headingVariants>;
+
++/** @public */
++export const dashedUnderline = 'underline underline-offset-4 decoration-dashed';
+
+diff --git a/styles/ui/shared/underline-accent.ts b/styles/ui/shared/underline-accent.ts
+index 4455abc..9900def 100644
+--- a/styles/ui/shared/underline-accent.ts
++++ b/styles/ui/shared/underline-accent.ts
+@@ -1,6 +1,8 @@
+-export const underlineAccent = (active: boolean) => active ? 'underline decoration-2' : '';
+-export type UnderlineAccentVariants = 'subtle' | 'bold';
++/** @public — animated underline accent used in hero and headers */
++export const underlineAccent = (active: boolean) => active ? 'underline decoration-2' : '';
++/** @public */
++export type UnderlineAccentVariants = 'subtle' | 'bold';
+
+diff --git a/styles/ui/shared/surface-interactive.ts b/styles/ui/shared/surface-interactive.ts
+index 5566abc..aa11def 100644
+--- a/styles/ui/shared/surface-interactive.ts
++++ b/styles/ui/shared/surface-interactive.ts
+@@ -1,6 +1,8 @@
+-export const surfaceInteractive = (elevated?: boolean) =>
+-  elevated ? 'shadow-lg transition-transform hover:scale-[1.01]' : 'shadow-sm';
++/** @public — hover/elevation utility used in market-insights */
++export const surfaceInteractive = (elevated?: boolean) =>
+-  elevated ? 'shadow-lg transition-transform hover:scale-[1.01]' : 'shadow-sm';
+
+diff --git a/styles/ui/shared/focus-ring.ts b/styles/ui/shared/focus-ring.ts
+index 6677abc..bb22def 100644
+--- a/styles/ui/shared/focus-ring.ts
++++ b/styles/ui/shared/focus-ring.ts
+@@ -1,4 +1,6 @@
+-export const focusRing = 'focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2';
++/** @public — shared focus state utility */
++export const focusRing = 'focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2';
+
+diff --git a/styles/ui/shared/header-base.ts b/styles/ui/shared/header-base.ts
+index 7788abc..cc33def 100644
+--- a/styles/ui/shared/header-base.ts
++++ b/styles/ui/shared/header-base.ts
+@@ -1,6 +8 @@
+-export const headerBarBase = 'sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-[rgba(255,255,255,0.6)]';
++/** @public — header layout primitive used by navbar */
++export const headerBarBase = 'sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-[rgba(255,255,255,0.6)]';
+
+diff --git a/styles/ui/shared/container-helpers.ts b/styles/ui/shared/container-helpers.ts
+index 8899abc..dd44def 100644
+--- a/styles/ui/shared/container-helpers.ts
++++ b/styles/ui/shared/container-helpers.ts
+@@ -1,8 +1,12 @@
+-export const containerWithPaddingVariants = (wide?: boolean) =>
+-  wide ? 'mx-auto max-w-[1400px] px-6 sm:px-8' : 'mx-auto max-w-6xl px-4 sm:px-6';
++/** @public — section/container helper used by multiple marketing sections */
++export const containerWithPaddingVariants = (wide?: boolean) =>
+-  wide ? 'mx-auto max-w-[1400px] px-6 sm:px-8' : 'mx-auto max-w-6xl px-4 sm:px-6';
+
+diff --git a/styles/ui/shared/container-base.ts b/styles/ui/shared/container-base.ts
+index 99aaabc..ee55def 100644
+--- a/styles/ui/shared/container-base.ts
++++ b/styles/ui/shared/container-base.ts
+@@ -1,10 +1,16 @@
+-import type { VariantProps } from 'class-variance-authority';
+-export type ContainerMaxWidthVariantProps = VariantProps<any>;
++import type { VariantProps } from 'class-variance-authority';
+
++/** @public — exported type used by marketing-container */
++export type ContainerMaxWidthVariantProps = VariantProps<any>;
+
++// (No other exports are intended to be public from this file)
+

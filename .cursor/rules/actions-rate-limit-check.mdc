@@ -1,0 +1,34 @@
+---
+rule_id: actions-rate-limit-check
+title: Server Actions & API — Rate Limiting Required
+owners: ["@security", "@platform"]
+status: active
+domains: ["api","server","security"]
+enforcement: warn
+alwaysApply: true
+globs:
+  - "app/**/api/**/route.ts"
+  - "app/**/actions/**"
+  - "lib/server/**"
+related_rules:
+  - code-quality-standards
+  - security-standards
+last_reviewed: "2025-10-13"
+summary: New/changed server actions and API routes must apply standardized rate limiting and tests.
+---
+
+### Why
+Prevent abuse and protect upstream dependencies.
+
+### Do
+- Use the shared limiter utilities in `@/lib/server/` (do not roll your own).
+- Add **one happy-path** and **one rate-limit** test per route/action.
+- Propagate limiter headers in error responses via repo HTTP helpers.
+
+### Don't
+- Ship unauthenticated, write-capable routes without a limiter.
+- Bypass HTTP helpers to craft ad-hoc responses.
+
+### Acceptance
+- CI shows limiter wired (unit tests present).
+- No direct `new Response()`; use `@/lib/api/response/http`.

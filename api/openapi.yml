@@ -1,0 +1,1011 @@
+openapi: 3.1.0
+info:
+  title: Corso API v1
+  version: 1.0.0
+  description: Public, versioned API endpoints and schemas.
+  contact:
+    name: Corso API Support
+    url: https://corso.app/support
+    email: support@corso.app
+servers:
+  - url: https://api.corso.app
+    description: Production
+  - url: https://staging-api.corso.app
+    description: Staging
+  - url: http://localhost:3000
+    description: Local
+tags:
+  - name: Status
+    description: Health and service status
+  - name: Security
+    description: Security-related endpoints
+  - name: Content
+    description: Public content and insights
+  - name: Internal
+    description: Internal system endpoints and webhooks
+  - name: Users
+    description: User/profile APIs
+  - name: Dashboard
+    description: Analytics & SQL generation
+  - name: Chat
+    description: AI chat & streaming
+x-tagGroups:
+  - name: Core
+    tags:
+      - Status
+      - Users
+      - Content
+  - name: AI
+    tags:
+      - Dashboard
+      - Chat
+paths:
+  /api/health:
+    get:
+      operationId: health_check
+      tags:
+        - Status
+      summary: Health check
+      description: Canonical health check endpoint for monitoring service availability
+      x-public: true
+      responses:
+        "200":
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+    head:
+      operationId: health_check_head
+      tags:
+        - Status
+      summary: Health check (HEAD)
+      description: Lightweight head request for health monitoring
+      x-public: true
+      responses:
+        "204":
+          description: Service is healthy
+  /api/health/clickhouse:
+    get:
+      operationId: health_clickhouse
+      tags:
+        - Status
+      summary: ClickHouse health check
+      description: Database connectivity health check for ClickHouse
+      x-public: true
+      responses:
+        "200":
+          description: ClickHouse is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: healthy
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: 2025-10-04T12:00:00.000Z
+                  service:
+                    type: string
+                    example: clickhouse
+        "500":
+          description: ClickHouse health check failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+    head:
+      operationId: health_clickhouse_head
+      tags:
+        - Status
+      summary: ClickHouse health check (HEAD)
+      description: Lightweight head request for ClickHouse health monitoring
+      x-public: true
+      responses:
+        "204":
+          description: ClickHouse is healthy
+  /api/insights/search:
+    get:
+      operationId: insights_search
+      tags:
+        - Content
+      summary: Search insights content
+      description: Public search endpoint for insights and articles
+      x-public: true
+      parameters:
+        - name: q
+          in: query
+          description: Search query string
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 200
+        - name: category
+          in: query
+          description: Filter by category slug
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 50
+      responses:
+        "200":
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        slug:
+                          type: string
+                          example: market-trends-2024
+                        title:
+                          type: string
+                          example: Construction Market Trends for 2024
+                        description:
+                          type: string
+                          example: An in-depth analysis of emerging trends...
+                        categories:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                                example: Market Analysis
+                              slug:
+                                type: string
+                                example: market-analysis
+              example:
+                results:
+                  - slug: market-trends-2024
+                    title: Construction Market Trends for 2024
+                    description: An in-depth analysis of emerging trends...
+                    categories:
+                      - name: Market Analysis
+                        slug: market-analysis
+        "400":
+          description: Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+  /api/v1/csp-report:
+    post:
+      operationId: security_cspReport
+      tags:
+        - Security
+      summary: CSP violation report intake
+      description: Public Edge-safe endpoint for receiving CSP violation reports
+      x-public: true
+      requestBody:
+        required: true
+        content:
+          application/csp-report:
+            schema:
+              type: object
+              properties:
+                csp-report:
+                  $ref: "#/components/schemas/CspViolation"
+          application/reports+json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: csp-violation
+                  body:
+                    $ref: "#/components/schemas/CspViolation"
+      responses:
+        "204":
+          description: Report accepted
+        "400":
+          description: Invalid payload
+        "429":
+          description: Rate limited
+  /api/v1/entity/{entity}:
+    get:
+      operationId: entity_operations
+      tags:
+        - Dashboard
+      summary: Entity data operations
+      description: Query and manage entity data (projects, companies, addresses) with
+        authentication
+      parameters:
+        - name: entity
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - projects
+              - companies
+              - addresses
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            maxLength: 64
+        - name: sortDir
+          in: query
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: asc
+        - name: search
+          in: query
+          schema:
+            type: string
+            maxLength: 200
+        - name: filters
+          in: query
+          description: JSON-encoded filter array
+          schema:
+            type: string
+        - $ref: "#/components/parameters/OrgIdHeader"
+      security:
+        - bearerAuth: []
+      x-corso-rbac:
+        - member
+      x-rate-limit:
+        limit: 60
+        window: 1m
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedEntityResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /api/v1/ai/chat:
+    post:
+      operationId: ai_chat_processStream
+      tags:
+        - Chat
+      summary: Stream chat processing (NDJSON)
+      description: Process user chat messages and stream AI responses in NDJSON format
+      security:
+        - bearerAuth: []
+      x-corso-rbac:
+        - member
+      x-rate-limit:
+        limit: 30
+        window: 1m
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatProcessRequest"
+      responses:
+        "200":
+          description: NDJSON stream of chat processing events
+          content:
+            application/x-ndjson:
+              schema:
+                type: string
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      parameters:
+        - $ref: "#/components/parameters/OrgIdHeader"
+  /api/v1/entity/{entity}/query:
+    post:
+      operationId: entity_query
+      tags:
+        - Dashboard
+      summary: Query entity data
+      description: Query paginated entity data with filtering and sorting
+      parameters:
+        - name: entity
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - projects
+              - companies
+              - addresses
+        - $ref: "#/components/parameters/OrgIdHeader"
+      security:
+        - bearerAuth: []
+      x-corso-rbac:
+        - member
+      x-rate-limit:
+        limit: 60
+        window: 1m
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                filter:
+                  type: object
+                  description: Filter criteria
+                  additionalProperties: true
+                sort:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      field:
+                        type: string
+                      dir:
+                        type: string
+                        enum:
+                          - asc
+                          - desc
+                page:
+                  type: object
+                  properties:
+                    index:
+                      type: integer
+                      minimum: 0
+                    size:
+                      type: integer
+                      minimum: 1
+                      maximum: 1000
+              additionalProperties: false
+            example:
+              filter:
+                status: active
+              sort:
+                - field: name
+                  dir: asc
+              page:
+                index: 0
+                size: 10
+      responses:
+        "200":
+          description: Query results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      rows:
+                        type: array
+                        items:
+                          type: object
+                        description: Entity data rows
+                      columns:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/TableColumnConfig"
+                        description: Column configuration for framework-agnostic rendering
+                      total:
+                        type: integer
+                        description: Total number of rows available
+                      page:
+                        type: integer
+                        description: Current page index
+                      pageSize:
+                        type: integer
+                        description: Number of rows per page
+                    required:
+                      - rows
+                      - columns
+                      - total
+                      - page
+                      - pageSize
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /api/v1/entity/{entity}/export:
+    get:
+      operationId: entity_export
+      tags:
+        - Dashboard
+      summary: Export entity data
+      description: Export entity data in CSV or XLSX format
+      parameters:
+        - name: entity
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - projects
+              - companies
+              - addresses
+        - name: format
+          in: query
+          schema:
+            type: string
+            enum:
+              - csv
+              - xlsx
+            default: csv
+        - $ref: "#/components/parameters/OrgIdHeader"
+      security:
+        - bearerAuth: []
+      x-corso-rbac:
+        - member
+      x-rate-limit:
+        limit: 30
+        window: 1m
+      responses:
+        "200":
+          description: Exported data
+          content:
+            text/csv:
+              schema:
+                type: string
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema:
+                type: string
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /api/v1/ai/generate-sql:
+    post:
+      operationId: ai_generateSql
+      tags:
+        - Chat
+      summary: AI SQL generation
+      description: Generate SQL from a natural-language question using AI
+      security:
+        - bearerAuth: []
+      x-corso-rbac:
+        - member
+      x-rate-limit:
+        limit: 30
+        window: 1m
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateSqlRequest"
+      responses:
+        "200":
+          description: Generated SQL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenerateSqlResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      parameters:
+        - $ref: "#/components/parameters/OrgIdHeader"
+  /api/v1/user:
+    post:
+      operationId: users_validate
+      tags:
+        - Users
+      summary: Validate user payload
+      description: Validate user profile data and return validation results
+      security:
+        - bearerAuth: []
+      x-corso-rbac:
+        - member
+      x-rate-limit:
+        limit: 30
+        window: 1m
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "200":
+          description: Validation successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                required:
+                  - success
+              example:
+                success: true
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      parameters:
+        - $ref: "#/components/parameters/OrgIdHeader"
+  /api/internal/auth:
+    post:
+      operationId: internal_auth_webhook
+      tags:
+        - Internal
+      summary: Clerk authentication webhook
+      description: Process Clerk authentication events and user management webhooks
+      x-public: false
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Clerk webhook payload (varies by event type)
+            example:
+              type: user.created
+              data:
+                id: user_123
+                email_addresses:
+                  - email_address: user@example.com
+                first_name: John
+                last_name: Doe
+      responses:
+        "200":
+          description: Webhook processed successfully
+        "400":
+          description: Invalid webhook payload or signature
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "429":
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    OrgIdHeader:
+      name: X-Corso-Org-Id
+      in: header
+      description: Organization identifier header for tenant scoping
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorEnvelope"
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorEnvelope"
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorEnvelope"
+    RateLimited:
+      description: Rate Limited
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorEnvelope"
+    InternalError:
+      description: Internal Error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorEnvelope"
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        name:
+          type: string
+          example: John Doe
+        avatarUrl:
+          type: string
+          format: uri
+          example: https://example.com/avatar.jpg
+        createdAt:
+          type: string
+          format: date-time
+          example: 2024-01-15T10:30:00Z
+        updatedAt:
+          type: string
+          format: date-time
+          example: 2024-01-15T10:30:00Z
+      required:
+        - id
+        - email
+        - name
+        - createdAt
+      additionalProperties: false
+      example:
+        id: 550e8400-e29b-41d4-a716-446655440000
+        email: user@example.com
+        name: John Doe
+        avatarUrl: https://example.com/avatar.jpg
+        createdAt: 2024-01-15T10:30:00Z
+        updatedAt: 2024-01-15T10:30:00Z
+    GenericObject:
+      type: object
+      additionalProperties: true
+    ApiError:
+      type: object
+      properties:
+        code:
+          type: string
+          example: VALIDATION_ERROR
+        message:
+          type: string
+          example: Invalid input
+        details:
+          type: object
+          example:
+            fieldErrors:
+              content:
+                - Required
+        timestamp:
+          type: string
+          format: date-time
+          example: 2024-01-15T10:30:00Z
+        request_id:
+          type: string
+      required:
+        - code
+        - message
+        - timestamp
+      additionalProperties: false
+    HealthResponse:
+      type: object
+      required:
+        - success
+        - data
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          required:
+            - status
+            - timestamp
+          properties:
+            status:
+              type: string
+              enum:
+                - ok
+              example: ok
+            timestamp:
+              type: string
+              format: date-time
+              example: 2025-10-04T12:00:00.000Z
+            uptime:
+              type: number
+              description: Server uptime in seconds (null if unavailable)
+              example: 3600
+            version:
+              type: string
+              description: Application version
+              example: 1.0.0
+            nodeVersion:
+              type: string
+              description: Node.js version (null in Edge runtime)
+              example: v18.17.0
+            environment:
+              type: string
+              description: Runtime environment
+              example: production
+            platform:
+              type: string
+              description: Platform identifier (null in Edge runtime)
+              example: linux
+            arch:
+              type: string
+              description: Architecture (null in Edge runtime)
+              example: x64
+          additionalProperties: false
+      additionalProperties: false
+    ErrorEnvelope:
+      type: object
+      properties:
+        success:
+          const: false
+        error:
+          $ref: "#/components/schemas/ApiError"
+      required:
+        - success
+        - error
+      additionalProperties: false
+      example:
+        success: false
+        error:
+          code: VALIDATION_ERROR
+          message: Invalid input
+          details:
+            fieldErrors:
+              content:
+                - Required
+          timestamp: 2024-01-15T10:30:00Z
+    PageMeta:
+      type: object
+      properties:
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        total:
+          type: integer
+      required:
+        - page
+        - pageSize
+        - total
+      additionalProperties: false
+    PaginatedEntityResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: "#/components/schemas/GenericObject"
+              example:
+                - id: "1"
+                  name: Sample Project
+                  status: active
+            pagination:
+              $ref: "#/components/schemas/PageMeta"
+          required:
+            - data
+            - pagination
+          additionalProperties: false
+      required:
+        - success
+        - data
+      additionalProperties: false
+      example:
+        success: true
+        data:
+          data:
+            - id: "1"
+              name: Sample Project
+              status: active
+              created_at: 2024-01-15T10:30:00Z
+          pagination:
+            page: 0
+            pageSize: 10
+            total: 1
+    ChatProcessRequest:
+      type: object
+      properties:
+        content:
+          type: string
+          minLength: 1
+          maxLength: 2000
+          example: Summarize the latest construction market trends
+        preferredTable:
+          type: string
+          enum:
+            - projects
+            - companies
+            - addresses
+          example: projects
+      required:
+        - content
+      example:
+        content: What are the key insights from recent project data?
+        preferredTable: projects
+    GenerateChartRequest:
+      type: object
+      properties:
+        question:
+          type: string
+        results:
+          type: array
+          items: {}
+      required:
+        - question
+        - results
+    ChartConfig:
+      type: object
+      properties:
+        chartType:
+          type: string
+        title:
+          type: string
+        explanation:
+          type: string
+      additionalProperties: true
+    GenerateSqlRequest:
+      type: object
+      properties:
+        question:
+          type: string
+          minLength: 1
+        detectedTableIntent:
+          type: string
+      required:
+        - question
+      additionalProperties: false
+    GenerateSqlResponse:
+      type: object
+      properties:
+        sql:
+          type: string
+        explanation:
+          type: string
+        isValid:
+          type: boolean
+      required:
+        - isValid
+      additionalProperties: true
+    CspViolation:
+      type: object
+      additionalProperties: true
+      required:
+        - violated-directive
+      properties:
+        document-uri:
+          type: string
+          format: uri
+        referrer:
+          type: string
+        violated-directive:
+          type: string
+        effective-directive:
+          type: string
+        original-policy:
+          type: string
+        blocked-uri:
+          type: string
+        status-code:
+          type: integer
+        source-file:
+          type: string
+        line-number:
+          type: integer
+        column-number:
+          type: integer
+        script-sample:
+          type: string
+        disposition:
+          type: string
+        sample:
+          type: string
+    TableColumnConfig:
+      type: object
+      description: Framework-agnostic column configuration for table rendering
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the column
+        label:
+          type: string
+          description: Human-readable column header
+        i18nKey:
+          type: string
+          description: Internationalization key for the column header
+        accessor:
+          type: string
+          description: Dot-path into the row object for data access
+        sortable:
+          type: boolean
+          default: false
+          description: Whether the column can be sorted
+        hidden:
+          type: boolean
+          default: false
+          description: Whether the column is hidden by default
+        width:
+          type: integer
+          minimum: 1
+          description: Fixed width in pixels
+        minWidth:
+          type: integer
+          minimum: 1
+          description: Minimum width in pixels
+        flex:
+          type: integer
+          minimum: 1
+          description: Flex factor for responsive sizing
+        format:
+          type: string
+          enum: [text, number, currency, date, datetime, badge, link]
+          description: Data formatting type
+        a11y:
+          type: object
+          description: Accessibility configuration
+          properties:
+            headerAriaLabel:
+              type: string
+              description: ARIA label for the column header
+      required:
+        - id
+        - label
+        - accessor
+

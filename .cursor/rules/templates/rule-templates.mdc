@@ -1,0 +1,236 @@
+# Cursor Rule Templates
+# This file contains shared templates for common rule sections and patterns
+# DO NOT use this file directly - copy patterns into your rules
+
+## Common Frontmatter Patterns
+
+### Standard Rule Frontmatter
+```yaml
+---
+rule_id: cursor/rule-name
+title: Human-readable title
+owners:
+  - team@corso.io
+last_reviewed: 2025-10-06
+status: stable
+domains: [primary, secondary]
+enforcement:
+  - tool:pattern
+related_rules:
+  - cursor/related-rule
+alwaysApply: true|false
+globs: ["**/*.{ext}"]
+---
+```
+
+### Security Rule Frontmatter
+```yaml
+---
+rule_id: cursor/security-rule
+title: Security Rule Title
+owners:
+  - security@corso.io
+  - platform@corso.io
+last_reviewed: 2025-10-06
+status: stable
+domains: [security, api]
+enforcement:
+  - ast-grep:pattern
+  - script:validator
+related_rules:
+  - cursor/security-standards
+alwaysApply: true
+globs: ["app/api/**", "lib/**"]
+---
+```
+
+## Common Section Templates
+
+### Windows-First Tips Section
+```markdown
+## Windows-first tips
+
+- Prefer explicit imports over shell globs in docs examples.
+- Avoid glob-based shell expansions; use explicit paths.
+- Keep commands simple and sequential; avoid long `&&` chains in docs.
+```
+
+### Quality Gates Section
+```markdown
+## Quality Gates
+
+### Development Validation
+```bash
+# Validate implementation
+pnpm typecheck
+
+# Check enforcement
+pnpm validate:cursor-rules
+
+# Domain-specific validation
+pnpm validate:domain-specific
+```
+
+### Production Readiness
+- ✅ **Validation**: Automated checks pass
+- ✅ **Documentation**: Examples provided and accurate
+- ✅ **Testing**: Test coverage maintained
+```
+
+### Related Rules Section
+```markdown
+## Related Rules
+
+- `cursor/security-standards` - Security patterns and authentication
+- `cursor/code-quality-standards` - TypeScript and testing standards
+- `cursor/runtime-boundaries` - Server/Edge import safety
+```
+
+### Enforcement Section
+```markdown
+## Enforcement
+
+### AST-Grep Rules
+```yaml
+# Detect violations
+rule: |
+  pattern_to_match
+  where:
+    condition: true
+
+# Prevent common mistakes
+rule: |
+  forbidden_pattern
+  where:
+    not: allowed_condition
+```
+
+### ESLint Integration
+```javascript
+// .eslintrc.mjs
+{
+  rules: {
+    '@corso/rule-name': 'error'
+  }
+}
+```
+
+### Quality Gates
+- **Development**: `pnpm typecheck`
+- **CI**: `pnpm validate:cursor-rules`
+- **Domain**: `pnpm validate:domain-specific`
+```
+
+## Common Content Patterns
+
+### Rule Description Template
+```markdown
+# Rule Title
+
+**Brief description of what this rule enforces and why it matters.**
+
+## TL;DR
+- **Key Point 1**: Brief explanation
+- **Key Point 2**: Brief explanation
+- **Key Point 3**: Brief explanation
+```
+
+### Do/Don't Section Template
+```markdown
+## Do
+- **Pattern**: Description of recommended approach
+- **Example**: Brief code example
+- **Rationale**: Why this pattern is preferred
+
+## Don't
+- **Anti-pattern**: Description of what to avoid
+- **Bad Example**: Brief code example
+- **Consequence**: Why this is problematic
+```
+
+### Example Code Template
+```typescript
+// ✅ CORRECT: Recommended approach
+export function exampleFunction(param: Type): ReturnType {
+  // Implementation
+  return result;
+}
+
+// ❌ INCORRECT: What to avoid
+export function badExample(param: any): any {
+  // Problematic implementation
+  return result;
+}
+```
+
+### Testing Pattern Template
+```typescript
+// Test pattern for rule validation
+describe('RuleName', () => {
+  it('should pass valid cases', () => {
+    // Test valid implementations
+  });
+
+  it('should fail invalid cases', () => {
+    // Test invalid implementations
+  });
+});
+```
+
+## Common Validation Commands
+
+### Standard Validation Commands
+```bash
+# Type checking
+pnpm typecheck
+
+# Linting
+pnpm lint
+
+# Rule validation
+pnpm validate:cursor-rules
+
+# Domain-specific validation
+pnpm validate:security
+pnpm validate:runtime-boundaries
+pnpm openapi:rbac:check
+```
+
+### Windows-Compatible Commands
+```bash
+# Git operations (Windows-safe)
+git --no-pager log --oneline
+
+# File operations
+type file.txt | findstr "pattern"
+
+# Path handling
+# Use forward slashes for consistency
+# Avoid platform-specific path separators in docs
+```
+
+## Common Metadata Patterns
+
+### Standard Metadata Values
+- `status`: `"stable"` (default)
+- `domains`: `["docs"]` (default)
+- `owners`: `["platform@corso.io"]` (default)
+- `enforcement`: `[]` (default empty array)
+
+### Common Domain Values
+- `"security"` - Security and authentication
+- `"api"` - API patterns and validation
+- `"components"` - React component patterns
+- `"docs"` - Documentation standards
+- `"runtime"` - Server/Edge boundaries
+- `"analytics"` - Analytics and tracking
+- `"hooks"` - Custom React hooks
+- `"quality"` - Code quality standards
+- `"testing"` - Testing patterns
+- `"tools"` - Development tooling
+
+### Common Enforcement Patterns
+- `"ast-grep:pattern"` - AST-based pattern matching
+- `"script:validator"` - Custom validation script
+- `"ci: validate:cursor-rules"` - CI rule validation
+- `"ci: validate:ast-grep"` - AST-grep validation

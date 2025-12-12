@@ -1,0 +1,8 @@
+{
+  "files": [
+    {
+      "path": ".next/static/chunks/*.js",
+      "maxSize": "250 KB"
+    }
+  ]
+}

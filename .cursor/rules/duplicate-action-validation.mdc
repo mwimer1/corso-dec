@@ -1,0 +1,41 @@
+---
+rule_id: duplicate-action-validation
+title: "Actions: Duplicate Zod Validation"
+owners:
+  - platform@corso.io
+status: active
+domains: ["maintainability", "testing"]
+enforcement: warn
+alwaysApply: true
+globs:
+  - "app/**/actions/**"
+  - "app/**/api/**/route.ts"
+related_rules:
+  - code-quality-standards
+  - security-standards
+last_reviewed: "2025-10-13"
+summary: New/changed server actions and API routes must avoid duplicate Zod validation.
+---
+
+## Intent
+Detect duplicated Zod `.parse()` or `validateInput` usage across action wrappers and implementations to avoid double validation and unnecessary runtime cost.
+
+## Examples
+
+```ts
+// ✅ Good: validation performed once in wrapper
+const validated = Schema.parse(input);
+handler(validated);
+
+// ❌ Bad: duplicate validation in wrapper and impl
+const v1 = Schema.parse(input);
+const v2 = Schema.parse(v1);
+```
+
+## Owners
+- platform@corso.io
+
+## Last Reviewed
+2025-10-06
+---
+

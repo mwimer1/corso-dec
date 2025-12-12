@@ -1,0 +1,26 @@
+/* styles/tokens/marketing.css */
+:root[data-route-theme="marketing"] {
+  --background: 0 0% 100%;
+  --foreground: 240 10% 3.9%;
+
+  /* Use unified primary (brand blue) and secondary (light blue tint) */
+  
+  /* No need for separate marketing-cta tokens - primary handles CTAs */
+  --accent: var(--secondary);
+  --accent-foreground: var(--secondary-foreground);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-route-theme="marketing"] {
+    --background: 222.2 84% 4.9%; /* base dark background (near-black) */
+    --foreground: 210 40% 98%; /* base dark-mode foreground (near-white) */
+
+    /* primary and accent remain as in light mode for now */
+  }
+}
+
+.dark[data-route-theme="marketing"],
+.dark [data-route-theme="marketing"] {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+}

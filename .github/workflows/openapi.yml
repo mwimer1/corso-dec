@@ -1,0 +1,28 @@
+name: openapi
+on:
+  pull_request:
+    paths:
+      - 'api/openapi.yml'
+      - 'app/api/**'
+      - 'types/rest/**'
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+jobs:
+  check-openapi:
+    uses: ./.github/workflows/_reusable-node-job.yml
+    with:
+      name: openapi
+      fetch_depth: 0
+      install: true
+      run: |
+        pnpm openapi:bundle
+        pnpm openapi:lint
+        pnpm openapi:types
+        pnpm openapi:diff
+        pnpm openapi:rbac:check
+        git diff --exit-code -- api/openapi.json types/rest/openapi.d.ts
+
+

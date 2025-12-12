@@ -1,0 +1,43 @@
+{
+  "domains": {
+    "components": {
+      "allowDeepImports": false,
+      "publicSurface": [
+        "sections",
+        "layout",
+        "ui",
+        "auth",
+        "billing",
+        "dashboard",
+        "chat",
+        "forms",
+        "landing",
+        "marketing",
+        "insights"
+      ]
+    },
+    "lib": {
+      "allowDeepImports": true,
+      "publicSurface": ["index"]
+    },
+    "types": {
+      "allowDeepImports": false,
+      "publicSurface": [
+        "index",
+        "shared",
+        "security",
+        "auth",
+        "billing",
+        "chat",
+        "config",
+        "dashboard",
+        "forms",
+        "integrations",
+        "marketing",
+        "realtime",
+        "validators"
+      ]
+    }
+  }
+}
+

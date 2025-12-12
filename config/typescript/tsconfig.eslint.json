@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./tsconfig.base.json",
+  "display": "ESLint All-Files Configuration", 
+  "compilerOptions": {
+    "tsBuildInfoFile": "../../.cache/tsconfig.eslint.tsbuildinfo"
+  },
+  "include": [
+    "../../assets/**/*",
+    "../../app/**/*",
+    "../../lib/**/*",
+    "../../actions/**/*",
+    "../../components/**/*",
+    "../../hooks/**/*",
+    "../../tests/**/*",
+    "../../config/**/*",
+    "../../contexts/**/*",
+    "../../types/**/*",
+    "../../styles/**/*",
+    "../../middleware/**/*",
+    "../../instrumentation.ts",
+    "../../instrumentation-client.ts",
+    "../../package.json",
+    "../../scripts/**/*",
+    "../../tools/scripts/**/*",
+    "../../tools/**/*.ts",
+    "../../.storybook/**/*",
+    "../../instrumentation*.ts",
+    "../../middleware*.ts",
+    "../../*.config.ts",
+    "../../vitest*.ts",
+    "../../eslint-plugin-corso/**/*",
+    "../../test-server-only-import.tsx"
+  ],
+  "exclude": [
+    "../../node_modules",
+    "../../grid-reference"
+  ]
+} 

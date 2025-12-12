@@ -1,0 +1,123 @@
+# .github/workflows/pr-checks.yml
+name: PR Checks
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "components/**"
+      - "hooks/**"
+      - "lib/**"
+      - "tests/**"
+      - "styles/**"
+      - "public/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "next.config.mjs"
+      - "tailwind.config.ts"
+      - ".storybook/**"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+jobs:
+  setup:
+    name: Setup & Build
+    uses: ./.github/workflows/_reusable-node-job.yml
+    permissions:
+      contents: read
+    with:
+      name: setup
+      fetch_depth: 0
+      install: true
+      run: pnpm build
+      upload_artifact: true
+      artifact_name: build-output-${{ github.sha }}
+      artifact_path: .next/
+    secrets: inherit
+
+  lighthouse:
+    name: Performance Audit
+    needs: setup
+    uses: ./.github/workflows/_reusable-node-job.yml
+    with:
+      name: lighthouse
+      fetch_depth: 0
+      install: true
+      run: |
+        pnpm dlx @lhci/cli@0.14.0 autorun \
+          --collect.startServerCommand="pnpm start" \
+          --collect.url=http://localhost:3000/ \
+          --upload.target=temporary-public-storage
+
+  bundle-size:
+    name: Bundle Size Analysis
+    needs: setup
+    uses: ./.github/workflows/_reusable-node-job.yml
+    with:
+      name: bundle-size
+      fetch_depth: 0
+      install: true
+      run: |
+        # Analyze current bundle size
+        pnpm bundlesize:ci > bundle-size-current.json
+
+        # Get base branch bundle size
+        git checkout origin/main
+        pnpm install --frozen-lockfile
+        pnpm build
+        pnpm bundlesize:ci > bundle-size-base.json || echo '{"totalGzippedSize": 0}' > bundle-size-base.json
+
+        # Generate report
+        node scripts/generate-bundle-report.mjs \
+          --current=bundle-size-current.json \
+          --base=bundle-size-base.json \
+          --output=bundle-report.md
+
+        # Set output for PR comment
+        {
+          echo "report<<EOF"
+          cat bundle-report.md
+          echo "EOF"
+        } >> $GITHUB_OUTPUT
+
+  bundle-comment:
+    name: Bundle Size Comment
+    needs: bundle-size
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('bundle-report.md', 'utf8');
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: report
+            });
+
+  duplication-check:
+    name: Tests Duplication Guard
+    needs: setup
+    if: ${{ github.event_name == 'pull_request' }}
+    uses: ./.github/workflows/_reusable-node-job.yml
+    with:
+      name: duplication-check
+      fetch_depth: 0
+      install: true
+      run: pnpm dup:tests:ci
+

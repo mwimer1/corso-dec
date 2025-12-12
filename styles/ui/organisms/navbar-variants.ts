@@ -1,0 +1,90 @@
+import { tv } from '@/styles/utils';
+
+const navbarStyleVariants = tv({
+  slots: {
+    navbar: [
+      'bg-surface px-0',
+      'transition-all duration-200 ease-in-out',
+      'relative z-40'
+    ],
+    navbarScrolled: 'shadow-[0_1px_3px_0_rgb(0_0_0/0.1),0_1px_2px_-1px_rgb(0_0_0/0.1)]',
+    container: [
+      'flex h-[calc(var(--space-4xl)+0.5rem)] items-center justify-between',
+      'max-w-7xl mx-auto'
+    ],
+    left: 'flex items-center gap-lg',
+    logoLink: [
+      'inline-flex items-center gap-sm',
+      'px-xs py-sm mr-md',
+      'outline-none',
+      'focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2',
+      'rounded-sm'
+    ],
+    right: 'hidden md:flex items-center gap-sm',
+    mobile: 'ml-auto md:hidden',
+    desktopNav: 'hidden md:flex items-center gap-md',
+    navItem: [
+      'text-foreground',
+      'text-base font-medium',
+      'px-md py-sm min-h-[44px]',
+      'transition-all duration-150 ease-in-out',
+      'no-underline rounded-full',
+      'hover:bg-muted/40 hover:text-foreground hover:underline hover:underline-offset-3',
+      'active:bg-muted-foreground/12',
+      'focus-visible:text-foreground focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2',
+      'focus-visible:no-underline focus-visible:shadow-[0_0_0_3px_rgb(var(--ring)/0.25)]'
+    ],
+    mobileMenu: [
+      'absolute left-0 top-[70px] w-full',
+      'bg-background/95 backdrop-blur-[8px]',
+      'flex flex-col items-center gap-lg',
+      'px-lg py-lg',
+      'pointer-events-none opacity-0 -translate-y-1',
+      'transition-all duration-200 ease-in-out',
+      'will-change-transform'
+    ],
+    mobileMenuOpen: 'pointer-events-auto opacity-100 translate-y-0',
+    mobileNav: 'flex flex-col items-center gap-md',
+    mobileNavItem: [
+      'text-foreground text-base',
+      'px-md py-sm',
+      'transition-all duration-200 ease-in-out',
+      'hover:bg-accent hover:text-accent-foreground',
+      'focus:bg-accent focus:text-accent-foreground'
+    ],
+    sentinel: 'absolute top-0 left-0 right-0 h-[150px] pointer-events-none -z-10',
+    button: [
+      'min-h-[44px] px-md py-sm',
+      'text-base font-medium',
+      'focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2',
+      'focus-visible:shadow-[0_0_0_3px_rgb(var(--ring)/0.25)]'
+    ]
+  },
+  variants: {
+    scrolled: {
+      true: {},
+      false: {}
+    },
+    mode: {
+      landing: {},
+      app: {},
+      minimal: {}
+    }
+  },
+  compoundVariants: [
+    {
+      scrolled: true,
+      class: {
+        navbar: 'shadow-[0_1px_3px_0_rgb(0_0_0/0.1),0_1px_2px_-1px_rgb(0_0_0/0.1)]'
+      }
+    }
+  ],
+  defaultVariants: {
+    scrolled: false,
+    mode: 'landing'
+  },
+});
+
+export { navbarStyleVariants };
+
+

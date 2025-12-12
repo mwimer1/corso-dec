@@ -1,0 +1,147 @@
+---
+title: FormFieldBase
+description: Shared wiring for label, ids, aria-describedby, and help/error text
+last_updated: 2025-09-10
+---
+
+import { FormFieldBase } from '@/components/forms/primitives/field-base';
+
+# FormFieldBase
+
+`FormFieldBase` centralizes the label→input wiring, id generation, and `aria-describedby` composition (help + error + extras) for form controls in the contact/onboarding forms.
+
+## API
+
+```ts
+type FormFieldBaseProps = {
+  field: ContactFormField;
+  variants: ReturnType<typeof contactFormVariants>;
+  className?: string;
+  id?: string;
+  extraDescribedBy?: string | string[];
+  labelProps?: React.LabelHTMLAttributes<HTMLLabelElement>;
+  children: (fieldId: string, describedBy: string, errorId?: string) => React.ReactNode;
+}
+```
+
+## Features
+
+- **SSR/CSR Safe**: Uses `React.useId()` to ensure hydration-safety for generated ids
+- **Stable ARIA**: Consistent `aria-describedby` ordering: help → error → extras, de-duplicated
+- **Accessibility**: Child control receives `errorId` for proper `aria-invalid` and `aria-errormessage` handling
+- **Flexible**: Supports custom IDs, additional described-by elements, and label customization
+
+## Usage
+
+```tsx
+<FormFieldBase field={field} variants={variants}>
+  {(fieldId, describedBy, errorId) => (
+    <Input
+      id={fieldId}
+      aria-describedby={describedBy || undefined}
+      aria-invalid={errorId ? 'true' : undefined}
+      aria-errormessage={errorId || undefined}
+    />
+  )}
+</FormFieldBase>
+```
+
+## Field Configuration
+
+The `field` prop should include:
+
+```tsx
+interface ContactFormField {
+  key: keyof ContactFormData;
+  label: string;
+  type: "text" | "email" | "tel" | "textarea";
+  required?: boolean;
+  placeholder?: string;
+  helpText?: string;        // Optional help text below the field
+  errorText?: string;       // Current error message
+  extraDescribedBy?: string | string[]; // Additional aria-describedby IDs
+}
+```
+
+## Accessibility Features
+
+- **Label Association**: Automatically generates `htmlFor` attribute linking label to input
+- **Help Text**: Renders help text with unique ID and includes in `aria-describedby`
+- **Error Handling**: Renders error messages with `role="alert"` and `aria-live="polite"`
+- **Described By**: Combines help, error, and extra IDs into comprehensive `aria-describedby`
+
+## ID Generation Strategy
+
+1. **Custom ID**: If `id` prop provided, use as-is
+2. **Field Key**: If `field.key` exists, generate `contact-${key}`
+3. **Fallback**: Use React-generated ID as last resort
+
+## Example with Custom Configuration
+
+```tsx
+<FormFieldBase 
+  field={field}
+  variants={variants}
+  className="custom-field-wrapper"
+  extraDescribedBy={["custom-help", "additional-info"]}
+  labelProps={{ className: "custom-label" }}
+>
+  {(fieldId, describedBy, errorId) => (
+    <div className="field-container">
+      <input
+        id={fieldId}
+        aria-describedby={describedBy || undefined}
+        aria-invalid={errorId ? 'true' : undefined}
+        className="custom-input"
+      />
+    </div>
+  )}
+</FormFieldBase>
+```
+
+## Integration with FieldRenderer
+
+`FormFieldBase` is used internally by `FieldRenderer` to provide consistent field structure:
+
+```tsx
+// FieldRenderer uses FormFieldBase for consistent field layout
+export const FieldRenderer = React.memo<FieldRendererProps>(({ 
+  field, 
+  value, 
+  onChange, 
+  variants 
+}) => {
+  return (
+    <FormFieldBase field={field} variants={variants}>
+      {(fieldId, describedBy, errorId) => (
+        // Render input/textarea with proper accessibility
+      )}
+    </FormFieldBase>
+  );
+});
+```
+
+## Styling Variants
+
+The component uses the `contactFormVariants` system for consistent styling:
+
+```tsx
+// Available variant slots
+const variants = contactFormVariants();
+variants.fieldGroup()      // Field container wrapper
+variants.fieldLabel()      // Label styling
+variants.fieldInputContainer() // Input container for positioning
+```
+
+## Best Practices
+
+1. **Always handle errorId**: Use the `errorId` parameter to set `aria-invalid` and `aria-errormessage`
+2. **Respect describedBy**: Use the `describedBy` parameter for `aria-describedby` attribute
+3. **Custom styling**: Apply custom classes via `className` prop rather than modifying variants
+4. **Accessibility**: Ensure child controls properly implement ARIA attributes using the provided IDs
+
+---
+
+Last updated: 2025-09-10
+
+

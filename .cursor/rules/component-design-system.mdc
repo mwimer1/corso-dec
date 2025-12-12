@@ -1,0 +1,279 @@
+---
+rule_id: component-design-system
+title: Component Design System & Architecture (Consolidated)
+owners:
+  - design-system@corso.io
+  - platform@corso.io
+last_reviewed: "2025-10-13"
+status: active
+domains: [components, design-system, styles]
+enforcement: warn
+related_rules:
+  - file-organization
+  - code-quality-standards
+alwaysApply: false
+globs: ["components/**", "app/**/_components/**", "stories/**", "styles/**"]
+---
+
+# Component Design System & Architecture (Consolidated)
+
+**Comprehensive guide to component architecture, atomic design patterns, import conventions, and design system standards.**
+
+## TL;DR
+- **Atomic Design**: Atoms → Molecules → Organisms → Domain Modules
+- **Import Conventions**: Use UI barrels (`@/atoms`, `@/molecules`, `@/organisms`) and domain facades
+- **Intra-domain Rule**: Files under `components/**` must not import root barrels (`@/components`, `@/components/ui`)
+- **Design System**: Use variant types from `@/styles/variants` and design tokens
+- **Theming**: Route-based theming with `data-route-theme` attributes
+- **Accessibility**: ARIA labels and axe testing required
+
+## 🏗️ Atomic Design & Component Structure
+
+### Component Hierarchy
+- **Atoms** → **Molecules** → **Organisms** → **Domain Modules**
+- **Domain Modules**: Feature-complete sections (dashboard/, onboarding/, marketing/, etc.)
+- **Current Structure**: auth/, billing/, dashboard/, forms/, landing/, marketing/, onboarding/, ui/
+- Place route-specific components under route `_components/` when applicable
+
+### Component Organization
+```typescript
+components/
+├── ui/                    # Atomic design system (120+ components)
+│   ├── atoms/            # Basic primitives (29 components)
+│   ├── molecules/        # Composed components (27+ components)
+│   └── organisms/        # Complex sections (24+ components)
+├── auth/                 # Authentication (5 components)
+├── billing/              # Subscription & billing (4 components)
+├── dashboard/            # Business intelligence (19 components)
+├── forms/                # Form handling (5 components)
+├── landing/              # Marketing sections (15+ components)
+├── marketing/            # Lead capture (16 components)
+├── onboarding/           # Multi-step wizard (29 components)
+```
+
+## 📦 Import Conventions
+
+### ✅ CORRECT: UI System Imports
+```typescript
+// Use short alias UI barrels
+import { Button } from '@/atoms';
+import { FormField } from '@/molecules';
+import { AnalyticsChart } from '@/organisms';
+
+// Domain-specific imports
+import { useDashboardContext } from '@/components/dashboard';
+import { EnhancedOnboardingFlow } from '@/components/onboarding';
+import { ContactForm } from '@/components/forms';
+import { Hero } from '@/components/landing';
+
+// Auth components
+import { ClerkEventsHandler } from '@/components/auth';
+
+// Billing components
+import { PlanPicker, SubscriptionStatus } from '@/components/billing';
+
+// Marketing components
+import { PricingPage } from '@/components/marketing';
+
+// Type imports
+import type { NavItem } from '@/types/dashboard/table';
+import type { OnboardingStepId } from '@/types/onboarding/flow/types';
+```
+
+### ✅ CORRECT: App Route Imports
+```typescript
+// Import heavy organisms via leaf modules (not the organisms aggregator)
+import { ErrorFallback } from '@/components/ui/organisms/error-fallback';
+```
+
+### ✅ CORRECT: Internal Component Imports
+```typescript
+// Inside components/** - use leaf modules or relative paths
+import { Button } from '@/components/ui/atoms/button';
+import { LinkTrack } from '@/components/ui/molecules/link-track';
+```
+
+### ❌ INCORRECT: Import Violations
+```typescript
+// ❌ Cross-domain imports
+// import { useDashboardContext } from '@/contexts';
+// import { logger } from '@/lib/monitoring';
+
+// ❌ Deep paths when facades exist
+// import { BarChart } from '@/components/ui/organisms/charts/bar-chart';
+
+// ❌ Root barrel imports from within components/**
+// import { Button } from '@/components/ui';
+// import { LinkTrack } from '@/components';
+
+// ❌ Organisms aggregator in app routes
+// import { ErrorFallback } from '@/organisms';
+```
+
+### Intra-Domain Import Guard (Critical)
+Files under `components/**` must not import the root components barrels (`@/components`, `@/components/ui`). Import leaf modules (`atoms`, `molecules`, `organisms`) or use relative paths.
+
+**Rationale**: Prevents circular dependencies between barrels and leaves; keeps UI layers modular.
+
+**Enforcement**: ESLint (`no-restricted-imports`) and dependency-cruiser rule `no-components-root-barrel-from-components`.
+
+## 🎨 Design System & Variants
+
+### Variant Types
+```typescript
+// Use types from @/styles/variants or component-specific variants
+import type { ButtonVariants } from '@/styles/ui/atoms/button-variants';
+import type { VariantProps } from 'class-variance-authority';
+
+// Use design tokens for responsive sizing
+import { responsiveImageSizes } from '@/styles/ui/shared/responsive-image-sizes';
+```
+
+### Button Variants
+```typescript
+// Allowed button variants
+type ButtonVariant = 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link' | 'waitlist' | 'waitlistBlue';
+
+// Allowed button sizes
+type ButtonSize = 'default' | 'sm' | 'lg' | 'icon';
+
+// Replace hardcoded viewport values with design tokens
+const imageSize = responsiveImageSizes.full; // Instead of "100vw"
+```
+
+### Design Tokens
+```typescript
+// Use design tokens consistently
+import { tokens } from '@/styles/tokens';
+
+const styles = {
+  color: tokens.color.primary,
+  spacing: tokens.spacing.md,
+  borderRadius: tokens.radius.lg,
+};
+```
+
+## 🎨 Theming (Route Groups)
+
+### Theme Implementation
+- Tokens target `:root[data-route-theme]`
+- Default theme set on `<html data-route-theme="protected">` in `app/layout.tsx`
+- Route groups like `(marketing)` set theme before paint via `next/script` (strategy: `beforeInteractive`)
+- Maintain theme during client navigations with client helpers (e.g., `app/(marketing)/_theme.tsx`)
+- Keep theme logic confined to layout glue; don't move providers or auth for theming
+
+### Theme Structure
+```typescript
+// app/layout.tsx
+<html data-route-theme="protected">
+  {/* Default theme */}
+</html>
+
+// app/(marketing)/_theme.tsx
+'use client';
+import { useEffect } from 'react';
+
+export function ThemeProvider() {
+  useEffect(() => {
+    document.documentElement.setAttribute('data-route-theme', 'marketing');
+  }, []);
+  return null;
+}
+```
+
+## ♿ Accessibility & Testing
+
+### Accessibility Requirements
+- Provide ARIA labels where needed
+- Include axe checks in component tests
+- Use semantic HTML elements
+- Ensure keyboard navigation support
+
+### Testing Standards
+```typescript
+// Use Testing Library + Vitest; include behavior and a11y tests
+import { render, screen } from '@testing-library/react';
+import { axe, toHaveNoViolations } from 'jest-axe';
+
+expect.extend(toHaveNoViolations);
+
+test('component has no accessibility violations', async () => {
+  const { container } = render(<MyComponent />);
+  const results = await axe(container);
+  expect(results).toHaveNoViolations();
+});
+```
+
+## 🎭 Animations
+
+### Animation Guidelines
+- Use React Spring (`@react-spring/web`) for complex animations
+- Respect `prefers-reduced-motion` with built-in support
+- Place animation logic in Client Components (`"use client"`)
+- Keep Server Components for static content
+
+```typescript
+import { useSpring, animated } from '@react-spring/web';
+
+function AnimatedComponent() {
+  const spring = useSpring({
+    from: { opacity: 0, transform: 'translateY(20px)' },
+    to: { opacity: 1, transform: 'translateY(0px)' },
+    config: { tension: 300, friction: 30 }
+  });
+
+  return (
+    <animated.div style={spring}>
+      Content
+    </animated.div>
+  );
+}
+```
+
+## Enforcement
+
+### AST-Grep Rules
+```yaml
+# Detect root barrel imports from components
+rule: |
+  import $X from '@/components$Y'
+  where:
+    regex: "^components/"
+
+# Detect missing variant types
+rule: |
+  const $COMPONENT = ($PROPS)
+  where:
+    not contains "VariantProps"
+```
+
+### ESLint Integration
+```javascript
+// .eslintrc.mjs
+{
+  rules: {
+    '@corso/component-import-boundaries': 'error',
+    '@corso/design-system-variants': 'error',
+    '@corso/accessibility-required': 'error'
+  }
+}
+```
+
+### Quality Gates
+- **Development**: `pnpm typecheck`
+- **Component Tests**: `pnpm test:components`
+- **Accessibility**: `pnpm test:a11y`
+- **Import Validation**: `pnpm verify:no-intradomain-root-barrels`
+
+## Windows-First Tips
+
+- Prefer barrel imports to reduce path brittleness across shells
+- Avoid glob-based shell expansions in examples; use explicit paths
+- Keep commands simple and sequential; avoid long `&&` chains in docs
+- Prefer `pnpm vitest run path/to/file.tsx` for single-file tests on Windows
+- Use explicit imports over shell globs in docs examples
+
+## Related Rules
+
+- `cursor/file-organization` - File structure and barrel usage
+- `cursor/code-quality-standards` - Testing and quality standards

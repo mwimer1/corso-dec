@@ -1,0 +1,22 @@
+id: ui-no-any
+language: typescript
+severity: error
+message: "Avoid 'any' escape hatches in UI components. Use proper typing instead."
+rule:
+  all:
+    - pattern: "as any"
+    - any:
+        - regex:
+            kind: file
+            regex: "^components/ui/"
+        - regex:
+            kind: file
+            regex: "^components/[^/]+/[^/]+/ui/"
+        - regex:
+            kind: file
+            regex: "^styles/ui/"
+files:
+  - "components/ui/**/*.{ts,tsx}"
+  - "components/*/ui/**/*.{ts,tsx}"
+  - "styles/ui/**/*.{ts,tsx}"
+

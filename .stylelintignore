@@ -1,0 +1,8 @@
+styles/build/**
+.next/**
+**/dist/**
+**/build/**
+styles/tailwind.css
+node_modules/**
+
+

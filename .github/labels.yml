@@ -1,0 +1,22 @@
+- name: type:bug
+  color: d73a4a
+  description: Bug
+- name: type:feature
+  color: a2eeef
+  description: Feature request
+- name: type:chore
+  color: cfd3d7
+  description: Maintenance / infra
+- name: docs
+  color: 0075ca
+  description: Documentation changes
+- name: priority:P0
+  color: b60205
+  description: Critical – immediate action
+- name: priority:P1
+  color: d93f0b
+  description: High – near-term
+- name: priority:P2
+  color: fef2c0
+  description: Normal
+

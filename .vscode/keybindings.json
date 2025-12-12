@@ -1,0 +1,80 @@
+[
+  {
+    "key": "ctrl+shift+d",
+    "command": "workbench.action.tasks.runTask",
+    "args": "⚡ Quick Dev Start",
+    "when": "workspaceFolderCount != 0"
+  },
+  {
+    "key": "ctrl+shift+q",
+    "command": "workbench.action.tasks.runTask",
+    "args": "🔍 Quality Gates (TypeCheck + Lint + Test)",
+    "when": "workspaceFolderCount != 0"
+  },
+  {
+    "key": "ctrl+shift+t",
+    "command": "workbench.action.tasks.runTask",
+    "args": "⚡ Fast TypeCheck",
+    "when": "workspaceFolderCount != 0"
+  },
+  {
+    "key": "ctrl+shift+l",
+    "command": "workbench.action.tasks.runTask",
+    "args": "🧹 Lint All",
+    "when": "workspaceFolderCount != 0"
+  },
+  {
+    "key": "ctrl+shift+b",
+    "command": "workbench.action.tasks.runTask",
+    "args": "🔧 Build Project",
+    "when": "workspaceFolderCount != 0"
+  },
+  {
+    "key": "ctrl+shift+o",
+    "command": "workbench.action.tasks.runTask",
+    "args": "📊 OpenAPI Generate",
+    "when": "workspaceFolderCount != 0"
+  },
+  {
+    "key": "ctrl+shift+s",
+    "command": "workbench.action.tasks.runTask",
+    "args": "🎨 Start Storybook",
+    "when": "workspaceFolderCount != 0"
+  },
+  {
+    "key": "ctrl+shift+r",
+    "command": "workbench.action.tasks.runTask",
+    "args": "🧪 Run All Tests",
+    "when": "workspaceFolderCount != 0"
+  },
+  {
+    "key": "ctrl+shift+c",
+    "command": "workbench.action.tasks.runTask",
+    "args": "🧹 Clean Cache",
+    "when": "workspaceFolderCount != 0"
+  },
+  {
+    "key": "ctrl+shift+e",
+    "command": "workbench.action.tasks.runTask",
+    "args": "🔧 Environment Check",
+    "when": "workspaceFolderCount != 0"
+  },
+  {
+    "key": "ctrl+shift+f",
+    "command": "workbench.action.tasks.runTask",
+    "args": "🧹 Lint Current File",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "ctrl+shift+u",
+    "command": "workbench.action.tasks.runTask",
+    "args": "🧪 Test Current File",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "ctrl+shift+n",
+    "command": "workbench.action.terminal.new",
+    "when": "workspaceFolderCount != 0"
+  }
+]
+

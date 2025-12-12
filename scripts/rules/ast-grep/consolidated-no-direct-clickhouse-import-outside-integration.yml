@@ -1,0 +1,14 @@
+# Consolidated: Direct ClickHouse import outside integration
+id: no-direct-clickhouse-import-outside-integration
+message: "Only import '@clickhouse/client' inside lib/integrations/clickhouse/** or scripts/**."
+severity: error
+language: typescript
+paths:
+  exclude:
+    - 'lib/integrations/clickhouse/**'
+    - 'scripts/**'
+rule:
+  any:
+    - pattern: import $X from '@clickhouse/client'
+    - pattern: import { $X } from '@clickhouse/client'
+

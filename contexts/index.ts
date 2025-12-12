@@ -1,0 +1,19 @@
+// contexts/index.ts
+// Single authoritative barrel for all React context providers.
+// Subpath barrels (contexts/*/index.ts) have been removed by design.
+
+////////////////////////////////////////////////////////////////////////////////
+// Core App Providers
+////////////////////////////////////////////////////////////////////////////////
+export * from './providers';
+export { default as Providers, Providers as default } from './providers';
+
+////////////////////////////////////////////////////////////////////////////////
+// Domain-Specific Providers (Alphabetized)
+////////////////////////////////////////////////////////////////////////////////
+// Onboarding provider removed for MVP; keep import line commented for history
+// export * from './onboarding/onboarding-provider';
+
+// Theme provider removed (dead code)
+
+

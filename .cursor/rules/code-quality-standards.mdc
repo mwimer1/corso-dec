@@ -1,0 +1,203 @@
+---
+rule_id: code-quality-standards
+title: Quality Assurance & Testing Standards (Consolidated)
+owners:
+  - platform@corso.io
+last_reviewed: "2025-10-13"
+status: active
+domains: [quality, testing, tools]
+enforcement: advise
+related_rules:
+  - ai-agent-development-environment
+alwaysApply: false
+globs: ["**/*.{ts,tsx,js,jsx}"]
+---
+
+# 🔍 Quality Assurance & Testing Standards (Consolidated)
+
+**Comprehensive guide to code quality, testing, and development tooling standards for Corso applications.**
+
+## 🎯 Core Principles
+- **Strict TypeScript**: No `any`, explicit types for non-trivial values, `exactOptionalPropertyTypes: true`
+- **Comprehensive Testing**: Unit, integration, component, and security tests with 85%+ coverage
+- **Quality Gates**: Automated validation at every stage of development
+- **Windows-First**: Cross-platform development environment with Windows compatibility
+- **Clean Code**: Consistent formatting, organized imports, and descriptive naming
+
+## 🔧 ESLint (core)
+```javascript
+// eslint.config.mjs (excerpt)
+export default [{
+  rules: {
+    '@typescript-eslint/no-unused-vars': 'error',
+    '@typescript-eslint/no-explicit-any': 'error',
+    '@typescript-eslint/explicit-function-return-type': 'warn',
+    'import/order': 'error',
+    'import/no-duplicates': 'error',
+    'no-console': 'warn',
+    'no-debugger': 'error'
+  }
+}];
+```
+
+## 🧭 Imports
+```typescript
+// External libraries
+import { z } from 'zod';
+
+// Internal types (type-only)
+import type { User } from '@/types/auth';
+
+// Internal utilities
+import { getEnv } from '@/lib/shared/env';
+
+// Components
+import { Button } from '@/atoms';
+import { BarChart } from '@/components/dashboard';
+```
+
+## ✅ TypeScript
+- Prefer `unknown` over `any`
+- Explicit return types for exported functions
+- Use `import type` for all type-only imports
+- With `exactOptionalPropertyTypes: true`, avoid assigning possibly-undefined values to required option keys. Prefer conditional spreading or explicit `| undefined` typing in option objects.
+
+## 📝 Formatting
+- Follow the repo's Prettier config. Prefer file-scoped runs when iterating:
+- `pnpm exec prettier --write path/to/file`
+
+## 🧪 Testing Standards
+
+### **Test Types**: `unit/`, `integration/`, `components/`, `styles/`
+- **Unit tests** (`tests/unit/`): Pure functions, utilities, business logic (79 test files)
+- **Integration tests** (`tests/integration/`): Cross-module interactions, API flows (29 test files)
+- **Component tests** (`tests/components/`): React component behavior and accessibility (37 test files)
+- **Style tests** (`tests/styles/`): Design system and CSS-in-JS validation (2 test files)
+
+### **Coverage Thresholds**
+```javascript
+// vitest.unit.ts
+coverage: {
+  provider: 'v8',
+  thresholds: { lines: 85, branches: 80, functions: 85, statements: 85 },
+}
+```
+
+### **Test Commands**
+```bash
+# Full test suite
+pnpm test
+
+# Test by type
+pnpm test:unit          # tests/unit/** (79 test files)
+pnpm test:integration   # tests/integration/** (29 test files)
+pnpm test:component     # tests/components/** (37 test files)
+pnpm test:styles        # tests/styles/** (2 test files)
+
+# Security tests (both unit and integration)
+pnpm test:security      # tests/unit/security/ + tests/integration/security/
+
+# Coverage
+pnpm test:coverage
+
+# File-targeted runs (faster)
+pnpm vitest run path/to/test.ts{,x}
+```
+
+### **Test Organization**
+```bash
+tests/
+├── unit/           # Pure functions, utilities, business logic (79 test files)
+├── integration/    # Cross-module interactions, API flows (29 test files)
+├── components/     # React component behavior and accessibility (37 test files)
+├── styles/         # Design system and CSS-in-JS validation (2 test files)
+└── support/        # Shared test infrastructure
+```
+
+### **Testing Patterns**
+- **Hooks**: Testing Library renderHook + waitFor; prefer factories from `@tests/support/test-factories/hook-test-factory.ts`
+- **Components**: behavior + a11y (axe); prefer factories from `@tests/support/test-factories/component-test-factory.ts`
+- **Providers/Contexts**: prefer `@tests/support/test-factories/provider-test-factory.tsx`
+- **API**: mock external deps; test 200/4xx paths
+
+## 🛠️ Tools & Scripts Standards
+
+### **Tools vs Scripts Distinction**
+- **Tools** (`/tools`): External-ish utilities, standalone scripts, analysis-focused
+- **Scripts** (`/tools/scripts`): Internal maintenance, CI/CD, development workflow automation
+
+### **Directory Organization**
+```text
+tools/
+├── eslint-plugin-corso/ # ESLint plugin with 40+ migrated rules (formerly AST-Grep)
+├── dedupe/           # Duplicate code detection tools
+├── scripts/          # Development utility scripts (26+ tools)
+├── tailwind/         # Tailwind CSS plugins and utilities
+└── types/           # TypeScript type definitions for tools
+```
+
+### **ESLint Rule Categories (formerly AST-Grep)**
+```bash
+# Security & API rules (now in ESLint)
+pnpm lint:client-directive      # Client directive enforcement
+pnpm lint:server-env-imports    # Server environment import validation
+pnpm lint:no-server-reexports   # Server re-export prevention
+
+# Architecture & boundaries (now in ESLint)
+pnpm lint:no-server-in-client   # Client/server separation
+pnpm lint:no-server-in-edge     # Edge runtime safety
+pnpm lint:runtime-exports       # Mixed runtime export prevention
+
+# Code quality rules (now in ESLint)
+pnpm lint:icons                 # SSR safety checks
+pnpm lint:contexts-barrel-usage # Context import patterns
+pnpm lint:rate-limits-bracket-access # Rate limiting patterns
+```
+
+### **Quality Validation**
+```bash
+# Comprehensive validation (98% now ESLint-based)
+pnpm quality:local             # typecheck + lint + test + remaining AST-Grep
+
+# Individual validations
+pnpm lint                      # All ESLint rules (40+ migrated from AST-Grep)
+pnpm validate:dedupe          # Code duplication analysis
+pnpm validate:cursor-rules    # Cursor rule validation
+```
+
+## ✅ Quality Gates
+```bash
+# Development (fast feedback)
+pnpm typecheck
+
+# Full validation (local) - 98% ESLint-based
+pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm quality:local
+
+# CI validation
+pnpm typecheck && pnpm lint && pnpm test && pnpm validate:cursor-rules
+```
+
+## Tooling & Automation
+- Keep generated artifacts out of source analysis and transforms.
+- **Codemods MUST ignore**: `node_modules/**`, `**/dist/**`, `**/build/**`, `**/.next/**`, `**/coverage/**`, `**/*.d.ts`.
+- Rationale: parsers for codemods target source files; generated `.d.ts` and bundles can contain unsupported syntaxes and break transforms.
+
+## Windows-first tips
+
+- Use `git --no-pager` in examples to avoid pagers.
+- Prefer file-scoped lint/format while iterating to keep output manageable on Windows terminals.
+
+### Fast single-file fixes
+
+- Prefer file-scoped commands when only one file is affected:
+- Lint (check one file): `pnpm exec eslint path/to/file.{ts,tsx}`
+- Lint (auto-fix one file): `pnpm exec eslint --fix path/to/file.{ts,tsx}`
+- Format one file: `pnpm exec prettier --write path/to/file`
+- If typecheck fails, fix the reported file first, then re-run only impacted tests; run full gates once clean.
+
+## Clerk UI Usage Standards
+
+- Prefer prebuilt Clerk UIs: `SignIn`, `SignUp`, `UserProfile`, `UserButton`.
+- Customize `UserButton` via `UserButton.MenuItems` rather than bespoke dropdowns.
+- For account navigation, enforce page-based routing with `userProfileMode="navigation"` and `userProfileUrl="/account"`.
+- Avoid deep imports; use alias barrels only (e.g., `@/components/...`, `@/lib/...`).

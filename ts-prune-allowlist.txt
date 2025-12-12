@@ -1,0 +1,3 @@
+# Allowlist for ts-prune - intentional public API not visible to static analysis
+# Format: filePath:symbolName
+# Example: lib/shared/utils.ts:formatDate

@@ -1,0 +1,18 @@
+{
+  "recommendations": [
+    "bradlc.vscode-tailwindcss",
+    "ms-vscode.vscode-json",
+    "github.vscode-github-actions",
+    "dbaeumer.vscode-eslint",
+    "ms-vscode.vscode-typescript-next",
+    "esbenp.prettier-vscode",
+    "formulahendry.auto-rename-tag"
+  ],
+  "unwantedRecommendations": [
+    "stylelint.vscode-stylelint",
+    "csstools.postcss",
+    "naumovs.color-highlight",
+    "wayou.vscode-todo-highlight"
+  ]
+}
+

@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Do not run in CI
+if [ -n "$CI" ]; then
+  exit 0
+fi
+
+echo "🔄  Rebase detected – refreshing pnpm-lock.yaml"
+pnpm run lock:refresh
+git add pnpm-lock.yaml
+echo "✅  Lockfile re-generated. Continue the rebase." 

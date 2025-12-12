@@ -1,0 +1,69 @@
+---
+rule_id: runtime-boundaries
+title: Runtime Boundaries & Server/Edge Imports
+owners:
+  - platform@corso.io
+last_reviewed: "2025-10-13"
+status: active
+domains: [runtime, api]
+enforcement: block
+related_rules:
+  - security-standards
+alwaysApply: false
+globs:
+  - "app/**/route.@(ts|tsx|js|jsx|mjs)"
+  - "app/**/page.@(ts|tsx|js|jsx|mjs)"
+  - "app/**/layout.@(ts|tsx|js|jsx|mjs)"
+---
+
+## Server vs Client boundaries (final)
+
+- Do **not** re-export server-only modules from client/shared barrels. Use a dedicated `index.server.ts` barrel for server-only exports.
+- Route files MUST declare `export const runtime = 'edge' | 'nodejs'`.
+- If any import from `@/lib/server/**` exists, use `'nodejs'` and ensure `import 'server-only'` exists in those modules.
+- `@/lib/server/env` is the only allowed entry for server env. Never import `lib/shared/env/*`.
+- Client/shared code cannot import from `@/lib/server/**`. AST-grep rules enforce this; do not suppress.
+
+## @/lib/api Edge Safety (Critical)
+The `@/lib/api` barrel **must remain Edge-compatible** at all times. This is a critical project convention:
+- ✅ Only export Edge-safe utilities (http helpers, redirect helpers, validation)
+- ❌ Never re-export Node-only utilities (ClickHouse, server-side streaming, rate limiting)
+- ✅ Use subpath imports for Node-only code: `@/lib/server/streaming/ndjson` instead of `@/lib/server`
+- ✅ Import server utilities directly in Node routes to maintain Edge compatibility
+
+**Violation Impact**: Breaking `@/lib/api` Edge safety will cause all Edge routes to fail at runtime.
+
+## @/lib/shared Client Safety (Critical)
+The `@/lib/shared` barrel **must remain client-compatible** at all times. This is a critical project convention:
+- ✅ Only export client-safe utilities (validation schemas, config helpers, assets)
+- ❌ Never re-export server-only utilities (environment validation, domain configs, feature flags)
+- ✅ Use `@/lib/shared/client` for client components and `@/lib/shared/server` for server-only code
+- ✅ Import server utilities directly in server routes to maintain client compatibility
+
+**Violation Impact**: Breaking `@/lib/shared` client safety will cause all client components to fail at runtime.
+
+## Notes
+- Keep undefined ClickHouse options elided to satisfy `exactOptionalPropertyTypes`.
+- Prefer explicit subpath imports (e.g., `@/lib/server/streaming/ndjson`) over broad server barrels in shared modules.
+
+### Clerk + App Router (Protected Pages)
+
+- All protected app routes stay on Node runtime: `export const runtime = 'nodejs'`.
+- Do not import `@/lib/server/**` from client components (e.g., dashboard sidebar). Use server-only logic only in route files or server modules.
+- Use `auth()` from `@clerk/nextjs/server` exclusively in server contexts (layouts/pages/api handlers), never in client components.
+
+### Next.js 15 route props (PageProps.params)
+
+- Generated `.next/types/**` uses `params?: Promise<...>`. Accept `{ params: Promise<T> }` and `await params` in route components and `generateMetadata`.
+- Health endpoint exception: `/api/status/health` is allowed to run on Edge and must avoid importing any Node-only utilities. No app-level rate limiting applies.
+
+## Enforcement
+- **ast-grep rules**: `tools/ast-grep/consolidated-no-direct-clickhouse-import-outside-integration.yml` (run with `ast-grep run`)
+- **CI validation**: `pnpm validate:runtime-boundaries` (automated in CI pipeline)
+- **Manual check**: `ast-grep run --pattern "import.*@clickhouse" --lang typescript app/`
+
+## Windows-first tips
+
+- Run runtime boundary validation with `pnpm validate:runtime-boundaries` before commits.
+- Use `ast-grep scan --rule tools/ast-grep/runtime-boundaries.yml` to check for violations locally.
+- Ensure Node-only imports are properly isolated to prevent Edge runtime errors on Windows builds.

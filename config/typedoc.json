@@ -1,0 +1,38 @@
+{
+  "entryPoints": [
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "actions/**/*.ts",
+    "lib/**/*.ts",
+    "types/**/*.ts",
+    "hooks/**/*.ts",
+    "contexts/**/*.ts"
+  ],
+  "out": "docs/api",
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeInternal": true,
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.stories.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/node_modules/**",
+    "**/.next/**",
+    "**/dist/**"
+  ],
+  "theme": "default",
+  "name": "Corso App API Documentation",
+  "includeVersion": true,
+  "categorizeByGroup": true,
+  "sort": ["source-order"],
+  "validation": {
+    "notExported": false,
+    "invalidLink": true,
+    "notDocumented": false
+  },
+  "treatWarningsAsErrors": false,
+  "searchInComments": true,
+  "searchInDocuments": true
+} 

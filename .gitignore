@@ -1,0 +1,194 @@
+*.bak
+reports/
+!reports/.gitkeep
+# ================================
+# Corso Next.js Application
+# ================================
+REFERENCE-TO-IMPLEMENT
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+.pnpm-store/
+grid-reference/
+# Next.js
+.next/
+out/
+**/*.bak
+
+
+# Build outputs
+build/
+/dist/
+eslint-plugin-corso/dist/
+bash.exe.stackdump
+*.stackdump
+
+# TypeScript
+tsconfig.tsbuildinfo
+*.tsbuildinfo
+config/typescript/*.tsbuildinfo
+config/typescript/tsconfig.app.tsbuildinfo
+config/typescript/tsconfig.dev.tsbuildinfo
+next-env.d.ts
+
+docs/audit/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+pnpm-debug.log*
+
+# Backup files
+*.backup
+*.bak
+*~
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+.nyc_output/
+
+# Testing
+test-results/
+test-reports/
+# Reports (generated) — keep folder visible but ignore contents
+full-deps.json
+shared-deps.json
+remaining-clones.json
+skip-list.json
+orphan-report.json
+playwright-report/
+# CI reports
+reports/ci/
+playwright/.cache/
+jest-coverage/
+tests/failures.json
+
+# Storybook build output
+storybook-static/
+build-storybook.log
+
+# Caches
+.npm
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.eslintcache
+.stylelintcache
+.cache/
+.cache/**
+scripts/.cache/*
+!scripts/.cache/.gitkeep
+.parcel-cache/
+.turbo/
+.vite/
+
+# IDE and OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.idea/
+# VS Code – allow settings but ignore user-specific files
+.vscode/settings.json.user
+.vscode/launch.json.user
+*.swp
+*.swo
+*~
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+
+# Package manager files
+.yarn-integrity
+package-lock.json
+yarn.lock
+
+# Debugging
+*.tgz
+*.tar.gz
+tree-sitter-windows-x64.gz
+
+# patch-package output
+patches/
+
+# Vercel
+.vercel
+
+# Dependency analysis outputs
+dependency-graph.dot
+dependency-graph.svg
+
+# Reports (generated)
+/reports/
+
+# Tailwind generated CSS (root-level build artefact)
+styles/tailwind.css
+
+# Sentry
+.sentryclirc
+
+# Type declarations emitted by types project
+.typegen/
+
+# Optional REPL history
+.node_repl_history
+
+# Audit Reports
+/audits/
+
+v8-compile-cache-*/
+
+# Vitest reports are now covered by reports/ directory exclusion above
+
+# Generated artefacts
+.test-results.json
+violation-files.txt
+
+# ---------------------------------
+# styles/build – track generated CSS
+# ---------------------------------
+# Ignore everything under styles/build…
+styles/build/*
+# …but keep the directory itself and any CSS files within it
+!styles/build/
+!styles/build/*.css
+
+!scripts/build/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.development
+.env.staging
+.env.production
+# Keep committed templates/examples
+!.env.example
+!.env.test
+!.env.supabase.example
+
+# Git hooks - prevent duplicate .githooks directory
+.githooks/dependency-graph.svg
+
+# CI / debug outputs
+debug-*.txt
+knip-baseline-*.json
+bundle-size-current.json

@@ -1,0 +1,10 @@
+id: forbid-at-alias-in-rules
+severity: error
+language: typescript
+rule:
+  pattern: import $A from "@/$_"
+constraints:
+  file:
+    includes: "scripts/"
+message: "Scripts must not import from @/ (app code). Use scripts/_shared or move script to lib/."
+

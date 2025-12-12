@@ -1,0 +1,323 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "🚀 Full Setup (Install + Verify + Setup Branch)",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "📦 Install Dependencies",
+        "🔎 Verify AI Tools",
+        "🔧 Setup Branch"
+      ],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "scrollToBottom": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "⚡ Quick Dev Start",
+      "type": "shell",
+      "command": "pnpm dev",
+      "isBackground": true,
+      "group": "build",
+      "runOptions": {
+        "runOn": "default"
+      },
+      "problemMatcher": [
+        {
+          "owner": "typescript",
+          "pattern": {
+            "regexp": "^([^\\s].*)\\((\\d+|\\d+,\\d+|\\d+,\\d+,\\d+,\\d+)\\):\\s+(error|warning|info)\\s+(TS\\d+)\\s*:\\s*(.*)$",
+            "file": 1,
+            "location": 2,
+            "severity": 3,
+            "code": 4,
+            "message": 5
+          },
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": "^started server on .+, url",
+            "endsPattern": "^waiting on"
+          }
+        }
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "scrollToBottom": true
+      }
+    },
+    {
+      "label": "🔍 Quality Gates (TypeCheck + Lint + Test)",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "⚡ Fast TypeCheck",
+        "🧹 Lint All",
+        "🧪 Run All Tests"
+      ],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "scrollToBottom": true
+      }
+    },
+    {
+      "label": "⚡ Fast TypeCheck",
+      "type": "shell",
+      "command": "pnpm",
+      "args": [
+        "typecheck:fast"
+      ],
+      "problemMatcher": [
+        "$tsc"
+      ],
+      "group": "test",
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🔧 Full TypeCheck",
+      "type": "shell",
+      "command": "pnpm typecheck",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🧹 Lint All",
+      "type": "shell",
+      "command": "pnpm lint",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🧹 Lint Current File",
+      "type": "shell",
+      "command": "pnpm eslint ${file}",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": "$eslint-stylish"
+    },
+    {
+      "label": "🧪 Run All Tests",
+      "type": "shell",
+      "command": "pnpm test",
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🧪 Test Current File",
+      "type": "shell",
+      "command": "pnpm vitest run ${file}",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "📊 OpenAPI Generate",
+      "type": "shell",
+      "command": "pnpm openapi:gen",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "📋 OpenAPI Validate",
+      "type": "shell",
+      "command": "pnpm openapi:rbac:check",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🔧 Build Project",
+      "type": "shell",
+      "command": "pnpm build",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🎨 Build Storybook",
+      "type": "shell",
+      "command": "pnpm build-storybook",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🎨 Start Storybook",
+      "type": "shell",
+      "command": "pnpm storybook",
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "🔍 Quality Local Check",
+      "type": "shell",
+      "command": "pnpm quality:local",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🧹 Clean Cache",
+      "type": "shell",
+      "command": "pnpm typecheck:clean",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🔧 Environment Check",
+      "type": "shell",
+      "command": "pnpm validate:env",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "📦 Install Dependencies",
+      "type": "shell",
+      "command": "pnpm install",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🔍 Validate Cursor Rules",
+      "type": "shell",
+      "command": "pnpm validate:cursor-rules",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🔎 Verify AI Tools",
+      "type": "shell",
+      "command": "pnpm run verify:ai-tools",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🔧 Setup Branch",
+      "type": "shell",
+      "command": "pnpm run setup:branch",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🔍 AST-Grep Scan",
+      "type": "shell",
+      "command": "pnpm ast-grep:scan",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🎯 Test Analytics Domain",
+      "type": "shell",
+      "command": "pnpm test:domain:analytics",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🎯 Test Billing Domain",
+      "type": "shell",
+      "command": "pnpm test:domain:billing",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🎯 Test Chat Domain",
+      "type": "shell",
+      "command": "pnpm test:domain:chat",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🛡️ Test Security",
+      "type": "shell",
+      "command": "pnpm test:security",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🧹 Clean All Caches",
+      "type": "shell",
+      "command": "pnpm cleanup:all",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "📚 Generate Docs",
+      "type": "shell",
+      "command": "pnpm docs:index",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "TypeScript: watch",
+      "type": "shell",
+      "command": "pnpm tsc --noEmit --watch",
+      "isBackground": true,
+      "problemMatcher": "$tsc-watch",
+      "presentation": {
+        "reveal": "never",
+        "panel": "dedicated"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}
+

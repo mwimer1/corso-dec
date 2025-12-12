@@ -1,0 +1,4 @@
+:root {
+  /* Core shadow tokens - keep only essential ones */
+  --shadow-xs: 0 1px 2px 0 hsl(0deg 0% 0% / 5%);
+}

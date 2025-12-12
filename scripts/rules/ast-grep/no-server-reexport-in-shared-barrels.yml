@@ -1,0 +1,19 @@
+id: no-server-reexport-in-shared-barrels
+language: ts
+rule:
+  kind: export_all
+  inside:
+    any:
+      - filename: "lib/auth/index.ts"
+      - filename: "lib/core/index.ts"
+  pattern: |
+    export * from '$PATH';
+  constraints:
+    any:
+      - byRegex: PATH
+        regex: .*/server(/.*)?$
+message: "Do not re-export server modules from shared barrels. Use '@/lib/**/server' directly in server code."
+severity: error
+
+
+

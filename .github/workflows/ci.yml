@@ -1,0 +1,245 @@
+name: Core CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.event_name == 'pull_request' && format('{0}-{1}', github.workflow, github.ref) || '' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  edge-boundaries:
+    name: Edge/Node runtime boundaries
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup pnpm v10 (Corepack)
+        run: |
+          corepack enable
+          corepack prepare pnpm@10 --activate
+
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.15.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - run: pnpm -w install
+      - run: pnpm -w typecheck
+      - run: pnpm -w test:boundaries
+      - run: pnpm -w verify:edge
+  # This job is the single source of truth for setup and build
+  setup:
+    name: Setup, Build & Persist
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Setup pnpm v10 (Corepack)
+        run: |
+          corepack enable
+          corepack prepare pnpm@10 --activate
+
+      - name: Checkout
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup-node-pnpm
+        with:
+          run-install: 'true'
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            pnpm install --frozen-lockfile --node-linker=isolated
+          else
+            pnpm install --frozen-lockfile
+          fi
+
+      - name: Docs freshness
+        run: pnpm docs:stale:check
+
+      - name: Build
+        run: pnpm build:offline
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: build-output-${{ github.sha }}-${{ matrix.os }}
+          path: .next/
+
+  quality:
+    name: Code Quality
+    needs: setup
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Setup pnpm v10 (Corepack)
+        run: |
+          corepack enable
+          corepack prepare pnpm@10 --activate
+
+      - name: Checkout Code
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+        with:
+          fetch-depth: 0 # For commitlint
+
+      - name: Setup Node & PNPM
+        uses: ./.github/actions/setup-node-pnpm
+        with:
+          run-install: 'true'
+
+      - name: Set NODE_ENV for production builds
+        run: echo "NODE_ENV=production" >> $GITHUB_ENV
+
+      - name: Run Linting
+        run: pnpm lint && pnpm lint:css
+
+      - name: Validate lib/ structure and barrels
+        run: pnpm validate:lib
+
+      - name: Run Type Checking
+        run: pnpm typecheck
+
+      - name: 'Guard: SEO metadata coverage'
+        run: pnpm guards:metadata
+
+      - name: 'Guard: Protected route auth coverage'
+        run: pnpm guards:protected
+
+      - name: Check alias documentation is up to date
+        run: pnpm docs:aliases:check
+
+      - name: Verify no deprecated dependencies
+        run: pnpm verify:deps:deprecations
+
+      - name: 'Guard: Dependency health (cycles, orphans, unused exports)'
+        run: pnpm validate:dead-code:ci
+
+      - name: Validate Commit Messages
+        if: github.event_name == 'pull_request'
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          # The reusable workflow has already fetched the full history
+          BASE_SHA=$(git merge-base origin/main HEAD)
+          pnpm exec commitlint --from="$BASE_SHA" --to=HEAD --verbose
+          echo "$PR_TITLE" | pnpm exec commitlint --verbose
+
+  test:
+    name: Testing
+    needs: setup
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          {
+            POSTGRES_USER: postgres,
+            POSTGRES_PASSWORD: postgres,
+            POSTGRES_DB: corso_test,
+          }
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/corso_test
+    steps:
+      - name: Setup pnpm v10 (Corepack)
+        run: |
+          corepack enable
+          corepack prepare pnpm@10 --activate
+
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+      - name: Setup Node & PNPM
+        uses: ./.github/actions/setup-node-pnpm
+        with:
+          run-install: 'true'
+
+      - name: Set NODE_ENV for production builds
+        run: echo "NODE_ENV=production" >> $GITHUB_ENV
+
+      - name: Run Test Suite & Generate Coverage
+        run: pnpm test:ci
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: coverage-report
+          path: coverage/
+
+  security:
+    name: Security Scan
+    needs: setup
+    permissions:
+      contents: read
+      actions: read
+      security-events: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+        with:
+          fetch-depth: 0 # For CodeQL
+
+      - name: Setup Node & PNPM
+        uses: ./.github/actions/setup-node-pnpm
+        with:
+          run-install: 'true'
+
+      - name: Set NODE_ENV for production builds
+        run: echo "NODE_ENV=production" >> $GITHUB_ENV
+
+      - name: Dependency vulnerability audit
+        run: pnpm audit --audit-level=high
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@ad2a4837011b42f6947b78d6417e7c253b1c504b # v3
+        with:
+          languages: javascript
+          config-file: ./.github/codeql/codeql-config.yml
+
+      - name: Download build artifact (by ID)
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: build-output-${{ github.sha }}-ubuntu-latest
+          path: .next/
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@ad2a4837011b42f6947b78d6417e7c253b1c504b # v3
+
+  coverage_gate:
+    name: Coverage Gate
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4 # Needed to access the jq tool in the runner
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: coverage-report
+          path: coverage/
+      - name: Fail if total line-coverage < 80 %
+        run: |
+          # Wait for coverage report to be available, since artifact download can be slow
+          while [ ! -f coverage/coverage-summary.json ]; do sleep 1; done
+          pct=$(jq '.total.lines.pct' coverage/coverage-summary.json)
+          echo "Coverage ${pct}%"
+          # Use bc for floating point comparison
+          if (( $(echo "$pct < 80" | bc -l) )); then
+            echo "❌ Coverage below 80 %" && exit 1
+          fi
+
