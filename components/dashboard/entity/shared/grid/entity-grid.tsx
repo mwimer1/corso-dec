@@ -7,7 +7,7 @@ import { AgGridReact } from 'ag-grid-react';
 import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { registerAgGridModules } from './ag-grid-modules';
-import type { EntityGridProps } from '@/types/entity-grid';
+import type { EntityGridProps } from '@/types/dashboard';
 // PostHog removed — no-op helper kept inline (no external dependency)
 type _PosthogLite = {
   get_distinct_id?: () => string;

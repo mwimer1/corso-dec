@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import EntityGrid from './entity-grid';
-import type { EntityGridConfig } from '@/types/entity-grid';
+import type { EntityGridConfig } from '@/types/dashboard';
 
 export default function EntityGridHost({ config }: { config: EntityGridConfig }) {
   const gridRef = React.useRef<any>(null);

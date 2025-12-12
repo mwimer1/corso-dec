@@ -1,7 +1,7 @@
 'use client';
 
 import type { IServerSideGetRowsParams } from 'ag-grid-community';
-import type { EntityFetcher, GridId } from '@/types/entity-grid';
+import type { EntityFetcher, GridId } from '@/types/dashboard';
 
 type AgServerRequest = IServerSideGetRowsParams['request'];
 

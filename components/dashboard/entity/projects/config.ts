@@ -4,7 +4,7 @@ import { PROJECTS_COLUMNS } from '@/lib/services/entity/projects/columns.config'
 import type { ColDef } from 'ag-grid-community';
 import { createDefaultColDef } from '../shared/ag-grid-config';
 import { createEntityFetcher } from '../shared/grid/fetchers';
-import type { EntityGridConfig } from '@/types/entity-grid';
+import type { EntityGridConfig } from '@/types/dashboard';
 
 async function resolveColDefs(): Promise<ColDef[]> {
   // Map framework-agnostic columns → AG Grid ColDef (lazy formatters)

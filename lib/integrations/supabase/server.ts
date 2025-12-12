@@ -3,6 +3,7 @@ import { getEnv } from '@/lib/server/env';
 import { ApplicationError, ErrorCategory, ErrorSeverity } from '@/lib/shared';
 import type { Database } from '@/types/integrations';
 import type { SupabaseClient } from '@supabase/supabase-js';
+import type * as SupabaseJs from '@supabase/supabase-js';
 // Delay Supabase SDK import until first use (avoids side effects on import)
 import 'server-only';
 
@@ -65,7 +66,7 @@ export function getSupabaseAdmin(): SupabaseClient<Database, 'public'> {
   if (__admin__) return __admin__;
   const { secureUrl, secret: SUPABASE_SERVICE_ROLE_KEY } = getSecureSupabaseConfig('SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY');
   // Import createClient on demand to avoid running Supabase code at module import
-  const { createClient } = require('@supabase/supabase-js') as typeof import('@supabase/supabase-js');
+  const { createClient } = require('@supabase/supabase-js') as typeof SupabaseJs;
   __admin__ = createClient<Database, 'public'>(secureUrl, SUPABASE_SERVICE_ROLE_KEY, {
     auth: { persistSession: false },
     global: { fetch },
