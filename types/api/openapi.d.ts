@@ -236,14 +236,16 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        /** @example {
+        /**
+         * @example {
          *       "id": "550e8400-e29b-41d4-a716-446655440000",
          *       "email": "user@example.com",
          *       "name": "John Doe",
          *       "avatarUrl": "https://example.com/avatar.jpg",
          *       "createdAt": "2024-01-15T10:30:00Z",
          *       "updatedAt": "2024-01-15T10:30:00Z"
-         *     } */
+         *     }
+         */
         User: {
             /**
              * Format: uuid
@@ -281,13 +283,15 @@ export interface components {
             code: string;
             /** @example Invalid input */
             message: string;
-            /** @example {
+            /**
+             * @example {
              *       "fieldErrors": {
              *         "content": [
              *           "Required"
              *         ]
              *       }
-             *     } */
+             *     }
+             */
             details?: Record<string, never>;
             /**
              * Format: date-time
@@ -342,7 +346,8 @@ export interface components {
                 arch?: string;
             };
         };
-        /** @example {
+        /**
+         * @example {
          *       "success": false,
          *       "error": {
          *         "code": "VALIDATION_ERROR",
@@ -356,7 +361,8 @@ export interface components {
          *         },
          *         "timestamp": "2024-01-15T10:30:00Z"
          *       }
-         *     } */
+         *     }
+         */
         ErrorEnvelope: {
             /** @constant */
             success: false;
@@ -367,7 +373,8 @@ export interface components {
             pageSize: number;
             total: number;
         };
-        /** @example {
+        /**
+         * @example {
          *       "success": true,
          *       "data": {
          *         "data": [
@@ -384,26 +391,31 @@ export interface components {
          *           "total": 1
          *         }
          *       }
-         *     } */
+         *     }
+         */
         PaginatedEntityResponse: {
             /** @example true */
             success: boolean;
             data: {
-                /** @example [
+                /**
+                 * @example [
                  *       {
                  *         "id": "1",
                  *         "name": "Sample Project",
                  *         "status": "active"
                  *       }
-                 *     ] */
+                 *     ]
+                 */
                 data: components["schemas"]["GenericObject"][];
                 pagination: components["schemas"]["PageMeta"];
             };
         };
-        /** @example {
+        /**
+         * @example {
          *       "content": "What are the key insights from recent project data?",
          *       "preferredTable": "projects"
-         *     } */
+         *     }
+         */
         ChatProcessRequest: {
             /** @example Summarize the latest construction market trends */
             content: string;
@@ -412,17 +424,6 @@ export interface components {
              * @enum {string}
              */
             preferredTable?: "projects" | "companies" | "addresses";
-        };
-        GenerateChartRequest: {
-            question: string;
-            results: unknown[];
-        };
-        ChartConfig: {
-            chartType?: string;
-            title?: string;
-            explanation?: string;
-        } & {
-            [key: string]: unknown;
         };
         GenerateSqlRequest: {
             question: string;
@@ -663,7 +664,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    /** @example {
+                    /**
+                     * @example {
                      *       "results": [
                      *         {
                      *           "slug": "market-trends-2024",
@@ -677,7 +679,8 @@ export interface operations {
                      *           ]
                      *         }
                      *       ]
-                     *     } */
+                     *     }
+                     */
                     "application/json": {
                         results?: {
                             /** @example market-trends-2024 */
@@ -834,7 +837,8 @@ export interface operations {
         };
         requestBody: {
             content: {
-                /** @example {
+                /**
+                 * @example {
                  *       "filter": {
                  *         "status": "active"
                  *       },
@@ -848,7 +852,8 @@ export interface operations {
                  *         "index": 0,
                  *         "size": 10
                  *       }
-                 *     } */
+                 *     }
+                 */
                 "application/json": {
                     /** @description Filter criteria */
                     filter?: {
@@ -984,9 +989,11 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    /** @example {
+                    /**
+                     * @example {
                      *       "success": true
-                     *     } */
+                     *     }
+                     */
                     "application/json": {
                         /** @example true */
                         success: boolean;
@@ -1008,7 +1015,8 @@ export interface operations {
         };
         requestBody: {
             content: {
-                /** @example {
+                /**
+                 * @example {
                  *       "type": "user.created",
                  *       "data": {
                  *         "id": "user_123",
@@ -1020,7 +1028,8 @@ export interface operations {
                  *         "first_name": "John",
                  *         "last_name": "Doe"
                  *       }
-                 *     } */
+                 *     }
+                 */
                 "application/json": Record<string, never>;
             };
         };

@@ -880,27 +880,6 @@ components:
       example:
         content: What are the key insights from recent project data?
         preferredTable: projects
-    GenerateChartRequest:
-      type: object
-      properties:
-        question:
-          type: string
-        results:
-          type: array
-          items: {}
-      required:
-        - question
-        - results
-    ChartConfig:
-      type: object
-      properties:
-        chartType:
-          type: string
-        title:
-          type: string
-        explanation:
-          type: string
-      additionalProperties: true
     GenerateSqlRequest:
       type: object
       properties:

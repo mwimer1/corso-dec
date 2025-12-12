@@ -33,17 +33,29 @@ try {
     Write-Host "✅ Node.js installed: $nodeVersion" -ForegroundColor Green
 } catch {
     Write-Host "⚠️  Node.js installed but not in PATH. Please restart your terminal." -ForegroundColor Yellow
-    Write-Host "After restarting, run: npm install -g pnpm@10.17.1" -ForegroundColor Cyan
+    Write-Host "After restarting, run: corepack enable && corepack prepare pnpm@10.17.1 --activate" -ForegroundColor Cyan
     exit 0
 }
 
-# Install pnpm
-Write-Host "`n📦 Installing pnpm..." -ForegroundColor Yellow
+# Enable Corepack and install pnpm
+Write-Host "`n📦 Setting up pnpm via Corepack..." -ForegroundColor Yellow
 try {
-    npm install -g pnpm@10.17.1
-    Write-Host "✅ pnpm installed successfully" -ForegroundColor Green
+    # Enable Corepack (built into Node.js 16.9+)
+    corepack enable
+    if ($LASTEXITCODE -ne 0) {
+        throw "Corepack enable failed"
+    }
+    
+    # Prepare and activate pnpm version from package.json
+    corepack prepare pnpm@10.17.1 --activate
+    if ($LASTEXITCODE -ne 0) {
+        throw "Corepack prepare failed"
+    }
+    
+    Write-Host "✅ pnpm installed successfully via Corepack" -ForegroundColor Green
 } catch {
-    Write-Host "❌ Failed to install pnpm: $_" -ForegroundColor Red
+    Write-Host "❌ Failed to install pnpm via Corepack: $_" -ForegroundColor Red
+    Write-Host "💡 Make sure Node.js >= 16.9 is installed (Corepack requires Node.js 16.9+)" -ForegroundColor Yellow
     exit 1
 }
 
