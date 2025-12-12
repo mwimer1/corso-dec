@@ -192,3 +192,6 @@ styles/build/*
 debug-*.txt
 knip-baseline-*.json
 bundle-size-current.json
+
+# clerk configuration (can include secrets)
+/.clerk/

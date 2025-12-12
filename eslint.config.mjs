@@ -314,6 +314,9 @@ export default [
           'components/dashboard/entity/shared/grid/ag-grid-modules.ts',
           'components/dashboard/entity/shared/renderers/value-formatter.ts',
           'components/dashboard/header/dashboard-header.tsx',
+          // Entity configs - used internally via registry
+          'components/dashboard/entity/companies/config.ts',
+          'components/dashboard/entity/projects/config.ts',
           // Public API exports - legitimate unused exports
           'lib/api/**/*.ts',
           'lib/shared/**/*.ts',
