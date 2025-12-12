@@ -184,7 +184,7 @@ pnpm typecheck  # Validates generated types
 ### Debug Commands
 ```bash
 # Validate YAML syntax
-pnpm dlx swagger-cli validate api/openapi.yml
+pnpm exec redocly lint api/openapi.yml
 
 # Check RBAC coverage (all protected routes should have x-corso-rbac)
 pnpm openapi:rbac:check

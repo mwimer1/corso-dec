@@ -54,23 +54,6 @@
       "description": "AI chat & streaming"
     }
   ],
-  "x-tagGroups": [
-    {
-      "name": "Core",
-      "tags": [
-        "Status",
-        "Users",
-        "Content"
-      ]
-    },
-    {
-      "name": "AI",
-      "tags": [
-        "Dashboard",
-        "Chat"
-      ]
-    }
-  ],
   "paths": {
     "/api/health": {
       "get": {
@@ -1531,5 +1514,22 @@
         ]
       }
     }
-  }
+  },
+  "x-tagGroups": [
+    {
+      "name": "Core",
+      "tags": [
+        "Status",
+        "Users",
+        "Content"
+      ]
+    },
+    {
+      "name": "AI",
+      "tags": [
+        "Dashboard",
+        "Chat"
+      ]
+    }
+  ]
 }

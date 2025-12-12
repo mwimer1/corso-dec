@@ -9,7 +9,7 @@ We maintain an OpenAPI v3.1 specification for the Corso API.
 
 - **Primary spec**: `api/openapi.yml` (manually maintained) - Source of truth for the API
 - **RBAC validation**: `tools/scripts/openapi-guard-rbac.ts` (automated security validation)
-- **Generated artifacts**: `api/openapi.json` (bundled via swagger-cli for tooling)
+- **Generated artifacts**: `api/openapi.json` (bundled via redocly for tooling)
 - **TypeScript types**: `types/api/openapi.d.ts` (auto-generated from spec)
 
 ## Usage
