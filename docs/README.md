@@ -78,6 +78,9 @@ The complete documentation index is auto-generated in [`docs/index.ts`](./index.
 #### Accessibility
 - [Accessibility Guide](./accessibility/accessibility-guide.md) - **a11y standards, testing, best practices**
 
+#### Monitoring
+- [Monitoring Guide](./monitoring/monitoring-guide.md) - **Health checks, metrics, observability, alerting**
+
 ## 🔧 Documentation Maintenance
 
 ### Automated Maintenance Scripts

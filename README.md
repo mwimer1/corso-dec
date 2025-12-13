@@ -67,6 +67,7 @@ pnpm test
 - **[API Design Guide](docs/api/api-design-guide.md)** - API design, OpenAPI compliance, validation
 - **[Error Handling Guide](docs/error-handling/error-handling-guide.md)** - Error boundaries, logging, resilience
 - **[Accessibility Guide](docs/accessibility/accessibility-guide.md)** - a11y standards, testing, best practices
+- **[Monitoring Guide](docs/monitoring/monitoring-guide.md)** - Health checks, metrics, observability
 - **[Contributing](docs/contributing/unused-exports.md)** - Contribution guidelines
 
 See [Documentation Index](docs/README.md) for complete documentation catalog.
