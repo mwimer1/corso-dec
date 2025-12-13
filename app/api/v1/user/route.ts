@@ -1,3 +1,23 @@
+/**
+ * API Route: POST /api/v1/user
+ * 
+ * User profile operations endpoint with RBAC enforcement.
+ * 
+ * @requires Node.js runtime for Clerk authentication
+ * @requires Authentication via Clerk (userId required)
+ * @requires RBAC: 'member' role minimum
+ * @requires Rate limiting: 30 requests per minute
+ * 
+ * @example
+ * ```typescript
+ * POST /api/v1/user
+ * Body: { id: "uuid", email: "user@example.com", name: "John Doe" }
+ * Response: { success: true, data: { updated: true } }
+ * ```
+ * 
+ * @see {@link https://nextjs.org/docs/app/building-your-application/routing/route-handlers} Next.js Route Handlers
+ */
+
 // app/api/v1/user/route.ts
 // Requires member role – enforced via Clerk v6 RBAC below
 import { http, validateJson, withErrorHandlingEdge as withErrorHandling, withRateLimitEdge as withRateLimit } from "@/lib/api";
@@ -10,7 +30,17 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-const handler = async (req: NextRequest) => {
+/**
+ * Main handler for user profile operations.
+ * 
+ * @param req - Next.js request object with user data in body
+ * @returns HTTP response indicating success or error
+ * 
+ * @throws {401} If user is not authenticated
+ * @throws {403} If user lacks 'member' role
+ * @throws {400} If request body validation fails
+ */
+const handler = async (req: NextRequest): Promise<Response> => {
   // 1 – Auth and RBAC enforcement using Clerk v6 (member role required per OpenAPI spec)
   const { userId, has } = await auth();
   if (!userId) {

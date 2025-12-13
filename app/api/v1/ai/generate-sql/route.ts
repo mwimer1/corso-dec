@@ -1,3 +1,22 @@
+/**
+ * API Route: POST /api/v1/ai/generate-sql
+ * 
+ * Generates SQL queries from natural language prompts with security validation.
+ * 
+ * @requires Node.js runtime for Clerk authentication
+ * @requires Authentication via Clerk (userId required)
+ * @requires Rate limiting: 30 requests per minute
+ * 
+ * @example
+ * ```typescript
+ * POST /api/v1/ai/generate-sql
+ * Body: { question: "show all active projects" }
+ * Response: { success: true, data: { sql: "SELECT * FROM projects WHERE status = 'active'" } }
+ * ```
+ * 
+ * @see {@link https://nextjs.org/docs/app/building-your-application/routing/route-handlers} Next.js Route Handlers
+ */
+
 // Node.js required: Clerk authentication
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -9,6 +28,10 @@ import { auth } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
 import { z } from 'zod';
 
+/**
+ * Request body schema for SQL generation endpoint.
+ * Accepts one of: sql, prompt, query, or question fields.
+ */
 const BodySchema = z
   .object({
     sql: z.string().optional(),
@@ -18,13 +41,35 @@ const BodySchema = z
   })
   .strict();
 
-function isUnsafe(sql: string) {
+/**
+ * Validates SQL for unsafe operations.
+ * 
+ * @param sql - SQL query string to validate
+ * @returns true if SQL contains dangerous operations (DROP, TRUNCATE, or DELETE without WHERE clause)
+ * 
+ * @example
+ * ```typescript
+ * isUnsafe('DROP TABLE users') // true
+ * isUnsafe('SELECT * FROM users') // false
+ * isUnsafe('DELETE FROM users WHERE id = 1') // false (has WHERE clause)
+ * ```
+ */
+function isUnsafe(sql: string): boolean {
   const s = sql.toLowerCase();
   // lightweight guard for tests
   return /\bdrop\b|\btruncate\b|\bdelete\b(?!\s+from\s+\w+\s+where)/.test(s);
 }
 
-const handler = async (req: NextRequest) => {
+/**
+ * Main handler for SQL generation requests.
+ * 
+ * @param req - Next.js request object
+ * @returns HTTP response with generated SQL or error
+ * 
+ * @throws {401} If user is not authenticated
+ * @throws {400} If request body is invalid or contains unsafe SQL
+ */
+const handler = async (req: NextRequest): Promise<Response> => {
   // Authentication check
   const { userId } = await auth();
   if (!userId) {

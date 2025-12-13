@@ -52,8 +52,15 @@ The complete documentation index is auto-generated in [`docs/index.ts`](./index.
 
 #### Testing & Quality
 - [Testing Strategy](./testing-quality/testing-strategy.md)
+- [Testing Guide](./testing-quality/testing-guide.md) - **Complete testing guide with examples**
 - [CI Pipeline](./cicd-workflow/ci-pipeline.md)
 - [Quality Gates](./cicd-workflow/quality-gates.md)
+
+#### Performance
+- [Performance Optimization Guide](./performance/performance-optimization-guide.md) - **Bundle size, database optimization, monitoring**
+
+#### Operations
+- [Operational Guide](./operations/operational-guide.md) - **Deployment, monitoring, troubleshooting**
 
 ## 🔧 Documentation Maintenance
 
