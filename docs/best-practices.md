@@ -35,10 +35,11 @@ Essential coding guardrails and development standards for the Corso platform.
 - Follow principle of least privilege
 
 ### Performance
-- Optimize bundle size
-- Use efficient queries
+- Optimize bundle size (< 300KB Brotli target)
+- Use efficient queries with pagination
 - Implement proper caching strategies
-- Monitor performance metrics
+- Monitor performance metrics (Lighthouse CI)
+- See [Performance Optimization Guide](performance/performance-optimization-guide.md) for detailed guidelines
 
 ## 3. Tooling Requirements
 

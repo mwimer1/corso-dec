@@ -123,6 +123,27 @@ corso-app/
 
 See [Security Standards](docs/security/security-policy.md) for complete security documentation.
 
+## ⚡ Performance
+
+```bash
+# Analyze bundle size
+pnpm bundlesize
+
+# Run bundle analyzer
+ANALYZE=true pnpm build
+
+# Run Lighthouse audit
+pnpm dlx @lhci/cli autorun --collect.url=http://localhost:3000/
+```
+
+### Performance Targets
+- **Bundle Size**: < 300KB (Brotli)
+- **LCP**: < 2.5s
+- **FID**: < 100ms
+- **CLS**: < 0.1
+
+See [Performance Optimization Guide](docs/performance/performance-optimization-guide.md) for complete performance documentation.
+
 ## 🧪 Testing
 
 ```bash
