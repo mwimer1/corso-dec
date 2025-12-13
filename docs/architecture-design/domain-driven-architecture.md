@@ -1,9 +1,9 @@
 ---
-title: "Domain-Driven Architecture Guidelines"
-description: "Comprehensive guidelines for organizing, maintaining, and growing the Corso application's domain-driven architecture with zero-trust principles"
+status: "draft"
+title: "Architecture Design"
+description: "Documentation and resources for documentation functionality. Located in architecture-design/."
 category: "documentation"
 last_updated: "2025-12-13"
-status: "draft"
 ---
 # Domain-Driven Architecture Guidelines
 

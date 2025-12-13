@@ -1,8 +1,9 @@
 ---
-title: "lib/services/entity"
+title: "Entity"
 last_updated: "2025-12-13"
-category: "automation"
+category: "library"
 status: "draft"
+description: "Core lib utilities and functionality for the Corso platform. Located in services/entity/."
 ---
 # Repository Scripts & Docs
 

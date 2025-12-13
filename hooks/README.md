@@ -1,8 +1,9 @@
 ---
-title: "hooks"
+title: "Hooks"
 last_updated: "2025-12-13"
-category: "automation"
+category: "hooks"
 status: "draft"
+description: "React hooks providing state management and functionality for hooks."
 ---
 # Repository Scripts & Docs
 

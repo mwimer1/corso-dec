@@ -1,9 +1,9 @@
 ---
-title: "Codebase Structure & Conventions"
-description: "Definitive reference for Corso's codebase organization, development patterns, and coding standards"
+status: "draft"
+title: "Codebase Apis"
+description: "Documentation and resources for documentation functionality. Located in codebase-apis/."
 category: "documentation"
 last_updated: "2025-12-13"
-status: "draft"
 ---
 # Codebase Structure & Conventions
 

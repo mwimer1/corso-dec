@@ -2,6 +2,8 @@
 category: "documentation"
 last_updated: "2025-12-13"
 status: "draft"
+title: "Scripts"
+description: "Documentation and resources for documentation functionality. Located in scripts/."
 ---
 ## Public Exports
 | File | Purpose | Location |

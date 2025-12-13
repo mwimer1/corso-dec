@@ -2,6 +2,8 @@
 category: "documentation"
 last_updated: "2025-12-13"
 status: "draft"
+title: "Setup"
+description: "Documentation and resources for documentation functionality. Located in support/setup/."
 ---
 ## Public Exports
 | Support File | Type | Description |

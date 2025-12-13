@@ -2,6 +2,8 @@
 category: "documentation"
 last_updated: "2025-12-13"
 status: "draft"
+title: "Analytics"
+description: "Documentation and resources for documentation functionality. Located in analytics/."
 ---
 > Refer to the canonical warehouse query rules: [`docs/codebase-apis/warehouse-queries.md`](../codebase-apis/warehouse-queries.md).
 

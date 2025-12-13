@@ -1,8 +1,9 @@
 ---
-title: "scripts/audit"
+title: "Audit"
 last_updated: "2025-12-13"
-category: "automation"
+category: "documentation"
 status: "draft"
+description: "Documentation and resources for documentation functionality. Located in audit/."
 ---
 # Repository Scripts & Docs
 

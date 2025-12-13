@@ -1,8 +1,9 @@
 ---
-title: "hooks/security"
+title: "Security"
 last_updated: "2025-12-13"
-category: "automation"
+category: "hooks"
 status: "draft"
+description: "React hooks providing state management and functionality for hooks. Located in security/."
 ---
 # Repository Scripts & Docs
 

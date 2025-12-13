@@ -2,6 +2,8 @@
 category: "documentation"
 last_updated: "2025-12-13"
 status: "draft"
+title: "Audits"
+description: "Documentation and resources for documentation functionality. Located in audits/."
 ---
 ## Priorities
 - P0 runtime violations: 0

@@ -1,9 +1,9 @@
 ---
-title: "Quality Gates"
-description: "Next.js metadata and runtime guards, edge-runtime validation, and quality gate enforcement in CI/CD pipeline"
+status: "draft"
+title: "Cicd Workflow"
+description: "Documentation and resources for documentation functionality. Located in cicd-workflow/."
 category: "documentation"
 last_updated: "2025-12-13"
-status: "draft"
 ---
 # Quality Gates
 

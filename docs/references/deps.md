@@ -1,9 +1,9 @@
 ---
-title: "Dependency Health & Audit Process"
-description: "Comprehensive dependency management system for preventing circular dependencies, identifying unused code, and maintaining clean import graphs"
+status: "draft"
+title: "References"
+description: "Documentation and resources for documentation functionality. Located in references/."
 category: "documentation"
 last_updated: "2025-12-13"
-status: "draft"
 ---
 # Dependency Health & Audit Process
 

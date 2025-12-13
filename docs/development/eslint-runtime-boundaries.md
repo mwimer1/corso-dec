@@ -1,9 +1,9 @@
 ---
-title: "Custom Lint Rules & Cursor AI Standards"
-description: "Comprehensive guide to all custom ESLint rules, validation scripts, and Cursor AI rules that enforce codebase standards, security, and runtime boundaries"
+status: "draft"
+title: "Development"
+description: "Documentation and resources for documentation functionality. Located in development/."
 category: "documentation"
 last_updated: "2025-12-13"
-status: "draft"
 ---
 # Custom Lint Rules & Cursor AI Standards
 

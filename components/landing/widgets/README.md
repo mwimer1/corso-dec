@@ -1,8 +1,9 @@
 ---
-title: "components/landing/widgets"
+title: "Widgets"
 last_updated: "2025-12-13"
-category: "automation"
+category: "components"
 status: "draft"
+description: "UI components for the components system, following atomic design principles. Located in landing/widgets/."
 ---
 # Repository Scripts & Docs
 

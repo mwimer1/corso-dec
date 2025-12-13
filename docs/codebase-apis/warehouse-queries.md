@@ -1,9 +1,9 @@
 ---
-title: "Warehouse Queries (Canonical)"
-description: "Canonical reference for warehouse query patterns used across dashboard tables and charts, including filter operations and ClickHouse integration"
+status: "draft"
+title: "Codebase Apis"
+description: "Documentation and resources for documentation functionality. Located in codebase-apis/."
 category: "documentation"
 last_updated: "2025-12-13"
-status: "draft"
 ---
 # Warehouse Queries (Canonical)
 

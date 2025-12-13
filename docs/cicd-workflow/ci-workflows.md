@@ -1,9 +1,9 @@
 ---
-title: "CI Workflows"
-description: "GitHub Actions workflow configuration, Node.js and pnpm setup patterns, and workflow consistency validation"
+status: "draft"
+title: "Cicd Workflow"
+description: "Documentation and resources for documentation functionality. Located in cicd-workflow/."
 category: "documentation"
 last_updated: "2025-12-13"
-status: "draft"
 ---
 # CI Workflows
 

@@ -1,9 +1,9 @@
 ---
-title: "Development Tools & Scripts"
-description: "Comprehensive guide to development tooling, scripts, and automation patterns used in Corso development"
+status: "draft"
+title: "Tools Scripts"
+description: "Documentation and resources for documentation functionality. Located in tools-scripts/."
 category: "documentation"
 last_updated: "2025-12-13"
-status: "draft"
 ---
 # Development Tools & Scripts
 

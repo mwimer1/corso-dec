@@ -1,8 +1,9 @@
 ---
-title: "components/insights/layout"
+title: "Layout"
 last_updated: "2025-12-13"
-category: "automation"
+category: "components"
 status: "draft"
+description: "UI components for the components system, following atomic design principles. Located in insights/layout/."
 ---
 # Repository Scripts & Docs
 

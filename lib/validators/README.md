@@ -1,8 +1,9 @@
 ---
-title: "lib/validators"
+title: "Validators"
 last_updated: "2025-12-13"
-category: "automation"
+category: "library"
 status: "draft"
+description: "Core lib utilities and functionality for the Corso platform. Located in validators/."
 ---
 # Repository Scripts & Docs
 

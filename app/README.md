@@ -1,9 +1,9 @@
 ---
-title: "App Directory — Next.js App Router Architecture"
-description: "Corso's Next.js 15 App Router foundation with file-system routing, nested layouts, comprehensive security, and production-ready patterns"
+status: "draft"
+title: "App"
+description: "Documentation and resources for documentation functionality."
 category: "documentation"
 last_updated: "2025-12-13"
-status: "draft"
 ---
 # App Directory — Next.js App Router Architecture
 

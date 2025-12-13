@@ -1,9 +1,9 @@
 ---
-title: "Security Policy"
-description: "Security policy covering vulnerability reporting, responsible disclosure, security best practices, and contact information for security issues"
+status: "draft"
+title: "Security"
+description: "Documentation and resources for documentation functionality. Located in security/."
 category: "documentation"
 last_updated: "2025-12-13"
-status: "draft"
 ---
 # Security Policy
 

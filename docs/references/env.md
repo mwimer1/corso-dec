@@ -1,9 +1,9 @@
 ---
-title: "Environment Variables Reference"
-description: "Complete reference for all environment variables used in the Corso platform, including server, client, and Edge runtime configurations"
+status: "draft"
+title: "References"
+description: "Documentation and resources for documentation functionality. Located in references/."
 category: "documentation"
 last_updated: "2025-12-13"
-status: "draft"
 ---
 # Environment Variables Reference
 

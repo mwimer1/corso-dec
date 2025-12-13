@@ -1,8 +1,9 @@
 ---
-title: "styles/ui/molecules"
+title: "Molecules"
 last_updated: "2025-12-13"
-category: "automation"
+category: "styling"
 status: "draft"
+description: "Styling system for styles, using Tailwind CSS and design tokens. Located in ui/molecules/."
 ---
 # Repository Scripts & Docs
 

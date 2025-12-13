@@ -1,6 +1,6 @@
 ---
-title: "Documentation"
-description: "Comprehensive documentation for the Corso platform, including architecture, development guides, security policies, and API references"
+title: "Docs"
+description: "Documentation and resources for documentation functionality."
 last_updated: "2025-12-13"
 category: "documentation"
 status: "draft"

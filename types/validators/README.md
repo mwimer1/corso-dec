@@ -1,8 +1,9 @@
 ---
-title: "types/validators"
+title: "Validators"
 last_updated: "2025-12-13"
-category: "automation"
+category: "types"
 status: "draft"
+description: "TypeScript type definitions for types, ensuring type safety across the platform. Located in validators/."
 ---
 # Repository Scripts & Docs
 

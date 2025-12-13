@@ -1,9 +1,9 @@
 ---
-title: "Testing Strategy & Best Practices"
-description: "Primary guide for all testing within the Corso platform, covering domain-first testing approach, test organization, and quality assurance"
+status: "draft"
+title: "Testing Quality"
+description: "Documentation and resources for documentation functionality. Located in testing-quality/."
 category: "documentation"
 last_updated: "2025-12-13"
-status: "draft"
 ---
 # Testing Strategy & Best Practices
 

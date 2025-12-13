@@ -1,9 +1,9 @@
 ---
-title: "Authentication Patterns"
-description: "Comprehensive guide to authentication patterns using Clerk, including server/client boundaries, security practices, and single-tenant considerations"
+status: "draft"
+title: "Security"
+description: "Documentation and resources for documentation functionality. Located in security/."
 category: "documentation"
 last_updated: "2025-12-13"
-status: "draft"
 ---
 # Authentication Patterns
 

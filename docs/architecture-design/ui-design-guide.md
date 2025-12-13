@@ -1,9 +1,9 @@
 ---
-title: "UI Design Guide"
-description: "Consolidated design principles, component patterns, and styling guidelines for consistent UI development across Corso applications"
+status: "draft"
+title: "Architecture Design"
+description: "Documentation and resources for documentation functionality. Located in architecture-design/."
 category: "documentation"
 last_updated: "2025-12-13"
-status: "draft"
 ---
 # UI Design Guide
 

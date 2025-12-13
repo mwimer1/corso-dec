@@ -1,8 +1,9 @@
 ---
-title: "lib/core"
+title: "Core"
 last_updated: "2025-12-13"
-category: "automation"
+category: "library"
 status: "draft"
+description: "Core lib utilities and functionality for the Corso platform. Located in core/."
 ---
 # Repository Scripts & Docs
 

@@ -1,9 +1,9 @@
 ---
-title: "Import Patterns & Runtime Boundaries"
-description: "Guide covering strict client/server separation, runtime boundaries, and import patterns that prevent server-only code from leaking into client bundles"
+status: "draft"
+title: "Codebase Apis"
+description: "Documentation and resources for documentation functionality. Located in codebase-apis/."
 category: "documentation"
 last_updated: "2025-12-13"
-status: "draft"
 ---
 # Import Patterns & Runtime Boundaries
 

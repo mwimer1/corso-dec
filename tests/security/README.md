@@ -2,6 +2,8 @@
 category: "documentation"
 last_updated: "2025-12-13"
 status: "draft"
+title: "Security"
+description: "Documentation and resources for documentation functionality. Located in security/."
 ---
 ## Public Exports
 | Test File | Type | Description |

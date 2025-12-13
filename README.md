@@ -1,8 +1,8 @@
 ---
-title: "Corso"
-description: "Construction permit and contractor data platform for the Dallas-Fort Worth metro area"
+title: "README.md"
+description: "Documentation and resources for documentation functionality."
 last_updated: "2025-12-13"
-category: "project"
+category: "documentation"
 status: "draft"
 ---
 # Corso
@@ -137,6 +137,11 @@ pnpm test:unit
 pnpm test:integration
 pnpm test:e2e
 ```
+
+### Test Coverage
+
+- **Test files**: 92
+- **Security tests**: 7
 
 ## 📦 Quality Gates
 

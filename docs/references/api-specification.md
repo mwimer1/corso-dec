@@ -1,9 +1,9 @@
 ---
-title: "API Specification"
-description: "OpenAPI v3.1 specification documentation covering API structure, RBAC validation, type generation, and usage patterns"
+status: "draft"
+title: "References"
+description: "Documentation and resources for documentation functionality. Located in references/."
 category: "documentation"
 last_updated: "2025-12-13"
-status: "draft"
 ---
 # API Specification
 

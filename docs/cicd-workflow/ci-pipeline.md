@@ -1,9 +1,9 @@
 ---
-title: "CI/CD Pipeline & Quality Gates"
-description: "Comprehensive guide to Corso's continuous integration and deployment pipeline, quality gates, and automated validation processes"
+status: "draft"
+title: "Cicd Workflow"
+description: "Documentation and resources for documentation functionality. Located in cicd-workflow/."
 category: "documentation"
 last_updated: "2025-12-13"
-status: "draft"
 ---
 # CI/CD Pipeline & Quality Gates
 
