@@ -69,6 +69,9 @@ The complete documentation index is auto-generated in [`docs/index.ts`](./index.
 #### TypeScript
 - [TypeScript Guide](./typescript/typescript-guide.md) - **Type safety, strict mode, best practices**
 
+#### API Design
+- [API Design Guide](./api/api-design-guide.md) - **API design, OpenAPI compliance, validation**
+
 ## 🔧 Documentation Maintenance
 
 ### Automated Maintenance Scripts
