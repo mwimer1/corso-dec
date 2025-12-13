@@ -41,8 +41,8 @@ app/api/
 
 | Domain | Method | Path | Purpose | Runtime | Rate Limit |
 |--------|--------|------|---------|---------|------------|
-| Entity | POST | `/api/v1/entity/[entity]/query` | Query entity with pagination/filtering | Node.js | None |
-| Entity | GET | `/api/v1/entity/[entity]/export` | Export entity data (CSV/XLSX) | Node.js | None |
+| Entity | POST | `/api/v1/entity/[entity]/query` | Query entity with pagination/filtering/sorting | Node.js | 60/min |
+| Entity | GET | `/api/v1/entity/[entity]/export` | Export entity data (CSV/XLSX) | Node.js | 30/min |
 | Entity | GET | `/api/v1/entity/[entity]` | Entity base operations | Node.js | 60/min |
 | AI | POST | `/api/v1/ai/generate-chart` | AI chart configuration | Node.js | 30/min |
 | AI | POST | `/api/v1/ai/generate-sql` | AI SQL generation | Node.js | 30/min |

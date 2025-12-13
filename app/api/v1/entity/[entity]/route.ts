@@ -3,12 +3,10 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-import { badRequest, error, noContent } from '@/lib/api/response/http';
+import { http, withErrorHandlingEdge as withErrorHandling, withRateLimitEdge as withRateLimit } from '@/lib/api';
 import { handleCors } from '@/lib/middleware';
 import { auth } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
-// If your repo exposes a CORS helper, prefer it here:
-// import { handleCors } from '@/lib/middleware';
 import { getEntityPage } from '@/lib/services/entity/pages';
 import {
     EntityListQuerySchema,
@@ -19,20 +17,20 @@ import {
 export async function OPTIONS(req: Request) {
   const response = handleCors(req);
   if (response) return response;
-  return noContent();
+  return http.noContent();
 }
 
-export async function GET(req: NextRequest, ctx: { params: { entity: string } }) {
+const handler = async (req: NextRequest, ctx: { params: { entity: string } }): Promise<Response> => {
   // AuthN
   const { userId } = await auth();
   if (!userId) {
-    return error(401, 'Unauthorized', { code: 'HTTP_401' });
+    return http.error(401, 'Unauthorized', { code: 'HTTP_401' });
   }
 
   // Entity param validation
   const entityParsed = EntityParamSchema.safeParse((ctx.params?.entity ?? '').toLowerCase());
   if (!entityParsed.success) {
-    return badRequest('Invalid entity type', { code: 'INVALID_ENTITY' });
+    return http.badRequest('Invalid entity type', { code: 'INVALID_ENTITY' });
   }
   const entity = entityParsed.data as EntityParam;
 
@@ -41,41 +39,55 @@ export async function GET(req: NextRequest, ctx: { params: { entity: string } })
   const queryObj = Object.fromEntries(sp.entries());
   const qpParsed = EntityListQuerySchema.safeParse(queryObj);
   if (!qpParsed.success) {
-    return badRequest('Invalid query parameters', {
+    return http.badRequest('Invalid query parameters', {
       code: 'INVALID_QUERY',
       details: qpParsed.error.flatten(),
     });
   }
   const { page, pageSize, sortBy, sortDir, search } = qpParsed.data;
 
-  try {
-    const result = await getEntityPage(entity, {
-      page,
-      pageSize,
-      sort: sortBy ? { column: sortBy, direction: sortDir } : { column: '', direction: 'asc' },
-      ...(search ? { search } : {}),
-      // TODO: Transform filters from Record<string, any> to Filter[] array format if needed
-      // For now, filters are not passed through to avoid type mismatch
-    });
+  const result = await getEntityPage(entity, {
+    page,
+    pageSize,
+    sort: sortBy ? { column: sortBy, direction: sortDir } : { column: '', direction: 'asc' },
+    ...(search ? { search } : {}),
+    // TODO: Transform filters from Record<string, any> to Filter[] array format if needed
+    // For now, filters are not passed through to avoid type mismatch
+  });
 
-    // Return flat response shape: { data, total, page, pageSize }
-    const payload = {
-      data: result?.data ?? [],
-      total: result?.total ?? 0,
-      page,
-      pageSize,
-    };
-    return new Response(JSON.stringify(payload), {
-      status: 200,
-      headers: {
-        'content-type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      }
-    });
-  } catch (e) {
-    return error(500, 'Failed to fetch entity data', {
-      code: 'INTERNAL_ERROR',
-      details: process.env.NODE_ENV !== 'production' ? String(e) : undefined,
-    });
-  }
+  // Return flat response shape: { data, total, page, pageSize }
+  const payload = {
+    data: result?.data ?? [],
+    total: result?.total ?? 0,
+    page,
+    pageSize,
+  };
+  return http.ok(payload, {
+    headers: {
+      'Access-Control-Allow-Origin': '*'
+    }
+  });
+};
+
+// Rate limit: 60/min per OpenAPI spec
+// Note: Next.js passes params as second argument, but rate limiter expects single-arg function
+// We wrap the handler to extract params from URL for rate limiting, then use actual params in handler
+const createWrappedHandler = (params: { entity: string }) => {
+  return withErrorHandling(
+    withRateLimit(
+      async (req: NextRequest) => {
+        return handler(req, { params }) as any;
+      },
+      { windowMs: 60_000, maxRequests: 60 }
+    )
+  );
+};
+
+// Next.js dynamic route signature: (req, { params }) => Response
+export async function GET(req: NextRequest, ctx: { params: Promise<{ entity: string }> | { entity: string } }): Promise<Response> {
+  // Resolve params if it's a Promise (Next.js 15+)
+  const resolvedParams = 'then' in ctx.params ? await ctx.params : ctx.params;
+  // Create wrapped handler with resolved params
+  const wrappedHandler = createWrappedHandler(resolvedParams);
+  return wrappedHandler(req) as Promise<Response>;
 }

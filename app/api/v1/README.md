@@ -22,12 +22,12 @@ export const revalidate = 0;
 - **Member-level RBAC** is enforced
 - **Error shape**: `{ success: false, error: { code, message, details? } }`
 
-## Routes (6)
+## Routes (7)
 
 | Domain | Method | Path | Purpose | Runtime | Rate limit |
 |--------|--------|------|---------|---------|------------|
-| Entity | POST | `/api/v1/entity/[entity]/query` | Entity queries (pagination/filtering) | Node.js | None |
-| Entity | GET | `/api/v1/entity/[entity]/export` | Entity exports (CSV/XLSX) | Node.js | None |
+| Entity | POST | `/api/v1/entity/[entity]/query` | Entity queries (pagination/filtering/sorting) | Node.js | 60/min |
+| Entity | GET | `/api/v1/entity/[entity]/export` | Entity exports (CSV/XLSX) | Node.js | 30/min |
 | Entity | GET | `/api/v1/entity/[entity]` | Entity base operations | Node.js | 60/min |
 | AI | POST | `/api/v1/ai/generate-chart` | AI chart configuration | Node.js | 30/min |
 | AI | POST | `/api/v1/ai/generate-sql` | AI SQL generation | Node.js | 30/min |

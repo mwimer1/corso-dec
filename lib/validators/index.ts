@@ -10,6 +10,10 @@ export {
 } from './entityListQuery';
 export type { EntityListQuery, EntityParam, SortDir } from './entityListQuery';
 
+// Entity query validators (POST /api/v1/entity/{entity}/query)
+export { EntityQueryRequestSchema } from './entityQuery';
+export type { EntityQueryRequest } from './entityQuery';
+
 // Auth validators
 export { UserSchema } from './auth/user-validation';
 
