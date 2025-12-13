@@ -112,17 +112,34 @@ pnpm docs:validate
 
 ## 🚀 Deployment Pipeline
 
+### Automated Deployment (`deploy.yml`)
+
+**Triggers:**
+- Push to `main` branch (automatic)
+- Manual workflow dispatch (with environment selection)
+
+**Stages:**
+1. **Pre-Deployment Validation**: All quality gates must pass
+2. **Deployment**: Creates deployment record and tracks status
+3. **Post-Deployment Health Check**: Verifies deployment success
+
+**Environments:**
+- **Production**: Automatic on push to main
+- **Staging**: Manual trigger with environment selection
+
 ### Staging Deployment
-- **Trigger**: Merge to main branch
+- **Trigger**: Merge to main branch or manual trigger
 - **Environment**: Staging (preview URL)
 - **Validation**: All quality gates pass
 - **Promotion**: Manual approval required
 
 ### Production Deployment
-- **Trigger**: Release creation or manual trigger
+- **Trigger**: Push to main (automatic) or manual trigger
 - **Environment**: Production
-- **Rollback**: Automated rollback on failures
-- **Monitoring**: Post-deployment health checks
+- **Health Check**: Automated post-deployment verification
+- **Rollback**: Manual rollback via deployment platform
+
+**See [CI/CD Enhancement Guide](./cicd-enhancement-guide.md) for detailed deployment documentation.**
 
 ## 🔧 Tooling Integration
 

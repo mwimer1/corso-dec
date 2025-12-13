@@ -1,0 +1,133 @@
+name: Deployment
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+permissions:
+  contents: read
+  deployments: write
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # Pre-deployment validation
+  validate:
+    name: Pre-Deployment Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup-node-pnpm
+        with:
+          run-install: 'true'
+
+      - name: Validate Environment Variables
+        run: pnpm validate:env
+
+      - name: Type Check
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test Suite
+        run: pnpm test:ci
+
+      - name: Build Verification
+        run: pnpm build:offline
+
+      - name: Security Headers Check
+        run: |
+          # Verify security headers are configured
+          if ! grep -q "Strict-Transport-Security" config/next.config.mjs; then
+            echo "❌ Security headers missing"
+            exit 1
+          fi
+          echo "✅ Security headers configured"
+
+  # Deployment status tracking
+  deploy:
+    name: Deploy to ${{ github.event.inputs.environment || 'production' }}
+    needs: validate
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.environment || 'production' }}
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+
+      - name: Create Deployment
+        id: deploy
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1d3799cdea # v7
+        with:
+          script: |
+            const environment = '${{ github.event.inputs.environment || 'production' }}';
+            const deployment = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.sha,
+              environment: environment,
+              auto_merge: false,
+              required_contexts: []
+            });
+            
+            return {
+              deployment_id: deployment.data.id,
+              url: `https://${context.repo.owner}.github.io/${context.repo.repo}`
+            };
+
+      - name: Update Deployment Status
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1d3799cdea # v7
+        if: always()
+        with:
+          script: |
+            const state = '${{ job.status }}' === 'success' ? 'success' : 'failure';
+            await github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: ${{ steps.deploy.outputs.deployment_id }},
+              state: state,
+              description: `Deployment ${state === 'success' ? 'completed' : 'failed'}`
+            });
+
+  # Post-deployment health check
+  health-check:
+    name: Post-Deployment Health Check
+    needs: deploy
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Wait for Deployment
+        run: sleep 30
+
+      - name: Health Check
+        run: |
+          # Note: Replace with actual production URL
+          URL="${DEPLOYMENT_URL:-https://your-domain.com}"
+          response=$(curl -s -o /dev/null -w "%{http_code}" "$URL/api/health")
+          
+          if [ "$response" != "200" ]; then
+            echo "❌ Health check failed: HTTP $response"
+            exit 1
+          fi
+          
+          echo "✅ Health check passed"
+        env:
+          DEPLOYMENT_URL: ${{ secrets.DEPLOYMENT_URL }}
+

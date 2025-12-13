@@ -133,13 +133,15 @@ Visual testing can be restored post-MVP launch by:
 
 Live map of our streamlined CI/CD pipeline. **All active workflows use SHA-pinned actions** for security and reproducibility.
 
-### Active Production Workflows (5)
+### Active Production Workflows (7)
 
 | Category | Workflow | Trigger | Purpose | Runtime | Status |
 |----------|----------|---------|---------|---------|--------|
 | **Core CI** | `ci.yml` | push/PR/main | Quality, test, security pipeline | ~8-10 min | ✅ Active |
+| **Deployment** | `deploy.yml` | push/main/manual | Automated deployment with validation | ~5-7 min | ✅ Active |
+| **Security** | `security-audit.yml` | push/PR/weekly | Dependency audit, CodeQL, secret scanning | ~3-5 min | ✅ Active |
+| **Scheduled** | `scheduled-maintenance.yml` | Weekly/Monthly | Dependency review, docs check, quality metrics | ~10-15 min | ✅ Active |
 | **Performance** | `pr-checks.yml` | PR (app/\*) | Bundle analysis, Lighthouse | ~3-4 min | ✅ Active |
-| **Security** | `security-audit.yml` | push/PR/weekly | Dependency audit, CodeQL | ~3 min | ✅ Active |
 | **Quality** | `quality.yml` | push/PR/main | Comprehensive quality checks (integrated) | ~2 min | ✅ Active |
 | **API** | `openapi.yml` | PR (api/\*) | OpenAPI validation, type generation | ~2 min | ✅ Active |
 | **Cursor Rules** | `validate-cursor-rules.yml` | PR (cursor/\*) | AI agent rule validation | ~1 min | ✅ Active |
