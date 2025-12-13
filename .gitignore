@@ -162,6 +162,10 @@ v8-compile-cache-*/
 .test-results.json
 violation-files.txt
 
+# Generated export analysis reports
+unused-exports-analysis.md
+eslint-allowlist-suggestions.txt
+
 # ---------------------------------
 # styles/build – track generated CSS
 # ---------------------------------
