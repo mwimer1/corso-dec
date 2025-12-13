@@ -7,6 +7,8 @@ status: "draft"
 ---
 # Documentation
 
+Last updated: 2025-12-13
+
 > **Comprehensive documentation for the Corso platform**
 
 This directory contains all project documentation, including architecture guides, development workflows, security policies, API references, and best practices.
