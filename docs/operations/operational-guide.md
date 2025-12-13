@@ -1,11 +1,10 @@
 ---
-status: "published"
-title: "Operational Guide"
-description: "Comprehensive guide to deployment, monitoring, troubleshooting, and operational procedures for the Corso platform"
+last_updated: "2025-12-13"
 category: "documentation"
-last_updated: "2025-01-15"
+status: "draft"
+title: "Operations"
+description: "Documentation and resources for documentation functionality. Located in operations/."
 ---
-
 # Operational Guide
 
 > **Complete guide to deployment, monitoring, troubleshooting, and day-to-day operations of the Corso platform.**

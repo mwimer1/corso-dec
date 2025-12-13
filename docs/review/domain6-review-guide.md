@@ -1,11 +1,10 @@
 ---
-status: "draft"
-title: "Domain 6 Review Guide"
-description: "Review guide for Domain 6: Documentation Quality improvements"
+last_updated: "2025-12-13"
 category: "documentation"
-last_updated: "2025-01-15"
+status: "draft"
+title: "Review"
+description: "Documentation and resources for documentation functionality. Located in review/."
 ---
-
 # Domain 6: Documentation Quality - Review Guide
 
 > **Quick review guide for Domain 6 documentation improvements**

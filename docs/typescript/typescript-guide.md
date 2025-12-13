@@ -1,11 +1,10 @@
 ---
-status: "published"
-title: "TypeScript Guide"
-description: "Comprehensive guide to TypeScript usage, type safety, and best practices"
+last_updated: "2025-12-13"
 category: "documentation"
-last_updated: "2025-01-15"
+status: "draft"
+title: "Typescript"
+description: "Documentation and resources for documentation functionality. Located in typescript/."
 ---
-
 # TypeScript Guide
 
 > **Complete guide to TypeScript usage, type safety, and best practices for the Corso codebase**

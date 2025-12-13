@@ -1,6 +1,6 @@
 ---
-title: "Authentication Domain"
-description: "Authentication, authorization, and role-based access control using Clerk v6, including server-side guards, client utilities, and RBAC helpers"
+title: "Auth"
+description: "Core lib utilities and functionality for the Corso platform. Located in auth/."
 category: "library"
 last_updated: "2025-12-13"
 status: "active"

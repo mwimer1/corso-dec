@@ -1,11 +1,10 @@
 ---
+description: "Documentation and resources for documentation functionality. Located in security/."
+last_updated: "2025-12-13"
 category: "documentation"
-last_updated: "2025-01-15"
-status: "active"
-title: "Security Implementation Guide"
-description: "Comprehensive guide to security implementation, authentication, authorization, and security best practices in the Corso codebase."
+status: "draft"
+title: "Security"
 ---
-
 # Security Implementation Guide
 
 This document provides a comprehensive guide to security implementation in the Corso codebase, covering authentication, authorization, security headers, and best practices.

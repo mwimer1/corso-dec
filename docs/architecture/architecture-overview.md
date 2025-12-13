@@ -1,11 +1,10 @@
 ---
+description: "Documentation and resources for documentation functionality. Located in architecture/."
+last_updated: "2025-12-13"
 category: "documentation"
-last_updated: "2025-01-15"
-status: "active"
-title: "Architecture Overview"
-description: "Comprehensive architecture overview for the Corso codebase, covering design patterns, separation of concerns, and Next.js 15 best practices."
+status: "draft"
+title: "Architecture"
 ---
-
 # Architecture Overview
 
 This document provides a comprehensive overview of the Corso codebase architecture, design patterns, and architectural decisions.

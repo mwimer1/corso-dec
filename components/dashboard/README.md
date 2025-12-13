@@ -1,6 +1,6 @@
 ---
-title: "Dashboard Components"
-description: "Dashboard UI components including entity grids, layouts, sidebars, and dashboard-specific widgets for the Corso platform"
+title: "Dashboard"
+description: "UI components for the components system, following atomic design principles. Located in dashboard/."
 category: "components"
 last_updated: "2025-12-13"
 status: "active"

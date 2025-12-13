@@ -1,11 +1,10 @@
 ---
-status: "published"
-title: "Performance Optimization Guide"
-description: "Comprehensive guide to performance optimization, bundle size management, and monitoring in the Corso codebase"
+last_updated: "2025-12-13"
 category: "documentation"
-last_updated: "2025-01-15"
+status: "draft"
+title: "Performance"
+description: "Documentation and resources for documentation functionality. Located in performance/."
 ---
-
 # Performance Optimization Guide
 
 > **Complete guide to performance optimization, bundle size management, database query optimization, and performance monitoring.**

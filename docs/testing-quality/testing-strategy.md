@@ -1,9 +1,9 @@
 ---
+last_updated: "2025-12-13"
+category: "documentation"
 status: "draft"
 title: "Testing Quality"
 description: "Documentation and resources for documentation functionality. Located in testing-quality/."
-category: "documentation"
-last_updated: "2025-12-13"
 ---
 # Testing Strategy & Best Practices
 

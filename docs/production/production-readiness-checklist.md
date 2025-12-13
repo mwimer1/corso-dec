@@ -1,11 +1,10 @@
 ---
-status: "published"
-title: "Production Readiness Checklist"
-description: "Comprehensive checklist for production deployment verification"
+last_updated: "2025-12-13"
 category: "documentation"
-last_updated: "2025-01-15"
+status: "draft"
+title: "Production"
+description: "Documentation and resources for documentation functionality. Located in production/."
 ---
-
 # Production Readiness Checklist
 
 > **Complete checklist for verifying production readiness across all domains**

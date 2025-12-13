@@ -1,11 +1,10 @@
 ---
-status: "published"
-title: "Monitoring & Observability Guide"
-description: "Comprehensive guide to monitoring, health checks, metrics, and observability"
+last_updated: "2025-12-13"
 category: "documentation"
-last_updated: "2025-01-15"
+status: "draft"
+title: "Monitoring"
+description: "Documentation and resources for documentation functionality. Located in monitoring/."
 ---
-
 # Monitoring & Observability Guide
 
 > **Complete guide to monitoring, health checks, metrics collection, and observability for the Corso platform**

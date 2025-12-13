@@ -102,7 +102,7 @@ export const docs = [
   },
   {
     "path": "components/dashboard/readme.md",
-    "title": "Dashboard Components"
+    "title": "Dashboard"
   },
   {
     "path": "components/dashboard/sidebar/readme.md",
@@ -278,11 +278,11 @@ export const docs = [
   },
   {
     "path": "lib/api/readme.md",
-    "title": "API Domain"
+    "title": "Api"
   },
   {
     "path": "lib/auth/readme.md",
-    "title": "Authentication Domain"
+    "title": "Auth"
   },
   {
     "path": "lib/chat/readme.md",
@@ -383,10 +383,6 @@ export const docs = [
   {
     "path": "scripts/maintenance/readme.md",
     "title": "Maintenance"
-  },
-  {
-    "path": "scripts/maintenance/unused-styles/readme.md",
-    "title": "Unused Styles"
   },
   {
     "path": "scripts/readme.md",

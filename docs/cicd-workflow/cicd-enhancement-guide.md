@@ -1,11 +1,10 @@
 ---
-status: "published"
-title: "CI/CD Enhancement Guide"
-description: "Comprehensive guide to CI/CD enhancements, deployment automation, and security scanning"
+last_updated: "2025-12-13"
 category: "documentation"
-last_updated: "2025-01-15"
+status: "draft"
+title: "Cicd Workflow"
+description: "Documentation and resources for documentation functionality. Located in cicd-workflow/."
 ---
-
 # CI/CD Enhancement Guide
 
 > **Complete guide to CI/CD automation, deployment workflows, security scanning, and scheduled maintenance**

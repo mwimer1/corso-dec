@@ -1,11 +1,10 @@
 ---
-status: "published"
-title: "Type Safety Audit"
-description: "Current state of type safety in the codebase and improvement opportunities"
+last_updated: "2025-12-13"
 category: "documentation"
-last_updated: "2025-01-15"
+status: "draft"
+title: "Typescript"
+description: "Documentation and resources for documentation functionality. Located in typescript/."
 ---
-
 # Type Safety Audit
 
 > **Current state of type safety and areas for improvement**

@@ -1,11 +1,10 @@
 ---
+description: "Documentation and resources for documentation functionality. Located in development/."
+last_updated: "2025-12-13"
 category: "documentation"
-last_updated: "2025-01-15"
-status: "active"
-title: "Coding Standards & Best Practices"
-description: "Comprehensive guide to coding standards, ESLint rules, and best practices for the Corso codebase."
+status: "draft"
+title: "Development"
 ---
-
 # Coding Standards & Best Practices
 
 This document provides comprehensive coding standards and best practices for the Corso codebase, covering TypeScript, React, ESLint rules, and code quality guidelines.

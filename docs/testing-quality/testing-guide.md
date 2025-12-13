@@ -1,11 +1,10 @@
 ---
-status: "published"
-title: "Testing Guide"
-description: "Comprehensive guide to writing, running, and maintaining tests in the Corso codebase"
+last_updated: "2025-12-13"
 category: "documentation"
-last_updated: "2025-01-15"
+status: "draft"
+title: "Testing Quality"
+description: "Documentation and resources for documentation functionality. Located in testing-quality/."
 ---
-
 # Testing Guide
 
 > **Complete guide to testing practices, patterns, and workflows in the Corso codebase.**

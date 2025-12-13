@@ -1,11 +1,10 @@
 ---
-status: "published"
-title: "Dependency Management Guide"
-description: "Comprehensive guide to dependency management, updates, vulnerability handling, and maintenance"
+last_updated: "2025-12-13"
 category: "documentation"
-last_updated: "2025-01-15"
+status: "draft"
+title: "Dependencies"
+description: "Documentation and resources for documentation functionality. Located in dependencies/."
 ---
-
 # Dependency Management Guide
 
 > **Complete guide to managing dependencies, handling vulnerabilities, and maintaining a secure, up-to-date dependency tree**

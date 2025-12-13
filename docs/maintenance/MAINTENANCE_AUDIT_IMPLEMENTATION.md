@@ -1,3 +1,10 @@
+---
+title: "Maintenance"
+description: "Documentation and resources for documentation functionality. Located in maintenance/."
+last_updated: "2025-12-13"
+category: "documentation"
+status: "draft"
+---
 # Maintenance Suite Audit - Implementation Summary
 
 ## Overview

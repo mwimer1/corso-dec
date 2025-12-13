@@ -1,6 +1,6 @@
 ---
-title: "API Domain"
-description: "Edge-safe API utilities for Next.js App Router routes, including HTTP response helpers, request validation, and Edge runtime configuration"
+title: "Api"
+description: "Core lib utilities and functionality for the Corso platform. Located in api/."
 category: "library"
 last_updated: "2025-12-13"
 status: "active"

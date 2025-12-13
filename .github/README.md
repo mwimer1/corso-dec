@@ -1,9 +1,9 @@
 ---
-category: "documentation"
+description: "Documentation and resources for documentation functionality."
 last_updated: "2025-12-13"
+category: "documentation"
 status: "draft"
 title: ".github"
-description: "Documentation and resources for documentation functionality."
 ---
 # 🤖 GitHub Automation Overview
 

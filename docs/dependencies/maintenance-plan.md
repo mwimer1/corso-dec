@@ -1,11 +1,10 @@
 ---
-status: "published"
-title: "Dependency Maintenance Plan"
-description: "Routine maintenance schedule and procedures for dependency management"
+last_updated: "2025-12-13"
 category: "documentation"
-last_updated: "2025-01-15"
+status: "draft"
+title: "Dependencies"
+description: "Documentation and resources for documentation functionality. Located in dependencies/."
 ---
-
 # Dependency Maintenance Plan
 
 > **Routine maintenance schedule and procedures for keeping dependencies secure and up-to-date**
