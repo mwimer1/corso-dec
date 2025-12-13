@@ -72,6 +72,12 @@ The complete documentation index is auto-generated in [`docs/index.ts`](./index.
 #### API Design
 - [API Design Guide](./api/api-design-guide.md) - **API design, OpenAPI compliance, validation**
 
+#### Error Handling
+- [Error Handling Guide](./error-handling/error-handling-guide.md) - **Error boundaries, logging, resilience patterns**
+
+#### Accessibility
+- [Accessibility Guide](./accessibility/accessibility-guide.md) - **a11y standards, testing, best practices**
+
 ## 🔧 Documentation Maintenance
 
 ### Automated Maintenance Scripts

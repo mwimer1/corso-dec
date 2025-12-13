@@ -65,6 +65,8 @@ pnpm test
 - **[Dependency Management](docs/dependencies/dependency-management-guide.md)** - Dependency updates, vulnerabilities, maintenance
 - **[TypeScript Guide](docs/typescript/typescript-guide.md)** - Type safety, strict mode, best practices
 - **[API Design Guide](docs/api/api-design-guide.md)** - API design, OpenAPI compliance, validation
+- **[Error Handling Guide](docs/error-handling/error-handling-guide.md)** - Error boundaries, logging, resilience
+- **[Accessibility Guide](docs/accessibility/accessibility-guide.md)** - a11y standards, testing, best practices
 - **[Contributing](docs/contributing/unused-exports.md)** - Contribution guidelines
 
 See [Documentation Index](docs/README.md) for complete documentation catalog.
