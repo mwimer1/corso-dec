@@ -534,6 +534,13 @@ Storybook in CI:
 - **Error Boundary Testing:** Ensure app error boundaries catch and report errors as expected using `app-error-boundary`.
 - **Form Validation Testing:** Validate form logic, error messages, and edge cases.
 
+## 📚 Related Documentation
+
+- [Testing Guide](./testing-guide.md) - **Complete testing guide with examples, patterns, and best practices**
+- [API Route Tests](../../tests/api/README.md) - API testing patterns and examples
+- [Security Tests](../../tests/security/README.md) - Security testing guidelines
+- [Test Support](../../tests/support/README.md) - Test utilities and helpers
+
 ## 🏷️ Tags
 
 `#testing` `#quality-assurance` `#unit-tests` `#integration-tests` `#security-tests` `#performance-tests` `#vitest` `#ci-cd`

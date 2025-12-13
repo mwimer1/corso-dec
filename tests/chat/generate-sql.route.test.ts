@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi, beforeEach } from "vitest";
 import { resolveRouteModule } from "../support/resolve-route";
 
 // Mock the auth function
@@ -8,22 +8,11 @@ vi.mock('@clerk/nextjs/server', () => ({
 }));
 
 describe("API v1: ai/generate-sql route", () => {
-  beforeEach(async () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
     mockAuth.mockResolvedValue({
       userId: 'test-user-123',
-      has: vi.fn().mockReturnValue(true),
     });
-
-    // Mock the generateSQL function
-    vi.doMock("@/lib/chat/query/sql-generation", () => ({
-      generateSQL: vi.fn().mockImplementation(async (params: any) => {
-        console.log('generateSQL called with:', params);
-        if (params.question.includes('drop')) {
-          return { isValid: false, error: "SQL contains dangerous operations" };
-        }
-        return { isValid: true, sql: "SELECT * FROM users LIMIT 100" };
-      }),
-    }));
   });
 
   it("loads route module and returns a Response", async () => {
@@ -46,56 +35,143 @@ describe("API v1: ai/generate-sql route", () => {
     expect(typeof res.status).toBe('number');
   }, 20_000);
 
-  it("returns 200 for safe SQL queries", async () => {
+  it("returns 401 when unauthenticated", async () => {
+    mockAuth.mockResolvedValue({ userId: null });
     const url = resolveRouteModule("ai/generate-sql");
-    if (!url) return expect(true).toBe(true); // route absent on this branch → skip
+    if (!url) return expect(true).toBe(true);
 
     const mod: any = await import(url);
     const handler = mod.POST;
     const req = new Request("http://localhost/api/v1/ai/generate-sql", {
       method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "Origin": "https://example.com"
-      },
+      headers: { "content-type": "application/json" },
       body: JSON.stringify({ question: "show all users" }),
     });
 
+    const res = await handler(req as any);
+    expect(res.status).toBe(401);
+    const data = await res.json();
+    expect(data.success).toBe(false);
+    expect(data.error.code).toBe("HTTP_401");
+  });
+
+  it("returns 200 for safe SQL queries", async () => {
+    const url = resolveRouteModule("ai/generate-sql");
+    if (!url) return expect(true).toBe(true);
+
+    const mod: any = await import(url);
+    const handler = mod.POST;
+    const req = new Request("http://localhost/api/v1/ai/generate-sql", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ question: "show all users" }),
+    });
 
     const res = await handler(req as any);
-    console.log('Response status:', res.status);
-    const data = await res.json();
-    console.log('Response body:', data);
     expect(res.status).toBe(200);
+    const data = await res.json();
     expect(data.success).toBe(true);
     expect(data.data).toHaveProperty("sql");
     expect(data.data.sql).toBe("show all users");
   });
 
-  it("returns 400 for unsafe SQL queries", async () => {
+  it("returns 400 for missing required field", async () => {
     const url = resolveRouteModule("ai/generate-sql");
-    if (!url) return expect(true).toBe(true); // route absent on this branch → skip
+    if (!url) return expect(true).toBe(true);
 
     const mod: any = await import(url);
     const handler = mod.POST;
     const req = new Request("http://localhost/api/v1/ai/generate-sql", {
       method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "Origin": "https://example.com"
-      },
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({}),
+    });
+
+    const res = await handler(req as any);
+    expect(res.status).toBe(400);
+    const data = await res.json();
+    expect(data.success).toBe(false);
+    expect(data.error.code).toBe("VALIDATION_ERROR");
+  });
+
+  it("accepts sql, prompt, query, or question fields", async () => {
+    const url = resolveRouteModule("ai/generate-sql");
+    if (!url) return expect(true).toBe(true);
+
+    const mod: any = await import(url);
+    const handler = mod.POST;
+
+    // Test with 'sql' field
+    const req1 = new Request("http://localhost/api/v1/ai/generate-sql", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ sql: "SELECT * FROM users" }),
+    });
+    const res1 = await handler(req1 as any);
+    expect(res1.status).toBe(200);
+
+    // Test with 'prompt' field
+    const req2 = new Request("http://localhost/api/v1/ai/generate-sql", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ prompt: "show me users" }),
+    });
+    const res2 = await handler(req2 as any);
+    expect(res2.status).toBe(200);
+  });
+
+  it("returns 400 for unsafe SQL queries (DROP)", async () => {
+    const url = resolveRouteModule("ai/generate-sql");
+    if (!url) return expect(true).toBe(true);
+
+    const mod: any = await import(url);
+    const handler = mod.POST;
+    const req = new Request("http://localhost/api/v1/ai/generate-sql", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
       body: JSON.stringify({ question: "drop all tables" }),
     });
 
-
     const res = await handler(req as any);
-    console.log('Response status:', res.status);
-    const data = await res.json();
-    console.log('Response body:', data);
     expect(res.status).toBe(400);
+    const data = await res.json();
     expect(data.success).toBe(false);
     expect(data.error.code).toBe("INVALID_SQL");
     expect(data.error.message).toBe("Unsafe SQL detected");
+  });
+
+  it("returns 400 for unsafe SQL queries (TRUNCATE)", async () => {
+    const url = resolveRouteModule("ai/generate-sql");
+    if (!url) return expect(true).toBe(true);
+
+    const mod: any = await import(url);
+    const handler = mod.POST;
+    const req = new Request("http://localhost/api/v1/ai/generate-sql", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ sql: "TRUNCATE TABLE users" }),
+    });
+
+    const res = await handler(req as any);
+    expect(res.status).toBe(400);
+    const data = await res.json();
+    expect(data.success).toBe(false);
+    expect(data.error.code).toBe("INVALID_SQL");
+  });
+
+  it("handles OPTIONS request for CORS", async () => {
+    const url = resolveRouteModule("ai/generate-sql");
+    if (!url) return expect(true).toBe(true);
+
+    const mod: any = await import(url);
+    const handler = mod.OPTIONS;
+    const req = new Request("http://localhost/api/v1/ai/generate-sql", {
+      method: "OPTIONS",
+      headers: { "Origin": "https://example.com" },
+    });
+
+    const res = await handler(req as any);
+    expect([200, 204]).toContain(res.status);
   });
 });
 

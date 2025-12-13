@@ -74,6 +74,32 @@ export default defineConfig({
     reporters: process.env.CI
       ? ['default', ['junit', { outputFile: 'reports/vitest-junit.xml' }]]
       : ['default'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html', 'lcov'],
+      reportsDirectory: './coverage',
+      exclude: [
+        'node_modules/',
+        'tests/',
+        '**/*.test.{ts,tsx}',
+        '**/*.spec.{ts,tsx}',
+        '**/__tests__/**',
+        '**/__mocks__/**',
+        '**/*.config.{ts,js,mjs}',
+        '**/dist/**',
+        '**/.next/**',
+        '**/coverage/**',
+        '**/scripts/**',
+        '**/types/**',
+        '**/docs/**',
+      ],
+      thresholds: {
+        lines: 80,
+        functions: 75,
+        branches: 70,
+        statements: 80,
+      },
+    },
     // Use projects instead of deprecated workspace
     projects: [
       {

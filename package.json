@@ -117,6 +117,8 @@
     "validate:boundaries:deep": "tsx scripts/maintenance/boundaries/check-deep-imports.ts",
     "codemods:server-to-integrations": "tsx scripts/maintenance/codemods/replace-server-to-integrations.ts",
     "test": "node scripts/assert-no-colocated-tests.cjs && vitest --run",
+    "test:coverage": "vitest --run --coverage",
+    "test:ci": "vitest --run --coverage --reporter=junit --outputFile=reports/vitest-junit.xml",
     "test:security": "vitest --run tests/security",
     "jscpd:tests": "pnpm dlx jscpd tests --reporters console --format typescript --format tsx --min-lines 15",
     "lint:dup-tests-ci": "pnpm jscpd:tests",
