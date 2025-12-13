@@ -66,6 +66,9 @@ The complete documentation index is auto-generated in [`docs/index.ts`](./index.
 - [Dependency Management Guide](./dependencies/dependency-management-guide.md) - **Dependency updates, vulnerabilities, maintenance**
 - [Maintenance Plan](./dependencies/maintenance-plan.md) - **Routine maintenance schedule**
 
+#### TypeScript
+- [TypeScript Guide](./typescript/typescript-guide.md) - **Type safety, strict mode, best practices**
+
 ## 🔧 Documentation Maintenance
 
 ### Automated Maintenance Scripts

@@ -63,6 +63,7 @@ pnpm test
 - **[Performance Guide](docs/performance/performance-optimization-guide.md)** - Performance optimization and monitoring
 - **[Operational Guide](docs/operations/operational-guide.md)** - Deployment, monitoring, and troubleshooting
 - **[Dependency Management](docs/dependencies/dependency-management-guide.md)** - Dependency updates, vulnerabilities, maintenance
+- **[TypeScript Guide](docs/typescript/typescript-guide.md)** - Type safety, strict mode, best practices
 - **[Contributing](docs/contributing/unused-exports.md)** - Contribution guidelines
 
 See [Documentation Index](docs/README.md) for complete documentation catalog.
