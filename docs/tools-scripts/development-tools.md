@@ -1,7 +1,7 @@
 ---
-status: "stable"
-last_updated: "2025-11-03"
 category: "documentation"
+last_updated: "2025-12-13"
+status: "draft"
 ---
 # Development Tools & Scripts
 

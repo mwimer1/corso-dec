@@ -1,7 +1,7 @@
 ---
-status: "stable"
-last_updated: "2025-11-03"
 category: "actions"
+last_updated: "2025-12-13"
+status: "draft"
 ---
 ## Public Exports
 | Action | Purpose | Import Path |

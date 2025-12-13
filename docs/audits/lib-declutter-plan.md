@@ -1,7 +1,7 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
 category: "documentation"
+last_updated: "2025-12-13"
+status: "draft"
 ---
 ## Priorities
 - P0 runtime violations: 0

@@ -1,7 +1,7 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
 category: "documentation"
+last_updated: "2025-12-13"
+status: "draft"
 ---
 This guide covers strict client/server separation, runtime boundaries, and import patterns that prevent server-only code from leaking into client bundles.
 
