@@ -312,6 +312,9 @@ export default [
           'app/**/error.tsx',
           'app/**/loading.tsx',
           'app/**/not-found.tsx',
+          'app/**/providers.tsx',
+          'app/**/*provider.tsx',
+          'app/**/_theme.tsx',
           'components/dashboard/corso-ai-mode.tsx',
           'components/dashboard/entity/addresses/config.ts',
           'components/dashboard/entity/shared/grid/ag-grid-modules.ts',
@@ -325,20 +328,76 @@ export default [
           'lib/shared/**/*.ts',
           'lib/validators/**/*.ts',
           'lib/server/env.ts',
+          // Infrastructure code - server-side utilities, middleware, integrations
+          'lib/server/**/*.ts',
+          'lib/middleware/**/*.ts',
+          'lib/integrations/**/*.ts',
+          'lib/ratelimiting/**/*.ts',
+          'lib/monitoring/**/*.ts',
+          'lib/security/**/*.ts',
+          // Core utilities - public API types and error handling
+          'lib/core/**/*.ts',
+          // Actions - server actions used in forms and components
+          'actions/**/*.ts',
+          // Hooks - React hooks used in components
+          'hooks/**/*.ts',
+          // Contexts - React context providers used in app
+          'contexts/**/*.tsx',
+          'contexts/**/*.ts',
+          // Entity services - used internally via registry
+          'lib/services/entity/**/*.ts',
+          // Dashboard utilities - used in dashboard routes
+          'lib/dashboard/**/*.ts',
+          'lib/dashboard/**/*.tsx',
+          // Marketing content services - server-side functions used in pages
+          'lib/marketing/**/*.ts',
+          // Mock utilities - used conditionally via dynamic imports
+          'lib/mocks/**/*.ts',
+          // Actions - server actions used in forms
+          'lib/actions/**/*.ts',
+          // Auth utilities - used in auth routes
+          'lib/auth/**/*.ts',
+          // Chat utilities - used in chat routes
+          'lib/chat/**/*.ts',
+          // Entity registry - used internally
+          'lib/entities/**/*.ts',
           // Landing components - used via dynamic imports (next/dynamic, React.lazy)
           'components/landing/**/*.tsx',
           'components/landing/**/*.ts',
+          // Insights components - used in insights pages/routes
+          'components/insights/**/*.tsx',
+          'components/insights/**/*.ts',
+          // Chat components - used in chat routes/pages
+          'components/chat/**/*.tsx',
+          'components/chat/**/*.ts',
+          // Forms components - used via dynamic imports
+          'components/forms/**/*.tsx',
+          'components/forms/**/*.ts',
+          // Auth components - used in auth routes/layouts
+          'components/auth/**/*.tsx',
+          'components/auth/**/*.ts',
+          // Dashboard components - used in dashboard routes
+          'components/dashboard/**/*.tsx',
+          'components/dashboard/**/*.ts',
           // UI icon components - exported via barrel and used in production
           'components/ui/atoms/icon/**/*.tsx',
           // UI atoms exported via barrel - used in production
-          'components/ui/atoms/badge.tsx',
-          'components/ui/atoms/card.tsx',
+          'components/ui/atoms/**/*.tsx',
+          'components/ui/atoms/**/*.ts',
           // UI molecules with barrel exports
           'components/ui/molecules/**/*.tsx',
+          'components/ui/molecules/**/*.ts',
           // Components used via dynamic imports
           'components/ui/organisms/**/*.tsx',
+          'components/ui/organisms/**/*.ts',
           // Marketing components used via dynamic imports
           'components/marketing/**/*.tsx',
+          'components/marketing/**/*.ts',
+          // Billing components - used in subscription pages
+          'components/billing/**/*.tsx',
+          'components/billing/**/*.ts',
+          // UI shared utilities - analytics, etc.
+          'components/ui/shared/**/*.ts',
         ],
       }],
 
