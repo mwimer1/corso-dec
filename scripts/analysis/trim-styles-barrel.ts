@@ -14,6 +14,33 @@ const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, "../..");
 const usagePath = path.join(repoRoot, "scripts/.cache/styles-usage.json");
 const allowlistPath = path.join(repoRoot, "scripts/analysis/data/styles-keep-allowlist.json");
+
+// Check for help flag first
+if (process.argv.includes('--help') || process.argv.includes('-h')) {
+  console.log(`
+Trim Styles Barrel
+
+Trims named exports in styles barrels down to only used (+ allowlisted) names.
+Uses scripts/.cache/styles-usage.json (created by scan:styles).
+
+Usage:
+  pnpm cleanup:styles:trim [options]
+
+Options:
+  --write                   Apply changes to style barrel files
+
+Examples:
+  pnpm cleanup:styles:trim           # Dry-run: show what would change
+  pnpm cleanup:styles:trim --write   # Apply changes to barrel files
+
+Safety:
+  - Default mode is dry-run (no changes)
+  - --write required to modify files
+  - Creates .bak backup files before modifying
+`);
+  process.exit(0);
+}
+
 const write = process.argv.includes("--write");
 
 type Usage = {

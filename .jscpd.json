@@ -1,12 +1,13 @@
 {
   "threshold": 10,
   "minTokens": 10,
-  "reporters": ["json"],
-  "output": "reports",
+  "reporters": ["console", "json"],
+  "output": "reports/duplication",
   "gitignore": true,
   "ignore": [
     "**/.next/**",
     "**/dist/**",
+    "**/coverage/**",
     "scripts/_archive/**",
     "stories/**",
     "**/*.gen.test.tsx"

@@ -343,7 +343,7 @@ const CONFIG = {
 } as const;
 
 const ArgSchema = z.object({
-  out: z.string().default('orphan-report.json'),
+  out: z.string().default('reports/orphan/orphan-report.json'),
   only: z.enum(['ALL','DROP','KEEP']).default('ALL'),
   apply: z.boolean().default(false),
   yes: z.boolean().default(false),
@@ -351,6 +351,46 @@ const ArgSchema = z.object({
   pathsOnly: z.boolean().default(false),
   includeIndex: z.boolean().default(false),
 }).strict();
+
+// Check for help flag first
+if (process.argv.includes('--help') || process.argv.includes('-h')) {
+  console.log(`
+Orphaned Files Audit Script
+
+Deterministically identifies files that are safe to delete by analyzing:
+- Import references via ts-morph
+- Next.js implicit route conventions
+- Barrel exports and their consumers
+- Dynamic imports
+- Test, docs, and generator references
+- Side-effect imports (CSS, styles)
+
+Usage:
+  pnpm audit:orphans [options]
+
+Options:
+  --out <file>              Output file path (default: reports/orphan/orphan-report.json)
+  --only <type>             Filter results: ALL, DROP, or KEEP (default: ALL)
+  --apply                   Apply deletions (requires --yes flag)
+  --yes                     Skip confirmation prompt (CI only)
+  --stdout                  Output results to stdout instead of file
+  --paths-only              Output only file paths (one per line)
+  --include-index           Include index barrel files in analysis
+
+Examples:
+  pnpm audit:orphans                              # Generate report only
+  pnpm audit:orphans --only DROP                  # Show only droppable files
+  pnpm audit:orphans --apply --yes                # Apply deletions (CI)
+  pnpm audit:orphans --stdout --paths-only        # List paths to stdout
+
+Safety:
+  - Default mode is read-only (report generation)
+  - --apply requires --yes flag for safety
+  - Interactive confirmation required in non-CI environments
+  - Shows list of files before deletion
+`);
+  process.exit(0);
+}
 
 const parsed = parseArgs({
   args: process.argv.slice(2),
@@ -362,6 +402,8 @@ const parsed = parseArgs({
     stdout: { type: 'boolean' },
     'paths-only': { type: 'boolean' },
     'include-index': { type: 'boolean' },
+    help: { type: 'boolean' },
+    h: { type: 'boolean' },
   },
   allowPositionals: true,
 });
@@ -503,6 +545,10 @@ const summary = {
   droppable: outputFiles.filter((r) => r.status === 'DROP').length,
 };
 
+// Ensure output directory exists
+const outDir = nodePath.dirname(argv.out);
+await fs.ensureDir(outDir);
+
 await fs.writeJson(argv.out, { summary, files: outputFiles }, { spaces: 2 });
 
 if (argv.stdout) {
@@ -514,9 +560,57 @@ if (argv.stdout) {
   }
 }
 
-if (argv.apply && argv.yes) {
-  for (const f of outputFiles) {
-    if (f.status === 'DROP') await fs.remove(f.path);
+if (argv.apply) {
+  const dropFiles = outputFiles.filter((f) => f.status === 'DROP');
+  
+  if (dropFiles.length === 0) {
+    console.log('✅ No files to drop. Exiting.');
+    process.exit(0);
   }
+
+  // Safety: Require explicit confirmation even with --yes flag (unless in CI)
+  const isCI = process.env['CI'] === 'true' || process.env['GITHUB_ACTIONS'] === 'true';
+  let confirmed = argv.yes;
+
+  if (!isCI && !confirmed) {
+    console.log(`\n⚠️  WARNING: You are about to DELETE ${dropFiles.length} file(s):`);
+    dropFiles.slice(0, 10).forEach((f) => {
+      console.log(`   - ${f.path}`);
+    });
+    if (dropFiles.length > 10) {
+      console.log(`   ... and ${dropFiles.length - 10} more (see report for full list)`);
+    }
+    console.log(`\n❓ Type "YES" (all caps) to confirm deletion:`);
+    
+    const readline = require('readline');
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+    
+    const answer = await new Promise<string>((resolve) => {
+      rl.question('> ', resolve);
+    });
+    rl.close();
+    
+    confirmed = answer === 'YES';
+  }
+
+  if (!confirmed) {
+    console.log('❌ Aborted: Deletion not confirmed. Use --yes to skip confirmation (CI only).');
+    process.exit(1);
+  }
+
+  // Perform deletions
+  console.log(`\n🗑️  Deleting ${dropFiles.length} file(s)...`);
+  for (const f of dropFiles) {
+    try {
+      await fs.remove(f.path);
+      console.log(`   ✅ Deleted: ${f.path}`);
+    } catch (error: any) {
+      console.error(`   ❌ Failed to delete ${f.path}: ${error?.message ?? String(error)}`);
+    }
+  }
+  console.log(`\n✅ Deletion complete. ${dropFiles.length} file(s) removed.`);
 }
 

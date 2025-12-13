@@ -27,13 +27,42 @@ const usageJson = path.resolve(repoRoot, "scripts/.cache/ui-usage.json");
 const keepJson = path.resolve(repoRoot, "scripts/analysis/data/ui-keep-allowlist.json");
 
 const argv = yargs(hideBin(process.argv))
-  .option("write", { type: "boolean", default: false })
-  .option("dry-run", { type: "boolean", default: false })
+  .option("write", { 
+    type: "boolean", 
+    default: false,
+    desc: "Apply changes to UI barrel files"
+  })
+  .option("dry-run", { 
+    type: "boolean", 
+    default: false,
+    desc: "Show what would change without applying (default behavior)"
+  })
   .option("delete", {
     type: "boolean",
     default: false,
-    desc: "Delete origin files whose entire group is unused and fully trimmed.",
+    desc: "Delete origin files whose entire group is unused and fully trimmed (requires --write)",
   })
+  .help()
+  .alias('help', 'h')
+  .usage(`
+Trim UI Barrels
+
+Trims unused exports from UI component barrel files.
+Uses scripts/.cache/ui-usage.json (created by scan:ui:json).
+
+Usage:
+  pnpm cleanup:ui:trim [options]
+
+Examples:
+  pnpm cleanup:ui:trim                    # Dry-run: show what would change
+  pnpm cleanup:ui:trim --write             # Apply changes to barrel files
+  pnpm cleanup:ui:trim --write --delete    # Apply changes + delete unused files
+
+Safety:
+  - Default mode is dry-run (no changes)
+  - --write required to modify files
+  - --delete only works with --write
+`)
   .parseSync();
 
 type Usage = {

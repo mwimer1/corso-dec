@@ -1,4 +1,20 @@
 #!/usr/bin/env tsx
+/**
+ * @deprecated This script is deprecated. Use `pnpm validate:duplication` instead.
+ * 
+ * The custom script used different settings (min-tokens=70, threshold=2) than the
+ * standard .jscpd.json config. If you need the lenient check, use:
+ *   pnpm dlx jscpd --min-tokens 70 --threshold 2 --reporters consoleFull,html
+ * 
+ * For standard validation, use:
+ *   pnpm validate:duplication
+ */
+
+console.warn('⚠️  DEPRECATED: This script is deprecated. Use `pnpm validate:duplication` instead.');
+console.warn('   The custom script used lenient settings. For standard validation, use:');
+console.warn('   pnpm validate:duplication');
+console.warn('   For lenient check, use: pnpm dlx jscpd --min-tokens 70 --threshold 2\n');
+
 import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
