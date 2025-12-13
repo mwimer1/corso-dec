@@ -47,8 +47,11 @@ export default function EntityGrid({
           setReady(true);
         }
       } catch (e) {
-        // Optional: surface to your toasts/telemetry
-        console.error(e);
+        // Log error for debugging (development only)
+        // In production, errors are handled by error boundaries
+        if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+          console.error('[EntityGrid] Failed to initialize', e);
+        }
       }
     })();
     return () => {
@@ -77,7 +80,10 @@ export default function EntityGrid({
           (params as any).success({ rowData: r.rows, rowCount: undefined });
           setSearchCount(r.totalSearchCount?.toString() ?? '—');
         } catch (e) {
-          console.error(`[${config.id}] datasource error`, e);
+          // Log datasource errors for debugging (development only)
+          if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+            console.error(`[${config.id}] datasource error`, e);
+          }
           (params as any).fail();
         }
       },

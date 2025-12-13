@@ -53,6 +53,7 @@ last_updated: "2025-12-13"
 - Use parameterized queries for database operations
 - Implement proper authentication and authorization
 - Keep dependencies updated
+- See [Security Implementation Guide](security-implementation.md) for detailed implementation guidelines
 
 ## 📞 Contact Information
 

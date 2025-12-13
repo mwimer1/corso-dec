@@ -26,6 +26,7 @@ Essential coding guardrails and development standards for the Corso platform.
 - Implement comprehensive error handling
 - Follow consistent naming conventions
 - Maintain high test coverage
+- See [Coding Standards](development/coding-standards.md) for detailed guidelines
 
 ### Security
 - Validate all inputs with Zod schemas

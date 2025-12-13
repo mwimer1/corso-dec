@@ -1,10 +1,12 @@
-// Edge preferred; add explicit dynamic caching controls for consistency
-export const runtime = 'edge';
+// Node.js required: Clerk authentication
+export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-import { http } from '@/lib/api';
+import { http, withErrorHandlingEdge as withErrorHandling, withRateLimitEdge as withRateLimit } from '@/lib/api';
 import { handleCors } from '@/lib/middleware';
+import { auth } from '@clerk/nextjs/server';
+import type { NextRequest } from 'next/server';
 import { z } from 'zod';
 
 const BodySchema = z
@@ -22,7 +24,13 @@ function isUnsafe(sql: string) {
   return /\bdrop\b|\btruncate\b|\bdelete\b(?!\s+from\s+\w+\s+where)/.test(s);
 }
 
-export async function POST(req: Request) {
+const handler = async (req: NextRequest) => {
+  // Authentication check
+  const { userId } = await auth();
+  if (!userId) {
+    return http.error(401, 'Unauthorized', { code: 'HTTP_401' });
+  }
+
   const json = (await req.json().catch(() => ({}))) as unknown;
   const parsed = BodySchema.safeParse(json);
   if (!parsed.success) {
@@ -44,7 +52,11 @@ export async function POST(req: Request) {
   return http.ok({ sql: candidate }, {
     headers: { 'Access-Control-Allow-Origin': '*' },
   });
-}
+};
+
+export const POST = withErrorHandling(
+  withRateLimit(async (req: NextRequest) => handler(req) as any, { windowMs: 60_000, maxRequests: 30 })
+);
 
 export async function OPTIONS(req: Request) {
   const response = handleCors(req);
