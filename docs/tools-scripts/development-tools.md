@@ -1,4 +1,6 @@
 ---
+title: "Development Tools & Scripts"
+description: "Comprehensive guide to development tooling, scripts, and automation patterns used in Corso development"
 category: "documentation"
 last_updated: "2025-12-13"
 status: "draft"

@@ -1,8 +1,12 @@
 ---
+title: "API Specification"
+description: "OpenAPI v3.1 specification documentation covering API structure, RBAC validation, type generation, and usage patterns"
 category: "documentation"
 last_updated: "2025-12-13"
 status: "draft"
 ---
+# API Specification
+
 ## Overview
 
 We maintain an OpenAPI v3.1 specification for the Corso API.

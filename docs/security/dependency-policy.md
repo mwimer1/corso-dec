@@ -1,8 +1,12 @@
 ---
+title: "Dependency Policy"
+description: "Policy for maintaining zero high-severity audit issues through dependency updates, pnpm overrides, and automated security audits"
 category: "documentation"
 last_updated: "2025-12-13"
 status: "draft"
 ---
+# Dependency Policy
+
 We keep all high-severity audit issues at zero.
 
 ## Approach

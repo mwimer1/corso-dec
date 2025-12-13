@@ -1,4 +1,6 @@
 ---
+title: "Development Environment & Workflows"
+description: "Comprehensive guide to setting up the Corso development environment, including environment files, terminal configuration, and workflow best practices"
 category: "documentation"
 last_updated: "2025-12-13"
 status: "draft"

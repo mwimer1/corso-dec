@@ -1,8 +1,12 @@
 ---
+title: "Import Patterns & Runtime Boundaries"
+description: "Guide covering strict client/server separation, runtime boundaries, and import patterns that prevent server-only code from leaking into client bundles"
 category: "documentation"
 last_updated: "2025-12-13"
 status: "draft"
 ---
+# Import Patterns & Runtime Boundaries
+
 This guide covers strict client/server separation, runtime boundaries, and import patterns that prevent server-only code from leaking into client bundles.
 
 ## 📋 Core Architecture Overview (Client/Server Entry Points)

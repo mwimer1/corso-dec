@@ -1,8 +1,12 @@
 ---
+title: "Security Policy"
+description: "Security policy covering vulnerability reporting, responsible disclosure, security best practices, and contact information for security issues"
 category: "documentation"
 last_updated: "2025-12-13"
 status: "draft"
 ---
+# Security Policy
+
 ## 🚨 Reporting Security Vulnerabilities
 
 **Do NOT file public issues for security vulnerabilities.** Instead, please follow our responsible disclosure policy:

@@ -1,9 +1,13 @@
 ---
+title: "Environment Variables Reference"
+description: "Complete reference for all environment variables used in the Corso platform, including server, client, and Edge runtime configurations"
 category: "documentation"
 last_updated: "2025-12-13"
 status: "draft"
 ---
-### CORSO_USE_MOCK_DB
+# Environment Variables Reference
+
+## CORSO_USE_MOCK_DB
 
 - Type: "true" | "false"
 - Purpose: When set to "true" in development, entity data routes (projects, companies, addresses) read from static JSON files generated from the CSVs under `/db`.

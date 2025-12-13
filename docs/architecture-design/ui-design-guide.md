@@ -1,4 +1,6 @@
 ---
+title: "UI Design Guide"
+description: "Consolidated design principles, component patterns, and styling guidelines for consistent UI development across Corso applications"
 category: "documentation"
 last_updated: "2025-12-13"
 status: "draft"

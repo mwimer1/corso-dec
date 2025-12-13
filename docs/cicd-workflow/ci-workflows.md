@@ -1,8 +1,12 @@
 ---
+title: "CI Workflows"
+description: "GitHub Actions workflow configuration, Node.js and pnpm setup patterns, and workflow consistency validation"
 category: "documentation"
 last_updated: "2025-12-13"
 status: "draft"
 ---
+# CI Workflows
+
 ## Node & pnpm Setup (Composite)
 
 - Always use `./.github/actions/setup-node-pnpm` in jobs that run `pnpm`.

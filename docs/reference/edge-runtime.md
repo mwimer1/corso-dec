@@ -1,4 +1,6 @@
 ---
+title: "Edge vs Node API: Boundaries & Guardrails"
+description: "Comprehensive guide to Edge and Node.js runtime boundaries, route configuration, and API compatibility requirements"
 category: "documentation"
 last_updated: "2025-12-13"
 status: "draft"

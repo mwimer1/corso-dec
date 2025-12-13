@@ -1,8 +1,12 @@
 ---
+title: "Route Configuration Guide"
+description: "Short guidance for route authors covering Next.js App Router configuration patterns, runtime settings, and best practices"
 category: "documentation"
 last_updated: "2025-12-13"
 status: "draft"
 ---
+# Route Configuration Guide
+
 Short guidance for route authors:
 
 - Prefer named exports for route config: `export const runtime = 'edge'`, `export const dynamic = 'force-dynamic'`, `export const revalidate = 0`.

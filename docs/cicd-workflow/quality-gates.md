@@ -1,9 +1,13 @@
 ---
+title: "Quality Gates"
+description: "Next.js metadata and runtime guards, edge-runtime validation, and quality gate enforcement in CI/CD pipeline"
 category: "documentation"
 last_updated: "2025-12-13"
 status: "draft"
 ---
-### Next.js metadata & runtime guards
+# Quality Gates
+
+## Next.js metadata & runtime guards
 
 - metadata/viewport guard: `viewport` must be exported via `export const viewport` or `generateViewport()`,
   never nested inside `metadata`. `not-found.tsx` must not export metadata/viewport.

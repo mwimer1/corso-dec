@@ -1,8 +1,12 @@
 ---
+title: "App Directory — Next.js App Router Architecture"
+description: "Corso's Next.js 15 App Router foundation with file-system routing, nested layouts, comprehensive security, and production-ready patterns"
 category: "documentation"
 last_updated: "2025-12-13"
 status: "draft"
 ---
+# App Directory — Next.js App Router Architecture
+
 ## 🚀 App Directory — Next.js App Router Architecture
 
 Corso's Next.js 15 App Router foundation with file-system routing, nested layouts, comprehensive security, and production-ready patterns. All routes use Node.js runtime for Clerk compatibility and data operations.

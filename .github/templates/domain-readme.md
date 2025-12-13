@@ -1,7 +1,7 @@
 ---
 title: "{Domain} Domain (`lib/{domain}`)"
 description: "Brief description of domain responsibilities and scope."
-last_updated: 2025-09-12
+last_updated: "2025-12-13"
 owner: "team@corso"
 category: "domain"
 runtime: "client|server|edge|mixed"

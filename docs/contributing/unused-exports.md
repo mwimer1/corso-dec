@@ -1,4 +1,6 @@
 ---
+title: "Unused Exports Audit & Remediation"
+description: "Comprehensive system for identifying, classifying, and safely remediating unused exports across the Corso codebase"
 category: "documentation"
 last_updated: "2025-12-13"
 status: "draft"

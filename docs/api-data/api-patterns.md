@@ -1,4 +1,6 @@
 ---
+title: "API Patterns & Data Fetching"
+description: "Best practices for implementing secure, validated APIs, server actions, and data fetching patterns in Corso applications"
 category: "documentation"
 last_updated: "2025-12-13"
 status: "draft"

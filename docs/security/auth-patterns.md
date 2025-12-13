@@ -1,15 +1,17 @@
 ---
+title: "Authentication Patterns"
+description: "Comprehensive guide to authentication patterns using Clerk, including server/client boundaries, security practices, and single-tenant considerations"
 category: "documentation"
 last_updated: "2025-12-13"
 status: "draft"
 ---
-## Authentication Patterns
+# Authentication Patterns
 
 This guide covers authentication patterns using Clerk, including server/client boundaries, security practices, and single-tenant considerations.
 
-### Clerk Integration
+## Clerk Integration
 
-#### Server-Side Authentication
+### Server-Side Authentication
 ```typescript
 import { auth } from '@clerk/nextjs/server';
 

@@ -1,4 +1,6 @@
 ---
+title: "CI/CD Pipeline & Quality Gates"
+description: "Comprehensive guide to Corso's continuous integration and deployment pipeline, quality gates, and automated validation processes"
 category: "documentation"
 last_updated: "2025-12-13"
 status: "draft"

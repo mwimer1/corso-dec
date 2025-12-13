@@ -1,8 +1,12 @@
 ---
+title: "Testing Strategy & Best Practices"
+description: "Primary guide for all testing within the Corso platform, covering domain-first testing approach, test organization, and quality assurance"
 category: "documentation"
 last_updated: "2025-12-13"
 status: "draft"
 ---
+# Testing Strategy & Best Practices
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*

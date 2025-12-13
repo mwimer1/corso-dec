@@ -1,4 +1,6 @@
 ---
+title: "Codebase Structure & Conventions"
+description: "Definitive reference for Corso's codebase organization, development patterns, and coding standards"
 category: "documentation"
 last_updated: "2025-12-13"
 status: "draft"

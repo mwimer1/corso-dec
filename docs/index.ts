@@ -62,7 +62,7 @@ export const docs = [
   },
   {
     "path": "app/readme.md",
-    "title": "Start development server"
+    "title": "App Directory — Next.js App Router Architecture"
   },
   {
     "path": "components/auth/readme.md",
@@ -562,6 +562,6 @@ export const docs = [
   },
   {
     "path": "docs/security/dependency-policy.md",
-    "title": "dependency-policy"
+    "title": "Dependency Policy"
   }
 ] as const;

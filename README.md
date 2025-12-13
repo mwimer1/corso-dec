@@ -3,8 +3,8 @@ title: "Corso"
 description: "Construction permit and contractor data platform for the Dallas-Fort Worth metro area"
 last_updated: "2025-12-13"
 category: "project"
+status: "draft"
 ---
-
 # Corso
 
 > **Construction permit and contractor data platform for the Dallas-Fort Worth metro area**

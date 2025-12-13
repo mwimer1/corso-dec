@@ -1,8 +1,12 @@
 ---
+title: "Dashboard Table UI Updates"
+description: "Summary of recent updates to the dashboard table UI including toolbar, sticky headers, error handling, and spacing improvements"
 category: "documentation"
 last_updated: "2025-12-13"
 status: "draft"
 ---
+# Dashboard Table UI Updates
+
 This doc summarizes the recent updates to the dashboard table UI:
 
 Key changes
