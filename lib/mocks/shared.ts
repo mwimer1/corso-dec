@@ -19,12 +19,12 @@ export type MockQueryParams = {
   search?: string;
 };
 
-export type { NormalizeOut, NormalizeRawRow, ProjectAdapterOut, ProjectsRawRow, Stringish } from './types';
+// Type re-exports removed - types no longer exported from ./types
 
 /**
- * Apply filters to data
+ * Apply filters to data (internal use only)
  */
-export function applyFilters<T extends Record<string, unknown>>(
+function applyFilters<T extends Record<string, unknown>>(
   data: T[],
   filters: Array<{
     field: string;
@@ -68,9 +68,9 @@ export function applyFilters<T extends Record<string, unknown>>(
 }
 
 /**
- * Apply search to data
+ * Apply search to data (internal use only)
  */
-export function applySearch<T extends Record<string, unknown>>(
+function applySearch<T extends Record<string, unknown>>(
   data: T[],
   search: string
 ): T[] {

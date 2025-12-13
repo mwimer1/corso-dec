@@ -325,6 +325,20 @@ export default [
           'lib/shared/**/*.ts',
           'lib/validators/**/*.ts',
           'lib/server/env.ts',
+          // Landing components - used via dynamic imports (next/dynamic, React.lazy)
+          'components/landing/**/*.tsx',
+          'components/landing/**/*.ts',
+          // UI icon components - exported via barrel and used in production
+          'components/ui/atoms/icon/**/*.tsx',
+          // UI atoms exported via barrel - used in production
+          'components/ui/atoms/badge.tsx',
+          'components/ui/atoms/card.tsx',
+          // UI molecules with barrel exports
+          'components/ui/molecules/**/*.tsx',
+          // Components used via dynamic imports
+          'components/ui/organisms/**/*.tsx',
+          // Marketing components used via dynamic imports
+          'components/marketing/**/*.tsx',
         ],
       }],
 
