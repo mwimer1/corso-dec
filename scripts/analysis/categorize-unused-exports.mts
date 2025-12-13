@@ -7,8 +7,9 @@
  * 4. Dynamic imports (used via dynamic imports)
  */
 
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { execSync } from 'node:child_process';
+import path from 'node:path';
 
 interface UnusedExport {
   file: string;
@@ -163,9 +164,14 @@ function main() {
     }
   }
 
-  // Write report
-  writeFileSync('unused-exports-analysis.md', report.join('\n'));
-  console.log('\n✅ Report written to: unused-exports-analysis.md');
+  // Write report to reports/exports/
+  const reportsDir = 'reports/exports';
+  if (!existsSync(reportsDir)) {
+    mkdirSync(reportsDir, { recursive: true });
+  }
+  const reportPath = path.join(reportsDir, 'unused-exports-analysis.md');
+  writeFileSync(reportPath, report.join('\n'));
+  console.log(`\n✅ Report written to: ${reportPath}`);
 
   // Generate ESLint allowlist suggestions
   const allowlistSuggestions: string[] = [];
@@ -180,8 +186,9 @@ function main() {
     allowlistSuggestions.push(`'${file}',`);
   }
 
-  writeFileSync('eslint-allowlist-suggestions.txt', allowlistSuggestions.join('\n'));
-  console.log('✅ Allowlist suggestions written to: eslint-allowlist-suggestions.txt');
+  const allowlistPath = path.join(reportsDir, 'eslint-allowlist-suggestions.txt');
+  writeFileSync(allowlistPath, allowlistSuggestions.join('\n'));
+  console.log(`✅ Allowlist suggestions written to: ${allowlistPath}`);
 }
 
 main();

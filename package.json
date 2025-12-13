@@ -198,7 +198,7 @@
     "audit:ai": "tsx scripts/lint/audit-ai-security.ts",
     "audit:ci": "pnpm audit --audit-level=high",
     "audit:atomic": "pnpm exec tsx scripts/setup/validate-atomic-design.ts",
-    "audit:orphans": "tsx scripts/audit/orphans.ts --out ./orphan-report.json",
+    "audit:orphans": "tsx scripts/audit/orphans.ts --out reports/orphan/orphan-report.json",
     "audit:orphans:drops": "tsx scripts/audit/orphans.ts --only DROP --stdout --paths-only",
     "audit:orphans:drop-json": "tsx scripts/audit/orphans.ts --only DROP --stdout",
     "audit:orphans:apply": "tsx scripts/audit/orphans.ts --apply --yes",
