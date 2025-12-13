@@ -17,6 +17,7 @@ We keep all high-severity audit issues at zero.
 ### Current enforced floors
 - `ws >= 8.17.1` — DoS fix
 - `tar-fs >= 3.0.9` — path traversal fixes
+- `glob >= 11.1.0` — Command injection fix (via markdownlint-cli)
 - `npm-run-path = 5.3.0` — exact pin for bin deduplication
 - `unicorn-magic = 0.1.0` — exact pin for bin deduplication
 - `@typescript-eslint/utils>eslint = 9.34.0` — exact pin for bin deduplication

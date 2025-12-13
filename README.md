@@ -62,6 +62,7 @@ pnpm test
 - **[Testing Guide](docs/testing-quality/testing-guide.md)** - Complete testing guide with examples
 - **[Performance Guide](docs/performance/performance-optimization-guide.md)** - Performance optimization and monitoring
 - **[Operational Guide](docs/operations/operational-guide.md)** - Deployment, monitoring, and troubleshooting
+- **[Dependency Management](docs/dependencies/dependency-management-guide.md)** - Dependency updates, vulnerabilities, maintenance
 - **[Contributing](docs/contributing/unused-exports.md)** - Contribution guidelines
 
 See [Documentation Index](docs/README.md) for complete documentation catalog.

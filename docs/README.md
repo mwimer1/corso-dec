@@ -62,6 +62,10 @@ The complete documentation index is auto-generated in [`docs/index.ts`](./index.
 #### Operations
 - [Operational Guide](./operations/operational-guide.md) - **Deployment, monitoring, troubleshooting**
 
+#### Dependencies
+- [Dependency Management Guide](./dependencies/dependency-management-guide.md) - **Dependency updates, vulnerabilities, maintenance**
+- [Maintenance Plan](./dependencies/maintenance-plan.md) - **Routine maintenance schedule**
+
 ## 🔧 Documentation Maintenance
 
 ### Automated Maintenance Scripts
