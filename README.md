@@ -68,6 +68,8 @@ pnpm test
 - **[Error Handling Guide](docs/error-handling/error-handling-guide.md)** - Error boundaries, logging, resilience
 - **[Accessibility Guide](docs/accessibility/accessibility-guide.md)** - a11y standards, testing, best practices
 - **[Monitoring Guide](docs/monitoring/monitoring-guide.md)** - Health checks, metrics, observability
+- **[Production Readiness Checklist](docs/production/production-readiness-checklist.md)** - Pre-deployment verification
+- **[Production Audit Report](docs/production/production-audit.md)** - Comprehensive domain audit
 - **[Contributing](docs/contributing/unused-exports.md)** - Contribution guidelines
 
 See [Documentation Index](docs/README.md) for complete documentation catalog.

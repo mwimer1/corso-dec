@@ -81,6 +81,10 @@ The complete documentation index is auto-generated in [`docs/index.ts`](./index.
 #### Monitoring
 - [Monitoring Guide](./monitoring/monitoring-guide.md) - **Health checks, metrics, observability, alerting**
 
+#### Production
+- [Production Readiness Checklist](./production/production-readiness-checklist.md) - **Pre-deployment verification checklist**
+- [Production Audit Report](./production/production-audit.md) - **Comprehensive audit of all domains**
+
 ## 🔧 Documentation Maintenance
 
 ### Automated Maintenance Scripts
