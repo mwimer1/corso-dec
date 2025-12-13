@@ -1,8 +1,4 @@
 :root {
-  /* surfaces */
-  --surface-muted: var(--muted, 0 0% 96%);
-  --surface-card: var(--surface, 0 0% 100%);
-
   /* borders & shadows */
   --border-subtle: var(--border, 214.3 31.8% 91.4%);
   --shadow-card: 0 1px 2px 0 hsl(0deg 0% 0% / 6%);
@@ -14,11 +10,6 @@
 
   /* radii */
   --radius-card: var(--radius-lg, 0.5rem);
-  --radius-pill: var(--radius-full, 9999px);
-  --radius-chip: var(--radius-md, 0.375rem);
-
-  /* industry palette (fallbacks) */
-  --industry-emerald-700: 160 84% 39%;
 
   
   /* Footer layered backgrounds (marketing dark surfaces): slightly lighter middle band vs. legal strip for layered effect */

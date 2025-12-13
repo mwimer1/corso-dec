@@ -4,7 +4,6 @@
   --pattern-grid-size: 14px;
   --pattern-grid-color: hsl(var(--border));        /* uses design token */
   --pattern-brand: hsl(var(--brand-500));
-  --pattern-surface: hsl(var(--background));
 }
 
 /* Dark mode: slightly higher alpha to read on dark neutrals */

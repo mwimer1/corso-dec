@@ -2,7 +2,6 @@
 :root {
   /* Sidebar tokens */
   --sb-width-expanded: 280px;
-  --sb-width-collapsed: 64px;
   --sb-item-h: 44px; /* Slightly reduced for better density */
   --sb-border: hsl(0deg 0% 90%);
   --sb-border-hover: hsl(0deg 0% 85%);
@@ -14,10 +13,6 @@
   --sb-icon-size: 1.25rem; /* 20px */
   --sb-icon-active: hsl(211deg 100% 50%);
   --sb-radius: 0.5rem;
-  --sb-inner-pad: 0.75rem;
-  --sb-hover: color-mix(in srgb, var(--sb-bg), black 6%);
-  --sb-active: color-mix(in srgb, var(--sb-bg), black 12%);
-  --sb-ring: hsl(var(--ring));
 
   /* Tooltip tokens for collapsed sidebar tooltips */
   --sb-tip-bg: var(--color-elevated-bg, rgb(15 23 42));
@@ -33,11 +28,6 @@
   --sb-tip-line: 1.25rem;  /* 20px */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --sb-hover: color-mix(in srgb, var(--sb-bg), white 8%);
-    --sb-active: color-mix(in srgb, var(--sb-bg), white 14%);
-  }
-}
+/* Dark mode sidebar color adjustments handled via CSS custom properties above */
 
 

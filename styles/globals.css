@@ -7,29 +7,6 @@
 :root {
   --nav-border: hsl(var(--border));
   --nav-shadow: 0 1px 3px hsl(0deg 0% 0% / 5%);
-
-  /* Optional button palette mapping (kept here for future alignment) */
-  --btn-outline-bg:    hsl(var(--background));
-  --btn-outline-border:hsl(var(--border));
-  --btn-outline-text:  hsl(var(--text-high));
-  --btn-outline-bg-hover:    hsl(var(--muted));
-  --btn-outline-border-hover:hsl(var(--border));
-  --btn-outline-text-hover:  hsl(var(--text-high));
-  --btn-primary-bg:    hsl(var(--primary));
-  --btn-primary-border:hsl(var(--primary));
-  --btn-primary-text:  hsl(var(--primary-foreground));
-  --btn-primary-bg-hover:    hsl(var(--primary) / 90%);
-  --btn-primary-border-hover:hsl(var(--primary) / 90%);
-  --btn-primary-text-hover:  hsl(var(--primary-foreground));
-  --btn-link-bg: transparent;
-  --btn-link-border: transparent;
-  --btn-link-text: hsl(var(--text-high));
-  --btn-link-bg-hover: hsl(var(--muted));
-  --btn-link-border-hover: transparent;
-  --btn-link-text-hover: hsl(var(--text-high));
-  --radius-default: 11px;
-  --radius-link: 13px;
-  --radius-cta: 14px;
 }
 
 /* Component overrides moved into Tailwind components layer */

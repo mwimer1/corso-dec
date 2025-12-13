@@ -6,8 +6,7 @@
   /* Use unified primary (brand blue) and secondary (light blue tint) */
   
   /* No need for separate marketing-cta tokens - primary handles CTAs */
-  --accent: var(--secondary);
-  --accent-foreground: var(--secondary-foreground);
+  /* Note: accent tokens removed - use secondary tokens directly via Tailwind */
 }
 
 @media (prefers-color-scheme: dark) {
