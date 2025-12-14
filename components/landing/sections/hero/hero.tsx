@@ -1,7 +1,7 @@
 'use client';
 import { Button } from '@/components/ui/atoms';
 import { LinkTrack } from '@/components/ui/molecules';
-import { APP_LINKS  } from '@/lib/shared';
+import { APP_LINKS  } from '@/components';
 import { navbarStyleVariants } from '@/styles/ui/organisms/navbar-variants';
 import { containerMaxWidthVariants } from '@/styles/ui/shared/container-base';
 import type { ReactNode } from 'react';

@@ -4,7 +4,6 @@
 export type { Category, CategoryFilterProps, InsightCardProps } from './types';
 
 // Layout components for insights pages
-export * from './layout/insights-layout';
 export * from './layout/insights-section';
 export * from './layout/nav.config';
 export * from './layout/navbar';
@@ -35,7 +34,6 @@ export * from './insights-hero';
 export * from './insights-client';
 
 // Default exports for layout components
-export { default as InsightsLayout } from './layout/insights-layout';
 export { default as InsightsSection } from './layout/insights-section';
 export { default as InsightsNavbar } from './layout/navbar';
 

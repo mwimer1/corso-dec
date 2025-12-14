@@ -1,11 +1,12 @@
 "use client";
 
 import { Button, SkipNavLink } from "@/components/ui/atoms";
-import { APP_LINKS } from '@/lib/shared';
+import { LinkTrack } from "@/components/ui/molecules";
+import { APP_LINKS } from '@/components';
 import { cn } from "@/styles";
+import { fullWidthSectionContainerVariants } from "@/styles/ui/organisms";
 import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
 import type { NavItemData } from "@/types/shared";
-import Link from "next/link";
 import type { HTMLAttributes, ReactNode } from "react";
 import { useEffect, useState } from "react";
 import FooterSystem from "./footer-system/footer";
@@ -14,7 +15,7 @@ import { Navbar } from "./navbar/navbar";
 interface PublicLayoutProps extends HTMLAttributes<HTMLElement> {
   children: ReactNode;
   /** Navigation mode - determines what nav items and buttons to show */
-  navMode?: "landing" | "minimal";
+  navMode?: "landing" | "minimal" | "insights";
   /** Custom navigation items (optional override) */
   navItems?: NavItemData[];
   /** Enable sticky header with blur and border (no JS scroll state) */
@@ -25,6 +26,10 @@ interface PublicLayoutProps extends HTMLAttributes<HTMLElement> {
   showFooterCTA?: boolean;
   /** Show mobile sticky CTA ribbon */
   showMobileCTA?: boolean;
+  /** Whether to show reading progress indicator (for insights article pages) */
+  showReadingProgress?: boolean;
+  /** Whether to show vertical guidelines overlay */
+  showVerticalGuidelines?: boolean;
 }
 
 /**
@@ -40,6 +45,8 @@ export function PublicLayout({
   headerClassName,
   showFooterCTA = true,
   showMobileCTA = true,
+  showReadingProgress = false,
+  showVerticalGuidelines = false,
   ...props
 }: PublicLayoutProps): JSX.Element {
   const [scrolled, setScrolled] = useState(false);
@@ -72,14 +79,32 @@ export function PublicLayout({
             containerMaxWidthVariants({ maxWidth: "7xl", centered: true })
           )}
         >
-          <Navbar mode={navMode} {...(navItems && { items: navItems })} />
+          <Navbar 
+            mode={navMode} 
+            {...(navItems && { items: navItems })}
+            {...(navMode === "insights" || navMode === "landing" ? { forceShowCTAs: true } : {})}
+          />
         </div>
       </header>
       <main
         id="main-content"
-        className={`bg-background text-foreground flex-1 ${className ?? ""}`}
+        className={cn(
+          "bg-background text-foreground flex-1 relative",
+          showReadingProgress && "pt-4", // Account for reading progress bar
+          className,
+        )}
         {...props}
       >
+        {/* Page-level continuous vertical guidelines overlay (scoped to main; excludes footer) */}
+        {showVerticalGuidelines && (
+          <div className={cn('pointer-events-none absolute inset-0 z-[39]')} aria-hidden="true">
+            <div className={cn(fullWidthSectionContainerVariants({ maxWidth: '7xl', padding: 'lg' }), 'relative h-full w-full mx-auto')}>
+              <div className="absolute inset-y-0 left-0 w-px bg-border" />
+              <div className="absolute inset-y-0 right-0 w-px bg-border" />
+            </div>
+          </div>
+        )}
+
         {children}
       </main>
 
@@ -88,12 +113,12 @@ export function PublicLayout({
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface/95 backdrop-blur supports-[backdrop-filter]:bg-surface/80 md:hidden">
           <div className={cn(containerMaxWidthVariants({ maxWidth: "7xl", centered: true }), "px-4 py-3 flex items-center justify-between gap-3")}>
             <span className="text-sm text-muted-foreground">Ready to explore Corso?</span>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <Button asChild size="sm" variant="secondary">
-                <Link href={APP_LINKS.NAV.SIGNIN}>Sign in</Link>
+                <LinkTrack href={APP_LINKS.NAV.SIGNIN} label="landing:mobile:signin">Sign in</LinkTrack>
               </Button>
               <Button asChild size="sm">
-                <Link href={APP_LINKS.NAV.SIGNUP}>Start for free</Link>
+                <LinkTrack href={APP_LINKS.NAV.SIGNUP} label="landing:mobile:signup">Start for free</LinkTrack>
               </Button>
             </div>
           </div>

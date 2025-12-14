@@ -3,6 +3,10 @@
 
 /** @module components */
 
+// Shared constants and utilities facade (client-safe)
+// Import from shared barrel to avoid deep import violation
+export { APP_LINKS } from "@/lib/shared";
+
 export * from "./marketing/pricing/plan-ui";
 export * from "./ui/atoms";
 export * from "./ui/molecules";

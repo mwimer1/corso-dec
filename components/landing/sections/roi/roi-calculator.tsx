@@ -6,7 +6,7 @@ import { NumberInputWithSteppers } from "../../widgets/number-input-with-stepper
 // landing shared types intentionally not imported here to avoid intra-domain root rules
 import { LinkTrack } from "@/components/ui/molecules";
 import { calcRoi, clamp } from "@/lib/marketing/client";
-import { APP_LINKS } from '@/lib/shared';
+import { APP_LINKS } from '@/components';
 import { trackNavClick } from "@/lib/shared/analytics/track";
 import React, { useId, useMemo, useState } from "react";
 import { RoiOutputPanel } from "./roi-output-panel";

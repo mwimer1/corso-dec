@@ -6,7 +6,9 @@
    • Generates SEO metadata from fetched article
    • Uses safe, local interface to avoid mismatch with auto-generated types
 ------------------------------------------------------------------- */
-import { InsightDetail, InsightsLayout } from "@/components/insights";
+import { PublicLayout } from "@/components";
+import { InsightDetail } from "@/components/insights";
+import { getInsightsNavItems } from "@/components/insights/layout/nav.config";
 import { getAllInsights, getInsightBySlug } from "@/lib/marketing/server";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -137,13 +139,16 @@ export default async function InsightPage({ params }: { params: Promise<{ slug: 
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
-      <InsightsLayout
+      <PublicLayout
+        navMode="insights"
+        navItems={getInsightsNavItems()}
         showReadingProgress={true}
+        showVerticalGuidelines
       >
         <div className="mx-auto max-w-4xl px-4 md:px-6">
           <InsightDetail initialData={item} relatedArticles={relatedArticles} />
         </div>
-      </InsightsLayout>
+      </PublicLayout>
     </>
   );
 }

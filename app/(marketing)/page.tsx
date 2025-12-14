@@ -1,8 +1,9 @@
 // Runtime: kept on nodejs due to Clerk keyless telemetry (see app/(marketing)/README.md)
 // FILE: app/(marketing)/page.tsx
 // Server component page; marketing content is static and revalidated periodically.
-import { FullWidthSection } from '@/components';
-import { Hero, IndustryExplorer, LandingLayout, LazyMarketInsightsSection, ProductShowcase } from '@/components/landing';
+import { FullWidthSection, PublicLayout } from '@/components';
+import { Hero, IndustryExplorer, LazyMarketInsightsSection, ProductShowcase } from '@/components/landing';
+import { landingNavItems } from '@/components/landing/layout/nav.config';
 
 
 
@@ -12,7 +13,7 @@ export const runtime = "nodejs";
 
 export default function MarketingHomePage() {
   return (
-    <LandingLayout>
+    <PublicLayout navMode="landing" navItems={landingNavItems} showVerticalGuidelines>
       <FullWidthSection
         padding="sm"
         containerMaxWidth="7xl"
@@ -55,6 +56,6 @@ export default function MarketingHomePage() {
       >
         <LazyMarketInsightsSection controlsVariant="dropdown" dense stickyMetrics />
       </FullWidthSection>
-    </LandingLayout>
+    </PublicLayout>
   );
 }

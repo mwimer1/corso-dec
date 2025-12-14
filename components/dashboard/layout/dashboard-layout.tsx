@@ -2,6 +2,7 @@
 "use client";
 
 // Dashboard context removed - using local state
+import { SkipNavLink } from "@/components/ui/atoms";
 import { cn } from "@/styles";
 import { dashboardShellVariants } from "@/styles/ui/organisms";
 import * as React from "react";
@@ -24,13 +25,8 @@ export const DashboardLayout = React.forwardRef<
     setSidebarCollapsed(prev => !prev);
   }, []);
   return (
-    <div className="flex h-screen flex-col bg-[#E7EBEE]">
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 z-50 p-2 bg-primary text-primary-foreground"
-      >
-        Skip to main content
-      </a>
+    <div className="flex h-screen flex-col bg-background">
+      <SkipNavLink />
       {/* Top navigation bar */}
       <DashboardTopBar />
       {/* Main content area with sidebar + page content */}
@@ -46,7 +42,7 @@ export const DashboardLayout = React.forwardRef<
           tabIndex={-1}
           className={cn(
             // Single-scroll contract: this node must not scroll; children manage it
-            "flex min-h-0 overflow-hidden flex-col bg-[#E7EBEE]",
+            "flex min-h-0 overflow-hidden flex-col bg-background",
             dashboardShellVariants({
               sidebar: sidebarCollapsed ? "collapsed" : "expanded",
             }),

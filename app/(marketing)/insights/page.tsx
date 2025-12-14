@@ -1,8 +1,9 @@
 // Runtime: kept on nodejs due to Clerk keyless telemetry (see app/(marketing)/README.md)
 // app/(marketing)/insights/page.tsx
 // This is a server component page. Keep server exports and render client components inside.
+import { PublicLayout } from "@/components";
 import { CategoryFilterClient, InsightsHero } from "@/components/insights";
-import { InsightsLayout } from "@/components/insights/layout/insights-layout";
+import { getInsightsNavItems } from "@/components/insights/layout/nav.config";
 import { getAllInsights } from "@/lib/marketing/server";
 import type { Metadata } from "next";
 
@@ -75,7 +76,7 @@ export default async function InsightsPage() {
   }));
 
   return (
-    <InsightsLayout>
+    <PublicLayout navMode="insights" navItems={getInsightsNavItems()} showVerticalGuidelines>
       <div className="mx-auto max-w-6xl px-4 md:px-6">
         <InsightsHero
           title="Construction industry trends, market intel, and practical playbooks."
@@ -83,6 +84,6 @@ export default async function InsightsPage() {
         />
         <CategoryFilterClient items={items} categories={categoriesWithCounts} />
       </div>
-    </InsightsLayout>
+    </PublicLayout>
   );
 }

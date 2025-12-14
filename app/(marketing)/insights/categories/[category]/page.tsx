@@ -1,4 +1,6 @@
-import { InsightsLayout, InsightsList } from '@/components/insights';
+import { PublicLayout } from '@/components';
+import { InsightsList } from '@/components/insights';
+import { getInsightsNavItems } from '@/components/insights/layout/nav.config';
 import { getAllInsights } from '@/lib/marketing/server';
 import { trackEvent } from '@/lib/shared/analytics/track';
 import type { Metadata } from 'next';
@@ -20,14 +22,14 @@ export default async function CategoryPage({ params }: { params: { category: str
   };
 
   return (
-    <InsightsLayout>
+    <PublicLayout navMode="insights" navItems={getInsightsNavItems()} showVerticalGuidelines>
       <div className="py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-bold mb-4">Category: {category}</h1>
           <InsightsList insights={filtered} onResultClick={handleResultClick} />
         </div>
       </div>
-    </InsightsLayout>
+    </PublicLayout>
   );
 }
 

@@ -1,4 +1,4 @@
-import { APP_LINKS  } from '@/lib/shared';
+import { APP_LINKS  } from '@/components';
 import Link from "next/link";
 import React from "react";
 

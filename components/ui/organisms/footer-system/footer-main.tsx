@@ -1,6 +1,6 @@
 import { LinkTrack } from "@/components/ui/molecules/link-track";
 import { BrandAssets } from "@/lib/shared";
-import { APP_LINKS  } from '@/lib/shared';
+import { APP_LINKS  } from '@/components';
 import { cn } from "@/styles";
 import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
 import Image from "next/image";

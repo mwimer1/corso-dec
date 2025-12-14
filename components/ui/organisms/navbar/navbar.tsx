@@ -6,7 +6,7 @@ import Link from "next/link";
 import * as React from "react";
 
 import { Logo } from "@/components/ui/atoms";
-import { APP_LINKS } from '@/lib/shared';
+import { APP_LINKS } from '@/components';
 import { cn } from "@/styles";
 import { navbarLogoVariants } from "@/styles/ui/organisms";
 import { navbarLayout } from "@/styles/ui/organisms/navbar-layout";
