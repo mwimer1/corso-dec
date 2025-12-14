@@ -24,7 +24,7 @@ function main() {
   lines.forEach((line, index) => {
     if (line.includes('"scripts"')) {
       inScriptsSection = true;
-    } else if (inScriptsSection && line.trim() === '}') {
+    } else if (inScriptsSection && /^\s*}\s*,?\s*$/.test(line)) {
       inScriptsSection = false;
     }
 
