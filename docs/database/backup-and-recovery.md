@@ -1,9 +1,8 @@
 ---
-description: "Documentation and resources for documentation functionality. Located in database/."
+title: "Database"
 last_updated: "2025-12-14"
 category: "documentation"
 status: "draft"
-title: "Database"
 ---
 # Backup & Recovery Strategy
 
