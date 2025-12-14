@@ -56,14 +56,18 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
   });
 
   // Return flat response shape: { data, total, page, pageSize }
+  // Note: This route returns flat structure (not wrapped in { success: true, data: ... })
+  // to match the expected API contract for entity queries
   const payload = {
     data: result?.data ?? [],
     total: result?.total ?? 0,
     page,
     pageSize,
   };
-  return http.ok(payload, {
+  return new Response(JSON.stringify(payload), {
+    status: 200,
     headers: {
+      'content-type': 'application/json; charset=utf-8',
       'Access-Control-Allow-Origin': '*'
     }
   });

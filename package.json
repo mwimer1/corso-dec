@@ -97,6 +97,7 @@
     "quality:phase1": "pnpm -w typecheck && pnpm -w lint && pnpm -w test && pnpm run guards:guards:rules:phase1",
     "validate:dedupe": "pnpm dlx jscpd --config .jscpd.json",
     "validate:onboarding-boundaries": "pnpm --package=@ast-grep/cli dlx sg scan --rule .astgrep/onboarding/no-widgets-import-outside.yml . && pnpm --package=@ast-grep/cli dlx sg scan --rule .astgrep/onboarding/no-steps-import-flow.yml .",
+    "prebuild": "tsx scripts/maintenance/clean-next-build.ts",
     "build": "next build && pnpm run typecheck",
     "cleanup:next": "rimraf .next && pnpm next build",
     "predev": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/maintenance/ensure-ports.ps1 -DevPort 3000 -PlaywrightPort 9323",
