@@ -2,7 +2,7 @@
 title: "Api"
 description: "Core lib utilities and functionality for the Corso platform. Located in api/."
 category: "library"
-last_updated: "2025-12-13"
+last_updated: "2025-12-14"
 status: "active"
 ---
 # API Domain

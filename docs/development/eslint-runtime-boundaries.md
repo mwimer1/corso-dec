@@ -3,7 +3,7 @@ status: "draft"
 title: "Development"
 description: "Documentation and resources for documentation functionality. Located in development/."
 category: "documentation"
-last_updated: "2025-12-13"
+last_updated: "2025-12-14"
 ---
 # Custom Lint Rules & Cursor AI Standards
 

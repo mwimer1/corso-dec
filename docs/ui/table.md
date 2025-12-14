@@ -3,7 +3,7 @@ status: "draft"
 title: "Ui"
 description: "Documentation and resources for documentation functionality. Located in ui/."
 category: "documentation"
-last_updated: "2025-12-13"
+last_updated: "2025-12-14"
 ---
 # Dashboard Table UI Updates
 

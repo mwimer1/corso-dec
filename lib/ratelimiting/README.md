@@ -1,6 +1,6 @@
 ---
 title: "Ratelimiting"
-last_updated: "2025-12-13"
+last_updated: "2025-12-14"
 category: "library"
 status: "draft"
 description: "Core lib utilities and functionality for the Corso platform. Located in ratelimiting/."

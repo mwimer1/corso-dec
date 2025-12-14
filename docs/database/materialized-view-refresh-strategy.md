@@ -1,11 +1,10 @@
 ---
-category: "documentation"
+description: "Documentation and resources for documentation functionality. Located in database/."
 last_updated: "2025-12-14"
+category: "documentation"
 status: "draft"
-title: "Materialized View Refresh Strategy"
-description: "Comprehensive guide for materialized view refresh strategy, monitoring, and maintenance."
+title: "Database"
 ---
-
 # Materialized View Refresh Strategy
 
 > **Comprehensive guide for managing materialized view refreshes, monitoring health, and ensuring data freshness**

@@ -3,7 +3,7 @@ status: "draft"
 title: "Reference"
 description: "Documentation and resources for documentation functionality. Located in reference/."
 category: "documentation"
-last_updated: "2025-12-13"
+last_updated: "2025-12-14"
 ---
 # Edge vs Node API: Boundaries & Guardrails
 

@@ -1,7 +1,7 @@
 ---
 title: "README.md"
 description: "Documentation and resources for documentation functionality."
-last_updated: "2025-12-13"
+last_updated: "2025-12-14"
 category: "documentation"
 status: "draft"
 ---
@@ -283,8 +283,8 @@ pnpm test:e2e
 
 ### Test Coverage
 
-- **Test files**: 92
-- **Security tests**: 7
+- **Test files**: 95
+- **Security tests**: 8
 
 ## 📦 Quality Gates
 

@@ -1,6 +1,6 @@
 ---
 category: "actions"
-last_updated: "2025-12-13"
+last_updated: "2025-12-14"
 status: "draft"
 title: "Actions"
 description: "Server-side actions for actions, handling data mutations and business logic."

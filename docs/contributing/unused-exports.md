@@ -3,7 +3,7 @@ status: "draft"
 title: "Contributing"
 description: "Documentation and resources for documentation functionality. Located in contributing/."
 category: "documentation"
-last_updated: "2025-12-13"
+last_updated: "2025-12-14"
 ---
 # Unused Exports Audit & Remediation
 

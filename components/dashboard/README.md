@@ -2,7 +2,7 @@
 title: "Dashboard"
 description: "UI components for the components system, following atomic design principles. Located in dashboard/."
 category: "components"
-last_updated: "2025-12-13"
+last_updated: "2025-12-14"
 status: "active"
 ---
 # Dashboard Components

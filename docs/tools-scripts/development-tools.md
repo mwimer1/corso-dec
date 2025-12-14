@@ -3,7 +3,7 @@ status: "draft"
 title: "Tools Scripts"
 description: "Documentation and resources for documentation functionality. Located in tools-scripts/."
 category: "documentation"
-last_updated: "2025-12-13"
+last_updated: "2025-12-14"
 ---
 # Development Tools & Scripts
 

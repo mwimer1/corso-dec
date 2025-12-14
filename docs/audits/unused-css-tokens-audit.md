@@ -1,11 +1,10 @@
 ---
-title: "Unused CSS Tokens Audit"
-description: "Comprehensive audit prompt and analysis for investigating unused CSS design tokens"
-last_updated: "2025-12-13"
-category: "audit"
 status: "draft"
+last_updated: "2025-12-14"
+category: "documentation"
+title: "Audits"
+description: "Documentation and resources for documentation functionality. Located in audits/."
 ---
-
 # Unused CSS Tokens Audit
 
 ## Executive Summary

@@ -1,6 +1,6 @@
 ---
 title: "Utils"
-last_updated: "2025-12-13"
+last_updated: "2025-12-14"
 category: "documentation"
 status: "draft"
 description: "Documentation and resources for documentation functionality. Located in utils/."
