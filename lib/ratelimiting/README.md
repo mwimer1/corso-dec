@@ -1,11 +1,9 @@
 ---
-title: Ratelimiting
-description: >-
-  Core lib utilities and functionality for the Corso platform. Located in
-  ratelimiting/.
-last_updated: '2025-12-14'
-category: library
-status: draft
+title: "Ratelimiting"
+description: ">-"
+last_updated: "2025-12-14"
+category: "library"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

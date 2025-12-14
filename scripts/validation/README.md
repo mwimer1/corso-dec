@@ -1,11 +1,9 @@
 ---
-title: Validation
-description: >-
-  Documentation and resources for documentation functionality. Located in
-  validation/.
-last_updated: '2025-12-14'
-category: documentation
-status: draft
+title: "Validation"
+description: ">-"
+last_updated: "2025-12-14"
+category: "documentation"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

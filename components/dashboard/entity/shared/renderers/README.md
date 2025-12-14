@@ -1,11 +1,9 @@
 ---
-title: Renderers
-description: >-
-  UI components for the components system, following atomic design principles.
-  Located in dashboard/entity/shared/renderers/.
-last_updated: '2025-12-14'
-category: components
-status: draft
+title: "Renderers"
+description: ">-"
+last_updated: "2025-12-14"
+category: "components"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

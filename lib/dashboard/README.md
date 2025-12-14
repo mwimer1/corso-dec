@@ -1,11 +1,9 @@
 ---
-title: Dashboard
-description: >-
-  Core lib utilities and functionality for the Corso platform. Located in
-  dashboard/.
-last_updated: '2025-12-14'
-category: library
-status: draft
+title: "Dashboard"
+description: ">-"
+last_updated: "2025-12-14"
+category: "library"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

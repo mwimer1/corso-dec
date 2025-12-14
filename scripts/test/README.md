@@ -1,9 +1,9 @@
 ---
-title: Test
-description: Documentation and resources for documentation functionality. Located in test/.
-last_updated: '2025-12-14'
-category: documentation
-status: draft
+title: "Test"
+description: "Documentation and resources for documentation functionality. Located in test/."
+last_updated: "2025-12-14"
+category: "documentation"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

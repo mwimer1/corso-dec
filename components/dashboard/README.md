@@ -1,11 +1,9 @@
 ---
-title: Dashboard
-description: >-
-  UI components for the components system, following atomic design principles.
-  Located in dashboard/.
-last_updated: '2025-12-14'
-category: components
-status: draft
+title: "Dashboard"
+description: ">-"
+last_updated: "2025-12-14"
+category: "components"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

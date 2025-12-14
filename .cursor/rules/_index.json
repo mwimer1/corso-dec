@@ -1,24 +1,126 @@
 {
-  "generatedAt": "2025-12-13T20:10:01.278Z",
-  "canonical": "corso-assistant.mdc",
-  "files": [
-    "README.md",
-    "_snippets.mdc",
-    "actions-rate-limit-check.mdc",
-    "ai-agent-development-environment.mdc",
-    "analytics-tracking.mdc",
-    "code-quality-standards.mdc",
-    "component-design-system.mdc",
-    "corso-assistant.mdc",
-    "corso-dev.md",
-    "dashboard-components.mdc",
-    "documentation-standards.mdc",
-    "duplicate-action-validation.mdc",
-    "entity-grid-architecture.mdc",
-    "file-organization.mdc",
-    "openapi-vendor-extensions.mdc",
-    "runtime-boundaries.mdc",
-    "security-standards.mdc",
-    "warehouse-query-hooks.mdc"
+  "generated_at": "2025-12-14T23:27:53.535Z",
+  "count": 15,
+  "rules": [
+    {
+      "rule_id": "actions-rate-limit-check",
+      "file": "actions-rate-limit-check.mdc",
+      "title": "Server Actions & API — Rate Limiting Required",
+      "status": "active",
+      "last_reviewed": "2025-10-13",
+      "alwaysApply": true
+    },
+    {
+      "rule_id": "ai-agent-development-environment",
+      "file": "ai-agent-development-environment.mdc",
+      "title": "AI Agent Development Environment",
+      "status": "active",
+      "last_reviewed": "2025-10-13",
+      "alwaysApply": true
+    },
+    {
+      "rule_id": "analytics-tracking",
+      "file": "analytics-tracking.mdc",
+      "title": "Analytics Tracking & User Insights",
+      "status": "active",
+      "last_reviewed": "2025-10-13",
+      "alwaysApply": true
+    },
+    {
+      "rule_id": "code-quality-standards",
+      "file": "code-quality-standards.mdc",
+      "title": "Quality Assurance & Testing Standards (Consolidated)",
+      "status": "active",
+      "last_reviewed": "2025-10-13",
+      "alwaysApply": false
+    },
+    {
+      "rule_id": "component-design-system",
+      "file": "component-design-system.mdc",
+      "title": "Component Design System & Architecture (Consolidated)",
+      "status": "active",
+      "last_reviewed": "2025-10-13",
+      "alwaysApply": false
+    },
+    {
+      "rule_id": "corso-assistant",
+      "file": "corso-assistant.mdc",
+      "title": "Corso Codebase Assistant — Operating Rules (vNext)",
+      "status": "active",
+      "last_reviewed": "2025-10-13",
+      "alwaysApply": true
+    },
+    {
+      "rule_id": "dashboard-components",
+      "file": "dashboard-components.mdc",
+      "title": "Dashboard Components — Chat & Tables (Consolidated)",
+      "status": "active",
+      "last_reviewed": "2025-10-13",
+      "alwaysApply": false
+    },
+    {
+      "rule_id": "documentation-standards",
+      "file": "documentation-standards.mdc",
+      "title": "Documentation Standards & References (Consolidated)",
+      "status": "active",
+      "last_reviewed": "2025-10-13",
+      "alwaysApply": false
+    },
+    {
+      "rule_id": "duplicate-action-validation",
+      "file": "duplicate-action-validation.mdc",
+      "title": "Actions: Duplicate Zod Validation",
+      "status": "active",
+      "last_reviewed": "2025-10-13",
+      "alwaysApply": true
+    },
+    {
+      "rule_id": "entity-grid-architecture",
+      "file": "entity-grid-architecture.mdc",
+      "title": "Entity Grid Architecture (AG Grid)",
+      "status": "active",
+      "last_reviewed": "2025-10-13",
+      "alwaysApply": true
+    },
+    {
+      "rule_id": "file-organization",
+      "file": "file-organization.mdc",
+      "title": "File Organization & Placement",
+      "status": "active",
+      "last_reviewed": "2025-10-13",
+      "alwaysApply": true
+    },
+    {
+      "rule_id": "openapi-vendor-extensions",
+      "file": "openapi-vendor-extensions.mdc",
+      "title": "OpenAPI Vendor Extensions & RBAC Guard",
+      "status": "active",
+      "last_reviewed": "2025-10-13",
+      "alwaysApply": true
+    },
+    {
+      "rule_id": "runtime-boundaries",
+      "file": "runtime-boundaries.mdc",
+      "title": "Runtime Boundaries & Server/Edge Imports",
+      "status": "active",
+      "last_reviewed": "2025-10-13",
+      "alwaysApply": false
+    },
+    {
+      "rule_id": "security-standards",
+      "file": "security-standards.mdc",
+      "title": "Security Standards & API Patterns (Consolidated)",
+      "status": "active",
+      "last_reviewed": "2025-10-13",
+      "alwaysApply": true
+    },
+    {
+      "rule_id": "warehouse-query-hooks",
+      "file": "warehouse-query-hooks.mdc",
+      "title": "Warehouse Query Hooks & Best Practices",
+      "status": "active",
+      "last_reviewed": "2025-10-13",
+      "alwaysApply": true
+    }
   ]
 }

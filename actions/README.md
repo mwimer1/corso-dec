@@ -1,9 +1,9 @@
 ---
-title: Actions
-description: 'Server-side actions for actions, handling data mutations and business logic.'
-last_updated: '2025-12-14'
-category: actions
-status: draft
+title: "Actions"
+description: "Server-side actions for actions, handling data mutations and business logic."
+last_updated: "2025-12-14"
+category: "actions"
+status: "draft"
 ---
 ## Public Exports
 | Action | Purpose | Import Path |

@@ -1,11 +1,9 @@
 ---
-title: Insights
-description: >-
-  UI components for the components system, following atomic design principles.
-  Located in insights/.
-last_updated: '2025-12-14'
-category: components
-status: draft
+title: "Insights"
+description: ">-"
+last_updated: "2025-12-14"
+category: "components"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

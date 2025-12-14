@@ -1,11 +1,9 @@
 ---
-title: Core
-description: >-
-  TypeScript type definitions for types, ensuring type safety across the
-  platform. Located in shared/core/.
-last_updated: '2025-12-14'
-category: types
-status: draft
+title: "Core"
+description: ">-"
+last_updated: "2025-12-14"
+category: "types"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

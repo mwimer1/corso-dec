@@ -1,11 +1,9 @@
 ---
-title: Landing
-description: >-
-  UI components for the components system, following atomic design principles.
-  Located in landing/.
-last_updated: '2025-12-14'
-category: components
-status: draft
+title: "Landing"
+description: ">-"
+last_updated: "2025-12-14"
+category: "components"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

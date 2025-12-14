@@ -1,11 +1,9 @@
 ---
-title: Sections
-description: >-
-  UI components for the components system, following atomic design principles.
-  Located in marketing/sections/.
-last_updated: '2025-12-14'
-category: components
-status: draft
+title: "Sections"
+description: ">-"
+last_updated: "2025-12-14"
+category: "components"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

@@ -1,11 +1,9 @@
 ---
-title: Dashboard
-description: >-
-  React hooks providing state management and functionality for hooks. Located in
-  dashboard/.
-last_updated: '2025-12-14'
-category: hooks
-status: draft
+title: "Dashboard"
+description: ">-"
+last_updated: "2025-12-14"
+category: "hooks"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

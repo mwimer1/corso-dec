@@ -1,11 +1,9 @@
 ---
-title: Auth
-description: >-
-  TypeScript type definitions for types, ensuring type safety across the
-  platform. Located in auth/.
-last_updated: '2025-12-14'
-category: types
-status: draft
+title: "Auth"
+description: ">-"
+last_updated: "2025-12-14"
+category: "types"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

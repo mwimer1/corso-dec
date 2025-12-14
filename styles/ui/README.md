@@ -1,11 +1,9 @@
 ---
-title: Ui
-description: >-
-  Styling system for styles, using Tailwind CSS and design tokens. Located in
-  ui/.
-last_updated: '2025-12-14'
-category: styling
-status: draft
+title: "Ui"
+description: ">-"
+last_updated: "2025-12-14"
+category: "styling"
+status: "draft"
 ---
 # Component Styles
 

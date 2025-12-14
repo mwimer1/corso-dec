@@ -1,11 +1,9 @@
 ---
-title: Performance
-description: >-
-  TypeScript type definitions for types, ensuring type safety across the
-  platform. Located in shared/performance/.
-last_updated: '2025-12-14'
-category: types
-status: draft
+title: "Performance"
+description: ">-"
+last_updated: "2025-12-14"
+category: "types"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

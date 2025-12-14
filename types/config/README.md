@@ -1,11 +1,9 @@
 ---
-title: Config
-description: >-
-  TypeScript type definitions for types, ensuring type safety across the
-  platform. Located in config/.
-last_updated: '2025-12-14'
-category: types
-status: draft
+title: "Config"
+description: ">-"
+last_updated: "2025-12-14"
+category: "types"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

@@ -1,11 +1,9 @@
 ---
-title: Security
-description: >-
-  TypeScript type definitions for types, ensuring type safety across the
-  platform. Located in security/.
-last_updated: '2025-12-14'
-category: types
-status: draft
+title: "Security"
+description: ">-"
+last_updated: "2025-12-14"
+category: "types"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

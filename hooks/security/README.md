@@ -1,11 +1,9 @@
 ---
-title: Security
-description: >-
-  React hooks providing state management and functionality for hooks. Located in
-  security/.
-last_updated: '2025-12-14'
-category: hooks
-status: draft
+title: "Security"
+description: ">-"
+last_updated: "2025-12-14"
+category: "hooks"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

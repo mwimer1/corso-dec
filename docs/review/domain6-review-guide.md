@@ -1,11 +1,9 @@
 ---
-title: Review
-description: >-
-  Documentation and resources for documentation functionality. Located in
-  review/.
-last_updated: '2025-12-14'
-category: documentation
-status: draft
+title: "Review"
+description: ">-"
+last_updated: "2025-12-14"
+category: "documentation"
+status: "draft"
 ---
 # Domain 6: Documentation Quality - Review Guide
 

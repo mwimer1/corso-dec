@@ -1,11 +1,9 @@
 ---
-title: Contributing
-description: >-
-  Documentation and resources for documentation functionality. Located in
-  contributing/.
-last_updated: '2025-12-14'
-category: documentation
-status: draft
+title: "Contributing"
+description: ">-"
+last_updated: "2025-12-14"
+category: "documentation"
+status: "draft"
 ---
 # Unused Exports Audit & Remediation
 

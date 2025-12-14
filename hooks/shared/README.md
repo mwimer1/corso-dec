@@ -1,11 +1,9 @@
 ---
-title: Shared
-description: >-
-  React hooks providing state management and functionality for hooks. Located in
-  shared/.
-last_updated: '2025-12-14'
-category: hooks
-status: draft
+title: "Shared"
+description: ">-"
+last_updated: "2025-12-14"
+category: "hooks"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

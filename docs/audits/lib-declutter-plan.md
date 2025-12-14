@@ -1,11 +1,9 @@
 ---
-title: Audits
-description: >-
-  Documentation and resources for documentation functionality. Located in
-  audits/.
-last_updated: '2025-12-14'
-category: documentation
-status: draft
+title: "Audits"
+description: ">-"
+last_updated: "2025-12-14"
+category: "documentation"
+status: "draft"
 ---
 ## Priorities
 - P0 runtime violations: 0

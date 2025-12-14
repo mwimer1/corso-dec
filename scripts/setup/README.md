@@ -1,11 +1,9 @@
 ---
-title: Setup
-description: >-
-  Documentation and resources for documentation functionality. Located in
-  setup/.
-last_updated: '2025-12-14'
-category: documentation
-status: draft
+title: "Setup"
+description: ">-"
+last_updated: "2025-12-14"
+category: "documentation"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

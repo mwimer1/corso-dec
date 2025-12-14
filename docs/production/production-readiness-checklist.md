@@ -1,11 +1,9 @@
 ---
-title: Production
-description: >-
-  Documentation and resources for documentation functionality. Located in
-  production/.
-last_updated: '2025-12-14'
-category: documentation
-status: draft
+title: "Production"
+description: ">-"
+last_updated: "2025-12-14"
+category: "documentation"
+status: "draft"
 ---
 # Production Readiness Checklist
 

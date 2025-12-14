@@ -1,11 +1,9 @@
 ---
-title: Dashboard
-description: >-
-  Documentation and resources for documentation functionality. Located in
-  (protected)/dashboard/.
-last_updated: '2025-12-14'
-category: documentation
-status: draft
+title: "Dashboard"
+description: ">-"
+last_updated: "2025-12-14"
+category: "documentation"
+status: "draft"
 ---
 ## Overview
 

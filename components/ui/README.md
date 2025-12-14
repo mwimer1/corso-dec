@@ -1,5 +1,7 @@
 ---
-last_updated: '2025-12-14'
+last_updated: "2025-12-14"
+category: "documentation"
+status: "draft"
 ---
 # UI Library
 

@@ -1,11 +1,9 @@
 ---
-title: Codemods
-description: >-
-  Documentation and resources for documentation functionality. Located in
-  codemods/.
-last_updated: '2025-12-14'
-category: documentation
-status: draft
+title: "Codemods"
+description: ">-"
+last_updated: "2025-12-14"
+category: "documentation"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

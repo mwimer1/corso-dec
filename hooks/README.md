@@ -1,9 +1,9 @@
 ---
-title: Hooks
-description: React hooks providing state management and functionality for hooks.
-last_updated: '2025-12-14'
-category: hooks
-status: draft
+title: "Hooks"
+description: "React hooks providing state management and functionality for hooks."
+last_updated: "2025-12-14"
+category: "hooks"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

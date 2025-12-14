@@ -1,11 +1,9 @@
 ---
-title: Shared
-description: >-
-  Styling system for styles, using Tailwind CSS and design tokens. Located in
-  ui/shared/.
-last_updated: '2025-12-14'
-category: styling
-status: draft
+title: "Shared"
+description: ">-"
+last_updated: "2025-12-14"
+category: "styling"
+status: "draft"
 ---
 # Repository Scripts & Docs
 
