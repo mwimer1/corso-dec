@@ -101,7 +101,12 @@ alter table public.watchlists       enable row level security;
 alter table public.watchlist_items  enable row level security;
 alter table public.saved_files      enable row level security;
 
-/* saved_views */
+/* saved_views - idempotent policies */
+drop policy if exists "sv_select_owner" on public.saved_views;
+drop policy if exists "sv_ins_owner" on public.saved_views;
+drop policy if exists "sv_upd_owner" on public.saved_views;
+drop policy if exists "sv_del_owner" on public.saved_views;
+
 create policy "sv_select_owner"
   on public.saved_views for select
   using ( auth.uid() = user_id );
@@ -118,7 +123,12 @@ create policy "sv_del_owner"
   on public.saved_views for delete
   using ( auth.uid() = user_id );
 
-/* watchlists */
+/* watchlists - idempotent policies */
+drop policy if exists "wl_select_owner" on public.watchlists;
+drop policy if exists "wl_ins_owner" on public.watchlists;
+drop policy if exists "wl_upd_owner" on public.watchlists;
+drop policy if exists "wl_del_owner" on public.watchlists;
+
 create policy "wl_select_owner"
   on public.watchlists for select
   using ( auth.uid() = user_id );
@@ -135,7 +145,12 @@ create policy "wl_del_owner"
   on public.watchlists for delete
   using ( auth.uid() = user_id );
 
-/* watchlist_items */
+/* watchlist_items - idempotent policies */
+drop policy if exists "wli_select_owner" on public.watchlist_items;
+drop policy if exists "wli_ins_owner" on public.watchlist_items;
+drop policy if exists "wli_upd_owner" on public.watchlist_items;
+drop policy if exists "wli_del_owner" on public.watchlist_items;
+
 create policy "wli_select_owner"
   on public.watchlist_items for select
   using (
@@ -180,7 +195,12 @@ create policy "wli_del_owner"
     )
   );
 
-/* saved_files */
+/* saved_files - idempotent policies */
+drop policy if exists "sf_select_owner" on public.saved_files;
+drop policy if exists "sf_ins_owner" on public.saved_files;
+drop policy if exists "sf_upd_owner" on public.saved_files;
+drop policy if exists "sf_del_owner" on public.saved_files;
+
 create policy "sf_select_owner"
   on public.saved_files for select
   using ( auth.uid() = user_id );

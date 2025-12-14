@@ -53,7 +53,15 @@ alter table public.watchlists enable row level security;
 alter table public.watchlist_items enable row level security;
 alter table public.saved_files enable row level security;
 
--- Create RLS policies
+-- Create RLS policies (idempotent: drop if exists before create)
+-- Note: This migration is superseded by 20250502061640_add_saved_views_and_watchlists.sql
+-- but kept for historical migration path safety
+
+drop policy if exists "Users can view their own saved views" on public.saved_views;
+drop policy if exists "Users can insert their own saved views" on public.saved_views;
+drop policy if exists "Users can update their own saved views" on public.saved_views;
+drop policy if exists "Users can delete their own saved views" on public.saved_views;
+
 create policy "Users can view their own saved views"
   on public.saved_views for select
   using (auth.uid() = user_id);
@@ -71,6 +79,11 @@ create policy "Users can delete their own saved views"
   using (auth.uid() = user_id);
 
 -- Similar policies for watchlists
+drop policy if exists "Users can view their own watchlists" on public.watchlists;
+drop policy if exists "Users can insert their own watchlists" on public.watchlists;
+drop policy if exists "Users can update their own watchlists" on public.watchlists;
+drop policy if exists "Users can delete their own watchlists" on public.watchlists;
+
 create policy "Users can view their own watchlists"
   on public.watchlists for select
   using (auth.uid() = user_id);
@@ -88,6 +101,10 @@ create policy "Users can delete their own watchlists"
   using (auth.uid() = user_id);
 
 -- Similar policies for watchlist_items
+drop policy if exists "Users can view items in their watchlists" on public.watchlist_items;
+drop policy if exists "Users can insert items into their watchlists" on public.watchlist_items;
+drop policy if exists "Users can delete items from their watchlists" on public.watchlist_items;
+
 create policy "Users can view items in their watchlists"
   on public.watchlist_items for select
   using (
@@ -119,6 +136,11 @@ create policy "Users can delete items from their watchlists"
   );
 
 -- Similar policies for saved_files
+drop policy if exists "Users can view their own saved files" on public.saved_files;
+drop policy if exists "Users can insert their own saved files" on public.saved_files;
+drop policy if exists "Users can update their own saved files" on public.saved_files;
+drop policy if exists "Users can delete their own saved files" on public.saved_files;
+
 create policy "Users can view their own saved files"
   on public.saved_files for select
   using (auth.uid() = user_id);
