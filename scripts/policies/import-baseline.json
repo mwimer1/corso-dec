@@ -52,6 +52,8 @@
     "lib/server/clickhouse/client.ts -> @/integrations/clickhouse/server",
     "lib/server/clickhouse/client.ts -> @/integrations/clickhouse/utils",
     "lib/server/clickhouse/client.ts -> @/integrations/database/scope",
+    "lib/server/db/supabase-tenant-client.ts -> @/types/integrations",
+    "lib/server/db/supabase-tenant-client.ts -> @/integrations/supabase/server",
     "lib/server/env.ts -> @/types/shared/config/base/types",
     "lib/server/errors/error-utils.ts -> @/shared/errors/error-utils",
     "lib/server/feature-flags/builder.ts -> @/types/shared",
