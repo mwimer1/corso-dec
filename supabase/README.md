@@ -1,9 +1,9 @@
 ---
-category: "documentation"
-last_updated: "2025-12-14"
-status: "draft"
-title: "Supabase"
-description: "Documentation and resources for documentation functionality."
+title: Supabase
+description: Documentation and resources for documentation functionality.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # 🗄️ Supabase Database Configuration
 
@@ -409,4 +409,3 @@ pnpm lint:sql
 **Migrations:** 21 total
 **Tables:** 18 core + 1 materialized view
 **RLS Policies:** 100% coverage
-

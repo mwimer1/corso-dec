@@ -1,9 +1,11 @@
 ---
-category: "documentation"
-last_updated: "2025-12-14"
-status: "draft"
-title: "Rules"
-description: "Documentation and resources for documentation functionality. Located in rules/."
+title: Rules
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  rules/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Cursor AI Rules
 
@@ -397,4 +399,3 @@ pnpm validate:cursor-rules --verbose
 ---
 
 **Last Updated:** 2025-10-06 | **Rules:** 13 | **Templates:** 1 | **Enforced:** STRICT
-

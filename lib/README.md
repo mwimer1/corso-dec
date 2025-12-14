@@ -1,9 +1,10 @@
 ---
-title: "lib"
-last_updated: "2025-12-14"
-category: "automation"
+title: Lib
+description: Core lib utilities and functionality for the Corso platform.
+last_updated: '2025-12-14'
+category: library
+status: draft
 ---
-
 # Repository Scripts & Docs
 
 This README is generated from a single template (`README.scripts.hbs`).

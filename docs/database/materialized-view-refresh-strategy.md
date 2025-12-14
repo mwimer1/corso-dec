@@ -1,9 +1,11 @@
 ---
-description: "Documentation and resources for documentation functionality. Located in database/."
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
-title: "Database"
+title: Database
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  database/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Materialized View Refresh Strategy
 
@@ -290,4 +292,3 @@ DROP MATERIALIZED VIEW IF EXISTS public.mv_old_view;
 | `refresh_frequency_minutes` | INTEGER | Refresh frequency in minutes |
 | `created_at` | TIMESTAMPTZ | When record was created |
 | `updated_at` | TIMESTAMPTZ | When record was last updated |
-

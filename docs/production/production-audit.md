@@ -1,9 +1,11 @@
 ---
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
-title: "Production"
-description: "Documentation and resources for documentation functionality. Located in production/."
+title: Production
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  production/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Production Audit Report
 
@@ -499,4 +501,3 @@ All 13 domains have been completed and verified. The codebase is:
 
 **Audit Completed:** 2025-01-15  
 **Next Review:** Post-deployment (1 week)
-

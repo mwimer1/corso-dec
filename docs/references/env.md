@@ -1,9 +1,11 @@
 ---
-status: "draft"
-title: "References"
-description: "Documentation and resources for documentation functionality. Located in references/."
-category: "documentation"
-last_updated: "2025-12-14"
+title: References
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  references/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Environment Variables Reference
 
@@ -240,4 +242,3 @@ const isProd = (typeof process !== 'undefined' ? process.env.NODE_ENV : undefine
 - `tools/**`: Development tools
 
 **Important**: All allowed `process.env` usage must include explanatory comments stating why direct access is necessary.
-

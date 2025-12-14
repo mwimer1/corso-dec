@@ -1,9 +1,11 @@
 ---
-status: "draft"
-title: "Development"
-description: "Documentation and resources for documentation functionality. Located in development/."
-category: "documentation"
-last_updated: "2025-12-14"
+title: Development
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  development/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Route Configuration Guide
 
@@ -28,4 +30,3 @@ export const revalidate = 0;
 ```
 
 Run `pnpm validate:cursor-rules` locally to validate these rules during development.
-

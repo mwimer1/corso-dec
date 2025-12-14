@@ -1,3 +1,12 @@
+---
+title: Tokens
+description: >-
+  Styling system for styles, using Tailwind CSS and design tokens. Located in
+  tokens/.
+last_updated: '2025-12-14'
+category: styling
+status: draft
+---
 # Design Tokens
 
 This directory contains CSS custom properties (design tokens) that define the visual design system values for colors, spacing, typography, shadows, animations, and more.

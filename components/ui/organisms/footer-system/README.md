@@ -1,9 +1,12 @@
 ---
-title: "components/ui/organisms/footer-system"
-last_updated: "2025-12-14"
-category: "automation"
+title: Footer System
+description: >-
+  UI components for the components system, following atomic design principles.
+  Located in ui/organisms/footer-system/.
+last_updated: '2025-12-14'
+category: components
+status: draft
 ---
-
 # Repository Scripts & Docs
 
 This README is generated from a single template (`README.scripts.hbs`).

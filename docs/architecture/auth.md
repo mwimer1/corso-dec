@@ -1,9 +1,11 @@
 ---
-category: "documentation"
-last_updated: "2025-12-14"
-status: "draft"
-title: "Architecture"
-description: "Documentation and resources for documentation functionality. Located in architecture/."
+title: Architecture
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  architecture/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Auth & Account Surfaces (Clerk v6)
 
@@ -33,4 +35,3 @@ description: "Documentation and resources for documentation functionality. Locat
 - Subscription management via `/dashboard/subscription` page.
 - User profile includes Billing tab at `/dashboard/account` for invoice history and payment methods.
 - Migrated from custom Stripe integration to Clerk Billing end-to-end.
-

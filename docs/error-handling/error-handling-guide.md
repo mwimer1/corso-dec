@@ -1,9 +1,11 @@
 ---
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
-title: "Error Handling"
-description: "Documentation and resources for documentation functionality. Located in error-handling/."
+title: Error Handling
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  error-handling/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Error Handling & Resilience Guide
 
@@ -475,4 +477,3 @@ return http.error(500, error.message); // May contain sensitive data
 ---
 
 **Last updated:** 2025-01-15
-

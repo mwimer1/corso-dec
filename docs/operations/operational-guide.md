@@ -1,9 +1,11 @@
 ---
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
-title: "Operations"
-description: "Documentation and resources for documentation functionality. Located in operations/."
+title: Operations
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  operations/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Operational Guide
 
@@ -352,6 +354,3 @@ curl -I https://your-domain.com/
 ---
 
 Last updated: 2025-01-15
-
-
-

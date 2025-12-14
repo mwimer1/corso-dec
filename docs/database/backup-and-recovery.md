@@ -1,8 +1,11 @@
 ---
-title: "Database"
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
+title: Database
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  database/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Backup & Recovery Strategy
 
@@ -533,5 +536,3 @@ head -n 100 backup.sql | grep -q "PostgreSQL database dump" && echo "Valid"
 # Test restore
 createdb test_restore && psql test_restore < backup.sql && dropdb test_restore
 ```
-
-

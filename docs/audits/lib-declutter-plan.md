@@ -1,9 +1,11 @@
 ---
-category: "documentation"
-last_updated: "2025-12-14"
-status: "draft"
-title: "Audits"
-description: "Documentation and resources for documentation functionality. Located in audits/."
+title: Audits
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  audits/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 ## Priorities
 - P0 runtime violations: 0
@@ -67,4 +69,3 @@ Implementation notes:
 ## (F) Barrel usage guarantees
 - Auth barrels: `@/lib/auth/client` for UI config, `@/lib/auth/server` for JWT/session/access control.
 - All Node-only modules must include `import 'server-only'`.
-

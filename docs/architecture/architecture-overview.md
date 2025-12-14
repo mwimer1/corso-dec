@@ -1,9 +1,11 @@
 ---
-description: "Documentation and resources for documentation functionality. Located in architecture/."
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
-title: "Architecture"
+title: Architecture
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  architecture/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Architecture Overview
 
@@ -297,4 +299,3 @@ The architecture is designed to scale:
 **Last Updated**: 2025-01-15  
 **Maintained By**: Platform Team  
 **Status**: Active
-

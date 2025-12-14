@@ -1,9 +1,11 @@
 ---
-description: "Documentation and resources for documentation functionality. Located in api/v1/."
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
-title: "V1"
+title: V1
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  api/v1/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # API v1 — Routes, Runtime & Limits
 
@@ -37,4 +39,3 @@ export const revalidate = 0;
 - **Resource vs AI Split**: Entity routes handle data operations; AI routes handle intelligence features.
 - **Runtime Strategy**: All routes use Node.js runtime for consistency and ClickHouse integration capabilities.
 - **Removed non-existent billing/ and subscription/ mentions**.
-

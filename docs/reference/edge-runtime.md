@@ -1,9 +1,11 @@
 ---
-status: "draft"
-title: "Reference"
-description: "Documentation and resources for documentation functionality. Located in reference/."
-category: "documentation"
-last_updated: "2025-12-14"
+title: Reference
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  reference/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Edge vs Node API: Boundaries & Guardrails
 
@@ -53,4 +55,3 @@ git commit -m "chore(boundary): add ESLint restriction, runtime-boundary tests, 
 # 6) Push topic branch
 git push -u origin chore/edge-boundary-guards
 ```
-

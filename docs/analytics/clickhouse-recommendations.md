@@ -1,9 +1,11 @@
 ---
-category: "documentation"
-last_updated: "2025-12-14"
-status: "draft"
-title: "Analytics"
-description: "Documentation and resources for documentation functionality. Located in analytics/."
+title: Analytics
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  analytics/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 ## Overview
 
@@ -226,4 +228,3 @@ GROUP BY day, project_type
 ORDER BY day
 LIMIT 1000;
 ```bash
-

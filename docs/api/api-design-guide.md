@@ -1,9 +1,9 @@
 ---
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
-title: "Api"
-description: "Documentation and resources for documentation functionality. Located in api/."
+title: Api
+description: Documentation and resources for documentation functionality. Located in api/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # API Design Guide
 
@@ -532,4 +532,3 @@ pnpm test
 ---
 
 **Last updated:** 2025-01-15
-

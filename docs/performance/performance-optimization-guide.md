@@ -1,9 +1,11 @@
 ---
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
-title: "Performance"
-description: "Documentation and resources for documentation functionality. Located in performance/."
+title: Performance
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  performance/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Performance Optimization Guide
 
@@ -450,4 +452,3 @@ Database query performance is tracked via:
 ---
 
 Last updated: 2025-01-15
-

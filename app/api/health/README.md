@@ -1,9 +1,11 @@
 ---
-category: "documentation"
-last_updated: "2025-12-14"
-status: "draft"
-title: "Health"
-description: "Documentation and resources for documentation functionality. Located in api/health/."
+title: Health
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  api/health/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 ## Overview
 
@@ -173,4 +175,3 @@ Both endpoints support standard HTTP status monitoring:
 ---
 
 **Last updated:** 2025-10-28
-

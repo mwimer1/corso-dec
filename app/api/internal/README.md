@@ -1,9 +1,11 @@
 ---
-category: "documentation"
-last_updated: "2025-12-14"
-status: "draft"
-title: "Internal"
-description: "Documentation and resources for documentation functionality. Located in api/internal/."
+title: Internal
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  api/internal/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 ## Overview
 
@@ -159,4 +161,3 @@ import type {
 ---
 
 **Last updated:** 2025-10-04
-

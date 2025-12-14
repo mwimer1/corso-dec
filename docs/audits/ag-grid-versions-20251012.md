@@ -1,9 +1,11 @@
 ---
-category: "documentation"
-last_updated: "2025-12-14"
-status: "draft"
-title: "Audits"
-description: "Documentation and resources for documentation functionality. Located in audits/."
+title: Audits
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  audits/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # AG Grid Package & Module Version Audit (20251012)
 
@@ -247,4 +249,3 @@ The error "ClientSideRowModel 34.2.0 vs other modules 32.3.9" directly correlate
 
 **Report Generated**: 2025-10-12
 **Status**: REQUIRES IMMEDIATE ACTION
-

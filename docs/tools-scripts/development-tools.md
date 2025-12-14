@@ -1,9 +1,11 @@
 ---
-status: "draft"
-title: "Tools Scripts"
-description: "Documentation and resources for documentation functionality. Located in tools-scripts/."
-category: "documentation"
-last_updated: "2025-12-14"
+title: Tools Scripts
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  tools-scripts/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Development Tools & Scripts
 
@@ -229,4 +231,3 @@ chmod +x scripts/**/*.sh
 ---
 
 **Last updated:** 2025-09-15
-

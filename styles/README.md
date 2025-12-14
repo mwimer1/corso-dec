@@ -1,3 +1,10 @@
+---
+title: Styles
+description: 'Styling system for styles, using Tailwind CSS and design tokens.'
+last_updated: '2025-12-14'
+category: styling
+status: draft
+---
 # Styles Directory
 
 This directory contains the global styles and design system for the project, including design tokens (CSS custom properties), Tailwind CSS configuration, and component-level styles.

@@ -1,9 +1,11 @@
 ---
-category: "documentation"
-last_updated: "2025-12-14"
-status: "draft"
-title: "Dashboard"
-description: "Documentation and resources for documentation functionality. Located in (protected)/dashboard/."
+title: Dashboard
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  (protected)/dashboard/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 ## Overview
 
@@ -150,4 +152,3 @@ pnpm vitest run            # Test components
 ---
 
 **Last updated: 2025-10-07**
-

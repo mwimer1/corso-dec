@@ -1,9 +1,11 @@
 ---
-status: "draft"
-title: "Codebase Apis"
-description: "Documentation and resources for documentation functionality. Located in codebase-apis/."
-category: "documentation"
-last_updated: "2025-12-14"
+title: Codebase Apis
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  codebase-apis/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Codebase Structure & Conventions
 
@@ -283,4 +285,3 @@ describe('Component', () => {
 - [UI Design Guide](../architecture-design/ui-design-guide.md) - Component patterns
 - [API Patterns](../api-data/api-patterns.md) - API development patterns
 - [Security Standards](../security/README.md) - Security implementation
-

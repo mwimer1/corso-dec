@@ -1,9 +1,11 @@
 ---
-status: "draft"
-last_updated: "2025-12-14"
-category: "documentation"
-title: "Audits"
-description: "Documentation and resources for documentation functionality. Located in audits/."
+title: Audits
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  audits/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Unused CSS Tokens Audit
 
@@ -247,4 +249,3 @@ find components -name "*.css" -o -name "*.module.css"
 2. **Short-term**: Update allowlist for intentional exceptions (Storybook, Marketing)
 3. **Medium-term**: Remove truly unused tokens (target: < 30 unused)
 4. **Long-term**: Migrate hardcoded values to use tokens where appropriate
-

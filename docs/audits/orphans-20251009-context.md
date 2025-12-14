@@ -1,9 +1,11 @@
 ---
-category: "documentation"
-last_updated: "2025-12-14"
-status: "draft"
-title: "Audits"
-description: "Documentation and resources for documentation functionality. Located in audits/."
+title: Audits
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  audits/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Orphans Context Audit (2025-10-09)
 
@@ -63,4 +65,3 @@ description: "Documentation and resources for documentation functionality. Locat
 - No non-test dependents remain for each removed file.
 - Boundary safety verified (no Edge/client importing server-only).
 - Generators and aliases updated; CI passing (typecheck, lint, tests).
-

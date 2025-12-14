@@ -1,9 +1,11 @@
 ---
-status: "draft"
-title: "Cicd Workflow"
-description: "Documentation and resources for documentation functionality. Located in cicd-workflow/."
-category: "documentation"
-last_updated: "2025-12-14"
+title: Cicd Workflow
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  cicd-workflow/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Quality Gates
 
@@ -57,4 +59,3 @@ Artifacts and visibility
 Notes
 - Uses repository composite action `./.github/actions/setup-node-pnpm` for consistent Node/pnpm setup.
 - Commands avoid interactive prompts and Unix‑only constructs to remain Windows‑friendly.
-

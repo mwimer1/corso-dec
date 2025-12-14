@@ -1,9 +1,9 @@
 ---
-category: "documentation"
-last_updated: "2025-12-14"
-status: "draft"
-title: ".husky"
-description: "Documentation and resources for documentation functionality."
+title: .husky
+description: Documentation and resources for documentation functionality.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # 🤖 Husky Git Hooks Configuration
 
@@ -269,4 +269,3 @@ pnpm install
 ---
 
 **Last Updated**: 2025-09-10 | **Next Review**: Monthly hook effectiveness audit
-

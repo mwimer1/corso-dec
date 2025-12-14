@@ -1,9 +1,11 @@
 ---
-status: "draft"
-title: "Contributing"
-description: "Documentation and resources for documentation functionality. Located in contributing/."
-category: "documentation"
-last_updated: "2025-12-14"
+title: Contributing
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  contributing/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Unused Exports Audit & Remediation
 
@@ -364,4 +366,3 @@ const patterns = {
 ---
 
 **Status**: ✅ **Active** | **Classification**: Automated | **Maintenance**: Continuous | **Last Updated**: 2025-10-07
-

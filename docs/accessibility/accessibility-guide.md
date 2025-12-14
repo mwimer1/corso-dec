@@ -1,9 +1,11 @@
 ---
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
-title: "Accessibility"
-description: "Documentation and resources for documentation functionality. Located in accessibility/."
+title: Accessibility
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  accessibility/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Accessibility Guide
 
@@ -526,4 +528,3 @@ button:focus-visible {
 ---
 
 **Last updated:** 2025-01-15
-

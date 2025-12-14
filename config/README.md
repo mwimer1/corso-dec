@@ -1,9 +1,9 @@
 ---
-category: "documentation"
-last_updated: "2025-12-14"
-status: "draft"
-title: "Config"
-description: "Documentation and resources for documentation functionality."
+title: Config
+description: Documentation and resources for documentation functionality.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Global Project Configuration (`config/`)
 
@@ -292,4 +292,3 @@ pnpm quality:local
 - **Category**: Development tooling
 - **Priority**: High
 - **Scope**: Project-wide configuration
-

@@ -1,9 +1,11 @@
 ---
-category: "documentation"
-last_updated: "2025-12-14"
-status: "draft"
-title: "Scripts"
-description: "Documentation and resources for documentation functionality. Located in scripts/."
+title: Scripts
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  scripts/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 ## Public Exports
 | File | Purpose | Location |
@@ -54,4 +56,3 @@ curl -s -H "Authorization: token $GITHUB_TOKEN" \
 Support
 -------
 If you have >10k workflow runs or need GitHub Enterprise assistance, contact GitHub Support or your enterprise admin to request a server-side purge.
-

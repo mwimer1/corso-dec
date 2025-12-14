@@ -1,9 +1,11 @@
 ---
-status: "draft"
-title: "Codebase Apis"
-description: "Documentation and resources for documentation functionality. Located in codebase-apis/."
-category: "documentation"
-last_updated: "2025-12-14"
+title: Codebase Apis
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  codebase-apis/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Import Patterns & Runtime Boundaries
 
@@ -683,4 +685,3 @@ Notes:
 _Last updated: 2025-09-03 - Added circular dependency prevention patterns and systematic fixes. Updated guidance: prefer `@/types/shared` barrel for shared UI/core types (e.g., `NavItemData`) instead of deep paths like `@/types/shared/core/ui`._
 
 > See also: Import Boundaries (Critical) in Best Practices for enforced source paths of logger, marketing pricing utilities, dashboard filter types, and SQL builder.
-

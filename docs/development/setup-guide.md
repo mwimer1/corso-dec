@@ -1,9 +1,11 @@
 ---
-status: "draft"
-title: "Development"
-description: "Documentation and resources for documentation functionality. Located in development/."
-category: "documentation"
-last_updated: "2025-12-14"
+title: Development
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  development/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # 🚀 Development Environment & Workflows
 
@@ -772,4 +774,3 @@ pnpm run cleanup:all
 - ✅ Git state (no impact on working directory)
 - ✅ Windows environments (cross-platform commands)
 - ✅ Large projects (efficient cleanup sequence)
-

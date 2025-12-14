@@ -1,9 +1,11 @@
 ---
-status: "draft"
-title: "Security"
-description: "Documentation and resources for documentation functionality. Located in security/."
-category: "documentation"
-last_updated: "2025-12-14"
+title: Security
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  security/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Authentication Patterns
 
@@ -348,4 +350,3 @@ function AuthAwareComponent() {
 - [API Patterns & Data Fetching](../api-data/api-patterns.md)
 - [Development Setup Guide](../development/setup-guide.md)
 - [Security Policy](security-policy.md)
-

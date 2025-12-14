@@ -1,9 +1,11 @@
 ---
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
-title: "Security"
-description: "Documentation and resources for documentation functionality. Located in security/."
+title: Security
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  security/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Dependency Policy
 
@@ -52,4 +54,3 @@ Rules enforced:
 - Block Node-only globals: `require`, `__dirname`, `__filename`, and non-public `process.env.*`
 - Ignore `Buffer` when referenced in type-only lines
 <!-- Removed duplicate Dependency Security Policy section (consolidated above) -->
-

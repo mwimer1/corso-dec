@@ -1,9 +1,11 @@
 ---
-status: "draft"
-title: "References"
-description: "Documentation and resources for documentation functionality. Located in references/."
-category: "documentation"
-last_updated: "2025-12-14"
+title: References
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  references/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Dependency Health & Audit Process
 
@@ -348,4 +350,3 @@ rg -n "ExportName" --type ts --type tsx
 ---
 
 *Last updated: 2025-01-16 | Maintained by: dev-team@corso*
-

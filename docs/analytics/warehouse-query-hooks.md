@@ -1,9 +1,11 @@
 ---
-category: "documentation"
-last_updated: "2025-12-14"
-status: "draft"
-title: "Analytics"
-description: "Documentation and resources for documentation functionality. Located in analytics/."
+title: Analytics
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  analytics/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 > Refer to the canonical warehouse query rules: [`docs/codebase-apis/warehouse-queries.md`](../codebase-apis/warehouse-queries.md).
 
@@ -725,4 +727,3 @@ When `CORSO_USE_MOCK_DB` is enabled, warehouse queries are served by a mock back
 - Prefer `| type` over `| cat` when piping query results in Windows terminals
 
 Last updated: 2025-09-01
-

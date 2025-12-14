@@ -1,9 +1,11 @@
 ---
-category: "documentation"
-last_updated: "2025-12-14"
-status: "draft"
-title: "Typescript"
-description: "Documentation and resources for documentation functionality. Located in typescript/."
+title: Typescript
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  typescript/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # TypeScript Configuration
 
@@ -473,4 +475,3 @@ npx tsc --traceResolution | grep "@/lib"
 ---
 
 _Last updated: 2025-01-16_
-

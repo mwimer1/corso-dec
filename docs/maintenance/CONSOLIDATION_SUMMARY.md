@@ -1,9 +1,11 @@
 ---
-title: "Maintenance"
-description: "Documentation and resources for documentation functionality. Located in maintenance/."
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
+title: Maintenance
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  maintenance/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Maintenance Suite Consolidation Summary
 
@@ -146,4 +148,3 @@ These commands remain unchanged as they serve specific purposes:
 
 - [Maintenance Audit Implementation](./MAINTENANCE_AUDIT_IMPLEMENTATION.md)
 - [Maintenance Standards](./MAINTENANCE_STANDARDS.md) (to be created)
-

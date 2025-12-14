@@ -1,9 +1,10 @@
 ---
-title: "scripts/test"
-last_updated: "2025-12-14"
-category: "automation"
+title: Test
+description: Documentation and resources for documentation functionality. Located in test/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
-
 # Repository Scripts & Docs
 
 This README is generated from a single template (`README.scripts.hbs`).

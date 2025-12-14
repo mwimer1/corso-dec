@@ -1,9 +1,11 @@
 ---
-description: "Documentation and resources for documentation functionality. Located in development/."
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
-title: "Development"
+title: Development
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  development/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Coding Standards & Best Practices
 
@@ -475,4 +477,3 @@ useEffect(() => {
 **Last Updated**: 2025-01-15  
 **Maintained By**: Platform Team  
 **Status**: Active
-

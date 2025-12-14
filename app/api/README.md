@@ -1,9 +1,9 @@
 ---
-description: "Documentation and resources for documentation functionality. Located in api/."
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
-title: "Api"
+title: Api
+description: Documentation and resources for documentation functionality. Located in api/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 ## API Structure
 
@@ -179,4 +179,3 @@ Single source: `api/openapi.yml` → generates `api/openapi.json` + TypeScript t
 ---
 
 **Last updated:** 2025-10-04
-

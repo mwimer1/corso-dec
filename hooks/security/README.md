@@ -1,9 +1,12 @@
 ---
-title: "hooks/security"
-last_updated: "2025-12-14"
-category: "automation"
+title: Security
+description: >-
+  React hooks providing state management and functionality for hooks. Located in
+  security/.
+last_updated: '2025-12-14'
+category: hooks
+status: draft
 ---
-
 # Repository Scripts & Docs
 
 This README is generated from a single template (`README.scripts.hbs`).

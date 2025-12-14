@@ -1,9 +1,12 @@
 ---
-title: "lib/integrations"
-last_updated: "2025-12-14"
-category: "automation"
+title: Integrations
+description: >-
+  Core lib utilities and functionality for the Corso platform. Located in
+  integrations/.
+last_updated: '2025-12-14'
+category: library
+status: draft
 ---
-
 # Repository Scripts & Docs
 
 This README is generated from a single template (`README.scripts.hbs`).

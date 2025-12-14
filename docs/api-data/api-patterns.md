@@ -1,9 +1,11 @@
 ---
-status: "draft"
-title: "Api Data"
-description: "Documentation and resources for documentation functionality. Located in api-data/."
-category: "documentation"
-last_updated: "2025-12-14"
+title: Api Data
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  api-data/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # API Patterns & Data Fetching
 
@@ -367,4 +369,3 @@ export async function createPost(input: CreatePostInput) {
 - [Warehouse Query Hooks](../codebase-apis/warehouse-queries.md) - Detailed hook usage
 - [API Security Patterns](../security/README.md) - Security implementation
 - [Data Fetching Patterns](../api-data/api-patterns.md) - Current patterns (this document)
-

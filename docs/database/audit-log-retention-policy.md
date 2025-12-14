@@ -1,8 +1,11 @@
 ---
-title: "Database"
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
+title: Database
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  database/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Audit Log Retention Policy
 
@@ -423,4 +426,3 @@ SELECT * FROM public.cleanup_audit_log();
 -- Update to 180 days
 SELECT * FROM public.update_audit_log_retention(180);
 ```
-

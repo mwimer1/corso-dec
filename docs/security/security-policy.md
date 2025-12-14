@@ -1,9 +1,11 @@
 ---
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
-title: "Security"
-description: "Documentation and resources for documentation functionality. Located in security/."
+title: Security
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  security/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Security Policy
 
@@ -71,4 +73,3 @@ We kindly ask that you:
 - Don't spam our systems or users
 
 We appreciate your help in keeping Corso and our users secure!
-

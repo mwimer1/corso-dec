@@ -1,9 +1,9 @@
 ---
-description: "Documentation and resources for documentation functionality."
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
-title: ".github"
+title: .github
+description: Documentation and resources for documentation functionality.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # 🤖 GitHub Automation Overview
 
@@ -339,4 +339,3 @@ The CI/CD pipeline implements comprehensive security measures with zero-trust pr
 ### 2025 Refactor Complete
 
 Successfully streamlined .github directory by removing 10 redundant workflows and consolidating functionality into 6 core workflows. Eliminated 2 non-essential custom actions and removed complex issue template system. Maintained zero-trust security principles while reducing maintenance overhead by ~70%.
-

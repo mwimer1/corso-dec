@@ -1,9 +1,9 @@
 ---
-status: "draft"
-title: "App"
-description: "Documentation and resources for documentation functionality."
-category: "documentation"
-last_updated: "2025-12-14"
+title: App
+description: Documentation and resources for documentation functionality.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # App Directory — Next.js App Router Architecture
 
@@ -243,4 +243,3 @@ export default async function DynamicPage({
 ---
 
 **Last updated:** 2025-10-07
-

@@ -1,9 +1,9 @@
 ---
-category: "actions"
-last_updated: "2025-12-14"
-status: "draft"
-title: "Actions"
-description: "Server-side actions for actions, handling data mutations and business logic."
+title: Actions
+description: 'Server-side actions for actions, handling data mutations and business logic.'
+last_updated: '2025-12-14'
+category: actions
+status: draft
 ---
 ## Public Exports
 | Action | Purpose | Import Path |
@@ -337,4 +337,3 @@ const result = await serverAction(data);
 
 ---
 _Last updated: 2025-09-04_
-

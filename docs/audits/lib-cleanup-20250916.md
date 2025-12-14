@@ -1,9 +1,11 @@
 ---
-category: "documentation"
-last_updated: "2025-12-14"
-status: "draft"
-title: "Audits"
-description: "Documentation and resources for documentation functionality. Located in audits/."
+title: Audits
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  audits/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 Summary
 -------
@@ -153,4 +155,3 @@ Evidence attachments (partial extracts from scans)
 Full scan logs and command outputs are available in the workspace shell history.
 
 -- End of audit doc
-

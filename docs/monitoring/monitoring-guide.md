@@ -1,9 +1,11 @@
 ---
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
-title: "Monitoring"
-description: "Documentation and resources for documentation functionality. Located in monitoring/."
+title: Monitoring
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  monitoring/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Monitoring & Observability Guide
 
@@ -553,4 +555,3 @@ export async function GET() {
 ---
 
 **Last updated:** 2025-01-15
-

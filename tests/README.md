@@ -1,9 +1,9 @@
 ---
-category: "documentation"
-last_updated: "2025-12-14"
-status: "draft"
-title: "Tests"
-description: "Documentation and resources for documentation functionality."
+title: Tests
+description: Documentation and resources for documentation functionality.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Test Suite
 
@@ -166,4 +166,3 @@ Tests automatically run in the appropriate environment based on file naming conv
 ---
 
 _Last updated: 2025-10-23 (Restructured to domain-first organization)_
-

@@ -1,9 +1,11 @@
 ---
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
-title: "Cicd Workflow"
-description: "Documentation and resources for documentation functionality. Located in cicd-workflow/."
+title: Cicd Workflow
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  cicd-workflow/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # CI/CD Pipeline & Quality Gates
 
@@ -253,4 +255,3 @@ pnpm install
 ---
 
 **Last updated:** 2025-09-15
-

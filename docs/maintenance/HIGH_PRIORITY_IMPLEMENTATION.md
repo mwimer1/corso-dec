@@ -1,9 +1,11 @@
 ---
-title: "Maintenance"
-description: "Documentation and resources for documentation functionality. Located in maintenance/."
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
+title: Maintenance
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  maintenance/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # High Priority Implementation Summary
 
@@ -162,4 +164,3 @@ pnpm validate:dead-code:all  # Now uses optimized version
 - [Maintenance Audit Implementation](./MAINTENANCE_AUDIT_IMPLEMENTATION.md)
 - [Consolidation Summary](./CONSOLIDATION_SUMMARY.md)
 - [Remaining Action Items](./REMAINING_ACTION_ITEMS.md)
-

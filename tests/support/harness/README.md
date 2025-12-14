@@ -1,9 +1,11 @@
 ---
-category: "documentation"
-last_updated: "2025-12-14"
-status: "draft"
-title: "Harness"
-description: "Documentation and resources for documentation functionality. Located in support/harness/."
+title: Harness
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  support/harness/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 ## Public Exports
 | Support File | Type | Description |
@@ -441,4 +443,3 @@ it('handles API requests', async () => {
 - All harness utilities are tested themselves
 - Edge cases and error conditions are covered
 - Integration with other test utilities is verified
-

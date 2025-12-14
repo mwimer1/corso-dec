@@ -1,9 +1,11 @@
 ---
-category: "documentation"
-last_updated: "2025-12-14"
-status: "draft"
-title: "Security"
-description: "Documentation and resources for documentation functionality. Located in security/."
+title: Security
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  security/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 ## Public Exports
 | Test File | Type | Description |
@@ -173,4 +175,3 @@ Security tests are automatically included in the quality gates:
 - [Security Standards](../../docs/security/)
 - [API Security Patterns](../../docs/security/api-security.md)
 - [Database Security](../../docs/security/database-security.md)
-

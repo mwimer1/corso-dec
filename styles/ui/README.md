@@ -1,3 +1,12 @@
+---
+title: Ui
+description: >-
+  Styling system for styles, using Tailwind CSS and design tokens. Located in
+  ui/.
+last_updated: '2025-12-14'
+category: styling
+status: draft
+---
 # Component Styles
 
 This directory contains component-level style definitions using `tailwind-variants` for type-safe, composable variant systems.

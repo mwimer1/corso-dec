@@ -1,9 +1,11 @@
 ---
-category: "documentation"
-last_updated: "2025-12-14"
-status: "draft"
-title: "Runtime Boundary"
-description: "Documentation and resources for documentation functionality. Located in runtime-boundary/."
+title: Runtime Boundary
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  runtime-boundary/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 ## Public Exports
 | Test File | Type | Description |
@@ -141,4 +143,3 @@ describe('authentication runtime boundaries', () => {
 ---
 
 _Last updated: 2025-01-16_
-

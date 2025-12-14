@@ -1,9 +1,11 @@
 ---
-title: "Maintenance"
-description: "Documentation and resources for documentation functionality. Located in maintenance/."
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
+title: Maintenance
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  maintenance/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Remaining Action Items - Maintenance Suite Audit
 
@@ -232,4 +234,3 @@ pnpm maintenance scan styles
 - [Maintenance Audit Implementation](./MAINTENANCE_AUDIT_IMPLEMENTATION.md)
 - [Consolidation Summary](./CONSOLIDATION_SUMMARY.md)
 - [Maintenance Standards](./MAINTENANCE_STANDARDS.md) (to be created)
-

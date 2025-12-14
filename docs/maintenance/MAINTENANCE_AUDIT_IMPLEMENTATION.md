@@ -1,9 +1,11 @@
 ---
-title: "Maintenance"
-description: "Documentation and resources for documentation functionality. Located in maintenance/."
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
+title: Maintenance
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  maintenance/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Maintenance Suite Audit - Implementation Summary
 
@@ -202,4 +204,3 @@ Before considering this implementation complete, test:
 
 - [Maintenance Suite Audit Report](./MAINTENANCE_AUDIT_REPORT.md) - Full audit findings
 - [Maintenance Standards](./MAINTENANCE_STANDARDS.md) - Proposed standards (to be created)
-

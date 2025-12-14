@@ -1,9 +1,11 @@
 ---
-category: "documentation"
-last_updated: "2025-12-14"
-status: "draft"
-title: "Support"
-description: "Documentation and resources for documentation functionality. Located in support/."
+title: Support
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  support/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Test Support Utilities
 
@@ -224,4 +226,3 @@ describe('MyComponent', () => {
 ---
 
 _Last updated: 2025-01-16_
-

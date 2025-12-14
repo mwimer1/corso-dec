@@ -1,9 +1,11 @@
 ---
-category: "documentation"
-last_updated: "2025-12-14"
-status: "draft"
-title: "(auth)"
-description: "Documentation and resources for documentation functionality. Located in (auth)/."
+title: (auth)
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  (auth)/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 [Back to App README](../README.md)
 
@@ -224,4 +226,3 @@ pnpm dev
 ---
 
 **Last updated:** 2025-10-07
-

@@ -1,9 +1,11 @@
 ---
-description: "Documentation and resources for documentation functionality. Located in security/."
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
-title: "Security"
+title: Security
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  security/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Security Implementation Guide
 
@@ -314,4 +316,3 @@ Track security events for:
 **Last Updated**: 2025-01-15  
 **Maintained By**: Security Team  
 **Status**: Active
-

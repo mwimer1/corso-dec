@@ -1,9 +1,11 @@
 ---
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
-title: "Cicd Workflow"
-description: "Documentation and resources for documentation functionality. Located in cicd-workflow/."
+title: Cicd Workflow
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  cicd-workflow/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # CI/CD Enhancement Guide
 
@@ -303,4 +305,3 @@ pnpm audit --fix
 ---
 
 **Last updated:** 2025-01-15
-

@@ -1,9 +1,11 @@
 ---
-status: "draft"
-title: "Architecture Design"
-description: "Documentation and resources for documentation functionality. Located in architecture-design/."
-category: "documentation"
-last_updated: "2025-12-14"
+title: Architecture Design
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  architecture-design/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Domain-Driven Architecture Guidelines
 
@@ -578,4 +580,3 @@ All team members must follow these rules when creating new domains or modifying 
 
 **Last updated:** 2025-09-12
 **Owner:** platform-team@corso
-

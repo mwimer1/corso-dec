@@ -1,9 +1,11 @@
 ---
-category: "documentation"
-last_updated: "2025-12-14"
-status: "draft"
-title: "(marketing)"
-description: "Documentation and resources for documentation functionality. Located in (marketing)/."
+title: (marketing)
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  (marketing)/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 ## 🚀 Quick Reference
 
@@ -692,4 +694,3 @@ pnpm vitest run            # Test components
 ---
 
 **Last updated:** 2025-09-10
-

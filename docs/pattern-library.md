@@ -1,9 +1,9 @@
 ---
-category: "documentation"
-last_updated: "2025-12-14"
-status: "draft"
-title: "Docs"
-description: "Documentation and resources for documentation functionality."
+title: Docs
+description: Documentation and resources for documentation functionality.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # 🎨 Style Pattern Library
 
@@ -456,4 +456,3 @@ const newButtonVariants = tv({
 **Pattern Library Status:** ✅ Complete and verified
 **Last Updated:** 2025-09-11
 **Coverage:** 100% of identified patterns documented
-

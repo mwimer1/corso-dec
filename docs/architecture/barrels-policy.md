@@ -1,9 +1,11 @@
 ---
-category: "documentation"
-last_updated: "2025-12-14"
-status: "draft"
-title: "Architecture"
-description: "Documentation and resources for documentation functionality. Located in architecture/."
+title: Architecture
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  architecture/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Barrels Policy (Manual, Selective, Runtime-Aware)
 
@@ -147,4 +149,3 @@ When creating new barrels:
 - `corso/no-cross-domain-imports`: Enforces domain boundaries
 - `corso/no-deep-imports`: Prevents deep imports that should use barrels
 - ESLint `no-restricted-imports`: Prevents client importing server-only code
-

@@ -1,8 +1,11 @@
 ---
-title: "Database"
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
+title: Database
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  database/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Database Performance Monitoring
 
@@ -380,4 +383,3 @@ SELECT * FROM public.get_slow_queries(100, 60);
 -- Remove metrics older than 30 days
 SELECT public.cleanup_old_performance_metrics(30);
 ```
-

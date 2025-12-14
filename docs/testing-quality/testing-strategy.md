@@ -1,9 +1,11 @@
 ---
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
-title: "Testing Quality"
-description: "Documentation and resources for documentation functionality. Located in testing-quality/."
+title: Testing Quality
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  testing-quality/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Testing Strategy & Best Practices
 
@@ -548,4 +550,3 @@ Storybook in CI:
 ---
 
 Last updated: 2025-10-21
-

@@ -1,9 +1,11 @@
 ---
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
-title: "Typescript"
-description: "Documentation and resources for documentation functionality. Located in typescript/."
+title: Typescript
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  typescript/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Type Safety Audit
 
@@ -167,4 +169,3 @@ console.error(`${context} failed:`, error as any);
 ---
 
 **Last updated:** 2025-01-15
-

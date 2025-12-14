@@ -1,9 +1,11 @@
 ---
-category: "documentation"
-last_updated: "2025-12-14"
-status: "draft"
-title: "Setup"
-description: "Documentation and resources for documentation functionality. Located in setup/."
+title: Setup
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  setup/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # Test Setup Configuration
 
@@ -231,4 +233,3 @@ it('setup provides expected test utilities', () => {
 ---
 
 _Last updated: 2025-01-16_
-

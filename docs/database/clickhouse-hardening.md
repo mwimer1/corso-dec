@@ -1,9 +1,11 @@
 ---
-description: "Documentation and resources for documentation functionality. Located in database/."
-last_updated: "2025-12-14"
-category: "documentation"
-status: "draft"
-title: "Database"
+title: Database
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  database/.
+last_updated: '2025-12-14'
+category: documentation
+status: draft
 ---
 # ClickHouse Security Hardening
 
@@ -454,4 +456,3 @@ const safeParams = sanitizeClickParams({
 - [ ] Review and update security rules
 - [ ] Test backup and recovery procedures
 - [ ] Update security documentation
-
