@@ -263,6 +263,7 @@ export default [
       'corso/no-direct-process-env': 'error',
       'corso/require-zod-strict': 'error',
       'corso/require-runtime-exports': ['error', { files: ['app/api/**/*.ts'] }],
+      'corso/no-direct-supabase-admin': 'error',
 
       // New migrated rules from AST-Grep (Phase 1-3)
       'corso/force-root-imports': 'warn', // Start with warn due to potential false positives

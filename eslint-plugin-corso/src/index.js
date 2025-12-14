@@ -1714,6 +1714,74 @@ export default {
           }
         };
       }
+    },
+    'no-direct-supabase-admin': {
+      meta: {
+        type: 'problem',
+        docs: {
+          description: 'Prevent direct usage of getSupabaseAdmin. Use tenant-scoped client wrapper instead.',
+          recommended: true,
+        },
+        messages: {
+          directUsage: 'Direct usage of getSupabaseAdmin() is forbidden. Use getTenantScopedSupabaseClient() or withTenantClient() from @/lib/server/db/supabase-tenant-client to ensure RLS context is set.',
+        },
+      },
+      create(context) {
+        const filename = context.getFilename().replace(/\\/g, '/');
+        
+        // Allow in the tenant client wrapper itself and the server module that defines it
+        if (filename.includes('lib/server/db/supabase-tenant-client.ts') ||
+            filename.includes('lib/integrations/supabase/server.ts') ||
+            filename.includes('lib/integrations/supabase/api.ts')) {
+          return {};
+        }
+
+        // Allow in tests
+        if (/(tests?|__tests__|\.(spec|test)\.)/.test(filename)) {
+          return {};
+        }
+
+        return {
+          CallExpression(node) {
+            // Check for getSupabaseAdmin() calls
+            if (node.callee && node.callee.type === 'Identifier' && node.callee.name === 'getSupabaseAdmin') {
+              context.report({
+                node,
+                messageId: 'directUsage',
+              });
+            }
+            // Check for getSupabaseAdmin imported and called
+            if (node.callee && node.callee.type === 'MemberExpression' &&
+                node.callee.property && node.callee.property.type === 'Identifier' &&
+                node.callee.property.name === 'getSupabaseAdmin') {
+              context.report({
+                node,
+                messageId: 'directUsage',
+              });
+            }
+          },
+          ImportDeclaration(node) {
+            const importPath = node.source.value;
+            if (typeof importPath !== 'string') return;
+
+            // Check if importing getSupabaseAdmin from integrations
+            if (importPath === '@/lib/integrations' || importPath === '@/lib/integrations/supabase/server') {
+              for (const spec of node.specifiers || []) {
+                if (spec.type === 'ImportSpecifier' && spec.imported && spec.imported.name === 'getSupabaseAdmin') {
+                  context.report({
+                    node: spec,
+                    messageId: 'directUsage',
+                  });
+                }
+                if (spec.type === 'ImportDefaultSpecifier' || spec.type === 'ImportNamespaceSpecifier') {
+                  // Check if default/namespace import might contain getSupabaseAdmin
+                  // This is a best-effort check
+                }
+              }
+            }
+          }
+        };
+      }
     }
   },
   configs: {
