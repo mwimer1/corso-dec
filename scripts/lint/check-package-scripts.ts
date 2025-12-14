@@ -47,6 +47,7 @@ const canonicalKeys = new Set<string>([
   'lint:edge', 'lint:workflows:pnpm',
   'validate', 'validate:dead-code', 'validate:dead-code:all',
   'validate:orphans', 'validate:cycles', 'validate:ts-unused',
+  'validate:duplication',
   'ast-grep:scan'
 ]);
 

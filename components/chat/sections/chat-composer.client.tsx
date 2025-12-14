@@ -18,19 +18,22 @@ type ChatComposerProps = {
   canSend?: boolean;
 };
 
-function ChatComposer({
-  value,
-  onChange,
-  onSend,
-  disabled,
-  placeholder,
-  onInputAutoGrow,
-  isProcessing,
-  mode,
-  setMode,
-  stop,
-  canSend,
-}: ChatComposerProps) {
+function ChatComposer(props: ChatComposerProps) {
+  // Provide defaults for required props to handle edge cases in tests
+  const {
+    value = '',
+    onChange = () => {},
+    onSend = () => {},
+    disabled = false,
+    placeholder,
+    onInputAutoGrow,
+    isProcessing = false,
+    mode = 'projects',
+    setMode = () => {},
+    stop,
+    canSend = false,
+  } = props || {};
+  
   const inputRef = React.useRef<HTMLTextAreaElement | null>(null);
   const [isComposing, setIsComposing] = React.useState(false);
 

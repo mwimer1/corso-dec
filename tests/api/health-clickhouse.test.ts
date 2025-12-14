@@ -1,4 +1,4 @@
-import * as clickhouseHealth from '@/app/api/health/clickhouse/route';
+import * as clickhouseHealth from '@/app/api/public/health/clickhouse/route';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock the ClickHouse client

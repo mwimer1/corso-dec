@@ -69,7 +69,9 @@ vi.mock('next/dynamic', async () => {
       
       // For tests, return a component that immediately starts loading
       // and renders once the import resolves, with caching for performance
-      return function DynamicComponent(props: any) {
+      return function DynamicComponent(componentProps: any) {
+        // Ensure props is always an object to prevent destructuring errors
+        const props = componentProps || {};
         const [Component, setComponent] = React.useState<any>(dynamicComponentCache.get(cacheKey) || null);
         const [isLoading, setIsLoading] = React.useState(!Component);
         

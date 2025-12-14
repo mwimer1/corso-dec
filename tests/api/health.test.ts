@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import * as health from '@/app/api/health/route';
+import * as health from '@/app/api/public/health/route';
 
 describe('health route', () => {
   it('declares edge runtime', () => {

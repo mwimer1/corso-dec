@@ -271,7 +271,7 @@ const sql = `SELECT * FROM events WHERE org_id = '${orgId}'`;
 const { data } = await clickhouseQuery(sql);
 ```
 
-### Tenant Isolation
+### Tenant Isolation Best Practices
 
 **✅ CORRECT:**
 ```typescript

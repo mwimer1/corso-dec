@@ -45,7 +45,7 @@ describe('Edge runtime boundary safety', () => {
   it('Edge routes do not import server-only modules', () => {
     // Define patterns for Edge runtime routes
     const edgeRoutes = [
-      'app/api/health/route.ts',
+      'app/api/public/health/route.ts',
       'app/api/v1/csp-report/route.ts',
     ];
 
@@ -89,7 +89,7 @@ describe('Edge runtime boundary safety', () => {
 
   it('Edge routes only use Edge-compatible environment access', () => {
     const edgeRoutes = [
-      'app/api/health/route.ts',
+      'app/api/public/health/route.ts',
       'app/api/v1/csp-report/route.ts',
     ];
 
