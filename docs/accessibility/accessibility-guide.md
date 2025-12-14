@@ -333,7 +333,7 @@ function Modal({ isOpen, onClose, title, children }) {
 
 ## 🎨 Visual Accessibility
 
-### Color Contrast
+### Color Contrast Testing
 
 **Testing Tools:**
 - Browser DevTools (Accessibility panel)

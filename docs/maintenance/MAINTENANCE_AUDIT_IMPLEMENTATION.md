@@ -30,7 +30,7 @@ This document tracks the implementation of improvements identified in the Mainte
 
 #### 3. Cleanup Commands Default to Dry-Run
 **Files**: `package.json`
-- **Change**: 
+- **Change**:
   - `cleanup:styles` composite now defaults to dry-run (removed automatic `--write` flags)
   - Added `cleanup:styles:apply` for explicit application
   - Standardized `cleanup:shared:trim` naming (removed `:dry` and `:prune` variants, added `:write` and `:delete`)

@@ -52,7 +52,7 @@ export const POST = withErrorHandling(
 );
 ```
 
-**Root Cause:** 
+**Root Cause:**
 - Handlers return `Response` (from `http.ok()`, `http.error()`, etc.)
 - Wrappers expect `NextResponse | Response`
 - Type system doesn't properly narrow the union

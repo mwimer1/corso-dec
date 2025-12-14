@@ -103,7 +103,7 @@ SELECT * FROM public.get_table_performance_stats(60);
 | `rowCount` | Number of rows affected/returned |
 | `error` | Error message (if query failed) |
 
-### Performance Statistics
+### Statistics Function Output
 
 The `get_query_performance_stats()` function returns:
 

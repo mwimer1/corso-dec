@@ -16,7 +16,7 @@ This document provides a comprehensive overview of the Corso codebase architectu
 - **Framework**: Next.js 15.5.9 (App Router)
 - **React**: 18.3.1
 - **Authentication**: Clerk v6.36.2
-- **Database**: 
+- **Database**:
   - ClickHouse (analytics/data warehouse)
   - Supabase (relational data)
 - **Language**: TypeScript 5.9.3 (strict mode)
@@ -162,7 +162,7 @@ Component organization follows atomic design principles:
 
 - **ClickHouse**: Analytics and data warehouse queries
 - **Supabase**: Relational data and user management
-- **Query Patterns**: 
+- **Query Patterns**:
   - Client: React Query hooks → API routes → ClickHouse/Supabase
   - Server: Direct service layer access
 

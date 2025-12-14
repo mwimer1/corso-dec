@@ -201,7 +201,7 @@ const errorId = reportError(error, {
 });
 ```
 
-### Error Categories
+### Error Category Types
 
 - `INTERNAL` - Internal system errors
 - `VALIDATION` - Input validation errors
