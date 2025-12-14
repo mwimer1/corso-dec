@@ -56,6 +56,52 @@ vi.mock('@/ui/molecules', () => ({
   SectionHeader: ({ children, ..._props }: any) => children,
 }));
 
+// Mock next/dynamic to return components directly in tests (no lazy loading)
+// This allows dynamically imported components to render immediately in tests
+vi.mock('next/dynamic', async () => {
+  const React = await import('react');
+  return {
+    default: (importFn: () => Promise<any>, options?: any) => {
+      // For tests, return a component that immediately starts loading
+      // and renders once the import resolves
+      return function DynamicComponent(props: any) {
+        const [Component, setComponent] = React.useState<any>(null);
+        const [isLoading, setIsLoading] = React.useState(true);
+        
+        React.useEffect(() => {
+          let cancelled = false;
+          importFn()
+            .then((mod) => {
+              if (!cancelled) {
+                setComponent(() => mod.default || mod);
+                setIsLoading(false);
+              }
+            })
+            .catch(() => {
+              if (!cancelled) {
+                setIsLoading(false);
+              }
+            });
+          
+          return () => {
+            cancelled = true;
+          };
+        }, []);
+        
+        if (Component) {
+          return React.createElement(Component, props);
+        }
+        
+        // Return loading state if provided, otherwise null
+        if (isLoading && options?.loading) {
+          return React.createElement(options.loading);
+        }
+        return null;
+      };
+    },
+  };
+});
+
 // Note: @/atoms is now mocked at the vitest configuration level
 
 // Mock validation import for tests that need it
