@@ -56,6 +56,69 @@ vi.mock('@/ui/molecules', () => ({
   SectionHeader: ({ children, ..._props }: any) => children,
 }));
 
+// Mock next/dynamic to return components directly in tests (no lazy loading)
+// This allows dynamically imported components to render immediately in tests
+const dynamicComponentCache = new Map<string, any>();
+
+vi.mock('next/dynamic', async () => {
+  const React = await import('react');
+  return {
+    default: (importFn: () => Promise<any>, options?: any) => {
+      // Create a cache key from the function string representation
+      const cacheKey = importFn.toString();
+      
+      // For tests, return a component that immediately starts loading
+      // and renders once the import resolves, with caching for performance
+      return function DynamicComponent(props: any) {
+        const [Component, setComponent] = React.useState<any>(dynamicComponentCache.get(cacheKey) || null);
+        const [isLoading, setIsLoading] = React.useState(!Component);
+        
+        React.useEffect(() => {
+          // If already cached, use it immediately
+          if (dynamicComponentCache.has(cacheKey)) {
+            const cached = dynamicComponentCache.get(cacheKey);
+            if (cached && !Component) {
+              setComponent(() => cached);
+              setIsLoading(false);
+            }
+            return;
+          }
+          
+          let cancelled = false;
+          importFn()
+            .then((mod) => {
+              if (!cancelled) {
+                const resolved = mod.default || mod;
+                dynamicComponentCache.set(cacheKey, resolved);
+                setComponent(() => resolved);
+                setIsLoading(false);
+              }
+            })
+            .catch(() => {
+              if (!cancelled) {
+                setIsLoading(false);
+              }
+            });
+          
+          return () => {
+            cancelled = true;
+          };
+        }, [Component, cacheKey]);
+        
+        if (Component) {
+          return React.createElement(Component, props);
+        }
+        
+        // Return loading state if provided, otherwise null
+        if (isLoading && options?.loading) {
+          return React.createElement(options.loading);
+        }
+        return null;
+      };
+    },
+  };
+});
+
 // Note: @/atoms is now mocked at the vitest configuration level
 
 // Mock validation import for tests that need it
