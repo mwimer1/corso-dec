@@ -2,8 +2,11 @@
 :root[data-route-theme="auth"] {
   --background: 0 0% 98%;
   --foreground: 240 10% 3.9%;
+  /* Auth theme uses a dark neutral primary (225 6% 13%) instead of brand blue
+     to avoid blue-on-white contrast issues on minimal authentication pages */
   --primary: 225 6% 13%;
   --primary-foreground: 0 0% 98%;
+  /* Auth theme uses a more vibrant blue for secondary/accent elements */
   --secondary: 217 92% 61%;
   --secondary-foreground: 0 0% 100%;
 }

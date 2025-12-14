@@ -103,7 +103,7 @@ html, body {
   box-sizing: border-box;
   user-select: text;
   padding: 6px 8px;
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-lg);
 }
 
 /* Dialog backdrop filter with vendor prefixes */

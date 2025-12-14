@@ -15,13 +15,13 @@
   --sb-radius: 0.5rem;
 
   /* Tooltip tokens for collapsed sidebar tooltips */
-  --sb-tip-bg: var(--color-elevated-bg, rgb(15 23 42));
-  --sb-tip-fg: var(--color-elevated-fg, rgb(255 255 255));
+  --sb-tip-bg: hsl(var(--surface-contrast, 0 0% 93%));
+  --sb-tip-fg: hsl(var(--foreground, 222.2 47.4% 11.2%));
   --sb-tip-radius: var(--sb-radius, 0.5rem);
   --sb-tip-pad-x: 0.5rem;
   --sb-tip-pad-y: 0.375rem;
   --sb-tip-gap: 0.5rem;
-  --sb-tip-shadow: var(--shadow-lg, rgb(0 0 0 / 10%), rgb(0 0 0 / 10%));
+  --sb-tip-shadow: var(--shadow-lg);
   --sb-tip-z: 60;
   --sb-tip-font: var(--font-sans, ui-sans-serif);
   --sb-tip-size: 0.875rem; /* 14px */
