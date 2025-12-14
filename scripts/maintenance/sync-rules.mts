@@ -2,7 +2,7 @@
 /**
  * Synchronize canonical rules to generated surfaces.
  * - Canonical: .cursor/rules/corso-assistant.mdc
- * - Generated: .agent/corso-dev.md
+ * - Generated: .cursor/rules/corso-dev.md
  * - Inventory:  .cursor/rules/_index.json
  *
  * Node 18+ / ESM. Run with: pnpm rules:sync
@@ -12,8 +12,6 @@ import { join } from 'node:path';
 
 const ROOT = process.cwd();
 const CURSOR_RULES_DIR = join(ROOT, '.cursor', 'rules');
-// We now generate the agent-facing mirror inside the canonical rules dir
-const AGENT_DIR = join(ROOT, '.agent');
 
 const CANONICAL = join(CURSOR_RULES_DIR, 'corso-assistant.mdc');
 // Mirror will be written into the canonical rules folder to avoid a separate .agent prose copy
@@ -26,7 +24,6 @@ function ensureDir(p: string) {
 
 function main() {
   ensureDir(CURSOR_RULES_DIR);
-  ensureDir(AGENT_DIR);
 
   if (!existsSync(CANONICAL)) {
     console.error(`[rules:sync] Missing canonical rules at ${CANONICAL}`);
@@ -35,7 +32,7 @@ function main() {
 
   const canonicalMd = readFileSync(CANONICAL, 'utf8');
 
-  // Build .agent/corso-dev.md with banner + canonical content + indexes section
+  // Build .cursor/rules/corso-dev.md with banner + canonical content
   const banner = [
     '<!--',
     '  AUTO-GENERATED FILE — DO NOT EDIT BY HAND.',

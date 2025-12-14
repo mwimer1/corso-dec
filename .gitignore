@@ -199,3 +199,6 @@ bundle-size-current.json
 
 # clerk configuration (can include secrets)
 /.clerk/
+
+# Generated agent indexes (created by pnpm agent:indexes)
+.agent/
