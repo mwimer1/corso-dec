@@ -535,3 +535,4 @@ head -n 100 backup.sql | grep -q "PostgreSQL database dump" && echo "Valid"
 createdb test_restore && psql test_restore < backup.sql && dropdb test_restore
 ```
 
+
