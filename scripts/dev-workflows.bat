@@ -159,8 +159,8 @@ pnpm typecheck:clean
 goto completed
 
 :cleanall
-echo Cleaning All Caches and Rebuilding...
-pnpm cleanup:all
+echo Cleaning Ports...
+pnpm cleanup:ports
 goto completed
 
 :docs
@@ -175,6 +175,7 @@ goto completed
 
 :fixpnpm
 echo Fixing Windows pnpm issues...
+echo Note: fix-windows-pnpm.ps1 is Windows-only. On other platforms, use standard pnpm commands.
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/setup/fix-windows-pnpm.ps1
 goto completed
 
