@@ -438,10 +438,12 @@ Database query performance is tracked via:
 
 ## 📚 Related Documentation
 
+- [Monitoring Guide](../monitoring/monitoring-guide.md) - Performance monitoring and metrics collection
+- [Operational Guide](../operations/operational-guide.md) - Production deployment and optimization
+- [Testing Strategy](../testing-quality/testing-strategy.md) - Performance testing patterns
 - [Bundle Size Configuration](../../scripts/ci/bundle-size.config.json) - Bundle size limits
 - [Next.js Configuration](../../config/next.config.mjs) - Build optimization settings
 - [Database Queries](../../docs/analytics/warehouse-query-hooks.md) - Query patterns
-- [Testing Strategy](../testing-quality/testing-strategy.md) - Performance testing
 
 ## 🏷️ Tags
 

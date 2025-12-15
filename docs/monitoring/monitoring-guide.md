@@ -546,9 +546,10 @@ export async function GET() {
 
 ## 🔗 Related Documentation
 
-- [Operational Guide](../operations/operational-guide.md) - Deployment and operations
-- [Error Handling Guide](../error-handling/error-handling-guide.md) - Error patterns
-- [Performance Guide](../performance/performance-optimization-guide.md) - Performance monitoring
+- [Performance Guide](../performance/performance-optimization-guide.md) - Performance optimization and Core Web Vitals
+- [Operational Guide](../operations/operational-guide.md) - Deployment, troubleshooting, and day-to-day operations
+- [Production Readiness](../production/production-readiness-checklist.md) - Production deployment checklist
+- [Error Handling Guide](../error-handling/error-handling-guide.md) - Error patterns and structured logging
 
 ---
 

@@ -286,6 +286,9 @@ Track security events for:
 
 ## 📚 Related Documentation
 
+- [Operational Guide](../operations/operational-guide.md) - Security operations and incident response
+- [Testing Strategy](../testing-quality/testing-strategy.md) - Security testing patterns
+- [API Documentation](../../app/api/README.md) - API security patterns and rate limiting
 - [Security Policy](security-policy.md) - Vulnerability reporting
 - [Authentication Patterns](auth-patterns.md) - Auth implementation details
 - [API Security Standards](../.cursor/rules/security-standards.mdc) - API security rules

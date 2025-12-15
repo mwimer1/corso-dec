@@ -466,11 +466,13 @@ return http.error(500, error.message); // May contain sensitive data
 - Log sensitive data (passwords, tokens)
 - Fail without recovery options
 
-## 🔗 Related Documentation
+## 📚 Related Documentation
 
+- [Monitoring Guide](../monitoring/monitoring-guide.md) - Error logging, observability, and monitoring
+- [Security Implementation](../security/security-implementation.md) - Security error handling
+- [Operational Guide](../operations/operational-guide.md) - Troubleshooting and incident response
+- [Testing Strategy](../testing-quality/testing-strategy.md) - Error boundary testing
 - [API Design Guide](../api/api-design-guide.md) - API error responses
-- [Security Standards](../security/security-standards.md) - Security error handling
-- [Monitoring Guide](../monitoring/monitoring-guide.md) - Error monitoring
 
 ---
 

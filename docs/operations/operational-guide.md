@@ -340,9 +340,11 @@ curl -I https://your-domain.com/
 
 ## 📚 Related Documentation
 
-- [Security Implementation](../security/security-implementation.md) - Security procedures
-- [Performance Optimization Guide](../performance/performance-optimization-guide.md) - Performance monitoring
-- [API Documentation](../../api/README.md) - API endpoints and health checks
+- [Monitoring Guide](../monitoring/monitoring-guide.md) - Health checks, metrics, and observability
+- [Performance Optimization Guide](../performance/performance-optimization-guide.md) - Performance monitoring and optimization
+- [Production Readiness Checklist](../production/production-readiness-checklist.md) - Pre-deployment verification
+- [Security Implementation](../security/security-implementation.md) - Security procedures and incident response
+- [API Documentation](../../app/api/README.md) - API endpoints and health checks
 - [Development Setup Guide](../development/setup-guide.md) - Development environment
 
 ## 🏷️ Tags

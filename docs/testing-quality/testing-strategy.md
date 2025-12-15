@@ -536,7 +536,8 @@ Storybook in CI:
 
 ## 📚 Related Documentation
 
-- [Testing Strategy](./testing-strategy.md) - **Complete testing guide with examples, patterns, and best practices**
+- [Security Implementation](../security/security-implementation.md) - Security testing patterns and RBAC testing
+- [Performance Guide](../performance/performance-optimization-guide.md) - Performance testing and optimization
 - [API Route Tests](../../tests/api/README.md) - API testing patterns and examples
 - [Security Tests](../../tests/security/README.md) - Security testing guidelines
 - [Test Support](../../tests/support/README.md) - Test utilities and helpers

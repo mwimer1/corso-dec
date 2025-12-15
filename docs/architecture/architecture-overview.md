@@ -3,7 +3,7 @@ title: "Architecture"
 description: "Documentation and resources for documentation functionality. Located in architecture/."
 last_updated: "2025-12-15"
 category: "documentation"
-status: "draft"
+status: "stable"
 ---
 # Architecture Overview
 
@@ -33,34 +33,18 @@ This document provides a comprehensive overview of the Corso codebase architectu
 
 ## 📁 Project Structure
 
-```
-corso-app/
-├── app/                    # Next.js App Router (pages, layouts, API routes)
-│   ├── (auth)/             # Authentication route group
-│   ├── (marketing)/        # Public marketing pages
-│   ├── (protected)/        # Authenticated application
-│   └── api/                # API routes (versioned under /api/v1/)
-├── components/             # React components (UI library)
-│   ├── ui/                 # Atomic design system (atoms, molecules, organisms)
-│   ├── auth/               # Authentication components
-│   ├── dashboard/          # Dashboard-specific components
-│   └── marketing/          # Marketing components
-├── lib/                     # Business logic, utilities, configurations
-│   ├── api/                # API utilities (Edge-safe)
-│   ├── auth/               # Authentication logic
-│   ├── integrations/      # External service integrations
-│   ├── server/             # Server-only utilities
-│   └── shared/             # Shared utilities (client-safe)
-├── types/                  # TypeScript type definitions
-├── hooks/                  # React hooks
-├── actions/                # Server actions
-├── contexts/               # React contexts
-├── docs/                   # Documentation
-├── api/                    # OpenAPI specifications
-├── scripts/                # Development and maintenance scripts
-├── tests/                  # Test files and utilities
-└── styles/                 # Styling and design tokens
-```
+For detailed directory structure and route organization, see:
+- [App Directory Structure](app/README.md) - Complete Next.js App Router organization
+- [Codebase Structure](docs/codebase-apis/codebase-structure.md) - Full directory reference
+
+**High-level organization:**
+- `app/` - Next.js App Router (route groups, pages, API routes)
+- `components/` - React components (atomic design system)
+- `lib/` - Business logic, utilities, configurations
+- `types/` - TypeScript type definitions
+- `hooks/` - React hooks
+- `docs/` - Documentation
+- `api/` - OpenAPI specifications
 
 ## 🎯 Design Patterns
 
