@@ -82,7 +82,7 @@ The `server` domain has specific allowed facades for importing from other domain
     "@/lib/shared",
     "@/lib/core",
     "@/lib/integrations",
-    "@/lib/auth",
+    "@/lib/auth/server",
     "@/lib/monitoring",
     "@/lib/security"
   ],
