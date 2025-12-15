@@ -10,6 +10,8 @@ import { FaqSectionFrame } from "../../widgets/faq-section-frame";
 import { PricingFAQ, type FAQItem } from "./pricing-faq";
 import { PricingHeader } from "./pricing-header";
 import type { ExtendedPricingPlan } from "./types";
+import { SegmentedControl } from "@/components/ui/segmented-control";
+import type { BillingCycle } from "@/components/marketing/pricing/plan-ui";
 // Local implementation to avoid cross-domain import
 const persistSelectedPlan = (planSlug: string) => {
   if (typeof window !== 'undefined') {
@@ -26,23 +28,29 @@ interface PricingPageProps extends React.HTMLAttributes<HTMLDivElement> {
   faqs: readonly FAQItem[];
   headerTitle?: string;
   headerSubtitle?: string;
+  /** Current billing cycle */
+  billingCycle?: BillingCycle;
+  /** Callback when billing cycle changes */
+  onBillingCycleChange?: (cycle: BillingCycle) => void;
   /** Optional analytics hook when a plan is selected */
   onPlanSelect?: (_planSlug: string) => void;
 }
 
 /** PricingPage – Complete pricing page with toggle, tiers, and FAQ. */
 export const PricingPage = React.forwardRef<HTMLDivElement, PricingPageProps>(
-  ({ plans, faqs, headerTitle, headerSubtitle, onPlanSelect, className, ...props }, ref) => {
+  ({ plans, faqs, headerTitle, headerSubtitle, billingCycle = "monthly", onBillingCycleChange, onPlanSelect, className, ...props }, ref) => {
     // Local PLANS constant (derived from props) so we can map consistently
     const PLANS: ExtendedPricingPlan[] = plans;
 
-    // Adapter: map ExtendedPricingPlan -> PricingCardProps (pricing shown as monthly)
+    // Adapter: map ExtendedPricingPlan -> PricingCardProps (pricing shown based on billing cycle)
     function toPricingCardProps(plan: ExtendedPricingPlan): PricingCardProps {
       const slug = (plan as any).slug ?? plan.title ?? "plan";
-      const priceText = plan.priceText;
+      const priceText = billingCycle === "annual" && plan.annualPriceText 
+        ? plan.annualPriceText 
+        : plan.priceText;
 
       // Small note shown directly under the price (subtle, italic)
-      const priceNote = 'billed monthly';
+      const priceNote = billingCycle === "annual" ? 'billed annually' : 'billed monthly';
       const description = plan.description ?? undefined;
 
       const p = {
@@ -52,7 +60,7 @@ export const PricingPage = React.forwardRef<HTMLDivElement, PricingPageProps>(
         priceNote,
         description: description ?? '',
         features: plan.features ?? [],
-        ctaText: 'Select',
+        ctaText: 'Start free',
       };
 
       const props: PricingCardProps = {
@@ -74,7 +82,7 @@ export const PricingPage = React.forwardRef<HTMLDivElement, PricingPageProps>(
       <div ref={ref} id="pricing" className={cn(className)} {...props}>
         {/* Header Section */}
         <FullWidthSection
-          padding="sm"
+          padding="lg"
           containerMaxWidth="7xl"
           containerPadding="lg"
           showVerticalGuidelines
@@ -85,6 +93,17 @@ export const PricingPage = React.forwardRef<HTMLDivElement, PricingPageProps>(
           <PricingHeader
             {...(headerTitle ? { title: headerTitle } : {})}
             {...(headerSubtitle ? { subtitle: headerSubtitle } : {})}
+            toggle={
+              <SegmentedControl<BillingCycle>
+                value={billingCycle}
+                onChange={(cycle) => onBillingCycleChange?.(cycle)}
+                options={[
+                  { id: "monthly", label: "Monthly" },
+                  { id: "annual", label: "Annual (Save 20%)" },
+                ]}
+                className="flex items-center gap-2"
+              />
+            }
           />
         </FullWidthSection>
 
@@ -98,8 +117,8 @@ export const PricingPage = React.forwardRef<HTMLDivElement, PricingPageProps>(
           guidelineColor="bg-border"
         >
           <section id="tiers">
-            <div className="mt-0">
-              <div className="flex flex-wrap items-stretch justify-center gap-6">
+            <h2 className="sr-only">Plans & Pricing</h2>
+            <div className="flex flex-wrap items-stretch justify-center gap-6">
                 {PLANS.map((plan, idx) => {
                   const props = toPricingCardProps(plan);
                   // Middle card (index 1) keeps dark button; left/right use the standard white-outline (secondary)
@@ -107,7 +126,10 @@ export const PricingPage = React.forwardRef<HTMLDivElement, PricingPageProps>(
                   return <PricingCard key={props.plan.slug} {...props} />;
                 })}
               </div>
-            </div>
+            {/* Trust note */}
+            <p className="mt-8 text-center text-sm text-muted-foreground">
+              All plans include a 7-day free trial and a 30‑day money-back guarantee.
+            </p>
           </section>
         </FullWidthSection>
 

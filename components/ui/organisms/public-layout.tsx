@@ -93,6 +93,7 @@ export function PublicLayout({
         className={cn(
           "flex-1 relative bg-background text-foreground",
           showReadingProgress && "pt-4", // Account for reading progress bar
+          !isSignedIn && showMobileCTA && "pb-20", // Prevent footer overlap with mobile CTA
           className,
         )}
         {...props}
