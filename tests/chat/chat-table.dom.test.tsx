@@ -48,7 +48,7 @@ describe('ChatTable', () => {
 
     const table = screen.getByRole('table');
     const thead = table.querySelector('thead');
-    expect(thead).toHaveClass('sticky', 'top-0', 'bg-white', 'border-b');
+    expect(thead).toHaveClass('sticky', 'top-0', 'bg-surface', 'border-b');
   });
 
   it('handles empty columns gracefully', () => {
@@ -94,7 +94,7 @@ describe('ChatTable', () => {
     const dataRows = rows.slice(1);
 
     dataRows.forEach(row => {
-      expect(row).toHaveClass('hover:bg-gray-50');
+      expect(row).toHaveClass('hover:bg-surface-hover');
     });
   });
 

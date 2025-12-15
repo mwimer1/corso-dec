@@ -70,17 +70,17 @@ describe('Navbar', () => {
       expect(screen.queryByTestId('user-button')).not.toBeInTheDocument();
     });
 
-    it('shows CTAs in landing mode even when user is signed in (forceShowCTAs behavior)', () => {
+    it('shows UserButton in landing mode when user is signed in', () => {
       vi.spyOn(clerkModule, 'useAuth').mockReturnValue({
         isSignedIn: true,
       } as any);
 
       render(<Navbar mode="landing" />);
 
-      // Landing mode always shows CTAs regardless of auth state
-      expect(screen.getByText(/sign in/i)).toBeInTheDocument();
-      expect(screen.getByText(/sign up|start for free/i)).toBeInTheDocument();
-      expect(screen.queryByTestId('user-button')).not.toBeInTheDocument();
+      // Signed-in users see UserButton even on landing pages
+      expect(screen.getByTestId('user-button')).toBeInTheDocument();
+      expect(screen.queryByText(/sign in/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/sign up|start for free/i)).not.toBeInTheDocument();
     });
 
     it('shows CTAs in insights mode when user is signed out', () => {
@@ -95,16 +95,17 @@ describe('Navbar', () => {
       expect(screen.queryByTestId('user-button')).not.toBeInTheDocument();
     });
 
-    it('shows CTAs in insights mode even when user is signed in', () => {
+    it('shows UserButton in insights mode when user is signed in', () => {
       vi.spyOn(clerkModule, 'useAuth').mockReturnValue({
         isSignedIn: true,
       } as any);
 
       render(<Navbar mode="insights" />);
 
-      expect(screen.getByText(/sign in/i)).toBeInTheDocument();
-      expect(screen.getByText(/sign up|start for free/i)).toBeInTheDocument();
-      expect(screen.queryByTestId('user-button')).not.toBeInTheDocument();
+      // Signed-in users see UserButton even on insights pages
+      expect(screen.getByTestId('user-button')).toBeInTheDocument();
+      expect(screen.queryByText(/sign in/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/sign up|start for free/i)).not.toBeInTheDocument();
     });
 
     it('shows UserButton in app mode when user is signed in', () => {
@@ -141,13 +142,12 @@ describe('Navbar', () => {
       expect(screen.getByText(/sign up|start for free/i)).toBeInTheDocument();
     });
 
-    it('respects forceShowCTAs prop to override default behavior', () => {
+    it('respects forceShowCTAs prop when user is signed out', () => {
       vi.spyOn(clerkModule, 'useAuth').mockReturnValue({
-        isSignedIn: true,
+        isSignedIn: false,
       } as any);
 
-      // In app mode with signed in user, normally shows UserButton
-      // But forceShowCTAs=true should show CTAs instead
+      // In app mode with signed out user, forceShowCTAs should show CTAs
       render(<Navbar mode="app" forceShowCTAs={true} />);
 
       expect(screen.getByText(/sign in/i)).toBeInTheDocument();
