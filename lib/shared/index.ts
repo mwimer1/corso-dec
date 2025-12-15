@@ -24,7 +24,8 @@ export * from './cache/simple-cache';
  */
 export * from './constants/links';
 // Environment types
-export type { ValidatedEnv as Env, ValidatedEnv } from '@/types/shared/config/base/types';
+export type { ValidatedEnv } from '@/types/shared/config/base/types';
+// Removed: Env alias - unused per dead code audit
 /**
  * Exports all shared error classes and utilities (shared, server/client-safe).
  */
