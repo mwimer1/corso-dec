@@ -25,7 +25,7 @@ export default function IndustryExplorer() {
 
   return (
     <section
-      className="bg-surface border-t border-border"
+      className="bg-surface"
       aria-labelledby="use-cases-title"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-lg">
