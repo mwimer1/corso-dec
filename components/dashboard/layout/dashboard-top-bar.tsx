@@ -16,26 +16,30 @@ interface DashboardTopBarProps {
 
 /** 🔴 Organism: Fixed top bar in protected dashboard layout. */
 export function DashboardTopBar({ title, orgName, actions, className }: DashboardTopBarProps) {
-  navbarLayout();
+  const layout = navbarLayout();
   return (
     // Outer header intentionally has no global padding; inner containers control spacing
     <header className={cn("border-b border-border bg-surface", className)}>
-      <div className="flex items-center gap-lg">
-        {(title || orgName) && (
-          <h1 className="text-lg font-medium">
-            {title ?? orgName}
-          </h1>
-        )}
-        {title && orgName && (
-          <span
-            className="text-base font-semibold text-primary"
-            data-testid="org-name"
-          >
-            {orgName}
-          </span>
+      <div className={cn(layout.container(), "px-lg")}>
+        <div className={layout.left()}>
+          {(title || orgName) && (
+            <h1 className="text-lg font-medium">
+              {title ?? orgName}
+            </h1>
+          )}
+          {title && orgName && (
+            <span
+              className="text-base font-semibold text-primary"
+              data-testid="org-name"
+            >
+              {orgName}
+            </span>
+          )}
+        </div>
+        {actions && (
+          <div className={layout.right()}>{actions}</div>
         )}
       </div>
-      <div className="flex items-center gap-sm">{actions}</div>
     </header>
   );
 }

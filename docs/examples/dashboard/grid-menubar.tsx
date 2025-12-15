@@ -7,7 +7,7 @@ import { ArrowDownToLine, CopyPlus, FileDown, ListRestart, Maximize2, RefreshCcw
 import type React from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { GridSaveAsDialog } from './grid-save-as-dialog';
+// GridSaveAsDialog removed - using simple prompt for now
 // Simple number formatting function (can be replaced with numeral if needed)
 const formatNumber = (num: string | null): string => {
   if (!num) return '0';
@@ -29,11 +29,11 @@ interface GridMenubarProps {
   setCoreGridTheme: Dispatch<SetStateAction<string>>;
   initDefaultGridName: string | null;
   initGridName: string | null;
+  hasEnterprise?: boolean;
 }
 
 export function GridMenubar(props: GridMenubarProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isSaveAsDialogOpen, setIsSaveAsDialogOpen] = useState(false);
   const [currentSaveStateName, setCurrentSaveStateName] = useState<string | null>(null);
   // Grid state functionality removed - using local state management
   const [savedStates, setSavedStates] = useState({});
@@ -111,7 +111,7 @@ export function GridMenubar(props: GridMenubarProps) {
       //   description: `Successfully saved to ${currentSaveStateName}`,
       // });
     } else {
-      setIsSaveAsDialogOpen(true);
+      handleSaveAsClick();
     }
   };
 
@@ -123,6 +123,13 @@ export function GridMenubar(props: GridMenubarProps) {
     //   title: "Grid saved",
     //   description: `Successfully saved to ${saveStateName}`,
     // });
+  };
+
+  const handleSaveAsClick = () => {
+    const name = prompt('Enter a name for this saved search:');
+    if (name && name.trim()) {
+      handleSaveAs(name.trim());
+    }
   };
 
   const handleDelete = (deleteStateName: string) => {
@@ -237,7 +244,7 @@ export function GridMenubar(props: GridMenubarProps) {
 
               {/* Save As */}
               <MenuBarItem
-                onClick={() => setIsSaveAsDialogOpen(true)}
+                onClick={handleSaveAsClick}
                 className="px-2 py-1.5 cursor-pointer hover:bg-accent flex items-center gap-2 border-b last:border-b-0 rounded-none"
               >
                 <CopyPlus className="h-4 w-4" />
@@ -255,14 +262,22 @@ export function GridMenubar(props: GridMenubarProps) {
                 <span>Export as CSV</span>
               </MenuBarItem>
 
-              {/* Export Excel */}
-              <MenuBarItem
-                onClick={() => props.gridRef?.current?.api.exportDataAsExcel()}
-                className="px-2 py-1.5 cursor-pointer hover:bg-accent flex items-center gap-2 border-b last:border-b-0 rounded-none"
-              >
-                <FileDown className="h-4 w-4" />
-                <span>Export as Excel</span>
-              </MenuBarItem>
+              {/* Export Excel - only show if enterprise is enabled */}
+              {props.hasEnterprise && (
+                <MenuBarItem
+                  onClick={() => {
+                    try {
+                      props.gridRef?.current?.api.exportDataAsExcel();
+                    } catch (error) {
+                      console.error('Excel export failed. Enterprise features may not be available.', error);
+                    }
+                  }}
+                  className="px-2 py-1.5 cursor-pointer hover:bg-accent flex items-center gap-2 border-b last:border-b-0 rounded-none"
+                >
+                  <FileDown className="h-4 w-4" />
+                  <span>Export as Excel</span>
+                </MenuBarItem>
+              )}
 
               <Separator />
 
@@ -335,7 +350,7 @@ export function GridMenubar(props: GridMenubarProps) {
 
           {/* Save As */}
           <button
-            onClick={() => setIsSaveAsDialogOpen(true)}
+            onClick={handleSaveAsClick}
             className="p-1 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors"
             aria-label="Save grid as"
           >
@@ -354,11 +369,6 @@ export function GridMenubar(props: GridMenubarProps) {
         </div>
       </MenuBar>
 
-      <GridSaveAsDialog
-        isOpen={isSaveAsDialogOpen}
-        onClose={() => setIsSaveAsDialogOpen(false)}
-        onSave={handleSaveAs}
-      />
     </>
   );
 }

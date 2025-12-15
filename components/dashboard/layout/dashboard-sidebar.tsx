@@ -30,10 +30,31 @@ export const DashboardSidebar = React.forwardRef<HTMLElement, DashboardSidebarPr
     const pathname = usePathname();
     const { user } = useUser();
     const { planLabel } = useSubscriptionStatus();
-    // Feature flags removed - using all available nav items
+    
+    // Extract user role from Clerk session claims or public metadata
+    const userRole = React.useMemo(() => {
+      if (!user) return null;
+      
+      // Try to get role from session claims (if configured in Clerk)
+      const sessionClaims = (user as any)?.sessionClaims;
+      if (sessionClaims?.metadata?.role) {
+        return sessionClaims.metadata.role as 'owner' | 'admin' | 'member' | 'viewer' | 'service';
+      }
+      
+      // Fallback: try public metadata
+      const publicMetadata = user.publicMetadata as { role?: string };
+      if (publicMetadata?.role) {
+        return publicMetadata.role as 'owner' | 'admin' | 'member' | 'viewer' | 'service';
+      }
+      
+      // Default to 'member' if no role is set (backward compatibility)
+      return 'member';
+    }, [user]);
+    
+    // Filter nav items based on user role
     const availableItems = React.useMemo(() => {
-      return getAvailableNavItems({ features: {} });
-    }, []);
+      return getAvailableNavItems({ role: userRole, features: {} });
+    }, [userRole]);
 
     React.useEffect(() => {
       const active = availableItems.find((item) =>

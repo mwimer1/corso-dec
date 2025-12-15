@@ -6,8 +6,30 @@ import { SkipNavLink } from "@/components/ui/atoms";
 import { cn } from "@/styles";
 import { dashboardShellVariants } from "@/styles/ui/organisms";
 import * as React from "react";
+import { usePathname } from "next/navigation";
 import { DashboardSidebar } from "./dashboard-sidebar";
 import { DashboardTopBar } from "./dashboard-top-bar";
+
+/**
+ * Maps pathname segments to page titles for the top bar.
+ */
+function getPageTitle(pathname: string | null): string | undefined {
+  if (!pathname) return undefined;
+  
+  // Extract entity from pathname like /dashboard/projects -> "Projects"
+  const match = pathname.match(/\/dashboard\/([^/]+)/);
+  if (!match || !match[1]) return undefined;
+
+  const segment = match[1];
+  const titleMap: Record<string, string> = {
+    chat: "Chat",
+    projects: "Projects",
+    companies: "Companies",
+    addresses: "Addresses",
+  };
+
+  return segment in titleMap ? titleMap[segment] : undefined;
+}
 
 /**
  * DashboardLayout – Wraps dashboard pages with top bar and side navigation.
@@ -20,6 +42,11 @@ export const DashboardLayout = React.forwardRef<
   // Dashboard context removed - using local state
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false);
   const [_section, setSection] = React.useState('overview');
+  const pathname = usePathname();
+  const pageTitle = React.useMemo(() => {
+    if (!pathname) return undefined;
+    return getPageTitle(pathname);
+  }, [pathname]);
 
   const toggleSidebar = React.useCallback(() => {
     setSidebarCollapsed(prev => !prev);
@@ -28,7 +55,7 @@ export const DashboardLayout = React.forwardRef<
     <div className="flex h-screen flex-col bg-background">
       <SkipNavLink />
       {/* Top navigation bar */}
-      <DashboardTopBar />
+      {pageTitle && <DashboardTopBar title={pageTitle} />}
       {/* Main content area with sidebar + page content */}
       <div className="flex flex-1 overflow-hidden">
         <DashboardSidebar
