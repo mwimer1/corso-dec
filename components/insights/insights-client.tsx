@@ -5,7 +5,9 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { CategoryFilter } from './category-filter';
 import { InsightsList } from './sections/insights-list';
 
-function CategoryFilterClient({ items, categories }: { items: any[]; categories: any[] }) {
+import type { InsightPreview } from '@/types/marketing';
+
+function CategoryFilterClient({ items, categories }: { items: InsightPreview[]; categories: any[] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get('category');
@@ -30,7 +32,11 @@ function CategoryFilterClient({ items, categories }: { items: any[]; categories:
 
   const filtered = useMemo(() => {
     if (active === 'all') return items;
-    return items.filter(i => i.category === active);
+    // Filter by category slug
+    return items.filter(i => {
+      const categorySlug = i.categories?.[0]?.slug;
+      return categorySlug === active;
+    });
   }, [items, active]);
 
   const handleCategoryChange = (key: string) => {

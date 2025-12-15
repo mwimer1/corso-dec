@@ -9,13 +9,13 @@
 import { PublicLayout } from "@/components";
 import { InsightDetail } from "@/components/insights";
 import { getInsightsNavItems } from "@/components/insights/layout/nav.config";
-import { getAllInsights, getInsightBySlug } from "@/lib/marketing/server";
+import { getInsightBySlug, getRelatedInsights } from "@/lib/marketing/server";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+// Use ISR for static content - revalidate every 5 minutes
+export const revalidate = 300; // 5 minutes
 
 // Client component; dynamic not required
 
@@ -62,16 +62,21 @@ export default async function InsightPage({ params }: { params: Promise<{ slug: 
 
   if (!item) notFound();
 
-  // Get related articles based on categories
-  const allInsights = await getAllInsights();
-  const relatedArticles = allInsights
-    .filter(insight =>
-      insight.slug !== slug && // Exclude current article
-      insight.categories?.some((cat: { slug: string }) =>
-        item.categories?.some((itemCat: { slug: string }) => itemCat.slug === cat.slug)
-      )
-    )
-    .slice(0, 3); // Limit to 3 related articles
+  // Get related articles using the content service's unified logic
+  // This ensures consistent scoring by category overlap and recency
+  const relatedInsights = await getRelatedInsights(item, { limit: 3 });
+  
+  // Transform InsightPreview[] to match InsightDetail's expected shape
+  const relatedArticles = relatedInsights.map(insight => ({
+    slug: insight.slug,
+    title: insight.title,
+    ...(insight.description && { excerpt: insight.description }),
+    ...(insight.imageUrl && { imageUrl: insight.imageUrl }),
+    ...(insight.categories && { categories: insight.categories.map(cat => ({ name: cat.name })) }),
+    ...(insight.publishDate && { publishDate: insight.publishDate }),
+    ...(insight.author && { author: { name: insight.author.name, slug: insight.author.name.toLowerCase().replace(/\s+/g, '-') } }),
+    ...(insight.readingTime !== undefined && { readingTime: insight.readingTime }),
+  }));
 
   const canonicalUrl = new URL(`/insights/${slug}`, 'https://getcorso.com').toString();
 
@@ -145,7 +150,7 @@ export default async function InsightPage({ params }: { params: Promise<{ slug: 
         showReadingProgress={true}
         showVerticalGuidelines
       >
-        <div className="mx-auto max-w-4xl px-4 md:px-6">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <InsightDetail
             initialData={item}
             relatedArticles={relatedArticles}

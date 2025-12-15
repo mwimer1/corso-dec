@@ -3,6 +3,7 @@
 import 'server-only';
 
 import type { InsightItem, InsightPreview } from '@/types/marketing';
+import type { ISODateString } from '@/types/shared';
 import fs from 'fs/promises';
 import matter from 'gray-matter';
 import path from 'path';
@@ -39,8 +40,8 @@ async function directoryExists(dir: string): Promise<boolean> {
   }
 }
 
-function fmToPreview(data: FrontmatterShape): InsightPreview {
-  const preview: Partial<InsightPreview> = {
+function fmToPreview(data: FrontmatterShape, readingTime?: number): InsightPreview {
+  const preview: InsightPreview = {
     id: data.id ?? data.slug,
     slug: data.slug,
     title: data.title,
@@ -50,24 +51,23 @@ function fmToPreview(data: FrontmatterShape): InsightPreview {
     preview.description = data.description;
   }
 
-  if (data.publishDate) preview.publishDate = data.publishDate as any;
+  if (data.publishDate) preview.publishDate = data.publishDate as ISODateString;
   if (data.imageUrl) preview.imageUrl = data.imageUrl;
   if (data.categories) preview.categories = data.categories;
-  // readingTime appended later in loadFromContentDir when content length known
+  if (readingTime !== undefined) preview.readingTime = readingTime;
+  if (data.author) preview.author = data.author;
 
-  return preview as InsightPreview;
+  return preview;
 }
 
-function fmToItem(data: FrontmatterShape, html: string): InsightItem {
-  const base = fmToPreview(data) as Omit<InsightItem, 'content' | 'author'>;
-  const item: Partial<InsightItem> = {
+function fmToItem(data: FrontmatterShape, html: string, readingTime?: number): InsightItem {
+  const base = fmToPreview(data, readingTime);
+  const item: InsightItem = {
     ...base,
     content: html,
   };
 
-  if (data.author) item.author = data.author;
-
-  return item as InsightItem;
+  return item;
 }
 
 /**
@@ -124,8 +124,7 @@ async function loadFromContentDir(): Promise<InsightItem[]> {
     const html = await markdownToHtmlRich(rawMd);
     const words = rawMd.trim().split(/\s+/).filter(Boolean).length;
     const readingTimeMin = Math.max(1, Math.round(words / 200));
-    const item = fmToItem(data, html);
-    (item as any).readingTime = readingTimeMin;
+    const item = fmToItem(data, html, readingTimeMin);
     items.push(item);
   }
 
@@ -139,25 +138,32 @@ async function loadFromContentDir(): Promise<InsightItem[]> {
 export async function getAllInsights(): Promise<InsightPreview[]> {
   const contentItems = await loadFromContentDir();
   if (contentItems.length > 0) {
-    return contentItems.map((i) => {
-      const base = fmToPreview(i);
-      if ((i as any).readingTime) (base as any).readingTime = (i as any).readingTime;
-      return base;
-    });
-  }
-  // Fallback to static mock content - provide only fields that are present
-  return staticInsights.map((i) => {
-    const p: Partial<InsightPreview> = {
+    // Content items are already InsightItem[], which extends InsightPreview
+    // Extract preview fields explicitly to ensure type safety with exactOptionalPropertyTypes
+    return contentItems.map((i): InsightPreview => ({
       id: i.id,
       slug: i.slug,
       title: i.title,
-    };
-    if (typeof i.description === 'string' && i.description.length > 0) p.description = i.description;
-    if (i.publishDate) p.publishDate = i.publishDate as any;
-    if (i.imageUrl) p.imageUrl = i.imageUrl;
-    if (i.categories) p.categories = i.categories;
-    return p as InsightPreview;
-  });
+      ...(i.description && { description: i.description }),
+      ...(i.publishDate && { publishDate: i.publishDate }),
+      ...(i.imageUrl && { imageUrl: i.imageUrl }),
+      ...(i.categories && { categories: i.categories }),
+      ...(i.readingTime !== undefined && { readingTime: i.readingTime }),
+      ...(i.author && { author: i.author }),
+    }));
+  }
+  // Fallback to static mock content - staticInsights are already InsightItem[]
+  return staticInsights.map((i): InsightPreview => ({
+    id: i.id,
+    slug: i.slug,
+    title: i.title,
+    ...(i.description && { description: i.description }),
+    ...(i.publishDate && { publishDate: i.publishDate }),
+    ...(i.imageUrl && { imageUrl: i.imageUrl }),
+    ...(i.categories && { categories: i.categories }),
+    ...(i.readingTime !== undefined && { readingTime: i.readingTime }),
+    ...(i.author && { author: i.author }),
+  }));
 }
 
 export async function getInsightBySlug(slug: string): Promise<InsightItem | undefined> {
@@ -176,7 +182,7 @@ export async function getCategories(): Promise<Array<{ slug: string; name: strin
   const source = contentItems.length > 0 ? contentItems : staticInsights;
   const map = new Map<string, string>();
   for (const it of source) {
-    const cats = (it as any).categories as Array<{ slug: string; name: string }> | undefined;
+    const cats = it.categories;
     if (!cats) continue;
     for (const c of cats) {
       if (!map.has(c.slug)) map.set(c.slug, c.name);

@@ -12,8 +12,8 @@ describe('insights page runtime', () => {
     
     // Verify runtime exports
     expect(pageSource).toContain('export const runtime = "nodejs"');
-    // Changed to force-dynamic to support URL query params for category filtering
-    expect(pageSource).toContain('export const dynamic = "force-dynamic"');
+    // Changed to ISR with revalidation for better performance while supporting URL query params
+    expect(pageSource).toContain('export const revalidate = 300');
   });
 
   it('imports no server-only modules in client components', async () => {

@@ -14,6 +14,8 @@ export interface InsightPreview {
   categories?: Array<{ slug: string; name: string }>;
   /** Estimated reading time in minutes */
   readingTime?: number;
+  /** Author information (optional for previews) */
+  author?: { name: string; avatar?: string };
 }
 
 /**
@@ -21,6 +23,7 @@ export interface InsightPreview {
  */
 export interface InsightItem extends InsightPreview {
   content: string;
+  /** Author information (more commonly present in full items) */
   author?: { name: string; avatar?: string };
 }
 

@@ -90,15 +90,15 @@ export const InsightsList = React.forwardRef<HTMLDivElement, InsightsListProps>(
                   href={`/insights/${insight.slug}`}
                   title={insight.title}
                   excerpt={insight.description || undefined}
-                  image={(insight as any).imageUrl ? {
-                    src: (insight as any).imageUrl as string,
+                  image={insight.imageUrl ? {
+                    src: insight.imageUrl,
                     alt: insight.title
                   } : undefined}
                   category={insight.categories?.[0]?.name || undefined}
                   date={insight.publishDate || undefined}
-                  readingTime={(insight as any).readingTime ? `${(insight as any).readingTime} min read` : undefined}
-                  author={(insight as any).author ? {
-                    name: (insight as any).author.name as string
+                  readingTime={insight.readingTime ? `${insight.readingTime} min read` : undefined}
+                  author={insight.author ? {
+                    name: insight.author.name
                   } : undefined}
                 />
               </li>

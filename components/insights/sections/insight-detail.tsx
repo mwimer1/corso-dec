@@ -183,16 +183,16 @@ InsightDetail.displayName = "InsightDetail";
  * Generate metadata for article pages - use in page components
  */
 export function generateArticleMetadata(article: InsightItem): Metadata {
-  const { title, publishDate, author, imageUrl, categories } = article;
+  const { title, publishDate, author, imageUrl, categories, description } = article;
 
   return {
     title,
-    description: (article as any).description ?? `Read ${title} on Corso Insights`,
+    description: description ?? `Read ${title} on Corso Insights`,
     authors: author?.name ? [{ name: author.name }] : undefined,
     other: publishDate ? { publishedTime: publishDate } : {},
     openGraph: {
       title,
-      description: (article as any).description ?? `Read ${title} on Corso Insights`,
+      description: description ?? `Read ${title} on Corso Insights`,
       images: imageUrl ? [{ url: imageUrl, alt: title }] : [{ url: '/logo.svg', alt: 'Corso Logo' }],
       type: 'article',
       publishedTime: publishDate,
@@ -203,7 +203,7 @@ export function generateArticleMetadata(article: InsightItem): Metadata {
     twitter: {
       card: 'summary_large_image',
       title,
-      description: (article as any).description ?? `Read ${title} on Corso Insights`,
+      description: description ?? `Read ${title} on Corso Insights`,
       images: imageUrl ? [imageUrl] : ['/logo.svg'],
     },
     alternates: {
