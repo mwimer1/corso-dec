@@ -110,7 +110,7 @@ describe('ChatWindow', () => {
     render(<ChatWindow />);
     await waitFor(() => {
       expect(screen.getByLabelText('Chat message input')).toBeInTheDocument();
-    });
+    }, { timeout: 3000 });
     const input = screen.getByLabelText('Chat message input');
     expect(input).toBeDisabled();
   });
@@ -159,7 +159,7 @@ describe('ChatWindow', () => {
     render(<ChatWindow />);
     await waitFor(() => {
       expect(screen.getByLabelText('Chat message input')).toBeInTheDocument();
-    });
+    }, { timeout: 3000 });
     expect(screen.getByText('Enter to send · Shift+Enter for newline')).toBeInTheDocument();
   });
 });

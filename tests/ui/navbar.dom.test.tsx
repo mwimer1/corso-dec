@@ -162,26 +162,20 @@ describe('Navbar', () => {
         isSignedIn: false,
       } as any);
 
-      render(<Navbar mode="landing" />);
+      const { container } = render(<Navbar mode="landing" />);
 
-      // Find the mobile menu button (usually has aria-label or aria-expanded)
-      const menuButton = screen.getByRole('button', { name: /menu|navigation/i }) || 
-                         screen.getByLabelText(/menu/i) ||
-                         document.querySelector('[aria-expanded]');
+      // Find the mobile menu button by aria-controls attribute
+      const menuButton = container.querySelector('[aria-controls="mobile-menu"]') as HTMLButtonElement;
+      expect(menuButton).toBeInTheDocument();
 
-      if (menuButton) {
-        // Click to open
-        fireEvent.click(menuButton);
-        
-        // Wait for menu to appear (if it uses state)
-        await waitFor(() => {
-          // Menu items should be accessible
-          expect(screen.getByRole('navigation', { name: /primary navigation/i })).toBeInTheDocument();
-        }, { timeout: 1000 });
-      } else {
-        // If no explicit menu button, check that nav items are rendered
-        expect(screen.getByRole('navigation', { name: /primary navigation/i })).toBeInTheDocument();
-      }
+      // Click to open
+      fireEvent.click(menuButton);
+      
+      // Wait for mobile menu to appear
+      await waitFor(() => {
+        // Mobile navigation should be accessible
+        expect(screen.getByRole('navigation', { name: /mobile navigation/i })).toBeInTheDocument();
+      }, { timeout: 1000 });
     });
   });
 
@@ -205,10 +199,13 @@ describe('Navbar', () => {
         />
       );
 
-      expect(screen.getByRole('navigation', { name: /breadcrumb/i })).toBeInTheDocument();
-      expect(screen.getByText('Home')).toBeInTheDocument();
-      expect(screen.getByText('Insights')).toBeInTheDocument();
-      expect(screen.getByText('Article')).toBeInTheDocument();
+      const breadcrumbNav = screen.getByRole('navigation', { name: /breadcrumb/i });
+      expect(breadcrumbNav).toBeInTheDocument();
+      
+      // Query within breadcrumb nav to avoid duplicate "Insights" from primary navigation
+      expect(breadcrumbNav).toHaveTextContent('Home');
+      expect(breadcrumbNav).toHaveTextContent('Insights');
+      expect(breadcrumbNav).toHaveTextContent('Article');
     });
 
     it('does not render breadcrumbs when showBreadcrumbs is false', () => {
@@ -250,7 +247,7 @@ describe('Navbar', () => {
   });
 
   describe('Navigation items', () => {
-    it('renders custom nav items when provided', () => {
+    it('renders custom nav items when provided', async () => {
       vi.spyOn(clerkModule, 'useAuth').mockReturnValue({
         isSignedIn: false,
       } as any);
@@ -262,8 +259,17 @@ describe('Navbar', () => {
 
       render(<Navbar mode="landing" items={customItems} />);
 
-      expect(screen.getByText('Custom 1')).toBeInTheDocument();
-      expect(screen.getByText('Custom 2')).toBeInTheDocument();
+      // Custom items are rendered in mobile menu (desktop always uses MenuPrimaryLinks)
+      // Open mobile menu to check custom items
+      const { container } = render(<Navbar mode="landing" items={customItems} />);
+      const menuButton = container.querySelector('[aria-controls="mobile-menu"]') as HTMLButtonElement;
+      expect(menuButton).toBeInTheDocument();
+      fireEvent.click(menuButton);
+
+      await waitFor(() => {
+        expect(screen.getByText('Custom 1')).toBeInTheDocument();
+        expect(screen.getByText('Custom 2')).toBeInTheDocument();
+      }, { timeout: 1000 });
     });
 
     it('uses default nav items when none provided', () => {

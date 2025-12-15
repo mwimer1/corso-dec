@@ -72,42 +72,59 @@ vi.mock('next/dynamic', async () => {
       return function DynamicComponent(componentProps: any) {
         // Ensure props is always an object to prevent destructuring errors
         const props = componentProps || {};
-        const [Component, setComponent] = React.useState<any>(dynamicComponentCache.get(cacheKey) || null);
+        const [Component, setComponent] = React.useState<any>(() => {
+          // Try to get from cache immediately
+          const cached = dynamicComponentCache.get(cacheKey);
+          return cached && typeof cached === 'function' ? cached : null;
+        });
         const [isLoading, setIsLoading] = React.useState(!Component);
         
         React.useEffect(() => {
-          // If already cached, use it immediately
+          // If already cached and valid, use it immediately
           if (dynamicComponentCache.has(cacheKey)) {
             const cached = dynamicComponentCache.get(cacheKey);
-            if (cached && !Component) {
+            if (cached && typeof cached === 'function' && !Component) {
               setComponent(() => cached);
               setIsLoading(false);
             }
             return;
           }
           
+          // Load the component
           let cancelled = false;
-          importFn()
-            .then((mod) => {
+          const loadComponent = async () => {
+            try {
+              const mod = await importFn();
               if (!cancelled) {
+                // Handle both default exports and named exports
                 const resolved = mod.default || mod;
-                dynamicComponentCache.set(cacheKey, resolved);
-                setComponent(() => resolved);
-                setIsLoading(false);
+                // Ensure we have a valid React component (must be a function)
+                if (typeof resolved === 'function') {
+                  dynamicComponentCache.set(cacheKey, resolved);
+                  setComponent(() => resolved);
+                  setIsLoading(false);
+                } else {
+                  console.warn('Dynamic import resolved to non-component:', resolved, 'Module:', mod);
+                  setIsLoading(false);
+                }
               }
-            })
-            .catch(() => {
+            } catch (err) {
               if (!cancelled) {
+                console.error('Dynamic import failed:', err);
                 setIsLoading(false);
               }
-            });
+            }
+          };
+          
+          void loadComponent();
           
           return () => {
             cancelled = true;
           };
         }, [Component, cacheKey]);
         
-        if (Component) {
+        // Only render if Component is a valid function
+        if (Component && typeof Component === 'function') {
           return React.createElement(Component, props);
         }
         

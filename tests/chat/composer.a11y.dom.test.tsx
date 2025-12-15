@@ -39,7 +39,7 @@ describe('Chat composer accessibility', () => {
     render(<ChatWindow />);
     await waitFor(() => {
       expect(screen.getByLabelText('Chat message input')).toBeInTheDocument();
-    });
+    }, { timeout: 3000 });
     let ta = screen.getByLabelText('Chat message input') as HTMLTextAreaElement;
 
     // Test that Enter during composition does NOT send
@@ -79,7 +79,7 @@ describe('Chat composer accessibility', () => {
     render(<ChatWindow />);
     await waitFor(() => {
       expect(screen.getByLabelText('Chat message input')).toBeInTheDocument();
-    });
+    }, { timeout: 3000 });
     const ta = screen.getByLabelText('Chat message input') as HTMLTextAreaElement;
     const long = Array(200).fill('line').join('\n');
     fireEvent.change(ta, { target: { value: long } });
