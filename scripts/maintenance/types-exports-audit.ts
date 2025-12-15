@@ -1,6 +1,13 @@
 #!/usr/bin/env tsx
-// scripts/maintenance/types-exports-audit.ts
-// Audits unused exports, focusing on type-only exports and export quality
+/**
+ * @fileoverview Types & Exports Audit Script
+ * @description Combines unused exports detection (via Knip) with barrel consistency checks, outputting a report of issues.
+ *
+ * Usage:
+ *   pnpm audit:types-exports           # Run all checks and report issues
+ *   pnpm audit:types-exports --out-json <path>  # Specify custom JSON output path
+ *   pnpm audit:types-exports --out-md <path>    # Specify custom Markdown output path
+ */
 
 import { execSync } from 'node:child_process';
 import fs from 'node:fs';
@@ -19,6 +26,21 @@ const arg = (name: string, fallback?: string) => {
 const REPORTS_ROOT = process.env['REPORTS_ROOT'] ?? "reports";
 const DEFAULT_JSON = path.join(REPORTS_ROOT, "exports", "unused-exports.report.json");
 const DEFAULT_MD   = path.join(REPORTS_ROOT, "exports", "unused-exports.summary.md");
+// Handle --help flag
+if (process.argv.includes('--help') || process.argv.includes('-h')) {
+  console.log(`
+Usage: pnpm audit:types-exports [options]
+
+Options:
+  --out-json <path>    Specify custom JSON output path (default: reports/exports/unused-exports.report.json)
+  --out-md <path>      Specify custom Markdown output path (default: reports/exports/unused-exports.summary.md)
+  --help, -h           Show this help message
+
+Runs unused exports detection (via Knip) and barrel consistency checks.
+`);
+  process.exit(0);
+}
+
 const OUT_JSON = arg("--out-json", DEFAULT_JSON);
 const OUT_MD   = arg("--out-md", DEFAULT_MD);
 fs.mkdirSync(path.dirname(OUT_JSON!), { recursive: true });

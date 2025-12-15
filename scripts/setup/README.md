@@ -1,10 +1,9 @@
 ---
-title: "Setup"
+title: "scripts/setup"
 last_updated: "2025-12-15"
-category: "documentation"
-status: "draft"
-description: "Documentation and resources for documentation functionality. Located in setup/."
+category: "automation"
 ---
+
 # Repository Scripts & Docs
 
 This README is generated from a single template (`README.scripts.hbs`).
@@ -13,3 +12,14 @@ This README is generated from a single template (`README.scripts.hbs`).
 - Last updated: `2025-12-15`
 
 > Edit the template or the generator context to change all READMEs consistently.
+
+## Scripts in `scripts/setup`
+
+- **env-check.ts** – scripts/setup/env-check.ts
+- **install-gitleaks.ts** – Prefer winget; fallback to choco
+- **setup-branch.ts** – Best-effort: do not throw; leave non-zero exit visible but continue
+- **setup-docs-environment.ts** – scripts/setup/setup-docs-environment.ts
+- **start-dev-server.ts** – scripts/setup/start-dev-server.ts
+- **validate-ai-agent-environment.ts** – scripts/setup/validate-ai-agent-environment.ts
+- **validate-atomic-design.ts** – scripts/setup/validate-atomic-design.ts
+- **validate-env.ts** – scripts/setup/validate-env.ts

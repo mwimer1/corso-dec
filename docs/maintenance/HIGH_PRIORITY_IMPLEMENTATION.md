@@ -121,7 +121,7 @@ pnpm docs:validate  # More comprehensive
 ```bash
 pnpm validate:barrels
 pnpm barrels:policy:check
-pnpm verify:no-intradomain-root-barrels
+pnpm audit:barrels --only intradomain
 ```
 
 **New**:

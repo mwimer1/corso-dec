@@ -1,4 +1,11 @@
-// scripts/maintenance/stale-docs.ts
+#!/usr/bin/env tsx
+/**
+ * @fileoverview Stale Documentation Checker
+ * @description Scans documentation files and flags ones not updated recently (>90 days old) that are still in draft status.
+ *
+ * Usage:
+ *   pnpm docs:stale        # Run stale documentation check (reports if any outdated docs)
+ */
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -76,6 +83,19 @@ function parseFrontMatter(content: string) {
 
 function daysBetween(a: Date, b: Date) {
   return Math.floor((a.getTime() - b.getTime()) / (1000 * 60 * 60 * 24));
+}
+
+// Handle --help flag
+if (process.argv.includes('--help') || process.argv.includes('-h')) {
+  console.log(`
+Usage: pnpm docs:stale
+
+Checks for stale documentation files (>90 days old) that are still in draft status.
+Exits with code 1 if any stale files are found, otherwise exits with code 0.
+
+Currently no additional flags are available.
+`);
+  process.exit(0);
 }
 
 const files = getAllMarkdownFiles(DOCS_DIRS);

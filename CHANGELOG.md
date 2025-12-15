@@ -1,6 +1,19 @@
 ## Unreleased
 
 ### Removed
+- **Maintenance Scripts**: Removed deprecated script aliases from package.json:
+  - `docs:check` (use `docs:validate` instead)
+  - `cleanup:atoms:trim:batch01` (one-time batch script no longer needed)
+
+### Changed
+- **Maintenance Scripts**: Enhanced README generation to include script metadata and descriptions
+- **Maintenance Scripts**: Standardized CLI interfaces across all maintenance scripts (consistent --help flags, tsx shebangs)
+- **Maintenance Scripts**: Refactored `audit:orphans` script by extracting utility functions into `scripts/audit-lib/orphan-utils.ts` for better maintainability
+- **Documentation**: Updated references to deprecated commands:
+  - `barrels:policy:check` → `audit:barrels --only policy`
+  - `verify:no-intradomain-root-barrels` → `audit:barrels --only intradomain`
+
+### Removed
 - **components/forms**: Removed deprecated `FieldBase` alias export. Use `FormFieldBase` directly instead.
 - **components/ui/molecules**: Removed deprecated `error` prop from `TextArea` component. Use `state="error"` instead.
 - **components/marketing/sections**: Removed deprecated `PricingSection` component. Use `PricingPage` or compose `PricingHeader` + `PricingTiers` instead.

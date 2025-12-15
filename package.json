@@ -179,7 +179,6 @@
     "typecheck:verify": "npx tsc --noEmit --project tsconfig.json && echo '✅ TypeScript compilation successful'",
     "typecheck:stories": "tsc -p config/typescript/tsconfig.stories.json --noEmit",
     "typecheck:prod": "tsc --noEmit -p config/typescript/tsconfig.prod.json",
-    "docs:check": "echo '⚠️  DEPRECATED: Use pnpm docs:validate instead (more comprehensive)' && pnpm docs:validate",
     "typecheck:app": "node node_modules/typescript/bin/tsc -p config/typescript/tsconfig.app.json --noEmit",
     "typecheck:components": "node node_modules/typescript/bin/tsc -p config/typescript/tsconfig.components.json --noEmit --pretty",
     "typecheck:tooling": "node node_modules/typescript/bin/tsc -p config/typescript/tsconfig.tooling.json --noEmit",
@@ -315,7 +314,6 @@
     "cleanup:atoms:trim:styles:leaf": "tsx scripts/analysis/trim-exports-declaration.ts --target=styles",
     "cleanup:atoms:trim:components:leaf": "tsx scripts/analysis/trim-exports-declaration.ts --target=components",
     "cleanup:atoms:purge:components": "tsx scripts/analysis/trim-atoms-barrel.ts --target=components --mode=declaration --delete",
-    "cleanup:atoms:trim:batch01": "tsx scripts/analysis/trim-atoms-barrel.ts --preset=batch01",
     "cleanup:organisms:trim": "tsx scripts/analysis/trim-organisms-barrel.ts --source=\"styles/ui/organisms/index.ts\" --usage=\"scripts/.cache/organisms-styles-usage.json\" --allowlist=\"scripts/analysis/data/organisms-keep-allowlist.json\"",
     "guards:guards:rules:phase1": "pnpm --package=@ast-grep/cli dlx sg scan --rule scripts/rules/ast-grep/ag-grid-no-direct-registration.yml .",
     "codemods:styles:resolve-shared": "tsx scripts/codemods/resolve-shared-symbol-imports.ts"

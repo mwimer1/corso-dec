@@ -30,7 +30,6 @@ const mapping: Map = {
   'atoms:trim:styles:leaf': 'cleanup:atoms:trim:styles:leaf',
   'atoms:trim:components:leaf': 'cleanup:atoms:trim:components:leaf',
   'atoms:purge:components': 'cleanup:atoms:purge:components',
-  'atoms:trim:batch01': 'cleanup:atoms:trim:batch01',
 
   'organisms:scan': 'scan:organisms',
   'organisms:trim': 'cleanup:organisms:trim',

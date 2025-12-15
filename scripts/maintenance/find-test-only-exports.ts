@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env tsx
 /**
  * Find exports that are only referenced from tests.
  * Strategy: run ts-prune twice and diff the outputs.

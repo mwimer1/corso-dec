@@ -17,7 +17,7 @@ Barrels (`index.ts` files) are **manual** and **selective**. Never auto-generate
 - **Selective Exports**: Use named exports rather than blanket `export *`
 - **Runtime Awareness**: Client-safe barrels must **not** re-export `server-only` modules (`*/server/*`)
 - **Cross-Domain Only**: Create barrels only where imports span domain boundaries
-- **ESLint Enforcement**: Use `pnpm barrels:policy:check` to ensure no server-only re-exports
+- **ESLint Enforcement**: Use `pnpm audit:barrels --only policy` to ensure no server-only re-exports
 
 ## When to Create a Barrel
 
@@ -78,7 +78,7 @@ Client/edge code cannot import server-only modules:
 
 ## Policy Enforcement
 
-Run `pnpm barrels:policy:check` to validate that no barrels re-export server-only code.
+Run `pnpm audit:barrels --only policy` to validate that no barrels re-export server-only code.
 
 ## Examples
 
@@ -140,7 +140,7 @@ When creating new barrels:
 2. Determine which are truly public API
 3. Check runtime compatibility (server vs client)
 4. Add documentation comments explaining boundaries
-5. Run `pnpm barrels:policy:check` to validate
+5. Run `pnpm audit:barrels --only policy` to validate
 
 ## Related Rules
 

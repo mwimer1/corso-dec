@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env tsx
 /**
  * Check for server-only code in pages directory
  * Windows-compatible replacement for Bash conditional

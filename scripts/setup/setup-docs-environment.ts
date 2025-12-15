@@ -66,7 +66,7 @@ async function setupDocsEnvironment() {
   logger.info('\n🛠️ Available Scripts:');
   logger.info('==========================================');
   logger.info('pnpm docs:index  - Regenerate docs index');
-  logger.info('pnpm docs:check  - Validate docs freshness');
+  logger.info('pnpm docs:validate  - Validate docs freshness');
   logger.info('pnpm docs:extract - Extract rules to JSON');
   logger.info('pnpm docs:fresh  - Test if docs are up-to-date');
 
