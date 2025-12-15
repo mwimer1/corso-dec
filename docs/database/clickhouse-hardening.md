@@ -1,7 +1,9 @@
 ---
 status: "draft"
-last_updated: "2025-12-14"
+last_updated: "2025-12-15"
 category: "documentation"
+title: "Database"
+description: "Documentation and resources for documentation functionality. Located in database/."
 ---
 # ClickHouse Security Hardening
 

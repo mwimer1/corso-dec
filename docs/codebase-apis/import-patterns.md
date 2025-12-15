@@ -1,9 +1,9 @@
 ---
-title: "Codebase Apis"
-description: ">-"
-last_updated: "2025-12-14"
-category: "documentation"
 status: "draft"
+last_updated: "2025-12-15"
+category: "documentation"
+title: "Codebase Apis"
+description: "Documentation and resources for documentation functionality. Located in codebase-apis/."
 ---
 # Import Patterns & Runtime Boundaries
 

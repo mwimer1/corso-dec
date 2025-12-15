@@ -2,6 +2,8 @@
 status: "draft"
 last_updated: "2025-12-15"
 category: "documentation"
+title: "App"
+description: "Documentation and resources for documentation functionality."
 ---
 # App Directory — Next.js App Router Architecture
 
