@@ -4,6 +4,7 @@ import * as React from "react";
 
 import { Button } from "@/components/ui/atoms";
 import { LinkTrack } from "@/components/ui/molecules/link-track";
+import { cn } from "@/styles";
 import { CTA_LINKS, PRIMARY_LINKS } from './links';
 
 export const MenuPrimaryLinks: React.FC<{ className?: string }> = ({ className }) => (
@@ -14,7 +15,12 @@ export const MenuPrimaryLinks: React.FC<{ className?: string }> = ({ className }
         href: item.href,
         label: item.label,
         ...(item.prefetch !== undefined ? { prefetch: item.prefetch } : {}),
-        ...(className ? { className } : {})
+        className: cn(
+          "px-3 py-1.5 rounded-md transition-colors duration-200",
+          "hover:bg-muted/50 hover:text-foreground",
+          "active:bg-muted/70",
+          className
+        )
       };
 
       if (item.target) {
