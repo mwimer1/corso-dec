@@ -1,9 +1,9 @@
 ---
 title: "Operations"
-description: "Documentation and resources for documentation functionality. Located in operations/."
+description: "Complete guide to deployment, monitoring, troubleshooting, and day-to-day operations of the Corso platform."
 last_updated: "2025-12-15"
 category: "documentation"
-status: "draft"
+status: "stable"
 ---
 # Operational Guide
 

@@ -1,6 +1,6 @@
 ---
 title: "Architecture"
-description: "Documentation and resources for documentation functionality. Located in architecture/."
+description: "Comprehensive overview of Corso codebase architecture, design patterns, and architectural decisions."
 last_updated: "2025-12-15"
 category: "documentation"
 status: "stable"

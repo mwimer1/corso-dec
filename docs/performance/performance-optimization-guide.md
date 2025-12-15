@@ -1,6 +1,6 @@
 ---
 title: "Performance"
-description: "Documentation and resources for documentation functionality. Located in performance/."
+description: "Complete guide to performance optimization, bundle size management, database query optimization, and performance monitoring."
 last_updated: "2025-12-15"
 category: "documentation"
 status: "draft"
