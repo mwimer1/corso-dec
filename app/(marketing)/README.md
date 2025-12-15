@@ -330,18 +330,25 @@ export default function ContactPage() {
 ### Insights Pages (`/insights/*`)
 
 #### Index Page (`insights/page.tsx`)
+
+**Key Features:**
+- **URL Query Param Sync**: Category filter state syncs with URL (`?category=technology`) for shareable filtered views
+- **Suspense Boundary**: Category filter wrapped in Suspense for proper Next.js App Router compatibility
+- **Consistent Container Width**: Uses `max-w-7xl` with responsive padding (`px-4 sm:px-6 lg:px-8`) for alignment
+- **ARIA Tablist Pattern**: Complete ARIA implementation for category filter tabs with proper tabpanel association
 ```tsx
 // Runtime: kept on nodejs due to Clerk keyless telemetry (see README)
 // app/(marketing)/insights/page.tsx
 // This is a server component page. Keep server exports and render client components inside.
-import { InsightsHero } from "@/components/insights";
-import { CategoryFilterClient } from "@/components/insights/clients";
-import { InsightsLayout } from "@/components/insights/layout/insights-layout";
+import { PublicLayout } from "@/components";
+import { CategoryFilterClient, InsightsHero } from "@/components/insights";
+import { getInsightsNavItems } from "@/components/insights/layout/nav.config";
 import { getAllInsights } from "@/lib/marketing/server";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
 export const runtime = "nodejs";
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic"; // Dynamic to support URL query params for category filtering
 export const revalidate = 0;
 
 export const metadata: Metadata = {
@@ -399,15 +406,17 @@ export default async function InsightsPage() {
   }));
 
   return (
-    <InsightsLayout>
-      <div className="mx-auto max-w-6xl px-4 md:px-6">
+    <PublicLayout navMode="insights" navItems={getInsightsNavItems()} showVerticalGuidelines>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <InsightsHero
           title="Construction industry trends, market intel, and practical playbooks."
           description="Stay ahead with curated analysis of construction markets, technology, sustainability, and safety—written for busy teams."
         />
-        <CategoryFilterClient items={items} categories={categoriesWithCounts} />
+        <Suspense fallback={<div className="mt-6 h-12" />}>
+          <CategoryFilterClient items={items} categories={categoriesWithCounts} />
+        </Suspense>
       </div>
-    </InsightsLayout>
+    </PublicLayout>
   );
 }
 ```
@@ -458,7 +467,13 @@ export default async function CategoryPage({ params }: { params: { category: str
 **Route**: `/insights/[slug]`
 **Runtime**: Node.js
 
-Dynamic article pages with SEO metadata generation:
+Dynamic article pages with SEO metadata generation, reading progress indicator, and breadcrumb navigation:
+
+**Key Features:**
+- **Reading Progress Bar**: Visual progress indicator at the top of the page (enabled via `showReadingProgress={true}` on `PublicLayout`)
+- **Breadcrumb Navigation**: Visible breadcrumb trail (Home > Insights > Article Title) for improved UX
+- **H1 Semantic Structure**: Article title renders as H1 for proper SEO and accessibility
+- **Structured Data**: JSON-LD breadcrumbs and article metadata for search engines
 
 ```typescript
 // Runtime: kept on nodejs due to Clerk keyless telemetry (see README)

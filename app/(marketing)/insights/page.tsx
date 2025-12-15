@@ -6,9 +6,10 @@ import { CategoryFilterClient, InsightsHero } from "@/components/insights";
 import { getInsightsNavItems } from "@/components/insights/layout/nav.config";
 import { getAllInsights } from "@/lib/marketing/server";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
 export const runtime = "nodejs";
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic"; // Changed to dynamic to support URL query params
 export const revalidate = 0;
 
 export const metadata: Metadata = {
@@ -77,12 +78,14 @@ export default async function InsightsPage() {
 
   return (
     <PublicLayout navMode="insights" navItems={getInsightsNavItems()} showVerticalGuidelines>
-      <div className="mx-auto max-w-6xl px-4 md:px-6">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <InsightsHero
           title="Construction industry trends, market intel, and practical playbooks."
           description="Stay ahead with curated analysis of construction markets, technology, sustainability, and safety—written for busy teams."
         />
-        <CategoryFilterClient items={items} categories={categoriesWithCounts} />
+        <Suspense fallback={<div className="mt-6 h-12" />}>
+          <CategoryFilterClient items={items} categories={categoriesWithCounts} />
+        </Suspense>
       </div>
     </PublicLayout>
   );

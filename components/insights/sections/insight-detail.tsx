@@ -10,6 +10,7 @@ import {
 } from "@/components/insights/constants";
 import { useArticleAnalytics } from "@/components/insights/hooks/use-article-analytics";
 import { RelatedArticles } from "@/components/insights/widgets/related-articles";
+import { Breadcrumbs } from "@/components/insights/widgets/breadcrumbs";
 import { SectionHeader } from "@/components/ui/patterns/section-header";
 import { cn } from "@/styles";
 import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
@@ -35,12 +36,14 @@ interface InsightDetailProps extends React.HTMLAttributes<HTMLDivElement> {
     author?: { name: string; slug: string };
     readingTime?: number;
   }>;
+  /** Optional breadcrumb items for navigation */
+  breadcrumbs?: Array<{ label: string; href: string }>;
 }
 
 export const InsightDetail = React.forwardRef<
   HTMLDivElement,
   InsightDetailProps
->(({ initialData, relatedArticles = [], className, ...rest }, ref) => {
+>(({ initialData, relatedArticles = [], breadcrumbs, className, ...rest }, ref) => {
   const {
     title,
     content, // already rendered HTML from MD-rich-text
@@ -99,10 +102,15 @@ export const InsightDetail = React.forwardRef<
     >
       {/* Note: Structured data is now handled server-side in the page component for better SEO */}
 
+      {breadcrumbs && breadcrumbs.length > 0 && (
+        <Breadcrumbs items={breadcrumbs} />
+      )}
+
       <header className={cn(headingVariants({ size: 'h1', align: 'center' }), "mb-8")}>
         {/* Article Header */}
         <div className="space-y-4">
           <SectionHeader
+            headingLevel={1}
             title={title}
             subtitle={publishDate ? format(new Date(publishDate), "MMM d, yyyy") : undefined}
             align="left"

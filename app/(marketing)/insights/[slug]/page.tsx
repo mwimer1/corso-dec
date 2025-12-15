@@ -146,7 +146,15 @@ export default async function InsightPage({ params }: { params: Promise<{ slug: 
         showVerticalGuidelines
       >
         <div className="mx-auto max-w-4xl px-4 md:px-6">
-          <InsightDetail initialData={item} relatedArticles={relatedArticles} />
+          <InsightDetail
+            initialData={item}
+            relatedArticles={relatedArticles}
+            breadcrumbs={[
+              { label: 'Home', href: '/' },
+              { label: 'Insights', href: '/insights' },
+              { label: item.title, href: `/insights/${slug}` },
+            ]}
+          />
         </div>
       </PublicLayout>
     </>

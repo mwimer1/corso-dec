@@ -63,4 +63,7 @@ export * from './link-track';
 // ===== METRICS =====
 export * from './metric-card';
 
+// ===== READING PROGRESS =====
+export * from './reading-progress';
+
 

@@ -27,7 +27,7 @@ export function InsightsHero({ title, eyebrow = 'Insights', description, classNa
         <div className="absolute -top-24 left-1/2 h-48 w-[120%] -translate-x-1/2 rounded-full blur-3xl opacity-40 bg-gradient-to-r from-primary/30 via-primary/10 to-transparent" />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-6xl px-4 md:px-6">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {eyebrow ? (
           <p className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
             {eyebrow}

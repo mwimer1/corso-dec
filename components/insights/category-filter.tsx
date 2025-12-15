@@ -37,15 +37,17 @@ export function CategoryFilter({
 
   return (
     <div className={cn('sticky z-20 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60', stickyOffsetClassName)}>
-      <div className={cn('mx-auto max-w-6xl px-4 md:px-6 py-3 border-b border-border', className)}>
+      <div className={cn('mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3 border-b border-border', className)}>
         <div role="tablist" aria-label="Filter insights by category" className="flex flex-wrap gap-2">
           {categories.map((c) => {
             const active = c.key === value;
             return (
               <Button
                 key={c.key}
+                id={`category-tab-${c.key}`}
                 role="tab"
                 aria-selected={active}
+                aria-controls="insights-panel"
                 onClick={() => onChange(c.key)}
                 onKeyDown={(e: React.KeyboardEvent<HTMLButtonElement>) => {
                   if (e.key === 'ArrowRight') { e.preventDefault(); handleArrow(c.key, 1); }

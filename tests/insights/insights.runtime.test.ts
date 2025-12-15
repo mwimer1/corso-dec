@@ -12,7 +12,8 @@ describe('insights page runtime', () => {
     
     // Verify runtime exports
     expect(pageSource).toContain('export const runtime = "nodejs"');
-    expect(pageSource).toContain('export const dynamic = "force-static"');
+    // Changed to force-dynamic to support URL query params for category filtering
+    expect(pageSource).toContain('export const dynamic = "force-dynamic"');
   });
 
   it('imports no server-only modules in client components', async () => {

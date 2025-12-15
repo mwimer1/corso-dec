@@ -2,7 +2,7 @@
 
 import { useAuth } from "@clerk/nextjs";
 import { Button, SkipNavLink } from "@/components/ui/atoms";
-import { LinkTrack } from "@/components/ui/molecules";
+import { LinkTrack, ReadingProgress } from "@/components/ui/molecules";
 import { APP_LINKS } from '@/components';
 import { cn } from "@/styles";
 import { fullWidthSectionContainerVariants } from "@/styles/ui/organisms";
@@ -88,11 +88,12 @@ export function PublicLayout({
           />
         </div>
       </header>
+      {showReadingProgress && <ReadingProgress />}
       <main
         id="main-content"
         className={cn(
           "flex-1 relative bg-background text-foreground",
-          showReadingProgress && "pt-4", // Account for reading progress bar
+          showReadingProgress && "pt-1", // Account for reading progress bar (1px height)
           !isSignedIn && showMobileCTA && "pb-20", // Prevent footer overlap with mobile CTA
           className,
         )}
