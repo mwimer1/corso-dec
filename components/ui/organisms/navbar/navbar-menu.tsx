@@ -3,6 +3,7 @@
 
 import { UserButton } from "@clerk/nextjs";
 import * as React from "react";
+import { usePathname } from "next/navigation";
 
 import { Button, HamburgerIcon, XMarkIcon } from "@/components/ui/atoms";
 import { NavItem } from "@/components/ui/molecules/nav-item";
@@ -40,6 +41,7 @@ export function NavbarMenu({
   showSignup: _showSignup = true,
 }: NavbarMenuProps) {
   const navbarStyles = navbarStyleVariants();
+  const pathname = usePathname();
 
   // Unified render helpers to avoid duplication between desktop and mobile
   const renderAuthSection = React.useCallback(
@@ -64,22 +66,41 @@ export function NavbarMenu({
     [isSignedIn],
   );
 
+  // Determine if a nav item is active based on current pathname
+  const isItemActive = React.useCallback((item: NavItemData): boolean => {
+    const itemHref = item.href;
+    // Remove hash from href for comparison
+    const itemPath = itemHref.split('#')[0];
+    
+    // For Pricing link, match if we're on /pricing (with or without hash)
+    if (itemPath === '/pricing') {
+      return pathname === '/pricing';
+    }
+    
+    // For other links, match exact pathname or if pathname starts with the href
+    return pathname === itemPath || pathname.startsWith(itemPath + '/');
+  }, [pathname]);
+
   const renderItem = React.useCallback(
-    (item: NavItemData, onClick?: () => void, size?: 'navLink' | 'mobileItem') => (
-      <NavItem
-        key={String(item.href)}
-        href={item.href}
-        external={item.external === true}
-        {...(onClick && { onClick })}
-        {...(size && { size })}
-        {...(size === 'mobileItem' ? { className: navbarStyles.mobileNavItem() } : undefined)}
-        {...(item.label === 'FAQ' ? { className: 'hide-faq-901' } : undefined)}
-        variant="text"
-      >
-        {item.label}
-      </NavItem>
-    ),
-    [navbarStyles],
+    (item: NavItemData, onClick?: () => void, size?: 'navLink' | 'mobileItem') => {
+      const active = isItemActive(item);
+      return (
+        <NavItem
+          key={String(item.href)}
+          href={item.href}
+          external={item.external === true}
+          isActive={active}
+          {...(onClick && { onClick })}
+          {...(size && { size })}
+          {...(size === 'mobileItem' ? { className: navbarStyles.mobileNavItem() } : undefined)}
+          {...(item.label === 'FAQ' ? { className: 'hide-faq-901' } : undefined)}
+          variant="text"
+        >
+          {item.label}
+        </NavItem>
+      );
+    },
+    [navbarStyles, isItemActive],
   );
 
   return (

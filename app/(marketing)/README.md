@@ -171,6 +171,7 @@ import { PublicLayout } from "@/components/ui/organisms";
 import { PRICING_UI, formatPriceUSD } from "@/lib/marketing/pricing/plan-ui";
 import { useRouter } from "next/navigation";
 import ScrollToFAQ from "./scroll-to-faq";
+import { landingNavItems } from "@/components/landing/layout/nav.config";
 
 // Transform PRICING_UI data into PricingPlan format (monthly only)
 const pricingPlans = Object.entries(PRICING_UI).map(([key, plan]) => ({
@@ -220,13 +221,15 @@ export default function PublicPricingPage() {
   };
 
   return (
-    <PublicLayout navMode="minimal">
+    <PublicLayout navMode="landing" navItems={landingNavItems}>
       <ScrollToFAQ />
       <PricingPage
         plans={pricingPlans}
         faqs={faqItems}
         headerTitle="Choose Your Plan"
-        headerSubtitle="Unlock real-time project, company, and address insights."
+        headerSubtitle="Start with a 7-day free trial — no credit card required."
+        billingCycle={billingCycle}
+        onBillingCycleChange={setBillingCycle}
         onPlanSelect={handlePlanSelect}
       />
     </PublicLayout>
