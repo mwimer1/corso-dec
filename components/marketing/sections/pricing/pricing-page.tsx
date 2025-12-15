@@ -82,7 +82,7 @@ export const PricingPage = React.forwardRef<HTMLDivElement, PricingPageProps>(
       <div ref={ref} id="pricing" className={cn(className)} {...props}>
         {/* Header Section */}
         <FullWidthSection
-          padding="lg"
+          padding="md"
           containerMaxWidth="7xl"
           containerPadding="lg"
           showVerticalGuidelines
@@ -109,6 +109,7 @@ export const PricingPage = React.forwardRef<HTMLDivElement, PricingPageProps>(
 
         {/* Pricing Tiers Section (mapped from PLANS) */}
         <FullWidthSection
+          padding="none"
           containerMaxWidth="7xl"
           containerPadding="lg"
           showVerticalGuidelines

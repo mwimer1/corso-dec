@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { useState, useMemo } from "react";
 import type { BillingCycle } from "@/components/marketing/pricing/plan-ui";
 import ScrollToFAQ from "./scroll-to-faq";
+import { landingNavItems } from "@/components/landing/layout/nav.config";
 
 // FAQ data
 const faqItems = [
@@ -68,7 +69,7 @@ export default function PublicPricingPage() {
   };
 
   return (
-    <PublicLayout navMode="minimal">
+    <PublicLayout navMode="landing" navItems={landingNavItems}>
       <ScrollToFAQ />
       <PricingPage
         plans={pricingPlans}
