@@ -99,7 +99,7 @@ The `server` domain has specific allowed facades for importing from other domain
 
 ```tsx
 // ✅ Server domain importing from allowed facades
-import { getCurrentUser } from '@/lib/auth';        // Via server→features facade
+import { requireUserId } from '@/lib/auth/server';  // Via server→features facade
 import { checkRateLimit } from '@/lib/security';    // Via server→features facade
 import { logger } from '@/lib/monitoring';          // Via server→features facade
 import type { ClickParams } from '@/lib/integrations'; // Via server→integrations facade
@@ -199,7 +199,7 @@ import { logger } from '@/lib/monitoring';
 // ✅ ALTERNATIVE: Direct imports for specific modules
 import { logger } from '@/lib/monitoring';
 import { requireServerEnv } from '@/lib/server/env';
-import { auth } from '@/lib/auth';
+import { auth } from '@clerk/nextjs/server';
 
 // ✅ ALSO VALID: Mix server + client-safe imports
 import { auth } from '@/lib/auth/server';

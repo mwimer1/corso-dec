@@ -337,7 +337,7 @@ export default function ContactPage() {
 import { InsightsHero } from "@/components/insights";
 import { CategoryFilterClient } from "@/components/insights/clients";
 import { InsightsLayout } from "@/components/insights/layout/insights-layout";
-import { getAllInsights } from "@/lib/marketing";
+import { getAllInsights } from "@/lib/marketing/server";
 import type { Metadata } from "next";
 
 export const runtime = "nodejs";
@@ -419,7 +419,7 @@ Category-specific insights pages that filter and display insights by category.
 ```tsx
 // FILE: app/(marketing)/insights/categories/[category]/page.tsx
 import { InsightsLayout, InsightsList } from '@/components/insights';
-import { getAllInsights } from '@/lib/marketing';
+import { getAllInsights } from '@/lib/marketing/server';
 import { trackEvent } from '@/lib/shared/analytics/track';
 import type { Metadata } from 'next';
 
@@ -470,7 +470,7 @@ Dynamic article pages with SEO metadata generation:
    • Uses safe, local interface to avoid mismatch with auto-generated types
 ------------------------------------------------------------------- */
 import { InsightDetail } from "@/components/insights";
-import { getInsightBySlug } from "@/lib/marketing";
+import { getInsightBySlug } from "@/lib/marketing/server";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 

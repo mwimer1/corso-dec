@@ -263,7 +263,8 @@ The path alias system provides consistent import resolution across all configura
   "@/lib/shared": ["./lib/shared/index.ts"],
   "@/lib/security": ["./lib/security/index.ts"],
   "@/lib/monitoring": ["./lib/monitoring/index.ts"],
-  "@/lib/auth": ["./lib/auth/index.ts"],
+  "@/lib/auth/server": ["./lib/auth/server.ts"],
+  "@/lib/auth/client": ["./lib/auth/client.ts"],
   "@/lib/chat": ["./lib/chat/index.ts"],
   "@/lib/dashboard": ["./lib/dashboard/index.ts"]
 }

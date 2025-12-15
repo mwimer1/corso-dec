@@ -98,7 +98,7 @@ lib/
 #### Barrel Imports (Preferred)
 ```typescript
 // Domain barrels
-import { validateAuth } from '@/lib/auth';
+import { requireUserId } from '@/lib/auth/server';
 import { Button, Input } from '@/components/ui';
 
 // Sub-domain barrels

@@ -114,7 +114,7 @@ export function getUser(id: string) {
 **✅ CORRECT: Use `import type` for type-only imports**
 ```typescript
 import type { User } from '@/types/auth/user';
-import { getUser } from '@/lib/auth';
+import { requireUserId } from '@/lib/auth/server';
 ```
 
 **❌ INCORRECT: Regular import for types**

@@ -56,8 +56,8 @@ import { getEnvEdge } from '@/lib/api';
 
 // ✅ Server Routes - Use server-only imports
 export const runtime = 'nodejs';
-import { getEnv } from '@/lib/shared/server';
-import { auth } from '@/lib/auth';
+import { getEnv } from '@/lib/server/env';
+import { auth } from '@clerk/nextjs/server';
 ```
 
 ### Import Pattern Enforcement
