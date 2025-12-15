@@ -8,9 +8,9 @@ import { Building2, FolderKanban, MapPin, MessageSquare } from "lucide-react";
 
 export const DASHBOARD_NAV_ITEMS = [
   { href: "/dashboard/chat", label: "Chat", icon: <MessageSquare className="h-5 w-5" aria-hidden="true" />, roles: ['owner', 'admin', 'member', 'viewer'] as const },
-  { href: "/dashboard/projects", label: "Projects", icon: <FolderKanban className="h-5 w-5" aria-hidden="true" />, roles: ['owner', 'admin', 'member', 'viewer'] as const },
+  { href: "/dashboard/projects", label: "Projects", icon: <FolderKanban className="h-5 w-5" aria-hidden="true" />, roles: ['owner', 'admin', 'member'] as const },
   { href: "/dashboard/companies", label: "Companies", icon: <Building2 className="h-5 w-5" aria-hidden="true" />, roles: ['owner', 'admin', 'member'] as const },
-  { href: "/dashboard/addresses", label: "Addresses", icon: <MapPin className="h-5 w-5" aria-hidden="true" />, roles: ['owner', 'admin', 'member', 'viewer'] as const },
+  { href: "/dashboard/addresses", label: "Addresses", icon: <MapPin className="h-5 w-5" aria-hidden="true" />, roles: ['owner', 'admin', 'member'] as const },
 ] as const;
 
 export function isNavItemActive(pathname: string, href: string): boolean {

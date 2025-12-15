@@ -43,6 +43,7 @@ export type EntityGridProps = {
   gridRef: React.RefObject<AgGridReact>;
   onStateUpdated: (e: StateUpdatedEvent) => void;
   setSearchCount: React.Dispatch<React.SetStateAction<string | null>>;
+  onLoadError?: (hasError: boolean) => void;
   className?: string;
   style?: React.CSSProperties;
 };

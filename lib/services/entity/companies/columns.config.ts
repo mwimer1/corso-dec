@@ -29,7 +29,7 @@ export const COMPANIES_COLUMNS: TableColumnConfig[] = [
   { id: 'project_count_2024', label: 'Count (2024)', accessor: 'project_count_2024', sortable: true, hidden: true, format: 'number' },
   { id: 'project_count_growth_2024', label: 'Count % (2024)', accessor: 'project_count_growth_2024', sortable: true, hidden: true, format: 'number' },
   { id: 'avg_job_value_2024', label: 'Avg. Value (2024)', accessor: 'avg_job_value_2024', sortable: true, hidden: true, format: 'currency' },
-  { id: 'company_url', label: 'Website', accessor: 'company_url', sortable: true, hidden: true, width: 300 },
-  { id: 'linkedin_url', label: 'LinkedIn', accessor: 'linkedin_url', sortable: true, hidden: true, width: 300 },
+  { id: 'company_url', label: 'Website', accessor: 'company_url', sortable: true, hidden: true, width: 300, format: 'link' },
+  { id: 'linkedin_url', label: 'LinkedIn', accessor: 'linkedin_url', sortable: true, hidden: true, width: 300, format: 'link' },
 ];
 

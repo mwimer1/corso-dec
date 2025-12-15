@@ -4,7 +4,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { cn } from "@/styles";
 // Grid state context removed - using local state instead
 import type { AgGridReact } from 'ag-grid-react';
-import { ArrowDownToLine, CopyPlus, FileDown, ListRestart, Maximize2, RefreshCcw, Save, Trash } from 'lucide-react';
+import { AlertTriangle, ArrowDownToLine, CopyPlus, FileDown, ListRestart, Maximize2, RefreshCcw, Save, Trash } from 'lucide-react';
 import type React from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -31,6 +31,8 @@ interface GridMenubarProps {
   initDefaultGridName: string | null;
   initGridName: string | null;
   hasEnterprise?: boolean;
+  loadError?: boolean;
+  onRetry?: () => void;
 }
 
 export function GridMenubar(props: GridMenubarProps) {
@@ -139,7 +141,7 @@ export function GridMenubar(props: GridMenubarProps) {
         <div className="flex items-center my-2 gap-2">
           {/* Saved Searches menu */}
           <DropdownMenu.Root>
-            <DropdownMenu.Trigger className="px-2 py-0.95 cursor-pointer transition-colors hover:bg-accent hover:text-accent-foreground rounded-md">
+            <DropdownMenu.Trigger className="px-2 py-0.95 cursor-pointer transition-colors hover:bg-accent hover:text-accent-foreground rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
               Saved Searches
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
@@ -166,7 +168,7 @@ export function GridMenubar(props: GridMenubarProps) {
                         e.stopPropagation();
                         handleDelete(state.state_name);
                       }}
-                      className="absolute right-2 text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-600"
+                      className="absolute right-2 text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:opacity-100"
                       aria-label="Delete state"
                     >
                       <Trash className="h-4 w-4" />
@@ -179,7 +181,7 @@ export function GridMenubar(props: GridMenubarProps) {
 
           {/* Tools menu */}
           <DropdownMenu.Root>
-            <DropdownMenu.Trigger className="px-2 py-0.95 cursor-pointer transition-colors hover:bg-accent hover:text-accent-foreground rounded-md">
+            <DropdownMenu.Trigger className="px-2 py-0.95 cursor-pointer transition-colors hover:bg-accent hover:text-accent-foreground rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
               Tools
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
@@ -280,8 +282,27 @@ export function GridMenubar(props: GridMenubarProps) {
           </DropdownMenu.Root>
         </div>
 
-        {/* Right side: results -> csv -> hard reset -> save as -> save */}
+        {/* Right side: error alert -> results -> csv -> hard reset -> save as -> save */}
         <div className="flex items-center p-1 gap-4">
+          {/* Error alert */}
+          {props.loadError && (
+            <div
+              role="alert"
+              className="flex items-center gap-2 px-2 py-1 text-xs text-destructive bg-destructive/10 border border-destructive/20 rounded-md"
+            >
+              <AlertTriangle className="h-4 w-4" aria-hidden="true" />
+              <span>Error loading data.</span>
+              {props.onRetry && (
+                <button
+                  onClick={props.onRetry}
+                  className="underline hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  aria-label="Retry loading data"
+                >
+                  Retry
+                </button>
+              )}
+            </div>
+          )}
           {/* Results count */}
           <div className="cursor-default text-muted-foreground">
             {formatNumber(props.searchCount)} results
@@ -290,7 +311,7 @@ export function GridMenubar(props: GridMenubarProps) {
           {/* Export CSV */}
           <button
             onClick={() => props.gridRef?.current?.api.exportDataAsCsv()}
-            className="p-1 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors"
+            className="p-1 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             aria-label="Export as CSV"
           >
             <ArrowDownToLine className="h-4 w-4" />
@@ -307,7 +328,7 @@ export function GridMenubar(props: GridMenubarProps) {
                 console.error("Failed to reset the grid:", error);
               }
             }}
-            className="p-1 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors"
+            className="p-1 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             aria-label="Reset grid"
           >
             <ListRestart className="h-4 w-4" />
@@ -322,7 +343,7 @@ export function GridMenubar(props: GridMenubarProps) {
                 console.error("Failed to refresh the grid:", error);
               }
             }}
-            className="p-1 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors"
+            className="p-1 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             aria-label="Refresh grid"
           >
             <RefreshCcw className="h-4 w-4" />
@@ -331,7 +352,7 @@ export function GridMenubar(props: GridMenubarProps) {
           {/* Save As */}
           <button
             onClick={handleSaveAsClick}
-            className="p-1 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors"
+            className="p-1 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             aria-label="Save grid as"
           >
             <CopyPlus className="h-4 w-4" />
@@ -341,7 +362,7 @@ export function GridMenubar(props: GridMenubarProps) {
           <button
             onClick={handleSave}
             disabled={!props.currentState}
-            className="p-1 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors disabled:opacity-50"
+            className="p-1 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:focus-visible:ring-0"
             aria-label="Save grid"
           >
             <Save className="h-4 w-4" />

@@ -21,7 +21,7 @@ const _posthogHook: () => _PosthogLite = () => ({
 registerAgGridModules();
 
 export default function EntityGrid({
-  config, gridRef, setSearchCount, onStateUpdated, className, style,
+  config, gridRef, setSearchCount, onStateUpdated, onLoadError, className, style,
 }: EntityGridProps) {
   const [, setGridApi] = useState<GridApi | null>(null);
   const [ready, setReady] = useState(false);
@@ -79,12 +79,14 @@ export default function EntityGrid({
           const r = await config.fetcher(p.request, posthog.get_distinct_id?.() ?? 'anon');
           (params as any).success({ rowData: r.rows, rowCount: undefined });
           setSearchCount(r.totalSearchCount?.toString() ?? '—');
+          onLoadError?.(false);
         } catch (e) {
           // Log datasource errors for debugging (development only)
           if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
             console.error(`[${config.id}] datasource error`, e);
           }
           (params as any).fail();
+          onLoadError?.(true);
         }
       },
     });
@@ -92,7 +94,7 @@ export default function EntityGrid({
     if (!(gridName || defaultGridName)) {
       params.api.applyColumnState({ state: config.defaultSortModel });
     }
-  }, [config, posthog, gridName, defaultGridName, setSearchCount]);
+  }, [config, posthog, gridName, defaultGridName, setSearchCount, onLoadError]);
 
   // Show loading state while AG Grid is initializing
   if (!ready) {

@@ -58,11 +58,9 @@ export default async function DashboardLayout({ children }) {
   if (!userId) redirect('/sign-in');
 
   return (
-    <DashboardProvider>
-      <DashboardLayout>
-        {children}
-      </DashboardLayout>
-    </DashboardProvider>
+    <DashboardLayout>
+      {children}
+    </DashboardLayout>
   );
 }
 ```
@@ -106,6 +104,7 @@ export default async function EntityPage({ params }: { params: Promise<{ entity:
 - **Dynamic Navigation:** Filtered by RBAC and feature flags via `@/lib/dashboard/nav.tsx`
 - **Active State:** Applied for exact path matches
 - **Accessibility:** Proper ARIA labels and `aria-current="page"`
+- **RBAC Enforcement:** Navigation items are filtered by user role. Final access control is enforced server-side via API endpoints (UI gating provides UX but is not the sole protection)
 
 ## Conventions
 
@@ -142,11 +141,13 @@ pnpm vitest run            # Test components
 
 | Component | Location | Purpose |
 |-----------|----------|---------|
-| `DashboardLayout` | `@/components/dashboard` | Main layout shell |
-| `DashboardProvider` | `@/contexts/dashboard` | Shared state management |
+| `DashboardLayout` | `@/components/dashboard` | Main layout shell with sidebar and top bar |
+| `DashboardTopBar` | `@/components/dashboard/layout` | Fixed top bar displaying current section title |
+| `DashboardSidebar` | `@/components/dashboard/layout` | Collapsible sidebar navigation |
 | `EntityGridHost` | `@/components/dashboard/entity` | Client grid host via typed registry |
-| `BarChart` | `@/components/dashboard` | Analytics charts |
+| `EntityGrid` | `@/components/dashboard/entity/shared/grid` | AG Grid wrapper with server-side data source |
+| `GridMenubar` | `@/components/dashboard/entity/shared/grid` | Toolbar with saved searches, export, and grid controls |
 
 ---
 
-**Last updated: 2025-10-07**
+**Last updated: 2025-01-27**
