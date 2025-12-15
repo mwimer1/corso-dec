@@ -127,15 +127,8 @@ export function requireServerEnv<K extends keyof ValidatedEnv>(
   return out;
 }
 
-/** Dynamic helper for string keys (returns string). */
-export function requireServerEnvVar(key: string): string {
-  const env = getEnv() as Record<string, unknown>;
-  const v = env[key];
-  if (v == null || (typeof v === 'string' && v.trim() === '')) {
-    throw new Error(`Missing required env var: ${key}`);
-  }
-  return String(v);
-}
+// Removed: requireServerEnvVar - unused per dead code audit
+// Use requireServerEnv<K>(...keys: K[]) for typed access instead
 
 export type { ValidatedEnv };
 

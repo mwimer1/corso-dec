@@ -5,7 +5,8 @@
 import 'server-only';
 
 // Server-only environment utilities
-export { getEnv, requireServerEnv, requireServerEnvVar } from '@/lib/server/env';
+export { getEnv, requireServerEnv } from '@/lib/server/env';
+// Removed: requireServerEnvVar - unused per dead code audit
 export type { ValidatedEnv } from '@/lib/server/env';
 
 // Server-only validation utilities (moved from shared)
