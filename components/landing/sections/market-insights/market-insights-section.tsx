@@ -272,7 +272,7 @@ export const MarketInsightsSection: React.FC<Props> = ({
         </div>
       </div>
 
-      <div className={"mt-8 border-t border-border pt-8 " + cls['roiWrap']}>
+      <div className={"mt-8 pt-8 " + cls['roiWrap']}>
         <ROICalculator />
       </div>
     </section>

@@ -38,10 +38,10 @@ export const ROICalculator: React.FC = () => {
   return (
     <LandingSection tone="brand" className="text-center">
       <div className={cls['roiHeader']}>
-        <h1 className={cls['roiTitle']}>Turn Leads Into Revenue—Instantly</h1>
-        <h2 className={cls['roiSubtitle']}>
+        <h2 className={cls['roiTitle']}>Turn Leads Into Revenue—Instantly</h2>
+        <p className={cls['roiSubtitle']}>
           Model your ROI in seconds. See revenue lift, new deals, and days saved using your numbers.
-        </h2>
+        </p>
       </div>
 
       <div className="mx-auto w-full max-w-[1200px] px-4 md:px-6">
@@ -111,7 +111,7 @@ export const ROICalculator: React.FC = () => {
               </div>
 
               <div className={cls['roiCta']}>
-                <Button asChild variant="whiteSolid" size="lg" className="w-full">
+                <Button asChild variant="whiteSolid" size="lg" className="w-full py-4 text-base font-semibold">
                   {APP_LINKS.NAV.BOOK_DEMO.startsWith("/") ? (
                     <LinkTrack href={APP_LINKS.NAV.BOOK_DEMO} label="roi:book-demo">Book a demo</LinkTrack>
                   ) : (
