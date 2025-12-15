@@ -8,14 +8,8 @@
  * `@/lib/core/server` instead.
  */
 
-/* ── Configuration Types (Client-Safe) ─────────────────────────────────── */
-/**
- * Exports client-safe configuration types.
- */
-export type { SecurityConfig } from '@/types/config/security/types';
-export type { ValidationResult } from '@/types/shared';
-
 // ValidatorResult alias removed - was unused per audit
+// SecurityConfig and ValidationResult removed - unused exports per dead code audit
 
 /* ── Errors (Client-Safe) ─────────────────────────────────────────────────── */
 /**

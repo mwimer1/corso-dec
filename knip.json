@@ -1,0 +1,33 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "app/**/*.{ts,tsx}",
+    "middleware.ts",
+    "next.config.mjs",
+    "instrumentation.ts",
+    "instrumentation-client.ts"
+  ],
+  "project": [
+    "app/**/*.{ts,tsx}",
+    "lib/**/*.{ts,tsx}",
+    "components/**/*.{ts,tsx}",
+    "hooks/**/*.{ts,tsx}",
+    "actions/**/*.{ts,tsx}"
+  ],
+  "ignore": [
+    "**/*.d.ts",
+    "lib/mocks/**",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/__tests__/**",
+    "**/__mocks__/**"
+  ],
+  "ignoreDependencies": [
+    "@types/*",
+    "eslint-*",
+    "@typescript-eslint/*"
+  ]
+}
+
