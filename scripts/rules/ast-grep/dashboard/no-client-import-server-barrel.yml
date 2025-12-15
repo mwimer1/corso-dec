@@ -13,8 +13,6 @@ paths:
   include:
     - components/dashboard/**
     - app/**
-  exclude:
-    - components/dashboard/server.ts
 
 
 
