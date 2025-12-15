@@ -13,6 +13,51 @@ interface ProductShowcaseProps extends React.HTMLAttributes<HTMLDivElement> {}
 export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
   const [activeTab, setActiveTab] = React.useState(0);
 
+  // Detect horizontal scrollbar height and expose as CSS variable
+  // This ensures sticky tabs at bottom of viewport are fully visible above the scrollbar
+  React.useEffect(() => {
+    const updateScrollbarHeight = () => {
+      // Check if there's horizontal overflow that would cause a horizontal scrollbar
+      const hasHorizontalScroll = document.documentElement.scrollWidth > window.innerWidth;
+      
+      if (hasHorizontalScroll) {
+        // Calculate horizontal scrollbar height by creating a temporary element
+        // and measuring the difference between offsetWidth and clientWidth
+        const scrollbarDiv = document.createElement('div');
+        scrollbarDiv.style.width = '100px';
+        scrollbarDiv.style.height = '100px';
+        scrollbarDiv.style.overflow = 'scroll';
+        scrollbarDiv.style.position = 'absolute';
+        scrollbarDiv.style.top = '-9999px';
+        document.body.appendChild(scrollbarDiv);
+        
+        // The horizontal scrollbar height is the difference between offsetHeight and clientHeight
+        const horizontalScrollbarHeight = scrollbarDiv.offsetHeight - scrollbarDiv.clientHeight;
+        document.body.removeChild(scrollbarDiv);
+        
+        // Fallback to standard Windows scrollbar height (17px) if calculation fails
+        const height = horizontalScrollbarHeight > 0 ? horizontalScrollbarHeight : 17;
+        document.documentElement.style.setProperty('--scrollbar-h', `${height}px`);
+      } else {
+        document.documentElement.style.setProperty('--scrollbar-h', '0px');
+      }
+    };
+
+    updateScrollbarHeight();
+    window.addEventListener('resize', updateScrollbarHeight);
+    // Use MutationObserver to detect DOM changes that might cause overflow
+    const observer = new MutationObserver(updateScrollbarHeight);
+    observer.observe(document.body, { childList: true, subtree: true, attributes: true });
+    // Also check after a brief delay to catch dynamic content loading
+    const timeoutId = setTimeout(updateScrollbarHeight, 100);
+
+    return () => {
+      window.removeEventListener('resize', updateScrollbarHeight);
+      observer.disconnect();
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
   // Showcase images are served from public/ for reliability and simplicity
 
   interface TabData extends TabItem {
@@ -93,14 +138,15 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
       {...props}
     >
       {/* Sticky tabs container - positioned at bottom of viewport */}
-      {/* Accounts for navbar height and mobile CTA ribbon on mobile */}
+      {/* Accounts for navbar height, mobile CTA ribbon, and horizontal scrollbar height */}
       {/* On mobile, tabs sit above the mobile CTA ribbon (which is ~60-70px tall) */}
+      {/* On desktop, tabs sit above horizontal scrollbar (typically 15-17px on Windows) */}
       <div 
         className={cn(
           "sticky z-[45] bg-background border-b border-border",
           // On mobile, add bottom padding to account for mobile CTA ribbon (~70px tall)
-          // On desktop, tabs sit at the very bottom
-          "bottom-[70px] md:bottom-0",
+          // On desktop, account for horizontal scrollbar using CSS variable (falls back to 17px)
+          "bottom-[70px] md:bottom-[var(--scrollbar-h,17px)]",
           // Ensure tabs are above content and mobile CTA (mobile CTA is z-40) but below navbar (navbar is z-50)
         )}
       >
