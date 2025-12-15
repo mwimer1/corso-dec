@@ -21,7 +21,7 @@ export default function ChatWindow() {
     return 'projects';
   });
   const scrollRef = useRef<HTMLDivElement>(null);
-  const firstName = user?.firstName ?? (user as any)?.first_name ?? undefined;
+  const firstName = user?.firstName;
   const hasHistory = messages.length > 0;
   const PREFIX_MODE = true;
   const applyModePrefix = useCallback((t: string) => (PREFIX_MODE ? `[mode:${mode}] ${t}` : t), [mode, PREFIX_MODE]);
@@ -112,7 +112,7 @@ export default function ChatWindow() {
           </ul>
         ) : (
           <div className="px-6">
-            <ChatWelcome onPreset={handleSelectFollowUp} {...(firstName ? { firstName } as const : {})} />
+            <ChatWelcome onPreset={handleSelectFollowUp} {...(firstName ? { firstName } : {})} />
           </div>
         )}
       </div>
