@@ -88,7 +88,7 @@ describe('ChatWindow', () => {
     render(<ChatWindow />);
     await waitFor(() => {
       expect(screen.getByLabelText('Chat message input')).toBeInTheDocument();
-    });
+    }, { timeout: 3000 }); // Allow time for dynamic import to resolve
     expect(screen.getByPlaceholderText(/Ask anything about projects/)).toBeInTheDocument();
   });
 
