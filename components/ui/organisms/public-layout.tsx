@@ -62,7 +62,7 @@ export function PublicLayout({
   }, []);
 
   return (
-    <div className="min-h-[100svh] flex flex-col">
+    <div className="flex min-h-screen flex-col">
       <SkipNavLink />
       <header
         role="banner"
@@ -89,7 +89,7 @@ export function PublicLayout({
       <main
         id="main-content"
         className={cn(
-          "bg-background text-foreground flex-1 relative",
+          "flex-1 relative bg-background text-foreground",
           showReadingProgress && "pt-4", // Account for reading progress bar
           className,
         )}
