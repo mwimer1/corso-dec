@@ -96,7 +96,7 @@ export const Slider = React.forwardRef<
       />
       {value.map((val, i) => (
         <SliderPrimitive.Thumb
-          key={`thumb-${val}`}
+          key={`thumb-${i}-${val}`}
           className={cn(
             sliderThumbVariants({ size: thumbSize ?? size, variant: 'slider' }),
             "relative bg-background border border-border shadow-sm focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
