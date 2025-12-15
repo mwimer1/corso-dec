@@ -53,7 +53,7 @@ function ChatComposer(props: ChatComposerProps) {
   }, [value, onInputAutoGrow]);
 
   return (
-    <div className="mx-auto w-full max-w-3xl rounded-2xl bg-white p-3 shadow-sm" role="region" aria-label="Message composer">
+    <div className="mx-auto w-full max-w-3xl rounded-2xl bg-surface p-3 shadow-sm" role="region" aria-label="Message composer">
       <textarea
         ref={inputRef}
         value={value}
@@ -85,7 +85,7 @@ function ChatComposer(props: ChatComposerProps) {
           <button
             type="button"
             aria-label="More actions"
-            className="h-9 w-9 rounded-md border border-gray-200 bg-white inline-flex items-center justify-center hover:bg-gray-50"
+            className="h-9 w-9 rounded-md border border-border bg-surface inline-flex items-center justify-center hover:bg-surface-hover"
             onClick={() => inputRef.current?.focus()}
             disabled={isProcessing}
             title="More"
@@ -97,7 +97,7 @@ function ChatComposer(props: ChatComposerProps) {
             aria-label="Send"
             onClick={() => onSend()}
             disabled={!canSend}
-            className="h-9 w-9 rounded-md bg-gray-800 text-white inline-flex items-center justify-center disabled:opacity-50 hover:shadow-sm active:opacity-90"
+            className="h-9 w-9 rounded-md bg-primary text-primary-foreground inline-flex items-center justify-center disabled:opacity-50 hover:shadow-sm active:opacity-90"
             aria-describedby="chat-send-hint"
           >
             <ArrowUpIcon pixelSize={18} />

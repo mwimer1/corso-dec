@@ -21,7 +21,7 @@ function ChatWelcome({ firstName, onPreset, className }: ChatWelcomeProps) {
     <div className={["w-full", className].filter(Boolean).join(' ')}>
         <div className="py-12 text-center">
         <h1 className="text-4xl md:text-5xl font-semibold tracking-tight">{greeting}</h1>
-        <p className="mt-4 text-base text-gray-600 max-w-3xl mx-auto">
+        <p className="mt-4 text-base text-muted-foreground max-w-3xl mx-auto">
           Ask a question about permits, company activity, or address history. Try a preset prompt below or type your
           own to get started.
         </p>
@@ -29,11 +29,11 @@ function ChatWelcome({ firstName, onPreset, className }: ChatWelcomeProps) {
       <div className="max-w-3xl mx-auto space-y-3">
           {PRESETS.map(({ icon, text }) => {
           const classes =
-            "group w-full rounded-2xl border var(--chat-preset-border) bg-white px-5 py-3.5 text-left " +
-            "flex items-center gap-3 text-gray-900 " +
+            "group w-full rounded-2xl border border-border bg-surface px-5 py-3.5 text-left " +
+            "flex items-center gap-3 text-foreground " +
             "shadow-[0_1px_2px_rgba(16,24,40,0.06)] " +
             "transition-all duration-150 ease-out " +
-            "hover:-translate-y-0.5 hover:shadow-[0_8px_16px_rgba(16,24,40,0.10)] hover:border-gray-300 " +
+            "hover:-translate-y-0.5 hover:shadow-[0_8px_16px_rgba(16,24,40,0.10)] hover:border-border " +
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2";
 
           return (
@@ -45,11 +45,11 @@ function ChatWelcome({ firstName, onPreset, className }: ChatWelcomeProps) {
             >
               <span
                 aria-hidden
-                className="grid h-8 w-8 place-items-center rounded-md border border-gray-200 bg-gray-50 text-base shadow-sm"
+                className="grid h-8 w-8 place-items-center rounded-md border border-border bg-surface-contrast text-base shadow-sm"
               >
                 {icon}
               </span>
-              <span className="text-base font-semibold text-gray-800">{text}</span>
+              <span className="text-base font-semibold text-foreground">{text}</span>
             </button>
           );
         })}

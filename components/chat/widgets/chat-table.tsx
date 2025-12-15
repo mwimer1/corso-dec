@@ -20,7 +20,7 @@ export function ChatTable({ columns, rows, compact = false, stickyHeader = false
   // Handle edge cases
   if (columns.length === 0) {
     return (
-      <div className="p-4 text-center text-gray-500 text-sm">
+      <div className="p-4 text-center text-muted-foreground text-sm">
         No columns to display
       </div>
     );
@@ -28,7 +28,7 @@ export function ChatTable({ columns, rows, compact = false, stickyHeader = false
 
   if (rows.length === 0) {
     return (
-      <div className="p-4 text-center text-gray-500 text-sm">
+      <div className="p-4 text-center text-muted-foreground text-sm">
         No data to display
       </div>
     );
@@ -38,21 +38,21 @@ export function ChatTable({ columns, rows, compact = false, stickyHeader = false
     <div className="overflow-x-auto">
       <table className={`min-w-full ${compact ? 'text-sm' : ''}`}>
         {stickyHeader && (
-          <thead className="sticky top-0 bg-white border-b">
+          <thead className="sticky top-0 bg-surface border-b">
             <tr>
               {columns.map((column) => (
-                <th key={column.id} className="text-left py-2 px-3 font-medium text-gray-900">
+                <th key={column.id} className="text-left py-2 px-3 font-medium text-foreground">
                   {column.label}
                 </th>
               ))}
             </tr>
           </thead>
         )}
-        <tbody className="divide-y divide-gray-200">
+        <tbody className="divide-y divide-border">
           {!stickyHeader && (
             <tr>
               {columns.map((column) => (
-                <th key={column.id} className="text-left py-2 px-3 font-medium text-gray-900 bg-gray-50">
+                <th key={column.id} className="text-left py-2 px-3 font-medium text-foreground bg-surface-contrast">
                   {column.label}
                 </th>
               ))}
@@ -64,9 +64,9 @@ export function ChatTable({ columns, rows, compact = false, stickyHeader = false
             const stableKey = firstColumnId ? String(row[firstColumnId]) : `row-${index}`;
 
             return (
-              <tr key={stableKey} className="hover:bg-gray-50">
+              <tr key={stableKey} className="hover:bg-surface-hover">
                 {columns.map((column) => (
-                  <td key={column.id} className="py-2 px-3 text-gray-700">
+                  <td key={column.id} className="py-2 px-3 text-foreground">
                     {String(row[column.id] ?? '') || '-'}
                   </td>
                 ))}

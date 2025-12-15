@@ -16,8 +16,6 @@ export * from './input';
 export * from './label';
 export * from './link';
 export * from './logo';
-// Menu components removed - unused in application code
-
 
 // Popover components (individual exports)
 
@@ -29,15 +27,10 @@ export * from './skip-nav-link';
 export * from './slider';
 export * from './spinner';
 export * from './toggle';
-// VerticalGuidelines removed — keep allowlist entry if needed
-// Route-level loading block (used in some pages)
 export * from './route-loading';
 
 // New pattern surface atom (marketing / landing sections)
 export * from './section-surface';
-
-// Menu components removed - unused in application code
-
 
 export * from './logo-dog';
 

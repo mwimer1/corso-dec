@@ -50,7 +50,7 @@ export function SegmentedControl<T extends string>({ value, onChange, options, c
             onKeyDown={(e) => onKeyDown(e, i)}
             className={
               "h-8 px-3 text-xs rounded-md border " +
-              (selected ? "bg-blue-50 text-blue-700 border-blue-200" : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50")
+              (selected ? "bg-surface-selected text-foreground border-border" : "bg-surface text-muted-foreground border-border hover:bg-surface-hover")
             }
           >
             {opt.label}
