@@ -37,33 +37,40 @@ app/api/
     └── route.ts                 # Test endpoint (Edge runtime)
 ```
 
-## v1 Endpoints
+## API Reference
 
-| Domain | Method | Path | Purpose | Runtime | Rate Limit |
-|--------|--------|------|---------|---------|------------|
-| Entity | POST | `/api/v1/entity/[entity]/query` | Query entity with pagination/filtering/sorting | Node.js | 60/min |
-| Entity | GET | `/api/v1/entity/[entity]/export` | Export entity data (CSV/XLSX) | Node.js | 30/min |
-| Entity | GET | `/api/v1/entity/[entity]` | Entity base operations | Node.js | 60/min |
-| AI | POST | `/api/v1/ai/generate-chart` | AI chart configuration | Node.js | 30/min |
-| AI | POST | `/api/v1/ai/generate-sql` | AI SQL generation | Node.js | 30/min |
-| Security | POST | `/api/v1/csp-report` | CSP violation reports | Node.js | 30/min |
-| User | POST | `/api/v1/user` | User profile operations | Node.js | 30/min |
+> **📘 Source of Truth**: The complete, authoritative API specification is in [OpenAPI format](api/openapi.yml). All endpoint details, request/response schemas, authentication requirements, and rate limits are documented there.
+
+### Quick Reference
+
+**Public API (v1)**: All endpoints under `/api/v1/*` are documented in the OpenAPI specification:
+- Entity operations: `/api/v1/entity/[entity]/*`
+- AI services: `/api/v1/ai/*`
+- User operations: `/api/v1/user`
+- Security: `/api/v1/csp-report`
+
+**Internal API**: Webhooks and privileged operations under `/api/internal/*` (see [Internal API README](internal/README.md))
+
+**Health Endpoints**: Public health checks at `/api/health` and `/api/health/clickhouse`
 
 > **Note**: Routes under `/api/v1/dashboard/**` were removed as of October 2025. Use `/api/v1/entity/**` for resource operations and `/api/v1/ai/**` for AI helpers.
 
-## Internal Endpoints
+### Viewing the API Specification
 
-| Domain | Method | Path | Purpose | Runtime | Rate Limit |
-|--------|--------|------|---------|---------|------------|
-| Auth | POST | `/api/internal/auth` | Clerk webhook processing | Node.js | 100/min |
+```bash
+# Generate and view OpenAPI spec
+pnpm openapi:gen
 
-## Public Endpoints
+# View in browser (if using OpenAPI UI tools)
+# Or use your IDE's OpenAPI viewer for api/openapi.yml
+```
 
-| Domain | Method | Path | Purpose | Runtime | Rate Limit |
-|--------|--------|------|---------|---------|------------|
-| Status | GET, HEAD | `/api/health` | Canonical health check with metadata | Edge | N/A |
-| Health | GET, HEAD | `/api/health/clickhouse` | ClickHouse database connectivity | Node.js | N/A |
-| Security | POST | `/api/v1/csp-report` | CSP violation reporting | Edge | 30/min |
+The OpenAPI spec includes:
+- Complete endpoint definitions with methods, paths, and descriptions
+- Request/response schemas with validation rules
+- Authentication and RBAC requirements
+- Rate limiting information
+- Error response formats
 
 ## Architecture & Standards
 
@@ -96,9 +103,9 @@ Browser-facing endpoints implement OPTIONS handlers with:
 1. Create route file with proper runtime declaration
 2. Add Zod validation for inputs
 3. Implement authentication/RBAC where needed
-4. Update OpenAPI spec (`api/openapi.yml`)
+4. **Update OpenAPI spec (`api/openapi.yml`)** - This is the source of truth
 5. Add tests for new functionality
-6. Update this README with route details
+6. Run `pnpm openapi:gen` to regenerate types and validate spec
 
 ### Development Guidelines
 - **Input validation**: All request bodies use Zod `.strict()` schemas
@@ -160,21 +167,28 @@ curl -X POST http://localhost:3000/api/v1/ai/generate-chart \
 
 ## OpenAPI Management
 
+The OpenAPI specification (`api/openapi.yml`) is the **single source of truth** for all API documentation. It generates:
+- `api/openapi.json` - Bundled JSON specification
+- `types/api/openapi.d.ts` - TypeScript types for API clients
+
+### Commands
+
 ```bash
-pnpm openapi:gen      # Generate types and docs from api/openapi.yml
-pnpm openapi:rbac:check # Validate RBAC annotations
+pnpm openapi:gen          # Complete pipeline: bundle → lint → generate types
+pnpm openapi:lint         # Validate YAML with Spectral
+pnpm openapi:rbac:check   # Validate RBAC annotations and security
+pnpm openapi:diff         # Compare spec changes
 ```
 
-Single source: `api/openapi.yml` → generates `api/openapi.json` + TypeScript types.
+### RBAC & Security
 
-**RBAC enforcement:**
-- `x-corso-rbac: [role...]` required for bearer-auth endpoints
-- `x-public: true` for public endpoints (no auth required)
-- Public endpoints are accessible without authentication (middleware configured)
-- `OrgIdHeader` parameter for tenant-scoped operations
-- CI fails if RBAC/tenant scope missing or invalid roles used
+The OpenAPI spec enforces security through vendor extensions:
+- `x-corso-rbac: [role...]` - Required for bearer-auth endpoints (defines minimum role)
+- `x-public: true` - Marks public endpoints (no auth required)
+- `OrgIdHeader` parameter - Required for tenant-scoped operations
+- CI validation - `pnpm openapi:rbac:check` fails if RBAC/tenant scope missing
 
-**Note:** Health endpoints (`/health`, `/api/status/health`) are public but located in `/app/api/status/` for organizational clarity, separate from `/app/api/public/` which contains browser-reporting endpoints.
+For complete OpenAPI documentation, see [api/README.md](../../api/README.md).
 
 ---
 

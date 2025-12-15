@@ -520,7 +520,7 @@ button:focus-visible {
 ## 🔗 Related Documentation
 
 - [Component Design System](../ui/component-design-system.md) - Component accessibility patterns
-- [Testing Guide](../testing-quality/testing-guide.md) - Accessibility testing
+- [Testing Strategy](../testing-quality/testing-strategy.md) - Accessibility testing
 - [Form Components](../forms/form-field-base.md) - Accessible form patterns
 
 ---

@@ -536,7 +536,7 @@ Storybook in CI:
 
 ## 📚 Related Documentation
 
-- [Testing Guide](./testing-guide.md) - **Complete testing guide with examples, patterns, and best practices**
+- [Testing Strategy](./testing-strategy.md) - **Complete testing guide with examples, patterns, and best practices**
 - [API Route Tests](../../tests/api/README.md) - API testing patterns and examples
 - [Security Tests](../../tests/security/README.md) - Security testing guidelines
 - [Test Support](../../tests/support/README.md) - Test utilities and helpers

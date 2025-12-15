@@ -59,7 +59,8 @@ pnpm build:storybook          # Storybook build
 # Documentation
 pnpm docs:links                # Validate internal links
 pnpm docs:lint                 # Lint documentation
-pnpm docs:refresh              # Update timestamps
+pnpm docs:validate             # Full documentation validation
+pnpm docs:readmes:check        # Check README consistency
 ```
 
 ## 📊 Specialized Tools
@@ -72,9 +73,19 @@ pnpm docs:refresh              # Update timestamps
 - **knip**: Unused dependency detection
 
 ### API & Schema Tools
-- **OpenAPI Generator**: API specification generation from code
+- **OpenAPI**: API specification management (`api/openapi.yml`)
 - **Spectral**: OpenAPI linting and validation
-- **TypeDoc**: API documentation generation
+- **openapi-typescript**: TypeScript type generation from OpenAPI spec
+- **Redocly**: OpenAPI bundling and documentation
+
+**OpenAPI Commands:**
+```bash
+pnpm openapi:gen              # Complete pipeline: bundle → lint → generate types
+pnpm openapi:bundle           # Bundle YAML to JSON
+pnpm openapi:lint             # Validate with Spectral
+pnpm openapi:types            # Generate TypeScript types
+pnpm openapi:rbac:check       # Validate RBAC annotations
+```
 
 ### Version Control
 - **Git**: Distributed version control
@@ -99,9 +110,10 @@ pnpm ast-grep:scan               # Remaining AST-Grep patterns (~4 rules)
 pnpm validate:cursor-rules       # Security and consistency rules
 
 # Documentation validation
-pnpm docs:stale-check           # Check for outdated docs
+pnpm docs:validate              # Full documentation validation (links, structure, etc.)
 pnpm docs:links                 # Validate cross-references
 pnpm docs:lint                  # Documentation formatting
+pnpm docs:readmes:check         # Check README consistency
 ```
 
 ### Maintenance Scripts
@@ -228,4 +240,4 @@ chmod +x scripts/**/*.sh
 
 ---
 
-**Last updated:** 2025-09-15
+**Last updated:** 2025-12-15
