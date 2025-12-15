@@ -1,6 +1,6 @@
 // Minimal dashboard layout for testing accessibility features
 const TestableDashboardLayout = ({ children }: { children: React.ReactNode }) => (
-  <div className="flex h-screen flex-col bg-[#E7EBEE]">
+  <div className="flex h-screen flex-col bg-background">
     <a
       href="#main-content"
       className="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 z-50 p-2 bg-primary text-primary-foreground"
@@ -11,7 +11,7 @@ const TestableDashboardLayout = ({ children }: { children: React.ReactNode }) =>
       <div
         id="main-content"
         tabIndex={-1}
-        className="flex min-h-0 overflow-hidden flex-col bg-[#E7EBEE]"
+        className="flex min-h-0 overflow-hidden flex-col bg-background"
       >
         {children}
       </div>

@@ -14,7 +14,6 @@
     "types/shared/index.ts",
     "types/api/index.ts",
     "types/api/openapi.d.ts",
-    "lib/marketing/index.ts",
     "lib/server/index.ts",
     "styles/tailwind.config.ts",
     "styles/ui/shared/index.ts",

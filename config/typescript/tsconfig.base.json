@@ -68,7 +68,6 @@
       "@/lib/api/client": ["lib/api/client.ts"],
       "@/lib/api/response/http": ["lib/api/response/http.ts"],
       "@/lib/api/streaming/ndjson-route": ["lib/api/streaming/ndjson-route.ts"],
-      "@/lib/auth": ["lib/auth/index.ts"],
       "@/lib/auth/server": ["lib/auth/server.ts"],
       "@/lib/auth/client": ["lib/auth/client.ts"],
       "@/lib/auth/authorization/constants": ["lib/auth/authorization/constants.ts"],

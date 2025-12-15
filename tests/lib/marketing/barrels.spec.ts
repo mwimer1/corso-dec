@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 
 describe('lib/marketing barrels', () => {
   it('client barrel does not leak server-only symbols', async () => {
-    const client = await import('@/lib/marketing');
+    // Note: lib/marketing/index.ts was removed - code uses /client directly
+    const client = await import('@/lib/marketing/client');
     expect(client).not.toHaveProperty('getAllInsights');
     expect(client).not.toHaveProperty('getInsightBySlug');
     expect(client).not.toHaveProperty('getInsightsByCategory');

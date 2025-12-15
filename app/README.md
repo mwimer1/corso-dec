@@ -36,11 +36,16 @@ app/
 │   ├── page.tsx                     # Landing page (/)
 │   ├── route.config.ts              # Marketing route configuration
 │   ├── README.md                    # Marketing routes documentation
-│   ├── [entity]/                    # Entity-based legal pages
-│   │   ├── layout.tsx               # Entity layout wrapper
-│   │   ├── page.tsx                 # Entity index with legal links
-│   │   └── [page]/                  # Legal/contact pages
-│   │       └── page.tsx             # Dynamic legal/contact content
+│   ├── legal/                       # Legal pages index (navigation hub)
+│   │   └── page.tsx                 # Legal index page
+│   ├── terms/                       # Terms of Service
+│   │   └── page.tsx                 # Terms content page
+│   ├── privacy/                     # Privacy Policy
+│   │   └── page.tsx                 # Privacy content page
+│   ├── cookies/                     # Cookie Notice
+│   │   └── page.tsx                 # Cookie content page
+│   ├── contact/                     # Contact form and information
+│   │   └── page.tsx                 # Contact form and info page
 │   ├── insights/                    # Blog/insights section
 │   │   ├── page.tsx                 # Insights index (static generation)
 │   │   └── [slug]/                  # Article pages
@@ -105,16 +110,16 @@ app/
 
 | Group | URLs | Purpose | Runtime | Auth Required |
 |-------|------|---------|---------|---------------|
-| `(marketing)` | `/`, `/[entity]/*`, `/pricing`, `/insights/*` | Public marketing, SEO-optimized | Node.js | No |
+| `(marketing)` | `/`, `/legal`, `/terms`, `/privacy`, `/cookies`, `/contact`, `/pricing`, `/insights/*` | Public marketing, SEO-optimized | Node.js | No |
 | `(auth)` | `/sign-in`, `/sign-up` | Authentication flow | Node.js | No |
 | `(protected)` | `/dashboard/*`, `/dashboard/account`, `/dashboard/subscription` | Authenticated application | Node.js | Yes |
 
 **Key Notes:**
 - **All routes use Node.js runtime** for Clerk telemetry and data operations
-- **Marketing**: Public access, SEO-optimized with static generation where possible
+- **Marketing**: Public access, SEO-optimized with static generation where possible. Legal pages (`/legal`, `/terms`, `/privacy`, `/cookies`, `/contact`) are static routes (not dynamic `[entity]/[page]` structure)
 - **Auth**: Server-side guards prevent authenticated users from accessing auth pages
-- **Protected**: Clerk session validation + onboarding completion gate
-- **Themes**: Centralized via `RouteThemeProvider` setting `data-route-theme` attribute for CSS theming
+- **Protected**: Clerk session validation + onboarding completion gate (removed for MVP)
+- **Themes**: Centralized via `RouteThemeProvider` setting `data-route-theme` attribute for CSS theming. Default theme is "protected" (set in root layout); auth and marketing groups override via `_theme.tsx`
 - **Error Handling**: Standardized across groups using shared `ErrorFallback` component
 
 ## 🔐 Security & Authentication Patterns
