@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { classifyError, toErrorPayload } from '../../shared/errors/error-utils';
+import { classifyError, toErrorPayload } from '@/lib/shared/errors/error-utils';
 
 export async function reportError(error: unknown, context?: Record<string, unknown>) {
   const kind = classifyError(error);

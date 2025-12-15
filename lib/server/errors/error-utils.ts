@@ -2,7 +2,7 @@
 import 'server-only';
 
 import { ZodError } from 'zod';
-import { ApplicationError } from '../../shared/errors/application-error';
+import { ApplicationError } from '@/lib/shared/errors/application-error';
 import type { ApiError, ApiErrorCode } from './api-error';
 
 // Re-export shared error utilities (none currently needed)

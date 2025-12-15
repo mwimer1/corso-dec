@@ -17,7 +17,8 @@ export async function fetchEntityData<T extends BaseRow = BaseRow>(
 ): Promise<EntityFetchResult<T>> {
   // Mock JSON fallback during development
   try {
-    const useMock = getEnv().CORSO_USE_MOCK_DB === 'true' || process.env.NODE_ENV === 'test';
+    const env = getEnv();
+    const useMock = env.CORSO_USE_MOCK_DB === 'true' || env.NODE_ENV === 'test';
     const entity = slug as 'projects' | 'companies' | 'addresses';
     if (useMock && (entity === 'projects' || entity === 'companies' || entity === 'addresses')) {
       const base = new URL(publicEnv.NEXT_PUBLIC_SITE_URL || publicEnv.NEXT_PUBLIC_APP_URL || 'http://localhost:3000');
@@ -41,7 +42,8 @@ export async function fetchEntityData<T extends BaseRow = BaseRow>(
   const entity = slug as EntityKind;
 
   // Try mock path first (development); otherwise run real DB queries
-  const useMock = getEnv().CORSO_USE_MOCK_DB === 'true' || process.env.NODE_ENV === 'test';
+  const env = getEnv();
+  const useMock = env.CORSO_USE_MOCK_DB === 'true' || env.NODE_ENV === 'test';
   if (useMock && (entity === 'projects' || entity === 'companies' || entity === 'addresses')) {
     try {
       const base = new URL(publicEnv.NEXT_PUBLIC_SITE_URL || publicEnv.NEXT_PUBLIC_APP_URL || 'http://localhost:3000');

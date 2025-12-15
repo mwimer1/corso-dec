@@ -7,8 +7,8 @@
 // Note: avoid importing server-only env helper at module top-level to keep this
 // module bundlable in client/edge contexts. Use process.env fallback below.
 import { v4 as uuidv4 } from 'uuid';
-import { LRUCache } from '../cache/lru-cache';
-import { isProduction } from '../config/client';
+import { LRUCache } from '@/lib/shared/cache/lru-cache';
+import { isProduction } from '@/lib/shared/config/client';
 
 interface LoggerLike {
   error(...args: unknown[]): void;

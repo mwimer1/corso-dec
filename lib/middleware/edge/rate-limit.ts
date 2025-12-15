@@ -14,8 +14,8 @@ import { createMemoryStore } from '@/lib/ratelimiting/adapters/memory';
 import { buildCompositeKey } from '@/lib/ratelimiting/key';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { exposeHeader } from '../http/headers';
-import { addRequestIdHeader, getRequestId } from '../http/request-id';
+import { exposeHeader } from '@/lib/middleware/http/headers';
+import { addRequestIdHeader, getRequestId } from '@/lib/middleware/http/request-id';
 
 // Edge-safe in-memory store (no server dependencies)
 const edgeMemoryStore = createMemoryStore();

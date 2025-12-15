@@ -1,6 +1,6 @@
 // lib/shared/cache/simple-cache.ts
 // Note: Using console.log instead of logger to avoid circular dependencies in shared layer
-import { isProduction } from '../config/client';
+import { isProduction } from '@/lib/shared/config/client';
 
 interface CacheEntry<T = any> {
   value: T;

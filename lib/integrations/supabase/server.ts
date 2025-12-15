@@ -16,17 +16,10 @@ function getSecureSupabaseConfig(urlEnvKey: string, secretEnvKey: string): {
   secret: string;
 } {
   // Read env safely at call-time. Avoid throwing or accessing properties on undefined values.
-  const env = (() => {
-    try {
-      return getEnv() as Record<string, string> | undefined;
-    } catch {
-      // Fall back to process.env for build/test environments where getEnv may be unavailable
-      return process.env as Record<string, string> | undefined;
-    }
-  })();
-
-  const url = env?.[urlEnvKey] ?? process.env[urlEnvKey];
-  const secret = env?.[secretEnvKey] ?? process.env[secretEnvKey];
+  const env = getEnv();
+  // Type-safe access to known env keys
+  const url = urlEnvKey === 'SUPABASE_URL' ? env.SUPABASE_URL : undefined;
+  const secret = secretEnvKey === 'SUPABASE_SERVICE_ROLE_KEY' ? env.SUPABASE_SERVICE_ROLE_KEY : undefined;
 
   if (!url || !secret) {
     throw new ApplicationError({

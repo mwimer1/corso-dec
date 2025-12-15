@@ -11,6 +11,7 @@ import {
     RawProjectRow,
     toISODateOrNullExport,
 } from '@/lib/validators/mock-projects';
+import { isProduction } from '@/lib/shared/config/client';
 import type { z } from 'zod';
 
 // RawProjectCsvRow schema and type removed as unused
@@ -29,7 +30,7 @@ export function adaptProjectsFile(rawFile: unknown): z.infer<typeof CanonicalPro
     // First, coerce/validate raw shape using new RawProjectRow
     const parsed = RawProjectRow.safeParse(raw as TRawProjectRow);
     if (!parsed.success) {
-      if (process.env.NODE_ENV !== 'production') {
+      if (!isProduction()) {
         console.warn('[mock-projects] Skipping row — raw validation failed', parsed.error.issues, { raw });
       }
       return null;
@@ -49,7 +50,7 @@ export function adaptProjectsFile(rawFile: unknown): z.infer<typeof CanonicalPro
 
     const canon = CanonicalProject.safeParse(candidate);
     if (!canon.success || !candidate.building_permit_id) {
-      if (process.env.NODE_ENV !== 'production') {
+      if (!isProduction()) {
         console.warn('[mock-projects] Skipping row — canonical validation failed', canon.success ? 'missing id' : canon.error.issues, { candidate });
       }
       return null;
@@ -62,7 +63,7 @@ export function adaptProjectsFile(rawFile: unknown): z.infer<typeof CanonicalPro
   // Final file-level validation
   const final = CanonicalProjectsFile.safeParse(mapped);
   if (!final.success) {
-    if (process.env.NODE_ENV !== 'production') {
+    if (!isProduction()) {
       console.warn('[mock-projects] CanonicalProjectsFile validation failed — returning best-effort subset', final.error.issues);
     }
     return mapped.filter((it) => CanonicalProject.safeParse(it).success);

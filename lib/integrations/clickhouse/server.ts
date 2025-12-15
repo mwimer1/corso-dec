@@ -135,7 +135,7 @@ export async function clickhouseQuery<T = unknown>(
 import { validateSQLSecurity } from '@/lib/integrations/database/scope';
 import { logger } from '@/lib/monitoring';
 import { ApplicationError, ErrorCategory, ErrorSeverity } from '@/lib/shared';
-import { normalizeSql } from '../../server/shared/query-utils';
+import { normalizeSql } from '@/lib/server/shared/query-utils';
 import { sanitizeClickParams } from './utils';
 
 // Error codes (copied from deleted errors.ts)

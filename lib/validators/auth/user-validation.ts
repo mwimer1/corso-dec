@@ -1,6 +1,6 @@
 // lib/validators/auth/user-validation.ts
 import { z } from 'zod';
-import { emailSchema, nameSchema } from '../shared/primitives';
+import { emailSchema, nameSchema } from '@/lib/validators/shared/primitives';
 
 /**
  * Runtime validation for a user profile.
