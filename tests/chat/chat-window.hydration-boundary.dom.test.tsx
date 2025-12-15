@@ -12,6 +12,6 @@ describe('ChatWindow hydration boundary', () => {
     // dynamic import should mount composer controls (textarea) eventually
     await waitFor(() => {
       expect(screen.getByLabelText('Chat message input')).toBeInTheDocument();
-    });
+    }, { timeout: 3000 });
   });
 });

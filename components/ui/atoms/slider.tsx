@@ -94,9 +94,13 @@ export const Slider = React.forwardRef<
           "data-[orientation=vertical]:w-full",
         )}
       />
-      {value.map((val, i) => (
-        <SliderPrimitive.Thumb
-          key={`thumb-${i}-${val}`}
+      {value.map((val, i) => {
+        // Use stable key combining index and value for multi-thumb sliders
+        // For single-thumb sliders, value alone is sufficient
+        const stableKey = value.length === 1 ? `thumb-${val}` : `thumb-${i}-${val}`;
+        return (
+          <SliderPrimitive.Thumb
+            key={stableKey}
           className={cn(
             sliderThumbVariants({ size: thumbSize ?? size, variant: 'slider' }),
             "relative bg-background border border-border shadow-sm focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
@@ -110,8 +114,9 @@ export const Slider = React.forwardRef<
               {formatValue ? formatValue(val, i) : val}
             </span>
           )}
-        </SliderPrimitive.Thumb>
-      ))}
+          </SliderPrimitive.Thumb>
+        );
+      })}
     </SliderPrimitive.Root>
   );
 });

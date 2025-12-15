@@ -4,6 +4,8 @@ import type { ICellRendererParams, ValueFormatterParams } from 'ag-grid-communit
 import React from 'react';
 
 // Date formatter - formats dates as MM/DD/YYYY
+// These exports are consumed via namespace import in aggrid.ts
+// eslint-disable-next-line import/no-unused-modules
 export const dateFormatter = (params: ValueFormatterParams): string => {
   if (params.value) {
     const date = new Date(params.value);
@@ -16,6 +18,7 @@ export const dateFormatter = (params: ValueFormatterParams): string => {
 };
 
 // Currency formatter - formats currency values with $ and commas, shows "-" for zero
+// eslint-disable-next-line import/no-unused-modules
 export const currencyFormatter = (params: ValueFormatterParams): string => {
   const value = Number(params.value) || 0;
   if (value === 0) return "-";
@@ -23,10 +26,12 @@ export const currencyFormatter = (params: ValueFormatterParams): string => {
 };
 
 // Additional formatters for the new config system
+// eslint-disable-next-line import/no-unused-modules
 export const numberGetter = (params: any): number => {
   return Number(params.data?.[params.colDef.field || '']) || 0;
 };
 
+// eslint-disable-next-line import/no-unused-modules
 export const datetimeFormatter = (params: ValueFormatterParams): string => {
   if (!params.value) return '';
   const date = new Date(params.value);
@@ -105,5 +110,6 @@ const LinkCellRenderer: React.FC<ICellRendererParams> = ({ value }) => {
 };
 
 // Cell renderer for links - returns React component
+// eslint-disable-next-line import/no-unused-modules
 export const linkRenderer = LinkCellRenderer;
 
