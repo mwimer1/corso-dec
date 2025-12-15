@@ -1,7 +1,6 @@
 /**
  * Tests for React key warnings - ensures components render arrays without missing key warnings
  */
-import { QuietUseCaseCard } from '@/components/landing/sections/use-cases/quiet-use-case-card';
 import { ContactItem } from '@/components/marketing/sections/contact/contact-item';
 import { MailIcon } from '@/components/ui/atoms';
 import { Skeleton } from '@/components/ui/atoms/skeleton';
@@ -79,21 +78,4 @@ describe('React Key Warnings', () => {
     });
   });
 
-  describe('QuietUseCaseCard', () => {
-    it('renders benefits list without key warnings', () => {
-      const mockData = {
-        title: 'Test Use Case',
-        subtitle: 'Test subtitle',
-        description: 'Test description',
-        benefits: ['Benefit 1', 'Benefit 2', 'Benefit 3'],
-        impact: 'High impact'
-      };
-
-      render(<QuietUseCaseCard data={mockData} />);
-
-      expect(consoleSpy).not.toHaveBeenCalledWith(
-        expect.stringContaining('Each child in a list should have a unique "key" prop')
-      );
-    });
-  });
 });

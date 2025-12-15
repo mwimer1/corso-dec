@@ -1,28 +1,34 @@
-'use client';
-import { SectionSurface } from '@/components/ui/atoms';
 import { SectionHeader } from '@/components/ui/patterns';
-import { cn } from '@/styles';
-import { containerMaxWidthVariants } from '@/styles/ui/shared/container-base';
-import { LandingSection } from '../../layout/landing-section';
-import { QuietUseCaseCard } from './quiet-use-case-card';
+import type { UseCaseKey } from '@/lib/marketing/client';
 import { DEFAULT_USE_CASES } from './use-cases.data';
-import cls from './use-cases.module.css';
+import { IndustrySelectorPanel } from './industry-selector-panel';
+
+interface Industry {
+  key: UseCaseKey;
+  title: string;
+  subtitle: string;
+  description: string;
+  benefits: string[];
+  impact: string;
+}
 
 export default function IndustryExplorer() {
-  const entries = Object.entries(DEFAULT_USE_CASES) as Array<
-    [keyof typeof DEFAULT_USE_CASES, (typeof DEFAULT_USE_CASES)[keyof typeof DEFAULT_USE_CASES]]
-  >;
+  // Transform DEFAULT_USE_CASES into Industry array
+  const industries: Industry[] = Object.entries(DEFAULT_USE_CASES).map(([key, data]) => ({
+    key: key as UseCaseKey,
+    title: data.title,
+    subtitle: data.subtitle,
+    description: data.description,
+    benefits: data.benefits,
+    impact: data.impact,
+  }));
 
   return (
-    <LandingSection tone="muted">
-      <section 
-        className={cn(
-          containerMaxWidthVariants({ maxWidth: '7xl', centered: true, responsive: true })
-        )}
-        aria-labelledby="use-cases-title"
-      >
-        {/* Tokenized background surface behind this section */}
-        <SectionSurface variant="radial-grid" intensity={0.06} />
+    <section
+      className="bg-surface border-t border-border"
+      aria-labelledby="use-cases-title"
+    >
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-lg">
         <div className="mx-auto max-w-4xl text-center mb-5xl">
           <SectionHeader
             id="use-cases-title"
@@ -34,12 +40,8 @@ export default function IndustryExplorer() {
           />
         </div>
 
-        <div className={cls['grid']}>
-          {entries.map(([k, v]) => (
-            <QuietUseCaseCard key={k} kind={k} data={v} />
-          ))}
-        </div>
-      </section>
-    </LandingSection>
+        <IndustrySelectorPanel industries={industries} />
+      </div>
+    </section>
   );
 }
