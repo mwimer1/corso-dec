@@ -16,7 +16,7 @@ function* walk(dir: string): Generator<string> {
       const st = statSync(full);
       if (st.isDirectory()) yield* walk(full);
       else if (isCode(full)) yield full;
-    } catch (err) {
+    } catch {
       // Skip files/directories that don't exist or can't be accessed
       continue;
     }
