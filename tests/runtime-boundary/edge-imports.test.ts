@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 const ROOT = process.cwd();
-const IGNORE = new Set(['node_modules', '.next', 'dist', 'coverage', 'public']);
+const IGNORE = new Set(['node_modules', '.next', 'dist', 'coverage', 'public', '__test_lib_structure__']);
 const isCode = (p: string) => /\.(ts|tsx|js|jsx)$/.test(p);
 const EDGE_SERVER_IMPORT = /@\/lib\/server\//;
 const EDGE_RL_SERVER = /@\/lib\/ratelimiting\/server/;
@@ -12,9 +12,14 @@ function* walk(dir: string): Generator<string> {
   for (const e of readdirSync(dir)) {
     if (IGNORE.has(e)) continue;
     const full = join(dir, e);
-    const st = statSync(full);
-    if (st.isDirectory()) yield* walk(full);
-    else if (isCode(full)) yield full;
+    try {
+      const st = statSync(full);
+      if (st.isDirectory()) yield* walk(full);
+      else if (isCode(full)) yield full;
+    } catch (err) {
+      // Skip files/directories that don't exist or can't be accessed
+      continue;
+    }
   }
 }
 

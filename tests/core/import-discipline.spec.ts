@@ -21,6 +21,17 @@ function fileDomain(filePath: string): string | null {
   return idx >= 0 && parts.length > idx + 1 ? parts[idx + 1] : null;
 }
 
+/**
+ * Strip comments from source code to avoid false positives from import examples in comments
+ */
+function stripComments(src: string): string {
+  // Remove single-line comments (// ...)
+  let result = src.replace(/\/\/.*$/gm, '');
+  // Remove multi-line comments (/* ... */)
+  result = result.replace(/\/\*[\s\S]*?\*\//g, '');
+  return result;
+}
+
 describe('import discipline', () => {
   it('no new cross-domain leaf imports (baseline enforcement)', async () => {
     const files = await walk(path.resolve(process.cwd(), 'lib'));
@@ -28,9 +39,11 @@ describe('import discipline', () => {
     for (const f of files) {
       const rel = path.relative(process.cwd(), f).replace(/\\/g, '/');
       const src = await fs.readFile(f, 'utf8');
+      // Strip comments to avoid false positives from import examples in comments
+      const srcWithoutComments = stripComments(src);
       let m: RegExpExecArray | null;
       const srcDomain = fileDomain(f);
-      while ((m = aliasRe.exec(src))) {
+      while ((m = aliasRe.exec(srcWithoutComments))) {
         const importDomain = m[1];
         const tail = m[2] || '';
         // Only enforce when crossing domains
