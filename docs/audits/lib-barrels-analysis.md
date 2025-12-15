@@ -1,11 +1,8 @@
 ---
-title: "Lib Barrels Production Usage Analysis"
-description: "Analysis of which lib barrel files are actually used in production runtime code"
-last_updated: "2025-12-14"
-category: "documentation"
 status: "draft"
+last_updated: "2025-12-15"
+category: "documentation"
 ---
-
 # Lib Barrels Production Usage Analysis
 
 **Date**: 2025-12-14  

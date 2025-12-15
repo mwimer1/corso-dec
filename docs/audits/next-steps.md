@@ -1,11 +1,8 @@
 ---
-title: "Deprecated Files Removal - Next Steps"
-description: "Remaining steps after removing deprecated barrel files"
-last_updated: "2025-12-14"
-category: "documentation"
 status: "draft"
+last_updated: "2025-12-15"
+category: "documentation"
 ---
-
 # Deprecated Files Removal - Next Steps
 
 **Date**: 2025-12-14  

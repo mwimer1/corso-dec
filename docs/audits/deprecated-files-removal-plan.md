@@ -1,11 +1,8 @@
 ---
-title: "Deprecated Files Removal Plan"
-description: "Detailed step-by-step plan for removing deprecated and unused barrel files"
-last_updated: "2025-12-14"
-category: "documentation"
 status: "draft"
+last_updated: "2025-12-15"
+category: "documentation"
 ---
-
 # Deprecated Files Removal Plan
 
 **Status**: Ready for Implementation  
