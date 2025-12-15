@@ -22,13 +22,8 @@
  * - Third-party service keys (Stripe, Clerk) are acceptable for client use
  */
 
-/**
- * Client-safe fetch wrapper that respects CORS and browser security policies
- * @param args - Standard fetch parameters
- * @returns Promise<Response> - Browser-compatible fetch response
- */
-export const httpFetch: typeof fetch = (...args: Parameters<typeof fetch>) =>
-  fetch(...args);
+// Removed: httpFetch - unused per dead code audit
+// Use native fetch() directly in client code
 
 /**
  * Client-safe logger that maps to browser console APIs
@@ -205,7 +200,6 @@ export const publicEnv: PublicEnv = (() => {
 })();
 
 export default {
-  fetch: httpFetch,
   logger,
   publicEnv,
 };

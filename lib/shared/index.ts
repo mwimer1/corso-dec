@@ -33,7 +33,8 @@ export * from './errors/browser';
 export * from './errors/error-utils';
 export * from './errors/reporting';
 export * from './errors/security-validation-error';
-export { ErrorCategory, ErrorCode, ErrorSeverity } from './errors/types';
+export { ErrorCategory, ErrorSeverity } from './errors/types';
+// Removed: ErrorCode - unused per dead code audit
 export type { AppError, ErrorContext } from './errors/types';
 // Server-only performance module moved to lib/server/performance
 // (Removed) Event bus utilities were deprecated and removed.
@@ -71,7 +72,7 @@ export * from './format/numbers';
 /**
  * Exports all shared utility functions (shared, server/client-safe).
  */
-export * from './utils/layout';
+// Removed: export * from './utils/layout'; - all exports were unused per dead code audit
 /**
  * Exports shared form utilities (shared, server/client-safe).
  * REMOVED: useZodForm, InferForm - Utilities removed as unused (no React Hook Form adoption)
@@ -110,7 +111,8 @@ export * from './assets/cdn';
 export { trackEvent, trackNavClick } from './analytics/track';
 
 // Re-export public client env to avoid deep imports
-// Re-export client-safe env, logger and fetch to avoid deep imports from callers
-export { httpFetch, logger, publicEnv } from './config/client';
+// Re-export client-safe env and logger to avoid deep imports from callers
+export { logger, publicEnv } from './config/client';
+// Removed: httpFetch - unused per dead code audit
 
 

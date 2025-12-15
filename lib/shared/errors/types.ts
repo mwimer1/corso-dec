@@ -39,28 +39,8 @@ export enum ErrorSeverity {
   CRITICAL = 'critical',
 }
 
-/**
- * Standard application error codes. Extend as needed.
- */
-export enum ErrorCode {
-  // SQL-related errors
-  INVALID_SQL_INPUT = 'INVALID_SQL_INPUT',
-  SUSPICIOUS_SQL_PATTERN = 'SUSPICIOUS_SQL_PATTERN',
-  INVALID_QUERY_TYPE = 'INVALID_QUERY_TYPE',
-  
-  // External service errors
-  CLICKHOUSE_QUERY_FAILED = 'CLICKHOUSE_QUERY_FAILED',
-
-  // General application errors
-  CONFIG_ERROR = 'CONFIG_ERROR',
-  VALIDATION_ERROR = 'VALIDATION_ERROR',
-  INVALID_INPUT = 'INVALID_INPUT',
-  UNAUTHORIZED = 'UNAUTHORIZED',
-  FORBIDDEN = 'FORBIDDEN',
-  NOT_FOUND = 'NOT_FOUND',
-  INTERNAL_ERROR = 'INTERNAL_ERROR',
-  SECURITY_VIOLATION = 'SECURITY_VIOLATION',
-}
+// Removed: ErrorCode enum - unused per dead code audit
+// Error codes are handled via string literals in ApplicationError and ApiError types
 
 /* ------------------------------------------------------------------ */
 /* Base error class                                                   */

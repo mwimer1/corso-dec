@@ -22,7 +22,9 @@
     "**/*.spec.ts",
     "**/*.spec.tsx",
     "**/__tests__/**",
-    "**/__mocks__/**"
+    "**/__mocks__/**",
+    ".github/**",
+    "scripts/**"
   ],
   "ignoreDependencies": [
     "@types/*",
