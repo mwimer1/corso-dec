@@ -263,7 +263,7 @@ rule: |
 - **Development**: `pnpm typecheck`
 - **Component Tests**: `pnpm test:components`
 - **Accessibility**: `pnpm test:a11y`
-- **Import Validation**: `pnpm verify:no-intradomain-root-barrels`
+- **Import Validation**: `pnpm audit:barrels --only intradomain`
 
 ## Windows-First Tips
 

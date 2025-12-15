@@ -1,4 +1,12 @@
-#!/usr/bin/env ts-node
+#!/usr/bin/env tsx
+/**
+ * @fileoverview Intradomain Root Barrel Import Validator
+ * @description Prevents circular dependencies by detecting when domain index files import their own root barrel.
+ * 
+ * This script is typically invoked via: pnpm audit:barrels --only intradomain
+ * Direct usage: tsx scripts/validation/verify-intradomain-barrels.ts
+ */
+
 import { globby } from "globby";
 import { readFileSync } from "node:fs";
 import { dirname, posix } from "node:path";
@@ -40,10 +48,11 @@ async function main() {
   }
 
   if (errors.length) {
-    console.error("verify:no-intradomain-root-barrels failed:\n" + errors.map(e => ` - ${e}`).join("\n"));
+    console.error("Intradomain root barrel check failed:\n" + errors.map(e => ` - ${e}`).join("\n"));
+    console.error("\n💡 Run 'pnpm audit:barrels --only intradomain' to see this check in context.");
     process.exit(1);
   }
-  console.log("verify:no-intradomain-root-barrels: OK");
+  console.log("✅ Intradomain root barrel check passed");
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });

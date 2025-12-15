@@ -37,7 +37,8 @@ const allowedPrefixes = [
   'diag',
   // Monitoring scripts for production health checks
   'monitor',
-  // Add deadcode prefix for dead code analysis scripts
+  // Dead code analysis scripts (e.g., deadcode:test-only finds exports only used in tests)
+  // Note: deadcode:test-only is intentionally kept as a specialized tool, distinct from validate:dead-code
   'deadcode'
 ];
 const prefixRe = new RegExp(`^(${allowedPrefixes.join('|')})(:|$)`);
