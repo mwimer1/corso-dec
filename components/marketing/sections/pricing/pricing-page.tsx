@@ -136,7 +136,7 @@ export const PricingPage = React.forwardRef<HTMLDivElement, PricingPageProps>(
 
         {/* FAQ Section */}
         <FullWidthSection
-          containerMaxWidth="7xl"
+          containerMaxWidth="4xl"
           containerPadding="lg"
           showVerticalGuidelines
           guidesVisibility="always"

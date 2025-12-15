@@ -5,6 +5,7 @@ import { cn } from "@/styles";
 import { emptyStateVariants } from "@/styles/ui/molecules";
 import { faqVariants } from "@/styles/ui/organisms";
 import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
+import { focusRing } from "@/styles/ui/shared/focus-ring";
 import { ChevronDown } from "lucide-react";
 import * as React from "react";
 
@@ -83,7 +84,7 @@ export const FAQ = React.forwardRef<HTMLDivElement, FAQProps>(
             return (
               <li
                 key={f.question}
-                className="rounded-lg border border-border bg-surface p-lg"
+                className="rounded-lg border border-border bg-surface p-lg transition-colors hover:bg-muted/50"
               >
                 <button
                   type="button"
@@ -91,12 +92,15 @@ export const FAQ = React.forwardRef<HTMLDivElement, FAQProps>(
                   onClick={() => {
                     setOpenIndex(expanded ? null : i);
                   }}
-                  className="flex w-full items-center justify-between text-left"
+                  className={cn(
+                    "flex w-full items-center justify-between text-left rounded-md",
+                    focusRing()
+                  )}
                   aria-expanded={expanded}
                   aria-controls={answerId}
                   aria-describedby={expanded ? answerId : undefined}
                 >
-                  <span className="text-lg font-medium text-foreground">
+                  <span className="text-lg font-semibold text-foreground">
                     {f.question}
                   </span>
                   <ChevronDown
