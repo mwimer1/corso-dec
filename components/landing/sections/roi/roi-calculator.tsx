@@ -36,7 +36,7 @@ export const ROICalculator: React.FC = () => {
   // Increment helpers handled inside NumberInputWithSteppers
 
   return (
-    <LandingSection tone="brand" className="text-center">
+    <LandingSection tone="brand" className="text-center border-t-0">
       <div className={cls['roiHeader']}>
         <h2 className={cls['roiTitle']}>Turn Leads Into Revenue—Instantly</h2>
         <p className={cls['roiSubtitle']}>
