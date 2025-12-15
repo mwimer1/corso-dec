@@ -5,9 +5,6 @@
 export * from './auth-card';
 
 // ===== DATA DISPLAY =====
-// ===== DATA TABLE COMPONENTS =====
-// Core table UI components moved to dashboard/table directory
-// Import from @/components/dashboard/table instead
 
 
 // Removed unused component: basic-card
