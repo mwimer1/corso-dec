@@ -40,7 +40,7 @@ const SocialLinkedIn = ({ className }: { className?: string }) => (
     rel="noopener noreferrer"
     target="_blank"
     className={cn(
-      "inline-flex h-9 w-9 items-center justify-center rounded-md border border-white/20 hover:border-white/40 hover:bg-white/5 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+      "inline-flex h-9 w-9 items-center justify-center rounded-md hover:bg-white/5 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
       className
     )}
   >
