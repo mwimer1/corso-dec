@@ -3,9 +3,10 @@ import { Button } from '@/components/ui/atoms';
 import { LinkTrack } from '@/components/ui/molecules';
 import { APP_LINKS  } from '@/components';
 import { navbarStyleVariants } from '@/styles/ui/organisms/navbar-variants';
-import { containerMaxWidthVariants } from '@/styles/ui/shared/container-base';
+import { cn } from '@/styles';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
+import { ChevronDown } from 'lucide-react';
 import AnimatedPill from '../../widgets/animated-pill';
 import cls from './hero.module.css';
 import { underlineAccent } from "@/styles/ui/shared/underline-accent";
@@ -22,46 +23,48 @@ export default function Hero({ children }: HeroProps) {
   const underline = underlineAccent({ show: underlineVisible, color: 'primary', duration: 'slow' });
 
   return (
-    <section className={cls['hero']}>
-      <div className={[
-        cls['container'],
-        containerMaxWidthVariants({ maxWidth: '7xl', centered: true, responsive: true })
-      ].join(' ')}>
-        {children}
-        {/* Attention CTA pill above the H1 */}
-        <AnimatedPill
-          text="Construction data made easy"
-          href="/redefine"
+    <section className={cn(cls['hero'], "flex flex-col items-center justify-center text-center")}>
+      {children}
+      {/* Attention CTA pill above the H1 */}
+      <AnimatedPill
+        text="Construction data made easy"
+        href="/redefine"
+      />
+      <h1 className={cls['title']}>
+        Intelligence for the{' '}
+        <span className={underline.wrap()}>
+          built world.
+          <span className={underline.line()} />
+        </span>
+      </h1>
+      <p className={cn(cls['subtitle'], "max-w-prose mx-auto")}>
+        Corso eliminates guesswork, translating complex data into a competitive edge.
+      </p>
+      <div className={cls['buttons']}>
+        <Button
+          asChild
+          variant="secondary"
+          className={navbarStyleVariants().button()}
+        >
+          <LinkTrack href={APP_LINKS.NAV.BOOK_DEMO} label="hero:talk-to-sales" target="_blank">
+            Talk to sales
+          </LinkTrack>
+        </Button>
+        <Button
+          asChild
+          className={navbarStyleVariants().button()}
+        >
+          <LinkTrack href={APP_LINKS.NAV.SIGNUP} label="hero:start-for-free">
+            Start for free
+          </LinkTrack>
+        </Button>
+      </div>
+      {/* Teaser element to guide users to scroll */}
+      <div className="mt-md flex flex-col items-center" aria-label="Scroll to see more">
+        <ChevronDown 
+          className="h-6 w-6 text-muted-foreground animate-bounce" 
+          aria-hidden="true"
         />
-        <h1 className={cls['title']}>
-          Intelligence<br/>for the{' '}
-          <span className={underline.wrap()}>
-            built world.
-            <span className={underline.line()} />
-          </span>
-        </h1>
-        <h2 className={cls['subtitle']}>
-          Corso eliminates guesswork, translating complex data into a competitive edge.
-        </h2>
-        <div className={cls['buttons']}>
-          <Button
-            asChild
-            variant="secondary"
-            className={navbarStyleVariants().button()}
-          >
-            <LinkTrack href={APP_LINKS.NAV.BOOK_DEMO} label="hero:talk-to-sales" target="_blank">
-              Talk to sales
-            </LinkTrack>
-          </Button>
-          <Button
-            asChild
-            className={navbarStyleVariants().button()}
-          >
-            <LinkTrack href={APP_LINKS.NAV.SIGNUP} label="hero:start-for-free">
-              Start for free
-            </LinkTrack>
-          </Button>
-        </div>
       </div>
     </section>
   );

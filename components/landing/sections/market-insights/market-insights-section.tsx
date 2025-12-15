@@ -187,13 +187,16 @@ export const MarketInsightsSection: React.FC<Props> = ({
   const controlsGap = dense ? "gap-4" : "gap-6";
 
   return (
-    <section className={cn(
-      containerMaxWidthVariants({ maxWidth: '7xl', centered: true, responsive: true }),
-      "my-5xl",
-      cls['section']
-    )}>
+    <section 
+      className={cn(
+        containerMaxWidthVariants({ maxWidth: '7xl', centered: true, responsive: true }),
+        cls['section']
+      )}
+      aria-labelledby="market-insights-title"
+    >
       <div className="mx-auto max-w-4xl text-center mb-5xl">
         <SectionHeader
+          id="market-insights-title"
           headingLevel={2}
           align="center"
           title={"Explore Real Data in Action"}

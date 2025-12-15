@@ -15,6 +15,8 @@ type SectionHeaderProps = {
   titleClassName?: string;
   descriptionClassName?: string;
   className?: string;
+  /** ID for the heading element (for aria-labelledby) */
+  id?: string;
 };
 
 /**
@@ -33,6 +35,7 @@ export const SectionHeader = React.forwardRef<HTMLElement, SectionHeaderProps>(
       titleClassName,
       descriptionClassName,
       className,
+      id,
       ...rest
     },
     ref,
@@ -50,7 +53,10 @@ export const SectionHeader = React.forwardRef<HTMLElement, SectionHeaderProps>(
         className={cn(align === "center" ? "text-center" : align === "right" ? "text-right" : "text-left", "space-y-sm", className)}
         {...rest}
       >
-        <Tag className={cn(headingVariants({ size: titleSizeClass }), "text-foreground", titleClassName)}>
+        <Tag 
+          {...(id && { id })}
+          className={cn(headingVariants({ size: titleSizeClass }), "text-foreground", titleClassName)}
+        >
           {title}
         </Tag>
         {content ? (

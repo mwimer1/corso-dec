@@ -15,14 +15,17 @@ export default function IndustryExplorer() {
 
   return (
     <LandingSection tone="muted">
-      <section className={cn(
-        containerMaxWidthVariants({ maxWidth: '7xl', centered: true, responsive: true }),
-        "my-5xl"
-      )}>
+      <section 
+        className={cn(
+          containerMaxWidthVariants({ maxWidth: '7xl', centered: true, responsive: true })
+        )}
+        aria-labelledby="use-cases-title"
+      >
         {/* Tokenized background surface behind this section */}
         <SectionSurface variant="radial-grid" intensity={0.06} />
         <div className="mx-auto max-w-4xl text-center mb-5xl">
           <SectionHeader
+            id="use-cases-title"
             headingLevel={2}
             align="center"
             title="Built for your industry."

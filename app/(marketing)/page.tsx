@@ -15,7 +15,7 @@ export default function MarketingHomePage() {
   return (
     <PublicLayout navMode="landing" navItems={landingNavItems} showVerticalGuidelines>
       <FullWidthSection
-        padding="sm"
+        padding="lg"
         containerMaxWidth="7xl"
         containerPadding="lg"
         opacity="none"
@@ -25,7 +25,7 @@ export default function MarketingHomePage() {
       </FullWidthSection>
 
       <FullWidthSection
-        padding="none"
+        padding="lg"
         containerMaxWidth="7xl"
         containerPadding="lg"
         opacity="none"
@@ -35,6 +35,7 @@ export default function MarketingHomePage() {
       </FullWidthSection>
 
       <FullWidthSection
+        padding="lg"
         containerMaxWidth="7xl"
         containerPadding="lg"
         guidesVisibility="always"
@@ -48,6 +49,7 @@ export default function MarketingHomePage() {
 
       {/* Market Insights Section - Consolidated market intelligence dashboard */}
       <FullWidthSection
+        padding="lg"
         containerMaxWidth="7xl"
         containerPadding="lg"
         guidesVisibility="always"
