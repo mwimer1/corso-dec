@@ -1,15 +1,14 @@
 ---
-title: "Progress"
-description: ">-"
-last_updated: "2025-12-14"
-category: "components"
-status: "draft"
+title: "components/ui/atoms/progress"
+last_updated: "2025-12-15"
+category: "automation"
 ---
+
 # Repository Scripts & Docs
 
 This README is generated from a single template (`README.scripts.hbs`).
 
 - Directory: `components/ui/atoms/progress`
-- Last updated: `2025-12-14`
+- Last updated: `2025-12-15`
 
 > Edit the template or the generator context to change all READMEs consistently.

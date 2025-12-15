@@ -1,15 +1,14 @@
 ---
-title: "Security"
-description: ">-"
-last_updated: "2025-12-14"
-category: "hooks"
-status: "draft"
+title: "hooks/security"
+last_updated: "2025-12-15"
+category: "automation"
 ---
+
 # Repository Scripts & Docs
 
 This README is generated from a single template (`README.scripts.hbs`).
 
 - Directory: `hooks/security`
-- Last updated: `2025-12-14`
+- Last updated: `2025-12-15`
 
 > Edit the template or the generator context to change all READMEs consistently.
