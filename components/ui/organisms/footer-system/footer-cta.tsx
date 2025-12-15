@@ -54,7 +54,7 @@ export const FooterCTA: React.FC<FooterCTAProps> = (props) => {
     containerMaxWidthVariants({ maxWidth: '7xl', centered: true, responsive: true }),
     // Formatting-only change: reduce top/bottom padding and keep content vertically centered
     isBlue
-      ? "py-[2.625rem] sm:py-[3.625rem] lg:py-[4.625rem] text-center"
+      ? "py-[2.625rem] sm:py-[3.625rem] lg:py-[3.5rem] text-center"
       : ""
   );
 
