@@ -85,9 +85,9 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
   }
 
   return (
-    <div className="flex flex-col lg:flex-row lg:gap-8 mt-4">
+    <div className="flex flex-col lg:flex-row lg:gap-xl mt-md">
       {/* Mobile: Horizontal PillGroup */}
-      <div className="lg:hidden mb-4">
+      <div className="lg:hidden mb-md">
         <PillGroup
           id="industry-selector-mobile"
           items={industries.map((ind) => ind.title)}
@@ -140,17 +140,17 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
         aria-labelledby={`industry-tab-${activeKey}`}
         aria-live="polite"
         className={cn(
-          'flex-1 rounded-lg border border-border bg-surface p-6 shadow-card',
+          'flex-1 rounded-lg border border-border bg-surface p-lg shadow-card',
           'lg:min-h-[400px]'
         )}
       >
-        <h3 className="text-xl font-bold text-foreground mb-1">{activeIndustry.title}</h3>
-        <p className="text-base text-muted-foreground mb-2">{activeIndustry.subtitle}</p>
-        <p className="text-sm text-foreground mb-2">{activeIndustry.description}</p>
+        <h3 className="text-xl font-bold text-foreground mb-xs">{activeIndustry.title}</h3>
+        <p className="text-base text-muted-foreground mb-sm">{activeIndustry.subtitle}</p>
+        <p className="text-sm text-foreground mb-sm">{activeIndustry.description}</p>
 
-        <ul className="list-disc pl-5 mb-2" aria-label="Key benefits">
+        <ul className="list-disc pl-5 mb-sm" aria-label="Key benefits">
           {activeIndustry.benefits.slice(0, 3).map((benefit) => (
-            <li key={benefit} className="text-sm text-foreground mb-1">
+            <li key={benefit} className="text-sm text-foreground mb-xs">
               {benefit}
             </li>
           ))}
@@ -158,7 +158,7 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
 
         {/* Impact Metrics as Badges */}
         {metrics.length > 0 && (
-          <div className="mb-4 flex flex-wrap gap-2" aria-label="Impact metrics">
+          <div className="mb-md flex flex-wrap gap-sm" aria-label="Impact metrics">
             {metrics.map((metric) => (
               <span
                 key={metric}
@@ -171,7 +171,7 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
         )}
 
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-sm mt-md">
           <Link
             href={APP_LINKS.FOOTER.CONTACT}
             onClick={() => trackNavClick('Talk to sales', APP_LINKS.FOOTER.CONTACT)}
