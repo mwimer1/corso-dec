@@ -31,14 +31,18 @@ export default function Hero({ children }: HeroProps) {
         href="/redefine"
       />
       <h1 className={cls['title']}>
-        Intelligence for the{' '}
+        Intelligence
+        <br />
+        {' '}for the{' '}
         <span className={underline.wrap()}>
           built world.
           <span className={underline.line()} />
         </span>
       </h1>
       <p className={cn(cls['subtitle'], "max-w-prose mx-auto")}>
-        Corso eliminates guesswork, translating complex data into a competitive edge.
+        Corso eliminates guesswork, translating complex
+        <br />
+        {' '}data into a competitive edge.
       </p>
       <div className={cls['buttons']}>
         <Button
@@ -60,7 +64,7 @@ export default function Hero({ children }: HeroProps) {
         </Button>
       </div>
       {/* Teaser element to guide users to scroll */}
-      <div className="mt-md flex flex-col items-center" aria-label="Scroll to see more">
+      <div className="mt-sm flex flex-col items-center" aria-label="Scroll to see more">
         <ChevronDown 
           className="h-6 w-6 text-muted-foreground animate-bounce" 
           aria-hidden="true"

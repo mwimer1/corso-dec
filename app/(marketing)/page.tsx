@@ -15,7 +15,7 @@ export default function MarketingHomePage() {
   return (
     <PublicLayout navMode="landing" navItems={landingNavItems} showVerticalGuidelines>
       <FullWidthSection
-        padding="lg"
+        padding="md"
         containerMaxWidth="7xl"
         containerPadding="lg"
         opacity="none"
