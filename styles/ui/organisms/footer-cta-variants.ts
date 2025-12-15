@@ -22,15 +22,15 @@ const footerCTA = tv({
       'border-2',
       'bg-primary text-primary-foreground',
       'border-primary/80',
-      'shadow-[0_3px_8px_rgb(38_109_240/0.3)]',
+      'shadow-[0_3px_8px_hsl(var(--primary)/0.3)]',
       'hover:bg-primary/90 hover:border-primary/85',
-      'hover:shadow-[0_6px_15px_rgb(38_109_240/0.5)]'
+      'hover:shadow-[0_6px_15px_hsl(var(--primary)/0.5)]'
     ],
     outlineButton: [
       'border-2 border-white/40',
       'bg-transparent text-background',
       'hover:border-white/70 hover:bg-primary hover:text-primary-foreground',
-      'hover:shadow-[0_0_10px_rgb(255_255_255/0.2)]'
+      'hover:shadow-[0_0_10px_hsl(var(--background)/0.2)]'
     ]
   },
   variants: {

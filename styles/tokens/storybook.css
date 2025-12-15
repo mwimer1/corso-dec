@@ -4,10 +4,8 @@
 :root[data-route-theme="storybook"] {
   --background: 0 0% 100%;
   --foreground: 222.2 47.4% 11.2%;
-  /* Storybook uses a slightly different blue (221.2 83.2% 53.3%) for component previews.
-     This is very close to the base brand blue (221 86% 54%) but may need reconciliation
-     for consistency. Consider aligning with base primary if design allows. */
-  --primary: 221.2 83.2% 53.3%;
+  /* Storybook uses the base brand blue for consistency across all component previews */
+  --primary: 221 86% 54%;
   --primary-foreground: 210 40% 98%;
   
   /* Neutral theme for component showcase */

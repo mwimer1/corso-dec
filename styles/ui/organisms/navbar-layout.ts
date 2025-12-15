@@ -32,7 +32,7 @@ const navbarLayout = tv({
       'transition-colors duration-400 ease-in-out hover:duration-150 active:duration-50',
       'hover:bg-[hsl(var(--muted)/0.40)] hover:text-foreground',
       'active:bg-[hsl(var(--muted-foreground)/0.12)]',
-      'focus-visible:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-[hsl(var(--ring))] focus-visible:outline-offset-2 focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.25)]',
+      'focus-visible:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-[hsl(var(--ring))] focus-visible:outline-offset-2 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
     ],
     mobileMenu: [
       'absolute left-0 top-[70px] w-full bg-background/95 backdrop-blur-sm md:hidden',
