@@ -85,27 +85,56 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
   const current = tabsData[activeTab];
 
   return (
-    <section className={cn(containerMaxWidthVariants({ maxWidth: '7xl', centered: true, responsive: true }), "mt-xl mb-5xl", className)} {...props}>
-
-      <TabSwitcher
-        tabs={tabsData}
-        active={activeTab}
-        onTabChange={setActiveTab}
-        alignment="center"
-        variant="default"
-        layout="grid"
-        buttonVariant="grid"
-        gridSeparators={true}
-        aria-label="Choose a dashboard view"
-      />
-      {/* Render the content for the active tab with ARIA-compliant tabpanel */}
-      <div
-        id={`panel-${current?.id ?? 'active'}`}
-        role="tabpanel"
-        aria-labelledby={`tab-${current?.id ?? 'active'}`}
-        className="mt-2xl"
+    <section 
+      className={cn(
+        "relative",
+        className
+      )} 
+      {...props}
+    >
+      {/* Sticky tabs container - positioned at bottom of viewport */}
+      {/* Accounts for navbar height and mobile CTA ribbon on mobile */}
+      {/* On mobile, tabs sit above the mobile CTA ribbon (which is ~60-70px tall) */}
+      <div 
+        className={cn(
+          "sticky z-[45] bg-background border-b border-border",
+          // On mobile, add bottom padding to account for mobile CTA ribbon (~70px tall)
+          // On desktop, tabs sit at the very bottom
+          "bottom-[70px] md:bottom-0",
+          // Ensure tabs are above content and mobile CTA (mobile CTA is z-40) but below navbar (navbar is z-50)
+        )}
       >
-        {current ? current.content : null}
+        <div className={cn(
+          containerMaxWidthVariants({ maxWidth: '7xl', centered: true, responsive: true })
+        )}>
+          <TabSwitcher
+            tabs={tabsData}
+            active={activeTab}
+            onTabChange={setActiveTab}
+            alignment="center"
+            variant="default"
+            layout="grid"
+            buttonVariant="grid"
+            gridSeparators={true}
+            aria-label="Choose a dashboard view"
+          />
+        </div>
+      </div>
+
+      {/* Content container with proper spacing */}
+      <div className={cn(
+        containerMaxWidthVariants({ maxWidth: '7xl', centered: true, responsive: true }),
+        "mt-xl mb-5xl"
+      )}>
+        {/* Render the content for the active tab with ARIA-compliant tabpanel */}
+        <div
+          id={`panel-${current?.id ?? 'active'}`}
+          role="tabpanel"
+          aria-labelledby={`tab-${current?.id ?? 'active'}`}
+          className="mt-2xl"
+        >
+          {current ? current.content : null}
+        </div>
       </div>
     </section>
   );

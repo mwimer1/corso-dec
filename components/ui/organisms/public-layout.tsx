@@ -5,7 +5,7 @@ import { LinkTrack } from "@/components/ui/molecules";
 import { APP_LINKS } from '@/components';
 import { cn } from "@/styles";
 import { fullWidthSectionContainerVariants } from "@/styles/ui/organisms";
-import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
+import { containerWithPaddingVariants } from "@/styles/ui/shared/container-helpers";
 import type { NavItemData } from "@/types/shared";
 import type { HTMLAttributes, ReactNode } from "react";
 import { useEffect, useState } from "react";
@@ -76,7 +76,7 @@ export function PublicLayout({
       >
         <div
           className={cn(
-            containerMaxWidthVariants({ maxWidth: "7xl", centered: true })
+            containerWithPaddingVariants({ maxWidth: "7xl", padding: "lg" })
           )}
         >
           <Navbar 
@@ -111,7 +111,7 @@ export function PublicLayout({
       {/* Sticky mobile CTA ribbon */}
       {showMobileCTA && (
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface/95 backdrop-blur supports-[backdrop-filter]:bg-surface/80 md:hidden">
-          <div className={cn(containerMaxWidthVariants({ maxWidth: "7xl", centered: true }), "px-4 py-3 flex items-center justify-between gap-3")}>
+          <div className={cn(containerWithPaddingVariants({ maxWidth: "7xl", padding: "lg" }), "py-3 flex items-center justify-between gap-3")}>
             <span className="text-sm text-muted-foreground">Ready to explore Corso?</span>
             <div className="flex items-center gap-3">
               <Button asChild size="sm" variant="secondary">

@@ -2,7 +2,7 @@ import { LinkTrack } from "@/components/ui/molecules/link-track";
 import { BrandAssets } from "@/lib/shared";
 import { APP_LINKS  } from '@/components';
 import { cn } from "@/styles";
-import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
+import { containerWithPaddingVariants } from "@/styles/ui/shared/container-helpers";
 import Image from "next/image";
 // import Link from "next/link";
 import React from "react";
@@ -91,7 +91,7 @@ export const FooterMain: React.FC = () => {
         Footer
       </h2>
 
-      <div className={cn(containerMaxWidthVariants({ maxWidth: "7xl", centered: true, responsive: true }), "py-8 lg:py-10")}>
+      <div className={cn(containerWithPaddingVariants({ maxWidth: "7xl", padding: "lg" }), "py-8 lg:py-10")}>
         {/* Top-align. Desktop: four equal tracks so each section gets the same width. */}
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-4 lg:gap-14">
           {/* Brand / Social */}
