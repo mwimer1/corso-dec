@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/atoms";
-import { LinkTrack } from "@/components/ui/molecules/link-track";
+import { LinkTrack } from "@/components/ui/molecules";
 import { APP_LINKS } from '@/components';
 import { cn } from "@/styles";
 import { footerCTA } from "@/styles/ui/organisms";

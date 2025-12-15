@@ -1,11 +1,11 @@
 "use client";
 
 import { CorsoAIMode, DashboardHeader } from '@/components/dashboard';
+import { ChatWelcome } from '@/components/chat';
 import { useChat } from '@/hooks/chat/use-chat';
 import { useUser } from '@clerk/nextjs';
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import ChatWelcome from '../widgets/chat-welcome';
 import { MessageItem } from '../widgets/message-item';
 
 export default function ChatWindow() {

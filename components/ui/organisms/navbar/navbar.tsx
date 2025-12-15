@@ -154,7 +154,7 @@ export function Navbar({
             </div>
           ) : (
             <div className={layout.right()}>
-              {forceShowCTAs || mode === "landing" || mode === "insights" ? (
+              {(forceShowCTAs || mode === "landing" || mode === "insights") && !isSignedIn ? (
                 <Ctas className={navbarStyles.button()} />
               ) : isSignedIn ? (
                 <UserButton afterSignOutUrl="/" />

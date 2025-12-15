@@ -1,5 +1,5 @@
 // components/ui/organisms/footer.tsx
-import { LinkTrack } from "@/components/ui/molecules/link-track";
+import { LinkTrack } from "@/components/ui/molecules";
 import { APP_LINKS } from '@/components';
 import { cn } from "@/styles";
 import { footer as footerVariants } from "@/styles/ui/organisms/footer-variants";

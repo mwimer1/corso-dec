@@ -1,4 +1,4 @@
-import { LinkTrack } from "@/components/ui/molecules/link-track";
+import { LinkTrack } from "@/components/ui/molecules";
 import { BrandAssets } from "@/lib/shared";
 import { APP_LINKS  } from '@/components';
 import { cn } from "@/styles";

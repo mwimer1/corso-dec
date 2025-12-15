@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@clerk/nextjs";
 import { Button, SkipNavLink } from "@/components/ui/atoms";
 import { LinkTrack } from "@/components/ui/molecules";
 import { APP_LINKS } from '@/components';
@@ -49,6 +50,7 @@ export function PublicLayout({
   showVerticalGuidelines = false,
   ...props
 }: PublicLayoutProps): JSX.Element {
+  const { isSignedIn } = useAuth();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -109,7 +111,7 @@ export function PublicLayout({
       </main>
 
       {/* Sticky mobile CTA ribbon */}
-      {showMobileCTA && (
+      {showMobileCTA && !isSignedIn && (
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface/95 backdrop-blur supports-[backdrop-filter]:bg-surface/80 md:hidden">
           <div className={cn(containerWithPaddingVariants({ maxWidth: "7xl", padding: "lg" }), "py-3 flex items-center justify-between gap-3")}>
             <span className="text-sm text-muted-foreground">Ready to explore Corso?</span>

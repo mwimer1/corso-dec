@@ -1,4 +1,4 @@
-import { AuthCard } from '@/components/ui/molecules/auth-card';
+import { AuthCard } from '@/components/ui/molecules';
 import Image from 'next/image';
 import * as React from 'react';
 
