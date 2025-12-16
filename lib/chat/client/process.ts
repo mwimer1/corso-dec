@@ -14,13 +14,21 @@ export async function* processUserMessageStreamClient(
   content: string,
   preferredTable?: string | null,
   signal?: AbortSignal | null,
-  history?: Array<{ role: 'user' | 'assistant'; content: string }>
+  history?: Array<{ role: 'user' | 'assistant'; content: string }>,
+  orgId?: string | null
 ): AsyncGenerator<AIChunk, void, unknown> {
   const baseUrl = publicEnv.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
   const url = `${baseUrl}/api/v1/ai/chat`;
+  
+  // Build headers with org ID if provided
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (orgId) {
+    headers['X-Corso-Org-Id'] = orgId;
+  }
+  
   const res = await fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers,
     body: JSON.stringify({ 
       content, 
       preferredTable: preferredTable ?? undefined,

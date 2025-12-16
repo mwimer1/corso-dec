@@ -58,7 +58,8 @@ describe("API v1: ai/generate-sql route", () => {
       method,
       headers: {
         "content-type": "application/json",
-        "Origin": "https://example.com"
+        "Origin": "https://example.com",
+        "X-Corso-Org-Id": "test-org-123"
       },
       body: method === "POST" ? JSON.stringify({ question: "show all users" }) : undefined,
     });
@@ -102,7 +103,10 @@ describe("API v1: ai/generate-sql route", () => {
     const handler = mod.POST;
     const req = new Request("http://localhost/api/v1/ai/generate-sql", {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: { 
+        "content-type": "application/json",
+        "X-Corso-Org-Id": "test-org-123"
+      },
       body: JSON.stringify({ question: "show all users" }),
     });
 
@@ -122,7 +126,10 @@ describe("API v1: ai/generate-sql route", () => {
     const handler = mod.POST;
     const req = new Request("http://localhost/api/v1/ai/generate-sql", {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: { 
+        "content-type": "application/json",
+        "X-Corso-Org-Id": "test-org-123"
+      },
       body: JSON.stringify({}),
     });
 
@@ -151,7 +158,10 @@ describe("API v1: ai/generate-sql route", () => {
     // Test with 'sql' field
     const req1 = new Request("http://localhost/api/v1/ai/generate-sql", {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: { 
+        "content-type": "application/json",
+        "X-Corso-Org-Id": "test-org-123"
+      },
       body: JSON.stringify({ sql: "SELECT * FROM users" }),
     });
     const res1 = await handler(req1 as any);
@@ -160,7 +170,10 @@ describe("API v1: ai/generate-sql route", () => {
     // Test with 'prompt' field
     const req2 = new Request("http://localhost/api/v1/ai/generate-sql", {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: { 
+        "content-type": "application/json",
+        "X-Corso-Org-Id": "test-org-123"
+      },
       body: JSON.stringify({ prompt: "show me users" }),
     });
     const res2 = await handler(req2 as any);
@@ -184,7 +197,10 @@ describe("API v1: ai/generate-sql route", () => {
     const handler = mod.POST;
     const req = new Request("http://localhost/api/v1/ai/generate-sql", {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: { 
+        "content-type": "application/json",
+        "X-Corso-Org-Id": "test-org-123"
+      },
       body: JSON.stringify({ question: "drop all tables" }),
     });
 
@@ -212,7 +228,10 @@ describe("API v1: ai/generate-sql route", () => {
     const handler = mod.POST;
     const req = new Request("http://localhost/api/v1/ai/generate-sql", {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: { 
+        "content-type": "application/json",
+        "X-Corso-Org-Id": "test-org-123"
+      },
       body: JSON.stringify({ sql: "TRUNCATE TABLE users" }),
     });
 

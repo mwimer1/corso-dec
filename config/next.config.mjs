@@ -93,9 +93,7 @@ const nextConfig = {
       { source: '/api/internal/billing/subscription-status', destination: '/api/v1/billing/subscription-status', permanent: true },
       { source: '/api/billing/test-success', destination: '/api/internal/billing/test-success', permanent: true },
 
-      // Streams
-      { source: '/api/v1/chat/process', destination: '/api/v1/dashboard/chat/process', permanent: true },
-      { source: '/api/dashboard/generate-sql/stream', destination: '/api/v1/dashboard/generate-sql/stream', permanent: true },
+      // Removed: Legacy chat/SQL redirects - endpoints migrated to /api/v1/ai/*
 
       // App: promote Chat as default dashboard landing
       { source: '/dashboard', destination: '/dashboard/chat', permanent: true },

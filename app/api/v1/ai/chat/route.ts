@@ -24,6 +24,7 @@ import { clickhouseQuery } from '@/lib/integrations/clickhouse/server';
 import { validateSQLScope } from '@/lib/integrations/database/scope';
 import { createOpenAIClient } from '@/lib/integrations/openai/server';
 import { handleCors } from '@/lib/middleware';
+import { getTenantContext } from '@/lib/server/db/tenant-context';
 import { getEnv } from '@/lib/server/env';
 import { auth } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
@@ -105,11 +106,13 @@ const executeSqlFunction: OpenAI.Chat.Completions.ChatCompletionTool = {
 
 /**
  * Executes SQL query and formats results
+ * @param sql - SQL query to execute
+ * @param orgId - Organization ID for tenant isolation validation
  */
-async function executeSqlAndFormat(sql: string): Promise<string> {
+async function executeSqlAndFormat(sql: string, orgId: string): Promise<string> {
   try {
-    // Validate SQL before execution
-    validateSQLScope(sql);
+    // Validate SQL before execution with tenant isolation
+    validateSQLScope(sql, orgId);
     
     // Execute query (limit results to 100 rows for chat display)
     const limitedSql = sql.includes('LIMIT') ? sql : `${sql} LIMIT 100`;
@@ -148,12 +151,19 @@ async function executeSqlAndFormat(sql: string): Promise<string> {
 
 /**
  * Creates a streaming NDJSON response with function calling support
+ * @param stream - OpenAI streaming response
+ * @param client - OpenAI client for continuation requests
+ * @param model - Model name
+ * @param messages - Conversation messages
+ * @param orgId - Organization ID for tenant isolation
+ * @param signal - Abort signal for cancellation
  */
 function createStreamResponse(
   stream: AsyncIterable<OpenAI.Chat.Completions.ChatCompletionChunk>,
   client: OpenAI,
   model: string,
   messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[],
+  orgId: string,
   signal?: AbortSignal
 ): Response {
   const encoder = new TextEncoder();
@@ -214,8 +224,8 @@ function createStreamResponse(
               // Parse function arguments
               const args = JSON.parse(functionArguments) as { query: string };
               
-              // Execute SQL
-              const sqlResults = await executeSqlAndFormat(args.query);
+              // Execute SQL with tenant isolation
+              const sqlResults = await executeSqlAndFormat(args.query, orgId);
               
               // Continue conversation with function result
               const continuationMessages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
@@ -347,6 +357,25 @@ const handler = async (req: NextRequest): Promise<Response> => {
     return http.error(401, 'Unauthorized', { code: 'HTTP_401' });
   }
 
+  // Get tenant context for org isolation
+  let tenantContext;
+  try {
+    tenantContext = await getTenantContext(req);
+  } catch (error) {
+    // getTenantContext throws ApplicationError with appropriate codes
+    if (error && typeof error === 'object' && 'code' in error) {
+      const code = error.code as string;
+      if (code === 'UNAUTHENTICATED') {
+        return http.error(401, 'Unauthorized', { code: 'HTTP_401' });
+      }
+      if (code === 'MISSING_ORG_CONTEXT') {
+        return http.error(400, 'Organization ID required. Provide X-Corso-Org-Id header or ensure org_id in session metadata.', { code: 'MISSING_ORG_CONTEXT' });
+      }
+    }
+    return http.error(400, 'Failed to determine organization context', { code: 'MISSING_ORG_CONTEXT' });
+  }
+  const { orgId } = tenantContext;
+
   // Parse request body
   let body: z.infer<typeof BodySchema>;
   try {
@@ -420,7 +449,7 @@ const handler = async (req: NextRequest): Promise<Response> => {
       abortController.abort();
     });
 
-    return createStreamResponse(stream, client, model, messages, abortController.signal);
+    return createStreamResponse(stream, client, model, messages, orgId, abortController.signal);
   } catch (error) {
     // Handle OpenAI errors
     const errorMessage = error instanceof Error ? error.message : 'Failed to process chat request';

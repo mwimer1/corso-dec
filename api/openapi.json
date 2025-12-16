@@ -403,7 +403,8 @@
           }
         ],
         "x-corso-rbac": [
-          "member"
+          "member",
+          "viewer"
         ],
         "x-rate-limit": {
           "limit": 60,
@@ -452,7 +453,8 @@
           }
         ],
         "x-corso-rbac": [
-          "member"
+          "member",
+          "viewer"
         ],
         "x-rate-limit": {
           "limit": 30,
@@ -534,7 +536,8 @@
           }
         ],
         "x-corso-rbac": [
-          "member"
+          "member",
+          "viewer"
         ],
         "x-rate-limit": {
           "limit": 60,
@@ -721,7 +724,8 @@
           }
         ],
         "x-corso-rbac": [
-          "member"
+          "member",
+          "viewer"
         ],
         "x-rate-limit": {
           "limit": 30,
@@ -775,7 +779,8 @@
           }
         ],
         "x-corso-rbac": [
-          "member"
+          "member",
+          "viewer"
         ],
         "x-rate-limit": {
           "limit": 30,
@@ -839,7 +844,8 @@
           }
         ],
         "x-corso-rbac": [
-          "member"
+          "member",
+          "viewer"
         ],
         "x-rate-limit": {
           "limit": 30,

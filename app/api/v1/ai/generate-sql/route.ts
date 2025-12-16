@@ -26,6 +26,7 @@ import { http, withErrorHandlingEdge as withErrorHandling, withRateLimitEdge as 
 import { validateSQLScope } from '@/lib/integrations/database/scope';
 import { createOpenAIClient } from '@/lib/integrations/openai/server';
 import { handleCors } from '@/lib/middleware';
+import { getTenantContext } from '@/lib/server/db/tenant-context';
 import { getEnv } from '@/lib/server/env';
 import { auth } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
@@ -60,6 +61,25 @@ const handler = async (req: NextRequest): Promise<Response> => {
   if (!userId) {
     return http.error(401, 'Unauthorized', { code: 'HTTP_401' });
   }
+
+  // Get tenant context for org isolation
+  let tenantContext;
+  try {
+    tenantContext = await getTenantContext(req);
+  } catch (error) {
+    // getTenantContext throws ApplicationError with appropriate codes
+    if (error && typeof error === 'object' && 'code' in error) {
+      const code = error.code as string;
+      if (code === 'UNAUTHENTICATED') {
+        return http.error(401, 'Unauthorized', { code: 'HTTP_401' });
+      }
+      if (code === 'MISSING_ORG_CONTEXT') {
+        return http.error(400, 'Organization ID required. Provide X-Corso-Org-Id header or ensure org_id in session metadata.', { code: 'MISSING_ORG_CONTEXT' });
+      }
+    }
+    return http.error(400, 'Failed to determine organization context', { code: 'MISSING_ORG_CONTEXT' });
+  }
+  const { orgId } = tenantContext;
 
   const json = (await req.json().catch(() => ({}))) as unknown;
   const parsed = BodySchema.safeParse(json);
@@ -115,10 +135,9 @@ SQL: SELECT COUNT(*) FROM companies WHERE headcount > 100`;
       return http.badRequest('Failed to generate SQL', { code: 'GENERATION_FAILED' });
     }
 
-    // Validate generated SQL with validateSQLScope
-    // Note: org_id is optional - if not provided, validation will still check for SELECT-only and suspicious patterns
+    // Validate generated SQL with tenant isolation enforcement
     try {
-      validateSQLScope(generatedSQL);
+      validateSQLScope(generatedSQL, orgId);
     } catch (validationError) {
       // SecurityError from validateSQLScope
       const errorMessage = validationError instanceof Error ? validationError.message : 'Invalid SQL generated';
