@@ -20,15 +20,15 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 import { http, withErrorHandlingEdge as withErrorHandling, withRateLimitEdge as withRateLimit } from '@/lib/api';
-import { handleCors } from '@/lib/middleware';
-import { createOpenAIClient } from '@/lib/integrations/openai/server';
-import { auth } from '@clerk/nextjs/server';
-import { getEnv } from '@/lib/server/env';
-import { validateSQLScope } from '@/lib/integrations/database/scope';
 import { clickhouseQuery } from '@/lib/integrations/clickhouse/server';
+import { validateSQLScope } from '@/lib/integrations/database/scope';
+import { createOpenAIClient } from '@/lib/integrations/openai/server';
+import { handleCors } from '@/lib/middleware';
+import { getEnv } from '@/lib/server/env';
+import { auth } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
-import { z } from 'zod';
 import type OpenAI from 'openai';
+import { z } from 'zod';
 
 /**
  * Request body schema for chat endpoint.

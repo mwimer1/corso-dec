@@ -1,7 +1,7 @@
 // lib/api/data.ts
 // Edge-safe adapter to serve entity page data, sourcing from public/__mockdb__ when mock flag is on.
 import { getEnvEdge } from '@/lib/api/edge';
-import { processQuery, type MockFilter, type MockSort, type MockQueryParams } from '@/lib/mocks/shared';
+import { processQuery, type MockFilter, type MockQueryParams, type MockSort } from '@/lib/mocks/shared';
 
 type Filter = MockFilter;
 type Sort = MockSort;

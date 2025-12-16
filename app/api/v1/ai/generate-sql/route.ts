@@ -23,11 +23,11 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 import { http, withErrorHandlingEdge as withErrorHandling, withRateLimitEdge as withRateLimit } from '@/lib/api';
-import { handleCors } from '@/lib/middleware';
-import { auth } from '@clerk/nextjs/server';
-import { createOpenAIClient } from '@/lib/integrations/openai/server';
 import { validateSQLScope } from '@/lib/integrations/database/scope';
+import { createOpenAIClient } from '@/lib/integrations/openai/server';
+import { handleCors } from '@/lib/middleware';
 import { getEnv } from '@/lib/server/env';
+import { auth } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
 import { z } from 'zod';
 

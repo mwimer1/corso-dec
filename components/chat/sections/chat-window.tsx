@@ -1,7 +1,7 @@
 "use client";
 
-import { CorsoAIMode, DashboardHeader } from '@/components/dashboard';
 import { ChatWelcome } from '@/components/chat';
+import { CorsoAIMode, DashboardHeader } from '@/components/dashboard';
 import { useChat } from '@/hooks/chat/use-chat';
 import { useUser } from '@clerk/nextjs';
 import dynamic from 'next/dynamic';
