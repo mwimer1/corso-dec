@@ -78,6 +78,9 @@ api/
 - `POST /api/v1/ai/chat` — AI chat processing with NDJSON streaming
 - `POST /api/v1/ai/generate-sql` — AI-powered SQL generation
 
+### Query Operations (`/api/v1/query`)
+- `POST /api/v1/query` — Generic SQL query endpoint for client-side ClickHouse queries with tenant isolation
+
 ### Entity Operations (`/api/v1/entity/*`)
 - `POST /api/v1/entity/{entity}/query` — Entity queries with filtering, sorting, pagination (projects, companies, addresses)
 - `GET /api/v1/entity/{entity}` — Entity base operations

@@ -35,12 +35,10 @@ app/api/
 │   │   └── generate-sql/route.ts # POST /api/v1/ai/generate-sql (SQL generation)
 │   └── user/
 │       └── route.ts             # POST /api/v1/user (User profile operations)
-├── internal/                    # Internal endpoints (webhooks, privileged ops)
-│   ├── README.md                # Internal API documentation (webhook details)
-│   └── auth/
-│       └── route.ts             # POST /api/internal/auth (Clerk webhooks)
-└── test/
-    └── route.ts                 # Test endpoint (Edge runtime)
+└── internal/                    # Internal endpoints (webhooks, privileged ops)
+    ├── README.md                # Internal API documentation (webhook details)
+    └── auth/
+        └── route.ts             # POST /api/internal/auth (Clerk webhooks)
 ```
 
 ## API Reference
@@ -63,6 +61,7 @@ All public endpoints are versioned under `/api/v1/*`:
 - Available to external clients
 - Require authentication (unless marked `x-public: true`)
 - Examples:
+  - `/api/v1/query` - Generic SQL queries (client-side ClickHouse)
   - `/api/v1/entity/[entity]/query` - Entity queries
   - `/api/v1/ai/chat` - AI chat processing
   - `/api/v1/ai/generate-sql` - SQL generation

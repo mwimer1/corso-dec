@@ -680,6 +680,117 @@
         }
       }
     },
+    "/api/v1/query": {
+      "post": {
+        "operationId": "query_execute",
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "Execute SQL query",
+        "description": "Generic SQL query endpoint for client-side ClickHouse queries with tenant isolation",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-corso-rbac": [
+          "member",
+          "viewer"
+        ],
+        "x-rate-limit": {
+          "limit": 60,
+          "window": "1m"
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sql": {
+                    "type": "string",
+                    "description": "SQL SELECT query string",
+                    "minLength": 1,
+                    "maxLength": 10000,
+                    "example": "SELECT * FROM projects WHERE org_id = ? LIMIT 10"
+                  },
+                  "params": {
+                    "type": "object",
+                    "description": "Query parameters (key-value pairs)",
+                    "additionalProperties": true,
+                    "example": {
+                      "org_id": "org_123"
+                    }
+                  },
+                  "cacheTtl": {
+                    "type": "integer",
+                    "description": "Cache TTL in seconds (0-3600)",
+                    "minimum": 0,
+                    "maximum": 3600
+                  }
+                },
+                "required": [
+                  "sql"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Query results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": true
+                      },
+                      "example": [
+                        {
+                          "id": "proj_123",
+                          "name": "Project A",
+                          "status": "active"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
     "/api/v1/entity/{entity}/export": {
       "get": {
         "operationId": "entity_export",

@@ -152,6 +152,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/query": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Execute SQL query
+         * @description Generic SQL query endpoint for client-side ClickHouse queries with tenant isolation
+         */
+        post: operations["query_execute"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/entity/{entity}/export": {
         parameters: {
             query?: never;
@@ -892,6 +912,70 @@ export interface operations {
                             /** @description Number of rows per page */
                             pageSize: number;
                         };
+                    };
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            429: components["responses"]["RateLimited"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    query_execute: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Organization identifier header for tenant scoping */
+                "X-Corso-Org-Id": components["parameters"]["OrgIdHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description SQL SELECT query string
+                     * @example SELECT * FROM projects WHERE org_id = ? LIMIT 10
+                     */
+                    sql: string;
+                    /**
+                     * @description Query parameters (key-value pairs)
+                     * @example {
+                     *       "org_id": "org_123"
+                     *     }
+                     */
+                    params?: {
+                        [key: string]: unknown;
+                    };
+                    /** @description Cache TTL in seconds (0-3600) */
+                    cacheTtl?: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Query results */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example true */
+                        success?: boolean;
+                        /**
+                         * @example [
+                         *       {
+                         *         "id": "proj_123",
+                         *         "name": "Project A",
+                         *         "status": "active"
+                         *       }
+                         *     ]
+                         */
+                        data?: {
+                            [key: string]: unknown;
+                        }[];
                     };
                 };
             };
