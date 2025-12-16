@@ -29,7 +29,7 @@ const navbarStyleVariants = tv({
       'px-md py-sm min-h-[44px]',
       'transition-all duration-150 ease-in-out',
       'no-underline rounded-full',
-      'hover:bg-muted/40 hover:text-foreground hover:underline hover:underline-offset-3',
+      'hover:bg-muted/40 hover:text-foreground',
       'active:bg-muted-foreground/12',
       'focus-visible:text-foreground focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2',
       'focus-visible:no-underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
