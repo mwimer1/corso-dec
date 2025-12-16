@@ -67,8 +67,8 @@ rules:
   # Patterns rules (keep as-is, unique)
   # - "scripts/rules/ast-grep/patterns/*.yml"  # Migrated to ESLint: require-client-directive-for-client-code, no-mixed-runtime-exports
 
-  # Import boundaries - candidates for ESLint migration
-  - "scripts/rules/ast-grep/import-boundaries/**/*.yml"
+  # Import boundaries - migrated to ESLint (no-restricted-imports patterns in eslint.config.mjs)
+  # - "scripts/rules/ast-grep/import-boundaries/**/*.yml"  # Migrated to ESLint
 
   # Guardrail: navbar must not set horizontal padding; use container gutters
   - id: navbar-no-horizontal-padding
@@ -246,93 +246,93 @@ customRules:
             <$COMPONENT {...$PROPS} />
         - regex: "title.*\\$PROPS"
 
-  # Components barrel consolidation guards
+  # Components barrel consolidation guards (migrated to ESLint: no-restricted-imports in eslint.config.mjs)
   # Only block @/components/ui imports that are NOT from within components/
-  - id: no-import-components-ui
+  # - id: no-import-components-ui
     message: 'Import from "@/components" instead of "@/components/ui".'
-    severity: error
-    language: ts
-    rule:
-      all:
-        - pattern: |
-            import $A from "@/components/ui"$B
-        - not:
-            regex:
-              kind: file
-              regex: "^components/"
+    #   severity: error
+    #   language: ts
+    #   rule:
+    #     all:
+    #       - pattern: |
+    #           import $A from "@/components/ui"$B
+    #       - not:
+    #           regex:
+    #             kind: file
+    #             regex: "^components/"
 
-  - id: no-import-components-ui-named
+  # - id: no-import-components-ui-named
     message: 'Import from "@/components" instead of "@/components/ui".'
-    severity: error
-    language: ts
-    rule:
-      all:
-        - pattern: |
-            import {$C} from "@/components/ui"$D
-        - not:
-            regex:
-              kind: file
-              regex: "^components/"
+    #   severity: error
+    #   language: ts
+    #   rule:
+    #     all:
+    #       - pattern: |
+    #           import {$C} from "@/components/ui"$D
+    #       - not:
+    #           regex:
+    #             kind: file
+    #             regex: "^components/"
 
-  - id: no-import-components-ui-wildcard
+  # - id: no-import-components-ui-wildcard
     message: 'Do not deep import from "@/components/ui/*". Re-export via "@/components" and import from there.'
-    severity: error
-    language: ts
-    rule:
-      all:
-        - pattern: |
-            import $A from "@/components/ui/$X"$B
-        - not:
-            regex:
-              kind: file
-              regex: "^components/"
+    #   severity: error
+    #   language: ts
+    #   rule:
+    #     all:
+    #       - pattern: |
+    #           import $A from "@/components/ui/$X"$B
+    #       - not:
+    #           regex:
+    #             kind: file
+    #             regex: "^components/"
 
-  - id: no-import-components-ui-wildcard-named
+  # - id: no-import-components-ui-wildcard-named
     message: 'Do not deep import from "@/components/ui/*". Re-export via "@/components" and import from there.'
-    severity: error
-    language: ts
-    rule:
-      all:
-        - pattern: |
-            import {$C} from "@/components/ui/$X"$D
-        - not:
-            regex:
-              kind: file
-              regex: "^components/"
+    #   severity: error
+    #   language: ts
+    #   rule:
+    #     all:
+    #       - pattern: |
+    #           import {$C} from "@/components/ui/$X"$D
+    #       - not:
+    #           regex:
+    #             kind: file
+    #             regex: "^components/"
 
-  # Components barrel deep import guards
-  - id: no-deep-components-atoms
-    message: 'Import from "@/components" (root barrel), not "@/components/atoms".'
-    severity: error
-    language: ts
-    pattern: |
-      import $A from "@/components/atoms"$B
+  # Components barrel deep import guards (migrated to ESLint)
+  #   # - id: no-deep-components-atoms
+  #   message: 'Import from "@/components" (root barrel), not "@/components/atoms".'
+  #   severity: error
+  #   language: ts
+  #   pattern: |
+  #     import $A from "@/components/atoms"$B
 
-  - id: no-deep-components-molecules
-    message: 'Import from "@/components" (root barrel), not "@/components/molecules".'
-    severity: error
-    language: ts
-    pattern: |
-      import $A from "@/components/molecules"$B
+  # - id: no-deep-components-molecules
+  #   message: 'Import from "@/components" (root barrel), not "@/components/molecules".'
+  #   severity: error
+  #   language: ts
+  #   pattern: |
+  #     import $A from "@/components/molecules"$B
 
-  - id: no-deep-components-organisms
-    message: 'Import from "@/components" (root barrel), not "@/components/organisms".'
-    severity: error
-    language: ts
-    pattern: |
-      import $A from "@/components/organisms"$B
+  # - id: no-deep-components-organisms
+  #   message: 'Import from "@/components" (root barrel), not "@/components/organisms".'
+  #   severity: error
+  #   language: ts
+  #   pattern: |
+  #     import $A from "@/components/organisms"$B
 
-  - id: no-deep-components-patterns
-    message: 'Import from "@/components" (root barrel), not "@/components/patterns".'
-    severity: error
-    language: ts
-    pattern: |
-      import $A from "@/components/patterns"$B
+  # - id: no-deep-components-patterns
+  #   message: 'Import from "@/components" (root barrel), not "@/components/patterns".'
+  #   severity: error
+  #   language: ts
+  #   pattern: |
+  #     import $A from "@/components/patterns"$B
 
-  - id: no-deep-components-shared
-    message: 'Import from "@/components" (root barrel), not "@/components/shared".'
-    severity: error
-    language: ts
-    pattern: |
-      import $A from "@/components/shared"$B
+  # - id: no-deep-components-shared
+  #   message: 'Import from "@/components" (root barrel), not "@/components/shared".'
+  #   severity: error
+  #   language: ts
+  #   pattern: |
+  #     import $A from "@/components/shared"$B
 
