@@ -20,7 +20,7 @@ import type { ChatValidationResult } from '@/lib/validators';
 import { validateUserMessage } from '@/lib/validators';
 import type { ChatMessage } from '@/types/chat';
 import type { ISODateString } from '@/types/shared';
-import { useUser } from '@clerk/nextjs';
+import { useOrganization, useUser } from '@clerk/nextjs';
 
 /* -------------------------------------------------------------------------- */
 /* Types                                                                      */
@@ -145,6 +145,10 @@ const isIterable = <T>(v: unknown): v is AsyncIterable<T> =>
 export function useChat(opts: UseChatOptions = {}): UseChatReturn {
   const { maxMessages = 100, persistHistory = true, autoSave = true, autoSaveDelay = 1_000, preferredTable } = opts;
   const { user: _user } = useUser();
+  const { organization, isLoaded } = useOrganization();
+  
+  // Derive orgId: only use it when organization is loaded to avoid stale data
+  const orgId = isLoaded ? (organization?.id ?? null) : null;
 
   const initialState: ChatState = {
     messages: [],
@@ -257,7 +261,8 @@ export function useChat(opts: UseChatOptions = {}): UseChatReturn {
           content,
           preferredTable,
           abortRef.current.signal,
-          recentHistory.length > 0 ? recentHistory : undefined
+          recentHistory.length > 0 ? recentHistory : undefined,
+          orgId
         ) as StreamOrPromise;
 
         if (isIterable<AIChunk>(result)) {
@@ -332,7 +337,7 @@ export function useChat(opts: UseChatOptions = {}): UseChatReturn {
         });
       }
     },
-    [preferredTable, messages]
+    [preferredTable, messages, orgId]
   );
 
   /* ----------------------- convenience actions ------------------------- */

@@ -12,6 +12,10 @@ vi.mock('@clerk/nextjs', async () => {
     SignedOut: ({ children }: { children?: React.ReactNode }) => React.createElement(React.Fragment, null, children),
     UserButton: (props: any) => React.createElement('div', { 'data-testid': 'user-button', ...props }),
     useUser: () => ({ isSignedIn: true, user: { fullName: 'Test User', id: 'u_123' } }),
+    useOrganization: () => ({ 
+      organization: { id: 'org_test_123', name: 'Test Org' }, 
+      isLoaded: true 
+    }),
     useAuth: () => ({
       userId: 'test-user',
       signOut: vi.fn(),
