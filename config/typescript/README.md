@@ -87,7 +87,7 @@ tsconfig.json (root)
 
 | Configuration | Purpose | Includes | Key Settings |
 |---------------|---------|----------|--------------|
-| `tsconfig.app.json` | Next.js application code | `app/**/*`, `middleware.ts` | Next.js plugin, composite |
+| `tsconfig.app.json` | Next.js application code | `app/**/*`, `proxy.ts` | Next.js plugin, composite |
 | `tsconfig.styles.json` | Styles and design system | `styles/**/*` | Emits .d.ts to `.typegen/styles` |
 || `tsconfig.lib.json` | Libraries (lib/hooks/contexts/validators) | `lib/**/*`, `hooks/**/*`, `contexts/**/*`, `types/**/*` | Emits .d.ts to `.typegen/lib` |
 | `tsconfig.components.json` | UI components (atoms, molecules, organisms) | `components/**/*` | Emits .d.ts to `.typegen/components` |
@@ -129,7 +129,7 @@ tsconfig.json (root)
 
 **Includes**:
 - `app/**/*.ts` - Next.js app directory
-- `middleware.ts` - Next.js middleware
+- `proxy.ts` - Next.js proxy (formerly middleware in Next.js 16+)
 - `.next/types/**/*.ts` - Next.js generated types
 
 **Key Settings**:
