@@ -44,6 +44,7 @@ export function NavbarMenu({
   const pathname = usePathname();
 
   // Unified render helpers to avoid duplication between desktop and mobile
+  // Never show UserButton on landing pages - authenticated users should be redirected by middleware
   const renderAuthSection = React.useCallback(
     (opts?: { onItemClick?: () => void; layout?: "desktop" | "mobile" }) => (
       <div
@@ -53,17 +54,22 @@ export function NavbarMenu({
             : "flex items-center gap-sm",
         )}
       >
-        {isSignedIn ? (
+        {/* Landing variant: always show CTAs (authenticated users should be redirected by middleware) */}
+        {/* App variant: show UserButton if signed in, CTAs if not */}
+        {_variant === "landing" ? (
+          <div className={opts?.layout === "mobile" ? "w-full flex items-center gap-2.5" : undefined}>
+            <Ctas className={opts?.layout === "mobile" ? "flex-1" : undefined} />
+          </div>
+        ) : isSignedIn ? (
           <UserButton afterSignOutUrl="/" />
         ) : (
-          // Reuse shared CTAs for desktop/mobile where appropriate
           <div className={opts?.layout === "mobile" ? "w-full flex items-center gap-2.5" : undefined}>
             <Ctas className={opts?.layout === "mobile" ? "flex-1" : undefined} />
           </div>
         )}
       </div>
     ),
-    [isSignedIn],
+    [isSignedIn, _variant],
   );
 
   // Determine if a nav item is active based on current pathname

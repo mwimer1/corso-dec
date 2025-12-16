@@ -9,7 +9,7 @@ status: "draft"
 
 ## Overview
 
-The `(auth)` route group contains all authentication flows: separate sign-in and sign-up routes using Clerk's App Router components. After successful authentication, users are redirected to the dashboard.
+The `(auth)` route group contains all authentication flows: separate sign-in and sign-up routes using Clerk's App Router components. After successful authentication, users are redirected to `/dashboard/chat` (the default dashboard landing page). Authenticated users attempting to access public marketing pages are automatically redirected to the dashboard by middleware.
 
 ## 📂 Directory Structure
 
@@ -50,8 +50,9 @@ export default function SignInPage() {
   const env = publicEnv ?? {};
   const signInPath = env.NEXT_PUBLIC_CLERK_SIGN_IN_URL ?? '/sign-in';
   const signUpUrl = env.NEXT_PUBLIC_CLERK_SIGN_UP_URL ?? '/sign-up';
-  const afterSignInUrl = env.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL ?? '/';
-  const signInRedirectFallback = env.NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL ?? '/';
+  const afterSignInUrl = env.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL ?? undefined;
+  // Default redirect to dashboard chat (per next.config.mjs: /dashboard redirects to /dashboard/chat)
+  const signInRedirectFallback = env.NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL ?? '/dashboard/chat';
 
   return (
     <AuthShell titleSr="Sign in to your account">
@@ -83,8 +84,9 @@ export default function SignUpPage() {
   const env = publicEnv ?? {};
   const signUpPath = env.NEXT_PUBLIC_CLERK_SIGN_UP_URL ?? '/sign-up';
   const signInUrl = env.NEXT_PUBLIC_CLERK_SIGN_IN_URL ?? '/sign-in';
-  const afterSignUpUrl = env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL ?? '/';
-  const signUpRedirectFallback = env.NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL ?? '/';
+  const afterSignUpUrl = env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL ?? undefined;
+  // Default redirect to dashboard chat (MVP: onboarding disabled, per next.config.mjs: /dashboard redirects to /dashboard/chat)
+  const signUpRedirectFallback = env.NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL ?? '/dashboard/chat';
 
   return (
     <AuthShell titleSr="Create your account">
@@ -108,9 +110,10 @@ export default function SignUpPage() {
 
 **Key Implementation Details:**
 - Uses separate routes with catch-all patterns for proper Clerk routing
-- Environment variables control redirect URLs with fallback to root (`/`)
+- Environment variables control redirect URLs with fallback to `/dashboard/chat` (default dashboard landing)
 - Consistent appearance theming across both forms
 - Client-side rendering required for Clerk components
+- **Security**: Authenticated users are automatically redirected from public marketing pages to dashboard by middleware (see `middleware.ts`)
 
 ## Auth Components
 
@@ -141,12 +144,13 @@ The auth pages use the following environment variables:
 # Sign-in configuration
 NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
 NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
-NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/
+# Default redirects to dashboard chat (per next.config.mjs: /dashboard redirects to /dashboard/chat)
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/dashboard/chat
+NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/dashboard/chat
 
-# Sign-up configuration
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
-NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/
+# Sign-up configuration (MVP: onboarding disabled)
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/dashboard/chat
+NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/dashboard/chat
 ```
 
 ## Error Handling
@@ -194,12 +198,18 @@ pnpm dev
 # Test new user flow: sign-up → dashboard
 # 1. Visit http://localhost:3000/sign-up
 # 2. Enter new email → Clerk shows sign-up form
-# 3. Complete registration → redirects to / (dashboard)
+# 3. Complete registration → redirects to /dashboard/chat
 
 # Test returning user flow: sign-in → dashboard
 # 1. Visit http://localhost:3000/sign-in
 # 2. Enter existing email → Clerk shows sign-in form
-# 3. Complete sign-in → redirects to / (dashboard)
+# 3. Complete sign-in → redirects to /dashboard/chat
+
+# Test authenticated user redirect from marketing pages
+# 1. Sign in to the application
+# 2. Visit http://localhost:3000/ (marketing home page)
+# 3. Should be automatically redirected to /dashboard/chat by middleware
+# 4. UserButton should never appear on public marketing pages
 
 # Test cross-navigation between sign-in and sign-up
 # 1. Visit http://localhost:3000/sign-in
@@ -220,6 +230,8 @@ pnpm dev
 - **Environment isolation**: Sensitive URLs configured via environment variables
 - **Clerk security**: Leverages Clerk's enterprise-grade authentication platform
 - **Cache prevention**: Route group prevents auth pages from being cached
+- **Authenticated user redirect**: Middleware automatically redirects authenticated users from public marketing pages to `/dashboard/chat` (prevents auth UI from appearing on public pages)
+- **Public page isolation**: UserButton component never renders on public marketing pages (landing/insights modes)
 
 ---
 

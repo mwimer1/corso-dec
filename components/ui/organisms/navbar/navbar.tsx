@@ -154,7 +154,8 @@ export function Navbar({
             </div>
           ) : (
             <div className={layout.right()}>
-              {(forceShowCTAs || mode === "landing" || mode === "insights") && !isSignedIn ? (
+              {/* Never show UserButton on public marketing pages (landing/insights) - authenticated users should be redirected */}
+              {(forceShowCTAs || mode === "landing" || mode === "insights") ? (
                 <Ctas className={navbarStyles.button()} />
               ) : isSignedIn ? (
                 <UserButton afterSignOutUrl="/" />

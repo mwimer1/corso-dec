@@ -18,7 +18,8 @@ export default function SignInPage() {
   const signInPath = env.NEXT_PUBLIC_CLERK_SIGN_IN_URL ?? '/sign-in';
   const signUpUrl = env.NEXT_PUBLIC_CLERK_SIGN_UP_URL ?? '/sign-up';
   const afterSignInUrl = env.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL ?? undefined;
-  const signInRedirectFallback = env.NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL ?? '/';
+  // Default redirect to dashboard chat (per next.config.mjs: /dashboard redirects to /dashboard/chat)
+  const signInRedirectFallback = env.NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL ?? '/dashboard/chat';
 
   return (
     <AuthShell titleSr="Sign in to your account">

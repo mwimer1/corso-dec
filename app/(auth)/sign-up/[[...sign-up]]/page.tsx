@@ -19,7 +19,8 @@ export default function SignUpPage() {
   const signUpPath = env.NEXT_PUBLIC_CLERK_SIGN_UP_URL ?? '/sign-up';
   const signInUrl = env.NEXT_PUBLIC_CLERK_SIGN_IN_URL ?? '/sign-in';
   const afterSignUpUrl = env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL ?? undefined;
-  const signUpRedirectFallback = env.NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL ?? '/';
+  // Default redirect to dashboard chat (MVP: onboarding disabled, per next.config.mjs: /dashboard redirects to /dashboard/chat)
+  const signUpRedirectFallback = env.NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL ?? '/dashboard/chat';
 
   return (
     <AuthShell titleSr="Create your account">

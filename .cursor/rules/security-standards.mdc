@@ -385,9 +385,23 @@ The `@/lib/shared` barrel **must remain client-compatible** at all times:
 ## Clerk UI Contract (Dashboard)
 
 - Render `UserButton` only inside `SignedIn` in the dashboard sidebar.
+- **Critical**: `UserButton` must **never** appear on public marketing pages (landing/insights modes). Authenticated users accessing public pages are automatically redirected to `/dashboard/chat` by middleware.
 - Force page routing for account settings: `userProfileMode="navigation"` and `userProfileUrl="/account"`.
 - Configure menu items in order using `UserButton.MenuItems`:
   1) `manageAccount` (navigates to `/account`)
   2) Link: label "Manage Subscription" → `/subscription`
   3) `signOut` (redirects to `/` via `afterSignOutUrl`)
 - Appearance: apply subtle popover elevation via `appearance={{ elements: { userButtonPopoverCard: "shadow-lg" } }}`.
+
+## Authentication Redirect Behavior
+
+### Post-Authentication Redirects
+- **Sign-in/Sign-up**: Default redirect to `/dashboard/chat` (per `next.config.mjs`, `/dashboard` redirects to `/dashboard/chat`)
+- **Environment variables**: `NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL` and `NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL` control redirects, with fallback to `/dashboard/chat`
+- **MVP**: Onboarding disabled, all authenticated users redirect to dashboard
+
+### Authenticated User Redirects (Middleware)
+- **Public marketing pages**: Authenticated users accessing public routes (`/`, `/pricing`, `/insights(.*)`, `/(marketing)(.*)`) are automatically redirected to `/dashboard/chat` by middleware (`middleware.ts`)
+- **Purpose**: Prevents authenticated users from seeing marketing content and ensures auth UI (UserButton) never appears on public pages
+- **Exception**: Auth routes (`/sign-in`, `/sign-up`) are excluded from redirect to allow authenticated users to access these pages if needed
+- **Implementation**: Middleware checks authentication state before allowing access to public marketing routes

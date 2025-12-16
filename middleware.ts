@@ -36,6 +36,15 @@ const publicRoutes = createRouteMatcher([
   '/api/public/(.*)',
 ]);
 
+// Marketing routes that should redirect authenticated users to dashboard
+// Excludes auth routes (/sign-in, /sign-up) which are handled separately
+const marketingRoutes = createRouteMatcher([
+  '/',
+  '/pricing',
+  '/insights(.*)',
+  '/(marketing)(.*)',
+]);
+
 // Onboarding routes removed for MVP; no special-case matcher required
 // const onboardingRoutes = createRouteMatcher(['/(auth)/onboarding(.*)']);
 
@@ -47,29 +56,41 @@ const publicRoutes = createRouteMatcher([
  * @returns NextResponse with appropriate routing/redirect behavior
  *
  * Processing Flow:
- * 1. Check if route is public - if so, allow immediate access
- * 2. Verify user authentication - redirect to sign-in if not authenticated
- * 3. Validate onboarding status - redirect to onboarding if incomplete (MVP: disabled)
- * 4. Allow authenticated users to proceed to protected routes
+ * 1. Redirect authenticated users from marketing pages to dashboard (prevents auth UI on public pages)
+ * 2. Allow public routes (including auth routes) - unauthenticated access to marketing/auth pages
+ * 3. Verify user authentication - redirect to sign-in if not authenticated
+ * 4. Validate onboarding status - redirect to onboarding if incomplete (MVP: disabled)
+ * 5. Allow authenticated users to proceed to protected routes
  */
 export const middleware = clerkMiddleware(async (auth, req) => {
   const { userId, redirectToSignIn } = await auth();
+  const url = req.nextUrl.clone();
 
-  // Step 1: Allow public routes (including auth routes)
+  // Step 1: Redirect authenticated users away from marketing pages to dashboard
+  // This ensures authenticated users don't see marketing content or auth UI on public pages
+  if (userId && marketingRoutes(req)) {
+    // Exclude auth routes from redirect (users should be able to access sign-in/sign-up even when authenticated)
+    if (!url.pathname.startsWith('/sign-in') && !url.pathname.startsWith('/sign-up')) {
+      url.pathname = '/dashboard/chat';
+      return NextResponse.redirect(url);
+    }
+  }
+
+  // Step 2: Allow public routes (including auth routes)
   // These routes are accessible without authentication for marketing and user onboarding
   if (publicRoutes(req)) return NextResponse.next();
 
-  // Step 2: No special onboarding routing for MVP - authenticated users proceed
+  // Step 3: No special onboarding routing for MVP - authenticated users proceed
   // When onboarding is enabled, this would check onboarding completion status
   // if (userId && onboardingRoutes(req)) return NextResponse.next();
 
-  // Step 3: Not signed in: redirect to sign-in for protected routes
+  // Step 4: Not signed in: redirect to sign-in for protected routes
   // This ensures all protected routes require authentication
   if (!userId) {
     return redirectToSignIn({ returnBackUrl: req.url });
   }
 
-  // Step 4: Previously gated by onboarding claim; for MVP assume authenticated users are allowed
+  // Step 5: Previously gated by onboarding claim; for MVP assume authenticated users are allowed
   // When onboarding is enabled, this would check:
   // const onboardComplete = (sessionClaims as any)?.metadata?.onboardingComplete;
   // if (!onboardComplete) { /* redirect to onboarding */ }
