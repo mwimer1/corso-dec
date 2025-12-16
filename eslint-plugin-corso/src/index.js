@@ -687,6 +687,21 @@ export default {
         };
       }
     },
+    'no-edge-runtime-on-pages': {
+      meta: { type: 'problem', docs: { description: 'Disallow Edge runtime in pages/layouts (use default runtime for SSG/ISR)' } },
+      create(context) {
+        const filename = context.getFilename().replace(/\\/g, '/');
+        if (!/app\/.*\/(page|layout)\.tsx$/.test(filename)) return {};
+        return {
+          Program(node) {
+            const source = context.getSourceCode();
+            if (/export\s+const\s+runtime\s*=\s*['"]edge['"]/.test(source.text)) {
+              context.report({ node, message: 'Pages/layouts must not specify runtime="edge". Use default (node) runtime.' });
+            }
+          }
+        };
+      }
+    },
     // CTA-focused rules ported from scripts/rules/ast-grep/cta
     'cta-require-linktrack-or-tracking': {
       meta: {

@@ -281,6 +281,7 @@ export default [
       'corso/next-script-no-empty-nonce': 'error',
       'corso/no-inline-color-literals': 'warn',
       'corso/no-server-only-in-client': 'error',
+      'corso/no-edge-runtime-on-pages': 'error',
 
       // Disable core no-unused-vars for TypeScript files, use TypeScript version instead
       'no-unused-vars': 'off',
@@ -485,6 +486,82 @@ export default [
           ]
         }
       ],
+    },
+  },
+  // Disallow importing from components/ui barrels outside components domain
+  {
+    files: ['**/*.{ts,tsx}'],
+    ignores: ['components/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@/components/ui', '@/components/ui/*'],
+              message: 'Import from "@/components" instead of "@/components/ui".',
+            },
+            {
+              group: ['@/components/atoms', '@/components/molecules', '@/components/organisms', '@/components/patterns', '@/components/shared'],
+              message: 'Import from "@/components" (root barrel) instead of deep component barrels.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  // Allow components domain to import its own sub-barrels (override)
+  {
+    files: ['components/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': 'off',
+    },
+  },
+  // Server code import restrictions (Radix UI, client components)
+  {
+    files: ['app/api/**/*.ts', 'lib/**/*.ts'],
+    ignores: ['lib/shared/**', 'lib/validators/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@radix-ui/*'],
+              message: 'Do not import Radix UI components in server-side code.',
+            },
+            {
+              group: ['@/components/ui', '@/components/ui/*'],
+              message: 'Do not import client UI components in server-side code.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  // ClickHouse import restriction: ban globally, allow in integration tests
+  {
+    files: ['**/*.ts', '**/*.tsx'],
+    ignores: ['tests/integration/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@clickhouse/client',
+              message: 'Use the integration layer for ClickHouse (do not import @clickhouse/client directly).',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  // Allow ClickHouse client in integration tests (override)
+  {
+    files: ['tests/integration/**'],
+    rules: {
+      'no-restricted-imports': 'off',
     },
   },
   //---------------------------------------------------------------------------

@@ -21,8 +21,8 @@ rules:
   # Consolidated runtime rules: migrated to ESLint or preserved below
   # Note: keep only rule files that exist under scripts/rules/ast-grep/
   - "scripts/rules/ast-grep/consolidated-no-direct-clickhouse-import-outside-integration.yml"
-  - "scripts/rules/ast-grep/consolidated-forbid-security-barrel-in-client-or-edge.yml"
-  - "scripts/rules/ast-grep/consolidated-nextjs15-route-params-async.yml"
+  # - "scripts/rules/ast-grep/consolidated-forbid-security-barrel-in-client-or-edge.yml"  # Migrated to ESLint: forbid-security-barrel-in-client-or-edge
+  # - "scripts/rules/ast-grep/consolidated-nextjs15-route-params-async.yml"  # Migrated to ESLint: nextjs15-route-params-async and nextjs15-route-params-optimization
   # - "scripts/rules/ast-grep/consolidated-client-logger-rules.yml"  # Migrated to ESLint: no-client-logger-import
   # shared-config.yml intentionally omitted; only explicit rule files are listed below
 
@@ -36,7 +36,6 @@ rules:
   # - "scripts/rules/ast-grep/dashboard/no-literal-entity-keys.yml"  # Migrated to ESLint: dashboard-literal-entity-keys
   # - "scripts/rules/ast-grep/no-client-in-icons.yml"  # Migrated to ESLint: no-client-in-icons
   - "scripts/rules/ast-grep/runtime-boundaries/forbid-at-alias-in-tools.yml"
-  # - "scripts/rules/ast-grep/consolidated-nextjs15-route-params-async.yml"  # Migrated to ESLint: nextjs15-route-params-async
   # - "scripts/rules/ast-grep/patterns/require-client-directive-for-client-code.yml"  # Migrated to ESLint: require-client-directive-for-client-code
   # - "scripts/rules/ast-grep/patterns/no-mixed-runtime-exports.yml"  # Migrated to ESLint: no-mixed-runtime-exports
   # Project-local rule files (exists check): include only if present in scripts/rules/ast-grep/
@@ -55,16 +54,15 @@ rules:
   # - "scripts/rules/ast-grep/forbid-header-spacing-in-dashboard.yml"  # Migrated to ESLint: forbid-header-spacing-in-dashboard
   # - "scripts/rules/ast-grep/no-clerkprovider-outside-root.yml"  # Migrated to ESLint: no-clerkprovider-outside-root
   # - "scripts/rules/ast-grep/rules/api-edge-barrel-no-server-exports.yml"  # Migrated to ESLint: api-edge-barrel-no-server-exports
-  # - "scripts/rules/ast-grep/consolidated-nextjs15-route-params-async.yml"  # Migrated to ESLint: nextjs15-route-params-optimization
 
-  # CTA rules (keep as-is, low duplication)
-  - "scripts/rules/ast-grep/cta/*.yml"
+  # CTA rules (migrated to ESLint)
+  # - "scripts/rules/ast-grep/cta/*.yml"  # Migrated to ESLint: cta-require-linktrack-or-tracking, cta-internal-link-to-link, etc.
 
-  # Marketing/Auth rules (keep as-is)
-  - "scripts/rules/ast-grep/marketing-auth/*.yml"
+  # Marketing/Auth rules (migrated to ESLint)
+  # - "scripts/rules/ast-grep/marketing-auth/*.yml"  # Migrated to ESLint: no-clerkprovider-outside-root, no-ad-hoc-navbars
 
-  # Next.js Script rules (keep as-is)
-  - "scripts/rules/ast-grep/next-script/*.yml"
+  # Next.js Script rules (migrated to ESLint)
+  # - "scripts/rules/ast-grep/next-script/*.yml"  # Migrated to ESLint: next-script-no-empty-nonce
 
   # Patterns rules (keep as-is, unique)
   # - "scripts/rules/ast-grep/patterns/*.yml"  # Migrated to ESLint: require-client-directive-for-client-code, no-mixed-runtime-exports
@@ -93,19 +91,19 @@ rules:
 
 customRules:
 
-  # Icon component SSR safety
-  - id: no-client-in-icons
-    language: tsx
-    message: "Icon modules under components/ui/atoms/icon/** must be SSR-safe: no 'use client' and no browser globals."
-    severity: error
-    rule:
-      all:
-        - regex:
-            kind: file
-            regex: "^components/ui/atoms/icon/"
-        - any:
-            - regex: "^['\"]use client['\"];?"
-            - regex: "\\b(window|document|matchMedia|navigator|getComputedStyle)\\b"
+  # Icon component SSR safety (migrated to ESLint: no-client-in-icons)
+  # - id: no-client-in-icons
+  #   language: tsx
+  #   message: "Icon modules under components/ui/atoms/icon/** must be SSR-safe: no 'use client' and no browser globals."
+  #   severity: error
+  #   rule:
+  #     all:
+  #       - regex:
+  #           kind: file
+  #           regex: "^components/ui/atoms/icon/"
+  #       - any:
+  #           - regex: "^['\"]use client['\"];?"
+  #           - regex: "\\b(window|document|matchMedia|navigator|getComputedStyle)\\b"
 
   # API wrapper enforcement - DEPRECATED
   # withApiWrappers has been removed in favor of makeEdgeRoute() and individual wrapper composition
@@ -201,29 +199,29 @@ customRules:
             regex: "^app/api/|^lib/|^scripts/|^tests/"
         - regex: "import.*from.*['\"]@radix-ui/"
 
-  # Data validation rules
-  - id: no-raw-internal-fetch
-    language: ts
-    message: "Use lib/api/client.ts (fetchJSON/postJSON) for internal /api calls."
-    severity: error
-    rule:
-      any:
-        - pattern: fetch("/api/$REST", $ARGS)
-        - pattern: fetch('/api/$REST', $ARGS)
-        - pattern: fetch(`/api/$REST`, $ARGS)
+  # Data validation rules (migrated to ESLint: no-raw-internal-fetch)
+  # - id: no-raw-internal-fetch
+  #   language: ts
+  #   message: "Use lib/api/client.ts (fetchJSON/postJSON) for internal /api calls."
+  #   severity: error
+  #   rule:
+  #     any:
+  #       - pattern: fetch("/api/$REST", $ARGS)
+  #       - pattern: fetch('/api/$REST', $ARGS)
+  #       - pattern: fetch(`/api/$REST`, $ARGS)
 
-  # Runtime policy: forbid Edge runtime on pages/layouts
-  - id: no-edge-runtime-on-pages
-    language: tsx
-    message: "Pages/layouts must not use Edge runtime. Use Node (default) to preserve SSG/ISR."
-    severity: error
-    rule:
-      all:
-        - regex:
-            kind: file
-            regex: "^app/.+/(page|layout)\\.tsx$"
-        - pattern: |
-            export const runtime = 'edge'
+  # Runtime policy: forbid Edge runtime on pages/layouts (migrated to ESLint: no-edge-runtime-on-pages)
+  # - id: no-edge-runtime-on-pages
+  #   language: tsx
+  #   message: "Pages/layouts must not use Edge runtime. Use Node (default) to preserve SSG/ISR."
+  #   severity: error
+  #   rule:
+  #     all:
+  #       - regex:
+  #           kind: file
+  #           regex: "^app/.+/(page|layout)\\.tsx$"
+  #       - pattern: |
+  #           export const runtime = 'edge'
 
   - id: no-string-bool-in-defaultVariants
     language: ts
