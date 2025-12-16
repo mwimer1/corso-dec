@@ -83,8 +83,8 @@ const nextConfig = {
     return [
       // API: redirect legacy/unversioned paths to versioned/internal equivalents (308)
       { source: '/api/user', destination: '/api/v1/user', permanent: true },
-      { source: '/api/dashboard/query', destination: '/api/v1/dashboard/query', permanent: true },
-      { source: '/api/dashboard/generate-sql', destination: '/api/v1/dashboard/generate-sql', permanent: true },
+      // Removed: /api/dashboard/query → migrated to /api/v1/entity/{entity}/query
+      // Removed: /api/dashboard/generate-sql → migrated to /api/v1/ai/generate-sql
       { source: '/api/subscription/products', destination: '/api/v1/subscription/products', permanent: true },
       { source: '/api/subscription/portal', destination: '/api/v1/subscription/portal', permanent: true },
       // Internal billing routes consolidated under /api/v1

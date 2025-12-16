@@ -690,9 +690,9 @@ const { data, isLoading, error } = useWarehouseQuery(
 #### Network Inspection
 ```typescript
 // Check browser network tab for:
-// - API endpoint: /api/v1/dashboard/query
-// - Request payload: { sql: "SELECT..." }
-// - Response: { data: [...], columns: [...], executionTimeMs: 123 }
+// - API endpoint: /api/v1/entity/{entity}/query (for entity queries)
+// - Request payload: { page: { index: 0, size: 50 }, sort: [...], filter: {...} }
+// - Response: { success: true, data: { rows: [...], columns: [...], total: 100 } }
 ```
 
 ---
@@ -710,7 +710,7 @@ const { data, isLoading, error } = useWarehouseQuery(
 
 When `CORSO_USE_MOCK_DB` is enabled, warehouse queries are served by a mock backend that reads from `db/*.csv` and `db/*.xlsx`.
 
-- API route: `app/api/v1/dashboard/query/route.ts`
+- API route: `app/api/v1/entity/{entity}/query/route.ts` (for entity queries)
 - Reader: `lib/integrations/clickhouse/server.ts`
 - Data and usage: see `db/README.md`
 

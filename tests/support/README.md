@@ -68,7 +68,7 @@ import { createTestRequest } from "../support/harness/request";
 // Create authenticated requests with proper headers
 const request = createTestRequest({
   method: 'POST',
-  url: '/api/v1/dashboard/query',
+  url: '/api/v1/entity/projects/query', // Example: use appropriate entity type
   userId: 'test-user',
   orgId: 'test-org',
   body: { sql: 'SELECT * FROM projects' }

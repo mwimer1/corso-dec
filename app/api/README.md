@@ -1,10 +1,17 @@
 ---
-title: "Api"
-description: "Documentation and resources for documentation functionality. Located in api/."
-last_updated: "2025-12-15"
-category: "documentation"
-status: "draft"
+title: "API Routes"
+description: "HTTP API endpoints for external clients, streaming, and integrations."
+last_updated: "2025-01-03"
+category: "api"
+status: "active"
 ---
+
+## Overview
+
+This directory contains HTTP API routes for the Corso application. All public endpoints are versioned under `/api/v1/*` and documented in the OpenAPI specification.
+
+**Related:** For server actions (form submissions), see [Actions README](../../actions/README.md). For guidance on choosing between actions and API routes, see [Actions vs API Routes](../../docs/architecture/actions-vs-api-routes.md).
+
 ## API Structure
 
 ```text
@@ -25,8 +32,7 @@ app/api/
 │   │       ├── query/route.ts   # POST /api/v1/entity/[entity]/query (Entity queries)
 │   │       └── export/route.ts   # GET /api/v1/entity/[entity]/export (Entity exports)
 │   ├── ai/                      # AI helper endpoints
-│   │   ├── generate-sql/route.ts # POST /api/v1/ai/generate-sql (SQL generation)
-│   │   └── generate-chart/route.ts # POST /api/v1/ai/generate-chart (Chart generation)
+│   │   └── generate-sql/route.ts # POST /api/v1/ai/generate-sql (SQL generation)
 │   └── user/
 │       └── route.ts             # POST /api/v1/user (User profile operations)
 ├── internal/                    # Internal endpoints (webhooks, privileged ops)
@@ -43,15 +49,40 @@ app/api/
 
 ### Quick Reference
 
-**Public API (v1)**: All endpoints under `/api/v1/*` are documented in the OpenAPI specification:
-- Entity operations: `/api/v1/entity/[entity]/*`
-- AI services: `/api/v1/ai/*`
-- User operations: `/api/v1/user`
-- Security: `/api/v1/csp-report`
+### API Versioning
 
-**Internal API**: Webhooks and privileged operations under `/api/internal/*` (see [Internal API README](internal/README.md))
+All public endpoints are versioned under `/api/v1/*`:
+- **Versioning strategy**: URL-based versioning (`/api/v1/...`)
+- **Breaking changes**: Require a new version (`/api/v2/...`)
+- **OpenAPI documented**: All `/api/v1/*` endpoints are in `api/openapi.yml`
 
-**Health Endpoints**: Public health checks at `/api/health` and `/api/health/clickhouse`
+### Public vs Internal Endpoints
+
+**Public API (`/api/v1/*`):**
+- Documented in OpenAPI specification
+- Available to external clients
+- Require authentication (unless marked `x-public: true`)
+- Examples:
+  - `/api/v1/entity/[entity]/query` - Entity queries
+  - `/api/v1/ai/chat` - AI chat processing
+  - `/api/v1/ai/generate-sql` - SQL generation
+  - `/api/v1/user` - User operations
+  - `/api/v1/csp-report` - CSP violation reports
+
+**Internal API (`/api/internal/*`):**
+- **Not** included in public OpenAPI spec
+- Webhooks and privileged operations
+- Require signature validation (e.g., Clerk webhooks)
+- Examples:
+  - `/api/internal/auth` - Clerk webhook handler
+- See [Internal API README](internal/README.md) for details
+
+**Health Endpoints (`/api/health/*`):**
+- Public, unauthenticated endpoints
+- Marked `x-public: true` in OpenAPI
+- Examples:
+  - `/api/health` - Service health check
+  - `/api/health/clickhouse` - ClickHouse connectivity check
 
 > **Note**: Routes under `/api/v1/dashboard/**` were removed as of October 2025. Use `/api/v1/entity/**` for resource operations and `/api/v1/ai/**` for AI helpers.
 
@@ -133,8 +164,54 @@ Browser-facing endpoints implement OPTIONS handlers with:
 
 ## Streaming (NDJSON)
 
-- Use `makeEdgeRoute` for typed, rate-limited route composition
-- Content type: `application/x-ndjson`
+Some endpoints return streaming responses in NDJSON format for real-time data delivery.
+
+### Streaming Endpoints
+
+- **`/api/v1/ai/chat`** - Streams AI chat responses as NDJSON chunks
+  - Content-Type: `application/x-ndjson`
+  - Each line is a JSON object: `{ assistantMessage: {...}, detectedTableIntent: null, error: null }`
+  - See `app/api/v1/ai/chat/route.ts` for implementation
+
+### NDJSON Format
+
+- **Content-Type**: `application/x-ndjson`
+- **Format**: Each line is a complete JSON object, newline-separated
+- **Example**:
+  ```json
+  {"data": "chunk1"}\n
+  {"data": "chunk2"}\n
+  {"data": "chunk3"}\n
+  ```
+
+### Client Usage
+
+```typescript
+const response = await fetch('/api/v1/ai/chat', {
+  method: 'POST',
+  body: JSON.stringify({ content: 'Hello', preferredTable: 'projects' }),
+});
+
+const reader = response.body.getReader();
+const decoder = new TextDecoder();
+let buffer = '';
+
+while (true) {
+  const { value, done } = await reader.read();
+  if (done) break;
+  
+  buffer += decoder.decode(value, { stream: true });
+  const lines = buffer.split('\n');
+  buffer = lines.pop() || '';
+  
+  for (const line of lines) {
+    if (line.trim()) {
+      const chunk = JSON.parse(line);
+      // Process chunk
+    }
+  }
+}
+```
 
 ## Quick File References
 
@@ -142,7 +219,6 @@ Browser-facing endpoints implement OPTIONS handlers with:
 - Entity export: `app/api/v1/entity/[entity]/export/route.ts`
 - Entity base operations: `app/api/v1/entity/[entity]/route.ts`
 - AI generate SQL: `app/api/v1/ai/generate-sql/route.ts`
-- AI generate chart: `app/api/v1/ai/generate-chart/route.ts`
 - User operations: `app/api/v1/user/route.ts`
 - CSP reports: `app/api/v1/csp-report/route.ts`
 
@@ -159,10 +235,10 @@ curl -X POST http://localhost:3000/api/v1/ai/generate-sql \
   -H "Content-Type: application/json" \
   -d '{"question":"Top 10 cities by permits in 2024"}'
 
-# AI chart generation
-curl -X POST http://localhost:3000/api/v1/ai/generate-chart \
+# AI chat (streaming)
+curl -X POST http://localhost:3000/api/v1/ai/chat \
   -H "Content-Type: application/json" \
-  -d '{"question":"Show permits by status","results":[{"status":"active","count":100}]}'
+  -d '{"content":"Show me active projects","preferredTable":"projects"}'
 ```
 
 ## OpenAPI Management
@@ -190,6 +266,13 @@ The OpenAPI spec enforces security through vendor extensions:
 
 For complete OpenAPI documentation, see [api/README.md](../../api/README.md).
 
+## Related Documentation
+
+- [Actions vs API Routes](../../docs/architecture/actions-vs-api-routes.md) - Decision guide
+- [Actions README](../../actions/README.md) - Server actions guide
+- [OpenAPI Specification](../../api/README.md) - Complete API specification
+- [Security Standards](../../.cursor/rules/security-standards.mdc) - Security patterns
+
 ---
 
-**Last updated:** 2025-10-04
+**Last updated:** 2025-01-03

@@ -23,6 +23,7 @@
     "verify:edge": "tsx scripts/verify-edge-safe.ts",
     "verify:env": "tsx scripts/verify-env-usage.ts",
     "verify:repo": "pnpm run verify:env && pnpm run verify:edge",
+    "check:drift": "tsx scripts/check-architecture-drift.ts",
     "docs:routes": "tsx scripts/docs/gen-route-tree.ts && git --no-pager diff -- docs/codebase/_generated/app-routes.md || true",
     "fix:barrels": "tsx scripts/codemods/refactor-constants-barrel.ts",
     "audit:barrels": "tsx scripts/maintenance/audit-barrels.ts",

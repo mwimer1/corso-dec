@@ -1,47 +1,49 @@
 ---
 title: "Actions"
-description: "Server-side actions for actions, handling data mutations and business logic."
-last_updated: "2025-12-15"
+description: "Server-side actions for form submissions and simple mutations."
+last_updated: "2025-01-03"
 category: "actions"
-status: "draft"
+status: "active"
 ---
-## Public Exports
-| Action | Purpose | Import Path |
-|--------|---------|-------------|
-| `marketing/contact-form` |  | `@/actions` |
-
-## Public Exports
-| Action | Purpose | Import Path |
-|--------|---------|-------------|
-| `marketing/contact-form` |  | `@/actions` |
-
 
 ## Overview
-**5 production-ready Next.js server actions** providing secure, type-safe backend operations for AI chat generation and marketing interactions.
 
-## Directory Structure
+**1 active Next.js server action** for marketing form submissions. This directory contains server actions intended for direct component calls (form submissions and simple mutations).
 
-### Core Domains
-| Domain | Purpose | Action Count |
-|--------|---------|--------------|
-| `chat/` | AI SQL and chart generation | 4 actions |
-| `marketing/` | Contact forms with bot protection | 1 action |
+**Note:** Chat processing, SQL generation, and entity queries have been migrated to API routes under `/app/api/v1/` for streaming support and OpenAPI documentation. See [Actions vs API Routes](../docs/architecture/actions-vs-api-routes.md) for guidance on when to use each pattern.
 
+## Current Actions
+
+| Action | Purpose | Import Path |
+|--------|---------|-------------|
+| `marketing/contact-form` | Contact form submission with bot protection | `@/actions` |
+
+## When to Use Server Actions vs API Routes
+
+### ✅ Use Server Actions When:
+- **Form submissions** (like contact forms)
+- **Simple mutations** from client components
+- **Direct function calls** (no HTTP overhead needed)
+- **Operations that don't need streaming**
+
+### ✅ Use API Routes When:
+- **HTTP endpoints** for external clients
+- **Streaming responses** (NDJSON format)
+- **OpenAPI documentation** required
+- **Complex operations** with multiple steps
+- **External integrations** (webhooks, third-party APIs)
+
+**Example:** The contact form uses a server action because it's a simple form submission. Chat processing uses API routes (`/api/v1/ai/chat`) because it requires streaming NDJSON responses.
+
+For detailed guidance, see [Actions vs API Routes](../docs/architecture/actions-vs-api-routes.md).
 
 ## Key Features
 
 ### 🔐 **Security First**
-- **Authentication**: All actions validate user sessions
-- **Authorization**: Organization-scoped operations
-- **Rate Limiting**: Configurable limits per action type
+- **Bot Protection**: Turnstile verification for public forms
+- **Rate Limiting**: IP-scoped rate limits for public actions
 - **Input Validation**: Zod schemas at action boundaries
 - **Error Handling**: Structured error responses
-
-### ⚡ **Performance Optimized**
-- **Caching**: Redis-backed function caching
-- **Streaming**: Real-time AI generation responses
-- **Database Optimization**: Efficient Supabase queries
-- **Rate Limiting**: Prevents abuse with smart throttling
 
 ### 🎯 **Type Safe**
 - **Zod Validation**: Runtime type checking
@@ -49,291 +51,157 @@ status: "draft"
 - **Schema Validation**: Input/output validation
 - **Error Types**: Structured error handling
 
-### 🔧 **Developer Experience**
-- **Consistent APIs**: Standardized patterns across domains
-- **Comprehensive Logging**: Debug-friendly error tracking
-- **Modular Design**: Import only what you need
-- **Documentation**: Inline JSDoc and usage examples
+## Usage Pattern
 
-## Usage Patterns
+### Contact Form Submission
 
-### Billing Operations
 ```typescript
-// Create checkout session
-const url = await createCheckoutSession({
-  priceId: 'price_456',
-  successUrl: '/success',
-  cancelUrl: '/cancel'
-});
+import { submitContactForm } from '@/actions';
+
+// In a server component or form handler
+const handleSubmit = async (data: ContactFormData) => {
+  'use server';
+  await submitContactForm({
+    name: data.name,
+    email: data.email,
+    message: data.message,
+    turnstileToken: data.turnstileToken, // Required for bot protection
+  });
+};
 ```
 
-### AI Chat Generation
+## How to Add a New Action
+
+### 1. Create Action File
+
+Create a new file in the appropriate domain directory:
+
 ```typescript
-// Generate SQL from natural language
-const sqlResult = await generateSQL({
-  question: 'Show me active projects',
-  detectedTableIntent: 'projects'
+// actions/[domain]/[action-name].ts
+'use server';
+
+import { z } from 'zod';
+import { validateInput, ApplicationError, ErrorCategory, ErrorSeverity } from '@/lib/actions';
+import { withRateLimit } from '@/lib/middleware/http/rate-limit';
+import { buildCompositeKey, ACTION_RATE_LIMITS } from '@/lib/ratelimiting';
+
+// Define Zod schema
+const ActionSchema = z.object({
+  field1: z.string().min(1),
+  field2: z.number().positive(),
 });
 
-// Stream chart configuration
-for await (const chunk of generateChartConfigurationStream(
-  results, 
-  'Create a revenue chart',
-  { preferredChartTypes: ['line', 'bar'] }
-)) {
-  // Process streaming response
+type ActionInput = z.infer<typeof ActionSchema>;
+
+// Export action function
+export async function myNewAction(input: ActionInput) {
+  // 1. Rate limiting (if needed)
+  const ip = headers().get('cf-connecting-ip') ?? 'unknown';
+  await withRateLimit(
+    buildCompositeKey('domain:action', ip),
+    ACTION_RATE_LIMITS.USER_ACTION
+  );
+
+  // 2. Validate input
+  const validated = validateInput(ActionSchema, input, 'action context');
+
+  // 3. Business logic
+  try {
+    // Your action logic here
+    return { success: true, data: result };
+  } catch (error) {
+    if (error instanceof ApplicationError) throw error;
+    throw new ApplicationError({
+      message: 'Action failed',
+      code: 'ACTION_ERROR',
+      category: ErrorCategory.API,
+      severity: ErrorSeverity.ERROR,
+      originalError: error instanceof Error ? error : new Error(String(error)),
+    });
+  }
 }
 ```
 
-### Marketing Interactions
+### 2. Export from Index
+
+Add the export to `actions/index.ts`:
+
 ```typescript
-// Submit contact form with bot protection
-await submitContactForm({
-  name: 'John Doe',
-  email: 'john@example.com',
-  message: 'Interested in your product',
-  turnstileToken: 'token123'
-});
+export * from './[domain]/[action-name]';
 ```
 
-## Architecture Principles
+### 3. Validation Requirements
 
-### 🔒 **Security Architecture**
-- **Boundary Validation**: Input validation at action entry points
-- **Authentication Context**: User/org context validation
-- **Rate Limiting**: Per-action type limits with smart backoff
-- **Audit Logging**: Security event tracking
-- **Error Sanitization**: No sensitive data leakage
+- ✅ **Zod schema** for all inputs
+- ✅ **Rate limiting** for public actions (IP-scoped) or authenticated actions (user-scoped)
+- ✅ **Error handling** using `ApplicationError` from `@/lib/actions`
+- ✅ **Type safety** with TypeScript types inferred from Zod schemas
 
-### ⚡ **Performance Patterns**
-- **Caching Strategy**: Redis-backed function caching
-- **Database Optimization**: Efficient queries with proper indexing
-- **Streaming Responses**: Real-time AI generation
-- **Memory Management**: Controlled resource usage
+### 4. Error Handling
 
-### 🎯 **Type Safety**
-- **Schema Validation**: Zod schemas for all inputs/outputs
-- **Runtime Checking**: Type validation at runtime
-- **Error Boundaries**: Structured error handling
-- **Type Inference**: Automatic TypeScript types
+All actions should throw structured errors:
 
-### 🔧 **Operational Excellence**
-- **Monitoring**: Comprehensive logging and metrics
-- **Error Tracking**: Structured error reporting
-- **Retry Logic**: Intelligent retry mechanisms
-- **Health Checks**: Action availability monitoring
+```typescript
+import { ApplicationError, ErrorCategory, ErrorSeverity } from '@/lib/actions';
+
+throw new ApplicationError({
+  message: 'Descriptive error message',
+  code: 'ERROR_CODE',
+  category: ErrorCategory.API,
+  severity: ErrorSeverity.ERROR,
+});
+```
 
 ## Security Considerations
 
-### Authentication & Authorization
+### Rate Limiting
+
 ```typescript
-// All actions include auth validation
-const { userId, orgId } = await validateAuth();
+// Public action (IP-scoped)
+const ip = headers().get('cf-connecting-ip') ?? 'unknown';
+await withRateLimit(
+  buildCompositeKey('marketing:contact', ip),
+  ACTION_RATE_LIMITS.USER_ACTION
+);
 
-// Organization context checking
-if (orgId !== targetOrgId) {
-  throw new ApplicationError({
-    code: 'FORBIDDEN',
-    message: 'Wrong organization context'
-  });
-}
-```
-
-### Rate Limiting Configuration
-```typescript
-// Action-specific, scoped rate limits (recommended)
-import { withRateLimit, buildCompositeKey } from '@/lib/ratelimiting';
-import { ACTION_RATE_LIMITS } from '@/lib/ratelimiting';
-
-// Authenticated action (per-user)
-await withRateLimit(buildCompositeKey(`chat:generate-sql`, userId), ACTION_RATE_LIMITS.AI_GENERATION);
-
-// Public action (per-IP)
-await withRateLimit(buildCompositeKey(`marketing:contact`, ip), ACTION_RATE_LIMITS.USER_ACTION);
+// Authenticated action (user-scoped)
+const { userId } = await auth();
+await withRateLimit(
+  buildCompositeKey('user:action', userId),
+  ACTION_RATE_LIMITS.USER_ACTION
+);
 ```
 
 ### Input Validation
-```typescript
-// Boundary validation with Zod
-const validated = validateInput(schema, input, "action context");
 
-// Structured error handling
-try {
-  // Action logic
-} catch (error) {
-  throw handleDbError(error, "Action description");
-}
+```typescript
+// Always validate with Zod
+const validated = validateInput(ActionSchema, input, 'action context');
 ```
 
-## Best Practices
+## Migration History
 
-### Error Handling
-```typescript
-// ✅ Structured error responses
-try {
-  const result = await billingAction(input);
-  return { success: true, data: result };
-} catch (error) {
-  if (error instanceof ApplicationError) {
-    return { success: false, error: error.message, code: error.code };
-  }
-  throw handleInternalError(error, "action context");
-}
-```
+### Removed Actions (Migrated to API Routes)
 
-### Caching Strategy
-```typescript
-// ✅ Use cached functions for expensive operations
-export const getExpensiveData = createCachedFunction(
-  async (params) => {
-    // Expensive operation
-    return await databaseQuery(params);
-  },
-  ["cache-key"],
-  CACHE_CONFIGS.DEFAULT
-);
-```
+- **Chat processing**: Now at `/api/v1/ai/chat` (streaming NDJSON)
+- **SQL generation**: Now at `/api/v1/ai/generate-sql`
+- **Entity queries**: Now at `/api/v1/entity/[entity]/query`
+- **Billing actions**: Removed (handled by Clerk Billing)
 
-### Database Operations
-```typescript
-// ✅ Safe database operations with error handling
-try {
-  const { data, error } = await supabaseApi
-    .fromUser("table", userId)
-    .select("*")
-    .eq("org_id", orgId);
-
-  if (error) throw error;
-  return data;
-} catch (error) {
-  throw handleDbError(error, "Failed to fetch data");
-}
-```
-
-### Rate Limiting
-```typescript
-// ✅ Appropriate rate limits per action type
-await checkRateLimit("expensive-operation", {
-  maxRequests: 5,    // Conservative for expensive ops
-  windowMs: 60000
-});
-
-await checkRateLimit("simple-read", {
-  maxRequests: 100,  // Generous for simple reads
-  windowMs: 60000
-});
-```
-
-## Caching Configuration
-
-### Function-Level Caching
-```typescript
-// Redis-backed function caching
-export const getCachedData = createCachedFunction(
-  async (params) => expensiveOperation(params),
-  ["data", "cache", "key"],
-  { revalidate: 300 } // 5 minute TTL
-);
-```
-
-### Cache Invalidation
-```typescript
-// Tag-based cache invalidation
-revalidateTag("user-preferences");
-revalidateTag("dashboard-data");
-```
-
-## Monitoring & Observability
-
-### Performance Monitoring
-```typescript
-// Automatic performance logging
-const result = await measureQueryTime(
-  () => expensiveOperation(),
-  { userId, operation: 'data-fetch' }
-);
-```
-
-### Error Tracking
-```typescript
-// Structured error reporting
-catch (error) {
-  reportError(error, {
-    category: ErrorCategory.DATABASE,
-    severity: ErrorSeverity.ERROR,
-    context: { userId, operation: 'data-update' }
-  });
-}
-```
-
-## Windows-First Development
-
-- ✅ Compatible with Windows file paths and PowerShell
-- ✅ Cross-platform database connectivity
-- ✅ Windows-friendly error messages and logging
-- ✅ Compatible with Windows development workflows
-
-## Troubleshooting
-
-### Common Issues
-
-**Rate Limit Exceeded**
-- Check rate limit configuration
-- Implement exponential backoff
-- Consider upgrading plan for higher limits
-
-**Authentication Failures**
-- Verify Clerk configuration
-- Check user session validity
-- Validate organization context
-
-**Database Connection Issues**
-- Verify Supabase credentials
-- Check network connectivity
-- Review connection pool settings
-
-**Streaming Response Problems**
-- Ensure proper async iteration
-- Check for network interruptions
-- Validate response format
-
-## Migration Guide
-
-### From Legacy Actions
-```typescript
-// Old approach - inline auth/validation
-export async function legacyAction(input) {
-  // Manual auth checking
-  // Manual validation
-  // Business logic
-}
-
-// New approach - structured actions
-export async function modernAction(input) {
-  // Auth automatically validated
-  const validated = validateInput(schema, input);
-  // Business logic with error handling
-}
-```
-
-### From Client-Side Operations
-```typescript
-// Old approach - client-side API calls
-const result = await fetch('/api/action', {
-  method: 'POST',
-  body: JSON.stringify(data)
-});
-
-// New approach - server actions
-const result = await serverAction(data);
-```
+These were migrated to API routes to support:
+- Streaming responses (NDJSON)
+- OpenAPI documentation
+- External client access
+- Complex multi-step operations
 
 ## Related Documentation
 
+- [Actions vs API Routes](../docs/architecture/actions-vs-api-routes.md) - Decision guide
+- [API Routes](../app/api/README.md) - API route documentation
+- [OpenAPI Specification](../api/README.md) - API specification
 - `@/lib/actions` – Action utilities and helpers
-- `@/lib/core/server` – Server-side core functionality
-- `@/types/actions` – Action-specific TypeScript types
 - `@/lib/validators` – Input validation schemas
 
 ---
-_Last updated: 2025-09-04_
+
+_Last updated: 2025-01-03_

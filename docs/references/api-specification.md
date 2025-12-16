@@ -85,12 +85,18 @@ All bearer-authenticated operations must include RBAC and tenant isolation:
 
 ```yaml
 paths:
-  /api/v1/dashboard/query:
+  /api/v1/entity/{entity}/query:
     post:
-      operationId: dashboard_query
+      operationId: entity_query
       tags: [Dashboard]
-      summary: Execute analytics query (ClickHouse)
+      summary: Query entity data with filtering, sorting, and pagination
       parameters:
+        - name: entity
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [projects, companies, addresses]
         - $ref: '#/components/parameters/OrgIdHeader'  # Required for tenant isolation
       security:
         - bearerAuth: []
@@ -100,7 +106,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DashboardQueryRequest"
+              $ref: "#/components/schemas/EntityQueryRequest"
 ```
 
 ### Public Endpoints

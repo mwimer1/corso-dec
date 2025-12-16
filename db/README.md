@@ -234,7 +234,7 @@ During early development, you can force dashboard entity queries to read from th
   - `NEXT_PUBLIC_USE_MOCK_DB=true` (browser-visible; dev only)
   - `USE_MOCK_DB=true` (server-only)
 
-When enabled, the API route `app/api/v1/dashboard/query/route.ts` will respond from `db/projects.csv`, `db/companies.csv`, or `db/addresses.csv` for simple table reads (e.g., `SELECT * FROM projects ...`).
+When enabled, the API route `app/api/v1/entity/{entity}/query/route.ts` will respond from `db/projects.csv`, `db/companies.csv`, or `db/addresses.csv` for entity queries.
 
 This flag is intended for local development and will be removed before production. Remove the flag and conditional once ClickHouse is fully available.
 

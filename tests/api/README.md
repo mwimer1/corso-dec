@@ -47,9 +47,8 @@ API route tests validate Next.js API handlers for correct behavior, error handli
 | `/api/health` | `health.test.ts` | ✅ | Runtime boundary, response format |
 | `/api/v1/chat/generate-chart` | `v1/chat-generate-chart.test.ts` | ✅ | Response validation, timeout handling |
 | `/api/v1/chat/generate-sql` | `v1/chat-generate-sql.test.ts` | ✅ | Route module loading, response type |
-| `/api/v1/dashboard/[entity]/query` | `v1/dashboard-entity-mock.test.ts` | ✅ | Mock DB integration, pagination |
-| `/api/v1/dashboard/[entity]/query` | `v1/dashboard-entity-validate.test.ts` | ✅ | Input validation, error responses |
-| `/api/v1/dashboard/query` | `v1/dashboard-query-tenant-isolation.test.ts` | ✅ | Multi-tenant security, SQL injection |
+| `/api/v1/entity/{entity}/query` | `v1/entity-query-*.test.ts` | ✅ | Entity queries, pagination, filtering |
+| `/api/v1/entity/{entity}` | `v1/entity-*.test.ts` | ✅ | Entity base operations |
 | `/api/v1/subscription/status` | `v1/subscription-status.test.ts` | ✅ | Route module loading, response type |
 | `/api/insights/search` | `insights-search.test.ts` | ✅ | Search functionality, response format |
 | `/api/public/csp-report` | `public/csp-report.test.ts` | ✅ | Content Security Policy validation |

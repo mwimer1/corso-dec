@@ -74,14 +74,14 @@ api/
 - `HEAD /health` — Lightweight health check (HEAD request)
 - `POST /api/public/csp-report` — CSP violation reporting (Edge-safe)
 
-### Dashboard Analytics (`/api/v1/dashboard/*`)
-- `POST /api/v1/dashboard/chat/process` — AI chat processing with NDJSON streaming
-- `POST /api/v1/dashboard/query` — Execute SQL queries against ClickHouse
-- `POST /api/v1/dashboard/generate-sql` — AI-powered SQL generation
-- `POST /api/v1/dashboard/generate-chart` — Chart configuration generation
-- `POST /api/v1/dashboard/generate-sql/stream` — Streaming SQL generation
-- `POST /api/v1/dashboard/generate-chart/stream` — Streaming chart generation
-- `GET /api/v1/dashboard/{entity}/query` — Entity queries (addresses, companies, projects)
+### AI Services (`/api/v1/ai/*`)
+- `POST /api/v1/ai/chat` — AI chat processing with NDJSON streaming
+- `POST /api/v1/ai/generate-sql` — AI-powered SQL generation
+
+### Entity Operations (`/api/v1/entity/*`)
+- `POST /api/v1/entity/{entity}/query` — Entity queries with filtering, sorting, pagination (projects, companies, addresses)
+- `GET /api/v1/entity/{entity}` — Entity base operations
+- `GET /api/v1/entity/{entity}/export` — Entity data export (CSV/XLSX)
 
 ### User Management
 - `POST /api/v1/user` — User profile validation and updates

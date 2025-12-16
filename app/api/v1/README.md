@@ -22,16 +22,17 @@ export const revalidate = 0;
 - **Member-level RBAC** is enforced
 - **Error shape**: `{ success: false, error: { code, message, details? } }`
 
-## Routes (7)
+## Routes (8)
 
 | Domain | Method | Path | Purpose | Runtime | Rate limit |
 |--------|--------|------|---------|---------|------------|
 | Entity | POST | `/api/v1/entity/[entity]/query` | Entity queries (pagination/filtering/sorting) | Node.js | 60/min |
 | Entity | GET | `/api/v1/entity/[entity]/export` | Entity exports (CSV/XLSX) | Node.js | 30/min |
 | Entity | GET | `/api/v1/entity/[entity]` | Entity base operations | Node.js | 60/min |
-| AI | POST | `/api/v1/ai/generate-chart` | AI chart configuration | Node.js | 30/min |
+| AI | POST | `/api/v1/ai/chat` | AI chat processing (streaming NDJSON) | Node.js | 30/min |
 | AI | POST | `/api/v1/ai/generate-sql` | AI SQL generation | Node.js | 30/min |
 | User | POST | `/api/v1/user` | User profile operations | Node.js | 30/min |
+| Security | POST | `/api/v1/csp-report` | CSP violation reports | Edge | 100/min |
 
 ## Notes
 - **Resource vs AI Split**: Entity routes handle data operations; AI routes handle intelligence features.

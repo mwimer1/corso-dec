@@ -159,6 +159,9 @@ function createContextAwareClient(): ClickHouseClientInterface {
       }
 
       // In client context, make API request
+      // TODO: This endpoint was removed. The ClickHouse client needs to be updated to use
+      // entity-specific queries (/api/v1/entity/{entity}/query) or a new generic query endpoint.
+      // For now, this will fail at runtime. See: https://github.com/your-org/repo/issues/XXX
       if (context.environment === 'client') {
         try {
           const startTime = performance.now();
