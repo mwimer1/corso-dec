@@ -213,12 +213,12 @@ describe("API v1: ai/chat route", () => {
       if (res.body) {
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
-        let buffer = '';
+        let _buffer = '';
         try {
           while (true) {
             const { value, done } = await reader.read();
             if (done) break;
-            buffer += decoder.decode(value, { stream: true });
+            _buffer += decoder.decode(value, { stream: true });
           }
         } catch {
           // Stream consumption may fail in test, that's ok

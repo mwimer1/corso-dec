@@ -1,5 +1,5 @@
 /**
- * API Route: GET /api/insights/search
+ * API Route: GET /api/v1/insights/search
  * 
  * Public search endpoint for insights and articles.
  * 
@@ -8,7 +8,7 @@
  * 
  * @example
  * ```typescript
- * GET /api/insights/search?q=construction&category=trends
+ * GET /api/v1/insights/search?q=construction&category=trends
  * Response: { results: [{ slug: "...", title: "...", ... }] }
  * ```
  */

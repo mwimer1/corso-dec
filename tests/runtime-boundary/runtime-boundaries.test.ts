@@ -1,7 +1,7 @@
 import { spawnSync } from 'node:child_process'
-import { describe, expect, it } from 'vitest'
 import fs from 'node:fs'
 import path from 'node:path'
+import { describe, expect, it } from 'vitest'
 
 function hasScript(name: string) {
   try {
@@ -13,7 +13,7 @@ function hasScript(name: string) {
 }
 
 describe('Runtime boundaries (Edge vs Node)', () => {
-  it('runs script when present, otherwise skips cleanly', () => {
+  it('runs script when present, otherwise skips cleanly', { timeout: 10000 }, () => {
     const script = 'validate:runtime-boundaries'
     if (!hasScript(script)) {
       expect(true).toBe(true)

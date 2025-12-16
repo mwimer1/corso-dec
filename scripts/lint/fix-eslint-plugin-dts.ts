@@ -1,7 +1,8 @@
 #!/usr/bin/env tsx
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { readTextSync, writeTextSync } from '../utils/fs';
+import { readTextSync } from '../utils/fs/read';
+import { writeTextSync } from '../utils/fs/write';
 
 /**
  * Post-build fixer for eslint-plugin-corso d.ts

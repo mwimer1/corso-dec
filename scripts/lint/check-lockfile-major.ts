@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import YAML from 'yaml';
-import { readJsonSync } from '../utils/fs';
+import { readJsonSync } from '../utils/fs/read';
 
 const root = process.cwd();
 const pkg = readJsonSync(path.join(root, 'package.json')) as any;

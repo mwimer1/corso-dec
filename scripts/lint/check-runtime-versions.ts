@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { readJsonSync } from '../utils/fs';
+import { readJsonSync } from '../utils/fs/read';
 
 type PackageJson = { engines?: { node?: string }, packageManager?: string };
 

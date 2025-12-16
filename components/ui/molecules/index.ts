@@ -9,7 +9,6 @@ export * from './auth-card';
 
 // Removed unused component: basic-card
 // Removed unused component: EmptyState (main component)
-export * from './empty-state';
 // Removed unused component: info-panel
 
 // ===== DIALOGS & OVERLAYS =====

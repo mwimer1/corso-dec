@@ -6,7 +6,7 @@
  * - Guarantees fast feedback on `pnpm lint` via "prelint".
  */
 import { resolve } from 'node:path';
-import { readJsonSync } from '../utils/fs';
+import { readJsonSync } from '../utils/fs/read';
 
 type Pkg = { scripts?: Record<string, string> };
 const pkgPath = resolve(process.cwd(), 'package.json');

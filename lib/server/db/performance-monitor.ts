@@ -2,8 +2,8 @@
 // Performance monitoring for Supabase database queries
 import 'server-only';
 
-import type { SupabaseClient } from '@supabase/supabase-js';
 import { logger } from '@/lib/monitoring';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 /**
  * Performance monitoring configuration
@@ -165,11 +165,11 @@ export async function monitorQuery<T>(
  */
 export function withPerformanceMonitoring<T extends SupabaseClient<any, any>>(
   client: T,
-  context: {
+  _context: {
     userId?: string;
     orgId?: string;
   } = {},
-  config: PerformanceMonitorConfig = {}
+  _config: PerformanceMonitorConfig = {}
 ): T {
   // For now, return the client as-is
   // Full proxy implementation would require more complex type handling

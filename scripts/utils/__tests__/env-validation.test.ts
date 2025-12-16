@@ -1,7 +1,7 @@
 // scripts/utils/__tests__/env-validation.test.ts
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
-import { getEnv, requireServerEnv, runConsolidatedValidation } from '../env';
+import { getEnv, requireServerEnv, runConsolidatedValidation } from '../env/validation';
 
 const withEnv = (vars: Record<string, string | undefined>, fn: () => void) => {
   const prev: Record<string, string | undefined> = {};

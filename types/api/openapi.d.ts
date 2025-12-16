@@ -52,7 +52,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/insights/search": {
+    "/api/v1/insights/search": {
         parameters: {
             query?: never;
             header?: never;

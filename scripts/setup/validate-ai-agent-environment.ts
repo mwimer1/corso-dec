@@ -2,7 +2,7 @@
 // scripts/setup/validate-ai-agent-environment.ts
 // Validates AI agent development environment setup using consolidated utilities
 
-import { runConsolidatedValidation } from '@/scripts/utils/env';
+import { runConsolidatedValidation } from '@/scripts/utils/env/validation';
 import { formatValidationResult, runValidationScript } from '../utils/validation-common';
 
 async function main() {
@@ -14,7 +14,7 @@ async function main() {
       name: 'AI Agent Tools',
       description: 'Validates AI agent development tools and environment',
       validator: async () => {
-        const { validateAIAgentTools } = await import('../utils/env');
+        const { validateAIAgentTools } = await import('../utils/env/validation');
         return validateAIAgentTools();
       },
       required: false
@@ -23,7 +23,7 @@ async function main() {
       name: 'Project Structure',
       description: 'Validates required project files and structure',
       validator: async () => {
-        const { validateProjectStructure } = await import('../utils/env');
+        const { validateProjectStructure } = await import('../utils/env/validation');
         return validateProjectStructure();
       },
       required: false

@@ -1,6 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
-import { ensureDir, readText, writeText } from "../utils/fs";
+import { ensureDir } from "../utils/fs/operations";
+import { readText } from "../utils/fs/read";
+import { writeText } from "../utils/fs/write";
 
 export async function writeIfChangedAtomic(targetPath: string, newContent: string) {
   const prev = fs.existsSync(targetPath) ? await readText(targetPath) : "";

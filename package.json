@@ -285,7 +285,7 @@
     "verify:routes": "tsx scripts/ci/ensure-api-in-v1-or-internal.ts",
     "codemods:remove-private-barrels": "jscodeshift -t tools/codemods/remove-private-barrel-imports.ts",
     "codemods:rewrite-bar-chart": "jscodeshift -t tools/codemods/rewrite-dashboard-bar-chart-imports.ts app/(protected)/dashboard/**/*.tsx",
-    "quality:local": "pnpm exec tsx scripts/ci/quality-gates-local.ts && pnpm bundlesize && pnpm verify:routes && pnpm -w typecheck && pnpm typecheck:prod && pnpm validate:cursor-rules && pnpm scripts:verify:utils && pnpm scripts:forbid:scripts-barrels && pnpm validate:stories && pnpm ast-grep:scan && pnpm audit:barrels --only intradomain",
+    "quality:local": "pnpm exec tsx scripts/ci/quality-gates-local.ts && pnpm bundlesize && pnpm verify:routes && pnpm -w typecheck && pnpm typecheck:prod && pnpm validate:cursor-rules && pnpm scripts:verify:utils && pnpm scripts:forbid:scripts-barrels && pnpm typecheck:stories && pnpm ast-grep:scan && pnpm audit:barrels --only intradomain",
     "quality:exports": "pnpm run audit:styles && pnpm run quality:exports:check",
     "quality:exports:check": "pnpm exec tsx scripts/maintenance/types-exports-audit.ts --out-json reports/exports/unused-exports.report.json --out-md reports/exports/unused-exports.summary.md",
     "validate:no-shared-variants": "tsx scripts/ci/assert-no-shared-component-variants.ts",

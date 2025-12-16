@@ -154,7 +154,7 @@
         }
       }
     },
-    "/api/insights/search": {
+    "/api/v1/insights/search": {
       "get": {
         "operationId": "insights_search",
         "tags": [

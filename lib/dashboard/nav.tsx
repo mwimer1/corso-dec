@@ -71,7 +71,7 @@ export function getAvailableNavItems(args?: {
   role?: 'owner' | 'admin' | 'member' | 'viewer' | 'service' | null;
   features?: Record<string, boolean | undefined>;
 }): typeof DASHBOARD_NAV_ITEMS {
-  const { role, features = {} } = args ?? {};
+  const { role, features: _features = {} } = args ?? {};
   
   // Feature flag check (currently all features enabled)
   const ffOk = true; // No feature flags currently used

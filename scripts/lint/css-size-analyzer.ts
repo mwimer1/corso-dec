@@ -11,7 +11,7 @@
 
 import { fileURLToPath } from 'node:url';
 import path from 'path';
-import { readTextSync } from '../utils/fs';
+import { readTextSync } from '../utils/fs/read';
 
 const MAX_CSS_SIZE_KB = 150;
 

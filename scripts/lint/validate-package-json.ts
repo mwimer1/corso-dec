@@ -3,7 +3,7 @@
 
 import { fileURLToPath } from 'node:url';
 import { join } from 'path';
-import { readTextSync } from '../utils/fs';
+import { readTextSync } from '../utils/fs/read';
 import { logger } from '../utils/logger';
 
 interface ScriptKey {

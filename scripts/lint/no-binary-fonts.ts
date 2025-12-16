@@ -3,7 +3,7 @@
 // CI guardrail to prevent binary fonts from being committed
 
 import { globby } from 'globby';
-import { readTextSync } from '../utils/fs';
+import { readTextSync } from '../utils/fs/read';
 import { logger } from '../utils/logger';
 
 const BINARY_FONT_PATTERNS: string[] = [
