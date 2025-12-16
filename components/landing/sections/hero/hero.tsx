@@ -1,15 +1,15 @@
 'use client';
+import { APP_LINKS } from '@/components';
 import { Button } from '@/components/ui/atoms';
 import { LinkTrack } from '@/components/ui/molecules';
-import { APP_LINKS  } from '@/components';
-import { navbarStyleVariants } from '@/styles/ui/organisms/navbar-variants';
 import { cn } from '@/styles';
+import { navbarStyleVariants } from '@/styles/ui/organisms/navbar-variants';
+import { underlineAccent } from "@/styles/ui/shared/underline-accent";
+import { ChevronDown } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
-import { ChevronDown } from 'lucide-react';
 import AnimatedPill from '../../widgets/animated-pill';
 import cls from './hero.module.css';
-import { underlineAccent } from "@/styles/ui/shared/underline-accent";
 
 interface HeroProps { children?: ReactNode }
 
@@ -22,8 +22,9 @@ export default function Hero({ children }: HeroProps) {
 
   const underline = underlineAccent({ show: underlineVisible, color: 'primary', duration: 'slow' });
 
+  // Changed from <section> to <div> to avoid nested sections (parent FullWidthSection already renders <section>)
   return (
-    <section className={cn(cls['hero'], "flex flex-col items-center justify-center text-center")}>
+    <div className={cn(cls['hero'], "flex flex-col items-center justify-center text-center")}>
       {children}
       {/* Attention CTA pill above the H1 */}
       <AnimatedPill
@@ -70,7 +71,7 @@ export default function Hero({ children }: HeroProps) {
           aria-hidden="true"
         />
       </div>
-    </section>
+    </div>
   );
 }
 

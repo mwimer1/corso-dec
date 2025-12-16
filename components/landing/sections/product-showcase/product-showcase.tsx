@@ -167,10 +167,10 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
         </div>
       </div>
 
-      {/* Content container with proper spacing */}
+      {/* Content container with proper spacing - reduced bottom margin from mb-5xl to mb-4xl for tighter layout */}
       <div className={cn(
         containerMaxWidthVariants({ maxWidth: '7xl', centered: true, responsive: true }),
-        "mt-xl mb-5xl"
+        "mt-xl mb-4xl"
       )}>
         {/* Render the content for the active tab with ARIA-compliant tabpanel */}
         <div

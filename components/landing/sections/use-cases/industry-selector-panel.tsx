@@ -1,13 +1,13 @@
 'use client';
 
-import Link from 'next/link';
 import { PillGroup } from '@/components/landing/widgets/pill-group';
-import { buttonVariants } from '@/styles/ui/atoms/button-variants';
+import type { UseCaseKey } from '@/lib/marketing/client';
 import { APP_LINKS } from '@/lib/shared';
 import { trackNavClick } from '@/lib/shared/analytics/track';
 import { cn } from '@/styles';
-import type { UseCaseKey } from '@/lib/marketing/client';
-import { useState, useRef } from 'react';
+import { buttonVariants } from '@/styles/ui/atoms/button-variants';
+import Link from 'next/link';
+import { useRef, useState } from 'react';
 
 interface Industry {
   key: UseCaseKey;
@@ -84,8 +84,9 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
     return null;
   }
 
+  // Removed mt-md - header margin-bottom provides sufficient spacing
   return (
-    <div className="flex flex-col lg:flex-row lg:gap-xl mt-md">
+    <div className="flex flex-col lg:flex-row lg:gap-xl">
       {/* Mobile: Horizontal PillGroup */}
       <div className="lg:hidden mb-md">
         <PillGroup

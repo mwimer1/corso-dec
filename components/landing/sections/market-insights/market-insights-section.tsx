@@ -194,7 +194,8 @@ export const MarketInsightsSection: React.FC<Props> = ({
       )}
       aria-labelledby="market-insights-title"
     >
-      <div className="mx-auto max-w-4xl text-center mb-5xl">
+      {/* Reduced header margin from mb-5xl to mb-4xl for tighter spacing (~80px instead of ~96px) */}
+      <div className="mx-auto max-w-4xl text-center mb-4xl">
         <SectionHeader
           id="market-insights-title"
           headingLevel={2}
@@ -205,7 +206,8 @@ export const MarketInsightsSection: React.FC<Props> = ({
         />
       </div>
 
-      <div className="mb-6">
+      {/* Consolidated spacing: removed mb-6, relying on controls container's mt-8 for consistent 32px gap */}
+      <div>
         {stickyMetrics ? (
           <div className="hidden md:block sticky z-20" style={{ top: 'var(--nav-offset, 0px)' }}>
             {/* wrapper uses module CSS to handle shrink-on-scroll */}
@@ -221,7 +223,7 @@ export const MarketInsightsSection: React.FC<Props> = ({
         <Chart data={filtered} loading={loading} variant="bare" />
       </div>
 
-      {/* Controls Section with Visual Grouping */}
+      {/* Controls Section with Visual Grouping - mt-8 provides 32px gap from chart above */}
       <div className={cn("bg-surface/50 border border-border rounded-xl p-6 mt-8 mb-8 shadow-sm", surfaceInteractive({ elevate: true }), cls['controlsContainer'])}>
         <div className={controlsSpacing}>
           {/* Wide layout: slider left (≈50%), filters right; stacks on small screens */}

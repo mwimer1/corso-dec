@@ -14,8 +14,9 @@ export const runtime = "nodejs";
 export default function MarketingHomePage() {
   return (
     <PublicLayout navMode="landing" navItems={landingNavItems} showVerticalGuidelines>
+      {/* Hero section: standardized padding for consistent vertical rhythm */}
       <FullWidthSection
-        padding="md"
+        padding="lg"
         containerMaxWidth="7xl"
         containerPadding="lg"
         opacity="none"
@@ -34,13 +35,16 @@ export default function MarketingHomePage() {
         <ProductShowcase />
       </FullWidthSection>
 
+      {/* Industry Use Case section: full-bleed grey background with border-top separator */}
       <FullWidthSection
+        background="muted"
         padding="lg"
         containerMaxWidth="7xl"
         containerPadding="lg"
         guidesVisibility="always"
         opacity="none"
         guidelineColor="bg-border"
+        className="border-t border-border"
       >
         <IndustryExplorer />
       </FullWidthSection>
