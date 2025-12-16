@@ -25,16 +25,21 @@ Health check endpoints provide operational monitoring capabilities for the Corso
 
 ```json
 {
-  "status": "ok",
-  "timestamp": "2025-10-28T12:00:00.000Z",
-  "uptime": 3600,
-  "version": "1.0.0",
-  "nodeVersion": "v20.10.0",
-  "environment": "production",
-  "platform": "linux",
-  "arch": "x64"
+  "success": true,
+  "data": {
+    "status": "ok",
+    "timestamp": "2025-10-28T12:00:00.000Z",
+    "uptime": null,
+    "version": "1.0.0",
+    "nodeVersion": null,
+    "environment": "production",
+    "platform": null,
+    "arch": null
+  }
 }
 ```
+
+**Note:** The health endpoint runs on Edge runtime for low-latency responses. Some system information (`uptime`, `platform`, `arch`, `nodeVersion`) is not available in Edge runtime and will be `null` in the response. For detailed system metrics, consider using a Node.js runtime endpoint or external monitoring tools.
 
 ### ClickHouse Health Check (`/api/health/clickhouse`)
 
@@ -82,8 +87,9 @@ Health check endpoints provide operational monitoring capabilities for the Corso
 ### General Health Check
 - Returns static application metadata
 - No external dependencies
-- Fast Edge runtime execution
+- Fast Edge runtime execution (< 100ms typical)
 - Includes runtime environment information
+- **Edge Runtime Limitations:** System metrics (`uptime`, `platform`, `arch`, `nodeVersion`) are not available and return `null`
 
 ### ClickHouse Health Check
 - Creates ClickHouse client connection
@@ -172,4 +178,4 @@ Both endpoints support standard HTTP status monitoring:
 
 ---
 
-**Last updated:** 2025-10-28
+**Last updated:** 2025-01-15

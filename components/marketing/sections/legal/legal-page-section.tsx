@@ -12,7 +12,7 @@ interface LegalPageSectionProps
 	/** Downshift heading level if a route-level H1 already exists */
 	headingLevel?: 1 | 2;
 	/** Optional wrapper element; defaults to 'article' */
-	as?: keyof JSX.IntrinsicElements;
+	as?: keyof React.JSX.IntrinsicElements;
 }
 
 /**
@@ -31,7 +31,7 @@ export function LegalPageSection(props: LegalPageSectionProps) {
 		...rest
 	} = props;
 
-	const HeadingTag: keyof JSX.IntrinsicElements = headingLevel === 1 ? "h1" : "h2";
+	const HeadingTag: keyof React.JSX.IntrinsicElements = headingLevel === 1 ? "h1" : "h2";
 
 	function toDate(v: string | Date) {
 		return typeof v === "string" ? new Date(v) : v;

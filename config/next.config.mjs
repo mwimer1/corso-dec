@@ -104,6 +104,10 @@ const nextConfig = {
   },
   images: {
     formats: ['image/avif', 'image/webp'],
+    // Next.js 16 defaults changed - explicitly set if current behavior is important
+    // minimumCacheTTL: 60, // Default changed from 60s to 14400s (4 hours) in v16
+    // qualities: [75, 50, 25], // Default changed from range to [75] in v16
+    maximumRedirects: 3, // Explicitly set (default changed from unlimited to 3 in v16)
     remotePatterns: [
       {
         protocol: 'https',
@@ -118,8 +122,14 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     // When allowing remote SVGs via next/image, restrict evaluated SVGs via this CSP
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    // Note: images.domains is deprecated in Next.js 16, use remotePatterns (already done)
+    // Note: If using local images with query strings, add:
+    // localPatterns: { search: true },
   },
   // experimental options removed: instrumentationHook is enabled by default in Next 15+
+  // Turbopack is now the default bundler in Next.js 16
+  // Note: Custom webpack config below will be ignored when using Turbopack (default)
+  // Use --webpack flag for builds if webpack config is required temporarily
   turbopack: {
     rules: {
       '*.svg': {
@@ -140,7 +150,13 @@ const nextConfig = {
   productionBrowserSourceMaps: isCI,
   experimental: {
     serverSourceMaps: isCI,
+    // Enable Turbopack file system cache for faster dev builds
+    turbopackFileSystemCacheForDev: true,
   },
+  // Webpack config: Note that Next.js 16 uses Turbopack as default bundler
+  // This webpack config will be ignored when using Turbopack (default behavior)
+  // To use webpack instead, run: pnpm build --webpack
+  // TODO: Migrate webpack-specific rules to Turbopack equivalents when ready
   webpack: (config, { dev, isServer }) => {
     // Only disable persistent cache in CI; keep it locally to speed rebuilds
     if (!dev && isCI) {

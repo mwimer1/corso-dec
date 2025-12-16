@@ -40,7 +40,7 @@ export const SectionHeader = React.forwardRef<HTMLElement, SectionHeaderProps>(
     },
     ref,
   ) => {
-    const Tag = (`h${headingLevel}` as unknown) as keyof JSX.IntrinsicElements;
+    const Tag = (`h${headingLevel}` as unknown) as keyof React.JSX.IntrinsicElements;
 
     const titleSizeClass: "hero" | "h1" = size === "marketingHero" ? "h1" : "h1"; // visual parity via headingVariants
 

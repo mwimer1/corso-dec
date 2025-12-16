@@ -27,6 +27,7 @@
     "../../.storybook/**/*",
     "../../instrumentation*.ts",
     "../../middleware*.ts",
+    "../../proxy*.ts",
     "../../*.config.ts",
     "../../vitest*.ts",
     "../../eslint-plugin-corso/**/*",

@@ -174,9 +174,9 @@ const TabSwitcherOverloads = React.forwardRef<HTMLDivElement, Props>(function Ta
 TabSwitcherOverloads.displayName = "TabSwitcher";
 
 // Export with overloads for backward compatibility
-export function TabSwitcher(props: TabSwitcherPropsArray): JSX.Element;
-export function TabSwitcher(props: TabSwitcherPropsItems): JSX.Element;
-export function TabSwitcher(props: Props): JSX.Element {
+export function TabSwitcher(props: TabSwitcherPropsArray): React.ReactElement;
+export function TabSwitcher(props: TabSwitcherPropsItems): React.ReactElement;
+export function TabSwitcher(props: Props): React.ReactElement {
   return <TabSwitcherOverloads {...props} />;
 }
 

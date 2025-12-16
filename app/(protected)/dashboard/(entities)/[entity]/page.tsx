@@ -3,6 +3,7 @@ import { isChatEntity, isGridEntity } from '@/lib/entities/registry';
 import { EntityParamSchema } from '@/lib/validators/entity';
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import React from "react";
 
 // Route config: use plain literals (no `as const`) so Next.js static analysis can read them.
 export const runtime = 'nodejs';
@@ -61,7 +62,7 @@ export default async function EntityPage({ params }: { params: Promise<{ entity:
 
   if (isChatEntity(entity)) {
     const { ChatPage } = await import('@/components/chat/sections/chat-page');
-    return <ChatPage /> as unknown as JSX.Element;
+    return <ChatPage /> as unknown as React.JSX.Element;
   }
 
   if (isGridEntity(entity)) {
@@ -69,7 +70,7 @@ export default async function EntityPage({ params }: { params: Promise<{ entity:
     if (!config) return notFound();
 
     const gridConfig = getEntityConfig(entity as 'projects' | 'addresses' | 'companies');
-    return <EntityGridHost config={gridConfig} /> as unknown as JSX.Element;
+    return <EntityGridHost config={gridConfig} /> as unknown as React.JSX.Element;
   }
 
   return notFound();

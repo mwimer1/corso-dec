@@ -1,8 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import { ChevronRight } from "lucide-react";
 import { cn } from "@/styles";
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
+import React from "react";
 
 export interface BreadcrumbItem {
   label: string;
@@ -18,7 +19,7 @@ interface BreadcrumbsProps {
  * Breadcrumbs - Navigation breadcrumb trail for article pages.
  * Provides clear navigation path and improves UX for users landing from external sources.
  */
-export function Breadcrumbs({ items, className }: BreadcrumbsProps): JSX.Element {
+export function Breadcrumbs({ items, className }: BreadcrumbsProps): React.ReactElement {
   if (!items || items.length === 0) {
     return <></>;
   }

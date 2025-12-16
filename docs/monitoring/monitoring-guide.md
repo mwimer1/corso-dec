@@ -69,15 +69,17 @@ pnpm validate:env
   "data": {
     "status": "ok",
     "timestamp": "2025-01-15T10:00:00.000Z",
-    "uptime": 3600,
+    "uptime": null,
     "version": "1.0.0",
-    "nodeVersion": "v20.19.4",
+    "nodeVersion": null,
     "environment": "production",
-    "platform": "linux",
-    "arch": "x64"
+    "platform": null,
+    "arch": null
   }
 }
 ```
+
+**Edge Runtime Note:** This endpoint runs on Edge runtime for optimal performance. System information fields (`uptime`, `platform`, `arch`, `nodeVersion`) are not available in Edge runtime and will be `null`. The required fields (`status`, `timestamp`, `version`, `environment`) are always available and sufficient for health monitoring.
 
 **Usage:**
 ```bash
@@ -89,9 +91,10 @@ curl -I https://api.corso.app/api/health
 ```
 
 **Monitoring:**
-- Use for uptime monitoring
+- Use for service availability monitoring
 - Set up alerts for non-200 responses
 - Monitor response times (< 100ms target)
+- **Note:** `uptime` field is `null` in Edge runtime; use external monitoring tools for server uptime metrics
 
 ### Database Health Check
 

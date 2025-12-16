@@ -19,7 +19,7 @@
 		"../../contexts/**/*.tsx",
 		"../../styles/**/*.ts",
 		"../../types/**/*.ts",
-		"../../middleware.ts"
+		"../../proxy.ts"
 	],
 	"exclude": [
 		"../../tests/**",

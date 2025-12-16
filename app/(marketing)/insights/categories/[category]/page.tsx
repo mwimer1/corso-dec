@@ -7,13 +7,13 @@ import type { Metadata } from 'next';
 
 export const runtime = 'nodejs';
 
-export async function generateMetadata({ params }: { params: { category: string } }): Promise<Metadata> {
-  const cat = params.category;
+export async function generateMetadata({ params }: { params: Promise<{ category: string }> }): Promise<Metadata> {
+  const { category: cat } = await params;
   return { title: `${cat} | Corso Insights`, description: `Insights in category ${cat}` };
 }
 
-export default async function CategoryPage({ params }: { params: { category: string } }) {
-  const { category } = params;
+export default async function CategoryPage({ params }: { params: Promise<{ category: string }> }) {
+  const { category } = await params;
   const all = await getAllInsights();
   const filtered = all.filter((i) => (i.categories ?? []).some((c: { slug: string }) => c.slug === category));
 

@@ -16,7 +16,7 @@ type ContactFormData = z.infer<typeof contactFormSchema>;
 export async function submitContactForm(
   data: ContactFormData & { turnstileToken?: string },
 ) {
-  const h: any = headers();
+  const h = await headers();
   const ip = h?.get?.("cf-connecting-ip") ?? "unknown";
 
   if (

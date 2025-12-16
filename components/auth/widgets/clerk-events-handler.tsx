@@ -10,7 +10,7 @@ import * as React from "react";
  * Mounts on the client side to subscribe to Clerk events (e.g., when the Clerk SDK loads),
  * and logs or handles those events. This prevents silent failures and aids debugging for auth flows.
  */
-export function ClerkEventsHandler(): JSX.Element | null {
+export function ClerkEventsHandler(): React.JSX.Element | null {
   React.useEffect(() => {
     const stage = publicEnv.NEXT_PUBLIC_STAGE ?? "production";
     const level = publicEnv.NEXT_PUBLIC_APP_VERSION ?? "info";

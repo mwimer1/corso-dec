@@ -6,7 +6,7 @@ import * as React from "react";
  * ReadingProgress - Visual progress indicator for long-form content.
  * Uses Intersection Observer for accurate scroll tracking.
  */
-export function ReadingProgress(): JSX.Element {
+export function ReadingProgress(): React.ReactElement {
   const [progress, setProgress] = React.useState(0);
 
   React.useEffect(() => {

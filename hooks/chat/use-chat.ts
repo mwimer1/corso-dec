@@ -116,7 +116,7 @@ function useDebounce<Args extends unknown[]>(
   cb: (...args: Args) => void,
   delay: number
 ): (...args: Args) => void {
-  const timer = useRef<NodeJS.Timeout>();
+  const timer = useRef<NodeJS.Timeout | undefined>(undefined);
 
   return useCallback(
     (...args: Args) => {
@@ -174,7 +174,7 @@ export function useChat(opts: UseChatOptions = {}): UseChatReturn {
 
   const { messages, isProcessing, detectedTable, error, lastUserMsg } = state;
 
-  const abortRef = useRef<AbortController>();
+  const abortRef = useRef<AbortController | undefined>(undefined);
 
   /* ------------------- debounced history save --------------------------- */
 

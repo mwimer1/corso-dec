@@ -1,13 +1,13 @@
 "use client";
 
-import { useAuth } from "@clerk/nextjs";
+import { APP_LINKS } from '@/components';
 import { Button, SkipNavLink } from "@/components/ui/atoms";
 import { LinkTrack, ReadingProgress } from "@/components/ui/molecules";
-import { APP_LINKS } from '@/components';
 import { cn } from "@/styles";
 import { fullWidthSectionContainerVariants } from "@/styles/ui/organisms";
 import { containerWithPaddingVariants } from "@/styles/ui/shared/container-helpers";
 import type { NavItemData } from "@/types/shared";
+import { useAuth } from "@clerk/nextjs";
 import type { HTMLAttributes, ReactNode } from "react";
 import { useEffect, useState } from "react";
 import FooterSystem from "./footer-system/footer";
@@ -49,7 +49,7 @@ export function PublicLayout({
   showReadingProgress = false,
   showVerticalGuidelines = false,
   ...props
-}: PublicLayoutProps): JSX.Element {
+}: PublicLayoutProps): React.ReactElement {
   const { isSignedIn } = useAuth();
   const [scrolled, setScrolled] = useState(false);
 

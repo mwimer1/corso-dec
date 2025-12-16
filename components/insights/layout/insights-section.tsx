@@ -1,8 +1,8 @@
 "use client";
 
 // components/insights/layout/insights-section.tsx
-import { SectionShell } from "@/components/ui/patterns";
 import { ReadingProgress } from "@/components/ui/molecules";
+import { SectionShell } from "@/components/ui/patterns";
 import * as React from "react";
 
 type InsightsSectionTone = "surface" | "muted" | "brand" | "dark";
@@ -28,7 +28,7 @@ export function InsightsSection({
   className,
   children,
   ...rest
-}: InsightsSectionProps): JSX.Element {
+}: InsightsSectionProps): React.ReactElement {
   return (
     <SectionShell
       tone={tone}

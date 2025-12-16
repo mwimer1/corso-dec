@@ -2,10 +2,10 @@ import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
 /**
- * Next.js Middleware Configuration
+ * Next.js Proxy Configuration (formerly Middleware)
  *
- * IMPORTANT: Middleware execution order is critical for security and performance.
- * This middleware handles authentication and route protection for the entire application.
+ * IMPORTANT: Proxy execution order is critical for security and performance.
+ * This proxy handles authentication and route protection for the entire application.
  *
  * Dependencies:
  * - Clerk authentication must be initialized in the app
@@ -22,6 +22,9 @@ import { NextResponse } from 'next/server';
  * - Clerk session claims must be configured in Clerk Dashboard for onboarding metadata
  * - Onboarding status relies on `user.publicMetadata.onboardingComplete` flag
  * - Route matchers depend on exact path patterns in the Next.js app structure
+ *
+ * Note: In Next.js 16, middleware.ts was renamed to proxy.ts and runs in Node.js runtime
+ * (not Edge runtime). Clerk's clerkMiddleware() remains compatible with this change.
  */
 
 const publicRoutes = createRouteMatcher([
@@ -49,7 +52,7 @@ const marketingRoutes = createRouteMatcher([
 // const onboardingRoutes = createRouteMatcher(['/(auth)/onboarding(.*)']);
 
 /**
- * Main middleware handler with Clerk authentication integration
+ * Main proxy handler with Clerk authentication integration
  *
  * @param auth - Clerk authentication context
  * @param req - Next.js request object
@@ -62,7 +65,7 @@ const marketingRoutes = createRouteMatcher([
  * 4. Validate onboarding status - redirect to onboarding if incomplete (MVP: disabled)
  * 5. Allow authenticated users to proceed to protected routes
  */
-export const middleware = clerkMiddleware(async (auth, req) => {
+export const proxy = clerkMiddleware(async (auth, req) => {
   const { userId, redirectToSignIn } = await auth();
   const url = req.nextUrl.clone();
 
@@ -99,9 +102,9 @@ export const middleware = clerkMiddleware(async (auth, req) => {
 });
 
 /**
- * Middleware configuration for Next.js
+ * Proxy configuration for Next.js
  *
- * This config defines which routes the middleware should process.
+ * This config defines which routes the proxy should process.
  * IMPORTANT: The matcher order matters for performance and security.
  *
  * Current Configuration:
@@ -109,20 +112,18 @@ export const middleware = clerkMiddleware(async (auth, req) => {
  * - Second matcher: Explicitly includes API routes for security processing
  *
  * Hidden Dependencies:
- * - Next.js middleware only runs on routes that match these patterns
+ * - Next.js proxy only runs on routes that match these patterns
  * - Excluded patterns (_next, static assets) are handled by Next.js directly
  * - API routes must be explicitly included for authentication checks
  */
 export const config = {
   matcher: [
     // Catch all non-asset routes (pages, dynamic routes, etc.)
-    // This ensures middleware processes all user-facing routes
+    // This ensures proxy processes all user-facing routes
     '/((?!_next|.*\\..*).*)',
 
     // Explicitly include API routes for authentication and security
-    // Without this, API routes might bypass middleware checks
+    // Without this, API routes might bypass proxy checks
     '/(api)(.*)',
   ],
 };
-
-
