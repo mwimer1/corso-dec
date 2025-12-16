@@ -1,0 +1,12 @@
+[
+  {
+    "package": "next",
+    "file": "node_modules/next/dist/compiled/assert/assert.js",
+    "reason": "Known issue in Next.js 15.5.9 compiled dependencies. Will be fixed in Next.js 16+ upgrade. See docs/maintenance/deprecation-warning-audit.md"
+  },
+  {
+    "package": "next",
+    "file": "node_modules/next/dist/compiled/util/util.js",
+    "reason": "Known issue in Next.js 15.5.9 compiled dependencies. Will be fixed in Next.js 16+ upgrade. See docs/maintenance/deprecation-warning-audit.md"
+  }
+]

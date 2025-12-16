@@ -117,6 +117,7 @@
     "lint": "pnpm exec eslint . --cache --cache-location node_modules/.cache/eslint/.eslintcache --cache-strategy content && pnpm ast-grep:scan",
     "lint:eslint": "pnpm exec eslint .",
     "lint:ast-grep": "pnpm run ast-grep:scan",
+    "lint:deprecations": "tsx scripts/lint/check-deprecations-util-extend.ts",
     "lint:ci": "pnpm run -s lint:eslint --max-warnings=0 && pnpm run -s lint:ast-grep",
     "lint:menu-no-any": "pnpm --package=@ast-grep/cli dlx sg scan --rule scripts/rules/ast-grep/menu-no-any.yml .",
     "lint:filenames": "node -e \"require('glob').globSync('**/*.*',{ignore:['**/node_modules/**','**/.next/**','**/dist/**','**/build/**']}).forEach(f=>require('child_process').spawnSync('tsx',['scripts/lint/check-filename-case.ts',f],{stdio:'inherit'}) )\"",
