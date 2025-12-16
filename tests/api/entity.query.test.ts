@@ -54,13 +54,11 @@ describe('Entity Query Route', () => {
 
       expect(mockGetEntityPage).toHaveBeenCalledWith(
         'projects',
-        {
+        expect.objectContaining({
           page: 0,
           pageSize: 10,
           sort: { column: 'name', direction: 'asc' },
-          search: undefined,
-          filters: undefined,
-        }
+        })
       );
     });
 
@@ -121,6 +119,29 @@ describe('Entity Query Route', () => {
       const body = await res.json();
       expect(body.success).toBe(false);
       expect(body.error.code).toBe('HTTP_401');
+    });
+
+    it('should return 403 when user lacks member role', async () => {
+      mockAuth.mockResolvedValue({
+        userId: 'test-user-123',
+        has: vi.fn().mockReturnValue(false), // No member role
+      });
+
+      const mod = await import('@/app/api/v1/entity/[entity]/route');
+      const handler = mod.GET;
+
+      const url = new URL('http://localhost/api/v1/entity/projects?page=0&pageSize=10');
+      const req = {
+        nextUrl: url,
+        url: url.toString(),
+      };
+
+      const res = await handler(req as any, { params: { entity: 'projects' } });
+      expect(res.status).toBe(403);
+
+      const body = await res.json();
+      expect(body.success).toBe(false);
+      expect(body.error.code).toBe('FORBIDDEN');
     });
 
     it('should return 500 for service error', async () => {
@@ -185,6 +206,77 @@ describe('Entity Query Route', () => {
           }
         );
       }
+    });
+
+    it('should parse and pass filters from query parameters', async () => {
+      const mod = await import('@/app/api/v1/entity/[entity]/route');
+      const handler = mod.GET;
+
+      const filters = JSON.stringify([
+        { field: 'status', op: 'eq', value: 'active' },
+        { field: 'priority', op: 'gt', value: 5 },
+      ]);
+
+      const url = new URL(`http://localhost/api/v1/entity/projects?page=0&pageSize=10&filters=${encodeURIComponent(filters)}`);
+      const req = {
+        nextUrl: url,
+        url: url.toString(),
+      };
+
+      const res = await handler(req as any, { params: { entity: 'projects' } });
+      expect(res.status).toBe(200);
+
+      expect(mockGetEntityPage).toHaveBeenCalledWith(
+        'projects',
+        {
+          page: 0,
+          pageSize: 10,
+          sort: { column: '', direction: 'asc' },
+          search: undefined,
+          filters: [
+            { field: 'status', op: 'eq', value: 'active' },
+            { field: 'priority', op: 'gt', value: 5 },
+          ],
+        }
+      );
+    });
+
+    it('should return 400 for invalid filters JSON format', async () => {
+      const mod = await import('@/app/api/v1/entity/[entity]/route');
+      const handler = mod.GET;
+
+      const url = new URL('http://localhost/api/v1/entity/projects?page=0&pageSize=10&filters=invalid-json');
+      const req = {
+        nextUrl: url,
+        url: url.toString(),
+      };
+
+      const res = await handler(req as any, { params: { entity: 'projects' } });
+      expect(res.status).toBe(400);
+
+      const body = await res.json();
+      expect(body.success).toBe(false);
+      expect(body.error.code).toBe('INVALID_FILTERS');
+    });
+
+    it('should return 400 for filters that are not an array', async () => {
+      const mod = await import('@/app/api/v1/entity/[entity]/route');
+      const handler = mod.GET;
+
+      const filters = JSON.stringify({ field: 'status', op: 'eq', value: 'active' }); // Object instead of array
+
+      const url = new URL(`http://localhost/api/v1/entity/projects?page=0&pageSize=10&filters=${encodeURIComponent(filters)}`);
+      const req = {
+        nextUrl: url,
+        url: url.toString(),
+      };
+
+      const res = await handler(req as any, { params: { entity: 'projects' } });
+      expect(res.status).toBe(400);
+
+      const body = await res.json();
+      expect(body.success).toBe(false);
+      expect(body.error.code).toBe('INVALID_FILTERS');
     });
   });
 

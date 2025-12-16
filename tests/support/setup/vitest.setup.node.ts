@@ -132,16 +132,6 @@ vi.mock('@/lib/auth/server', () => ({
   })
 }));
 
-// Mock entity CSV data helper used by API routes when CORSO_USE_MOCK_DB is enabled
-vi.mock('@/lib/mocks/entity-data.server', () => ({
-  queryEntityFromCsv: async (_entity: string, opts: any) => ({
-    data: [],
-    total: 0,
-    page: opts?.page ?? 0,
-    pageSize: opts?.pageSize ?? 0,
-  }),
-}));
-
 // Mock server env access used by routes
 vi.mock('@/lib/integrations/env', () => ({
   getEnv: () => ({

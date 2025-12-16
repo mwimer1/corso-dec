@@ -12,6 +12,7 @@ This doc summarizes the recent updates to the dashboard table UI:
 Key changes
 
 - Icon-only toolbar: Export (CSV/Excel), Refresh, Reset, Save/Save As, Fullscreen. All controls are keyboard accessible and have `aria-label` attributes. Buttons use focus rings for keyboard navigation.
+  - **Note:** Excel export requires AG Grid Enterprise to be enabled (license required). If enterprise features are not available, the Excel export option is not shown in the menu.
 - Refresh calls `refreshServerSide()` to reload grid data.
 - Error handling: Compact inline error alert appears in toolbar when data load fails, with retry button. Error state is tracked and cleared on successful reload.
 - Sticky header: Headers remain visible via AG Grid's native sticky positioning.

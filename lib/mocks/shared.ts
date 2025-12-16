@@ -1,7 +1,7 @@
 // Minimal mock utilities for remaining dependencies
 
 // Re-export client-safe types for tests/fixtures in mocks domain
-// Note: These are client-safe versions, separate from server-only exports in entity-data.server.ts
+// Note: These are client-safe versions for mock data processing
 export type MockFilter = {
   field: string;
   op: 'eq' | 'contains' | 'gt' | 'lt' | 'gte' | 'lte' | 'in' | 'between' | 'bool';

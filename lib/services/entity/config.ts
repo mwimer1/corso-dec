@@ -24,74 +24,22 @@ export async function loadGridConfig(gridId: GridId): Promise<GridConfig> {
 
 // New function for framework-agnostic configs
 export async function getEntityConfig(entity: string): Promise<TableColumnConfig[]> {
-  // For now, return a basic config - in production this would be loaded from DB/files
-  // This is a placeholder that will be expanded based on the actual entity configs
-  const baseConfig: TableColumnConfig[] = [
-    {
-      id: 'name',
-      label: 'Name',
-      accessor: 'name',
-      sortable: true,
-      hidden: false,
-    },
-    {
-      id: 'status',
-      label: 'Status',
-      accessor: 'status',
-      sortable: true,
-      hidden: false,
-      format: 'text',
-    },
-    {
-      id: 'created_at',
-      label: 'Created',
-      accessor: 'created_at',
-      sortable: true,
-      hidden: false,
-      format: 'date',
-    },
-  ];
-
-  // Entity-specific overrides would go here
+  // Return the full static column configurations for each entity
   switch (entity) {
-    case 'projects':
-      return [
-        ...baseConfig,
-        {
-          id: 'value',
-          label: 'Value',
-          accessor: 'value',
-          sortable: true,
-          hidden: false,
-          format: 'currency',
-        },
-      ];
-    case 'companies':
-      return [
-        ...baseConfig,
-        {
-          id: 'website',
-          label: 'Website',
-          accessor: 'website',
-          sortable: false,
-          hidden: false,
-          format: 'link',
-        },
-      ];
-    case 'addresses':
-      return [
-        ...baseConfig,
-        {
-          id: 'coordinates',
-          label: 'Coordinates',
-          accessor: 'coordinates',
-          sortable: false,
-          hidden: false,
-          format: 'text',
-        },
-      ];
+    case 'projects': {
+      const mod = await import('./projects/columns.config');
+      return mod.PROJECTS_COLUMNS;
+    }
+    case 'companies': {
+      const mod = await import('./companies/columns.config');
+      return mod.COMPANIES_COLUMNS;
+    }
+    case 'addresses': {
+      const mod = await import('./addresses/columns.config');
+      return mod.ADDRESSES_COLUMNS;
+    }
     default:
-      return baseConfig;
+      throw new Error(`Unknown entity type: ${entity}`);
   }
 }
 

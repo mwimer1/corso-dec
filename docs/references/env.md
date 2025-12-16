@@ -38,6 +38,7 @@ The mock database feature has complex runtime dependencies that developers must 
 - **Server-side Rendering (SSR)**: May have access to both server and public variables
 - **Browser**: Only `NEXT_PUBLIC_*` variables available after hydration
 - **Build Time**: Static replacement of all available environment variables
+- **Test Environment**: Tests automatically use mock mode when `NODE_ENV === 'test'` (no flag needed in test setup)
 
 **Hidden Dependencies:**
 - Mock JSON files must be generated via `pnpm mockdb:build` command

@@ -38,15 +38,15 @@ app/(protected)/dashboard/
 ### `(entities)/` Route Group
 - **Purpose:** Organizes entity management using dynamic routing
 - **Dynamic Route:** `[entity]` parameter supports `addresses`, `companies`, `projects`
-- **Static Generation:** Uses `generateStaticParams()` for optimization
+- **Dynamic Rendering:** Pages are rendered dynamically (`dynamic = 'force-dynamic'`) with no static generation
 - **Shared Implementation:** Single `page.tsx` handles all entity types
 
 ## Key Features
 
 ### Entity Management
 - **Dynamic Routing:** Single route handles all entity types
-- **Configuration-Driven:** Entity-specific settings via `ENTITY_CONFIG`
-- **Static Generation:** Pre-built pages for all entities
+- **Configuration-Driven:** Entity-specific settings via `ENTITY_CONFIG` (front-end config registry via `getEntityConfig()`)
+- **Dynamic Rendering:** Pages are rendered on-demand (no static generation)
 
 ## Implementation
 
@@ -71,13 +71,10 @@ export default async function DashboardLayout({ children }) {
 import { EntityParamSchema } from '@/lib/validators/entity';
 import { EntityGridHost, getEntityConfig } from '@/components/dashboard/entity';
 
-export async function generateStaticParams() {
-  return [
-    { entity: "addresses" },
-    { entity: "companies" },
-    { entity: "projects" },
-  ];
-}
+// Route config: dynamic rendering (no static generation)
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function generateMetadata({ params }: { params: Promise<{ entity: string }> }) {
   const parsed = EntityParamSchema.safeParse(await params);

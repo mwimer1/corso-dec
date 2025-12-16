@@ -13,7 +13,6 @@ export { PROJECTS_COLUMNS } from './entity/projects/columns.config';
 export type { TableColumnConfig } from './entity/types';
 export { getEntityConfig, loadGridConfig } from './entity/config';
 export type { GridConfig, GridId } from './entity/contracts';
-export { createEntityFetchData } from './entity/loader';
 
 // Re-export adapters for client-side use
 export { toColDef } from './entity/adapters/aggrid';

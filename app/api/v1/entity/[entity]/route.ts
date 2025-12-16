@@ -8,6 +8,7 @@ import { handleCors } from '@/lib/middleware';
 import { auth } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
 import { getEntityPage } from '@/lib/services/entity/pages';
+import type { EntityFetchParams } from '@/lib/services/entity/contracts';
 import {
     EntityListQuerySchema,
     EntityParamSchema,
@@ -21,10 +22,14 @@ export async function OPTIONS(req: Request) {
 }
 
 const handler = async (req: NextRequest, ctx: { params: { entity: string } }): Promise<Response> => {
-  // AuthN
-  const { userId } = await auth();
+  // Authentication & RBAC
+  const { userId, has } = await auth();
   if (!userId) {
     return http.error(401, 'Unauthorized', { code: 'HTTP_401' });
+  }
+  // Enforce member-or-higher role (viewer not allowed)
+  if (!has({ role: 'member' })) {
+    return http.error(403, 'Insufficient permissions', { code: 'FORBIDDEN' });
   }
 
   // Entity param validation
@@ -46,13 +51,29 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
   }
   const { page, pageSize, sortBy, sortDir, search } = qpParsed.data;
 
+  // Parse filters JSON if provided
+  let filters: EntityFetchParams['filters'];
+  const filtersParam = sp.get('filters');
+  if (filtersParam) {
+    try {
+      const parsed = JSON.parse(filtersParam);
+      // Validate filter structure
+      if (!Array.isArray(parsed)) {
+        return http.badRequest('Invalid filters format: must be an array', { code: 'INVALID_FILTERS' });
+      }
+      // Type assertion with validation that op matches allowed values
+      filters = parsed as EntityFetchParams['filters'];
+    } catch (_e) {
+      return http.badRequest('Invalid filters format', { code: 'INVALID_FILTERS' });
+    }
+  }
+
   const result = await getEntityPage(entity, {
     page,
     pageSize,
     sort: sortBy ? { column: sortBy, direction: sortDir } : { column: '', direction: 'asc' },
     ...(search ? { search } : {}),
-    // TODO: Transform filters from Record<string, any> to Filter[] array format if needed
-    // For now, filters are not passed through to avoid type mismatch
+    ...(filters ? { filters } : {}),
   });
 
   // Return flat response shape: { data, total, page, pageSize }

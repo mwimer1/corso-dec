@@ -1,5 +1,21 @@
 ## Unreleased
 
+### Fixed
+- **Security**: Enforced RBAC on GET entity data route - now requires 'member' role minimum (viewers receive 403)
+- **API**: Fixed grid filtering - filters from query parameters are now properly parsed and applied to data queries
+- **API**: Updated `getEntityConfig()` to return actual column configurations instead of placeholder stub
+
+### Removed
+- **Deprecated Code**: Removed legacy mock data loader (`lib/services/entity/loader.ts` and `lib/mocks/entity-data.server.ts`)
+- **Deprecated Code**: Removed associated test file for deprecated CSV loader (`tests/mocks/entity-data.server.test.ts`)
+- **Deprecated Code**: Removed `createEntityFetchData` export from `lib/services/index.ts`
+
+### Changed
+- **Documentation**: Updated dashboard README to reflect dynamic routing (removed incorrect `generateStaticParams()` reference)
+- **Documentation**: Added note in table docs that Excel export requires AG Grid Enterprise license
+- **Tests**: Added comprehensive tests for RBAC enforcement and filter parameter parsing on GET entity route
+- **Tests**: Updated vitest setup to remove mock for deprecated entity-data.server module
+
 ### Removed
 - **Maintenance Scripts**: Removed deprecated script aliases from package.json:
   - `docs:check` (use `docs:validate` instead)
