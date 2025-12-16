@@ -138,10 +138,6 @@ const nextConfig = {
       },
     },
   },
-  eslint: {
-    // We lint via dedicated scripts/CI; skip during Next build to avoid false warnings
-    ignoreDuringBuilds: true,
-  },
   typescript: {
     // We run a separate typecheck step via package.json scripts
     ignoreBuildErrors: true,
