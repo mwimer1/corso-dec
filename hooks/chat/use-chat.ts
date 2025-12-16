@@ -196,6 +196,14 @@ export function useChat(opts: UseChatOptions = {}): UseChatReturn {
 
   const sendMessage = useCallback(
     async (content: string) => {
+      // Build conversation history from current messages (last 10, excluding errors)
+      const recentHistory = messages
+        .slice(-10)
+        .filter(m => !m.isError)
+        .map(m => ({
+          role: m.type as 'user' | 'assistant',
+          content: m.content,
+        }));
       dispatch({ type: 'set_error', payload: null });
       dispatch({ type: 'set_processing', payload: true });
 
@@ -248,7 +256,8 @@ export function useChat(opts: UseChatOptions = {}): UseChatReturn {
         const result = processUserMessage(
           content,
           preferredTable,
-          abortRef.current.signal
+          abortRef.current.signal,
+          recentHistory.length > 0 ? recentHistory : undefined
         ) as StreamOrPromise;
 
         if (isIterable<AIChunk>(result)) {
@@ -323,7 +332,7 @@ export function useChat(opts: UseChatOptions = {}): UseChatReturn {
         });
       }
     },
-    [preferredTable]
+    [preferredTable, messages]
   );
 
   /* ----------------------- convenience actions ------------------------- */

@@ -3,7 +3,6 @@
 // Feature flags removed - using default behavior
 import { useSubscriptionStatus } from "@/hooks/shared/use-subscription-status";
 import {
-    DASHBOARD_NAV_ITEMS,
     getAvailableNavItems,
     isNavItemActive,
 } from "@/lib/dashboard";
@@ -86,8 +85,8 @@ export const DashboardSidebar = React.forwardRef<HTMLElement, DashboardSidebarPr
 
         <div className="flex-1 overflow-y-auto">
           <nav className="space-y-0.5 px-2 py-2">
-            {(availableItems.length ? availableItems : DASHBOARD_NAV_ITEMS).map(
-              ({ href, label, icon }) => {
+            {availableItems.length > 0 ? (
+              availableItems.map(({ href, label, icon }) => {
                 const isActive = isNavItemActive(pathname, href);
                 return (
                   <SidebarItem
@@ -99,7 +98,11 @@ export const DashboardSidebar = React.forwardRef<HTMLElement, DashboardSidebarPr
                     onClick={() => trackNavClick(label, href)}
                   />
                 );
-              },
+              })
+            ) : (
+              <div className="px-2 py-4 text-sm text-muted-foreground">
+                No sections available
+              </div>
             )}
           </nav>
         </div>

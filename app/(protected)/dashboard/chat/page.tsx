@@ -1,4 +1,4 @@
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 
 import { ChatPage } from '@/components/chat';
 import type { Metadata } from 'next';

@@ -15,35 +15,13 @@ export async function fetchEntityData<T extends BaseRow = BaseRow>(
   _id: string | undefined,
   params: EntityFetchParams,
 ): Promise<EntityFetchResult<T>> {
-  // Mock JSON fallback during development
-  try {
-    const env = getEnv();
-    const useMock = env.CORSO_USE_MOCK_DB === 'true' || env.NODE_ENV === 'test';
-    const entity = slug as 'projects' | 'companies' | 'addresses';
-    if (useMock && (entity === 'projects' || entity === 'companies' || entity === 'addresses')) {
-      const base = new URL(publicEnv.NEXT_PUBLIC_SITE_URL || publicEnv.NEXT_PUBLIC_APP_URL || 'http://localhost:3000');
-      const result = await getEntityPage(
-        {
-          entity,
-          page: params.page,
-          pageSize: params.pageSize,
-          sort: params.sort,
-          ...(params.search ? { search: params.search } : {}),
-          ...(params.filters ? { filters: params.filters } : {}),
-        },
-        { baseUrl: base },
-      );
-      return result as unknown as { data: T[]; total: number; page: number; pageSize: number };
-    }
-  } catch {
-    // If mock path fails, fall through to real DB query
-  }
-
   const entity = slug as EntityKind;
 
-  // Try mock path first (development); otherwise run real DB queries
+  // Check if mock mode should be used (default to mock in dev/test unless explicitly disabled)
   const env = getEnv();
-  const useMock = env.CORSO_USE_MOCK_DB === 'true' || env.NODE_ENV === 'test';
+  const useMock = env.CORSO_USE_MOCK_DB === 'true' || (env.NODE_ENV !== 'production' && env.CORSO_USE_MOCK_DB !== 'false');
+  
+  // Try mock path first (development); if mock fails or not enabled, fall through to real DB query
   if (useMock && (entity === 'projects' || entity === 'companies' || entity === 'addresses')) {
     try {
       const base = new URL(publicEnv.NEXT_PUBLIC_SITE_URL || publicEnv.NEXT_PUBLIC_APP_URL || 'http://localhost:3000');
@@ -61,6 +39,10 @@ export async function fetchEntityData<T extends BaseRow = BaseRow>(
       return result as unknown as { data: T[]; total: number; page: number; pageSize: number };
     } catch (error) {
       // If mock path failed, fall through to attempt real DB query
+      // Log error in development for debugging
+      if (env.NODE_ENV !== 'production') {
+        console.warn('[fetchEntityData] Mock path failed, falling back to real DB:', error);
+      }
     }
   }
 

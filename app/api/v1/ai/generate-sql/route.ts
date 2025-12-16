@@ -25,6 +25,9 @@ export const revalidate = 0;
 import { http, withErrorHandlingEdge as withErrorHandling, withRateLimitEdge as withRateLimit } from '@/lib/api';
 import { handleCors } from '@/lib/middleware';
 import { auth } from '@clerk/nextjs/server';
+import { createOpenAIClient } from '@/lib/integrations/openai/server';
+import { validateSQLScope } from '@/lib/integrations/database/scope';
+import { getEnv } from '@/lib/server/env';
 import type { NextRequest } from 'next/server';
 import { z } from 'zod';
 
@@ -41,24 +44,6 @@ const BodySchema = z
   })
   .strict();
 
-/**
- * Validates SQL for unsafe operations.
- * 
- * @param sql - SQL query string to validate
- * @returns true if SQL contains dangerous operations (DROP, TRUNCATE, or DELETE without WHERE clause)
- * 
- * @example
- * ```typescript
- * isUnsafe('DROP TABLE users') // true
- * isUnsafe('SELECT * FROM users') // false
- * isUnsafe('DELETE FROM users WHERE id = 1') // false (has WHERE clause)
- * ```
- */
-function isUnsafe(sql: string): boolean {
-  const s = sql.toLowerCase();
-  // lightweight guard for tests
-  return /\bdrop\b|\btruncate\b|\bdelete\b(?!\s+from\s+\w+\s+where)/.test(s);
-}
 
 /**
  * Main handler for SQL generation requests.
@@ -89,14 +74,65 @@ const handler = async (req: NextRequest): Promise<Response> => {
     return http.badRequest('Missing required field', { code: 'VALIDATION_ERROR' });
   }
 
-  if (isUnsafe(candidate)) {
-    return http.badRequest('Unsafe SQL detected', { code: 'INVALID_SQL' });
-  }
+  // Get OpenAI client and model
+  const env = getEnv();
+  const client = createOpenAIClient();
+  const model = env.OPENAI_SQL_MODEL || 'gpt-4o-mini';
 
-  // TODO: generate SQL from candidate
-  return http.ok({ sql: candidate }, {
-    headers: { 'Access-Control-Allow-Origin': '*' },
-  });
+  // Build SQL generation prompt
+  const systemPrompt = `You are a SQL query generator. Convert natural language questions into valid SQL SELECT queries.
+
+Rules:
+- Only generate SELECT queries (no INSERT, UPDATE, DELETE, DROP, etc.)
+- Include appropriate WHERE clauses when needed
+- Use proper SQL syntax
+- Return ONLY the SQL query, no explanations or markdown formatting
+- Do not include backticks or code fences
+- For queries involving projects, companies, or addresses tables, ensure proper filtering
+
+Example:
+Question: "Show all active projects"
+SQL: SELECT * FROM projects WHERE status = 'active'
+
+Question: "How many companies have more than 100 employees?"
+SQL: SELECT COUNT(*) FROM companies WHERE headcount > 100`;
+
+  try {
+    // Call OpenAI to generate SQL
+    const completion = await client.chat.completions.create({
+      model,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: candidate },
+      ],
+      temperature: 0.3, // Lower temperature for more deterministic SQL
+      max_tokens: 500,
+    });
+
+    const generatedSQL = completion.choices[0]?.message?.content?.trim() || '';
+    
+    if (!generatedSQL) {
+      return http.badRequest('Failed to generate SQL', { code: 'GENERATION_FAILED' });
+    }
+
+    // Validate generated SQL with validateSQLScope
+    // Note: org_id is optional - if not provided, validation will still check for SELECT-only and suspicious patterns
+    try {
+      validateSQLScope(generatedSQL);
+    } catch (validationError) {
+      // SecurityError from validateSQLScope
+      const errorMessage = validationError instanceof Error ? validationError.message : 'Invalid SQL generated';
+      return http.badRequest(errorMessage, { code: 'INVALID_SQL' });
+    }
+
+    return http.ok({ sql: generatedSQL }, {
+      headers: { 'Access-Control-Allow-Origin': '*' },
+    });
+  } catch (error) {
+    // Handle OpenAI API errors
+    const errorMessage = error instanceof Error ? error.message : 'Failed to generate SQL';
+    return http.error(500, `SQL generation failed: ${errorMessage}`, { code: 'GENERATION_ERROR' });
+  }
 };
 
 export const POST = withErrorHandling(

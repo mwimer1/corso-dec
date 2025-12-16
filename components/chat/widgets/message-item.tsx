@@ -26,9 +26,18 @@ function MessageItemImpl({ message, onSelectFollowUp }: Props) {
           ? "bg-blue-600 text-white ml-12"
       : "bg-gray-100 text-gray-900 mr-12 border-[var(--chat-bubble-asst-border)] border-gray-200"
       )}>
-        <p className="whitespace-pre-wrap leading-relaxed">
-          {message.content}
-        </p>
+        {!isUser && !message.content && (
+          <div className="flex items-center gap-1 text-muted-foreground" aria-live="polite" aria-label="Assistant is typing">
+            <span className="animate-pulse">●</span>
+            <span className="animate-pulse delay-75">●</span>
+            <span className="animate-pulse delay-150">●</span>
+          </div>
+        )}
+        {message.content && (
+          <p className="whitespace-pre-wrap leading-relaxed">
+            {message.content}
+          </p>
+        )}
 
         {/* Charts and tables only for assistant messages */}
         {!isUser && message.visualizationType === 'table' && message.tableData && message.tableColumns && (

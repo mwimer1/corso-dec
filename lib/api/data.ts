@@ -19,7 +19,8 @@ export async function getEntityPage(
   opts: { baseUrl: URL }
 ): Promise<{ data: Record<string, unknown>[]; total: number; page: number; pageSize: number }> {
   const env = getEnvEdge();
-  const useMock = (env.CORSO_USE_MOCK_DB ?? 'false') === 'true';
+  // Default to mock in dev/test unless explicitly disabled; production defaults to real DB
+  const useMock = (env.CORSO_USE_MOCK_DB ?? 'false') === 'true' || (env.NODE_ENV !== 'production' && env.CORSO_USE_MOCK_DB !== 'false');
   if (!useMock) {
     // Delegate to existing SQL endpoint for real data
     const { entity, page, pageSize, sort, search, filters } = params;

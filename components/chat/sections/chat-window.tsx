@@ -89,9 +89,9 @@ export default function ChatWindow() {
       // tokenized chat surface vars: presets/bubbles/composer border widths
       style={
         {
-          ['--chat-bubble-asst-border' as any]: '1px',
-          ['--chat-preset-border' as any]: '1px',
-          ['--chat-composer-border' as any]: '0px',
+          '--chat-bubble-asst-border': '1px',
+          '--chat-preset-border': '1px',
+          '--chat-composer-border': '0px',
         } as React.CSSProperties
       }
     >

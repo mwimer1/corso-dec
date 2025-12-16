@@ -7,11 +7,42 @@ vi.mock('@clerk/nextjs/server', () => ({
   auth: () => mockAuth(),
 }));
 
+// Mock OpenAI client
+const mockCreateCompletion = vi.fn();
+vi.mock('@/lib/integrations/openai/server', () => ({
+  createOpenAIClient: () => ({
+    chat: {
+      completions: {
+        create: mockCreateCompletion,
+      },
+    },
+  }),
+}));
+
+// Mock validateSQLScope (it will throw SecurityError for unsafe SQL)
+vi.mock('@/lib/integrations/database/scope', () => ({
+  validateSQLScope: vi.fn((sql: string) => {
+    const s = sql.toLowerCase();
+    if (/\bdrop\b|\btruncate\b|\bdelete\b(?!\s+from\s+\w+\s+where)/.test(s)) {
+      const { SecurityError } = require('@/lib/shared/errors/types');
+      throw new SecurityError('Unsafe SQL detected', 'SUSPICIOUS_SQL_PATTERN');
+    }
+  }),
+}));
+
 describe("API v1: ai/generate-sql route", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockAuth.mockResolvedValue({
       userId: 'test-user-123',
+    });
+    // Mock successful OpenAI response
+    mockCreateCompletion.mockResolvedValue({
+      choices: [{
+        message: {
+          content: 'SELECT * FROM users',
+        },
+      }],
     });
   });
 
@@ -56,6 +87,14 @@ describe("API v1: ai/generate-sql route", () => {
   });
 
   it("returns 200 for safe SQL queries", async () => {
+    mockCreateCompletion.mockResolvedValueOnce({
+      choices: [{
+        message: {
+          content: 'SELECT * FROM users',
+        },
+      }],
+    });
+
     const url = resolveRouteModule("ai/generate-sql");
     if (!url) return expect(true).toBe(true);
 
@@ -72,7 +111,7 @@ describe("API v1: ai/generate-sql route", () => {
     const data = await res.json();
     expect(data.success).toBe(true);
     expect(data.data).toHaveProperty("sql");
-    expect(data.data.sql).toBe("show all users");
+    expect(data.data.sql).toBe("SELECT * FROM users");
   });
 
   it("returns 400 for missing required field", async () => {
@@ -95,6 +134,14 @@ describe("API v1: ai/generate-sql route", () => {
   });
 
   it("accepts sql, prompt, query, or question fields", async () => {
+    mockCreateCompletion.mockResolvedValue({
+      choices: [{
+        message: {
+          content: 'SELECT * FROM users',
+        },
+      }],
+    });
+
     const url = resolveRouteModule("ai/generate-sql");
     if (!url) return expect(true).toBe(true);
 
@@ -121,6 +168,15 @@ describe("API v1: ai/generate-sql route", () => {
   });
 
   it("returns 400 for unsafe SQL queries (DROP)", async () => {
+    // Mock OpenAI returning unsafe SQL
+    mockCreateCompletion.mockResolvedValueOnce({
+      choices: [{
+        message: {
+          content: 'DROP TABLE users',
+        },
+      }],
+    });
+
     const url = resolveRouteModule("ai/generate-sql");
     if (!url) return expect(true).toBe(true);
 
@@ -137,10 +193,18 @@ describe("API v1: ai/generate-sql route", () => {
     const data = await res.json();
     expect(data.success).toBe(false);
     expect(data.error.code).toBe("INVALID_SQL");
-    expect(data.error.message).toBe("Unsafe SQL detected");
   });
 
   it("returns 400 for unsafe SQL queries (TRUNCATE)", async () => {
+    // Mock OpenAI returning unsafe SQL
+    mockCreateCompletion.mockResolvedValueOnce({
+      choices: [{
+        message: {
+          content: 'TRUNCATE TABLE users',
+        },
+      }],
+    });
+
     const url = resolveRouteModule("ai/generate-sql");
     if (!url) return expect(true).toBe(true);
 
