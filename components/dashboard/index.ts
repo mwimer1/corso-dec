@@ -30,9 +30,7 @@ export * from './header/dashboard-header';
 // ===== ENTITY MANAGEMENT =====
 // NOTE: Entity server-only builders and pages MUST NOT be exported from this
 // client-facing barrel. Exporting server-only modules here would leak server
-// code into client bundles and break Next.js runtime boundaries. Import the
-// server helpers directly where needed, for example:
-//   const { createEntityFetchData } = await import('@/lib/services/entity')
+// code into client bundles and break Next.js runtime boundaries.
 // Client-only helpers (if needed) should be exported from a dedicated client
 // barrel under components/dashboard/entity/client.ts
 

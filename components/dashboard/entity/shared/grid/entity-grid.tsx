@@ -71,6 +71,18 @@ export default function EntityGrid({
     mode: 'multiRow' as const, groupSelects: 'descendants' as const, hideDisabledCheckboxes: true,
   }), [config]);
 
+  // Custom "No Rows" overlay component
+  const noRowsOverlayComponent = useCallback(() => {
+    return (
+      <div className="flex items-center justify-center h-full w-full">
+        <div className="text-center py-8">
+          <p className="text-base font-medium text-foreground">No results found</p>
+          <p className="text-sm text-muted-foreground mt-1">Try adjusting your filters or search criteria</p>
+        </div>
+      </div>
+    );
+  }, []);
+
   const onGridReady = useCallback((params: GridReadyEvent) => {
     setGridApi(params.api);
     params.api.setGridOption('serverSideDatasource', {
@@ -130,6 +142,7 @@ export default function EntityGrid({
         allowContextMenuWithControlKey
         enableCharts={false}
         onStateUpdated={onStateUpdated as any}
+        noRowsOverlayComponent={noRowsOverlayComponent as any}
       />
     </div>
   );

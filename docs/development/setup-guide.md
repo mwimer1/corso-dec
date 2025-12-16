@@ -170,13 +170,14 @@ to be copy‑paste friendly and CI‑ready.
 - **VS Code** workspace settings included for consistent terminals
 - **Cleanup script**: `pnpm run cleanup:all` for complete cache/node_modules rebuild
 
-> Mock Mode (CSV-backed tables)
+> Mock Mode (JSON-backed tables)
 >
-> - Set `MOCK_ENTITY_DATA=true` in `.env.local` to serve dashboard entity tables from CSV seeds in `db/*.csv`.
-> - Server-only (Node). Normalizes columns to existing table configs; supports
-> eq/contains/gt/lt/gte/lte/in/between/bool, global search, sorting (numbers/strings/dates),
-> and pagination.
-> - No UI changes; uses the existing `createEntityFetchData()` seam. Not used in production.
+> - Set `CORSO_USE_MOCK_DB=true` in `.env.local` to serve dashboard entity tables from JSON files in `public/__mockdb__/`.
+> - JSON files are generated from CSV seeds in `db/*.csv` by running `pnpm gen:mockdb`.
+> - Edge-compatible (uses `fetch()` to load JSON, no Node `fs`). Supports
+> eq/contains/gt/lt/gte/lte/in/between/bool filters, global search, sorting (numbers/strings/dates),
+> and pagination via `getEntityPage()` service.
+> - No UI changes required; routes automatically use mock data when flag is enabled. Not used in production.
 
 - **Lightweight clones (save disk/RAM on dev/CI)**
 
