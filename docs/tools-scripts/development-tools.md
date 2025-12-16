@@ -50,7 +50,7 @@ pnpm validate:cursor-rules     # Custom security rules
 #### Development Workflow
 ```bash
 # Development server
-pnpm dev                       # Start development server
+pnpm dev                       # Start development server (auto-cleans ports & orphans)
 
 # Build commands
 pnpm build                     # Production build
@@ -122,6 +122,11 @@ pnpm docs:readmes:check         # Check README consistency
 pnpm fix:single-child           # Fix React single-child issues
 pnpm fix:imports               # Auto-fix import issues
 pnpm codemod:transform         # Apply code transformations
+
+# Process & port cleanup
+pnpm cleanup:ports             # Kill processes on ports 3000, 9323 (manual)
+pnpm dev:clean:orphans         # Kill orphaned dev processes > 4 hours old (manual)
+# Note: Port and orphan cleanup runs automatically before `pnpm dev` via predev hook
 
 # Repository maintenance
 pnpm maintenance:deps           # Update dependencies
@@ -205,6 +210,17 @@ pnpm lint:clear-cache
 
 # Reset TypeScript cache
 pnpm typecheck:clean
+```
+
+#### Port & Process Conflicts
+```bash
+# Manual cleanup (usually not needed - runs automatically before `pnpm dev`)
+pnpm cleanup:ports             # Kill processes on dev ports
+pnpm dev:clean:orphans         # Kill orphaned dev processes
+
+# The predev hook automatically runs cleanup before starting dev server:
+# - Clears ports 3000 and 9323
+# - Kills orphaned Node.js dev processes older than 30 minutes
 ```
 
 #### Permission Issues

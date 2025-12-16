@@ -92,7 +92,7 @@
     "prebuild": "tsx scripts/maintenance/clean-next-build.ts",
     "build": "next build && pnpm run typecheck",
     "cleanup:next": "rimraf .next && pnpm next build",
-    "predev": "tsx scripts/maintenance/ensure-ports.ts --DevPort 3000 --PlaywrightPort 9323",
+    "predev": "tsx scripts/maintenance/ensure-ports.ts --DevPort 3000 --PlaywrightPort 9323 && tsx scripts/maintenance/kill-orphans.ts --max-age 30",
     "dev": "pnpm run gen:mockdb && pnpm run dev:next",
     "dev:trace-deprecations": "cross-env NODE_OPTIONS=--trace-deprecation pnpm run dev:next",
     "dev:next": "next dev --turbo --hostname localhost -p 3000",

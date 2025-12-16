@@ -70,6 +70,10 @@ After pulling the repository, complete this checklist to ensure full compliance 
 
 ### Development Server Commands
 - **`pnpm dev`** - Starts Next.js development server only (no Storybook)
+  - **Automatic Cleanup**: Before starting, automatically:
+    - Clears processes on ports 3000 and 9323 (dev server and Playwright)
+    - Kills orphaned Node.js dev processes older than 30 minutes
+    - Ensures clean startup without port conflicts or accumulated processes
 - **`pnpm dev:stories`** - Starts Storybook development server separately
 - **`pnpm dev:with-storybook`** - Runs both Next.js and Storybook concurrently (if needed)
 

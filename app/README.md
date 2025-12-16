@@ -190,6 +190,7 @@ const apiKey = getEnv().OPENAI_API_KEY;
 ### Local Development
 ```bash
 # Start development server
+# Automatically cleans ports (3000, 9323) and orphaned processes before starting
 pnpm dev
 
 # TypeScript validation

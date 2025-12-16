@@ -22,7 +22,7 @@ summary: Keep agent/rules artifacts versioned, indexed, and validated in CI.
 
 ## TL;DR
 - **Setup**: Run `pnpm install`, then `pnpm run verify:ai-tools`, then `pnpm run setup:branch` (each sequentially).
-- **Development**: Use `pnpm typecheck` for fast feedback on type errors; avoid using `pnpm -s` (silent) so you don't miss output. For UI changes, run `pnpm dev` in a separate terminal to get instant feedback on edits.
+- **Development**: Use `pnpm typecheck` for fast feedback on type errors; avoid using `pnpm -s` (silent) so you don't miss output. For UI changes, run `pnpm dev` in a separate terminal to get instant feedback on edits. The `predev` hook automatically cleans ports (3000, 9323) and orphaned processes (>30min old) before starting.
 - **Quality gates**: Run `pnpm typecheck → pnpm lint → pnpm test → pnpm validate:cursor-rules` sequentially (don't chain with &&) to ensure all standards pass.
 - **Lint performance**: `pnpm lint` uses ESLint cache for faster reruns. Use `pnpm lint:full` for CI-grade validation (rebuilds plugin + lint scripts + lint).
 - **Environment**: Use the provided `getEnv()` helper for config (never access `process.env` directly in app code).
@@ -212,7 +212,7 @@ pnpm typecheck && pnpm lint && pnpm test && pnpm validate:cursor-rules
 - **Run setup scripts in order**: Execute setup steps one after another (as in **TL;DR**). Do not concatenate long sequences with `&&` – run each step separately for clarity and easier debugging.
 - **Leverage search tools**: Start with broad semantic code searches, then refine with exact symbol searches. Use the repository search (`rg`/`sg`) scoped to relevant folders to gather context in parallel.
 - **Make targeted edits**: Apply minimal necessary changes (preserve formatting and import style). Use a small TODO list for multi-step fixes, marking the first task as `in_progress` before editing.
-- **Use the PNPM dev server for UI feedback**: If working on frontend or UI-related tasks, keep the development server running (`pnpm dev`) to catch errors or UI regressions immediately as you make changes.
+- **Use the PNPM dev server for UI feedback**: If working on frontend or UI-related tasks, keep the development server running (`pnpm dev`) to catch errors or UI regressions immediately as you make changes. The `predev` hook automatically cleans ports and orphaned processes before starting, ensuring clean startup without conflicts.
 - **Favor GitHub CLI for context**: Use `gh` commands to retrieve PR details, issues, or to check out branches as needed for context instead of manual web navigation.
 - **Post-edit validation**: After making changes, always run the full suite: type-checking, linting, tests, then `pnpm validate:cursor-rules` to catch any rule violations.
 
