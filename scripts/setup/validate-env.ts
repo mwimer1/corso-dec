@@ -2,6 +2,14 @@
 // scripts/setup/validate-env.ts
 // Validates environment variables using consolidated validation utilities
 
+import { config } from 'dotenv';
+import { resolve } from 'node:path';
+
+// Load .env.local if it exists (for local development)
+config({ path: resolve(process.cwd(), '.env.local') });
+// Also try .env as fallback
+config({ path: resolve(process.cwd(), '.env') });
+
 // Minimal validation that doesn't require server-only imports
 async function main() {
   console.log('🔍 Environment Validation');

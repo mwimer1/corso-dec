@@ -1,7 +1,7 @@
 ---
 title: "Dashboard"
 description: "Documentation and resources for documentation functionality. Located in (protected)/dashboard/."
-last_updated: "2025-01-28"
+last_updated: "2025-12-15"
 category: "documentation"
 status: "draft"
 ---

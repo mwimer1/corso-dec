@@ -81,7 +81,7 @@ See [docs/README.md](docs/README.md) for the complete documentation index.
 - **React**: 18.3.1
 - **TypeScript**: 5.9.3 (strict mode)
 - **Authentication**: Clerk v6.36.2
-- **Database**: 
+- **Database**:
   - ClickHouse (analytics/data warehouse)
   - Supabase (relational data)
 - **Package Manager**: pnpm 10.17.1
@@ -114,7 +114,7 @@ For detailed structure, see [Codebase Structure](docs/codebase-apis/codebase-str
 
 ## 🔧 Common Commands
 
-### Development
+### Development Commands
 ```bash
 pnpm dev                    # Start development server
 pnpm typecheck              # TypeScript validation (fast)
@@ -165,7 +165,7 @@ For security standards and practices, see [Security Standards](.cursor/rules/sec
 ## 🧪 Testing
 
 - **Test Framework**: Vitest
-- **Coverage Thresholds**: 
+- **Coverage Thresholds**:
   - Lines: ≥ 80%
   - Branches: ≥ 70%
   - Functions: ≥ 75%

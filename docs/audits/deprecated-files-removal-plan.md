@@ -69,7 +69,7 @@ Update documentation and remove references from allowlists.
 
 ---
 
-## Phase 2: Import Path Migrations
+## Phase 2: Import Path Migrations (Skipped)
 
 ### 2.1 Components Root Barrel
 

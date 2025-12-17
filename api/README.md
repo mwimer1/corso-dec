@@ -3,7 +3,7 @@ title: "API — OpenAPI Specs & Tooling"
 description: "Comprehensive OpenAPI specification management, RBAC validation, and automated TypeScript type generation for Corso API v1."
 status: active
 category: "development"
-last_updated: 2025-09-24
+last_updated: 2025-12-15
 ---
 
 ## Overview

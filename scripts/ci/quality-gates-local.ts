@@ -44,35 +44,8 @@ const checks: QualityCheck[] = [
   },
   {
     name: 'README Freshness Check',
-    command: 'node',
-    args: ['-e', `
-      const fs = require('fs');
-      const path = require('path');
-      const glob = require('glob');
-
-      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-      const readmes = glob.sync('**/README.md', { ignore: 'node_modules/**' });
-      let staleCount = 0;
-
-      readmes.forEach(file => {
-        const content = fs.readFileSync(file, 'utf8');
-        const lastUpdatedMatch = content.match(/last_updated:\\s*['"]?(\\d{4}-\\d{2}-\\d{2})['"]?/);
-        if (lastUpdatedMatch) {
-          const lastUpdated = new Date(lastUpdatedMatch[1]);
-          if (lastUpdated < thirtyDaysAgo) {
-            console.log('⚠️  Stale README:', file, 'last updated:', lastUpdatedMatch[1]);
-            staleCount++;
-          }
-        }
-      });
-
-      if (staleCount > 0) {
-        console.error('Found', staleCount, 'stale README files (>30 days old)');
-        process.exit(1);
-      } else {
-        console.log('✅ All READMEs are fresh');
-      }
-    `],
+    command: 'pnpm',
+    args: ['exec', 'tsx', 'scripts/maintenance/check-readme-freshness.ts'],
     required: false,
     description: 'Checks for READMEs older than 30 days.',
   },
@@ -106,7 +79,9 @@ function runCheck(check: QualityCheck): { status: 'passed' | 'failed'; duration:
   try {
     const result = spawnSync(check.command, check.args, {
       stdio: 'pipe',
-      encoding: 'utf8'
+      encoding: 'utf8',
+      shell: true, // Required for Windows compatibility with pnpm
+      cwd: process.cwd()
     });
 
     const duration = Date.now() - startTime;
@@ -116,8 +91,20 @@ function runCheck(check: QualityCheck): { status: 'passed' | 'failed'; duration:
       return { status: 'passed', duration };
     } else {
       logger.error(`❌ Failed: ${check.name} (${duration}ms)`);
+      if (result.stdout) {
+        // Show last 50 lines of output for context
+        const lines = result.stdout.split('\n');
+        const relevant = lines.slice(-50).join('\n');
+        console.error('STDOUT (last 50 lines):', relevant);
+      }
       if (result.stderr) {
-        console.error(result.stderr);
+        // Show last 50 lines of stderr
+        const lines = result.stderr.split('\n');
+        const relevant = lines.slice(-50).join('\n');
+        console.error('STDERR (last 50 lines):', relevant);
+      }
+      if (!result.stdout && !result.stderr) {
+        console.error(`Command failed with exit code ${result.status}`);
       }
       return { status: 'failed', duration };
     }

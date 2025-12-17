@@ -1,7 +1,7 @@
 ---
 title: "Actions"
 description: "Server-side actions for form submissions and simple mutations."
-last_updated: "2025-01-03"
+last_updated: "2025-12-15"
 category: "actions"
 status: "active"
 ---

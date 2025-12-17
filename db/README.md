@@ -2,7 +2,7 @@
 title: "Database Assets"
 description: "Construction permit and contractor data for the Dallas-Fort Worth metro area, supporting development and testing workflows."
 category: data
-last_updated: 2025-09-24
+last_updated: 2025-12-15
 ---
 
 # Database Assets

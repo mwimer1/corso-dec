@@ -128,7 +128,7 @@ const h = await headers();
 import { useSubscription } from '@clerk/nextjs/experimental'
 ```
 
-**Action**: 
+**Action**:
 - Check Clerk's Next.js 16 compatibility documentation
 - Verify `@clerk/nextjs` version supports Next.js 16
 - Keep experimental import if Billing APIs are still experimental (as per Clerk docs)
@@ -322,7 +322,7 @@ npx @next/codemod@canary middleware-to-proxy .
    };
    ```
 
-**Note**: 
+**Note**:
 - `proxy.ts` runs in Node.js runtime (not Edge)
 - Clerk's `clerkMiddleware` should work with `proxy.ts`
 - Verify Clerk's Next.js 16 compatibility docs
@@ -551,7 +551,7 @@ const nextConfig = {
 ### 2. Turbopack Default Bundler
 - **Risk**: Custom webpack config may cause build failures
 - **Impact**: Builds may fail if webpack-specific features are used
-- **Mitigation**: 
+- **Mitigation**:
   - Use `--webpack` flag initially
   - Migrate webpack config to Turbopack-compatible config
   - Test builds early (Phase 7.3)
@@ -584,7 +584,7 @@ const nextConfig = {
 ### 8. Clerk Compatibility
 - **Risk**: Experimental Clerk APIs may not be compatible
 - **Impact**: Subscription component may break
-- **Mitigation**: 
+- **Mitigation**:
   - Check Clerk's Next.js 16 migration guide
   - Keep experimental import if needed (Billing is intentionally experimental)
   - Pin Clerk version to avoid API churn

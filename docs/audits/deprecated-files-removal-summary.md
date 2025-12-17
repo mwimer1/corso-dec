@@ -67,7 +67,7 @@ Most lib barrels appear to be in active use based on context audit:
 
 The codebase is already well-maintained with most deprecated files already removed. The remaining "deprecated" items are either architectural components that should be kept, or require deeper analysis before removal.
 
-**Next Steps**: 
+**Next Steps**:
 - Mark Phase 1 as complete in audit docs
 - Document `components/index.ts` as intentionally kept
 - Consider removing lib barrels only after thorough runtime usage analysis
