@@ -1,7 +1,7 @@
 ---
 title: "Dashboard"
 description: "Documentation and resources for documentation functionality. Located in (protected)/dashboard/."
-last_updated: "2025-01-27"
+last_updated: "2025-01-28"
 category: "documentation"
 status: "draft"
 ---
@@ -12,6 +12,7 @@ The dashboard provides authenticated users with entity management (projects, com
 ```
 app/(protected)/dashboard/
 ├── layout.tsx                 # Root layout: auth only (no shell)
+├── page.tsx                   # Index route: redirects to /dashboard/chat
 ├── error.tsx                  # Error boundary
 ├── (no-topbar)/               # Route group: full-height pages without top bar
 │   ├── layout.tsx             # Dashboard shell + sidebar, NO top bar
@@ -32,6 +33,7 @@ app/(protected)/dashboard/
 
 | Path | Purpose | Implementation | Layout Group |
 |------|---------|----------------|--------------|
+| `/dashboard` | Redirects to `/dashboard/chat` (default dashboard landing) | `page.tsx` (redirect) | N/A (redirect only) |
 | `/dashboard/chat` | CorsoAI chat assistant (default dashboard landing) | `(no-topbar)/chat/page.tsx` | `(no-topbar)` |
 | `/dashboard/addresses` | Address/property management | `(with-topbar)/(entities)/[entity]/page.tsx` | `(with-topbar)` |
 | `/dashboard/companies` | Company/contractor management | `(with-topbar)/(entities)/[entity]/page.tsx` | `(with-topbar)` |
@@ -193,4 +195,4 @@ pnpm vitest run            # Test components
 
 ---
 
-**Last updated: 2025-01-27**
+**Last updated: 2025-01-28**
