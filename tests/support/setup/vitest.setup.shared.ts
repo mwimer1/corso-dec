@@ -1,3 +1,9 @@
+// Set environment variable for Enterprise features (tests require SSRM)
+// MUST be set at the very top before any imports that might trigger publicEnv initialization
+if (!process.env.NEXT_PUBLIC_AGGRID_ENTERPRISE) {
+  process.env.NEXT_PUBLIC_AGGRID_ENTERPRISE = '1';
+}
+
 import { afterAll, beforeAll, vi } from "vitest";
 
 // Ensure deterministic test env

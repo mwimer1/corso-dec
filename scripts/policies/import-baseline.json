@@ -88,7 +88,8 @@
     "lib/services/index.ts -> @/validators/tableColumnConfig",
     "lib/shared/errors/error-utils.ts -> @/server/errors",
     "lib/shared/feature-flags/core.ts -> @/types/shared",
-    "lib/shared/index.ts -> @/types/shared/config/base/types"
+    "lib/shared/index.ts -> @/types/shared/config/base/types",
+    "lib/vendors/ag-grid.client.ts -> @/shared/config/client"
   ]
 }
 

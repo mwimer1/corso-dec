@@ -1,19 +1,13 @@
 /**
- * Compat shim for legacy imports:
- *   import { ensureAgGridRegistered, ensureAgGridReadyFor } from "@/lib/vendors/ag-grid";
- *
- * Keep surface stable; do not introduce vendor runtime deps here.
- * If tests require side-effects, wire them behind try/catch in a follow-up.
+ * Legacy compatibility shim - re-exports from client adapter.
+ * 
+ * @deprecated Import directly from "@/lib/vendors/ag-grid.client" in client components.
+ * This file is kept for backward compatibility with test setups and server-side code.
+ * 
+ * Note: In client components, prefer importing from ag-grid.client.ts directly
+ * to ensure proper 'use client' boundary.
  */
 
-// no-op registration (compile-time compatibility)
-export function ensureAgGridRegistered(): void {
-  // Intentionally noop. Real registration (if required) should live in a vendor adapter.
-}
-
-// simple readiness gate for call-sites that `await` this
-export async function ensureAgGridReadyFor(_mode: string): Promise<void> {
-  // Intentionally resolve immediately to preserve async call sites.
-  return;
-}
+// Re-export from client adapter (client components should import directly)
+export { ensureAgGridReadyFor, ensureAgGridRegistered } from './ag-grid.client';
 

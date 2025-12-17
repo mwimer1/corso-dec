@@ -2,7 +2,7 @@
 
 'use client';
 
-import { ensureAgGridRegistered } from "@/lib/vendors/ag-grid";
+import { ensureAgGridRegistered } from "@/lib/vendors/ag-grid.client";
 // Minimal module registration shim for AG Grid – delegates to vendor utility.
 export function registerAgGridModules(): void {
   ensureAgGridRegistered();

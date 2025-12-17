@@ -1,3 +1,9 @@
+// Set environment variable for Enterprise features (tests require SSRM)
+// MUST be set before any modules are loaded to ensure publicEnv reads it correctly
+if (!process.env.NEXT_PUBLIC_AGGRID_ENTERPRISE) {
+  process.env.NEXT_PUBLIC_AGGRID_ENTERPRISE = '1';
+}
+
 import { fileURLToPath } from "node:url";
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { defineConfig } from "vitest/config";
