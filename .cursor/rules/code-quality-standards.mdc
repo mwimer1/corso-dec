@@ -3,7 +3,7 @@ rule_id: code-quality-standards
 title: Quality Assurance & Testing Standards (Consolidated)
 owners:
   - platform@corso.io
-last_reviewed: "2025-10-13"
+last_reviewed: "2025-12-15"
 status: active
 domains: [quality, testing, tools]
 enforcement: advise
@@ -11,6 +11,7 @@ related_rules:
   - ai-agent-development-environment
 alwaysApply: false
 globs: ["**/*.{ts,tsx,js,jsx}"]
+# Reviewed in Dec 2025 - Vitest confirmed, no Jest references, testing standards current
 ---
 
 # 🔍 Quality Assurance & Testing Standards (Consolidated)

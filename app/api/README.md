@@ -1,7 +1,7 @@
 ---
 title: "API Routes"
 description: "HTTP API endpoints for external clients, streaming, and integrations."
-last_updated: "2025-01-03"
+last_updated: "2025-12-15"
 category: "api"
 status: "active"
 ---

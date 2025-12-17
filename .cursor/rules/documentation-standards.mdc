@@ -4,13 +4,14 @@ title: Documentation Standards & References (Consolidated)
 owners:
   - docs@corso.io
   - platform@corso.io
-last_reviewed: "2025-10-13"
+last_reviewed: "2025-12-15"
 status: active
 domains: [docs]
 enforcement: warn
 related_rules: []
 alwaysApply: false
 globs: ["docs/**", "**/README.md"]
+# Reviewed in Dec 2025 - Updated to reflect current documentation consolidation and standards
 ---
 
 # Documentation Standards & References (Consolidated)

@@ -13,8 +13,9 @@ globs:
 related_rules:
   - documentation-standards
   - code-quality-standards
-last_reviewed: "2025-10-13"
+last_reviewed: "2025-12-15"
 summary: Keep agent/rules artifacts versioned, indexed, and validated in CI.
+# Reviewed in Dec 2025 - Development workflow and tooling standards current
 ---
 # 🚀 Development Environment & Workflow (Consolidated)
 

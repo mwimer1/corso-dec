@@ -4,7 +4,7 @@ title: Security Standards & API Patterns (Consolidated)
 owners:
   - security@corso.io
   - platform@corso.io
-last_reviewed: "2025-10-13"
+last_reviewed: "2025-12-15"
 status: active
 domains: [security, api]
 enforcement: block
@@ -13,6 +13,7 @@ related_rules:
   - runtime-boundaries
 alwaysApply: true
 globs: ["app/api/**", "actions/**", "lib/api/**", "lib/middleware/**"]
+# Reviewed in Dec 2025 - Current security practices verified, no deprecated patterns found
 ---
 
 # 🔐 Security Standards & API Patterns (Consolidated)
