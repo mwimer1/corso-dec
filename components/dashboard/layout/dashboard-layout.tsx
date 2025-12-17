@@ -5,8 +5,8 @@
 import { SkipNavLink } from "@/components/ui/atoms";
 import { cn } from "@/styles";
 import { dashboardShellVariants } from "@/styles/ui/organisms";
-import * as React from "react";
 import { usePathname } from "next/navigation";
+import * as React from "react";
 import { DashboardSidebar } from "./dashboard-sidebar";
 import { DashboardTopBar } from "./dashboard-top-bar";
 
@@ -22,31 +22,39 @@ function getPageTitle(pathname: string | null): string | undefined {
 
   const segment = match[1];
   const titleMap: Record<string, string> = {
-    chat: "Chat",
     projects: "Projects",
     companies: "Companies",
     addresses: "Addresses",
+    account: "Account",
+    subscription: "Subscription",
   };
 
   return segment in titleMap ? titleMap[segment] : undefined;
 }
 
+interface DashboardLayoutProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Whether to show the top bar. Defaults to true. */
+  showTopBar?: boolean;
+}
+
 /**
  * DashboardLayout – Wraps dashboard pages with top bar and side navigation.
  * Expects to be used in protected route where Dashboard context is provided.
+ * 
+ * @param showTopBar - If false, the top bar is not rendered. Defaults to true.
  */
 export const DashboardLayout = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(function DashboardLayout({ className, children, ...props }, ref) {
+  DashboardLayoutProps
+>(function DashboardLayout({ className, children, showTopBar = true, ...props }, ref) {
   // Dashboard context removed - using local state
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false);
   const [_section, setSection] = React.useState('overview');
   const pathname = usePathname();
   const pageTitle = React.useMemo(() => {
-    if (!pathname) return undefined;
+    if (!pathname || !showTopBar) return undefined;
     return getPageTitle(pathname);
-  }, [pathname]);
+  }, [pathname, showTopBar]);
 
   const toggleSidebar = React.useCallback(() => {
     setSidebarCollapsed(prev => !prev);
@@ -54,8 +62,8 @@ export const DashboardLayout = React.forwardRef<
   return (
     <div className="flex h-screen flex-col bg-background">
       <SkipNavLink />
-      {/* Top navigation bar */}
-      {pageTitle && <DashboardTopBar title={pageTitle} />}
+      {/* Top navigation bar - conditionally rendered based on showTopBar prop */}
+      {showTopBar && pageTitle && <DashboardTopBar title={pageTitle} />}
       {/* Main content area with sidebar + page content */}
       <div className="flex flex-1 overflow-hidden">
         <DashboardSidebar

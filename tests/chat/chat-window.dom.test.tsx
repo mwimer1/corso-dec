@@ -4,7 +4,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 describe('ChatWindow', () => {
-  it('renders header with CorsoAI and empty-state greeting', () => {
+  it('renders empty-state greeting without header', () => {
     vi.spyOn(useChatModule, 'useChat').mockReturnValue({
       messages: [],
       isProcessing: false,
@@ -20,7 +20,8 @@ describe('ChatWindow', () => {
     } as unknown as ReturnType<typeof useChatModule.useChat>);
 
     render(<ChatWindow />);
-    expect(screen.getByText('CorsoAI')).toBeInTheDocument();
+    // Chat no longer renders the CorsoAI header - it's handled by route group layout
+    expect(screen.queryByText('CorsoAI')).not.toBeInTheDocument();
     expect(screen.getByText(/Good (morning|afternoon|evening)/)).toBeInTheDocument();
     expect(
       screen.getByText(/Ask a question about permits, company activity, or address history/)

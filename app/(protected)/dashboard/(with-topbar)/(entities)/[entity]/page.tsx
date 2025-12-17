@@ -31,12 +31,6 @@ const ENTITY_CONFIG: Record<string, { title: string; subtitle: string; loadingTe
     loadingText: "Loading projects table...",
     pageSize: 10,
   },
-  chat: {
-    title: "Chat",
-    subtitle: "AI-powered data exploration.",
-    loadingText: "Loading chat interface...",
-    pageSize: 10,
-  },
 };
 
 
@@ -60,9 +54,9 @@ export default async function EntityPage({ params }: { params: Promise<{ entity:
 
   const { entity } = parsed.data;
 
+  // Chat entity is handled in (no-topbar) route group
   if (isChatEntity(entity)) {
-    const { ChatPage } = await import('@/components/chat/sections/chat-page');
-    return <ChatPage /> as unknown as React.JSX.Element;
+    return notFound();
   }
 
   if (isGridEntity(entity)) {
@@ -75,5 +69,3 @@ export default async function EntityPage({ params }: { params: Promise<{ entity:
 
   return notFound();
 }
-
-

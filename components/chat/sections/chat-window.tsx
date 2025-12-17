@@ -1,7 +1,6 @@
 "use client";
 
 import { ChatWelcome } from '@/components/chat';
-import { CorsoAIMode, DashboardHeader } from '@/components/dashboard';
 import { useChat } from '@/hooks/chat/use-chat';
 import { useUser } from '@clerk/nextjs';
 import dynamic from 'next/dynamic';
@@ -95,11 +94,6 @@ export default function ChatWindow() {
         } as React.CSSProperties
       }
     >
-      {/* Shared dashboard header — Chat title/subtitle removed; left only shows CorsoAI */}
-      <DashboardHeader
-        left={<CorsoAIMode />}
-      />
-
       {/* Messages list */}
       <div ref={scrollRef} className={"flex-1 min-h-0 " + (hasHistory ? 'overflow-y-auto' : 'overflow-hidden') + ' bg-gray-50'}>
         {hasHistory ? (

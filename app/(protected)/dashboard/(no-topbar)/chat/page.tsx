@@ -9,5 +9,11 @@ export const metadata: Metadata = {
 };
 
 export default function DashboardChatPage() {
-  return <ChatPage />;
+  return (
+    <>
+      {/* Accessible page title for screen readers */}
+      <h1 className="sr-only">Chat</h1>
+      <ChatPage />
+    </>
+  );
 }
