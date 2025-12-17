@@ -58,12 +58,12 @@ The `@/lib/shared` barrel **must remain client-compatible** at all times. This i
 - Health endpoint exception: `/api/status/health` is allowed to run on Edge and must avoid importing any Node-only utilities. No app-level rate limiting applies.
 
 ## Enforcement
-- **ast-grep rules**: `tools/ast-grep/consolidated-no-direct-clickhouse-import-outside-integration.yml` (run with `ast-grep run`)
+- **ast-grep rules**: `scripts/rules/ast-grep/consolidated-no-direct-clickhouse-import-outside-integration.yml` (run with `ast-grep run`)
 - **CI validation**: `pnpm validate:runtime-boundaries` (automated in CI pipeline)
 - **Manual check**: `ast-grep run --pattern "import.*@clickhouse" --lang typescript app/`
 
 ## Windows-first tips
 
 - Run runtime boundary validation with `pnpm validate:runtime-boundaries` before commits.
-- Use `ast-grep scan --rule tools/ast-grep/runtime-boundaries.yml` to check for violations locally.
+- Use `ast-grep scan --rule scripts/rules/ast-grep/runtime-boundaries/ban-server-imports-in-app.yml` to check for violations locally.
 - Ensure Node-only imports are properly isolated to prevent Edge runtime errors on Windows builds.

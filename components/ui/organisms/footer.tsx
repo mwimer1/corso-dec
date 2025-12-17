@@ -1,6 +1,6 @@
 // components/ui/organisms/footer.tsx
 import { LinkTrack } from "@/components/ui/molecules";
-import { APP_LINKS } from '@/components';
+import { APP_LINKS } from '@/lib/shared';
 import { cn } from "@/styles";
 import { footer as footerVariants } from "@/styles/ui/organisms/footer-variants";
 import { focusRing } from "@/styles/ui/shared/focus-ring";

@@ -1,4 +1,4 @@
-import { APP_LINKS  } from '@/components';
+import { APP_LINKS } from '@/lib/shared';
 import { cn } from "@/styles";
 import { containerWithPaddingVariants } from "@/styles/ui/shared/container-helpers";
 import Link from "next/link";

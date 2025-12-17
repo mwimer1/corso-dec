@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/atoms";
 import { LinkTrack } from "@/components/ui/molecules";
-import { APP_LINKS } from '@/components';
+import { APP_LINKS } from '@/lib/shared';
 import { cn } from "@/styles";
 import { footerCTA } from "@/styles/ui/organisms";
 import { navbarStyleVariants } from "@/styles/ui/organisms/navbar-variants";

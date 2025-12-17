@@ -29,6 +29,8 @@ jobs:
       - name: Setup Node & pnpm
         uses: ./.github/actions/setup-node-pnpm
       - run: pnpm install --frozen-lockfile
+      - name: Guardrail - Check for deprecated path references
+        run: pnpm validate:deprecated-paths
       - run: pnpm validate:cursor-rules
 
 

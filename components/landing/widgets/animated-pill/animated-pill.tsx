@@ -1,7 +1,7 @@
 'use client';
 
 import { LinkTrack } from '@/components/ui/molecules';
-import { APP_LINKS  } from '@/components';
+import { APP_LINKS } from '@/lib/shared';
 import { cn } from '@/styles';
 import type { ComponentPropsWithoutRef } from 'react';
 import { useCallback, useEffect, useRef } from 'react';

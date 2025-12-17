@@ -1,8 +1,8 @@
 "use client";
 
-import { APP_LINKS } from '@/components';
 import { Button, SkipNavLink } from "@/components/ui/atoms";
 import { LinkTrack, ReadingProgress } from "@/components/ui/molecules";
+import { APP_LINKS } from '@/lib/shared';
 import { cn } from "@/styles";
 import { fullWidthSectionContainerVariants } from "@/styles/ui/organisms";
 import { containerWithPaddingVariants } from "@/styles/ui/shared/container-helpers";

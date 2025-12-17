@@ -1,5 +1,5 @@
 // components/landing/nav.config.ts
-import { APP_LINKS } from '@/components';
+import { APP_LINKS } from '@/lib/shared';
 import type { NavItemData } from "@/types/shared";
 
 export const landingNavItems: NavItemData[] = [

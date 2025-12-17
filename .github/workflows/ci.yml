@@ -129,6 +129,9 @@ jobs:
       - name: 'Guard: Dependency health (cycles, orphans, unused exports)'
         run: pnpm validate:dead-code:ci
 
+      - name: 'Guard: Deprecated path references'
+        run: pnpm validate:deprecated-paths
+
       - name: Validate Commit Messages
         if: github.event_name == 'pull_request'
         env:

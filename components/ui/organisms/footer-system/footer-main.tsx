@@ -1,6 +1,5 @@
 import { LinkTrack } from "@/components/ui/molecules";
-import { BrandAssets } from "@/lib/shared";
-import { APP_LINKS  } from '@/components';
+import { APP_LINKS, BrandAssets } from "@/lib/shared";
 import { cn } from "@/styles";
 import { containerWithPaddingVariants } from "@/styles/ui/shared/container-helpers";
 import Image from "next/image";

@@ -444,6 +444,6 @@ rule: |
 ## Windows-First Tips
 
 - Use `pnpm typecheck` to quickly validate warehouse query usage
-- Run `ast-grep scan --rule tools/ast-grep/warehouse-query-hooks.yml` for pattern validation
+- Run `ast-grep scan --rule scripts/rules/ast-grep/warehouse-query-hooks.yml` for pattern validation (if rule exists)
 - Use `git --no-pager log --oneline --grep="warehouse"` to track query-related changes
 - Prefer `| type` over `| cat` when piping query results in Windows terminals

@@ -1,7 +1,7 @@
 'use client';
-import { APP_LINKS } from '@/components';
 import { Button } from '@/components/ui/atoms';
 import { LinkTrack } from '@/components/ui/molecules';
+import { APP_LINKS } from '@/lib/shared';
 import { cn } from '@/styles';
 import { navbarStyleVariants } from '@/styles/ui/organisms/navbar-variants';
 import { underlineAccent } from "@/styles/ui/shared/underline-accent";
