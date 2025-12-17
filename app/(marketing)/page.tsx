@@ -26,7 +26,7 @@ export default function MarketingHomePage() {
       </FullWidthSection>
 
       <FullWidthSection
-        padding="lg"
+        padding="md"
         containerMaxWidth="7xl"
         containerPadding="lg"
         opacity="none"
