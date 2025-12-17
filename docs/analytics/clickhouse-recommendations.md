@@ -225,4 +225,4 @@ PREWHERE org_id = {org_id:String} AND day BETWEEN {start:Date} AND {end:Date}
 GROUP BY day, project_type
 ORDER BY day
 LIMIT 1000;
-```bash
+```

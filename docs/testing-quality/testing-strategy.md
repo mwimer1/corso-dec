@@ -133,14 +133,14 @@ declare module 'vitest' {
   export interface Assertion extends AxeMatchers, TestingLibraryMatchers<string, Element> {}
   export interface AsymmetricMatchersContaining extends AxeMatchers, TestingLibraryMatchers<string, Element> {}
 }
-```bash
+```
 
 **Setup Files**:
 ```typescript
 // tests/support/setup/vitest.setup.ts
 import '@testing-library/jest-dom/vitest';
 import 'vitest-axe/extend-expect';
-```bash
+```
 
 ### Critical Testing Patterns
 
@@ -156,7 +156,7 @@ describe('ComponentName', () => {
     expect(results).toHaveNoViolations();
   });
 });
-```bash
+```
 
 #### 2. Component Testing with TypeScript
 
@@ -171,7 +171,7 @@ describe('TablePro', () => {
     expect(screen.getByText('Name')).toBeInTheDocument();
   });
 });
-```bash
+```
 
 #### 3. Async Hook Testing
 ### Duplication Monitoring and Shared Factories
@@ -196,7 +196,7 @@ describe('useTableData', () => {
     });
   });
 });
-```bash
+```
 
 ## 📊 Test Coverage & Metrics
 
