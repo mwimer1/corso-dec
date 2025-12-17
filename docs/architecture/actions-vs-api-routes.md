@@ -1,8 +1,8 @@
 ---
 title: "Server Actions vs API Routes"
 description: "Decision guide for choosing between Next.js Server Actions and API Routes in the Corso codebase."
-last_updated: "2025-01-03"
-category: "architecture"
+last_updated: "2025-12-15"
+category: "documentation"
 status: "active"
 ---
 

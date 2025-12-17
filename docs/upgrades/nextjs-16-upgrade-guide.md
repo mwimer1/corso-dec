@@ -1,9 +1,16 @@
+---
+title: "Next.js 16 Upgrade Guide"
+description: "Comprehensive upgrade path from Next.js 15.5.9 to Next.js 16.0.10+ with security and compatibility checks."
+last_updated: "2025-12-15"
+category: "documentation"
+status: "draft"
+---
+
 # Next.js 16 Upgrade Guide
 
 **Status**: Ready for Implementation  
 **Target Version**: Next.js 16.0.10+ (patched security release)  
-**Current Version**: Next.js 15.5.9  
-**Last Updated**: 2025-01-XX
+**Current Version**: Next.js 15.5.9
 
 ## 🎯 Executive Summary
 

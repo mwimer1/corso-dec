@@ -54,7 +54,7 @@ export const docs = [
   },
   {
     "path": "app/api/readme.md",
-    "title": "Api"
+    "title": "API Routes"
   },
   {
     "path": "app/api/v1/readme.md",
@@ -66,159 +66,159 @@ export const docs = [
   },
   {
     "path": "components/auth/readme.md",
-    "title": "Auth"
+    "title": "components/auth"
   },
   {
     "path": "components/billing/readme.md",
-    "title": "Billing"
+    "title": "components/billing"
   },
   {
     "path": "components/dashboard/entity/addresses/readme.md",
-    "title": "Addresses"
+    "title": "components/dashboard/entity/addresses"
   },
   {
     "path": "components/dashboard/entity/companies/readme.md",
-    "title": "Companies"
+    "title": "components/dashboard/entity/companies"
   },
   {
     "path": "components/dashboard/entity/projects/readme.md",
-    "title": "Projects"
+    "title": "components/dashboard/entity/projects"
   },
   {
     "path": "components/dashboard/entity/readme.md",
-    "title": "Entity"
+    "title": "components/dashboard/entity"
   },
   {
     "path": "components/dashboard/entity/shared/readme.md",
-    "title": "Shared"
+    "title": "components/dashboard/entity/shared"
   },
   {
     "path": "components/dashboard/entity/shared/renderers/readme.md",
-    "title": "Renderers"
+    "title": "components/dashboard/entity/shared/renderers"
   },
   {
     "path": "components/dashboard/layout/readme.md",
-    "title": "Layout"
+    "title": "components/dashboard/layout"
   },
   {
     "path": "components/dashboard/readme.md",
-    "title": "Dashboard"
+    "title": "components/dashboard"
   },
   {
     "path": "components/dashboard/sidebar/readme.md",
-    "title": "Sidebar"
+    "title": "components/dashboard/sidebar"
   },
   {
     "path": "components/forms/readme.md",
-    "title": "Forms"
+    "title": "components/forms"
   },
   {
     "path": "components/insights/layout/readme.md",
-    "title": "Layout"
+    "title": "components/insights/layout"
   },
   {
     "path": "components/insights/readme.md",
-    "title": "Insights"
+    "title": "components/insights"
   },
   {
     "path": "components/landing/layout/readme.md",
-    "title": "Layout"
+    "title": "components/landing/layout"
   },
   {
     "path": "components/landing/readme.md",
-    "title": "Landing"
+    "title": "components/landing"
   },
   {
     "path": "components/landing/sections/market-insights/readme.md",
-    "title": "Market Insights"
+    "title": "components/landing/sections/market-insights"
   },
   {
     "path": "components/landing/sections/readme.md",
-    "title": "Sections"
+    "title": "components/landing/sections"
   },
   {
     "path": "components/landing/sections/roi/readme.md",
-    "title": "Roi"
+    "title": "components/landing/sections/roi"
   },
   {
     "path": "components/landing/widgets/readme.md",
-    "title": "Widgets"
+    "title": "components/landing/widgets"
   },
   {
     "path": "components/marketing/readme.md",
-    "title": "Marketing"
+    "title": "components/marketing"
   },
   {
     "path": "components/marketing/sections/contact/readme.md",
-    "title": "Contact"
+    "title": "components/marketing/sections/contact"
   },
   {
     "path": "components/marketing/sections/legal/readme.md",
-    "title": "Legal"
+    "title": "components/marketing/sections/legal"
   },
   {
     "path": "components/marketing/sections/pricing/readme.md",
-    "title": "Pricing"
+    "title": "components/marketing/sections/pricing"
   },
   {
     "path": "components/marketing/sections/readme.md",
-    "title": "Sections"
+    "title": "components/marketing/sections"
   },
   {
     "path": "components/marketing/widgets/readme.md",
-    "title": "Widgets"
+    "title": "components/marketing/widgets"
   },
   {
     "path": "components/readme.md",
-    "title": "Components"
+    "title": "components"
   },
   {
     "path": "components/ui/atoms/icon/readme.md",
-    "title": "Icon"
+    "title": "components/ui/atoms/icon"
   },
   {
     "path": "components/ui/atoms/progress/readme.md",
-    "title": "Progress"
+    "title": "components/ui/atoms/progress"
   },
   {
     "path": "components/ui/atoms/readme.md",
-    "title": "Atoms"
+    "title": "components/ui/atoms"
   },
   {
     "path": "components/ui/molecules/readme.md",
-    "title": "Molecules"
+    "title": "components/ui/molecules"
   },
   {
     "path": "components/ui/molecules/shared/readme.md",
-    "title": "Shared"
+    "title": "components/ui/molecules/shared"
   },
   {
     "path": "components/ui/molecules/tab-switcher/readme.md",
-    "title": "Tab Switcher"
+    "title": "components/ui/molecules/tab-switcher"
   },
   {
     "path": "components/ui/organisms/footer-system/readme.md",
-    "title": "Footer System"
+    "title": "components/ui/organisms/footer-system"
   },
   {
     "path": "components/ui/organisms/navbar/readme.md",
-    "title": "Navbar"
+    "title": "components/ui/organisms/navbar"
   },
   {
     "path": "components/ui/organisms/readme.md",
-    "title": "Organisms"
+    "title": "components/ui/organisms"
   },
   {
     "path": "components/ui/patterns/readme.md",
-    "title": "Patterns"
+    "title": "components/ui/patterns"
   },
   {
     "path": "components/ui/readme.md",
-    "title": "Ui"
+    "title": "components/ui"
   },
   {
     "path": "components/ui/shared/readme.md",
-    "title": "Shared"
+    "title": "components/ui/shared"
   },
   {
     "path": "config/readme.md",
@@ -230,7 +230,7 @@ export const docs = [
   },
   {
     "path": "contexts/readme.md",
-    "title": "Contexts"
+    "title": "contexts"
   },
   {
     "path": "db/readme.md",
@@ -238,11 +238,11 @@ export const docs = [
   },
   {
     "path": "docs/readme.md",
-    "title": "Docs"
+    "title": "Documentation Index"
   },
   {
     "path": "docs/security/readme.md",
-    "title": "Security"
+    "title": "docs/security"
   },
   {
     "path": "eslint-plugin-corso/readme.md",
@@ -250,103 +250,103 @@ export const docs = [
   },
   {
     "path": "hooks/chat/readme.md",
-    "title": "Chat"
+    "title": "hooks/chat"
   },
   {
     "path": "hooks/dashboard/readme.md",
-    "title": "Dashboard"
+    "title": "hooks/dashboard"
   },
   {
     "path": "hooks/integrations/readme.md",
-    "title": "Integrations"
+    "title": "hooks/integrations"
   },
   {
     "path": "hooks/marketing/readme.md",
-    "title": "Marketing"
+    "title": "hooks/marketing"
   },
   {
     "path": "hooks/readme.md",
-    "title": "Hooks"
+    "title": "hooks"
   },
   {
     "path": "hooks/security/readme.md",
-    "title": "Security"
+    "title": "hooks/security"
   },
   {
     "path": "lib/actions/readme.md",
-    "title": "Actions"
+    "title": "lib/actions"
   },
   {
     "path": "lib/api/readme.md",
-    "title": "Api"
+    "title": "lib/api"
   },
   {
     "path": "lib/auth/readme.md",
-    "title": "Auth"
+    "title": "lib/auth"
   },
   {
     "path": "lib/chat/readme.md",
-    "title": "Chat"
+    "title": "lib/chat"
   },
   {
     "path": "lib/core/readme.md",
-    "title": "Core"
+    "title": "lib/core"
   },
   {
     "path": "lib/dashboard/readme.md",
-    "title": "Dashboard"
+    "title": "lib/dashboard"
   },
   {
     "path": "lib/integrations/readme.md",
-    "title": "Integrations"
+    "title": "lib/integrations"
   },
   {
     "path": "lib/marketing/readme.md",
-    "title": "Marketing"
+    "title": "lib/marketing"
   },
   {
     "path": "lib/middleware/readme.md",
-    "title": "Middleware"
+    "title": "lib/middleware"
   },
   {
     "path": "lib/monitoring/readme.md",
-    "title": "Monitoring"
+    "title": "lib/monitoring"
   },
   {
     "path": "lib/ratelimiting/readme.md",
-    "title": "Ratelimiting"
+    "title": "lib/ratelimiting"
   },
   {
     "path": "lib/readme.md",
-    "title": "Lib"
+    "title": "lib"
   },
   {
     "path": "lib/security/readme.md",
-    "title": "Security"
+    "title": "lib/security"
   },
   {
     "path": "lib/server/readme.md",
-    "title": "Server"
+    "title": "lib/server"
   },
   {
     "path": "lib/services/entity/readme.md",
-    "title": "Entity"
+    "title": "lib/services/entity"
   },
   {
     "path": "lib/shared/readme.md",
-    "title": "Shared"
+    "title": "lib/shared"
   },
   {
     "path": "lib/shared/utils/readme.md",
-    "title": "Utils"
+    "title": "lib/shared/utils"
   },
   {
     "path": "lib/shared/validation/readme.md",
-    "title": "Validation"
+    "title": "lib/shared/validation"
   },
   {
     "path": "lib/validators/readme.md",
-    "title": "Validators"
+    "title": "lib/validators"
   },
   {
     "path": "public/readme.md",
@@ -354,91 +354,91 @@ export const docs = [
   },
   {
     "path": "readme.md",
-    "title": "README.md"
+    "title": "Corso"
   },
   {
     "path": "scripts/analysis/readme.md",
-    "title": "Analysis"
+    "title": "scripts/analysis"
   },
   {
     "path": "scripts/audit/readme.md",
-    "title": "Audit"
+    "title": "scripts/audit"
   },
   {
     "path": "scripts/ci/readme.md",
-    "title": "Ci"
+    "title": "scripts/ci"
   },
   {
     "path": "scripts/codemods/readme.md",
-    "title": "Codemods"
+    "title": "scripts/codemods"
   },
   {
     "path": "scripts/docs/readme.md",
-    "title": "Docs"
+    "title": "scripts/docs"
   },
   {
     "path": "scripts/lint/readme.md",
-    "title": "Lint"
+    "title": "scripts/lint"
   },
   {
     "path": "scripts/maintenance/readme.md",
-    "title": "Maintenance"
+    "title": "scripts/maintenance"
   },
   {
     "path": "scripts/readme.md",
-    "title": "Scripts"
+    "title": "scripts"
   },
   {
     "path": "scripts/rules/ast-grep/readme.md",
-    "title": "Ast Grep"
+    "title": "scripts/rules/ast-grep"
   },
   {
     "path": "scripts/rules/readme.md",
-    "title": "Rules"
+    "title": "scripts/rules"
   },
   {
     "path": "scripts/setup/readme.md",
-    "title": "Setup"
+    "title": "scripts/setup"
   },
   {
     "path": "scripts/test/readme.md",
-    "title": "Test"
+    "title": "scripts/test"
   },
   {
     "path": "scripts/utils/readme.md",
-    "title": "Utils"
+    "title": "Utils Scripts"
   },
   {
     "path": "scripts/validation/readme.md",
-    "title": "Validation"
+    "title": "scripts/validation"
   },
   {
     "path": "styles/readme.md",
-    "title": "Styles"
+    "title": "styles"
   },
   {
     "path": "styles/tokens/readme.md",
-    "title": "Tokens"
+    "title": "styles/tokens"
   },
   {
     "path": "styles/ui/atoms/readme.md",
-    "title": "Atoms"
+    "title": "styles/ui/atoms"
   },
   {
     "path": "styles/ui/molecules/readme.md",
-    "title": "Molecules"
+    "title": "styles/ui/molecules"
   },
   {
     "path": "styles/ui/organisms/readme.md",
-    "title": "Organisms"
+    "title": "styles/ui/organisms"
   },
   {
     "path": "styles/ui/readme.md",
-    "title": "Ui"
+    "title": "styles/ui"
   },
   {
     "path": "styles/ui/shared/readme.md",
-    "title": "Shared"
+    "title": "styles/ui/shared"
   },
   {
     "path": "supabase/readme.md",
@@ -482,79 +482,79 @@ export const docs = [
   },
   {
     "path": "types/api/readme.md",
-    "title": "Api"
+    "title": "types/api"
   },
   {
     "path": "types/auth/readme.md",
-    "title": "Auth"
+    "title": "types/auth"
   },
   {
     "path": "types/chat/readme.md",
-    "title": "Chat"
+    "title": "types/chat"
   },
   {
     "path": "types/config/readme.md",
-    "title": "Config"
+    "title": "types/config"
   },
   {
     "path": "types/dashboard/readme.md",
-    "title": "Dashboard"
+    "title": "types/dashboard"
   },
   {
     "path": "types/forms/readme.md",
-    "title": "Forms"
+    "title": "types/forms"
   },
   {
     "path": "types/integrations/readme.md",
-    "title": "Integrations"
+    "title": "types/integrations"
   },
   {
     "path": "types/integrations/supabase/readme.md",
-    "title": "Supabase"
+    "title": "types/integrations/supabase"
   },
   {
     "path": "types/marketing/readme.md",
-    "title": "Marketing"
+    "title": "types/marketing"
   },
   {
     "path": "types/readme.md",
-    "title": "Types"
+    "title": "types"
   },
   {
     "path": "types/security/readme.md",
-    "title": "Security"
+    "title": "types/security"
   },
   {
     "path": "types/shared/config/readme.md",
-    "title": "Config"
+    "title": "types/shared/config"
   },
   {
     "path": "types/shared/core/readme.md",
-    "title": "Core"
+    "title": "types/shared/core"
   },
   {
     "path": "types/shared/data/readme.md",
-    "title": "Data"
+    "title": "types/shared/data"
   },
   {
     "path": "types/shared/performance/readme.md",
-    "title": "Performance"
+    "title": "types/shared/performance"
   },
   {
     "path": "types/shared/readme.md",
-    "title": "Shared"
+    "title": "types/shared"
   },
   {
     "path": "types/shared/system/readme.md",
-    "title": "System"
+    "title": "types/shared/system"
   },
   {
     "path": "types/shared/utils/readme.md",
-    "title": "Utils"
+    "title": "types/shared/utils"
   },
   {
     "path": "types/validators/readme.md",
-    "title": "Validators"
+    "title": "types/validators"
   },
   {
     "path": "docs/security/dependency-policy.md",

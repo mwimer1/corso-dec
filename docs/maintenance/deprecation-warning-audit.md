@@ -1,3 +1,11 @@
+---
+title: "DEP0060 util._extend Deprecation Warning - Audit & Resolution"
+description: "Audit and resolution guide for Node.js util._extend deprecation warnings."
+last_updated: "2025-12-15"
+category: "documentation"
+status: "stable"
+---
+
 # DEP0060 util._extend Deprecation Warning - Audit & Resolution
 
 **Date**: 2025-12-16  

@@ -1,3 +1,11 @@
+---
+title: "Dead Code Removal - Batch 3 Summary"
+description: "Investigation results for Batch 3 high-risk dead code removal items."
+last_updated: "2025-12-15"
+category: "documentation"
+status: "stable"
+---
+
 # Dead Code Removal - Batch 3 Summary
 
 ## Investigation Results

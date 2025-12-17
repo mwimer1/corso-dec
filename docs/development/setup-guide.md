@@ -615,10 +615,10 @@ pnpm dev --turbo  # If available
 # The script checks for: Spectral, Spellcheck, and other AI tools
 
 # Install Spectral (OpenAPI linter)
-npm install -g @stoplight/spectral
+pnpm add -g @stoplight/spectral
 
 # Install Spellcheck (markdown spell checking)
-npm install -g spellchecker-cli
+pnpm add -g spellchecker-cli
 
 # Alternative: Let the script install them automatically
 pnpm run verify:ai-tools --force

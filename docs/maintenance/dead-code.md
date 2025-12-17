@@ -1,3 +1,11 @@
+---
+title: "Dead Code Removal Guide"
+description: "Process and policies for identifying and removing dead code in the Corso codebase."
+last_updated: "2025-12-15"
+category: "documentation"
+status: "stable"
+---
+
 # Dead Code Removal Guide
 
 This document describes the process and policies for identifying and removing dead code in the Corso codebase.

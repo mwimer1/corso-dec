@@ -1,3 +1,11 @@
+---
+title: "Dead Code Removal Sprint - Complete"
+description: "Summary of completed dead code removal sprint across all batches."
+last_updated: "2025-12-15"
+category: "documentation"
+status: "stable"
+---
+
 # Dead Code Removal Sprint - Complete ✅
 
 ## Summary
