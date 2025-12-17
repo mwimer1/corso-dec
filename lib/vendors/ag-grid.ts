@@ -9,5 +9,6 @@
  */
 
 // Re-export from client adapter (client components should import directly)
+// eslint-disable-next-line import/no-unused-modules -- Exports are used in test files (tests/support/setup/vitest.setup.shared.ts, tests/dashboard/ag-grid-modules.test.ts)
 export { ensureAgGridReadyFor, ensureAgGridRegistered } from './ag-grid.client';
 
