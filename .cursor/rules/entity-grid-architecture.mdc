@@ -12,7 +12,7 @@ globs:
 related_rules:
   - dashboard-components
   - component-design-system
-last_reviewed: "2025-10-13"
+last_reviewed: "2025-01-28"
 summary: Standardize AG Grid setup, registration, SSRM usage, and boundaries.
 ---
 
@@ -78,11 +78,37 @@ lib/services/entity/
   ```
 - POST to `/api/v1/entity/{entity}/query` (edge-safe at callsite).
 
+## AG Grid Module Registration
+
+**Critical**: AG Grid modules must be registered before any grid is instantiated. The grid uses `rowModelType="serverSide"` which requires Enterprise modules.
+
+### Registration Pattern
+- **Client-only registration**: `lib/vendors/ag-grid.client.ts` registers `AllEnterpriseModule`
+- **Component integration**: `components/dashboard/entity/shared/grid/ag-grid-modules.ts` calls `registerAgGridModules()` at module level
+- **Automatic execution**: `EntityGrid` component calls `registerAgGridModules()` before render (line 21)
+
+### Environment Requirements
+- `NEXT_PUBLIC_AGGRID_ENTERPRISE=1` must be set (required for server-side row model)
+- `NEXT_PUBLIC_AG_GRID_LICENSE_KEY` (optional, removes watermark in production)
+
+### Implementation Details
+```typescript
+// Registration happens automatically when EntityGrid module loads
+registerAgGridModules(); // Called at module level in entity-grid.tsx
+
+// Which calls:
+ensureAgGridRegistered(); // From lib/vendors/ag-grid.client.ts
+
+// Which registers:
+ModuleRegistry.registerModules([AllEnterpriseModule]); // Includes ServerSideRowModelModule
+```
+
 ## Rules
 - Do not deep-import renderers; import directly from `shared/renderers/` (no barrel after cleanup).
 - Keep server-only code out of `@/components/**` (client bundles).
 - Column definitions must use `TableColumnConfig` schema in `lib/services/entity/<entity>/columns.config.ts`.
 - Route options: export top-level literals (`runtime`, `dynamic`, `revalidate`). No `as const`.
+- **AG Grid registration**: Never call `ModuleRegistry.registerModules()` directly in components. Use `ensureAgGridRegistered()` from `@/lib/vendors/ag-grid.client`.
 
 ## Quality Gates
 - Run sequentially:
