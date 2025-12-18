@@ -152,12 +152,16 @@ export function NavbarMenu({
             id="mobile-menu"
             role="dialog"
             aria-modal="true"
+            aria-labelledby="mobile-menu-title"
             aria-describedby="mobile-menu-description"
             className={cn(
               navbarStyles.mobileMenu(),
               isMobileMenuOpen && navbarStyles.mobileMenuOpen()
             )}
           >
+            <DialogPrimitive.Title id="mobile-menu-title" className="sr-only">
+              Mobile Navigation
+            </DialogPrimitive.Title>
             <DialogPrimitive.Description id="mobile-menu-description" className="sr-only">
               Mobile navigation menu
             </DialogPrimitive.Description>
