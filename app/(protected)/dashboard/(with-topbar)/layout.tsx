@@ -4,11 +4,13 @@ import { DashboardLayout } from "@/components/dashboard";
 import type { ReactNode } from "react";
 
 /**
- * Layout for routes that SHOULD render the dashboard top bar.
- * Used for entity pages (projects, companies, addresses) and settings pages (account, subscription).
+ * Layout for entity pages (projects, companies, addresses) and settings pages (account, subscription).
+ * 
+ * Note: The top bar has been removed globally. This route group name is kept for organizational
+ * purposes but no longer controls top bar rendering.
  */
 export default function WithTopBarLayout({ children }: { children: ReactNode }) {
   return (
-    <DashboardLayout showTopBar={true}>{children}</DashboardLayout>
+    <DashboardLayout>{children}</DashboardLayout>
   );
 }

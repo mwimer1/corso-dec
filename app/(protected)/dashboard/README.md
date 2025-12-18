@@ -7,19 +7,19 @@ status: "draft"
 ---
 ## Overview
 
-The dashboard provides authenticated users with entity management (projects, companies, addresses), account management, billing, and AI chat. The layout uses Next.js App Router route groups to separate pages that need a top bar from those that don't.
+The dashboard provides authenticated users with entity management (projects, companies, addresses), account management, billing, and AI chat. The layout uses Next.js App Router route groups for organizational purposes, but all routes share the same layout without a global top bar to maximize vertical space.
 
 ```
 app/(protected)/dashboard/
 ├── layout.tsx                 # Root layout: auth only (no shell)
 ├── page.tsx                   # Index route: redirects to /dashboard/chat
 ├── error.tsx                  # Error boundary
-├── (no-topbar)/               # Route group: full-height pages without top bar
-│   ├── layout.tsx             # Dashboard shell + sidebar, NO top bar
+├── (no-topbar)/               # Route group: chat and full-height pages
+│   ├── layout.tsx             # Dashboard shell + sidebar (no top bar)
 │   └── chat/
 │       └── page.tsx           # CorsoAI chat (default dashboard landing)
-└── (with-topbar)/             # Route group: pages with top bar
-    ├── layout.tsx             # Dashboard shell + sidebar, WITH top bar
+└── (with-topbar)/             # Route group: entity and settings pages
+    ├── layout.tsx             # Dashboard shell + sidebar (no top bar)
     ├── (entities)/
     │   └── [entity]/
     │       └── page.tsx       # Dynamic entity pages (addresses/companies/projects)
@@ -44,16 +44,17 @@ app/(protected)/dashboard/
 ## Route Groups
 
 ### `(no-topbar)/` Route Group
-- **Purpose:** Pages that should use full vertical height without a top bar
-- **Layout:** Renders `DashboardLayout` with `showTopBar={false}`
+- **Purpose:** Organizes chat and other full-height pages
+- **Layout:** Renders `DashboardLayout` (no top bar - removed globally)
 - **Routes:** Chat (default dashboard landing)
-- **Use Case:** Full-height content like chat interfaces that shouldn't waste vertical space
+- **Use Case:** Full-height content like chat interfaces
 
 ### `(with-topbar)/` Route Group
-- **Purpose:** Pages that benefit from a top bar showing the current section title
-- **Layout:** Renders `DashboardLayout` with `showTopBar={true}`
+- **Purpose:** Organizes entity pages and settings pages
+- **Layout:** Renders `DashboardLayout` (no top bar - removed globally)
 - **Routes:** Entity pages (projects, companies, addresses), account, subscription
-- **Use Case:** Pages with toolbars, tables, or settings that need clear section identification
+- **Use Case:** Pages with toolbars, tables, or settings that render their own headings if needed
+- **Note:** The route group name is kept for organizational purposes but no longer controls top bar rendering
 
 ### `(entities)/` Route Group (nested under `(with-topbar)`)
 - **Purpose:** Organizes entity management using dynamic routing
@@ -83,24 +84,26 @@ export default async function Layout({ children }) {
 ```
 
 ### No Top Bar Layout (`(no-topbar)/layout.tsx`)
-Renders the dashboard shell (sidebar + main content) without the top bar. Used for chat and other full-height pages.
+Renders the dashboard shell (sidebar + main content). Used for chat and other full-height pages.
 
 ```tsx
 // (no-topbar)/layout.tsx
 export default function NoTopBarLayout({ children }) {
-  return <DashboardLayout showTopBar={false}>{children}</DashboardLayout>;
+  return <DashboardLayout>{children}</DashboardLayout>;
 }
 ```
 
 ### With Top Bar Layout (`(with-topbar)/layout.tsx`)
-Renders the dashboard shell (sidebar + main content) with the top bar. Used for entity pages and settings.
+Renders the dashboard shell (sidebar + main content). Used for entity pages and settings.
 
 ```tsx
 // (with-topbar)/layout.tsx
 export default function WithTopBarLayout({ children }) {
-  return <DashboardLayout showTopBar={true}>{children}</DashboardLayout>;
+  return <DashboardLayout>{children}</DashboardLayout>;
 }
 ```
+
+**Note:** The top bar has been removed globally from all dashboard routes to maximize vertical space. Both route groups now render the same layout.
 
 ## Implementation
 
@@ -135,13 +138,13 @@ export default async function EntityPage({ params }: { params: Promise<{ entity:
 }
 ```
 
-## Dashboard Header & Top Bar
+## Dashboard Layout
 
-The dashboard layout includes a top bar (`DashboardTopBar`) that displays the current section title for pages in the `(with-topbar)` route group.
+The dashboard layout no longer includes a global top bar to maximize vertical space across all routes.
 
-**Chat Route Exception:** The `/dashboard/chat` route is in the `(no-topbar)` group and does not render the top bar to maximize vertical space for the chat interface. The chat page uses the full available height without any header, allowing the chat content to start at the top of the main content area.
+**All Routes:** All dashboard routes (chat, entities, account, subscription) share the same layout without a top bar. Pages should render their own headings if needed.
 
-**Entity Pages:** Entity pages (Projects, Companies, Addresses) are in the `(with-topbar)` group and render the `DashboardTopBar` with the entity name as the title, plus a toolbar (`GridMenubar`) with saved searches, export options, and grid controls.
+**Entity Pages:** Entity pages (Projects, Companies, Addresses) render a toolbar (`GridMenubar`) with saved searches, export options, and grid controls, but no global top bar.
 
 ## Navigation & Sidebar
 
@@ -186,8 +189,7 @@ pnpm vitest run            # Test components
 
 | Component | Location | Purpose |
 |-----------|----------|---------|
-| `DashboardLayout` | `@/components/dashboard` | Main layout shell with sidebar and optional top bar (controlled by `showTopBar` prop) |
-| `DashboardTopBar` | `@/components/dashboard/layout` | Fixed top bar displaying current section title (rendered when `showTopBar={true}`) |
+| `DashboardLayout` | `@/components/dashboard` | Main layout shell with sidebar (no top bar) |
 | `DashboardSidebar` | `@/components/dashboard/layout` | Collapsible sidebar navigation |
 | `EntityGridHost` | `@/components/dashboard/entity` | Client grid host via typed registry |
 | `EntityGrid` | `@/components/dashboard/entity/shared/grid` | AG Grid wrapper with server-side data source |
