@@ -4,7 +4,7 @@ import { Button, SkipNavLink } from "@/components/ui/atoms";
 import { LinkTrack, ReadingProgress } from "@/components/ui/molecules";
 import { APP_LINKS } from '@/lib/shared';
 import { cn } from "@/styles";
-import { fullWidthSectionContainerVariants } from "@/styles/ui/organisms";
+import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
 import { containerWithPaddingVariants } from "@/styles/ui/shared/container-helpers";
 import type { NavItemData } from "@/types/shared";
 import { useAuth } from "@clerk/nextjs";
@@ -92,7 +92,7 @@ export function PublicLayout({
       <main
         id="main-content"
         className={cn(
-          "flex-1 relative bg-background text-foreground",
+          "flex-1 relative bg-background text-foreground overflow-x-hidden",
           showReadingProgress && "pt-1", // Account for reading progress bar (1px height)
           !isSignedIn && showMobileCTA && "pb-20", // Prevent footer overlap with mobile CTA
           className,
@@ -102,9 +102,14 @@ export function PublicLayout({
         {/* Page-level continuous vertical guidelines overlay (scoped to main; excludes footer) */}
         {showVerticalGuidelines && (
           <div className={cn('pointer-events-none absolute inset-0 z-[39]')} aria-hidden="true">
-            <div className={cn(fullWidthSectionContainerVariants({ maxWidth: '7xl', padding: 'lg' }), 'relative h-full w-full mx-auto')}>
-              <div className="absolute inset-y-0 left-0 w-px bg-border" />
-              <div className="absolute inset-y-0 right-0 w-px bg-border" />
+            <div className={cn(
+              containerMaxWidthVariants({ maxWidth: '7xl', centered: true }),
+              'relative h-full mx-auto'
+            )}>
+              {/* Left guideline positioned at inner edge of padding (px-4 sm:px-6 lg:px-8) */}
+              <div className="absolute inset-y-0 left-4 sm:left-6 lg:left-8 w-px bg-border" />
+              {/* Right guideline positioned at inner edge of padding (px-4 sm:px-6 lg:px-8) */}
+              <div className="absolute inset-y-0 right-4 sm:right-6 lg:right-8 w-px bg-border" />
             </div>
           </div>
         )}

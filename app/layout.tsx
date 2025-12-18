@@ -61,7 +61,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           }}
         />
       </head>
-      <body>
+      <body className="overflow-x-hidden">
         <Providers>
           {stage === 'development' || isDev ? <ClerkEventsHandler /> : null}
           {children}
