@@ -23,6 +23,7 @@ type SectionHeaderProps = {
  * SectionHeader – semantic, reusable title/subtitle block used across domains.
  * Remains SSR-safe (no hooks) so it can be used in server and client code.
  */
+// eslint-disable-next-line import/no-unused-modules -- Used directly in components/insights/sections/insight-detail.tsx
 export const SectionHeader = React.forwardRef<HTMLElement, SectionHeaderProps>(
   (
     {

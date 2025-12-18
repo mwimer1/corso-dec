@@ -11,7 +11,7 @@ let registered = false;
  * 
  * @returns true if Enterprise is enabled, false otherwise
  */
- 
+// eslint-disable-next-line import/no-unused-modules -- Used in components/dashboard/entity/shared/grid/entity-grid.tsx
 export function isAgGridEnterpriseEnabled(): boolean {
   return publicEnv.NEXT_PUBLIC_AGGRID_ENTERPRISE === '1';
 }
@@ -87,7 +87,7 @@ export function ensureAgGridRegistered(): void {
  * @param mode - Row model mode ('serverSide', 'clientSide', etc.)
  * @throws {Error} If Enterprise is required but not enabled
  */
- 
+// eslint-disable-next-line import/no-unused-modules -- Used in components/dashboard/entity/shared/grid/entity-grid.tsx
 export async function ensureAgGridReadyFor(mode: string): Promise<void> {
   ensureAgGridRegistered();
   
