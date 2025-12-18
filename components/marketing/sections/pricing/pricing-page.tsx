@@ -132,7 +132,7 @@ export const PricingPage = React.forwardRef<HTMLDivElement, PricingPageProps>(
           containerPadding="lg"
         >
           <FaqSectionFrame>
-            <PricingFAQ faqs={faqs} />
+            <PricingFAQ faqs={faqs} columns={2} columnsAt="lg" />
           </FaqSectionFrame>
         </FullWidthSection>
 
