@@ -148,8 +148,9 @@ export default async function InsightPage({ params }: { params: Promise<{ slug: 
         navMode="insights"
         navItems={getInsightsNavItems()}
         showReadingProgress={true}
+        showVerticalGuidelines
       >
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div className="px-4 sm:px-6 lg:px-8 py-8">
           <InsightDetail
             initialData={item}
             relatedArticles={relatedArticles}

@@ -9,12 +9,11 @@ import {
     INSIGHT_HERO_WIDTH,
 } from "@/components/insights/constants";
 import { useArticleAnalytics } from "@/components/insights/hooks/use-article-analytics";
-import { RelatedArticles } from "@/components/insights/widgets/related-articles";
 import { Breadcrumbs } from "@/components/insights/widgets/breadcrumbs";
+import { RelatedArticles } from "@/components/insights/widgets/related-articles";
 import { SectionHeader } from "@/components/ui/patterns/section-header";
 import { cn } from "@/styles";
 import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
-import { headingVariants } from "@/styles/ui/shared/typography-variants";
 import type { InsightItem } from "@/types/marketing";
 import { format } from "date-fns";
 import DOMPurify from "dompurify";
@@ -51,6 +50,7 @@ export const InsightDetail = React.forwardRef<
     publishDate,
     author,
     imageUrl,
+    readingTime,
   } = initialData;
 
   const sanitizedContent = React.useMemo(() => {
@@ -94,8 +94,9 @@ export const InsightDetail = React.forwardRef<
     <article
       ref={ref}
       className={cn(
-        containerMaxWidthVariants({ maxWidth: '4xl', centered: true }),
+        containerMaxWidthVariants({ maxWidth: '3xl', centered: true }),
         "prose prose-gray max-w-none prose-lg prose-headings:font-bold prose-headings:tracking-tight prose-p:text-foreground/90 prose-p:leading-relaxed prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-foreground prose-strong:font-semibold prose-code:bg-muted prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-pre:bg-muted prose-pre:border",
+        "space-y-8",
         className,
       )}
       {...rest}
@@ -103,41 +104,64 @@ export const InsightDetail = React.forwardRef<
       {/* Note: Structured data is now handled server-side in the page component for better SEO */}
 
       {breadcrumbs && breadcrumbs.length > 0 && (
-        <Breadcrumbs items={breadcrumbs} />
+        <div className="mb-4">
+          <Breadcrumbs items={breadcrumbs} />
+        </div>
       )}
 
-      <header className={cn(headingVariants({ size: 'h1', align: 'center' }), "mb-8")}>
-        {/* Article Header */}
-        <div className="space-y-4">
-          <SectionHeader
-            headingLevel={1}
-            title={title}
-            subtitle={publishDate ? format(new Date(publishDate), "MMM d, yyyy") : undefined}
-            align="left"
-          />
+      <header className="space-y-6">
+        {/* Article Title */}
+        <SectionHeader
+          headingLevel={1}
+          title={title}
+          align="left"
+        />
 
+        {/* Unified Metadata Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 text-sm text-muted-foreground">
+          {/* Date and Reading Time */}
+          <div className="flex items-center gap-4">
+            {publishDate && (
+              <time dateTime={publishDate} className="flex items-center gap-1.5">
+                <span>{format(new Date(publishDate), "MMM d, yyyy")}</span>
+              </time>
+            )}
+            {readingTime && (
+              <>
+                <span aria-hidden className="hidden sm:inline">•</span>
+                <span className="flex items-center gap-1.5">
+                  {readingTime} min read
+                </span>
+              </>
+            )}
+          </div>
+
+          {/* Author */}
           {author && (
-            <div className="flex items-center gap-3">
-              {author.avatar && (
-                <Image
-                  src={author.avatar}
-                  alt={author.name}
-                  width={48}
-                  height={48}
-                  className="rounded-full ring-2 ring-border"
-                />
-              )}
-              <div className="space-y-1">
-                <span className="text-sm font-medium text-foreground">Written by</span>
-                <p className="text-sm text-muted-foreground">{author.name}</p>
+            <>
+              <span aria-hidden className="hidden sm:inline">•</span>
+              <div className="flex items-center gap-2">
+                {author.avatar && (
+                  <Image
+                    src={author.avatar}
+                    alt={author.name}
+                    width={32}
+                    height={32}
+                    className="rounded-full ring-1 ring-border"
+                  />
+                )}
+                <span>
+                  <span className="text-foreground/70">Written by </span>
+                  <span className="font-medium text-foreground">{author.name}</span>
+                </span>
               </div>
-            </div>
+            </>
           )}
         </div>
 
         {/* Categories */}
         {categories && categories.length > 0 && (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 pt-2">
             {categories.map((category: { slug: string; name: string }) => (
               <span
                 key={category.slug}
@@ -151,7 +175,7 @@ export const InsightDetail = React.forwardRef<
       </header>
 
       {imageUrl && (
-        <div className="relative mb-8 overflow-hidden rounded-lg">
+        <div className="relative overflow-hidden rounded-lg">
           <Image
             src={imageUrl}
             alt={title}
@@ -165,11 +189,11 @@ export const InsightDetail = React.forwardRef<
 
       <section
         dangerouslySetInnerHTML={{ __html: sanitizedContent }}
-        className="mx-auto"
+        className="prose-content"
       />
 
       {relatedArticles.length > 0 && (
-        <div className="mt-12 pt-8 border-t border-border">
+        <div className="pt-12 border-t border-border">
           <RelatedArticles articles={relatedArticles} />
         </div>
       )}
