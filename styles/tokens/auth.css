@@ -2,6 +2,8 @@
 :root[data-route-theme="auth"] {
   --background: 0 0% 98%;
   --foreground: 240 10% 3.9%;
+  /* Match surface to background for consistent navbar/page appearance */
+  --surface: 0 0% 98%;
   /* Auth theme uses a dark neutral primary (225 6% 13%) instead of brand blue
      to avoid blue-on-white contrast issues on minimal authentication pages */
   --primary: 225 6% 13%;
@@ -15,6 +17,8 @@
   :root[data-route-theme="auth"] {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
+    /* Match surface to background in dark mode */
+    --surface: 222.2 84% 4.9%;
   }
 }
 
@@ -22,4 +26,6 @@
 .dark [data-route-theme="auth"] {
   --background: 222.2 84% 4.9%;
   --foreground: 210 40% 98%;
+  /* Match surface to background in dark mode */
+  --surface: 222.2 84% 4.9%;
 }
