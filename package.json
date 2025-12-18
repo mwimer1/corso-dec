@@ -95,7 +95,7 @@
     "predev": "tsx scripts/maintenance/ensure-ports.ts --DevPort 3000 --PlaywrightPort 9323 && tsx scripts/maintenance/kill-orphans.ts --max-age 30",
     "dev": "pnpm run gen:mockdb && pnpm run dev:next",
     "dev:trace-deprecations": "cross-env NODE_OPTIONS=--trace-deprecation pnpm run dev:next",
-    "dev:next": "next dev --turbo --hostname localhost -p 3000",
+    "dev:next": "cross-env NODE_OPTIONS=--no-deprecation next dev --turbo --hostname localhost -p 3000",
     "dev:clean:orphans": "tsx scripts/maintenance/kill-orphans.ts --max-age 240",
     "cleanup:ports": "tsx scripts/maintenance/ensure-ports.ts 3000 9323 --kill-only",
     "dev:start": "node -e \"require('child_process').spawn('pnpm', ['dev'], {stdio: 'inherit', detached: true})\"",
