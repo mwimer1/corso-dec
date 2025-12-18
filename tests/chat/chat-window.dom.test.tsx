@@ -163,4 +163,119 @@ describe('ChatWindow', () => {
     }, { timeout: 3000 });
     expect(screen.getByText('Enter to send · Shift+Enter for newline')).toBeInTheDocument();
   });
+
+  it('composer remains visible and accessible after clicking preset button', async () => {
+    const mockMessages = [
+      { id: '1', type: 'user' as const, content: '[mode:projects] Show permits issued in the last 30 days', timestamp: new Date().toISOString() },
+      { id: '2', type: 'assistant' as const, content: 'Processing your request...', timestamp: new Date().toISOString() },
+    ];
+
+    const sendMessage = vi.fn().mockImplementation(() => {
+      // Simulate adding messages after preset click
+      return Promise.resolve();
+    });
+
+    vi.spyOn(useChatModule, 'useChat').mockReturnValue({
+      messages: [],
+      isProcessing: false,
+      detectedTable: null,
+      sendMessage,
+      stop: vi.fn(),
+      clearChat: vi.fn(),
+      saveHistory: vi.fn(),
+      loadHistory: vi.fn(),
+      error: null,
+      clearError: vi.fn(),
+      retryLastMessage: vi.fn(),
+    } as unknown as ReturnType<typeof useChatModule.useChat>);
+
+    const { rerender } = render(<ChatWindow />);
+
+    // Wait for composer to hydrate
+    await waitFor(() => {
+      expect(screen.getByLabelText('Chat message input')).toBeInTheDocument();
+    }, { timeout: 3000 });
+
+    // Initial state: composer should be visible
+    const composer = screen.getByRole('region', { name: /message composer/i });
+    expect(composer).toBeInTheDocument();
+    expect(composer).toBeVisible();
+
+    // Click a preset button
+    const presetButton = screen.getByText('Show permits issued in the last 30 days');
+    fireEvent.click(presetButton);
+
+    // Verify sendMessage was called
+    expect(sendMessage).toHaveBeenCalledWith('[mode:projects] Show permits issued in the last 30 days');
+
+    // Simulate messages being added (hasHistory becomes true)
+    vi.spyOn(useChatModule, 'useChat').mockReturnValue({
+      messages: mockMessages,
+      isProcessing: false,
+      detectedTable: null,
+      sendMessage,
+      stop: vi.fn(),
+      clearChat: vi.fn(),
+      saveHistory: vi.fn(),
+      loadHistory: vi.fn(),
+      error: null,
+      clearError: vi.fn(),
+      retryLastMessage: vi.fn(),
+    } as unknown as ReturnType<typeof useChatModule.useChat>);
+
+    rerender(<ChatWindow />);
+
+    // Wait for message list to appear
+    await waitFor(() => {
+      expect(screen.getByRole('log')).toBeInTheDocument();
+    });
+
+    // Composer should still be visible and accessible
+    const composerAfter = screen.getByRole('region', { name: /message composer/i });
+    expect(composerAfter).toBeInTheDocument();
+    expect(composerAfter).toBeVisible();
+
+    // Textarea should be present and focusable
+    const textarea = screen.getByLabelText('Chat message input');
+    expect(textarea).toBeInTheDocument();
+    expect(textarea).not.toBeDisabled();
+  });
+
+  it('composer remains visible during processing state', async () => {
+    vi.spyOn(useChatModule, 'useChat').mockReturnValue({
+      messages: [
+        { id: '1', type: 'user' as const, content: 'Test message', timestamp: new Date().toISOString() },
+      ],
+      isProcessing: true,
+      detectedTable: null,
+      sendMessage: vi.fn().mockResolvedValue(undefined),
+      stop: vi.fn(),
+      clearChat: vi.fn(),
+      saveHistory: vi.fn(),
+      loadHistory: vi.fn(),
+      error: null,
+      clearError: vi.fn(),
+      retryLastMessage: vi.fn(),
+    } as unknown as ReturnType<typeof useChatModule.useChat>);
+
+    render(<ChatWindow />);
+
+    // Wait for composer to hydrate
+    await waitFor(() => {
+      expect(screen.getByLabelText('Chat message input')).toBeInTheDocument();
+    }, { timeout: 3000 });
+
+    // Composer should be visible even during processing
+    const composer = screen.getByRole('region', { name: /message composer/i });
+    expect(composer).toBeInTheDocument();
+    expect(composer).toBeVisible();
+
+    // Input may be disabled during processing, but should still be present
+    const textarea = screen.getByLabelText('Chat message input');
+    expect(textarea).toBeInTheDocument();
+    expect(textarea).toBeDisabled();
+
+    // Stop button should be visible during processing
+    expect(screen.getByText('Stop')).toBeInTheDocument();
+  });
 });

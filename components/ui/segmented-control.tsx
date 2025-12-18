@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/styles";
 import * as React from "react";
 
 type SegmentedOption<T extends string> = { id: T; label: string };
@@ -36,7 +37,7 @@ export function SegmentedControl<T extends string>({ value, onChange, options, c
   }
 
   return (
-    <div role="tablist" aria-orientation="horizontal" className={className}>
+    <div role="tablist" aria-orientation="horizontal" className={cn("flex gap-1", className)}>
       {options.map((opt, i) => {
         const selected = opt.id === value;
         return (

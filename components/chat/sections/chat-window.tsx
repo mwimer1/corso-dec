@@ -19,6 +19,7 @@ export default function ChatWindow() {
     } catch {}
     return 'projects';
   });
+  const [hydrated, setHydrated] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const firstName = user?.firstName;
   const hasHistory = messages.length > 0;
@@ -27,6 +28,11 @@ export default function ChatWindow() {
   const placeholder = useMemo(() => `Ask anything about ${mode}…`, [mode]);
 
   const ChatComposer = dynamic(() => import('./chat-composer.client'), { ssr: false });
+
+  // Track hydration state to conditionally render placeholder
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   // Smooth autoscroll to bottom when messages change
   useEffect(() => {
@@ -95,7 +101,7 @@ export default function ChatWindow() {
       }
     >
       {/* Messages list */}
-      <div ref={scrollRef} className={"flex-1 min-h-0 " + (hasHistory ? 'overflow-y-auto' : 'overflow-hidden') + ' bg-gray-50'}>
+      <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto bg-gray-50">
         {hasHistory ? (
           <ul role="log" aria-live="polite" aria-relevant="additions" className="px-4 py-4 space-y-2">
             {messages.map((m) => (
@@ -112,11 +118,13 @@ export default function ChatWindow() {
       </div>
 
       {/* Composer — server placeholder + client-only composer */}
-      <div className="bg-transparent px-6 py-6">
+      <div className="bg-transparent px-6 py-6 flex-shrink-0">
         {/* Server-only placeholder to preserve layout pre-hydration; mark as region for a11y */}
-        <div className="mx-auto w-full max-w-3xl rounded-2xl bg-white p-3 shadow-sm" role="region" aria-hidden="true">
-          {/* Empty shell matches sizing of composer */}
-        </div>
+        {!hydrated && (
+          <div className="mx-auto w-full max-w-3xl rounded-2xl bg-white p-3 shadow-sm" role="region" aria-hidden="true">
+            {/* Empty shell matches sizing of composer */}
+          </div>
+        )}
         {/* Dynamic client-only composer — hydrates on client only */}
         <ChatComposer
           value={draft}
