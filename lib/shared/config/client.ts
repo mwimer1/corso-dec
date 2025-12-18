@@ -86,7 +86,8 @@ const PublicEnvSchema = z.object({
   NEXT_PUBLIC_PLACEHOLDER_IMAGE_BASE: z.string().optional(),
 
   // AG Grid Enterprise license (public by design)
-  NEXT_PUBLIC_AG_GRID_LICENSE_KEY: z.string().min(1).optional(),
+  // Accept both NEXT_PUBLIC_AGGRID_LICENSE_KEY (canonical) and NEXT_PUBLIC_AG_GRID_LICENSE_KEY (legacy)
+  NEXT_PUBLIC_AGGRID_LICENSE_KEY: z.string().min(1).optional(),
   // Accept both NEXT_PUBLIC_AGGRID_ENTERPRISE and NEXT_PUBLIC_AG_GRID_ENTERPRISE (legacy)
   NEXT_PUBLIC_AGGRID_ENTERPRISE: z.string().optional(),
 }).strict();
@@ -190,7 +191,8 @@ export const publicEnv: PublicEnv = (() => {
     NEXT_PUBLIC_PLACEHOLDER_IMAGE_BASE: safeGetEnv('NEXT_PUBLIC_PLACEHOLDER_IMAGE_BASE'),
 
     // AG Grid Enterprise license (public by design)
-    NEXT_PUBLIC_AG_GRID_LICENSE_KEY: safeGetEnv('NEXT_PUBLIC_AG_GRID_LICENSE_KEY'),
+    // Accept both NEXT_PUBLIC_AGGRID_LICENSE_KEY (canonical) and NEXT_PUBLIC_AG_GRID_LICENSE_KEY (legacy)
+    NEXT_PUBLIC_AGGRID_LICENSE_KEY: safeGetEnv('NEXT_PUBLIC_AGGRID_LICENSE_KEY') ?? safeGetEnv('NEXT_PUBLIC_AG_GRID_LICENSE_KEY'),
     // Accept both NEXT_PUBLIC_AGGRID_ENTERPRISE and NEXT_PUBLIC_AG_GRID_ENTERPRISE (legacy)
     NEXT_PUBLIC_AGGRID_ENTERPRISE: safeGetEnv('NEXT_PUBLIC_AGGRID_ENTERPRISE') ?? safeGetEnv('NEXT_PUBLIC_AG_GRID_ENTERPRISE') ?? safeGetEnv('AGGRID_ENTERPRISE') ?? safeGetEnv('AG_GRID_ENTERPRISE'),
   };

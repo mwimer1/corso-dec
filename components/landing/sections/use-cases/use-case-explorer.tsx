@@ -27,7 +27,7 @@ export default function IndustryExplorer() {
   // Header is left-aligned to match the Industry Explorer content below
   return (
     <>
-      <div className="mb-3xl">
+      <div className="mb-2xl">
         <SectionHeader
           id="use-cases-title"
           headingLevel={2}

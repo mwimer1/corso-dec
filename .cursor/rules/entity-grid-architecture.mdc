@@ -89,7 +89,7 @@ lib/services/entity/
 
 ### Environment Requirements
 - `NEXT_PUBLIC_AGGRID_ENTERPRISE=1` must be set (required for server-side row model)
-- `NEXT_PUBLIC_AG_GRID_LICENSE_KEY` (optional, removes watermark in production)
+- `NEXT_PUBLIC_AGGRID_LICENSE_KEY` (optional, removes watermark in production; legacy `NEXT_PUBLIC_AG_GRID_LICENSE_KEY` also supported)
 
 ### Implementation Details
 ```typescript

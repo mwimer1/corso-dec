@@ -6,6 +6,7 @@ import { APP_LINKS } from '@/lib/shared';
 import { trackNavClick } from '@/lib/shared/analytics/track';
 import { cn } from '@/styles';
 import { buttonVariants } from '@/styles/ui/atoms/button-variants';
+import { navbarStyleVariants } from '@/styles/ui/organisms/navbar-variants';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
 
@@ -176,16 +177,16 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
           <Link
             href={APP_LINKS.FOOTER.CONTACT}
             onClick={() => trackNavClick('Talk to sales', APP_LINKS.FOOTER.CONTACT)}
-            className={cn(buttonVariants({ variant: 'secondary', size: 'lg' }), 'w-full sm:w-auto')}
+            className={cn(buttonVariants({ variant: 'secondary' }), navbarStyleVariants().button(), 'w-full sm:w-auto')}
           >
             Talk to sales
           </Link>
           <Link
             href={APP_LINKS.NAV.SIGNUP}
-            onClick={() => trackNavClick('Start free', APP_LINKS.NAV.SIGNUP)}
-            className={cn(buttonVariants({ variant: 'cta', size: 'lg' }), 'w-full sm:w-auto')}
+            onClick={() => trackNavClick('Start for free', APP_LINKS.NAV.SIGNUP)}
+            className={cn(buttonVariants({ variant: 'cta' }), navbarStyleVariants().button(), 'w-full sm:w-auto')}
           >
-            Start free
+            Start for free
           </Link>
         </div>
       </div>

@@ -11,7 +11,7 @@ let registered = false;
  * 
  * @returns true if Enterprise is enabled, false otherwise
  */
-// eslint-disable-next-line import/no-unused-modules -- Used in components/dashboard/entity/shared/grid/entity-grid.tsx
+// eslint-disable-next-line import/no-unused-modules -- Used in entity-grid.tsx; rule doesn't detect cross-file usage
 export function isAgGridEnterpriseEnabled(): boolean {
   return publicEnv.NEXT_PUBLIC_AGGRID_ENTERPRISE === '1';
 }
@@ -58,7 +58,7 @@ function getAgGridEnterpriseErrorMessage(): string {
  * 
  * @throws {Error} If Enterprise is disabled but server-side row model is used
  */
-// eslint-disable-next-line import/no-unused-modules -- Exported and used via re-exports in ag-grid.ts and ag-grid-modules.ts
+// eslint-disable-next-line import/no-unused-modules -- Used in ag-grid-modules.ts and re-exported in ag-grid.ts; rule doesn't detect re-exports
 export function ensureAgGridRegistered(): void {
   if (registered) return;
   registered = true;
@@ -72,7 +72,8 @@ export function ensureAgGridRegistered(): void {
   }
 
   // Set license key if provided (removes watermark/warnings in production)
-  const licenseKey = publicEnv.NEXT_PUBLIC_AG_GRID_LICENSE_KEY;
+  // Uses canonical name NEXT_PUBLIC_AGGRID_LICENSE_KEY (legacy NEXT_PUBLIC_AG_GRID_LICENSE_KEY supported via config)
+  const licenseKey = publicEnv.NEXT_PUBLIC_AGGRID_LICENSE_KEY;
   if (licenseKey) {
     LicenseManager.setLicenseKey(licenseKey);
   }
@@ -87,7 +88,7 @@ export function ensureAgGridRegistered(): void {
  * @param mode - Row model mode ('serverSide', 'clientSide', etc.)
  * @throws {Error} If Enterprise is required but not enabled
  */
-// eslint-disable-next-line import/no-unused-modules -- Used in components/dashboard/entity/shared/grid/entity-grid.tsx
+// eslint-disable-next-line import/no-unused-modules -- Used in entity-grid.tsx; rule doesn't detect cross-file usage
 export async function ensureAgGridReadyFor(mode: string): Promise<void> {
   ensureAgGridRegistered();
   
