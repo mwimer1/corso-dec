@@ -57,14 +57,15 @@ export const Ctas: React.FC<CtasProps> = ({ className }) => {
           }
         }
 
+        const variant =
+          item.href === '/sign-in' ? 'secondary'
+          : item.href === '/sign-up' ? 'default' // IMPORTANT: dark CTA, NOT 'cta'
+          : undefined;
+
         return (
           <Button
             key={item.href}
-            variant={
-              item.href === '/sign-in' ? 'secondary' :
-              item.href === '/sign-up' ? 'cta' :
-              undefined
-            }
+            variant={variant}
             asChild
             {...(className ? { className } : {})}
           >

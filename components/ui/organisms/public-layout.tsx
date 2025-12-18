@@ -126,7 +126,7 @@ export function PublicLayout({
               <Button asChild size="sm" variant="secondary">
                 <LinkTrack href={APP_LINKS.NAV.SIGNIN} label="landing:mobile:signin">Sign in</LinkTrack>
               </Button>
-              <Button asChild size="sm" variant="cta">
+              <Button asChild size="sm" variant="default">
                 <LinkTrack href={APP_LINKS.NAV.SIGNUP} label="landing:mobile:signup">Start for free</LinkTrack>
               </Button>
             </div>

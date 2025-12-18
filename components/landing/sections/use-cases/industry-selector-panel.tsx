@@ -184,7 +184,7 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
           <Link
             href={APP_LINKS.NAV.SIGNUP}
             onClick={() => trackNavClick('Start for free', APP_LINKS.NAV.SIGNUP)}
-            className={cn(buttonVariants({ variant: 'cta' }), navbarStyleVariants().button(), 'w-full sm:w-auto')}
+            className={cn(buttonVariants({ variant: 'default' }), navbarStyleVariants().button(), 'w-full sm:w-auto')}
           >
             Start for free
           </Link>
