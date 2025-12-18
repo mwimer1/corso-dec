@@ -3,7 +3,7 @@
 
 import { TabSwitcher, type TabItem } from "@/components/ui/molecules";
 import { cn } from "@/styles";
-import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
+import { containerWithPaddingVariants } from "@/styles/ui/shared/container-helpers";
 import Image from "next/image";
 import React from "react";
 
@@ -141,6 +141,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
       {/* Accounts for navbar height, mobile CTA ribbon, and horizontal scrollbar height */}
       {/* On mobile, tabs sit above the mobile CTA ribbon (which is ~60-70px tall) */}
       {/* On desktop, tabs sit above horizontal scrollbar (typically 15-17px on Windows) */}
+      {/* Uses containerWithPaddingVariants to align with FullWidthSection guidelines */}
       <div 
         className={cn(
           "sticky z-[45] bg-background",
@@ -151,7 +152,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
         )}
       >
         <div className={cn(
-          containerMaxWidthVariants({ maxWidth: '7xl', centered: true, responsive: true })
+          containerWithPaddingVariants({ maxWidth: '7xl', padding: 'lg', centered: true })
         )}>
           <TabSwitcher
             tabs={tabsData}
@@ -168,8 +169,9 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
       </div>
 
       {/* Content container with proper spacing - reduced bottom margin from mb-5xl to mb-4xl for tighter layout */}
+      {/* Uses containerWithPaddingVariants to align with FullWidthSection guidelines */}
       <div className={cn(
-        containerMaxWidthVariants({ maxWidth: '7xl', centered: true, responsive: true }),
+        containerWithPaddingVariants({ maxWidth: '7xl', padding: 'lg', centered: true }),
         "mt-sm md:mt-md mb-4xl"
       )}>
         {/* Render the content for the active tab with ARIA-compliant tabpanel */}

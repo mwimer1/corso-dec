@@ -7,6 +7,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import ChatWelcome from '../widgets/chat-welcome';
 import { MessageItem } from '../widgets/message-item';
 
+// Move dynamic import outside component to prevent remounting on re-renders
+const ChatComposer = dynamic(() => import('./chat-composer.client'), { ssr: false });
+
 export default function ChatWindow() {
   const { messages, isProcessing, sendMessage, stop, error, clearError } = useChat({ persistHistory: true, autoSave: true });
   const { user } = useUser();
@@ -26,8 +29,6 @@ export default function ChatWindow() {
   const PREFIX_MODE = true;
   const applyModePrefix = useCallback((t: string) => (PREFIX_MODE ? `[mode:${mode}] ${t}` : t), [mode, PREFIX_MODE]);
   const placeholder = useMemo(() => `Ask anything about ${mode}…`, [mode]);
-
-  const ChatComposer = dynamic(() => import('./chat-composer.client'), { ssr: false });
 
   // Track hydration state to conditionally render placeholder
   useEffect(() => {

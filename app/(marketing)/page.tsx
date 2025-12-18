@@ -13,12 +13,13 @@ export const runtime = "nodejs";
 
 export default function MarketingHomePage() {
   return (
-    <PublicLayout navMode="landing" navItems={landingNavItems} showVerticalGuidelines>
+    <PublicLayout navMode="landing" navItems={landingNavItems}>
       {/* Hero section: standardized padding for consistent vertical rhythm */}
       <FullWidthSection
         padding="lg"
         containerMaxWidth="7xl"
         containerPadding="lg"
+        showVerticalGuidelines={true}
         opacity="none"
         guidelineColor="bg-border"
         className="!pb-0"
@@ -30,6 +31,7 @@ export default function MarketingHomePage() {
         padding="md"
         containerMaxWidth="7xl"
         containerPadding="lg"
+        showVerticalGuidelines={true}
         opacity="none"
         guidelineColor="bg-border"
       >
