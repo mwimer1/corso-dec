@@ -88,7 +88,7 @@ export default async function InsightPage({ params }: { params: Promise<{ slug: 
     description: item.description ?? `Read ${item.title} on Corso Insights`,
     image: item.imageUrl ? [item.imageUrl] : ['/logo.svg'],
     datePublished: item.publishDate,
-    dateModified: item.publishDate,
+    dateModified: item.updatedDate ?? item.publishDate, // Use updatedDate if available, fallback to publishDate
     author: item.author?.name ? {
       '@type': 'Person',
       name: item.author.name,

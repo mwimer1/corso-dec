@@ -9,13 +9,12 @@ import {
     INSIGHT_HERO_WIDTH,
 } from "@/components/insights/constants";
 import { useArticleAnalytics } from "@/components/insights/hooks/use-article-analytics";
+import { ArticleHeader } from "@/components/insights/widgets/article-header";
 import { Breadcrumbs } from "@/components/insights/widgets/breadcrumbs";
 import { RelatedArticles } from "@/components/insights/widgets/related-articles";
-import { SectionHeader } from "@/components/ui/patterns/section-header";
 import { cn } from "@/styles";
 import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
 import type { InsightItem } from "@/types/marketing";
-import { format } from "date-fns";
 import DOMPurify from "dompurify";
 import type { Metadata } from "next";
 import Image from "next/image";
@@ -48,6 +47,7 @@ export const InsightDetail = React.forwardRef<
     content, // already rendered HTML from MD-rich-text
     categories,
     publishDate,
+    updatedDate,
     author,
     imageUrl,
     readingTime,
@@ -95,8 +95,38 @@ export const InsightDetail = React.forwardRef<
       ref={ref}
       className={cn(
         containerMaxWidthVariants({ maxWidth: '3xl', centered: true }),
-        "prose prose-gray max-w-none prose-lg prose-headings:font-bold prose-headings:tracking-tight prose-p:text-foreground/90 prose-p:leading-relaxed prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-foreground prose-strong:font-semibold prose-code:bg-muted prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-pre:bg-muted prose-pre:border",
-        "space-y-8",
+        // Base prose styles
+        "prose prose-gray max-w-none prose-lg",
+        // Headings
+        "prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground",
+        "prose-h1:text-4xl prose-h1:mt-8 prose-h1:mb-4",
+        "prose-h2:text-3xl prose-h2:mt-8 prose-h2:mb-4 prose-h2:border-b prose-h2:border-border prose-h2:pb-2",
+        "prose-h3:text-2xl prose-h3:mt-6 prose-h3:mb-3",
+        "prose-h4:text-xl prose-h4:mt-4 prose-h4:mb-2",
+        // Paragraphs
+        "prose-p:text-foreground/90 prose-p:leading-relaxed prose-p:mb-4",
+        // Links
+        "prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-medium prose-a:transition-colors",
+        // Strong and emphasis
+        "prose-strong:text-foreground prose-strong:font-semibold",
+        "prose-em:text-foreground prose-em:italic",
+        // Lists
+        "prose-ul:my-6 prose-ul:space-y-2 prose-ul:list-disc prose-ul:pl-6",
+        "prose-ol:my-6 prose-ol:space-y-2 prose-ol:list-decimal prose-ol:pl-6",
+        "prose-li:text-foreground/90 prose-li:leading-relaxed prose-li:marker:text-primary",
+        // Blockquotes
+        "prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-6 prose-blockquote:pr-4 prose-blockquote:py-2 prose-blockquote:my-6 prose-blockquote:bg-muted/50 prose-blockquote:rounded-r-md prose-blockquote:not-italic",
+        "prose-blockquote>p:text-foreground/80 prose-blockquote>p:mb-0",
+        // Code
+        "prose-code:bg-muted prose-code:text-foreground prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:font-mono prose-code:before:content-none prose-code:after:content-none",
+        "prose-pre:bg-muted prose-pre:border prose-pre:border-border prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto prose-pre:my-6",
+        "prose-pre>code:bg-transparent prose-pre>code:p-0 prose-pre>code:text-sm",
+        // Images
+        "prose-img:rounded-lg prose-img:shadow-md prose-img:my-8 prose-img:border prose-img:border-border",
+        // Horizontal rules
+        "prose-hr:border-border prose-hr:my-8",
+        // Spacing - responsive vertical spacing
+        "space-y-6 sm:space-y-8",
         className,
       )}
       {...rest}
@@ -104,78 +134,22 @@ export const InsightDetail = React.forwardRef<
       {/* Note: Structured data is now handled server-side in the page component for better SEO */}
 
       {breadcrumbs && breadcrumbs.length > 0 && (
-        <div className="mb-4">
+        <div className="mb-4 sm:mb-6">
           <Breadcrumbs items={breadcrumbs} />
         </div>
       )}
 
-      <header className="space-y-6">
-        {/* Article Title */}
-        <SectionHeader
-          headingLevel={1}
-          title={title}
-          align="left"
-        />
-
-        {/* Unified Metadata Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 text-sm text-muted-foreground">
-          {/* Date and Reading Time */}
-          <div className="flex items-center gap-4">
-            {publishDate && (
-              <time dateTime={publishDate} className="flex items-center gap-1.5">
-                <span>{format(new Date(publishDate), "MMM d, yyyy")}</span>
-              </time>
-            )}
-            {readingTime && (
-              <>
-                <span aria-hidden className="hidden sm:inline">•</span>
-                <span className="flex items-center gap-1.5">
-                  {readingTime} min read
-                </span>
-              </>
-            )}
-          </div>
-
-          {/* Author */}
-          {author && (
-            <>
-              <span aria-hidden className="hidden sm:inline">•</span>
-              <div className="flex items-center gap-2">
-                {author.avatar && (
-                  <Image
-                    src={author.avatar}
-                    alt={author.name}
-                    width={32}
-                    height={32}
-                    className="rounded-full ring-1 ring-border"
-                  />
-                )}
-                <span>
-                  <span className="text-foreground/70">Written by </span>
-                  <span className="font-medium text-foreground">{author.name}</span>
-                </span>
-              </div>
-            </>
-          )}
-        </div>
-
-        {/* Categories */}
-        {categories && categories.length > 0 && (
-          <div className="flex flex-wrap gap-2 pt-2">
-            {categories.map((category: { slug: string; name: string }) => (
-              <span
-                key={category.slug}
-                className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20"
-              >
-                {category.name}
-              </span>
-            ))}
-          </div>
-        )}
-      </header>
+      <ArticleHeader
+        title={title}
+        {...(publishDate && { publishDate })}
+        {...(updatedDate && { updatedDate })}
+        {...(readingTime && { readingTime })}
+        {...(author && { author })}
+        {...(categories && { categories })}
+      />
 
       {imageUrl && (
-        <div className="relative overflow-hidden rounded-lg">
+        <div className="relative overflow-hidden rounded-lg -mx-4 sm:mx-0">
           <Image
             src={imageUrl}
             alt={title}
@@ -183,6 +157,7 @@ export const InsightDetail = React.forwardRef<
             height={INSIGHT_HERO_HEIGHT}
             sizes={INSIGHT_HERO_SIZES}
             className="w-full h-auto object-cover"
+            priority={false}
           />
         </div>
       )}
@@ -193,7 +168,7 @@ export const InsightDetail = React.forwardRef<
       />
 
       {relatedArticles.length > 0 && (
-        <div className="pt-12 border-t border-border">
+        <div className="pt-8 sm:pt-12 border-t border-border mt-8 sm:mt-12">
           <RelatedArticles articles={relatedArticles} />
         </div>
       )}

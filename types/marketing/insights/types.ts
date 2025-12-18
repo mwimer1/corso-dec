@@ -10,6 +10,8 @@ export interface InsightPreview {
   title: string;
   description?: string;
   publishDate?: ISODateString;
+  /** Last updated date (optional, defaults to publishDate if not provided) */
+  updatedDate?: ISODateString;
   imageUrl?: string;
   categories?: Array<{ slug: string; name: string }>;
   /** Estimated reading time in minutes */

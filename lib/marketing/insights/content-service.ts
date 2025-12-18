@@ -25,6 +25,7 @@ interface FrontmatterShape {
   title: string;
   description?: string;
   publishDate?: string;
+  updatedDate?: string;
   imageUrl?: string;
   categories?: Array<{ slug: string; name: string }>;
   author?: { name: string; avatar?: string };
@@ -52,6 +53,7 @@ function fmToPreview(data: FrontmatterShape, readingTime?: number): InsightPrevi
   }
 
   if (data.publishDate) preview.publishDate = data.publishDate as ISODateString;
+  if (data.updatedDate) preview.updatedDate = data.updatedDate as ISODateString;
   if (data.imageUrl) preview.imageUrl = data.imageUrl;
   if (data.categories) preview.categories = data.categories;
   if (readingTime !== undefined) preview.readingTime = readingTime;
