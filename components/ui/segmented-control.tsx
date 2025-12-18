@@ -37,7 +37,14 @@ export function SegmentedControl<T extends string>({ value, onChange, options, c
   }
 
   return (
-    <div role="tablist" aria-orientation="horizontal" className={cn("flex gap-1", className)}>
+    <div 
+      role="tablist" 
+      aria-orientation="horizontal" 
+      className={cn(
+        "inline-flex items-center gap-0.5 rounded-lg bg-muted/50 p-1 border border-border shadow-sm",
+        className
+      )}
+    >
       {options.map((opt, i) => {
         const selected = opt.id === value;
         return (
@@ -46,13 +53,17 @@ export function SegmentedControl<T extends string>({ value, onChange, options, c
             ref={(el) => { refs.current[i] = el; }}
             role="tab"
             aria-selected={selected}
+            aria-pressed={selected}
             tabIndex={selected ? 0 : -1}
             onClick={() => onChange(opt.id)}
             onKeyDown={(e) => onKeyDown(e, i)}
-            className={
-              "h-8 px-3 text-xs rounded-md border " +
-              (selected ? "bg-surface-selected text-foreground border-border" : "bg-surface text-muted-foreground border-border hover:bg-surface-hover")
-            }
+            className={cn(
+              "relative inline-flex items-center justify-center h-7 px-3 text-xs font-medium rounded-md transition-colors",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+              selected
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "bg-transparent text-muted-foreground hover:bg-muted/30"
+            )}
           >
             {opt.label}
           </button>

@@ -23,8 +23,8 @@ function MessageItemImpl({ message, onSelectFollowUp }: Props) {
       <div className={cn(
         "rounded-2xl px-4 py-3 max-w-[70%]",
         isUser
-          ? "bg-blue-600 text-white ml-12"
-      : "bg-gray-100 text-gray-900 mr-12 border-[var(--chat-bubble-asst-border)] border-gray-200"
+          ? "bg-blue-600 text-white"
+      : "bg-gray-100 text-gray-900 border-[var(--chat-bubble-asst-border)] border-gray-200"
       )}>
         {!isUser && !message.content && (
           <div className="flex items-center gap-1 text-muted-foreground" aria-live="polite" aria-label="Assistant is typing">

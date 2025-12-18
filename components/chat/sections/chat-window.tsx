@@ -101,27 +101,29 @@ export default function ChatWindow() {
       }
     >
       {/* Messages list */}
-      <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto bg-gray-50">
+      <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto bg-background">
         {hasHistory ? (
-          <ul role="log" aria-live="polite" aria-relevant="additions" className="px-4 py-4 space-y-2">
-            {messages.map((m) => (
-              <li key={m.id}>
-                <MessageItem message={m} onSelectFollowUp={handleSelectFollowUp} />
-              </li>
-            ))}
-          </ul>
+          <div className="mx-auto w-full max-w-3xl px-6 py-4">
+            <ul role="log" aria-live="polite" aria-relevant="additions" className="space-y-2">
+              {messages.map((m) => (
+                <li key={m.id}>
+                  <MessageItem message={m} onSelectFollowUp={handleSelectFollowUp} />
+                </li>
+              ))}
+            </ul>
+          </div>
         ) : (
-          <div className="px-6">
+          <div className="mx-auto w-full max-w-3xl px-6 pt-6 pb-3">
             <ChatWelcome onPreset={handleSelectFollowUp} {...(firstName ? { firstName } : {})} />
           </div>
         )}
       </div>
 
       {/* Composer — server placeholder + client-only composer */}
-      <div className="bg-transparent px-6 py-6 flex-shrink-0">
+      <div className="bg-background px-6 py-5 flex-shrink-0">
         {/* Server-only placeholder to preserve layout pre-hydration; mark as region for a11y */}
         {!hydrated && (
-          <div className="mx-auto w-full max-w-3xl rounded-2xl bg-white p-3 shadow-sm" role="region" aria-hidden="true">
+          <div className="mx-auto w-full max-w-3xl rounded-2xl bg-surface p-3 shadow-sm" role="region" aria-hidden="true">
             {/* Empty shell matches sizing of composer */}
           </div>
         )}
