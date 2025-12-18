@@ -1,6 +1,8 @@
 'use client';
 
 import { InsightCard } from '@/components/insights/insight-card';
+import { cn } from '@/styles';
+import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 interface RelatedArticlesProps {
@@ -21,9 +23,23 @@ export function RelatedArticles({ articles, className }: RelatedArticlesProps) {
   if (!articles.length) return null;
 
   return (
-    <section className={className}>
-      <h2 className="text-xl font-semibold mb-6">Related Articles</h2>
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <section 
+      className={cn("space-y-6 sm:space-y-8", className)} 
+      aria-labelledby="related-articles-heading"
+    >
+      <header className="space-y-2">
+        <h2 
+          id="related-articles-heading"
+          className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground"
+        >
+          Related Articles
+        </h2>
+        <p className="text-sm sm:text-base text-muted-foreground">
+          Continue exploring insights and industry trends
+        </p>
+      </header>
+      
+      <div className="grid gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {articles.slice(0, 3).map((article) => (
           <InsightCard
             key={article.slug}
@@ -40,9 +56,15 @@ export function RelatedArticles({ articles, className }: RelatedArticlesProps) {
           />
         ))}
       </div>
-      <div className="mt-6 text-center">
-        <Link href="/insights" className="text-primary hover:underline">
-          View all insights →
+      
+      <div className="pt-6 sm:pt-8 text-center border-t border-border">
+        <Link 
+          href="/insights" 
+          className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
+          aria-label="View all insights articles"
+        >
+          View all insights
+          <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </Link>
       </div>
     </section>

@@ -3,13 +3,9 @@
 ------------------------------------------------------------------- */
 "use client";
 
-import {
-    INSIGHT_HERO_HEIGHT,
-    INSIGHT_HERO_SIZES,
-    INSIGHT_HERO_WIDTH,
-} from "@/components/insights/constants";
 import { useArticleAnalytics } from "@/components/insights/hooks/use-article-analytics";
 import { ArticleHeader } from "@/components/insights/widgets/article-header";
+import { ArticleImage } from "@/components/insights/widgets/article-image";
 import { Breadcrumbs } from "@/components/insights/widgets/breadcrumbs";
 import { RelatedArticles } from "@/components/insights/widgets/related-articles";
 import { cn } from "@/styles";
@@ -17,7 +13,6 @@ import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
 import type { InsightItem } from "@/types/marketing";
 import DOMPurify from "dompurify";
 import type { Metadata } from "next";
-import Image from "next/image";
 import * as React from "react";
 
 interface InsightDetailProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -149,28 +144,28 @@ export const InsightDetail = React.forwardRef<
       />
 
       {imageUrl && (
-        <div className="relative overflow-hidden rounded-lg -mx-4 sm:mx-0">
-          <Image
-            src={imageUrl}
-            alt={title}
-            width={INSIGHT_HERO_WIDTH}
-            height={INSIGHT_HERO_HEIGHT}
-            sizes={INSIGHT_HERO_SIZES}
-            className="w-full h-auto object-cover"
-            priority={false}
-          />
-        </div>
+        <ArticleImage
+          src={imageUrl}
+          alt={title}
+          loading="lazy"
+          priority={false}
+        />
       )}
 
       <section
         dangerouslySetInnerHTML={{ __html: sanitizedContent }}
         className="prose-content"
+        aria-label="Article content"
+        itemProp="articleBody"
       />
 
       {relatedArticles.length > 0 && (
-        <div className="pt-8 sm:pt-12 border-t border-border mt-8 sm:mt-12">
+        <aside 
+          className="pt-8 sm:pt-12 border-t border-border mt-8 sm:mt-12"
+          aria-label="Related content"
+        >
           <RelatedArticles articles={relatedArticles} />
-        </div>
+        </aside>
       )}
     </article>
   );

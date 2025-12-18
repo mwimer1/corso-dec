@@ -39,7 +39,11 @@ export function ArticleHeader({
   return (
     <header className={cn("space-y-4 sm:space-y-6", className)}>
       {/* Article Title */}
-      <SectionHeader headingLevel={1} title={title} align="left" />
+      <SectionHeader 
+        headingLevel={1} 
+        title={title} 
+        align="left"
+      />
 
       {/* Unified Metadata Bar */}
       <ArticleMetadata

@@ -90,28 +90,28 @@ export function ArticleMetadata({
       </div>
 
       {/* Author */}
-      {author && (
-        <>
-          <span aria-hidden className="hidden sm:inline text-muted-foreground/50">
-            •
-          </span>
-          <div className="flex items-center gap-2">
-            {author.avatar && (
-              <Image
-                src={author.avatar}
-                alt={author.name}
-                width={32}
-                height={32}
-                className="rounded-full ring-1 ring-border shrink-0"
-              />
-            )}
-            <span>
-              <span className="text-foreground/70">Written by </span>
-              <span className="font-medium text-foreground">{author.name}</span>
-            </span>
-          </div>
-        </>
-      )}
+          {author && (
+            <>
+              <span aria-hidden className="hidden sm:inline text-muted-foreground/50">
+                •
+              </span>
+              <div className="flex items-center gap-2" itemProp="author" itemScope itemType="https://schema.org/Person">
+                {author.avatar && (
+                  <Image
+                    src={author.avatar}
+                    alt={author.name}
+                    width={32}
+                    height={32}
+                    className="rounded-full ring-1 ring-border shrink-0"
+                  />
+                )}
+                <span>
+                  <span className="text-foreground/70">Written by </span>
+                  <span className="font-medium text-foreground" itemProp="name">{author.name}</span>
+                </span>
+              </div>
+            </>
+          )}
     </div>
   );
 }

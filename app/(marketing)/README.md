@@ -1,6 +1,6 @@
 ---
 status: "draft"
-last_updated: "2025-12-15"
+last_updated: "2025-01-28"
 category: "documentation"
 title: "(marketing)"
 description: "Documentation and resources for documentation functionality. Located in (marketing)/."
@@ -476,7 +476,14 @@ Dynamic article pages with SEO metadata generation, reading progress indicator, 
 - **Reading Progress Bar**: Visual progress indicator at the top of the page (enabled via `showReadingProgress={true}` on `PublicLayout`)
 - **Breadcrumb Navigation**: Visible breadcrumb trail (Home > Insights > Article Title) for improved UX
 - **H1 Semantic Structure**: Article title renders as H1 for proper SEO and accessibility
-- **Structured Data**: JSON-LD breadcrumbs and article metadata for search engines
+- **Structured Data**: JSON-LD breadcrumbs and article metadata for search engines (includes `updatedDate` support)
+- **Optimized Layout**: Content width set to `max-w-3xl` (768px) for optimal readability
+- **Unified Metadata Bar**: Date, reading time, and author displayed in a responsive horizontal layout with icons
+- **Enhanced Typography**: Comprehensive prose styling for headings, paragraphs, lists, blockquotes, code blocks, and images
+- **Image Optimization**: Hero images with blur placeholders, lazy loading, and hover effects via `ArticleImage` component
+- **Component Architecture**: Modular structure with `ArticleHeader`, `ArticleMetadata`, and `ArticleImage` sub-components
+- **Accessibility**: Full ARIA labels, semantic HTML (`<section>`, `<aside>`, `<figure>`), and microdata support
+- **Responsive Design**: Mobile-first spacing and layout adjustments throughout
 
 ```typescript
 // Runtime: kept on nodejs due to Clerk keyless telemetry (see README)
@@ -487,8 +494,10 @@ Dynamic article pages with SEO metadata generation, reading progress indicator, 
    • Generates SEO metadata from fetched article
    • Uses safe, local interface to avoid mismatch with auto-generated types
 ------------------------------------------------------------------- */
+import { PublicLayout } from "@/components";
 import { InsightDetail } from "@/components/insights";
-import { getInsightBySlug } from "@/lib/marketing/server";
+import { getInsightsNavItems } from "@/components/insights/layout/nav.config";
+import { getInsightBySlug, getRelatedInsights } from "@/lib/marketing/server";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -546,14 +555,42 @@ export async function generateMetadata({
 
 export default async function InsightPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const item = getInsightBySlug(slug);
+  const item = await getInsightBySlug(slug);
 
   if (!item) notFound();
 
+  // Get related articles using the content service's unified logic
+  const relatedInsights = await getRelatedInsights(item, { limit: 3 });
+  const relatedArticles = relatedInsights.map(insight => ({
+    slug: insight.slug,
+    title: insight.title,
+    ...(insight.description && { excerpt: insight.description }),
+    ...(insight.imageUrl && { imageUrl: insight.imageUrl }),
+    ...(insight.categories && { categories: insight.categories.map(cat => ({ name: cat.name })) }),
+    ...(insight.publishDate && { publishDate: insight.publishDate }),
+    ...(insight.author && { author: { name: insight.author.name, slug: insight.author.name.toLowerCase().replace(/\s+/g, '-') } }),
+    ...(insight.readingTime !== undefined && { readingTime: insight.readingTime }),
+  }));
+
   return (
-    <main>
-      <InsightDetail initialData={item} />
-    </main>
+    <PublicLayout
+      navMode="insights"
+      navItems={getInsightsNavItems()}
+      showReadingProgress={true}
+      showVerticalGuidelines
+    >
+      <div className="px-4 sm:px-6 lg:px-8 py-8">
+        <InsightDetail
+          initialData={item}
+          relatedArticles={relatedArticles}
+          breadcrumbs={[
+            { label: 'Home', href: '/' },
+            { label: 'Insights', href: '/insights' },
+            { label: item.title, href: `/insights/${slug}` },
+          ]}
+        />
+      </div>
+    </PublicLayout>
   );
 }
 ```
