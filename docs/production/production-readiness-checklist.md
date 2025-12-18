@@ -20,7 +20,7 @@ pnpm quality:ci
 pnpm validate:env
 
 # Production build test
-pnpm build:offline
+pnpm build
 
 # Security audit
 pnpm audit:ci
@@ -258,7 +258,7 @@ pnpm audit:ci
 - [ ] External service integrations tested
 
 ### Build Verification
-- [ ] Production build succeeds (`pnpm build:offline`)
+- [ ] Production build succeeds (`pnpm build`)
 - [ ] No build warnings or errors
 - [ ] Bundle size within limits
 - [ ] TypeScript compilation passes

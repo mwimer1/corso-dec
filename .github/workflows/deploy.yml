@@ -49,7 +49,7 @@ jobs:
         run: pnpm test:ci
 
       - name: Build Verification
-        run: pnpm build:offline
+        run: pnpm build
 
       - name: Security Headers Check
         run: |

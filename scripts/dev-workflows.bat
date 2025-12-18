@@ -28,23 +28,18 @@ echo [10] 🧹 Lint All
 echo [11] 🧪 Run All Tests
 echo [12] 🛡️ Test Security Suite
 echo.
-echo [DOMAIN TESTING]
-echo [13] 🎯 Test Analytics Domain
-echo [14] 🎯 Test Billing Domain
-echo [15] 🎯 Test Chat Domain
-echo.
 echo [BUILD & CLEANUP]
-echo [17] 🔧 Build Project
-echo [18] 🧹 Clean Cache
-echo [19] 🧹 Clean All Caches
+echo [13] 🔧 Build Project
+echo [14] 🧹 Clean Cache
+echo [15] 🧹 Clean All Caches
 echo.
 echo [DOCUMENTATION]
-echo [19] 📚 Generate Docs
-echo [20] 🔍 AST-Grep Scan
-echo [21] 🔧 Fix pnpm (Windows recovery)
+echo [16] 📚 Generate Docs
+echo [17] 🔍 AST-Grep Scan
+echo [18] 🔧 Fix pnpm (Windows recovery)
 echo [0] Exit
 echo.
-set /p choice="Enter your choice (0-21): "
+set /p choice="Enter your choice (0-18): "
 
 if "%choice%"=="0" goto exit
 if "%choice%"=="1" goto fullsetup
@@ -59,15 +54,12 @@ if "%choice%"=="9" goto fastcheck
 if "%choice%"=="10" goto lintall
 if "%choice%"=="11" goto testall
 if "%choice%"=="12" goto securitytest
-if "%choice%"=="13" goto testanalytics
-if "%choice%"=="14" goto testbilling
-if "%choice%"=="15" goto testchat
-if "%choice%"=="16" goto build
-if "%choice%"=="17" goto cleancache
-if "%choice%"=="18" goto cleanall
-if "%choice%"=="19" goto docs
-if "%choice%"=="20" goto astgrep
-if "%choice%"=="21" goto fixpnpm
+if "%choice%"=="13" goto build
+if "%choice%"=="14" goto cleancache
+if "%choice%"=="15" goto cleanall
+if "%choice%"=="16" goto docs
+if "%choice%"=="17" goto astgrep
+if "%choice%"=="18" goto fixpnpm
 
 echo Invalid choice. Please try again.
 timeout /t 2 >nul
@@ -131,21 +123,6 @@ goto completed
 :securitytest
 echo Running Security Tests...
 pnpm test:security
-goto completed
-
-:testanalytics
-echo Testing Analytics Domain...
-pnpm test:domain:analytics
-goto completed
-
-:testbilling
-echo Testing Billing Domain...
-pnpm test:domain:billing
-goto completed
-
-:testchat
-echo Testing Chat Domain...
-pnpm test:domain:chat
 goto completed
 
 :build
