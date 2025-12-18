@@ -21,6 +21,7 @@ export default function MarketingHomePage() {
         containerPadding="lg"
         opacity="none"
         guidelineColor="bg-border"
+        className="!pb-0"
       >
         <Hero />
       </FullWidthSection>
