@@ -1,11 +1,12 @@
 "use client";
 
+import { publicEnv } from '@/lib/shared/config/client';
+import type { EntityGridConfig } from '@/types/dashboard';
+import { AlertTriangle } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 import * as React from 'react';
 import EntityGrid from './entity-grid';
-import type { EntityGridConfig } from '@/types/dashboard';
 import { GridMenubar } from './grid-menubar';
-import { useSearchParams } from 'next/navigation';
-import { publicEnv } from '@/lib/shared/config/client';
 
 export default function EntityGridHost({ config }: { config: EntityGridConfig }) {
   const gridRef = React.useRef<any>(null);
@@ -37,8 +38,32 @@ export default function EntityGridHost({ config }: { config: EntityGridConfig })
     }
   }, []);
 
+  const handleRetry = React.useCallback(() => {
+    setLoadError(false);
+    gridRef.current?.api?.refreshServerSide();
+  }, []);
+
   return (
     <div className="flex flex-col h-full w-full" id="corso-grid">
+      {/* Error alert above toolbar */}
+      {loadError && (
+        <div className="px-6 md:px-8 pt-2">
+          <div
+            role="alert"
+            className="flex items-center gap-2 px-3 py-2 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md"
+          >
+            <AlertTriangle className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
+            <span className="flex-1">Error loading data.</span>
+            <button
+              onClick={handleRetry}
+              className="text-sm font-medium underline hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded px-2 py-1 -mr-2"
+              aria-label="Retry loading data"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      )}
       <div className="px-6 md:px-8 pb-2">
         <GridMenubar
           searchCount={searchCount}
@@ -53,10 +78,7 @@ export default function EntityGridHost({ config }: { config: EntityGridConfig })
           initGridName={gridName}
           hasEnterprise={hasEnterprise}
           loadError={loadError}
-          onRetry={() => {
-            setLoadError(false);
-            gridRef.current?.api?.refreshServerSide();
-          }}
+          onRetry={handleRetry}
         />
       </div>
       <div className="flex-1 min-h-0 px-6 md:px-8">

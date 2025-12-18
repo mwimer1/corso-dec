@@ -1,10 +1,11 @@
 "use client";
 
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { Button } from "@/components/ui/atoms";
 import { cn } from "@/styles";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 // Grid state context removed - using local state instead
 import type { AgGridReact } from 'ag-grid-react';
-import { AlertTriangle, ArrowDownToLine, CopyPlus, FileDown, ListRestart, Maximize2, RefreshCcw, Save, Trash } from 'lucide-react';
+import { ArrowDownToLine, CopyPlus, FileDown, ListRestart, Maximize2, RefreshCcw, Save, Trash } from 'lucide-react';
 import type React from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -136,13 +137,15 @@ export function GridMenubar(props: GridMenubarProps) {
 
   return (
     <>
-      <div className="flex items-center justify-between w-full px-1 mb-1 mt-1 bg-background shadow-sm">
+      <div className="flex items-center justify-between w-full px-4 py-2 border-b border-border bg-background/95 backdrop-blur-sm">
         {/* Left side: Saved Searches and Tools */}
-        <div className="flex items-center my-2 gap-2">
+        <div className="flex items-center gap-3">
           {/* Saved Searches menu */}
           <DropdownMenu.Root>
-            <DropdownMenu.Trigger className="px-2 py-0.95 cursor-pointer transition-colors hover:bg-accent hover:text-accent-foreground rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
-              Saved Searches
+            <DropdownMenu.Trigger asChild>
+              <Button variant="ghost" size="sm" className="h-8">
+                Saved Searches
+              </Button>
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
               <DropdownMenu.Content
@@ -181,8 +184,10 @@ export function GridMenubar(props: GridMenubarProps) {
 
           {/* Tools menu */}
           <DropdownMenu.Root>
-            <DropdownMenu.Trigger className="px-2 py-0.95 cursor-pointer transition-colors hover:bg-accent hover:text-accent-foreground rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
-              Tools
+            <DropdownMenu.Trigger asChild>
+              <Button variant="ghost" size="sm" className="h-8">
+                Tools
+              </Button>
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
               <DropdownMenu.Content className={cn("md:min-w-48 border border-border shadow-md p-0 overflow-hidden rounded-md bg-background")}>
@@ -282,91 +287,79 @@ export function GridMenubar(props: GridMenubarProps) {
           </DropdownMenu.Root>
         </div>
 
-        {/* Right side: error alert -> results -> csv -> hard reset -> save as -> save */}
-        <div className="flex items-center p-1 gap-4">
-          {/* Error alert */}
-          {props.loadError && (
-            <div
-              role="alert"
-              className="flex items-center gap-2 px-2 py-1 text-xs text-destructive bg-destructive/10 border border-destructive/20 rounded-md"
-            >
-              <AlertTriangle className="h-4 w-4" aria-hidden="true" />
-              <span>Error loading data.</span>
-              {props.onRetry && (
-                <button
-                  onClick={props.onRetry}
-                  className="underline hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                  aria-label="Retry loading data"
-                >
-                  Retry
-                </button>
-              )}
-            </div>
-          )}
+        {/* Right side: results count -> action buttons (grouped) */}
+        <div className="flex items-center gap-4">
           {/* Results count */}
-          <div className="cursor-default text-muted-foreground">
-            {formatNumber(props.searchCount)} results
+          <div className="flex items-center gap-1.5 text-sm font-medium">
+            <span className="text-foreground">{formatNumber(props.searchCount)}</span>
+            <span className="text-muted-foreground">results</span>
           </div>
 
-          {/* Export CSV */}
-          <button
-            onClick={() => props.gridRef?.current?.api.exportDataAsCsv()}
-            className="p-1 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            aria-label="Export as CSV"
-          >
-            <ArrowDownToLine className="h-4 w-4" />
-          </button>
+          {/* Action buttons group: Export, Reset, Refresh */}
+          <div className="flex items-center gap-2 border-l border-border pl-4">
+            <button
+              onClick={() => props.gridRef?.current?.api.exportDataAsCsv()}
+              className="p-1.5 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              aria-label="Export as CSV"
+              title="Export as CSV"
+            >
+              <ArrowDownToLine className="h-4 w-4" />
+            </button>
 
-          {/* Hard reset */}
-          <button
-            onClick={() => {
-              try {
-                props.gridRef?.current?.api.setFilterModel(null);
-                props.gridRef?.current?.api.resetColumnState();
-                props.gridRef?.current?.api.refreshServerSide();
-              } catch (error) {
-                console.error("Failed to reset the grid:", error);
-              }
-            }}
-            className="p-1 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            aria-label="Reset grid"
-          >
-            <ListRestart className="h-4 w-4" />
-          </button>
+            <button
+              onClick={() => {
+                try {
+                  props.gridRef?.current?.api.setFilterModel(null);
+                  props.gridRef?.current?.api.resetColumnState();
+                  props.gridRef?.current?.api.refreshServerSide();
+                } catch (error) {
+                  console.error("Failed to reset the grid:", error);
+                }
+              }}
+              className="p-1.5 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              aria-label="Reset grid"
+              title="Reset filters and columns"
+            >
+              <ListRestart className="h-4 w-4" />
+            </button>
 
-          {/* Reload */}
-          <button
-            onClick={() => {
-              try {
-                props.gridRef?.current?.api.refreshServerSide();
-              } catch (error) {
-                console.error("Failed to refresh the grid:", error);
-              }
-            }}
-            className="p-1 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            aria-label="Refresh grid"
-          >
-            <RefreshCcw className="h-4 w-4" />
-          </button>
+            <button
+              onClick={() => {
+                try {
+                  props.gridRef?.current?.api.refreshServerSide();
+                } catch (error) {
+                  console.error("Failed to refresh the grid:", error);
+                }
+              }}
+              className="p-1.5 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              aria-label="Refresh grid"
+              title="Refresh data"
+            >
+              <RefreshCcw className="h-4 w-4" />
+            </button>
+          </div>
 
-          {/* Save As */}
-          <button
-            onClick={handleSaveAsClick}
-            className="p-1 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            aria-label="Save grid as"
-          >
-            <CopyPlus className="h-4 w-4" />
-          </button>
+          {/* Save actions group: Save As, Save */}
+          <div className="flex items-center gap-2 border-l border-border pl-4">
+            <button
+              onClick={handleSaveAsClick}
+              className="p-1.5 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              aria-label="Save grid as"
+              title="Save current view as new"
+            >
+              <CopyPlus className="h-4 w-4" />
+            </button>
 
-          {/* Save */}
-          <button
-            onClick={handleSave}
-            disabled={!props.currentState}
-            className="p-1 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:focus-visible:ring-0"
-            aria-label="Save grid"
-          >
-            <Save className="h-4 w-4" />
-          </button>
+            <button
+              onClick={handleSave}
+              disabled={!props.currentState}
+              className="p-1.5 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:focus-visible:ring-0"
+              aria-label="Save grid"
+              title="Save current view"
+            >
+              <Save className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       </div>
     </>
