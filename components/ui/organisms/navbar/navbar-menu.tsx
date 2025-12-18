@@ -2,8 +2,8 @@
 "use client";
 
 import { UserButton } from "@clerk/nextjs";
-import * as React from "react";
 import { usePathname } from "next/navigation";
+import * as React from "react";
 
 import { Button, HamburgerIcon, XMarkIcon } from "@/components/ui/atoms";
 import { NavItem } from "@/components/ui/molecules/nav-item";
@@ -152,11 +152,15 @@ export function NavbarMenu({
             id="mobile-menu"
             role="dialog"
             aria-modal="true"
+            aria-describedby="mobile-menu-description"
             className={cn(
               navbarStyles.mobileMenu(),
               isMobileMenuOpen && navbarStyles.mobileMenuOpen()
             )}
           >
+            <DialogPrimitive.Description id="mobile-menu-description" className="sr-only">
+              Mobile navigation menu
+            </DialogPrimitive.Description>
             <nav aria-label="Mobile navigation" className={navbarStyles.mobileNav()}>
               {items.map((i) => renderItem(i, () => setIsMobileMenuOpen(false), 'mobileItem'))}
               {renderAuthSection({ onItemClick: () => setIsMobileMenuOpen(false), layout: "mobile" })}

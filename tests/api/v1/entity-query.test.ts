@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock the auth function
 const mockAuth = vi.fn();
@@ -124,14 +124,15 @@ describe('POST /api/v1/entity/[entity]/query', () => {
     const mod = await import('@/app/api/v1/entity/[entity]/query/route');
     const handler = mod.POST;
 
-    const url = new URL('http://localhost/api/v1/entity/invalid/query');
-    const req = {
-      nextUrl: url,
-      url: url.toString(),
-      json: async () => ({
-        page: { index: 0, size: 10 },
-      }),
-    } as any;
+    const requestBody = {
+      page: { index: 0, size: 10 },
+    };
+    const req = new Request('http://localhost/api/v1/entity/invalid/query', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(requestBody),
+    });
+    (req as any).nextUrl = new URL(req.url);
 
     const res = await handler(req, { params: { entity: 'invalid' } });
     expect(res.status).toBe(400);
@@ -145,15 +146,16 @@ describe('POST /api/v1/entity/[entity]/query', () => {
     const mod = await import('@/app/api/v1/entity/[entity]/query/route');
     const handler = mod.POST;
 
-    const url = new URL('http://localhost/api/v1/entity/projects/query');
-    const req = {
-      nextUrl: url,
-      url: url.toString(),
-      json: async () => ({
-        filter: { status: 'active' },
-        // Missing required 'page' field
-      }),
-    } as any;
+    const requestBody = {
+      filter: { status: 'active' },
+      // Missing required 'page' field
+    };
+    const req = new Request('http://localhost/api/v1/entity/projects/query', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(requestBody),
+    });
+    (req as any).nextUrl = new URL(req.url);
 
     const res = await handler(req, { params: { entity: 'projects' } });
     expect(res.status).toBe(400);
@@ -167,14 +169,15 @@ describe('POST /api/v1/entity/[entity]/query', () => {
     const mod = await import('@/app/api/v1/entity/[entity]/query/route');
     const handler = mod.POST;
 
-    const url = new URL('http://localhost/api/v1/entity/projects/query');
-    const req = {
-      nextUrl: url,
-      url: url.toString(),
-      json: async () => ({
-        page: { index: 0, size: 2000 }, // Exceeds max of 1000
-      }),
-    } as any;
+    const requestBody = {
+      page: { index: 0, size: 2000 }, // Exceeds max of 1000
+    };
+    const req = new Request('http://localhost/api/v1/entity/projects/query', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(requestBody),
+    });
+    (req as any).nextUrl = new URL(req.url);
 
     const res = await handler(req, { params: { entity: 'projects' } });
     expect(res.status).toBe(400);
@@ -188,14 +191,15 @@ describe('POST /api/v1/entity/[entity]/query', () => {
     const mod = await import('@/app/api/v1/entity/[entity]/query/route');
     const handler = mod.POST;
 
-    const url = new URL('http://localhost/api/v1/entity/projects/query');
-    const req = {
-      nextUrl: url,
-      url: url.toString(),
-      json: async () => ({
-        page: { index: -1, size: 10 }, // Negative index
-      }),
-    } as any;
+    const requestBody = {
+      page: { index: -1, size: 10 }, // Negative index
+    };
+    const req = new Request('http://localhost/api/v1/entity/projects/query', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(requestBody),
+    });
+    (req as any).nextUrl = new URL(req.url);
 
     const res = await handler(req, { params: { entity: 'projects' } });
     expect(res.status).toBe(400);
