@@ -84,7 +84,7 @@ export const FAQ = React.forwardRef<HTMLDivElement, FAQProps>(
             return (
               <li
                 key={f.question}
-                className="rounded-lg border border-border bg-surface p-lg transition-colors hover:bg-muted/50"
+                className="rounded-lg bg-surface p-lg transition-colors hover:bg-muted/50"
               >
                 <button
                   type="button"

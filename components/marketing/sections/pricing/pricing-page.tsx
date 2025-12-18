@@ -1,17 +1,17 @@
 // components/marketing/pricing/pricing-page.tsx
 "use client";
 
+import type { BillingCycle } from "@/components/marketing/pricing/plan-ui";
 import type { PricingCardProps } from "@/components/ui/molecules";
 import { PricingCard } from "@/components/ui/molecules";
 import { FullWidthSection } from "@/components/ui/organisms";
+import { SegmentedControl } from "@/components/ui/segmented-control";
 import { cn } from "@/styles";
 import * as React from "react";
 import { FaqSectionFrame } from "../../widgets/faq-section-frame";
 import { PricingFAQ, type FAQItem } from "./pricing-faq";
 import { PricingHeader } from "./pricing-header";
 import type { ExtendedPricingPlan } from "./types";
-import { SegmentedControl } from "@/components/ui/segmented-control";
-import type { BillingCycle } from "@/components/marketing/pricing/plan-ui";
 // Local implementation to avoid cross-domain import
 const persistSelectedPlan = (planSlug: string) => {
   if (typeof window !== 'undefined') {
@@ -85,10 +85,6 @@ export const PricingPage = React.forwardRef<HTMLDivElement, PricingPageProps>(
           padding="md"
           containerMaxWidth="7xl"
           containerPadding="lg"
-          showVerticalGuidelines
-          guidesVisibility="always"
-          opacity="none"
-          guidelineColor="bg-border"
         >
           <PricingHeader
             {...(headerTitle ? { title: headerTitle } : {})}
@@ -112,10 +108,6 @@ export const PricingPage = React.forwardRef<HTMLDivElement, PricingPageProps>(
           padding="none"
           containerMaxWidth="7xl"
           containerPadding="lg"
-          showVerticalGuidelines
-          guidesVisibility="always"
-          opacity="none"
-          guidelineColor="bg-border"
         >
           <section id="tiers">
             <h2 className="sr-only">Plans & Pricing</h2>
@@ -138,10 +130,6 @@ export const PricingPage = React.forwardRef<HTMLDivElement, PricingPageProps>(
         <FullWidthSection
           containerMaxWidth="4xl"
           containerPadding="lg"
-          showVerticalGuidelines
-          guidesVisibility="always"
-          opacity="none"
-          guidelineColor="bg-border"
         >
           <FaqSectionFrame>
             <PricingFAQ faqs={faqs} />

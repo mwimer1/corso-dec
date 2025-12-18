@@ -65,7 +65,7 @@ export default async function InsightsPage() {
   ];
 
   return (
-    <PublicLayout navMode="insights" navItems={getInsightsNavItems()} showVerticalGuidelines>
+    <PublicLayout navMode="insights" navItems={getInsightsNavItems()}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <InsightsHero
           title="Construction industry trends, market intel, and practical playbooks."
