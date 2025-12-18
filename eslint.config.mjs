@@ -322,6 +322,8 @@ export default [
           'components/dashboard/entity/shared/grid/ag-grid-modules.ts',
           'components/dashboard/entity/shared/renderers/value-formatter.ts',
           'components/dashboard/header/dashboard-header.tsx',
+          // UI components - exported via barrel and used via @/components
+          'components/ui/segmented-control.tsx',
           // Entity configs - used internally via registry
           'components/dashboard/entity/companies/config.ts',
           'components/dashboard/entity/projects/config.ts',
