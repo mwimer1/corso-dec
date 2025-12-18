@@ -24,14 +24,14 @@ export default function IndustryExplorer() {
   }));
 
   // Removed inner section wrapper - parent FullWidthSection provides full-bleed background and border
-  // Reduced header margin from mb-5xl to mb-4xl for tighter spacing (~80px instead of ~96px)
+  // Header is left-aligned to match the Industry Explorer content below
   return (
     <>
-      <div className="mx-auto max-w-4xl text-center mb-4xl">
+      <div className="mb-3xl">
         <SectionHeader
           id="use-cases-title"
           headingLevel={2}
-          align="center"
+          align="left"
           title="Built for your industry."
           subtitle="Discover how Corso turns building-permit data into actionable business intelligence."
           size="marketingHero"

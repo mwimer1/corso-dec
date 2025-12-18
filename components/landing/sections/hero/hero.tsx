@@ -57,10 +57,11 @@ export default function Hero({ children }: HeroProps) {
         </Button>
         <Button
           asChild
+          variant="default"
           className={navbarStyleVariants().button()}
         >
-          <LinkTrack href={APP_LINKS.NAV.SIGNUP} label="hero:start-for-free">
-            Start for free
+          <LinkTrack href={APP_LINKS.NAV.SIGNUP} label="hero:start-free">
+            Start free
           </LinkTrack>
         </Button>
       </div>

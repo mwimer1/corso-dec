@@ -18,8 +18,8 @@ describe('SegmentedControl', () => {
 
     const tabList = container.querySelector('div[role="tablist"]');
     expect(tabList).toBeInTheDocument();
-    expect(tabList).toHaveClass('flex');
-    expect(tabList).toHaveClass('gap-1');
+    expect(tabList).toHaveClass('inline-flex');
+    expect(tabList).toHaveClass('gap-0.5');
 
     // Verify all buttons are rendered
     const buttons = container.querySelectorAll('button[role="tab"]');
@@ -40,8 +40,8 @@ describe('SegmentedControl', () => {
     );
 
     const tabList = container.querySelector('div[role="tablist"]');
-    expect(tabList).toHaveClass('flex');
-    expect(tabList).toHaveClass('gap-1');
+    expect(tabList).toHaveClass('inline-flex');
+    expect(tabList).toHaveClass('gap-0.5');
     expect(tabList).toHaveClass('custom-class');
   });
 
@@ -55,7 +55,7 @@ describe('SegmentedControl', () => {
     );
 
     const tabList = container.querySelector('div[role="tablist"]');
-    expect(tabList).toHaveClass('flex');
-    expect(tabList).toHaveClass('gap-1');
+    expect(tabList).toHaveClass('inline-flex');
+    expect(tabList).toHaveClass('gap-0.5');
   });
 });

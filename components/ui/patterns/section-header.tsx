@@ -60,7 +60,11 @@ export const SectionHeader = React.forwardRef<HTMLElement, SectionHeaderProps>(
           {title}
         </Tag>
         {content ? (
-          <p className={cn(size === "marketingHero" ? "mt-lg text-lg text-muted-foreground max-w-2xl mx-auto" : "mt-4 text-lg text-muted-foreground max-w-2xl mx-auto", descriptionClassName)}>
+          <p className={cn(
+            size === "marketingHero" ? "mt-lg text-lg text-muted-foreground max-w-2xl" : "mt-4 text-lg text-muted-foreground max-w-2xl",
+            align === "center" ? "mx-auto" : align === "right" ? "ml-auto" : "",
+            descriptionClassName
+          )}>
             {content}
           </p>
         ) : null}

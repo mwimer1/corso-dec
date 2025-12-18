@@ -85,66 +85,66 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
   }
 
   // Removed mt-md - header margin-bottom provides sufficient spacing
+  // Unified container wraps both columns for visual cohesion
   return (
-    <div className="flex flex-col lg:flex-row lg:gap-xl">
-      {/* Mobile: Horizontal PillGroup */}
-      <div className="lg:hidden mb-md">
-        <PillGroup
-          id="industry-selector-mobile"
-          items={industries.map((ind) => ind.title)}
-          selected={activeIndustry.title}
-          onSelect={handlePillSelect}
-          aria-label="Select industry"
-        />
-      </div>
+    <div className="rounded-lg border border-border bg-surface shadow-card p-lg">
+      <div className="flex flex-col lg:flex-row lg:items-start lg:gap-xl">
+        {/* Mobile: Horizontal PillGroup */}
+        <div className="lg:hidden mb-md">
+          <PillGroup
+            id="industry-selector-mobile"
+            items={industries.map((ind) => ind.title)}
+            selected={activeIndustry.title}
+            onSelect={handlePillSelect}
+            aria-label="Select industry"
+          />
+        </div>
 
-      {/* Desktop: Vertical Tab List */}
-      <div
-        className="hidden lg:flex lg:flex-col lg:w-64 lg:flex-shrink-0"
-        role="tablist"
-        aria-orientation="vertical"
-        aria-label="Industry selection"
-      >
-        {industries.map((industry, index) => {
-          const isSelected = industry.key === activeKey;
-          return (
-            <button
-              key={industry.key}
-              ref={(el) => {
-                tabRefs.current[index] = el;
-              }}
-              id={`industry-tab-${industry.key}`}
-              role="tab"
-              aria-selected={isSelected}
-              aria-controls={`industry-panel-${industry.key}`}
-              tabIndex={isSelected ? 0 : -1}
-              className={cn(
-                'px-4 py-2 text-left rounded-md text-base font-medium transition-colors',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                isSelected
-                  ? 'bg-surface-selected text-foreground font-semibold border-l-4 border-primary'
-                  : 'bg-transparent text-foreground hover:bg-surface-hover'
-              )}
-              onClick={() => setActiveKey(industry.key)}
-              onKeyDown={(e) => handleKeyDown(e, index)}
-            >
-              {industry.title}
-            </button>
-          );
-        })}
-      </div>
+        {/* Desktop: Vertical Tab List */}
+        <div
+          className="hidden lg:flex lg:flex-col lg:w-64 lg:flex-shrink-0"
+          role="tablist"
+          aria-orientation="vertical"
+          aria-label="Industry selection"
+        >
+          {industries.map((industry, index) => {
+            const isSelected = industry.key === activeKey;
+            return (
+              <button
+                key={industry.key}
+                ref={(el) => {
+                  tabRefs.current[index] = el;
+                }}
+                id={`industry-tab-${industry.key}`}
+                role="tab"
+                aria-selected={isSelected}
+                aria-controls={`industry-panel-${industry.key}`}
+                tabIndex={isSelected ? 0 : -1}
+                className={cn(
+                  'px-4 py-2 text-left rounded-md text-base font-medium transition-colors',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                  'list-none', // Ensure no list markers appear
+                  isSelected
+                    ? 'bg-surface-selected text-foreground font-semibold border-l-4 border-primary'
+                    : 'bg-transparent text-foreground hover:bg-surface-hover'
+                )}
+                onClick={() => setActiveKey(industry.key)}
+                onKeyDown={(e) => handleKeyDown(e, index)}
+              >
+                {industry.title}
+              </button>
+            );
+          })}
+        </div>
 
-      {/* Detail Panel */}
-      <div
-        id={`industry-panel-${activeKey}`}
-        role="tabpanel"
-        aria-labelledby={`industry-tab-${activeKey}`}
-        aria-live="polite"
-        className={cn(
-          'flex-1 rounded-lg border border-border bg-surface p-lg shadow-card',
-          'lg:min-h-[400px]'
-        )}
-      >
+        {/* Detail Panel */}
+        <div
+          id={`industry-panel-${activeKey}`}
+          role="tabpanel"
+          aria-labelledby={`industry-tab-${activeKey}`}
+          aria-live="polite"
+          className="flex-1 min-w-0"
+        >
         <h3 className="text-xl font-bold text-foreground mb-xs">{activeIndustry.title}</h3>
         <p className="text-base text-muted-foreground mb-sm">{activeIndustry.subtitle}</p>
         <p className="text-sm text-foreground mb-sm">{activeIndustry.description}</p>
@@ -176,7 +176,7 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
           <Link
             href={APP_LINKS.FOOTER.CONTACT}
             onClick={() => trackNavClick('Talk to sales', APP_LINKS.FOOTER.CONTACT)}
-            className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'w-full sm:w-auto')}
+            className={cn(buttonVariants({ variant: 'secondary', size: 'lg' }), 'w-full sm:w-auto')}
           >
             Talk to sales
           </Link>
@@ -188,6 +188,7 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
             Start free
           </Link>
         </div>
+      </div>
       </div>
     </div>
   );
