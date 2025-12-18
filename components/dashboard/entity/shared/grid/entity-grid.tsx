@@ -1,13 +1,13 @@
 "use client";
 
-// AG Grid registration is handled via registerAgGridModules() below.
+// AG Grid registration is handled in the useEffect hook via ensureAgGridReadyFor().
+// This ensures registration happens client-side after mount when environment variables are available.
 import { ensureAgGridReadyFor } from '@/lib/vendors/ag-grid.client';
 import type { EntityGridProps } from '@/types/dashboard';
 import type { GridApi, GridReadyEvent, IServerSideGetRowsParams } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { registerAgGridModules } from './ag-grid-modules';
 // PostHog removed — no-op helper kept inline (no external dependency)
 type _PosthogLite = {
   get_distinct_id?: () => string;
@@ -17,8 +17,6 @@ const _posthogHook: () => _PosthogLite = () => ({
   get_distinct_id: () => 'anon',
   capture: () => {},
 });
-
-registerAgGridModules();
 
 export default function EntityGrid({
   config, gridRef, setSearchCount, onStateUpdated, onLoadError, className, style,

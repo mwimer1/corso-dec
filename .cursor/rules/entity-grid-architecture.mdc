@@ -84,8 +84,8 @@ lib/services/entity/
 
 ### Registration Pattern
 - **Client-only registration**: `lib/vendors/ag-grid.client.ts` registers `AllEnterpriseModule`
-- **Component integration**: `components/dashboard/entity/shared/grid/ag-grid-modules.ts` calls `registerAgGridModules()` at module level
-- **Automatic execution**: `EntityGrid` component calls `registerAgGridModules()` before render (line 21)
+- **Component integration**: `EntityGrid` component calls `ensureAgGridReadyFor()` in a `useEffect` hook
+- **Timing**: Registration happens client-side after component mount when environment variables are available
 
 ### Environment Requirements
 - `NEXT_PUBLIC_AGGRID_ENTERPRISE=1` must be set (required for server-side row model)
@@ -93,8 +93,10 @@ lib/services/entity/
 
 ### Implementation Details
 ```typescript
-// Registration happens automatically when EntityGrid module loads
-registerAgGridModules(); // Called at module level in entity-grid.tsx
+// Registration happens in useEffect hook (client-side, after mount)
+useEffect(() => {
+  await ensureAgGridReadyFor("serverSide"); // Called in EntityGrid component
+}, [config]);
 
 // Which calls:
 ensureAgGridRegistered(); // From lib/vendors/ag-grid.client.ts
