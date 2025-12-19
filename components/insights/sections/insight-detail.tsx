@@ -8,6 +8,7 @@ import { ArticleHeader } from "@/components/insights/widgets/article-header";
 import { ArticleImage } from "@/components/insights/widgets/article-image";
 import { Breadcrumbs } from "@/components/insights/widgets/breadcrumbs";
 import { RelatedArticles } from "@/components/insights/widgets/related-articles";
+import { resolveInsightImageUrl } from "@/lib/marketing/insights/image-resolver";
 import { cn } from "@/styles";
 import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
 import { containerWithPaddingVariants } from "@/styles/ui/shared/container-helpers";
@@ -86,6 +87,15 @@ export const InsightDetail = React.forwardRef<
     publishDate: initialData.publishDate ?? null,
   });
 
+  // Resolve image URL using shared resolver for consistency with list page
+  const resolvedImageUrl = React.useMemo(
+    () => resolveInsightImageUrl({ 
+      ...(imageUrl && { imageUrl }), 
+      ...(categories && { categories }) 
+    }),
+    [imageUrl, categories]
+  );
+
   return (
     <div
       ref={ref}
@@ -151,14 +161,12 @@ export const InsightDetail = React.forwardRef<
           {...(categories && { categories })}
         />
 
-        {imageUrl && (
-          <ArticleImage
-            src={imageUrl}
-            alt={title}
-            loading="lazy"
-            priority={false}
-          />
-        )}
+        <ArticleImage
+          src={resolvedImageUrl}
+          alt={title}
+          loading="lazy"
+          priority={false}
+        />
 
         <section
           dangerouslySetInnerHTML={{ __html: sanitizedContent }}

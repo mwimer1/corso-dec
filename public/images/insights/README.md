@@ -2,11 +2,15 @@
 
 We currently use remote Pexels images as category-aware placeholders to avoid committing binary thumbnail assets while the Insights CMS is still mock/hybrid.
 
+**Single source of truth**: The image resolution logic lives in `lib/marketing/insights/image-resolver.ts`. If you add new categories/slugs, update `categoryPlaceholderImageMap` there.
+
 ## Precedence
 
-1. If a post has `coverImage` (or `imageUrl`), that is used.
-2. Else use the category placeholder below.
+1. If a post has `imageUrl` and it does NOT contain the generic "projects-interface" placeholder, that is used.
+2. Else use the category placeholder (based on primary category slug).
 3. Else use the default placeholder.
+
+**Note**: The generic "projects-interface" placeholder is automatically filtered out and replaced with category-specific placeholders for consistency.
 
 ## License
 

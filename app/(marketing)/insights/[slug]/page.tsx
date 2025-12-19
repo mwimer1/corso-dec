@@ -9,6 +9,7 @@
 import { PublicLayout } from "@/components";
 import { InsightDetail } from "@/components/insights";
 import { getInsightsNavItems } from "@/components/insights/layout/nav.config";
+import { resolveInsightImageUrl } from "@/lib/marketing/insights/image-resolver";
 import { getInsightBySlug, getRelatedInsights } from "@/lib/marketing/server";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -28,6 +29,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const description = item.description ?? `Read ${item.title} on Corso Insights`;
     const url = `https://getcorso.com/insights/${slug}`;
     const canonicalUrl = new URL(url, 'https://getcorso.com').toString();
+    // Resolve image URL using shared resolver for consistency
+    const resolvedImage = resolveInsightImageUrl(item);
 
     return {
       title: `${item.title} | Corso Insights`,
@@ -38,7 +41,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         description,
         url: canonicalUrl,
         type: 'article',
-        images: item.imageUrl ? [{ url: item.imageUrl, alt: item.title }] : [{ url: '/logo.svg', alt: 'Corso Logo' }],
+        images: [{ url: resolvedImage, alt: item.title }],
         publishedTime: item.publishDate,
         authors: item.author?.name ? [item.author.name] : undefined,
         section: item.categories?.map((cat: { name: string }) => cat.name).join(', '),
@@ -48,7 +51,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         card: 'summary_large_image',
         title: item.title,
         description,
-        images: item.imageUrl ? [item.imageUrl] : ['/logo.svg'],
+        images: [resolvedImage],
       },
     };
   }
@@ -72,7 +75,7 @@ export default async function InsightPage({ params }: { params: Promise<{ slug: 
     title: insight.title,
     ...(insight.description && { excerpt: insight.description }),
     ...(insight.imageUrl && { imageUrl: insight.imageUrl }),
-    ...(insight.categories && { categories: insight.categories.map(cat => ({ name: cat.name })) }),
+    ...(insight.categories && { categories: insight.categories.map(cat => ({ name: cat.name, slug: cat.slug })) }),
     ...(insight.publishDate && { publishDate: insight.publishDate }),
     ...(insight.author && { author: { name: insight.author.name, slug: insight.author.name.toLowerCase().replace(/\s+/g, '-') } }),
     ...(insight.readingTime !== undefined && { readingTime: insight.readingTime }),
@@ -80,13 +83,16 @@ export default async function InsightPage({ params }: { params: Promise<{ slug: 
 
   const canonicalUrl = new URL(`/insights/${slug}`, 'https://getcorso.com').toString();
 
+  // Resolve image URL using shared resolver for consistency
+  const resolvedImage = resolveInsightImageUrl(item);
+
   // Generate structured data for SEO
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: item.title,
     description: item.description ?? `Read ${item.title} on Corso Insights`,
-    image: item.imageUrl ? [item.imageUrl] : ['/logo.svg'],
+    image: [resolvedImage],
     datePublished: item.publishDate,
     dateModified: item.updatedDate ?? item.publishDate, // Use updatedDate if available, fallback to publishDate
     author: item.author?.name ? {

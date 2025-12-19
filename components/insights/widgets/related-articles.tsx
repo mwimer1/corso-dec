@@ -1,6 +1,7 @@
 'use client';
 
 import { InsightCard } from '@/components/insights/insight-card';
+import { resolveInsightImageUrl } from '@/lib/marketing/insights/image-resolver';
 import { cn } from '@/styles';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
@@ -11,7 +12,7 @@ interface RelatedArticlesProps {
     title: string;
     excerpt?: string;
     imageUrl?: string;
-    categories?: Array<{ name: string }>;
+    categories?: Array<{ name: string; slug?: string }>;
     publishDate?: string;
     author?: { name: string; slug: string };
     readingTime?: number;
@@ -40,21 +41,29 @@ export function RelatedArticles({ articles, className }: RelatedArticlesProps) {
       </header>
       
       <div className="grid gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
-        {articles.slice(0, 3).map((article) => (
-          <InsightCard
-            key={article.slug}
-            href={`/insights/${article.slug}`}
-            title={article.title}
-            excerpt={article.excerpt || undefined}
-            image={article.imageUrl ? { src: article.imageUrl as string, alt: article.title } : undefined}
-            category={article.categories?.[0]?.name || undefined}
-            date={article.publishDate || undefined}
-            readingTime={article.readingTime ? `${article.readingTime} min read` : undefined}
-            author={article.author ? {
-              name: article.author.name as string
-            } : undefined}
-          />
-        ))}
+        {articles.slice(0, 3).map((article) => {
+          // Map categories to ensure slug is present for resolver
+          const categoriesWithSlug = article.categories?.filter((cat): cat is { name: string; slug: string } => !!cat.slug).map(cat => ({ slug: cat.slug }));
+          const imageSrc = resolveInsightImageUrl({ 
+            ...(article.imageUrl && { imageUrl: article.imageUrl }), 
+            ...(categoriesWithSlug && categoriesWithSlug.length > 0 && { categories: categoriesWithSlug }) 
+          });
+          return (
+            <InsightCard
+              key={article.slug}
+              href={`/insights/${article.slug}`}
+              title={article.title}
+              excerpt={article.excerpt || undefined}
+              image={{ src: imageSrc, alt: article.title }}
+              category={article.categories?.[0]?.name || undefined}
+              date={article.publishDate || undefined}
+              readingTime={article.readingTime ? `${article.readingTime} min read` : undefined}
+              author={article.author ? {
+                name: article.author.name as string
+              } : undefined}
+            />
+          );
+        })}
       </div>
       
       <div className="pt-6 sm:pt-8 text-center border-t border-border">
