@@ -72,7 +72,7 @@ export function NumberInputWithSteppers({
             suppressHydrationWarning
             type="button"
           >
-            <span aria-hidden="true">▲</span>
+            <span aria-hidden="true">+</span>
           </button>
           <button
             aria-label={decreaseAria}
@@ -84,7 +84,7 @@ export function NumberInputWithSteppers({
             suppressHydrationWarning
             type="button"
           >
-            <span aria-hidden="true">▼</span>
+            <span aria-hidden="true">–</span>
           </button>
         </div>
       ) : (
@@ -100,7 +100,7 @@ export function NumberInputWithSteppers({
             suppressHydrationWarning
             type="button"
           >
-            <span aria-hidden="true">▲</span>
+            <span aria-hidden="true">+</span>
           </button>
           <button
             aria-label={decreaseAria}
@@ -113,7 +113,7 @@ export function NumberInputWithSteppers({
             suppressHydrationWarning
             type="button"
           >
-            <span aria-hidden="true">▼</span>
+            <span aria-hidden="true">–</span>
           </button>
         </div>
       )}
