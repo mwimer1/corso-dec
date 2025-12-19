@@ -8,16 +8,21 @@ import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
 import type { InsightPreview } from "@/types/marketing";
 import * as React from "react";
 
-// Placeholder images for each category (local assets in public/images/insights)
+// Helper to generate Pexels CDN URLs with consistent 16:9 crop
+const pexels = (id: number, w = 1200, h = 675) =>
+  `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${w}&h=${h}&fit=crop`;
+
+// Category-aware placeholder thumbnails (remote Pexels CDN).
+// If a post has coverImage (imageUrl), it should override these.
 const categoryImageMap: Record<string, string> = {
-  technology: "/images/insights/technology.jpg",
-  "market-analysis": "/images/insights/market.jpg",
-  sustainability: "/images/insights/sustainability.jpg",
-  "cost-management": "/images/insights/cost.jpg",
-  safety: "/images/insights/safety.jpg",
-  data: "/images/insights/data.jpg",
-  general: "/images/insights/general.jpg",
-  default: "/images/insights/default.jpg",
+  technology: pexels(8470810),
+  "market-analysis": pexels(19915446),
+  sustainability: pexels(27863809),
+  "cost-management": pexels(5915147),
+  safety: pexels(10739750),
+  data: pexels(4508751),
+  general: pexels(1188532),
+  default: pexels(20847810),
 };
 
 /** Props for InsightsList – list of insight previews and loading flag. */

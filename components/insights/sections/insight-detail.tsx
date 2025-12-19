@@ -10,6 +10,7 @@ import { Breadcrumbs } from "@/components/insights/widgets/breadcrumbs";
 import { RelatedArticles } from "@/components/insights/widgets/related-articles";
 import { cn } from "@/styles";
 import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
+import { containerWithPaddingVariants } from "@/styles/ui/shared/container-helpers";
 import type { InsightItem } from "@/types/marketing";
 import DOMPurify from "dompurify";
 import type { Metadata } from "next";
@@ -86,88 +87,103 @@ export const InsightDetail = React.forwardRef<
   });
 
   return (
-    <article
+    <div
       ref={ref}
       className={cn(
-        containerMaxWidthVariants({ maxWidth: '3xl', centered: true }),
-        // Base prose styles
-        "prose prose-gray max-w-none prose-lg",
-        // Headings
-        "prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground",
-        "prose-h1:text-4xl prose-h1:mt-8 prose-h1:mb-4",
-        "prose-h2:text-3xl prose-h2:mt-8 prose-h2:mb-4 prose-h2:border-b prose-h2:border-border prose-h2:pb-2",
-        "prose-h3:text-2xl prose-h3:mt-6 prose-h3:mb-3",
-        "prose-h4:text-xl prose-h4:mt-4 prose-h4:mb-2",
-        // Paragraphs
-        "prose-p:text-foreground/90 prose-p:leading-relaxed prose-p:mb-4",
-        // Links
-        "prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-medium prose-a:transition-colors",
-        // Strong and emphasis
-        "prose-strong:text-foreground prose-strong:font-semibold",
-        "prose-em:text-foreground prose-em:italic",
-        // Lists
-        "prose-ul:my-6 prose-ul:space-y-2 prose-ul:list-disc prose-ul:pl-6",
-        "prose-ol:my-6 prose-ol:space-y-2 prose-ol:list-decimal prose-ol:pl-6",
-        "prose-li:text-foreground/90 prose-li:leading-relaxed prose-li:marker:text-primary",
-        // Blockquotes
-        "prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-6 prose-blockquote:pr-4 prose-blockquote:py-2 prose-blockquote:my-6 prose-blockquote:bg-muted/50 prose-blockquote:rounded-r-md prose-blockquote:not-italic",
-        "prose-blockquote>p:text-foreground/80 prose-blockquote>p:mb-0",
-        // Code
-        "prose-code:bg-muted prose-code:text-foreground prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:font-mono prose-code:before:content-none prose-code:after:content-none",
-        "prose-pre:bg-muted prose-pre:border prose-pre:border-border prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto prose-pre:my-6",
-        "prose-pre>code:bg-transparent prose-pre>code:p-0 prose-pre>code:text-sm",
-        // Images
-        "prose-img:rounded-lg prose-img:shadow-md prose-img:my-8 prose-img:border prose-img:border-border",
-        // Horizontal rules
-        "prose-hr:border-border prose-hr:my-8",
-        // Spacing - responsive vertical spacing
-        "space-y-6 sm:space-y-8",
+        // Outer container: matches navbar/footer margins (7xl with lg padding)
+        containerWithPaddingVariants({ maxWidth: "7xl", padding: "lg" }),
         className,
       )}
       {...rest}
     >
-      {/* Note: Structured data is now handled server-side in the page component for better SEO */}
+      <article
+        className={cn(
+          // Inner container: max-w-3xl for optimal article readability
+          containerMaxWidthVariants({ maxWidth: '3xl', centered: true }),
+          // Base prose styles
+          "prose prose-gray max-w-none prose-lg",
+          // Headings
+          "prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground",
+          "prose-h1:text-4xl prose-h1:mt-8 prose-h1:mb-4",
+          "prose-h2:text-3xl prose-h2:mt-8 prose-h2:mb-4 prose-h2:border-b prose-h2:border-border prose-h2:pb-2",
+          "prose-h3:text-2xl prose-h3:mt-6 prose-h3:mb-3",
+          "prose-h4:text-xl prose-h4:mt-4 prose-h4:mb-2",
+          // Paragraphs
+          "prose-p:text-foreground/90 prose-p:leading-relaxed prose-p:mb-4",
+          // Links
+          "prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-medium prose-a:transition-colors",
+          // Strong and emphasis
+          "prose-strong:text-foreground prose-strong:font-semibold",
+          "prose-em:text-foreground prose-em:italic",
+          // Lists
+          "prose-ul:my-6 prose-ul:space-y-2 prose-ul:list-disc prose-ul:pl-6",
+          "prose-ol:my-6 prose-ol:space-y-2 prose-ol:list-decimal prose-ol:pl-6",
+          "prose-li:text-foreground/90 prose-li:leading-relaxed prose-li:marker:text-primary",
+          // Blockquotes
+          "prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-6 prose-blockquote:pr-4 prose-blockquote:py-2 prose-blockquote:my-6 prose-blockquote:bg-muted/50 prose-blockquote:rounded-r-md prose-blockquote:not-italic",
+          "prose-blockquote>p:text-foreground/80 prose-blockquote>p:mb-0",
+          // Code
+          "prose-code:bg-muted prose-code:text-foreground prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:font-mono prose-code:before:content-none prose-code:after:content-none",
+          "prose-pre:bg-muted prose-pre:border prose-pre:border-border prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto prose-pre:my-6",
+          "prose-pre>code:bg-transparent prose-pre>code:p-0 prose-pre>code:text-sm",
+          // Images
+          "prose-img:rounded-lg prose-img:shadow-md prose-img:my-8 prose-img:border prose-img:border-border",
+          // Horizontal rules
+          "prose-hr:border-border prose-hr:my-8",
+          // Spacing - responsive vertical spacing
+          "space-y-6 sm:space-y-8",
+        )}
+      >
+        {/* Note: Structured data is now handled server-side in the page component for better SEO */}
 
-      {breadcrumbs && breadcrumbs.length > 0 && (
-        <div className="mb-4 sm:mb-6">
-          <Breadcrumbs items={breadcrumbs} />
-        </div>
-      )}
+        {breadcrumbs && breadcrumbs.length > 0 && (
+          <div className="mb-4 sm:mb-6">
+            <Breadcrumbs items={breadcrumbs} />
+          </div>
+        )}
 
-      <ArticleHeader
-        title={title}
-        {...(publishDate && { publishDate })}
-        {...(updatedDate && { updatedDate })}
-        {...(readingTime && { readingTime })}
-        {...(author && { author })}
-        {...(categories && { categories })}
-      />
-
-      {imageUrl && (
-        <ArticleImage
-          src={imageUrl}
-          alt={title}
-          loading="lazy"
-          priority={false}
+        <ArticleHeader
+          title={title}
+          {...(publishDate && { publishDate })}
+          {...(updatedDate && { updatedDate })}
+          {...(readingTime && { readingTime })}
+          {...(author && { author })}
+          {...(categories && { categories })}
         />
-      )}
 
-      <section
-        dangerouslySetInnerHTML={{ __html: sanitizedContent }}
-        className="prose-content"
-        aria-label="Article content"
-        itemProp="articleBody"
-      />
+        {imageUrl && (
+          <ArticleImage
+            src={imageUrl}
+            alt={title}
+            loading="lazy"
+            priority={false}
+          />
+        )}
 
-      {relatedArticles.length > 0 && (
-        <aside 
-          className="pt-8 sm:pt-12 border-t border-border mt-8 sm:mt-12"
-          aria-label="Related content"
-        >
-          <RelatedArticles articles={relatedArticles} />
-        </aside>
-      )}
-    </article>
+        <section
+          dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+          className={cn(
+            "prose-content",
+            // Allow full-width elements to break out of 3xl article container to outer 7xl container
+            // Elements with .prose-full-width or data-full-width extend to outer container edges
+            // Uses viewport-relative positioning to break out while respecting outer container padding
+            "[&_.prose-full-width]:relative [&_.prose-full-width]:left-[calc(-50vw+50%)] [&_.prose-full-width]:w-screen [&_.prose-full-width]:max-w-[calc(80rem+2rem)] [&_.prose-full-width]:sm:max-w-[calc(80rem+3rem)] [&_.prose-full-width]:lg:max-w-[calc(80rem+4rem)]",
+            "[&_[data-full-width]]:relative [&_[data-full-width]]:left-[calc(-50vw+50%)] [&_[data-full-width]]:w-screen [&_[data-full-width]]:max-w-[calc(80rem+2rem)] [&_[data-full-width]]:sm:max-w-[calc(80rem+3rem)] [&_[data-full-width]]:lg:max-w-[calc(80rem+4rem)]",
+          )}
+          aria-label="Article content"
+          itemProp="articleBody"
+        />
+
+        {relatedArticles.length > 0 && (
+          <aside 
+            className="pt-8 sm:pt-12 border-t border-border mt-8 sm:mt-12"
+            aria-label="Related content"
+          >
+            <RelatedArticles articles={relatedArticles} />
+          </aside>
+        )}
+      </article>
+    </div>
   );
 });
 

@@ -118,6 +118,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'www.google.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'images.pexels.com',
+      },
     ],
     dangerouslyAllowSVG: true,
     // When allowing remote SVGs via next/image, restrict evaluated SVGs via this CSP
