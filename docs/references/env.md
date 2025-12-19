@@ -26,7 +26,7 @@ pnpm gen:mockdb
 
 - Type: "true" | "1" | undefined
 - Purpose: When set to "true" or "1" in development, chat AI responses are generated locally without calling the OpenAI API. Useful for UI/UX development and testing without backend connectivity.
-- Behavior: 
+- Behavior:
   - Bypasses `/api/v1/ai/chat` endpoint calls
   - Generates context-aware mock responses based on mode (projects/companies/addresses) and question keywords
   - Simulates realistic typing delay (~500ms) for natural UX

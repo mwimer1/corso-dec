@@ -1,11 +1,13 @@
 ---
 title: "Corso"
 description: "Next.js monorepo for Corso platform - data analytics and insights platform with AI-powered SQL generation and visualization."
-last_updated: "2025-12-15"
+last_updated: "2025-12-19"
 category: "project"
 ---
 
 # Corso
+
+Last updated: 2025-12-19
 
 > **Modern data analytics platform built with Next.js 15, TypeScript, and ClickHouse**
 

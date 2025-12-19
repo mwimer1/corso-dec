@@ -1,12 +1,14 @@
 ---
 title: "Documentation Index"
 description: "Complete index of Corso platform documentation organized by category and topic."
-last_updated: "2025-12-15"
+last_updated: "2025-12-19"
 category: "documentation"
 status: "stable"
 ---
 
 # Corso Documentation
+
+Last updated: 2025-12-19
 
 > **Complete documentation index for the Corso platform - data analytics and insights platform**
 
