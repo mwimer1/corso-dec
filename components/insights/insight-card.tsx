@@ -87,12 +87,20 @@ export function InsightCard({
         </h3>
 
         {excerpt && (
-          <p className={cn(
-            'mt-2 line-clamp-3 text-sm flex-1',
-            variant === 'overlay' ? 'text-white/90' : 'text-muted-foreground'
-          )}>
-            {excerpt}
-          </p>
+          <>
+            {/*
+              Excerpt is intentionally NOT flex-1.
+              These cards are equal-height in the grid, and the title can be 1–2 lines.
+              If excerpt also flexes, it can end up shorter than its clamp height and get clipped mid-line.
+              Clamp to 2 lines for consistent, clean ellipsis across cards.
+            */}
+            <p className={cn(
+              'mt-2 line-clamp-2 text-sm',
+              variant === 'overlay' ? 'text-white/90' : 'text-muted-foreground'
+            )}>
+              {excerpt}
+            </p>
+          </>
         )}
 
         <div className={cn(
