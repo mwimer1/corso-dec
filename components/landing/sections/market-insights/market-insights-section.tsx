@@ -2,13 +2,14 @@
 
 // src/components/landing/market-insights/market-insights-section.tsx
 
-import { SectionHeader } from "@/components/ui/patterns";
-import { trackEvent } from "@/lib/shared/analytics/track";
+import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/atoms";
+import { Badge } from "@/components/ui/atoms/badge";
+import { trackEvent, trackNavClick } from "@/lib/shared/analytics/track";
 import { cn } from "@/styles";
 import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
-import { surfaceInteractive } from "@/styles/ui/shared/surface-interactive";
 import type { ChartDataPoint } from "@/types/marketing";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { averageJobValue, filterSeries, getRangeSlice, sumJobValue, sumProjectCount } from "../../utils/data";
 import { FilterPills } from "../../widgets/filter-pills";
@@ -52,7 +53,7 @@ export const MarketInsightsSection: React.FC<Props> = ({
   propertyTypes = DEFAULT_PROPERTY_TYPES,
   controlsVariant = "pills",
   dense = false,
-  stickyMetrics = false,
+  stickyMetrics: _stickyMetrics = false,
 }) => {
   const minYear = useMemo(() => Math.min(...data.map((d: ChartDataPoint) => d.year)), [data]);
   const maxYear = useMemo(() => Math.max(...data.map((d: ChartDataPoint) => d.year)), [data]);
@@ -182,96 +183,103 @@ export const MarketInsightsSection: React.FC<Props> = ({
     try { trackEvent("insights_range_changed", { minYear: r[0], maxYear: r[1] }); } catch {}
     updateUrl({ minYear: r[0], maxYear: r[1] });
   }, [updateUrl]);
-
-  const controlsSpacing = dense ? "space-y-4" : "space-y-6";
-  const controlsGap = dense ? "gap-4" : "gap-6";
+  const handleReset = useCallback(() => {
+    const defaultTerritory = territories[0] ?? "Texas";
+    const defaultProperty = propertyTypes[0] ?? "All";
+    setTerritory(defaultTerritory);
+    setPropType(defaultProperty);
+    const defaultLow = Math.max(minYear, maxYear - 9);
+    const defaultHigh = maxYear;
+    setRange([defaultLow, defaultHigh]);
+    try { trackEvent("insights_filters_reset", {}); } catch {}
+    updateUrl({
+      ...(defaultTerritory && { territory: defaultTerritory }),
+      ...(defaultProperty && { property: defaultProperty }),
+      minYear: defaultLow,
+      maxYear: defaultHigh
+    });
+  }, [territories, propertyTypes, minYear, maxYear, updateUrl]);
 
   return (
-    <section 
+    <section
       className={cn(
         containerMaxWidthVariants({ maxWidth: '7xl', centered: true, responsive: true }),
         cls['section']
       )}
       aria-labelledby="market-insights-title"
     >
-      {/* Reduced header margin from mb-5xl to mb-4xl for tighter spacing (~80px instead of ~96px) */}
-      <div className="mx-auto max-w-4xl text-center mb-4xl">
-        <SectionHeader
-          id="market-insights-title"
-          headingLevel={2}
-          align="center"
-          title={"Explore Real Data in Action"}
-          subtitle={"See how Corso transforms building-permit data into actionable business intelligence across different views."}
-          size={"marketingHero"}
-        />
-      </div>
-
-      {/* Consolidated spacing: removed mb-6, relying on controls container's mt-8 for consistent 32px gap */}
-      <div>
-        {stickyMetrics ? (
-          <div className="hidden md:block sticky z-20" style={{ top: 'var(--nav-offset, 0px)' }}>
-            {/* wrapper uses module CSS to handle shrink-on-scroll */}
-            <div className={cn("bg-surface/95 supports-[backdrop-filter]:bg-surface/80 backdrop-blur-md rounded-xl border border-border shadow-md px-4 py-2", cls['stickyStatsWrapper'])} id="market-insights-sticky-stats">
-              <div className="statsInner">
-                <Statistics totalProjects={totalProjects} totalJobValue={totalJobValue} averageJobValue={avgJobValue} valueClassName="text-primary" compact className="border-b-0" />
-              </div>
-            </div>
-          </div>
-        ) : (
-          <Statistics totalProjects={totalProjects} totalJobValue={totalJobValue} averageJobValue={avgJobValue} valueClassName="text-primary" />
-        )}
-        <Chart data={filtered} loading={loading} variant="bare" />
-      </div>
-
-      {/* Controls Section with Visual Grouping - mt-8 provides 32px gap from chart above */}
-      <div className={cn("bg-surface/50 border border-border rounded-xl p-6 mt-8 mb-8 shadow-sm", surfaceInteractive({ elevate: true }), cls['controlsContainer'])}>
-        <div className={controlsSpacing}>
-          {/* Wide layout: slider left (≈50%), filters right; stacks on small screens */}
-          <div className={`grid grid-cols-1 lg:grid-cols-2 ${controlsGap} items-start lg:items-center`}>
-            <div className="lg:col-span-1 lg:max-w-[48ch]">
-              <YearRangeSlider value={range} onChange={setRange} onCommit={onRangeCommit} minYear={minYear} maxYear={maxYear} {...(!dense ? {} : { showBubbles: false })} compact />
-            </div>
-            <div className="lg:col-span-1">
-              <div className={`grid grid-cols-1 lg:grid-cols-2 ${controlsGap}`}>
-                {controlsVariant === "dropdown" ? (
-                  <>
-                    <FilterSelect
-                      title="Select Territory"
-                      items={territories}
-                      {...(territory !== undefined && { selected: territory })}
-                      onSelect={onTerritorySelect}
-                      id="territory-select"
-                    />
-                    <FilterSelect
-                      title="Select Property Type"
-                      items={propertyTypes}
-                      {...(propType !== undefined && { selected: propType })}
-                      onSelect={onPropertySelect}
-                      id="property-select"
-                    />
-                  </>
-                ) : (
-                  <>
-                    <FilterPills
-                      title="Select Territory"
-                      items={territories}
-                      {...(territory !== undefined && { selected: territory })}
-                      onSelect={onTerritorySelect}
-                      id="territory-pills"
-                    />
-                    <FilterPills
-                      title="Select Property Type"
-                      items={propertyTypes}
-                      {...(propType !== undefined && { selected: propType })}
-                      onSelect={onPropertySelect}
-                      id="property-pills"
-                    />
-                  </>
-                )}
-              </div>
-            </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 items-start gap-12">
+        <div className="mb-8 lg:mb-0">
+          <h2 id="market-insights-title" className="text-4xl font-bold tracking-tight text-foreground">
+            Explore Real Data in Action
+          </h2>
+          <p className="text-lg text-muted-foreground mt-4">
+            See how Corso transforms building-permit data into actionable business intelligence across different views.
+          </p>
+          <ul className="list-disc list-inside mt-6 space-y-2 text-foreground">
+            <li>Filter by territory, property type, and year range</li>
+            <li>Compare job value vs project count</li>
+            <li>Export-ready insights for GTM teams</li>
+          </ul>
+          <div className="flex gap-3 mt-6">
+            <Button asChild>
+              <Link href="/start" onClick={() => trackNavClick("Start for free", "/start")}>Start for free</Link>
+            </Button>
+            <Button variant="secondary" asChild>
+              <Link href="/contact" onClick={() => trackNavClick("Talk to sales", "/contact")}>Talk to sales</Link>
+            </Button>
           </div>
         </div>
+        <Card className="bg-surface rounded-xl border border-border shadow-md">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Permit activity (sample)</CardTitle>
+                <CardDescription>Bars = Job Value • Line = Project Count</CardDescription>
+              </div>
+              <Button variant="ghost" size="sm" onClick={() => {
+                try { trackEvent("insights_full_dataset_clicked", {}); } catch {}
+                window.location.href = "/pricing";
+              }}>
+                See full dataset
+              </Button>
+            </div>
+            <div className="flex flex-wrap gap-2 mt-4">
+              <Badge color="secondary">{territory}</Badge>
+              <Badge color="secondary">{propType === "All" ? "All Types" : propType}</Badge>
+              <Badge color="secondary">{range[0]}–{range[1]}</Badge>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <Statistics totalProjects={totalProjects} totalJobValue={totalJobValue} averageJobValue={avgJobValue} valueClassName="text-primary" compact className="border-b-0 mt-0 mb-4" />
+            <Chart data={filtered} loading={loading} variant="bare" />
+          </CardContent>
+          <CardFooter>
+            <div className="grid grid-cols-1 lg:grid-cols-3 items-start gap-4">
+              <div className="lg:col-span-1 lg:max-w-[48ch]">
+                <YearRangeSlider value={range} onChange={setRange} onCommit={onRangeCommit} minYear={minYear} maxYear={maxYear} {...(!dense ? {} : { showBubbles: false })} compact />
+              </div>
+              <div className="lg:col-span-2">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                  {controlsVariant === "dropdown" ? (
+                    <>
+                      <FilterSelect title="Select Territory" items={territories} {...(territory !== undefined && { selected: territory })} onSelect={onTerritorySelect} id="territory-select" />
+                      <FilterSelect title="Select Property Type" items={propertyTypes} {...(propType !== undefined && { selected: propType })} onSelect={onPropertySelect} id="property-select" />
+                      <Button variant="secondary" size="sm" onClick={handleReset}>Reset</Button>
+                    </>
+                  ) : (
+                    <>
+                      <FilterPills title="Select Territory" items={territories} {...(territory !== undefined && { selected: territory })} onSelect={onTerritorySelect} id="territory-pills" />
+                      <FilterPills title="Select Property Type" items={propertyTypes} {...(propType !== undefined && { selected: propType })} onSelect={onPropertySelect} id="property-pills" />
+                      <Button variant="secondary" size="sm" onClick={handleReset}>Reset</Button>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground mt-4">Sample view • Updated regularly</p>
+          </CardFooter>
+        </Card>
       </div>
 
       <div className={"mt-8 pt-8 " + cls['roiWrap']}>

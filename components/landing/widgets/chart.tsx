@@ -9,10 +9,13 @@ import {
     Bar,
     CartesianGrid,
     ComposedChart,
+    Label,
+    Legend,
     Line,
     ResponsiveContainer,
     Tooltip,
-    XAxis, YAxis
+    XAxis,
+    YAxis
 } from "recharts";
 
 type Props = { data: ChartDataPoint[]; loading?: boolean; variant?: "card" | "bare" };
@@ -59,10 +62,10 @@ export const Chart: React.FC<Props> = ({ data, loading, variant = "card" }) => {
   }
 
   return (
-    <div className={`${variant === "bare" ? "bg-transparent border-0 shadow-none rounded-none p-0 mb-8" : "bg-surface rounded-xl shadow-md border border-border p-6 mb-8"} transition-opacity ${loading ? "opacity-50" : "opacity-100"}`}>
+    <div className={`${variant === "bare" ? "bg-transparent border-0 shadow-none rounded-none p-0" : "bg-surface rounded-xl shadow-md border border-border p-6"} transition-opacity ${loading ? "opacity-50" : "opacity-100"}`}>
       <div className="w-full h-64 md:h-80">
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={sorted} margin={{ top: 20, right: 4, left: 0, bottom: 10 }}>
+          <ComposedChart data={sorted} margin={{ top: 50, right: 4, left: 0, bottom: 10 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={"hsl(var(--border))"} />
             <XAxis dataKey="year" tick={{ fontSize: 12, fill: "currentColor", fontWeight: 500 }} axisLine={{ stroke: "hsl(var(--border))" }} tickLine={false} />
             <YAxis
@@ -72,7 +75,9 @@ export const Chart: React.FC<Props> = ({ data, loading, variant = "card" }) => {
               axisLine={false}
               tickLine={false}
               domain={[0, maxJob]}
-            />
+            >
+              <Label value="Job Value (USD)" angle={-90} position="insideLeft" fill="currentColor" fontSize={12} fontWeight={500} />
+            </YAxis>
             <YAxis
               yAxisId="right"
               orientation="right"
@@ -81,10 +86,13 @@ export const Chart: React.FC<Props> = ({ data, loading, variant = "card" }) => {
               axisLine={false}
               tickLine={false}
               domain={[0, maxProjects]}
-            />
+            >
+              <Label value="Projects" angle={90} position="insideRight" fill="currentColor" fontSize={12} fontWeight={500} />
+            </YAxis>
             <Tooltip content={<CustomTooltip />} cursor={{ fill: "hsl(var(--foreground) / 0.06)" }} />
+            <Legend verticalAlign="top" height={36} />
             <Bar yAxisId="right" dataKey="projectCount" name="Project Count" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} barSize={24} />
-            <Line yAxisId="left" type="monotone" dataKey="jobValue" name="Job Value" stroke="hsl(var(--success, var(--primary)))" strokeWidth={3} dot={{ r: 5 }} activeDot={{ r: 7 }} />
+            <Line yAxisId="left" type="monotone" dataKey="jobValue" name="Job Value" stroke="hsl(var(--success, var(--primary)))" strokeWidth={3} dot={false} activeDot={{ r: 6 }} />
           </ComposedChart>
         </ResponsiveContainer>
       </div>
