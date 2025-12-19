@@ -7,32 +7,42 @@ import path from 'node:path';
  * Field name mappings from CSV headers to canonical field names expected by the UI.
  * Maps are applied per entity type to normalize field names.
  */
-function getFieldMappings(csvName: string): Record<string, string> {
-  const baseMappings: Record<string, string> = {};
-  
-  if (csvName === 'projects.csv') {
-    return {
-      'id_permit_atm': 'building_permit_id',
-      'date_effective': 'effective_date',
-      'propery_type_major_category': 'property_type_major_category', // Fix typo
-      'latitude': 'property_latitude',
-      'longitude': 'property_longitude',
-      'full_mailing_address': 'full_address',
-      'id_property_atm': 'attom_id',
-      'company_name': 'contractor_names',
-      'property_owner': 'homeowner_names',
-    };
+function getFieldMapForEntity(entity: 'projects' | 'companies' | 'addresses'): Record<string, string> {
+  switch (entity) {
+    case 'projects': {
+      return {
+        'id_permit_atm': 'building_permit_id',
+        'date_effective': 'effective_date',
+        'propery_type_major_category': 'property_type_major_category', // Fix typo
+        'latitude': 'property_latitude',
+        'longitude': 'property_longitude',
+        'full_mailing_address': 'full_address',
+        'id_property_atm': 'attom_id',
+        'company_name': 'contractor_names',
+        'property_owner': 'homeowner_names',
+      };
+    }
+    case 'companies': {
+      return {
+        'id_contractor': 'company_name',
+        'total_value': 'job_value_ttm',
+        'avg_value': 'avg_value_ttm',
+        'permits_total': 'project_count_ttm',
+        'top_permit_types': 'top_cities',
+      };
+    }
+    case 'addresses': {
+      return {
+        'property_address_type_key': 'full_address',
+        'total_value': 'total_job_value',
+        'permits_total': 'job_count',
+        'latest_permit_date': 'record_last_updated',
+      };
+    }
+    default: {
+      return {};
+    }
   }
-  
-  // Add mappings for companies.csv and addresses.csv as needed
-  // For now, return empty object if no specific mappings are needed
-  if (csvName === 'companies.csv' || csvName === 'addresses.csv') {
-    // Add entity-specific mappings here if needed
-    // Example: 'id_contractor': 'contractor_id'
-    return {};
-  }
-  
-  return baseMappings;
 }
 
 /**
@@ -77,7 +87,16 @@ function parseCsv(text: string, csvName: string): Array<Record<string, string | 
   const lines = text.split(/\r?\n/).filter((l) => l.trim().length > 0);
   if (lines.length === 0) return [];
   const header = splitCsvLine(lines[0] || '');
-  const mappings = getFieldMappings(csvName);
+  
+  // Determine entity type from CSV filename
+  const entityMap: Record<string, 'projects' | 'companies' | 'addresses'> = {
+    'projects.csv': 'projects',
+    'companies.csv': 'companies',
+    'addresses.csv': 'addresses',
+  };
+  const entity = entityMap[csvName] || 'projects';
+  const mappings = getFieldMapForEntity(entity);
+  
   const out: Array<Record<string, string | number | boolean | null>> = [];
   for (let i = 1; i < lines.length; i++) {
     const cols = splitCsvLine(lines[i] || '');

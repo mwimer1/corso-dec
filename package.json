@@ -20,6 +20,7 @@
   "scripts": {
     "typecheck:fast": "tsc -p config/typescript/tsconfig.tooling.json --noEmit",
     "gen:mockdb": "tsx scripts/maintenance/generate-mock-json.ts",
+    "validate:mock-schema": "tsx scripts/maintenance/validate-mock-schema.ts",
     "verify:edge": "tsx scripts/verify-edge-safe.ts",
     "verify:env": "tsx scripts/verify-env-usage.ts",
     "verify:repo": "pnpm run verify:env && pnpm run verify:edge",
