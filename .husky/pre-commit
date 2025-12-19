@@ -1,6 +1,9 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# Ensure we're in the git repository root (Windows compatibility)
+cd "$(git rev-parse --show-toplevel)" || exit 1
+
 echo "🔍 Running local quality gates..."
 
 # Package.json validation (prevents duplicate scripts)
