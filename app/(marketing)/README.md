@@ -1,6 +1,6 @@
 ---
 status: "draft"
-last_updated: "2025-01-28"
+last_updated: "2025-12-19"
 category: "documentation"
 title: "(marketing)"
 description: "Documentation and resources for documentation functionality. Located in (marketing)/."
