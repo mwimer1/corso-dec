@@ -1,10 +1,15 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/husky.sh"
 
-# husky.sh already changes to the git repository root, so we just verify we're in the right place
-if ! git rev-parse --git-dir >/dev/null 2>&1; then
-  echo "✖ Error: Could not find git repository root"
-  exit 1
+# husky.sh already changes to the git repository root
+# Verify we're in a git repository (use --show-toplevel which is more reliable)
+if ! git rev-parse --show-toplevel >/dev/null 2>&1; then
+  # Fallback: ensure we're in repo root using relative path (Windows compatibility)
+  cd "$(dirname -- "$0")/../.." || exit 1
+  if ! git rev-parse --show-toplevel >/dev/null 2>&1; then
+    echo "✖ Error: Could not find git repository root"
+    exit 1
+  fi
 fi
 
 echo "🔍 Running local quality gates..."

@@ -106,7 +106,7 @@
     },
     "Git Bash (fast)": {
       "path": "C:\\Program Files\\Git\\bin\\bash.exe",
-      "args": ["--noprofile", "--norc", "-c", "eval 'dump_bash_state() { :; }'; exec bash"],
+      "args": ["--noprofile", "--norc", "-c", "dump_bash_state() { :; }; export -f dump_bash_state; exec bash --noprofile --norc"],
       "icon": "terminal-bash"
     },
     "PowerShell": {
