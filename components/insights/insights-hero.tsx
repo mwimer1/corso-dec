@@ -14,7 +14,7 @@ export function InsightsHero({ title, eyebrow = 'Insights', description, classNa
       aria-label="Insights overview"
       className={cn(
         'relative py-12 md:py-16',
-        'bg-muted/20 rounded-3xl border border-border',
+        'bg-muted/20 rounded-2xl border border-border',
         'overflow-hidden',
         className
       )}

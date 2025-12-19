@@ -8,6 +8,18 @@ import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
 import type { InsightPreview } from "@/types/marketing";
 import * as React from "react";
 
+// Placeholder images for each category (local assets in public/images/insights)
+const categoryImageMap: Record<string, string> = {
+  technology: "/images/insights/technology.jpg",
+  "market-analysis": "/images/insights/market.jpg",
+  sustainability: "/images/insights/sustainability.jpg",
+  "cost-management": "/images/insights/cost.jpg",
+  safety: "/images/insights/safety.jpg",
+  data: "/images/insights/data.jpg",
+  general: "/images/insights/general.jpg",
+  default: "/images/insights/default.jpg",
+};
+
 /** Props for InsightsList – list of insight previews and loading flag. */
 interface InsightsListProps extends React.HTMLAttributes<HTMLDivElement> {
   insights: InsightPreview[];
@@ -84,25 +96,35 @@ export const InsightsList = React.forwardRef<HTMLDivElement, InsightsListProps>(
             )}
             aria-label="Insights articles"
           >
-            {insights.map((insight) => (
-              <li key={insight.id} className="m-0 p-0 list-none">
-                <InsightCard
-                  href={`/insights/${insight.slug}`}
-                  title={insight.title}
-                  excerpt={insight.description || undefined}
-                  image={insight.imageUrl ? {
-                    src: insight.imageUrl,
-                    alt: insight.title
-                  } : undefined}
-                  category={insight.categories?.[0]?.name || undefined}
-                  date={insight.publishDate || undefined}
-                  readingTime={insight.readingTime ? `${insight.readingTime} min read` : undefined}
-                  author={insight.author ? {
-                    name: insight.author.name
-                  } : undefined}
-                />
-              </li>
-            ))}
+            {insights.map((insight) => {
+              const primaryCategory = insight.categories?.[0]?.slug;
+              const isGenericImage = insight.imageUrl && insight.imageUrl.includes("projects-interface");
+              // Determine which image to use: post cover, category placeholder, or default
+              let imageSrc: string;
+              if (insight.imageUrl && !isGenericImage) {
+                imageSrc = insight.imageUrl;
+              } else if (primaryCategory && categoryImageMap[primaryCategory]) {
+                imageSrc = categoryImageMap[primaryCategory]!;
+              } else {
+                imageSrc = categoryImageMap['default']!;
+              }
+              return (
+                <li key={insight.id} className="m-0 p-0 list-none">
+                  <InsightCard
+                    href={`/insights/${insight.slug}`}
+                    title={insight.title}
+                    excerpt={insight.description || undefined}
+                    image={{ src: imageSrc, alt: insight.title }}
+                    category={insight.categories?.[0]?.name || undefined}
+                    date={insight.publishDate || undefined}
+                    readingTime={insight.readingTime ? `${insight.readingTime} min read` : undefined}
+                    author={insight.author ? {
+                      name: insight.author.name
+                    } : undefined}
+                  />
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>

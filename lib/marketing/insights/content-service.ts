@@ -15,6 +15,7 @@ import remarkRehype from 'remark-rehype';
 import { unified } from 'unified';
 // import { z } from 'zod' // (removed: no longer used)
 import { CATEGORIES, staticInsights } from './static-data';
+// If integrating a CMS, import or require its SDK or API client here (future enhancement)
 
 const CONTENT_ROOT = path.join(process.cwd(), 'content', 'insights');
 const ARTICLES_DIR = path.join(CONTENT_ROOT, 'articles');
@@ -138,10 +139,39 @@ async function loadFromContentDir(): Promise<InsightItem[]> {
 }
 
 export async function getAllInsights(): Promise<InsightPreview[]> {
+  const source = process.env['INSIGHTS_SOURCE']?.toLowerCase();
+  if (source === 'cms') {
+    // TODO: Integrate CMS content fetch. Using static data as placeholder.
+    console.warn("INSIGHTS_SOURCE=cms – returning static insights as placeholder (CMS integration not implemented).");
+    return staticInsights.map((i): InsightPreview => ({
+      id: i.id,
+      slug: i.slug,
+      title: i.title,
+      ...(i.description && { description: i.description }),
+      ...(i.publishDate && { publishDate: i.publishDate }),
+      ...(i.imageUrl && { imageUrl: i.imageUrl }),
+      ...(i.categories && { categories: i.categories }),
+      ...(i.readingTime !== undefined && { readingTime: i.readingTime }),
+      ...(i.author && { author: i.author }),
+    }));
+  }
+  if (source === 'mock') {
+    // Use static mock data explicitly
+    return staticInsights.map((i): InsightPreview => ({
+      id: i.id,
+      slug: i.slug,
+      title: i.title,
+      ...(i.description && { description: i.description }),
+      ...(i.publishDate && { publishDate: i.publishDate }),
+      ...(i.imageUrl && { imageUrl: i.imageUrl }),
+      ...(i.categories && { categories: i.categories }),
+      ...(i.readingTime !== undefined && { readingTime: i.readingTime }),
+      ...(i.author && { author: i.author }),
+    }));
+  }
+  // Default: try to load from local markdown files, fall back to static if none
   const contentItems = await loadFromContentDir();
   if (contentItems.length > 0) {
-    // Content items are already InsightItem[], which extends InsightPreview
-    // Extract preview fields explicitly to ensure type safety with exactOptionalPropertyTypes
     return contentItems.map((i): InsightPreview => ({
       id: i.id,
       slug: i.slug,
@@ -154,7 +184,7 @@ export async function getAllInsights(): Promise<InsightPreview[]> {
       ...(i.author && { author: i.author }),
     }));
   }
-  // Fallback to static mock content - staticInsights are already InsightItem[]
+  // No content files found, use static data as last resort
   return staticInsights.map((i): InsightPreview => ({
     id: i.id,
     slug: i.slug,
@@ -169,6 +199,11 @@ export async function getAllInsights(): Promise<InsightPreview[]> {
 }
 
 export async function getInsightBySlug(slug: string): Promise<InsightItem | undefined> {
+  const source = process.env['INSIGHTS_SOURCE']?.toLowerCase();
+  if (source === 'cms' || source === 'mock') {
+    // In CMS or mock mode, look up in static insights (assuming no markdown content)
+    return staticInsights.find((i) => i.slug === slug);
+  }
   const contentItems = await loadFromContentDir();
   if (contentItems.length > 0) {
     return contentItems.find((i) => i.slug === slug);
@@ -180,17 +215,22 @@ export async function getInsightBySlug(slug: string): Promise<InsightItem | unde
  * Collect categories across all available content (frontmatter) or static fallback.
  */
 export async function getCategories(): Promise<Array<{ slug: string; name: string }>> {
+  const source = process.env['INSIGHTS_SOURCE']?.toLowerCase();
+  if (source === 'cms' || source === 'mock') {
+    // Use static categories in CMS or mock mode (assuming no dynamic content)
+    return CATEGORIES;
+  }
   const contentItems = await loadFromContentDir();
-  const source = contentItems.length > 0 ? contentItems : staticInsights;
+  const dataSource = contentItems.length > 0 ? contentItems : staticInsights;
   const map = new Map<string, string>();
-  for (const it of source) {
-    const cats = it.categories;
-    if (!cats) continue;
-    for (const c of cats) {
-      if (!map.has(c.slug)) map.set(c.slug, c.name);
+  for (const it of dataSource) {
+    for (const c of it.categories ?? []) {
+      if (!map.has(c.slug)) {
+        map.set(c.slug, c.name);
+      }
     }
   }
-  return Array.from(map.entries()).map(([slug, name]) => ({ slug, name }));
+  return Array.from(map, ([slug, name]) => ({ slug, name }));
 }
 
 // --- Category filtering helpers (non-breaking additions) ---
