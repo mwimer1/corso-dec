@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+. "$(dirname -- "$0")/husky.sh"
 
 # Validate the current commit message using commitlint
 pnpm exec commitlint --edit "$1"

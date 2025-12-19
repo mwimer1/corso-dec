@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 if [ -z "$HUSKY" ]; then
-  cd "$(dirname -- "$0")/../.."
+  cd "$(dirname -- "$0")/.."
   if [ -f .huskyrc ]; then
     export HUSKY=0
     . .huskyrc

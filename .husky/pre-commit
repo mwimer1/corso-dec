@@ -1,8 +1,16 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+. "$(dirname -- "$0")/husky.sh"
 
 # Ensure we're in the git repository root (Windows compatibility)
-cd "$(git rev-parse --show-toplevel)" || exit 1
+# Use relative path navigation (same approach as husky.sh) - more reliable on Windows
+REPO_ROOT="$(dirname -- "$0")/../.."
+cd "$REPO_ROOT" || exit 1
+
+# Verify we're in a git repository
+if ! git rev-parse --git-dir >/dev/null 2>&1; then
+  echo "✖ Error: Could not find git repository root"
+  exit 1
+fi
 
 echo "🔍 Running local quality gates..."
 
