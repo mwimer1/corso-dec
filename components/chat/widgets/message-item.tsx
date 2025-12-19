@@ -20,48 +20,57 @@ function MessageItemImpl({ message, onSelectFollowUp }: Props) {
       "flex w-full",
       isUser ? "justify-end" : "justify-start"
     )}>
-      <div className={cn(
-        "rounded-2xl px-4 py-3 max-w-[70%]",
-        isUser
-          ? "bg-primary text-primary-foreground"
-      : "bg-surface text-foreground border-[var(--chat-bubble-asst-border)] border-border"
-      )}>
-        {!isUser && !message.content && (
-          <div className="flex items-center gap-1 text-muted-foreground" aria-live="polite" aria-label="Assistant is typing">
-            <span className="animate-pulse">●</span>
-            <span className="animate-pulse delay-75">●</span>
-            <span className="animate-pulse delay-150">●</span>
+      {isUser ? (
+        // User message bubble with primary styling
+        message.content && (
+          <div className="relative my-2 flex w-full items-start rounded-xl border border-primary bg-primary p-4 text-primary-foreground text-sm max-w-[70%]">
+            <p className="whitespace-pre-wrap leading-relaxed w-full">
+              {message.content}
+            </p>
           </div>
-        )}
-        {message.content && (
-          <p className="whitespace-pre-wrap leading-relaxed">
-            {message.content}
-          </p>
-        )}
-
-        {/* Charts and tables only for assistant messages */}
-        {!isUser && message.visualizationType === 'table' && message.tableData && message.tableColumns && (
-          <div className="mt-3">
-            <ChatTable
-              columns={message.tableColumns.map((c: { name: string }) => ({ id: c.name, label: c.name }))}
-              rows={message.tableData}
-              compact
-              stickyHeader
-            />
+        )
+      ) : (
+        // Assistant message bubble
+        (!message.content || message.content.length === 0) && !message.isError ? (
+          // Typing indicator bubble
+          <div className="relative my-2 flex w-full items-start rounded-xl border border-border bg-surface px-4 py-3 max-w-[70%]">
+            <span className="text-sm italic text-muted-foreground">
+              Assistant is typing<span className="animate-pulse">…</span>
+            </span>
           </div>
-        )}
+        ) : (
+          // Normal assistant message bubble
+          <div className="relative my-2 flex w-full items-start rounded-xl border border-border bg-surface p-4 max-w-[70%]">
+            <div className="w-full text-foreground">
+              {message.content && (
+                <p className="whitespace-pre-wrap leading-relaxed">
+                  {message.content}
+                </p>
+              )}
 
+              {/* Charts and tables only for assistant messages */}
+              {message.visualizationType === 'table' && message.tableData && message.tableColumns && (
+                <div className="mt-3">
+                  <ChatTable
+                    columns={message.tableColumns.map((c: { name: string }) => ({ id: c.name, label: c.name }))}
+                    rows={message.tableData}
+                    compact
+                    stickyHeader
+                  />
+                </div>
+              )}
 
-        {/* Follow-up chips only for assistant messages */}
-        {!isUser && (
-          <div className="mt-3">
-            <FollowUpChips
-              items={message.followUpQuestions || []}
-              onClick={onSelectFollowUp ?? (() => {})}
-            />
+              {/* Follow-up chips only for assistant messages */}
+              <div className="mt-3">
+                <FollowUpChips
+                  items={message.followUpQuestions || []}
+                  onClick={onSelectFollowUp ?? (() => {})}
+                />
+              </div>
+            </div>
           </div>
-        )}
-      </div>
+        )
+      )}
     </div>
   );
 }

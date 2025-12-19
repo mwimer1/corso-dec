@@ -295,6 +295,15 @@ export function useChat(opts: UseChatOptions = {}): UseChatReturn {
           });
           dispatch({ type: 'set_error', payload: aiErr });
           reportError(aiErr);
+          dispatch({
+            type: 'update_assistant_message',
+            payload: {
+              id: assistantId,
+              content: `⚠️ ${chunk.error}`,
+              isError: true,
+            },
+          });
+          return;
         }
       }
 

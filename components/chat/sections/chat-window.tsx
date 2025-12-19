@@ -35,14 +35,18 @@ export default function ChatWindow() {
     setHydrated(true);
   }, []);
 
-  // Smooth autoscroll to bottom when messages change
+  // Smooth autoscroll to bottom when messages change (only if user is near bottom)
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-    // Use rAF to wait for DOM paint
-    requestAnimationFrame(() => {
-      el.scrollTop = el.scrollHeight;
-    });
+    // Only scroll if user is near bottom (within ~100px)
+    const distanceFromBottom = el.scrollHeight - el.clientHeight - el.scrollTop;
+    if (distanceFromBottom < 100) {
+      // Use rAF to wait for DOM paint
+      requestAnimationFrame(() => {
+        el.scrollTop = el.scrollHeight;
+      });
+    }
   }, [messages.length]);
 
   const canSend = useMemo(() => draft.trim().length > 0 && !isProcessing, [draft, isProcessing]);

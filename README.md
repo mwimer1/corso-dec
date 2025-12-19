@@ -175,6 +175,32 @@ For security standards and practices, see [Security Standards](.cursor/rules/sec
 
 For testing patterns and best practices, see [Testing Strategy](docs/testing-quality/testing-strategy.md).
 
+### Development & Testing Features
+
+#### Chat Mock Mode
+
+To test the chat UI without calling OpenAI or the backend, you can enable the mock AI mode. Set `NEXT_PUBLIC_USE_MOCK_AI=1` in your `.env.local`. In this mode, the assistant will respond with pre-defined answers and simulate typing delays. This is useful for UI/UX testing and demos without incurring API calls.
+
+**Behavior:**
+- Bypasses `/api/v1/ai/chat` endpoint calls
+- Generates context-aware mock responses based on mode (projects/companies/addresses) and question keywords
+- Simulates realistic typing delay (~500ms) for natural UX
+- Returns mock data for common queries (e.g., "last 30 days", "top 10 contractors", "trending")
+
+**Usage:**
+```bash
+# In .env.local
+NEXT_PUBLIC_USE_MOCK_AI=1
+```
+
+#### Starting a New Chat
+
+The chat history is stored in the browser (local storage). To clear the conversation, you can either:
+- Refresh with the URL parameter `?new=true` (the app uses this when you click the "New Chat" button in the sidebar)
+- Call the `Clear chat` action (if available)
+
+This will wipe the local history so you can begin a fresh conversation.
+
 ## 📖 Contributing
 
 1. Create a feature branch: `feat/<scope>/<description>`
