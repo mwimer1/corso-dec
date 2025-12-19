@@ -14,6 +14,13 @@ import {
 } from '@/lib/validators';
 import { auth } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+
+// Helper to convert Response to NextResponse for type compatibility
+async function toNextResponse(response: Response): Promise<NextResponse> {
+  const body = await response.json();
+  return NextResponse.json(body, { status: response.status, headers: response.headers });
+}
 
 export async function OPTIONS(req: Request) {
   const response = handleCors(req);
@@ -21,11 +28,11 @@ export async function OPTIONS(req: Request) {
   return http.noContent();
 }
 
-const handler = async (req: NextRequest, ctx: { params: { entity: string } }): Promise<Response> => {
+const handler = async (req: NextRequest, ctx: { params: { entity: string } }): Promise<NextResponse> => {
   // Authentication & RBAC
   const { userId, has, orgId } = await auth();
   if (!userId) {
-    return http.error(401, 'Unauthorized', { code: 'HTTP_401' });
+    return await toNextResponse(http.error(401, 'Unauthorized', { code: 'HTTP_401' }));
   }
   
   // Check for active organization (required for organization-scoped operations)
@@ -33,7 +40,7 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
     if (process.env.NODE_ENV !== 'production') {
       console.debug('[entity route] No active organization found for userId:', userId);
     }
-    return http.error(403, 'No active organization', { code: 'NO_ORG_CONTEXT' });
+    return await toNextResponse(http.error(403, 'No active organization', { code: 'NO_ORG_CONTEXT' }));
   }
   
   // Enforce org:member-or-higher role (org:viewer not allowed)
@@ -42,13 +49,13 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
     if (process.env.NODE_ENV !== 'production') {
       console.debug('[entity route] RBAC check failed for userId:', userId, 'orgId:', orgId);
     }
-    return http.error(403, 'Insufficient permissions', { code: 'FORBIDDEN' });
+    return await toNextResponse(http.error(403, 'Insufficient permissions', { code: 'FORBIDDEN' }));
   }
 
   // Entity param validation
   const entityParsed = EntityParamSchema.safeParse((ctx.params?.entity ?? '').toLowerCase());
   if (!entityParsed.success) {
-    return http.badRequest('Invalid entity type', { code: 'INVALID_ENTITY' });
+    return await toNextResponse(http.badRequest('Invalid entity type', { code: 'INVALID_ENTITY' }));
   }
   const entity = entityParsed.data as EntityParam;
 
@@ -57,10 +64,10 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
   const queryObj = Object.fromEntries(sp.entries());
   const qpParsed = EntityListQuerySchema.safeParse(queryObj);
   if (!qpParsed.success) {
-    return http.badRequest('Invalid query parameters', {
+    return await toNextResponse(http.badRequest('Invalid query parameters', {
       code: 'INVALID_QUERY',
       details: qpParsed.error.flatten(),
-    });
+    }));
   }
   const { page, pageSize, sortBy, sortDir, search } = qpParsed.data;
 
@@ -72,12 +79,12 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
       const parsed = JSON.parse(filtersParam);
       // Validate filter structure
       if (!Array.isArray(parsed)) {
-        return http.badRequest('Invalid filters format: must be an array', { code: 'INVALID_FILTERS' });
+        return await toNextResponse(http.badRequest('Invalid filters format: must be an array', { code: 'INVALID_FILTERS' }));
       }
       // Type assertion with validation that op matches allowed values
       filters = parsed as EntityFetchParams['filters'];
     } catch (_e) {
-      return http.badRequest('Invalid filters format', { code: 'INVALID_FILTERS' });
+      return await toNextResponse(http.badRequest('Invalid filters format', { code: 'INVALID_FILTERS' }));
     }
   }
 
@@ -89,22 +96,15 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
     ...(filters ? { filters } : {}),
   });
 
-  // Return flat response shape: { data, total, page, pageSize }
-  // Note: This route returns flat structure (not wrapped in { success: true, data: ... })
-  // to match the expected API contract for entity queries
+  // Return standardized response shape: { success: true, data: { data, total, page, pageSize } }
+  // The client fetcher handles both wrapped and flat formats for backward compatibility
   const payload = {
     data: result?.data ?? [],
     total: result?.total ?? 0,
     page,
     pageSize,
   };
-  return new Response(JSON.stringify(payload), {
-    status: 200,
-    headers: {
-      'content-type': 'application/json; charset=utf-8',
-      'Access-Control-Allow-Origin': '*'
-    }
-  });
+  return await toNextResponse(http.ok(payload));
 };
 
 // Rate limit: 60/min per OpenAPI spec
@@ -113,8 +113,8 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
 const createWrappedHandler = (params: { entity: string }) => {
   return withErrorHandling(
     withRateLimit(
-      async (req: NextRequest) => {
-        return handler(req, { params }) as any;
+      async (req: NextRequest): Promise<NextResponse> => {
+        return handler(req, { params });
       },
       { windowMs: 60_000, maxRequests: 60 }
     )
@@ -122,10 +122,10 @@ const createWrappedHandler = (params: { entity: string }) => {
 };
 
 // Next.js dynamic route signature: (req, { params }) => Response
-export async function GET(req: NextRequest, ctx: { params: Promise<{ entity: string }> | { entity: string } }): Promise<Response> {
+export async function GET(req: NextRequest, ctx: { params: Promise<{ entity: string }> | { entity: string } }): Promise<NextResponse> {
   // Resolve params if it's a Promise (Next.js 15+)
   const resolvedParams = 'then' in ctx.params ? await ctx.params : ctx.params;
   // Create wrapped handler with resolved params
   const wrappedHandler = createWrappedHandler(resolvedParams);
-  return wrappedHandler(req) as Promise<Response>;
+  return wrappedHandler(req);
 }
