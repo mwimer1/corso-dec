@@ -5,15 +5,15 @@ export const revalidate = 0;
 
 import { http, withErrorHandlingEdge as withErrorHandling, withRateLimitEdge as withRateLimit } from '@/lib/api';
 import { handleCors } from '@/lib/middleware';
-import { auth } from '@clerk/nextjs/server';
-import type { NextRequest } from 'next/server';
-import { getEntityPage } from '@/lib/services/entity/pages';
 import type { EntityFetchParams } from '@/lib/services/entity/contracts';
+import { getEntityPage } from '@/lib/services/entity/pages';
 import {
     EntityListQuerySchema,
     EntityParamSchema,
     type EntityParam,
 } from '@/lib/validators';
+import { auth } from '@clerk/nextjs/server';
+import type { NextRequest } from 'next/server';
 
 export async function OPTIONS(req: Request) {
   const response = handleCors(req);
@@ -23,12 +23,25 @@ export async function OPTIONS(req: Request) {
 
 const handler = async (req: NextRequest, ctx: { params: { entity: string } }): Promise<Response> => {
   // Authentication & RBAC
-  const { userId, has } = await auth();
+  const { userId, has, orgId } = await auth();
   if (!userId) {
     return http.error(401, 'Unauthorized', { code: 'HTTP_401' });
   }
-  // Enforce member-or-higher role (viewer not allowed)
-  if (!has({ role: 'member' })) {
+  
+  // Check for active organization (required for organization-scoped operations)
+  if (!orgId) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.debug('[entity route] No active organization found for userId:', userId);
+    }
+    return http.error(403, 'No active organization', { code: 'NO_ORG_CONTEXT' });
+  }
+  
+  // Enforce org:member-or-higher role (org:viewer not allowed)
+  // Clerk organization roles use the format: org:member, org:admin, etc.
+  if (!has({ role: 'org:member' })) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.debug('[entity route] RBAC check failed for userId:', userId, 'orgId:', orgId);
+    }
     return http.error(403, 'Insufficient permissions', { code: 'FORBIDDEN' });
   }
 

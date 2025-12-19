@@ -131,9 +131,55 @@ export function createEntityFetcher(entity: GridId): EntityFetcher {
     }
 
     const res = await fetch(`/api/v1/entity/${entity}?${sp.toString()}`, { credentials: 'include' });
-    if (!res.ok) throw new Error(`Entity query failed (${entity}): HTTP ${res.status}`);
+    if (!res.ok) {
+      // Attempt to parse error response body safely
+      let errorMessage = `Entity query failed (${entity}): HTTP ${res.status}`;
+      let errorCode: string | undefined;
+      
+      try {
+        const errorBody = await res.json();
+        // Handle both { success: false, error: "...", code: "..." } and { error: "...", code: "..." } formats
+        const message = errorBody?.error || errorBody?.message || errorMessage;
+        errorCode = errorBody?.code;
+        
+        // Provide clear messages for common status codes
+        if (res.status === 401) {
+          errorMessage = 'Unauthorized: Please sign in again.';
+        } else if (res.status === 403) {
+          errorMessage = errorBody?.error || `Forbidden: You do not have permission to access this resource.`;
+          if (errorCode) {
+            errorMessage += ` (${errorCode})`;
+          }
+        } else {
+          errorMessage = message;
+          if (errorCode) {
+            errorMessage += ` (code: ${errorCode})`;
+          }
+        }
+      } catch {
+        // If JSON parsing fails, use status-based messages
+        if (res.status === 401) {
+          errorMessage = 'Unauthorized: Please sign in again.';
+        } else if (res.status === 403) {
+          errorMessage = 'Forbidden: You do not have permission to access this resource.';
+        } else {
+          errorMessage = `Entity query failed (${entity}): HTTP ${res.status}`;
+        }
+      }
+      
+      const error = new Error(errorMessage);
+      (error as any).status = res.status;
+      if (errorCode) {
+        (error as any).code = errorCode;
+      }
+      throw error;
+    }
+    
     const json = (await res.json()) as any;
-    const payload = json?.data ?? json;
+    // Handle both response formats:
+    // 1. Flat: { data: [...], total, page, pageSize }
+    // 2. Wrapped: { success: true, data: { data: [...], total, page, pageSize } }
+    const payload = json?.success === true ? (json?.data ?? json) : (json?.data ?? json);
     return { rows: Array.isArray(payload?.data) ? payload.data : [], totalSearchCount: typeof payload?.total === 'number' ? payload.total : null };
   };
 }

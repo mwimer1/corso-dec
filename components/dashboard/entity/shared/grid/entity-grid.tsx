@@ -140,7 +140,7 @@ export default function EntityGrid({
         }
         
         // Notify parent component of error
-        onLoadError?.(true);
+        onLoadError?.(error);
       }
     })();
     return () => {
@@ -183,14 +183,15 @@ export default function EntityGrid({
             ...(r.totalSearchCount != null ? { rowCount: r.totalSearchCount } : {}),
           });
           setSearchCount(r.totalSearchCount?.toString() ?? '—');
-          onLoadError?.(false);
+          onLoadError?.(null);
         } catch (e) {
           // Log datasource errors for debugging (development only)
           if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
             console.error(`[${config.id}] datasource error`, e);
           }
           p.fail();
-          onLoadError?.(true);
+          const error = e instanceof Error ? e : new Error(String(e));
+          onLoadError?.(error);
         }
       },
     });
