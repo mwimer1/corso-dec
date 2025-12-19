@@ -178,7 +178,10 @@ export default function EntityGrid({
       async getRows(p: IServerSideGetRowsParams) {
         try {
           const r = await config.fetcher(p.request, posthog.get_distinct_id?.() ?? 'anon');
-          (params as any).success({ rowData: r.rows, rowCount: undefined });
+          p.success({
+            rowData: r.rows,
+            ...(r.totalSearchCount != null ? { rowCount: r.totalSearchCount } : {}),
+          });
           setSearchCount(r.totalSearchCount?.toString() ?? '—');
           onLoadError?.(false);
         } catch (e) {
@@ -186,7 +189,7 @@ export default function EntityGrid({
           if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
             console.error(`[${config.id}] datasource error`, e);
           }
-          (params as any).fail();
+          p.fail();
           onLoadError?.(true);
         }
       },

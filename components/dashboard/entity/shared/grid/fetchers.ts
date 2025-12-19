@@ -1,7 +1,7 @@
 'use client';
 
-import type { IServerSideGetRowsParams } from 'ag-grid-community';
 import type { EntityFetcher, GridId } from '@/types/dashboard';
+import type { IServerSideGetRowsParams } from 'ag-grid-community';
 
 type AgServerRequest = IServerSideGetRowsParams['request'];
 
@@ -130,7 +130,7 @@ export function createEntityFetcher(entity: GridId): EntityFetcher {
       sp.set('filters', JSON.stringify(filters));
     }
 
-    const res = await fetch(`/api/v1/entity/${entity}?${sp.toString()}`);
+    const res = await fetch(`/api/v1/entity/${entity}?${sp.toString()}`, { credentials: 'include' });
     if (!res.ok) throw new Error(`Entity query failed (${entity}): HTTP ${res.status}`);
     const json = (await res.json()) as any;
     const payload = json?.data ?? json;
