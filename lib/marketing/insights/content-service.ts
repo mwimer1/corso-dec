@@ -30,6 +30,7 @@ interface FrontmatterShape {
   publishDate?: string;
   updatedDate?: string;
   imageUrl?: string;
+  heroCaption?: string;
   categories?: Array<{ slug: string; name: string }>;
   author?: { name: string; avatar?: string };
   status?: 'draft' | 'published';
@@ -71,6 +72,10 @@ function fmToItem(data: FrontmatterShape, html: string, readingTime?: number): I
     ...base,
     content: html,
   };
+
+  if (typeof data.heroCaption === 'string' && data.heroCaption.length > 0) {
+    item.heroCaption = data.heroCaption;
+  }
 
   return item;
 }

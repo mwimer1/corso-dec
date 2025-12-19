@@ -8,6 +8,7 @@ import { ArticleHeader } from "@/components/insights/widgets/article-header";
 import { ArticleImage } from "@/components/insights/widgets/article-image";
 import { Breadcrumbs } from "@/components/insights/widgets/breadcrumbs";
 import { RelatedArticles } from "@/components/insights/widgets/related-articles";
+import { TableOfContents } from "@/components/insights/widgets/table-of-contents";
 import { Button } from "@/components/ui/atoms";
 import { LinkTrack } from "@/components/ui/molecules";
 import { resolveInsightImageUrl } from "@/lib/marketing/insights/image-resolver";
@@ -109,16 +110,19 @@ export const InsightDetail = React.forwardRef<
       )}
       {...rest}
     >
-      <article
-        className={cn(
-          // Inner container: max-w-3xl for optimal article readability
-          containerMaxWidthVariants({ maxWidth: '3xl', centered: true }),
+      {/* Desktop: Flex layout with article and TOC side by side */}
+      <div className="lg:flex lg:items-start lg:gap-8">
+        <article
+          className={cn(
+            // Inner container: max-w-3xl for optimal article readability
+            containerMaxWidthVariants({ maxWidth: '3xl', centered: false }),
+            "lg:flex-1 lg:min-w-0",
           // Base prose styles
           "prose prose-gray max-w-none prose-lg",
           // Headings
           "prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground",
           "prose-h1:text-4xl prose-h1:mt-8 prose-h1:mb-4",
-          "prose-h2:text-3xl prose-h2:mt-8 prose-h2:mb-4",
+          "prose-h2:text-3xl prose-h2:mt-6 prose-h2:mb-4",
           "prose-h3:text-2xl prose-h3:mt-6 prose-h3:mb-3",
           "prose-h4:text-xl prose-h4:mt-4 prose-h4:mb-2",
           // Paragraphs
@@ -143,6 +147,8 @@ export const InsightDetail = React.forwardRef<
           "prose-img:rounded-lg prose-img:shadow-md prose-img:my-8 prose-img:border prose-img:border-border",
           // Horizontal rules
           "prose-hr:border-border prose-hr:my-8",
+          // Ensure anchored headings aren't hidden behind sticky nav
+          "prose-headings:scroll-mt-20",
           // Spacing - responsive vertical spacing
           "space-y-6 sm:space-y-8",
         )}
@@ -171,6 +177,9 @@ export const InsightDetail = React.forwardRef<
           loading="lazy"
           priority={false}
         />
+
+        {/* Table of Contents - Mobile: above content, Desktop: sticky aside */}
+        <TableOfContents content={sanitizedContent} />
 
         <section
           dangerouslySetInnerHTML={{ __html: sanitizedContent }}
@@ -210,7 +219,8 @@ export const InsightDetail = React.forwardRef<
             <RelatedArticles articles={relatedArticles} />
           </aside>
         )}
-      </article>
+        </article>
+      </div>
     </div>
   );
 });
