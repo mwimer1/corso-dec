@@ -5,6 +5,14 @@ import type { IServerSideGetRowsParams } from 'ag-grid-community';
 
 type AgServerRequest = IServerSideGetRowsParams['request'];
 
+/**
+ * Minimal type for AG Grid request that may include filterModel
+ * Using intersection type to avoid extending conflict with required filterModel
+ */
+type AgRequestWithFilters = AgServerRequest & {
+  filterModel?: Record<string, unknown>;
+};
+
 function mapAgRequestToPagingAndSort(request: AgServerRequest): {
   page: { index: number; size: number };
   sortBy?: string;
@@ -35,7 +43,7 @@ function normalizeBoolean(val: unknown): boolean {
 }
 
 // Map AG Grid filter model to API filter array
-function mapAgFiltersToApiFilters(filterModel: Record<string, any> | undefined | null): ApiFilter[] | undefined {
+function mapAgFiltersToApiFilters(filterModel: Record<string, unknown> | undefined | null): ApiFilter[] | undefined {
   if (!filterModel || typeof filterModel !== 'object') return undefined;
   const out: ApiFilter[] = [];
 
@@ -43,8 +51,9 @@ function mapAgFiltersToApiFilters(filterModel: Record<string, any> | undefined |
     if (!model || typeof model !== 'object') continue;
 
     // Combined filter (AND/OR)
-    if (model.operator && Array.isArray(model.conditions)) {
-      for (const cond of model.conditions) {
+    const modelObj = model as Record<string, unknown>;
+    if (modelObj['operator'] && Array.isArray(modelObj['conditions'])) {
+      for (const cond of modelObj['conditions'] as unknown[]) {
         const converted = convertSingleFilter(field, cond);
         if (converted) out.push(converted);
       }
@@ -58,43 +67,45 @@ function mapAgFiltersToApiFilters(filterModel: Record<string, any> | undefined |
   return out.length > 0 ? out : undefined;
 }
 
-function convertSingleFilter(field: string, m: any): ApiFilter | null {
-  const type = String(m?.type ?? m?.filterType ?? '').toLowerCase();
-  const filterType = String(m?.filterType ?? '').toLowerCase();
+function convertSingleFilter(field: string, m: unknown): ApiFilter | null {
+  if (!m || typeof m !== 'object') return null;
+  const model = m as Record<string, unknown>;
+  const type = String(model['type'] ?? model['filterType'] ?? '').toLowerCase();
+  const filterType = String(model['filterType'] ?? '').toLowerCase();
 
   // Set filter
-  if (filterType === 'set' && Array.isArray(m.values)) {
-    return { field, op: 'in', value: m.values };
+  if (filterType === 'set' && Array.isArray(model['values'])) {
+    return { field, op: 'in', value: model['values'] };
   }
 
   // Boolean
   if (filterType === 'boolean') {
-    return { field, op: 'bool', value: normalizeBoolean(m.filter) };
+    return { field, op: 'bool', value: normalizeBoolean(model['filter']) };
   }
 
   // Number/date
   if (filterType === 'number' || filterType === 'date') {
     switch (type) {
       case 'equals':
-        return { field, op: 'eq', value: m.filter };
+        return { field, op: 'eq', value: model['filter'] };
       case 'notequal':
       case 'notEqual':
         return null; // not supported
       case 'lessthan':
       case 'lessThan':
-        return { field, op: 'lt', value: m.filter };
+        return { field, op: 'lt', value: model['filter'] };
       case 'lessthanorequal':
       case 'lessThanOrEqual':
-        return { field, op: 'lte', value: m.filter };
+        return { field, op: 'lte', value: model['filter'] };
       case 'greaterthan':
       case 'greaterThan':
-        return { field, op: 'gt', value: m.filter };
+        return { field, op: 'gt', value: model['filter'] };
       case 'greaterthanorequal':
       case 'greaterThanOrEqual':
-        return { field, op: 'gte', value: m.filter };
+        return { field, op: 'gte', value: model['filter'] };
       case 'inrange':
       case 'inRange':
-        return { field, op: 'between', value: [m.filter, m.filterTo] };
+        return { field, op: 'between', value: [model['filter'], model['filterTo']] };
       default:
         return null;
     }
@@ -104,9 +115,9 @@ function convertSingleFilter(field: string, m: any): ApiFilter | null {
   if (filterType === 'text' || !filterType) {
     switch (type) {
       case 'contains':
-        return { field, op: 'contains', value: m.filter };
+        return { field, op: 'contains', value: model['filter'] };
       case 'equals':
-        return { field, op: 'eq', value: m.filter };
+        return { field, op: 'eq', value: model['filter'] };
       default:
         return null; // startsWith/endsWith not supported by API contract
     }
@@ -115,10 +126,46 @@ function convertSingleFilter(field: string, m: any): ApiFilter | null {
   return null;
 }
 
+/**
+ * Minimal type for error objects that may include status and code
+ */
+interface ErrorWithStatus extends Error {
+  status?: number;
+  code?: string;
+}
+
+/**
+ * Minimal type for API error response
+ */
+interface ApiErrorResponse {
+  success?: boolean;
+  error?: string;
+  message?: string;
+  code?: string;
+}
+
+/**
+ * Minimal type for API success response payload
+ */
+interface ApiDataPayload {
+  data?: unknown[];
+  total?: number;
+  page?: number;
+  pageSize?: number;
+}
+
+/**
+ * Minimal type for API success response (wrapped or flat format)
+ */
+type ApiSuccessResponse = 
+  | { success: true; data: ApiDataPayload }
+  | ApiDataPayload;
+
 export function createEntityFetcher(entity: GridId): EntityFetcher {
   return async (request, _distinctId) => {
     const { page, sortBy, sortDir } = mapAgRequestToPagingAndSort(request as unknown as AgServerRequest);
-    const filters = mapAgFiltersToApiFilters((request as any)?.filterModel ?? undefined);
+    const requestWithFilters = request as unknown as AgRequestWithFilters;
+    const filters = mapAgFiltersToApiFilters(requestWithFilters?.filterModel);
 
     const sp = new URLSearchParams();
     sp.set('page', String(page.index));
@@ -137,23 +184,27 @@ export function createEntityFetcher(entity: GridId): EntityFetcher {
       let errorCode: string | undefined;
       
       try {
-        const errorBody = await res.json();
-        // Handle both { success: false, error: "...", code: "..." } and { error: "...", code: "..." } formats
-        const message = errorBody?.error || errorBody?.message || errorMessage;
-        errorCode = errorBody?.code;
+        const errorBody = (await res.json()) as unknown;
+        // Runtime guard: ensure errorBody is an object
+        if (errorBody && typeof errorBody === 'object') {
+          const error = errorBody as ApiErrorResponse;
+          // Handle both { success: false, error: "...", code: "..." } and { error: "...", code: "..." } formats
+          const message = error?.error || error?.message || errorMessage;
+          errorCode = error?.code;
         
-        // Provide clear messages for common status codes
-        if (res.status === 401) {
-          errorMessage = 'Unauthorized: Please sign in again.';
-        } else if (res.status === 403) {
-          errorMessage = errorBody?.error || `Forbidden: You do not have permission to access this resource.`;
-          if (errorCode) {
-            errorMessage += ` (${errorCode})`;
-          }
-        } else {
-          errorMessage = message;
-          if (errorCode) {
-            errorMessage += ` (code: ${errorCode})`;
+          // Provide clear messages for common status codes
+          if (res.status === 401) {
+            errorMessage = 'Unauthorized: Please sign in again.';
+          } else if (res.status === 403) {
+            errorMessage = error?.error || `Forbidden: You do not have permission to access this resource.`;
+            if (errorCode) {
+              errorMessage += ` (${errorCode})`;
+            }
+          } else {
+            errorMessage = message;
+            if (errorCode) {
+              errorMessage += ` (code: ${errorCode})`;
+            }
           }
         }
       } catch {
@@ -167,20 +218,37 @@ export function createEntityFetcher(entity: GridId): EntityFetcher {
         }
       }
       
-      const error = new Error(errorMessage);
-      (error as any).status = res.status;
+      const error = new Error(errorMessage) as ErrorWithStatus;
+      error.status = res.status;
       if (errorCode) {
-        (error as any).code = errorCode;
+        error.code = errorCode;
       }
       throw error;
     }
     
-    const json = (await res.json()) as any;
+    const json = (await res.json()) as unknown;
+    // Runtime guard: ensure json is an object
+    if (!json || typeof json !== 'object') {
+      throw new Error(`Invalid response format from entity query (${entity})`);
+    }
+    
+    const response = json as ApiSuccessResponse;
     // Handle both response formats:
     // 1. Flat: { data: [...], total, page, pageSize }
     // 2. Wrapped: { success: true, data: { data: [...], total, page, pageSize } }
-    const payload = json?.success === true ? (json?.data ?? json) : (json?.data ?? json);
-    return { rows: Array.isArray(payload?.data) ? payload.data : [], totalSearchCount: typeof payload?.total === 'number' ? payload.total : null };
+    const payload: ApiDataPayload = 'success' in response && response.success === true && response.data
+      ? response.data
+      : (response as ApiDataPayload);
+    
+    // Runtime guard: ensure payload has expected structure
+    const dataArray = payload && typeof payload === 'object' && 'data' in payload && Array.isArray(payload.data) 
+      ? payload.data 
+      : [];
+    const total = payload && typeof payload === 'object' && 'total' in payload && typeof payload.total === 'number'
+      ? payload.total
+      : null;
+    
+    return { rows: dataArray, totalSearchCount: total };
   };
 }
 

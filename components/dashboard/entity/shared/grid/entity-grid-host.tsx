@@ -1,39 +1,68 @@
 "use client";
 
+import { devError } from '@/lib/log';
 import { publicEnv } from '@/lib/shared/config/client';
 import type { EntityGridConfig } from '@/types/dashboard';
+import type { ColumnState, FilterModel, StateUpdatedEvent } from 'ag-grid-community';
+import type { AgGridReact } from 'ag-grid-react';
 import { AlertTriangle } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import * as React from 'react';
 import EntityGrid from './entity-grid';
 import { GridMenubar } from './grid-menubar';
 
+/**
+ * Minimal type for grid state applied by GridMenubar
+ */
+interface GridState {
+  columnState?: ColumnState[];
+  filterModel?: FilterModel;
+  sortModel?: ColumnState[];
+}
+
+/**
+ * Minimal type for error objects that may include status code
+ */
+interface ErrorWithStatus extends Error {
+  status?: number;
+  code?: string;
+}
+
 export default function EntityGridHost({ config }: { config: EntityGridConfig }) {
-  const gridRef = React.useRef<any>(null);
+  const gridRef = React.useRef<AgGridReact | null>(null);
   const [searchCount, setSearchCount] = React.useState<string | null>(null);
-  const [currentState, setCurrentState] = React.useState<any>(null);
+  const [currentState, setCurrentState] = React.useState<GridState | null>(null);
   const [loadError, setLoadError] = React.useState<Error | null>(null);
   const searchParams = useSearchParams();
   const gridName = searchParams.get('gridName');
   const defaultGridName = searchParams.get('defaultGridName');
   const hasEnterprise = publicEnv.NEXT_PUBLIC_AGGRID_ENTERPRISE === '1';
 
-  const handleStateUpdated = React.useCallback((state: any) => {
+  const handleStateUpdated = React.useCallback((event: StateUpdatedEvent) => {
+    // Extract state from AG Grid StateUpdatedEvent and convert to GridState format
+    // Note: AG Grid v31+ uses api.getColumnState() instead of columnApi
+    const state: GridState = {
+      columnState: event.api.getColumnState(),
+      filterModel: event.api.getFilterModel(),
+      sortModel: event.api.getColumnState(),
+    };
     setCurrentState(state);
   }, []);
 
-  const applyState = React.useCallback((state: any) => {
+  const applyState = React.useCallback((state: GridState) => {
     if (gridRef.current?.api) {
       try {
-        gridRef.current.api.applyColumnState({ state: state.columnState });
+        if (state.columnState && state.columnState.length > 0) {
+          gridRef.current.api.applyColumnState({ state: state.columnState });
+        }
         if (state.filterModel) {
           gridRef.current.api.setFilterModel(state.filterModel);
         }
-        if (state.sortModel) {
+        if (state.sortModel && state.sortModel.length > 0) {
           gridRef.current.api.applyColumnState({ state: state.sortModel });
         }
       } catch (error) {
-        console.error('Failed to apply grid state:', error);
+        devError('Failed to apply grid state:', error);
       }
     }
   }, []);
@@ -47,7 +76,8 @@ export default function EntityGridHost({ config }: { config: EntityGridConfig })
     <div className="flex flex-col h-full w-full" id="corso-grid">
       {/* Error alert above toolbar */}
       {loadError && (() => {
-        const status = (loadError as any)?.status;
+        const errorWithStatus = loadError as ErrorWithStatus;
+        const status = errorWithStatus?.status;
         let errorMessage = loadError.message || 'Error loading data.';
         
         // Provide user-friendly messages for specific status codes
@@ -86,7 +116,7 @@ export default function EntityGridHost({ config }: { config: EntityGridConfig })
           applyState={applyState}
           currentState={currentState}
           unsavedState={false}
-          gridRef={gridRef}
+          gridRef={gridRef as React.RefObject<AgGridReact>}
           coreGridTheme="ag-theme-quartz"
           setCoreGridTheme={() => {}}
           initDefaultGridName={defaultGridName}
@@ -99,7 +129,7 @@ export default function EntityGridHost({ config }: { config: EntityGridConfig })
       <div className="flex-1 min-h-0 px-6 md:px-8">
         <EntityGrid
           config={config}
-          gridRef={gridRef}
+          gridRef={gridRef as React.RefObject<AgGridReact>}
           setSearchCount={setSearchCount}
           onStateUpdated={handleStateUpdated}
           onLoadError={setLoadError}

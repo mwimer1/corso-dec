@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/atoms";
+import { devError, devWarn } from "@/lib/log";
 import { cn } from "@/styles";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 // Grid state context removed - using local state instead
@@ -78,13 +79,13 @@ export function GridMenubar(props: GridMenubarProps) {
           props.applyState(stateToApply.grid_state);
           setCurrentSaveStateName(stateToApply.state_name);
         } else {
-          console.warn(`Grid state with ID "${props.initGridName}" not found.`);
+          devWarn(`Grid state with ID "${props.initGridName}" not found.`);
         }
       }
 
       if (!stateToApply && props.initDefaultGridName) {
         // For now, skip default grid state handling
-        console.warn(`Default grid state handling not implemented`);
+        devWarn(`Default grid state handling not implemented`);
       }
     }
   }, [savedStates, props]);
@@ -197,7 +198,7 @@ export function GridMenubar(props: GridMenubarProps) {
                     try {
                       props.gridRef?.current?.api.refreshServerSide();
                     } catch (error) {
-                      console.error("Failed to refresh the grid:", error);
+                      devError("Failed to refresh the grid:", error);
                     }
                   }}
                   className={cn("px-2 py-1.5 cursor-pointer hover:bg-accent flex items-center gap-2 border-b last:border-b-0 rounded-none")}
@@ -214,7 +215,7 @@ export function GridMenubar(props: GridMenubarProps) {
                       props.gridRef?.current?.api.resetColumnState();
                       props.gridRef?.current?.api.refreshServerSide();
                     } catch (error) {
-                      console.error("Failed to reset the grid:", error);
+                      devError("Failed to reset the grid:", error);
                     }
                   }}
                   className={cn("px-2 py-1.5 cursor-pointer hover:bg-accent flex items-center gap-2 border-b last:border-b-0 rounded-none")}
@@ -262,7 +263,7 @@ export function GridMenubar(props: GridMenubarProps) {
                       try {
                         props.gridRef?.current?.api.exportDataAsExcel();
                       } catch (error) {
-                        console.error('Excel export failed. Enterprise features may not be available.', error);
+                        devError('Excel export failed. Enterprise features may not be available.', error);
                       }
                     }}
                     className={cn("px-2 py-1.5 cursor-pointer hover:bg-accent flex items-center gap-2 border-b last:border-b-0 rounded-none")}
@@ -313,7 +314,7 @@ export function GridMenubar(props: GridMenubarProps) {
                   props.gridRef?.current?.api.resetColumnState();
                   props.gridRef?.current?.api.refreshServerSide();
                 } catch (error) {
-                  console.error("Failed to reset the grid:", error);
+                  devError("Failed to reset the grid:", error);
                 }
               }}
               className="p-1.5 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
@@ -328,7 +329,7 @@ export function GridMenubar(props: GridMenubarProps) {
                 try {
                   props.gridRef?.current?.api.refreshServerSide();
                 } catch (error) {
-                  console.error("Failed to refresh the grid:", error);
+                  devError("Failed to refresh the grid:", error);
                 }
               }}
               className="p-1.5 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"

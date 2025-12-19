@@ -2,9 +2,10 @@
 
 // AG Grid registration is handled in the useEffect hook via ensureAgGridReadyFor().
 // This ensures registration happens client-side after mount when environment variables are available.
+import { devError } from '@/lib/log';
 import { ensureAgGridReadyFor, isAgGridEnterpriseEnabled } from '@/lib/vendors/ag-grid.client';
 import type { EntityGridProps } from '@/types/dashboard';
-import type { GridApi, GridReadyEvent, IServerSideGetRowsParams } from 'ag-grid-community';
+import type { ColDef, ColGroupDef, GridApi, GridReadyEvent, IServerSideGetRowsParams } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -19,10 +20,18 @@ const _posthogHook: () => _PosthogLite = () => ({
 });
 
 /**
+ * Minimal type for errors that may include a code property
+ */
+interface ErrorWithCode extends Error {
+  code?: string;
+}
+
+/**
  * Error display component for AG Grid Enterprise configuration issues.
  */
 function AgGridEnterpriseError({ error }: { error: Error }) {
-  const isConfigError = (error as any)?.code === 'AG_GRID_ENTERPRISE_NOT_CONFIGURED';
+  const errorWithCode = error as ErrorWithCode;
+  const isConfigError = errorWithCode?.code === 'AG_GRID_ENTERPRISE_NOT_CONFIGURED';
   const errorMessage = error.message;
   
   if (!isConfigError) {
@@ -95,7 +104,7 @@ export default function EntityGrid({
   const [, setGridApi] = useState<GridApi | null>(null);
   const [ready, setReady] = useState(false);
   const [initError, setInitError] = useState<Error | null>(null);
-  const [colDefs, setColDefs] = useState<any[]>([]);
+  const [colDefs, setColDefs] = useState<Array<ColDef | ColGroupDef>>([]);
   const posthog = _posthogHook();
   const searchParams = useSearchParams();
   const gridName = searchParams.get('gridName');
@@ -113,8 +122,8 @@ export default function EntityGrid({
           const error = new Error(
             'AG Grid Enterprise is required but not configured. ' +
             'Set NEXT_PUBLIC_AGGRID_ENTERPRISE=1 in your .env.local file and restart the dev server.'
-          );
-          (error as any).code = 'AG_GRID_ENTERPRISE_NOT_CONFIGURED';
+          ) as ErrorWithCode;
+          error.code = 'AG_GRID_ENTERPRISE_NOT_CONFIGURED';
           throw error;
         }
         
@@ -135,9 +144,7 @@ export default function EntityGrid({
         setReady(false);
         
         // Log error for debugging (development only)
-        if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
-          console.error('[EntityGrid] Failed to initialize', error);
-        }
+        devError('[EntityGrid] Failed to initialize', error);
         
         // Notify parent component of error
         onLoadError?.(error);
@@ -186,9 +193,7 @@ export default function EntityGrid({
           onLoadError?.(null);
         } catch (e) {
           // Log datasource errors for debugging (development only)
-          if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
-            console.error(`[${config.id}] datasource error`, e);
-          }
+          devError(`[${config.id}] datasource error`, e);
           p.fail();
           const error = e instanceof Error ? e : new Error(String(e));
           onLoadError?.(error);
