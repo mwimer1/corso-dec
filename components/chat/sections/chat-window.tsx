@@ -11,7 +11,7 @@ import { MessageItem } from '../widgets/message-item';
 const ChatComposer = dynamic(() => import('./chat-composer.client'), { ssr: false });
 
 export default function ChatWindow() {
-  const { messages, isProcessing, sendMessage, stop, error, clearError } = useChat({ persistHistory: true, autoSave: true });
+  const { messages, isProcessing, sendMessage, stop, error, clearError, retryLastMessage } = useChat({ persistHistory: true, autoSave: true });
   const { user } = useUser();
 
   const [draft, setDraft] = useState<string>("");
@@ -97,15 +97,15 @@ export default function ChatWindow() {
         {
           '--chat-bubble-asst-border': '1px',
           '--chat-preset-border': '1px',
-          '--chat-composer-border': '0px',
+          '--chat-composer-border': '1px',
         } as React.CSSProperties
       }
     >
       {/* Messages list */}
-      <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto bg-background">
+      <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto bg-background flex flex-col justify-end">
         {hasHistory ? (
           <div className="mx-auto w-full max-w-3xl px-6 py-4">
-            <ul role="log" aria-live="polite" aria-relevant="additions" className="space-y-2">
+            <ul role="log" aria-live="polite" aria-relevant="additions" className="space-y-4">
               {messages.map((m) => (
                 <li key={m.id}>
                   <MessageItem message={m} onSelectFollowUp={handleSelectFollowUp} />
@@ -121,7 +121,7 @@ export default function ChatWindow() {
       </div>
 
       {/* Composer — server placeholder + client-only composer */}
-      <div className="bg-background px-6 py-5 flex-shrink-0">
+      <div className="bg-background px-6 py-5 flex-shrink-0 border-t-[var(--chat-composer-border)] border-border">
         {/* Server-only placeholder to preserve layout pre-hydration; mark as region for a11y */}
         {!hydrated && (
           <div className="mx-auto w-full max-w-3xl rounded-2xl bg-surface p-3 shadow-sm" role="region" aria-hidden="true">
@@ -144,8 +144,9 @@ export default function ChatWindow() {
         />
         {error && (
           <div className="pt-2 text-sm text-destructive">
-            {error.message}
-            <button onClick={clearError} className="ml-2 underline">Dismiss</button>
+            Something went wrong.
+            <button onClick={() => { void retryLastMessage().catch(() => {/* no-op */}); }} className="ml-3 underline">Retry</button>
+            <button onClick={clearError} className="ml-3 underline">Dismiss</button>
           </div>
         )}
       </div>

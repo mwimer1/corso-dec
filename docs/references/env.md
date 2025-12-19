@@ -22,6 +22,17 @@ pnpm gen:mockdb
 - **Deprecation Note**: Use `CORSO_USE_MOCK_DB` for all new code. Legacy flags are maintained only for existing configurations.
 - Edge-safety: API routes run on Edge and fetch mock JSON from `/__mockdb__/...`, avoiding any Node `fs` usage.
 
+## NEXT_PUBLIC_USE_MOCK_AI
+
+- Type: "true" | "1" | undefined
+- Purpose: When set to "true" or "1" in development, chat AI responses are generated locally without calling the OpenAI API. Useful for UI/UX development and testing without backend connectivity.
+- Behavior: 
+  - Bypasses `/api/v1/ai/chat` endpoint calls
+  - Generates context-aware mock responses based on mode (projects/companies/addresses) and question keywords
+  - Simulates realistic typing delay (~500ms) for natural UX
+  - Returns mock data for common queries (e.g., "last 30 days", "top 10 contractors", "trending")
+- Edge-safety: Mock responses are generated client-side, avoiding any API calls.
+
 ## Edge Cases & Hidden Dependencies
 
 ### Mock DB Environment Resolution

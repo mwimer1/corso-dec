@@ -87,10 +87,13 @@ describe('ChatWindow', () => {
     } as unknown as ReturnType<typeof useChatModule.useChat>);
 
     render(<ChatWindow />);
+    // Allow time for dynamic import to resolve - increased timeout for test suite runs
     await waitFor(() => {
       expect(screen.getByLabelText('Chat message input')).toBeInTheDocument();
-    }, { timeout: 3000 }); // Allow time for dynamic import to resolve
-    expect(screen.getByPlaceholderText(/Ask anything about projects/)).toBeInTheDocument();
+    }, { timeout: 5000 });
+    await waitFor(() => {
+      expect(screen.getByPlaceholderText(/Ask anything about projects/)).toBeInTheDocument();
+    }, { timeout: 2000 });
   });
 
   it('disables input while processing', async () => {

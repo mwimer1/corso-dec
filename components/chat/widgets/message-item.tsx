@@ -17,14 +17,14 @@ function MessageItemImpl({ message, onSelectFollowUp }: Props) {
 
   return (
     <div className={cn(
-      "flex w-full mb-4",
+      "flex w-full",
       isUser ? "justify-end" : "justify-start"
     )}>
       <div className={cn(
         "rounded-2xl px-4 py-3 max-w-[70%]",
         isUser
-          ? "bg-blue-600 text-white"
-      : "bg-gray-100 text-gray-900 border-[var(--chat-bubble-asst-border)] border-gray-200"
+          ? "bg-primary text-primary-foreground"
+      : "bg-surface text-foreground border-[var(--chat-bubble-asst-border)] border-border"
       )}>
         {!isUser && !message.content && (
           <div className="flex items-center gap-1 text-muted-foreground" aria-live="polite" aria-label="Assistant is typing">

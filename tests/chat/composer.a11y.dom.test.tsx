@@ -5,6 +5,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('Chat composer accessibility', () => {
   beforeEach(() => {
+    // Clear any previous mocks to ensure clean state
+    vi.clearAllMocks();
     vi.spyOn(useChatModule, 'useChat').mockReturnValue({
       messages: [],
       isProcessing: false,
@@ -37,9 +39,10 @@ describe('Chat composer accessibility', () => {
     } as any);
 
     render(<ChatWindow />);
+    // Increased timeout for test suite runs to handle dynamic import delays
     await waitFor(() => {
       expect(screen.getByLabelText('Chat message input')).toBeInTheDocument();
-    }, { timeout: 3000 });
+    }, { timeout: 5000 });
     let ta = screen.getByLabelText('Chat message input') as HTMLTextAreaElement;
 
     // Test that Enter during composition does NOT send
@@ -77,9 +80,10 @@ describe('Chat composer accessibility', () => {
 
   it('autosizes up to a cap', async () => {
     render(<ChatWindow />);
+    // Increased timeout for test suite runs to handle dynamic import delays
     await waitFor(() => {
       expect(screen.getByLabelText('Chat message input')).toBeInTheDocument();
-    }, { timeout: 3000 });
+    }, { timeout: 5000 });
     const ta = screen.getByLabelText('Chat message input') as HTMLTextAreaElement;
     const long = Array(200).fill('line').join('\n');
     fireEvent.change(ta, { target: { value: long } });

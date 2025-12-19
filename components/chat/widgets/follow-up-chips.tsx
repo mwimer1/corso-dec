@@ -15,7 +15,7 @@ export function FollowUpChips({ items, onClick }: FollowUpChipsProps) {
           key={item}
           type="button"
           onClick={() => onClick(item)}
-          className="px-3 py-1 text-sm bg-blue-100 text-blue-800 rounded-full hover:bg-blue-200 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+          className="px-3 py-1 text-sm rounded-full bg-primary/10 text-primary/90 hover:bg-primary/20 transition-colors focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2"
         >
           {item}
         </button>

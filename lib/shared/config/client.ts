@@ -90,6 +90,9 @@ const PublicEnvSchema = z.object({
   NEXT_PUBLIC_AGGRID_LICENSE_KEY: z.string().min(1).optional(),
   // Accept both NEXT_PUBLIC_AGGRID_ENTERPRISE and NEXT_PUBLIC_AG_GRID_ENTERPRISE (legacy)
   NEXT_PUBLIC_AGGRID_ENTERPRISE: z.string().optional(),
+
+  // Mock AI mode for development/testing (bypasses real API calls)
+  NEXT_PUBLIC_USE_MOCK_AI: z.string().optional(),
 }).strict();
 
 type PublicEnv = z.infer<typeof PublicEnvSchema>;
@@ -195,6 +198,9 @@ export const publicEnv: PublicEnv = (() => {
     NEXT_PUBLIC_AGGRID_LICENSE_KEY: safeGetEnv('NEXT_PUBLIC_AGGRID_LICENSE_KEY') ?? safeGetEnv('NEXT_PUBLIC_AG_GRID_LICENSE_KEY'),
     // Accept both NEXT_PUBLIC_AGGRID_ENTERPRISE and NEXT_PUBLIC_AG_GRID_ENTERPRISE (legacy)
     NEXT_PUBLIC_AGGRID_ENTERPRISE: safeGetEnv('NEXT_PUBLIC_AGGRID_ENTERPRISE') ?? safeGetEnv('NEXT_PUBLIC_AG_GRID_ENTERPRISE') ?? safeGetEnv('AGGRID_ENTERPRISE') ?? safeGetEnv('AG_GRID_ENTERPRISE'),
+
+    // Mock AI mode for development/testing
+    NEXT_PUBLIC_USE_MOCK_AI: safeGetEnv('NEXT_PUBLIC_USE_MOCK_AI'),
   };
 
   _cache = PublicEnvSchema.parse(obj);
