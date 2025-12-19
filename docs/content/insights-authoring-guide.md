@@ -1,7 +1,7 @@
 ---
 title: "Insights Content Authoring Guide"
 description: "Guidelines and best practices for creating and authoring insights articles on Corso"
-last_updated: "2025-01-20"
+last_updated: "2025-01-21"
 category: "content"
 status: "active"
 ---
@@ -111,7 +111,7 @@ Use headings to create a clear content hierarchy:
 1. **Descriptive Headings**: Use clear, descriptive headings that summarize the section
 2. **Consistency**: Maintain consistent heading style throughout the article
 3. **Anchor Links**: All headings automatically receive anchor IDs (e.g., `#introduction`)
-4. **Table of Contents**: Future TOC feature will use H2 and H3 headings
+4. **Table of Contents**: Automatically generated from H2 and H3 headings (see [Table of Contents](#table-of-contents) section)
 
 ### Example Structure
 
@@ -196,6 +196,30 @@ Every article automatically includes a CTA section at the bottom with:
 2. **Natural Integration**: If you mention sign-up or contact, do so naturally within the content flow
 3. **Focus on Value**: Let the built-in CTA handle conversion; focus article content on providing value
 
+## 📑 Table of Contents
+
+### Automatic Generation
+
+A **Table of Contents (TOC)** is automatically generated from H2 and H3 headings in your article. The TOC:
+
+- **Desktop**: Appears as a sticky sidebar on the right side of the article
+- **Mobile**: Appears as a collapsible dropdown above the article content
+- **Updates**: Automatically reflects all H2 and H3 headings in your article
+- **Navigation**: Clicking TOC items smoothly scrolls to the corresponding section
+
+### TOC Behavior
+
+- **Visibility**: TOC only appears if your article has at least one H2 or H3 heading
+- **Hierarchy**: H2 headings appear in bold; H3 headings are indented and appear in regular weight
+- **Scrolling**: Smooth scroll animation with proper offset for sticky navigation header
+- **Accessibility**: Full keyboard navigation and screen reader support
+
+### Best Practices for TOC
+
+1. **Use Clear Headings**: Since headings appear in the TOC, make them descriptive and scannable
+2. **Limit Depth**: Stick to H2 and H3 for best TOC readability
+3. **Logical Structure**: Organize content hierarchically so the TOC provides a clear content outline
+
 ## 🔗 Anchor Links & Navigation
 
 ### Automatic ID Generation
@@ -213,7 +237,7 @@ You can link to specific sections within the article:
 [Link to Market Analysis section](#market-analysis)
 ```
 
-**Note**: Anchor links work automatically once headings are rendered. The scroll position accounts for the sticky navigation header.
+**Note**: Anchor links work automatically once headings are rendered. The scroll position accounts for the sticky navigation header. The Table of Contents also provides quick navigation to all sections.
 
 ## 📊 Categories
 
@@ -382,6 +406,6 @@ No additional styling is needed or supported in article content.
 
 ---
 
-**Last Updated**: January 20, 2025  
+**Last Updated**: January 21, 2025  
 **Maintained By**: Platform Team  
 **Questions**: Contact platform@corso.io
