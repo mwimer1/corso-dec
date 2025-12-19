@@ -6,8 +6,10 @@ import type { InsightItem, InsightPreview } from '@/types/marketing';
 import type { ISODateString } from '@/types/shared';
 import fs from 'fs/promises';
 import matter from 'gray-matter';
+import { defaultSchema } from 'hast-util-sanitize';
 import path from 'path';
 import rehypeSanitize from 'rehype-sanitize';
+import rehypeSlug from 'rehype-slug';
 import rehypeStringify from 'rehype-stringify';
 import remarkGfm from 'remark-gfm';
 import remarkParse from 'remark-parse';
@@ -94,11 +96,26 @@ function markdownToHtmlLoose(markdown: string): string {
 
 async function markdownToHtmlRich(markdown: string): Promise<string> {
   try {
+    // Extend the default schema to allow 'id' attributes on heading elements
+    const customSchema = {
+      ...defaultSchema,
+      attributes: {
+        ...defaultSchema.attributes,
+        h1: ['id'],
+        h2: ['id'],
+        h3: ['id'],
+        h4: ['id'],
+        h5: ['id'],
+        h6: ['id'],
+      },
+    };
+
     const file = await unified()
       .use(remarkParse)
       .use(remarkGfm)
       .use(remarkRehype)
-      .use(rehypeSanitize)
+      .use(rehypeSlug)
+      .use(rehypeSanitize, customSchema)
       .use(rehypeStringify)
       .process(markdown);
     return String(file);

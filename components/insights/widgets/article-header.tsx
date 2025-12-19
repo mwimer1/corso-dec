@@ -37,7 +37,7 @@ export function ArticleHeader({
   className,
 }: ArticleHeaderProps): React.ReactElement {
   return (
-    <header className={cn("space-y-4 sm:space-y-6", className)}>
+    <header className={cn("space-y-3 sm:space-y-4", className)}>
       {/* Article Title */}
       <SectionHeader 
         headingLevel={1} 
@@ -55,11 +55,11 @@ export function ArticleHeader({
 
       {/* Categories */}
       {categories && categories.length > 0 && (
-        <div className="flex flex-wrap gap-2 pt-2">
+        <div className="flex flex-wrap gap-2 pt-1">
           {categories.map((category) => (
             <span
               key={category.slug}
-              className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20 transition-all duration-200 hover:bg-primary/15 hover:border-primary/30 hover:shadow-sm"
+              className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20 transition-colors"
             >
               {category.name}
             </span>

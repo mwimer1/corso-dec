@@ -8,7 +8,10 @@ import { ArticleHeader } from "@/components/insights/widgets/article-header";
 import { ArticleImage } from "@/components/insights/widgets/article-image";
 import { Breadcrumbs } from "@/components/insights/widgets/breadcrumbs";
 import { RelatedArticles } from "@/components/insights/widgets/related-articles";
+import { Button } from "@/components/ui/atoms";
+import { LinkTrack } from "@/components/ui/molecules";
 import { resolveInsightImageUrl } from "@/lib/marketing/insights/image-resolver";
+import { APP_LINKS } from "@/lib/shared";
 import { cn } from "@/styles";
 import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
 import { containerWithPaddingVariants } from "@/styles/ui/shared/container-helpers";
@@ -67,7 +70,7 @@ export const InsightDetail = React.forwardRef<
         ALLOWED_TAGS: [
           "p","h1","h2","h3","h4","h5","h6","ul","ol","li","a","strong","em","code","pre","blockquote","br","hr","div","span","img",
         ],
-        ALLOWED_ATTR: ["href", "target", "rel", "class", "src", "alt", "title"],
+        ALLOWED_ATTR: ["href", "target", "rel", "class", "src", "alt", "title", "id"],
         ADD_ATTR: ["target"],
         ALLOW_DATA_ATTR: false,
         ALLOWED_URI_REGEXP: /^(?:https?:|mailto:|\/(?!\/)|#)/,
@@ -115,7 +118,7 @@ export const InsightDetail = React.forwardRef<
           // Headings
           "prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground",
           "prose-h1:text-4xl prose-h1:mt-8 prose-h1:mb-4",
-          "prose-h2:text-3xl prose-h2:mt-8 prose-h2:mb-4 prose-h2:border-b prose-h2:border-border prose-h2:pb-2",
+          "prose-h2:text-3xl prose-h2:mt-8 prose-h2:mb-4",
           "prose-h3:text-2xl prose-h3:mt-6 prose-h3:mb-3",
           "prose-h4:text-xl prose-h4:mt-4 prose-h4:mb-2",
           // Paragraphs
@@ -147,7 +150,7 @@ export const InsightDetail = React.forwardRef<
         {/* Note: Structured data is now handled server-side in the page component for better SEO */}
 
         {breadcrumbs && breadcrumbs.length > 0 && (
-          <div className="mb-4 sm:mb-6">
+          <div>
             <Breadcrumbs items={breadcrumbs} />
           </div>
         )}
@@ -164,6 +167,7 @@ export const InsightDetail = React.forwardRef<
         <ArticleImage
           src={resolvedImageUrl}
           alt={title}
+          {...(initialData.heroCaption && { caption: initialData.heroCaption })}
           loading="lazy"
           priority={false}
         />
@@ -182,9 +186,25 @@ export const InsightDetail = React.forwardRef<
           itemProp="articleBody"
         />
 
+        {/* Call-to-Action: prompt user to sign up or contact sales */}
+        <section className="mt-8 sm:mt-12">
+          <div className="rounded-lg border border-border bg-muted p-6 text-center">
+            <h3 className="text-xl font-semibold text-foreground">Ready to unlock insights?</h3>
+            <p className="mt-2 text-base text-foreground/80">Start your free trial today, or talk to our team about your needs.</p>
+            <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Button asChild variant="default" size="lg">
+                <LinkTrack href={APP_LINKS.NAV.SIGNUP} label="insight:cta:signup">Start for free</LinkTrack>
+              </Button>
+              <Button asChild variant="secondary" size="lg">
+                <LinkTrack href="/contact" label="insight:cta:contact">Talk to sales</LinkTrack>
+              </Button>
+            </div>
+          </div>
+        </section>
+
         {relatedArticles.length > 0 && (
           <aside 
-            className="pt-8 sm:pt-12 border-t border-border mt-8 sm:mt-12"
+            className={cn("pt-8 sm:pt-12 mt-8 sm:mt-12")}
             aria-label="Related content"
           >
             <RelatedArticles articles={relatedArticles} />

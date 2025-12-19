@@ -27,5 +27,7 @@ export interface InsightItem extends InsightPreview {
   content: string;
   /** Author information (more commonly present in full items) */
   author?: { name: string; avatar?: string };
+  /** Optional hero image caption */
+  heroCaption?: string;
 }
 

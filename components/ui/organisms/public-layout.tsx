@@ -78,7 +78,8 @@ export function PublicLayout({
       >
         <div
           className={cn(
-            containerWithPaddingVariants({ maxWidth: "7xl", padding: "lg" })
+            containerWithPaddingVariants({ maxWidth: "7xl", padding: "lg" }),
+            "relative"
           )}
         >
           <Navbar 
@@ -86,14 +87,13 @@ export function PublicLayout({
             {...(navItems && { items: navItems })}
             {...(navMode === "insights" || navMode === "landing" ? { forceShowCTAs: true } : {})}
           />
+          {showReadingProgress && <ReadingProgress />}
         </div>
       </header>
-      {showReadingProgress && <ReadingProgress />}
       <main
         id="main-content"
         className={cn(
           "flex-1 relative bg-background text-foreground overflow-x-hidden",
-          showReadingProgress && "pt-1", // Account for reading progress bar (1px height)
           !isSignedIn && showMobileCTA && "pb-20", // Prevent footer overlap with mobile CTA
           className,
         )}

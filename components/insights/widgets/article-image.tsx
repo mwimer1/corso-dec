@@ -1,10 +1,5 @@
 "use client";
 
-import {
-    INSIGHT_HERO_HEIGHT,
-    INSIGHT_HERO_SIZES,
-    INSIGHT_HERO_WIDTH,
-} from "@/components/insights/constants";
 import { cn } from "@/styles";
 import Image from "next/image";
 import * as React from "react";
@@ -37,15 +32,14 @@ export function ArticleImage({
   priority = false,
 }: ArticleImageProps): React.ReactElement {
   return (
-    <figure className={cn("relative overflow-hidden rounded-lg -mx-4 sm:mx-0", className)}>
-      <div className="relative aspect-[16/9] sm:aspect-[21/9] w-full overflow-hidden bg-muted">
+    <figure className={cn("mx-auto w-full max-w-3xl sm:max-w-4xl lg:max-w-5xl", className)}>
+      <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg bg-muted">
         <Image
           src={src}
           alt={alt}
-          width={INSIGHT_HERO_WIDTH}
-          height={INSIGHT_HERO_HEIGHT}
-          sizes={INSIGHT_HERO_SIZES}
-          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+          className="object-cover transition-transform duration-300 hover:scale-105"
           loading={loading}
           priority={priority}
           placeholder="blur"
@@ -53,7 +47,7 @@ export function ArticleImage({
         />
       </div>
       {caption && (
-        <figcaption className="mt-3 px-4 sm:px-0 text-sm text-muted-foreground text-center italic">
+        <figcaption className="mt-2 text-sm text-muted-foreground text-center">
           {caption}
         </figcaption>
       )}

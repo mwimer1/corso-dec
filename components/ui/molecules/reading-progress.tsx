@@ -53,18 +53,14 @@ export function ReadingProgress(): React.ReactElement {
 
   return (
     <div 
-      className="fixed top-0 left-0 right-0 z-50 h-1 bg-border" 
+      className="absolute bottom-0 left-0 w-full bg-primary" 
+      style={{ height: '1px', width: `${progress}%` }}
       aria-hidden="true"
       role="progressbar"
       aria-valuenow={Math.round(progress)}
       aria-valuemin={0}
       aria-valuemax={100}
-    >
-      <div
-        className="h-full bg-primary transition-all duration-150 ease-out"
-        style={{ width: `${progress}%` }}
-      />
-    </div>
+    />
   );
 }
 
