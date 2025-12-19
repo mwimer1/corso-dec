@@ -1,12 +1,7 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/husky.sh"
 
-# Ensure we're in the git repository root (Windows compatibility)
-# Use relative path navigation (same approach as husky.sh) - more reliable on Windows
-REPO_ROOT="$(dirname -- "$0")/../.."
-cd "$REPO_ROOT" || exit 1
-
-# Verify we're in a git repository
+# husky.sh already changes to the git repository root, so we just verify we're in the right place
 if ! git rev-parse --git-dir >/dev/null 2>&1; then
   echo "✖ Error: Could not find git repository root"
   exit 1
