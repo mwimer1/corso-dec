@@ -136,7 +136,7 @@ export default function EntityGridHost({ config }: { config: EntityGridConfig })
           </div>
         );
       })()}
-      <div className="px-2 pb-2">
+      <div className="px-[1px] pb-[1px]">
         <GridMenubar
           searchCount={searchCount}
           gridId={config.id}
@@ -153,7 +153,7 @@ export default function EntityGridHost({ config }: { config: EntityGridConfig })
           onRetry={handleRetry}
         />
       </div>
-      <div className="flex-1 min-h-0 px-2">
+      <div className="flex-1 min-h-0 px-[1px] pb-[1px]">
         <EntityGrid
           config={config}
           gridRef={gridRef as React.RefObject<AgGridReact>}

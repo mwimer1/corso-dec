@@ -249,7 +249,7 @@ Create `public/__mockdb__/{entity}.json` with sample data array.
 ### Filtering
 - **Limited filter types**: Only `eq`, `contains`, `gt`, `lt`, `gte`, `lte`, `in`, `between`, `bool` operations supported
 - **No client-side filtering**: All filters applied server-side
-- **No filter persistence**: Filters reset on page refresh (saved views can preserve state)
+- **Saved searches persistence**: Saved searches are persisted to localStorage (user-scoped and grid-scoped) and survive page reloads
 
 ### Sorting
 - **Single-column sorting**: Only first sort in `sortModel` array is applied

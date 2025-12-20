@@ -6,6 +6,7 @@ import { cn } from "@/styles";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 // Grid state context removed - using local state instead
 import type { AgGridReact } from 'ag-grid-react';
+import { useUser } from '@clerk/nextjs';
 import { ArrowDownToLine, CopyPlus, FileDown, ListRestart, Maximize2, RefreshCcw, Save, Search, Trash } from 'lucide-react';
 import type React from 'react';
 import type { Dispatch, SetStateAction } from 'react';
@@ -38,10 +39,60 @@ interface GridMenubarProps {
 }
 
 export function GridMenubar(props: GridMenubarProps) {
+  const { user } = useUser();
+  const userId = user?.id ?? 'anon';
+  const storageKey = `corso:gridSavedStates:${userId}:${props.gridId}`;
+
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [currentSaveStateName, setCurrentSaveStateName] = useState<string | null>(null);
   // Grid state functionality removed - using local state management
   const [savedStates, setSavedStates] = useState<Record<string, { state_name: string; grid_state: any }>>({});
+  
+  // Load saved states from localStorage on mount
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    try {
+      const stored = localStorage.getItem(storageKey);
+      if (stored) {
+        const parsed = JSON.parse(stored) as Record<string, { state_name: string; grid_state: any }>;
+        if (parsed && typeof parsed === 'object') {
+          setSavedStates(parsed);
+        }
+      }
+    } catch (error) {
+      // Handle corrupted data gracefully
+      if (process.env.NODE_ENV !== 'production') {
+        devWarn(`[GridMenubar] Failed to load saved states from localStorage:`, error);
+      }
+      // Clear corrupted data
+      try {
+        localStorage.removeItem(storageKey);
+      } catch {
+        // Ignore cleanup errors
+      }
+    }
+  }, [storageKey]);
+
+  // Save saved states to localStorage whenever they change
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    try {
+      if (Object.keys(savedStates).length > 0) {
+        localStorage.setItem(storageKey, JSON.stringify(savedStates));
+      } else {
+        // Remove key if no saved states
+        localStorage.removeItem(storageKey);
+      }
+    } catch (error) {
+      // Handle storage quota errors gracefully
+      if (process.env.NODE_ENV !== 'production') {
+        devWarn(`[GridMenubar] Failed to save states to localStorage:`, error);
+      }
+    }
+  }, [savedStates, storageKey]);
+
   const saveState = useCallback((name: string, state: any) => {
     setSavedStates(prev => ({ ...prev, [name]: { state_name: name, grid_state: state } }));
   }, []);
@@ -367,7 +418,9 @@ export function GridMenubar(props: GridMenubarProps) {
         <div className="flex items-center gap-3">
           {/* Results count */}
           <div className="flex items-center gap-1.5 text-sm font-medium">
-            <span className="text-foreground">{formatNumber(props.searchCount)}</span>
+            <Badge color="secondary" className="tabular-nums">
+              {formatNumber(props.searchCount)}
+            </Badge>
             <span className="text-muted-foreground">results</span>
           </div>
 
@@ -375,7 +428,7 @@ export function GridMenubar(props: GridMenubarProps) {
           <div className="flex items-center gap-1">
             <button
               onClick={() => props.gridRef?.current?.api.exportDataAsCsv()}
-              className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-black/5 active:bg-black/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               aria-label="Export as CSV"
               title="Export as CSV"
             >
@@ -392,7 +445,7 @@ export function GridMenubar(props: GridMenubarProps) {
                   devError("Failed to reset the grid:", error);
                 }
               }}
-              className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-black/5 active:bg-black/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               aria-label="Reset grid"
               title="Reset filters and columns"
             >
@@ -407,7 +460,7 @@ export function GridMenubar(props: GridMenubarProps) {
                   devError("Failed to refresh the grid:", error);
                 }
               }}
-              className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-black/5 active:bg-black/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               aria-label="Refresh grid"
               title="Refresh data"
             >
@@ -419,7 +472,7 @@ export function GridMenubar(props: GridMenubarProps) {
           <div className="flex items-center gap-1">
             <button
               onClick={handleSaveAsClick}
-              className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-black/5 active:bg-black/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               aria-label="Save grid as"
               title="Save current view as new"
             >
@@ -429,7 +482,7 @@ export function GridMenubar(props: GridMenubarProps) {
             <button
               onClick={handleSave}
               disabled={!props.currentState}
-              className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:focus-visible:ring-0"
+              className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-black/5 active:bg-black/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:focus-visible:ring-0"
               aria-label="Save grid"
               title="Save current view"
             >
