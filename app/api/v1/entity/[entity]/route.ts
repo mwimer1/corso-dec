@@ -39,6 +39,13 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
   // Check auth mode
   const isRelaxed = isRelaxedAuthMode();
   
+  // Log auth mode for debugging (dev only)
+  if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test') {
+    if (isRelaxed) {
+      console.debug('[entity route] Relaxed auth mode enabled - org/RBAC checks bypassed');
+    }
+  }
+  
   // Define allowed roles (for strict mode only)
   const allowedRoles = ['org:member', 'org:admin', 'org:owner'] as const;
   
