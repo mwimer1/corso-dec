@@ -16,8 +16,12 @@
     "types/api/openapi.d.ts",
     "lib/server/index.ts",
     "styles/tailwind.config.ts",
-    "styles/ui/shared/index.ts",
-    "types/security/index.ts"
-  ]
+    "styles/ui/shared/index.ts"
+  ],
+  "notes": {
+    "types/api/openapi.d.ts": "AUTO-GENERATED - Do not delete. Regenerated via pnpm openapi:gen",
+    "types/shared/index.ts": "Intentional convenience facade for cross-cutting primitives",
+    "types/api/index.ts": "Intentional barrel for OpenAPI types (stable import path)",
+  }
 }
 

@@ -466,16 +466,24 @@ export default [
               'message': '⚠️  Deprecated: import from "@/lib/security/guards" instead.',
             },
             {
-              'group': ['@/types/dashboard/index.ts'],
-              'message': 'Import from dashboard subfolders, not the barrel'
+              'group': ['@/types/auth', '@/types/auth/index'],
+              'message': 'Barrel removed. Import directly from canonical locations (e.g., @/types/auth/authorization/types).'
             },
             {
-              'group': ['@/types/integrations/**/**'],
-              'message': "Use integration barrels (e.g. '@/types/integrations/openai'), never deep import"
+              'group': ['@/types/validators', '@/types/validators/index'],
+              'message': 'Barrel removed. Import directly from canonical locations (e.g., @/types/validators/runtime/types).'
             },
             {
-              'group': ['@/types/auth/index.ts'],
-              'message': 'Import from auth subfolders (user, session, etc.), not the top-level barrel'
+              'group': ['@/types/chat', '@/types/chat/index'],
+              'message': 'Barrel discouraged. Prefer direct imports (e.g., @/types/chat/message/types).'
+            },
+            {
+              'group': ['@/types/integrations', '@/types/integrations/index'],
+              'message': 'Barrel discouraged. Prefer direct imports (e.g., @/types/integrations/supabase/core/types).'
+            },
+            {
+              'group': ['@/types/dashboard/index'],
+              'message': 'Barrel discouraged. Prefer direct imports (e.g., @/types/dashboard/analytics/types).'
             },
             {
               'group': ['@/lib/dashboard/entity'],

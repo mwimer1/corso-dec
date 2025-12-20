@@ -4,12 +4,30 @@ last_updated: "2025-12-15"
 category: "automation"
 ---
 
-# Repository Scripts & Docs
+# Chat Types
 
-This README is generated from a single template (`README.scripts.hbs`).
+Type definitions for chat messages, queries, and responses.
 
-- Directory: `types/chat`
-- Last updated: `2025-12-15`
+## Import Patterns
 
-> Edit the template or the generator context to change all READMEs consistently.
+**Prefer direct imports** from the specific type file. While `types/chat/index.ts` barrel exists, direct imports are recommended to prevent circular dependencies.
 
+```typescript
+// ✅ Preferred: Direct imports
+import type { ChatMessage } from '@/types/chat/message/types';
+import type { QueryIntent, TableIntent } from '@/types/chat/query/types';
+import type { ChartConfig, ChatStreamChunk } from '@/types/chat/response/types';
+```
+
+### ⚠️ Barrel Available (but discouraged)
+
+```typescript
+// ⚠️ Barrel exists but direct imports preferred
+import type { ChatMessage } from '@/types/chat';
+```
+
+## Available Types
+
+- `types/chat/message/types.ts` - Chat message types (ChatMessage, ColumnDef, VisualizationType)
+- `types/chat/query/types.ts` - Query types (QueryIntent, QueryIntentDetection, TableIntent, BuildSqlPrompt, ChatQueryResult, NLtoSQLResult, QueryFilter)
+- `types/chat/response/types.ts` - Response types (ChartConfig, ChatStreamChunk)
