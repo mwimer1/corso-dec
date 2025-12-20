@@ -127,11 +127,12 @@ function convertSingleFilter(field: string, m: unknown): ApiFilter | null {
 }
 
 /**
- * Minimal type for error objects that may include status and code
+ * Minimal type for error objects that may include status, code, and details
  */
 interface ErrorWithStatus extends Error {
   status?: number;
   code?: string;
+  details?: unknown;
 }
 
 /**
@@ -148,6 +149,7 @@ interface ApiErrorResponse {
   // Legacy format support (for backward compatibility)
   message?: string;
   code?: string;
+  details?: unknown;
 }
 
 /**
@@ -197,14 +199,15 @@ export function createEntityFetcher(entity: GridId): EntityFetcher {
       // Attempt to parse error response body safely
       let errorMessage = `Entity query failed (${entity}): HTTP ${res.status}`;
       let errorCode: string | undefined;
+      let errorDetails: unknown | undefined;
       
       try {
         const errorBody = (await res.json()) as unknown;
         // Runtime guard: ensure errorBody is an object
         if (errorBody && typeof errorBody === 'object') {
           const error = errorBody as ApiErrorResponse;
-          // Extract message from nested error object: { success: false, error: { code, message } }
-          // Also support legacy flat format: { error: "...", code: "..." }
+          // Extract message from nested error object: { success: false, error: { code, message, details? } }
+          // Also support legacy flat format: { error: "...", code: "...", details?: ... }
           const apiErrorMessage = 
             (error?.error && typeof error.error === 'object' && error.error.message)
               ? error.error.message
@@ -213,19 +216,22 @@ export function createEntityFetcher(entity: GridId): EntityFetcher {
             (error?.error && typeof error.error === 'object' && error.error.code)
               ? error.error.code
               : error?.code;
+          const apiErrorDetails = 
+            (error?.error && typeof error.error === 'object' && error.error.details)
+              ? error.error.details
+              : error?.details;
           
           // Use extracted message or fallback to top-level message or default
           const message = apiErrorMessage || error?.message || errorMessage;
           errorCode = apiErrorCode;
+          errorDetails = apiErrorDetails;
         
           // Provide clear messages for common status codes
           if (res.status === 401) {
             errorMessage = apiErrorMessage || 'Unauthorized: Please sign in again.';
           } else if (res.status === 403) {
+            // Don't append code to message here - let the UI component decide based on code
             errorMessage = apiErrorMessage || `Forbidden: You do not have permission to access this resource.`;
-            if (errorCode) {
-              errorMessage += ` (${errorCode})`;
-            }
           } else {
             errorMessage = message;
             if (errorCode) {
@@ -248,6 +254,9 @@ export function createEntityFetcher(entity: GridId): EntityFetcher {
       error.status = res.status;
       if (errorCode) {
         error.code = errorCode;
+      }
+      if (errorDetails !== undefined) {
+        error.details = errorDetails;
       }
       throw error;
     }

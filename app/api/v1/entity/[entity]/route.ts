@@ -8,9 +8,9 @@ import { handleCors } from '@/lib/middleware';
 import type { EntityFetchParams } from '@/lib/services/entity/contracts';
 import { getEntityPage } from '@/lib/services/entity/pages';
 import {
-    EntityListQuerySchema,
-    EntityParamSchema,
-    type EntityParam,
+  EntityListQuerySchema,
+  EntityParamSchema,
+  type EntityParam,
 } from '@/lib/validators';
 import { auth, clerkClient } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
@@ -35,8 +35,26 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
     return await toNextResponse(http.error(401, 'Unauthorized', { code: 'HTTP_401' }));
   }
   
-  // Resolve organization ID: use active org if available, otherwise fall back to user's first organization
-  let orgId: string | null = activeOrgId ?? null;
+  // Define allowed roles (consistent across all RBAC checks)
+  const allowedRoles = ['org:member', 'org:admin', 'org:owner'] as const;
+  
+  // Resolve effective organization ID in priority order:
+  // 1. X-Corso-Org-Id header (explicit tenant selection)
+  // 2. auth().orgId (active org in Clerk session)
+  // 3. Fallback: first org from user's memberships
+  let orgId: string | null = null;
+  let effectiveOrgIdSource: 'header' | 'active' | 'fallback' | null = null;
+  
+  // Check header if available
+  if (req.headers) {
+    orgId = req.headers.get('x-corso-org-id') || req.headers.get('X-Corso-Org-Id') || null;
+    effectiveOrgIdSource = orgId ? 'header' : null;
+  }
+  
+  if (!orgId) {
+    orgId = activeOrgId ?? null;
+    effectiveOrgIdSource = orgId ? 'active' : null;
+  }
   
   if (!orgId) {
     if (process.env.NODE_ENV !== 'production') {
@@ -54,6 +72,7 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
       
       if (orgMemberships.data && orgMemberships.data.length > 0 && orgMemberships.data[0]) {
         orgId = orgMemberships.data[0].organization.id;
+        effectiveOrgIdSource = 'fallback';
         if (process.env.NODE_ENV !== 'production') {
           console.debug('[entity route] Using first organization from memberships:', orgId);
         }
@@ -68,7 +87,7 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
   
   // Check for organization (required for organization-scoped operations)
   if (!orgId) {
-    return await toNextResponse(http.error(403, 'No active organization. Please ensure you are a member of an organization.', { 
+    return await toNextResponse(http.error(403, 'No active organization. Please create or join an organization to continue.', { 
       code: 'NO_ORG_CONTEXT',
       details: {
         message: 'You must be a member of an organization to access this resource. If you are a member, please ensure an organization is selected in your session.',
@@ -76,45 +95,64 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
     }));
   }
   
-  // Enforce org:member-or-higher role (org:viewer not allowed)
+  // Enforce RBAC: user must have one of the allowed roles in the effective organization
   // Note: When using a fallback orgId, we need to check role for that specific org
   // Clerk organization roles use the format: org:member, org:admin, etc.
-  // The has() method checks the active org, so we need to verify the user has the role in the org we're using
   try {
-    // Verify user has org:member role in the organization we're using
-    // If we used a fallback org, we need to check membership directly
-    if (!activeOrgId) {
-      // When using fallback org, verify the user actually has member role
+    const effectiveOrgId = orgId;
+    const isActiveOrg = effectiveOrgId === activeOrgId && effectiveOrgIdSource === 'active';
+    
+    if (isActiveOrg) {
+      // When using active org, use the standard has() check for each allowed role
+      const hasAllowedRole = allowedRoles.some((role) => has({ role }));
+      
+      if (!hasAllowedRole) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.debug('[entity route] RBAC check failed for userId:', userId, 'orgId:', effectiveOrgId, 'allowedRoles:', allowedRoles);
+        }
+        return await toNextResponse(http.error(403, 'Insufficient permissions', { 
+          code: 'FORBIDDEN',
+          details: {
+            requiredRoles: allowedRoles,
+          }
+        }));
+      }
+    } else {
+      // When using fallback org or header-specified org, verify membership directly
       const client = typeof clerkClient === 'function' ? await clerkClient() : clerkClient;
       const membership = await client.users.getOrganizationMembershipList({
         userId,
         limit: 100,
       });
       const hasMembership = membership.data?.some(
-        (m: { organization: { id: string }; role: string }) => 
-          m.organization.id === orgId && (m.role === 'org:member' || m.role === 'org:admin' || m.role === 'org:owner')
+        (m: { organization: { id: string }; role: string }) => {
+          const role = m.role as string;
+          return m.organization.id === effectiveOrgId && allowedRoles.includes(role as typeof allowedRoles[number]);
+        }
       );
       
       if (!hasMembership) {
         if (process.env.NODE_ENV !== 'production') {
-          console.debug('[entity route] User does not have org:member role in organization:', orgId);
+          console.debug('[entity route] User does not have allowed role in organization:', effectiveOrgId, 'allowedRoles:', allowedRoles);
         }
-        return await toNextResponse(http.error(403, 'Insufficient permissions', { code: 'FORBIDDEN' }));
-      }
-    } else {
-      // When using active org, use the standard has() check
-      if (!has({ role: 'org:member' })) {
-        if (process.env.NODE_ENV !== 'production') {
-          console.debug('[entity route] RBAC check failed for userId:', userId, 'orgId:', orgId);
-        }
-        return await toNextResponse(http.error(403, 'Insufficient permissions', { code: 'FORBIDDEN' }));
+        return await toNextResponse(http.error(403, 'Insufficient permissions', { 
+          code: 'FORBIDDEN',
+          details: {
+            requiredRoles: allowedRoles,
+          }
+        }));
       }
     }
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
       console.debug('[entity route] Failed to verify organization membership:', error);
     }
-    return await toNextResponse(http.error(403, 'Insufficient permissions', { code: 'FORBIDDEN' }));
+    return await toNextResponse(http.error(403, 'Insufficient permissions', { 
+      code: 'FORBIDDEN',
+      details: {
+        requiredRoles: allowedRoles,
+      }
+    }));
   }
 
   // Entity param validation

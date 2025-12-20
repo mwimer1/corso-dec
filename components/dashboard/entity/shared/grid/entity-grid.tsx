@@ -194,18 +194,11 @@ export default function EntityGrid({
     
     api.setGridOption('serverSideDatasource', {
       async getRows(p: IServerSideGetRowsParams) {
-        // If orgId is not available but organization data has loaded, show error
-        if (!currentOrgId && orgLoaded) {
-          const error = new Error('No active organization. Please ensure you are a member of an organization.') as Error & { code?: string; status?: number };
-          error.code = 'NO_ORG_CONTEXT';
-          error.status = 403;
-          p.fail();
-          onLoadError?.(error);
-          return;
-        }
-        
+        // Allow API call even if orgId is null - let API fallback handle org resolution
+        // The API will return NO_ORG_CONTEXT if no org can be resolved
         try {
-          // Pass orgId to fetcher to include X-Corso-Org-Id header in API request
+          // Pass orgId to fetcher to include X-Corso-Org-Id header in API request (if available)
+          // If orgId is null, fetcher won't set the header, allowing API to use fallback logic
           const r = await config.fetcher(p.request, posthog.get_distinct_id?.() ?? 'anon', currentOrgId);
           p.success({
             rowData: r.rows,
@@ -222,7 +215,7 @@ export default function EntityGrid({
         }
       },
     });
-  }, [config, posthog, setSearchCount, onLoadError, orgLoaded]);
+  }, [config, posthog, setSearchCount, onLoadError]);
 
   const onGridReady = useCallback((params: GridReadyEvent) => {
     const api = params.api;

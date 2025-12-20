@@ -21,11 +21,12 @@ interface GridState {
 }
 
 /**
- * Minimal type for error objects that may include status code
+ * Minimal type for error objects that may include status code, error code, and details
  */
 interface ErrorWithStatus extends Error {
   status?: number;
   code?: string;
+  details?: unknown;
 }
 
 export default function EntityGridHost({ config }: { config: EntityGridConfig }) {
@@ -78,13 +79,28 @@ export default function EntityGridHost({ config }: { config: EntityGridConfig })
       {loadError && (() => {
         const errorWithStatus = loadError as ErrorWithStatus;
         const status = errorWithStatus?.status;
+        const errorCode = errorWithStatus?.code;
         let errorMessage = loadError.message || 'Error loading data.';
         
-        // Provide user-friendly messages for specific status codes
+        // Provide user-friendly messages for specific status codes and error codes
         if (status === 401) {
           errorMessage = 'Please sign in again.';
         } else if (status === 403) {
-          errorMessage = 'You do not have permission to access this resource (role required: org:member).';
+          // Show specific message based on error code
+          if (errorCode === 'NO_ORG_CONTEXT') {
+            errorMessage = 'No active organization. Please create or join an organization to continue.';
+          } else if (errorCode === 'FORBIDDEN') {
+            // Extract required roles from details if available
+            const details = errorWithStatus?.details;
+            const requiredRoles = (details && typeof details === 'object' && 'requiredRoles' in details)
+              ? (details as { requiredRoles?: string[] }).requiredRoles
+              : ['org:member', 'org:admin', 'org:owner'];
+            const rolesText = requiredRoles?.join(', ') || 'org:member, org:admin, or org:owner';
+            errorMessage = `You do not have permission to access this resource. Required roles: ${rolesText}.`;
+          } else {
+            // Use API error message if available, otherwise fallback
+            errorMessage = loadError.message || 'You do not have permission to access this resource.';
+          }
         } else if (status) {
           // For other status codes, use the error message from the fetcher (already includes status)
           errorMessage = loadError.message;
