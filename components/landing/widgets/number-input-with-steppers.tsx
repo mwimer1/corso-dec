@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { useNumberInput } from "./use-number-input";
 
 type Props = {
@@ -61,7 +62,7 @@ export function NumberInputWithSteppers({
         data-lpignore="true"
       />
       {usesCustomLayout ? (
-        <div suppressHydrationWarning>
+        <div data-stepper suppressHydrationWarning>
           <button
             aria-label={increaseAria}
             onClick={onInc}
@@ -72,7 +73,7 @@ export function NumberInputWithSteppers({
             suppressHydrationWarning
             type="button"
           >
-            <span aria-hidden="true">+</span>
+            <ChevronUp aria-hidden="true" size={14} />
           </button>
           <button
             aria-label={decreaseAria}
@@ -84,7 +85,7 @@ export function NumberInputWithSteppers({
             suppressHydrationWarning
             type="button"
           >
-            <span aria-hidden="true">–</span>
+            <ChevronDown aria-hidden="true" size={14} />
           </button>
         </div>
       ) : (

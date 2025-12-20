@@ -12,9 +12,7 @@ export function RoiOutputPanel({ revenueGrowth, newDeals, workdaysSaved }: Props
         grid gap-4 md:gap-5
         grid-cols-1 sm:grid-cols-2
         auto-rows-min
-        items-end
       "
-      style={{ alignContent: 'end' }}
     >
       {/* Row 1: full width */}
       <div className="sm:col-span-2">

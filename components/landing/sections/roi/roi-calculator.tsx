@@ -8,7 +8,7 @@ import { LinkTrack } from "@/components/ui/molecules";
 import { calcRoi, clamp } from "@/lib/marketing/client";
 import { APP_LINKS } from '@/lib/shared';
 import { trackNavClick } from "@/lib/shared/analytics/track";
-import * as Tooltip from "@radix-ui/react-tooltip";
+import { ChevronDown } from "lucide-react";
 import React, { useId, useMemo, useState } from "react";
 import { RoiOutputPanel } from "./roi-output-panel";
 import cls from "./roi.module.css";
@@ -22,6 +22,7 @@ export const ROICalculator: React.FC = () => {
   const [leads, setLeads] = useState<number>(100);
   const [closeRate, setCloseRate] = useState<number>(20);
   const [dealSize, setDealSize] = useState<number>(20000);
+  const [assumptionsOpen, setAssumptionsOpen] = useState<boolean>(false);
 
   const { newDeals, workdaysSaved, totalRevenue } = useMemo(
     () => calcRoi({ leads, closeRate, dealSize }),
@@ -140,36 +141,42 @@ export const ROICalculator: React.FC = () => {
             </div>
           </div>
 
-          {/* Right: Results (stretch to match left card height and align content to bottom) */}
-          <div className="max-w-[560px] w-full self-stretch h-full flex flex-col justify-end">
+          {/* Right: Results */}
+          <div className="max-w-[560px] w-full flex flex-col">
             <RoiOutputPanel
               revenueGrowth={totalRevenue}
               newDeals={newDeals}
               workdaysSaved={workdaysSaved}
             />
             <div className="mt-4 text-sm text-left">
-              <Tooltip.Provider>
-                <Tooltip.Root>
-                  <Tooltip.Trigger asChild>
-                    <button
-                      type="button"
-                      className="text-muted-foreground underline decoration-dotted underline-offset-2 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded"
-                    >
-                      Assumptions
-                    </button>
-                  </Tooltip.Trigger>
-                  <Tooltip.Portal>
-                    <Tooltip.Content
-                      side="top"
-                      sideOffset={8}
-                      className="max-w-xs p-3 rounded-md shadow-lg bg-popover text-popover-foreground text-sm leading-normal z-50 border border-border"
-                    >
-                      We assume ~2 hours saved per lead. 8 hours = 1 workday. New Deals = Leads × (Close Rate/100). Revenue = New Deals × Avg. Deal Size.
-                      <Tooltip.Arrow className="fill-popover" />
-                    </Tooltip.Content>
-                  </Tooltip.Portal>
-                </Tooltip.Root>
-              </Tooltip.Provider>
+              <button
+                type="button"
+                onClick={() => setAssumptionsOpen((v) => !v)}
+                aria-expanded={assumptionsOpen}
+                aria-controls="roi-assumptions"
+                className="inline-flex items-center gap-1 text-muted-foreground underline decoration-dotted underline-offset-2 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded"
+                title="View assumptions"
+              >
+                Assumptions
+                <ChevronDown
+                  aria-hidden="true"
+                  className={`h-4 w-4 transition-transform ${assumptionsOpen ? "rotate-180" : ""}`}
+                />
+              </button>
+
+              {assumptionsOpen && (
+                <div
+                  id="roi-assumptions"
+                  className="mt-2 rounded-lg border border-border bg-[hsl(var(--muted))]/30 p-3 text-sm leading-normal text-muted-foreground"
+                >
+                  <ul className="list-disc pl-4 space-y-1">
+                    <li>We assume ~2 hours saved per lead.</li>
+                    <li>8 hours = 1 workday.</li>
+                    <li>New Deals = Leads × (Close Rate/100).</li>
+                    <li>Revenue = New Deals × Avg. Deal Size.</li>
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
         </div>
