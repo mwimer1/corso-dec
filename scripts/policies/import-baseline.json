@@ -34,6 +34,7 @@
     "lib/integrations/supabase/server.ts -> @/server/env",
     "lib/integrations/supabase/server.ts -> @/types/integrations",
     "lib/integrations/errors/server.ts -> @/shared/errors/error-utils",
+    "lib/marketing/insights/content-service.ts -> @/server/env",
     "lib/marketing/insights/content-service.ts -> @/types/marketing",
     "lib/marketing/insights/content-service.ts -> @/types/shared",
     "lib/marketing/insights/static-data.ts -> @/shared/env/client",

@@ -106,6 +106,9 @@ export function getEnv(): ValidatedEnv {
     PRESENCE_CACHE_TTL_MS: toNum(g('PRESENCE_CACHE_TTL_MS')),
     PRESENCE_CACHE_CAPACITY: toNum(g('PRESENCE_CACHE_CAPACITY')),
     CLERK_WEBHOOK_SECRET: g('CLERK_WEBHOOK_SECRET'),
+
+    // Content/Insights
+    INSIGHTS_SOURCE: g('INSIGHTS_SOURCE'),
   } as ValidatedEnv;
 
   return _cache!;

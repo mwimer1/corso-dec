@@ -52,6 +52,16 @@ async function verifyEnvUsage(): Promise<void> {
     // Check for direct process.env array access
     const processEnvRegex = /process\.env\[/g;
     if (processEnvRegex.test(content)) {
+      // Allow client-side NEXT_PUBLIC_* access in client components
+      // This is intentional for Next.js build-time inlining
+      const isClientComponent = content.includes("'use client'") || content.includes('"use client"');
+      const isNextPublicVar = /process\.env\[['"]NEXT_PUBLIC_/.test(content);
+      
+      if (isClientComponent && isNextPublicVar) {
+        // This is allowed - client components can access NEXT_PUBLIC_* directly
+        continue;
+      }
+      
       violations.push({
         file,
         issue: 'Direct process.env usage detected',

@@ -115,6 +115,9 @@ export interface ValidatedEnv {
   PRESENCE_CACHE_TTL_MS?: number;
   PRESENCE_CACHE_CAPACITY?: number;
 
+  // Content/Insights
+  INSIGHTS_SOURCE?: string;
+
   // Optional metadata
   isValid?: boolean;
 }

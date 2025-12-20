@@ -2,6 +2,7 @@
 // Server-only content loader for Insights with safe fallbacks to static data.
 import 'server-only';
 
+import { getEnv } from '@/lib/server/env';
 import type { InsightItem, InsightPreview } from '@/types/marketing';
 import type { ISODateString } from '@/types/shared';
 import fs from 'fs/promises';
@@ -161,7 +162,7 @@ async function loadFromContentDir(): Promise<InsightItem[]> {
 }
 
 export async function getAllInsights(): Promise<InsightPreview[]> {
-  const source = process.env['INSIGHTS_SOURCE']?.toLowerCase();
+  const source = getEnv().INSIGHTS_SOURCE?.toLowerCase();
   if (source === 'cms') {
     // TODO: Integrate CMS content fetch. Using static data as placeholder.
     console.warn("INSIGHTS_SOURCE=cms – returning static insights as placeholder (CMS integration not implemented).");
@@ -221,7 +222,7 @@ export async function getAllInsights(): Promise<InsightPreview[]> {
 }
 
 export async function getInsightBySlug(slug: string): Promise<InsightItem | undefined> {
-  const source = process.env['INSIGHTS_SOURCE']?.toLowerCase();
+  const source = getEnv().INSIGHTS_SOURCE?.toLowerCase();
   if (source === 'cms' || source === 'mock') {
     // In CMS or mock mode, look up in static insights (assuming no markdown content)
     return staticInsights.find((i) => i.slug === slug);
@@ -237,7 +238,7 @@ export async function getInsightBySlug(slug: string): Promise<InsightItem | unde
  * Collect categories across all available content (frontmatter) or static fallback.
  */
 export async function getCategories(): Promise<Array<{ slug: string; name: string }>> {
-  const source = process.env['INSIGHTS_SOURCE']?.toLowerCase();
+  const source = getEnv().INSIGHTS_SOURCE?.toLowerCase();
   if (source === 'cms' || source === 'mock') {
     // Use static categories in CMS or mock mode (assuming no dynamic content)
     return CATEGORIES;
