@@ -26,19 +26,16 @@ export default function IndustryExplorer() {
   // Removed inner section wrapper - parent FullWidthSection provides full-bleed background and border
   // Header is left-aligned to match the Industry Explorer content below
   return (
-    <>
-      <div className="mb-2xl">
-        <SectionHeader
-          id="use-cases-title"
-          headingLevel={2}
-          align="left"
-          title="Built for your industry."
-          subtitle="Discover how Corso turns building-permit data into actionable business intelligence."
-          size="marketingHero"
-        />
-      </div>
-
+    <div className="space-y-lg">
+      <SectionHeader
+        id="use-cases-title"
+        headingLevel={2}
+        align="left"
+        title="Built for your industry."
+        subtitle="Discover how Corso turns building-permit data into actionable business intelligence."
+        size="marketingHero"
+      />
       <IndustrySelectorPanel industries={industries} />
-    </>
+    </div>
   );
 }

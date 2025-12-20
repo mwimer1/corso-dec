@@ -1,12 +1,12 @@
 'use client';
 
-import { PillGroup } from '@/components/landing/widgets/pill-group';
 import type { UseCaseKey } from '@/lib/marketing/client';
 import { APP_LINKS } from '@/lib/shared';
 import { trackNavClick } from '@/lib/shared/analytics/track';
 import { cn } from '@/styles';
 import { buttonVariants } from '@/styles/ui/atoms/button-variants';
 import { navbarStyleVariants } from '@/styles/ui/organisms/navbar-variants';
+import { Building2, Check, Hammer, Package, Shield } from 'lucide-react';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
 
@@ -42,15 +42,22 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
   const metrics = activeIndustry ? parseImpactMetrics(activeIndustry.impact) : [];
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  // Handle keyboard navigation for vertical tabs
+  const INDUSTRY_ICONS: Record<UseCaseKey, React.ElementType> = {
+    insurance: Shield,
+    suppliers: Package,
+    construction: Hammer,
+    developers: Building2,
+  };
+
+  // Handle keyboard navigation for horizontal tabs
   const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
     const itemsCount = industries.length;
     let nextIndex = index;
 
-    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
       nextIndex = (index + 1) % itemsCount;
       e.preventDefault();
-    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
       nextIndex = (index - 1 + itemsCount) % itemsCount;
       e.preventDefault();
     } else if (e.key === 'Home') {
@@ -65,19 +72,12 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
       const nextIndustry = industries[nextIndex];
       if (nextIndustry) {
         setActiveKey(nextIndustry.key);
-        // Focus the newly selected tab
+        // Focus the newly selected tab and scroll into view on mobile
         setTimeout(() => {
           tabRefs.current[nextIndex]?.focus();
+          tabRefs.current[nextIndex]?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
         }, 0);
       }
-    }
-  };
-
-  // Mobile pill selection handler
-  const handlePillSelect = (label: string) => {
-    const industry = industries.find((ind) => ind.title === label);
-    if (industry) {
-      setActiveKey(industry.key);
     }
   };
 
@@ -85,31 +85,22 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
     return null;
   }
 
-  // Removed mt-md - header margin-bottom provides sufficient spacing
-  // Unified container wraps both columns for visual cohesion
   return (
-    <div className="rounded-lg border border-border bg-surface shadow-card p-lg">
-      <div className="flex flex-col lg:flex-row lg:items-start lg:gap-xl">
-        {/* Mobile: Horizontal PillGroup */}
-        <div className="lg:hidden mb-md">
-          <PillGroup
-            id="industry-selector-mobile"
-            items={industries.map((ind) => ind.title)}
-            selected={activeIndustry.title}
-            onSelect={handlePillSelect}
-            aria-label="Select industry"
-          />
-        </div>
-
-        {/* Desktop: Vertical Tab List */}
+    <div className="rounded-xl border border-border bg-surface shadow-card p-lg">
+      <div className="flex flex-col gap-lg">
+        {/* Unified segmented tabs (mobile scroll, desktop grid) */}
         <div
-          className="hidden lg:flex lg:flex-col lg:w-64 lg:flex-shrink-0"
           role="tablist"
-          aria-orientation="vertical"
+          aria-orientation="horizontal"
           aria-label="Industry selection"
+          className={cn(
+            'flex gap-sm overflow-x-auto pb-2 -mx-2 px-2',
+            'lg:mx-0 lg:px-0 lg:overflow-visible lg:grid lg:grid-cols-4 lg:gap-sm'
+          )}
         >
           {industries.map((industry, index) => {
             const isSelected = industry.key === activeKey;
+            const Icon = INDUSTRY_ICONS[industry.key];
             return (
               <button
                 key={industry.key}
@@ -122,74 +113,96 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
                 aria-controls={`industry-panel-${industry.key}`}
                 tabIndex={isSelected ? 0 : -1}
                 className={cn(
-                  'px-4 py-2 text-left rounded-md text-base font-medium transition-colors',
+                  'flex items-center justify-center lg:justify-start gap-2',
+                  'whitespace-nowrap rounded-xl border px-4 py-2 text-sm font-medium transition-colors',
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                  'list-none', // Ensure no list markers appear
                   isSelected
-                    ? 'bg-surface-selected text-foreground font-semibold border-l-4 border-primary'
-                    : 'bg-transparent text-foreground hover:bg-surface-hover'
+                    ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                    : 'bg-background text-foreground border-border hover:bg-surface-hover hover:border-border'
                 )}
                 onClick={() => setActiveKey(industry.key)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
               >
-                {industry.title}
+                <Icon className="h-4 w-4 opacity-90" aria-hidden="true" />
+                <span>{industry.title}</span>
               </button>
             );
           })}
         </div>
 
-        {/* Detail Panel */}
+        {/* Detail panel */}
         <div
           id={`industry-panel-${activeKey}`}
           role="tabpanel"
           aria-labelledby={`industry-tab-${activeKey}`}
           aria-live="polite"
-          className="flex-1 min-w-0"
+          className="min-w-0"
         >
-        <h3 className="text-xl font-bold text-foreground mb-xs">{activeIndustry.title}</h3>
-        <p className="text-base text-muted-foreground mb-sm">{activeIndustry.subtitle}</p>
-        <p className="text-sm text-foreground mb-sm">{activeIndustry.description}</p>
+          <div className="grid gap-xl lg:grid-cols-12 lg:items-start">
+            {/* Left: Narrative + benefits */}
+            <div className="lg:col-span-7 min-w-0">
+              <h3 className="text-2xl font-bold text-foreground mb-xs">{activeIndustry.title}</h3>
+              <p className="text-base text-muted-foreground mb-sm">{activeIndustry.subtitle}</p>
+              <p className="text-sm text-foreground/90 mb-md">{activeIndustry.description}</p>
 
-        <ul className="list-disc pl-5 mb-sm" aria-label="Key benefits">
-          {activeIndustry.benefits.slice(0, 3).map((benefit) => (
-            <li key={benefit} className="text-sm text-foreground mb-xs">
-              {benefit}
-            </li>
-          ))}
-        </ul>
+              <ul className="space-y-xs" aria-label="Key benefits">
+                {activeIndustry.benefits.slice(0, 3).map((benefit) => (
+                  <li key={benefit} className="flex gap-2 text-sm text-foreground">
+                    <Check className="h-4 w-4 text-primary mt-[2px]" aria-hidden="true" />
+                    <span>{benefit}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-        {/* Impact Metrics as Badges */}
-        {metrics.length > 0 && (
-          <div className="mb-md flex flex-wrap gap-sm" aria-label="Impact metrics">
-            {metrics.map((metric) => (
-              <span
-                key={metric}
-                className="inline-block bg-surface-contrast/10 text-foreground text-xs font-medium rounded-full px-3 py-1"
-              >
-                {metric}
-              </span>
-            ))}
+            {/* Right: Outcomes + CTAs */}
+            <div className="lg:col-span-5">
+              <div className="rounded-xl border border-border bg-background p-md">
+                <p className="text-sm font-semibold text-foreground mb-sm">Typical outcomes</p>
+
+                {metrics.length > 0 && (
+                  <div className="flex flex-wrap gap-sm" aria-label="Impact metrics">
+                    {metrics.map((metric) => (
+                      <span
+                        key={metric}
+                        className="inline-flex items-center rounded-full border border-border bg-surface-hover px-3 py-1 text-xs font-medium text-foreground"
+                      >
+                        {metric}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                <p className="mt-sm text-sm text-muted-foreground">{activeIndustry.impact}</p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-center gap-sm mt-md">
+                <Link
+                  href={APP_LINKS.FOOTER.CONTACT}
+                  onClick={() => trackNavClick('Talk to sales', APP_LINKS.FOOTER.CONTACT)}
+                  className={cn(
+                    buttonVariants({ variant: 'secondary' }),
+                    navbarStyleVariants().button(),
+                    'w-full sm:w-auto'
+                  )}
+                >
+                  Talk to sales
+                </Link>
+                <Link
+                  href={APP_LINKS.NAV.SIGNUP}
+                  onClick={() => trackNavClick('Start for free', APP_LINKS.NAV.SIGNUP)}
+                  className={cn(
+                    buttonVariants({ variant: 'default' }),
+                    navbarStyleVariants().button(),
+                    'w-full sm:w-auto'
+                  )}
+                >
+                  Start for free
+                </Link>
+              </div>
+            </div>
           </div>
-        )}
-
-        {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-sm mt-md">
-          <Link
-            href={APP_LINKS.FOOTER.CONTACT}
-            onClick={() => trackNavClick('Talk to sales', APP_LINKS.FOOTER.CONTACT)}
-            className={cn(buttonVariants({ variant: 'secondary' }), navbarStyleVariants().button(), 'w-full sm:w-auto')}
-          >
-            Talk to sales
-          </Link>
-          <Link
-            href={APP_LINKS.NAV.SIGNUP}
-            onClick={() => trackNavClick('Start for free', APP_LINKS.NAV.SIGNUP)}
-            className={cn(buttonVariants({ variant: 'default' }), navbarStyleVariants().button(), 'w-full sm:w-auto')}
-          >
-            Start for free
-          </Link>
         </div>
-      </div>
       </div>
     </div>
   );
