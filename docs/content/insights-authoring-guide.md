@@ -1,7 +1,7 @@
 ---
 title: "Insights Content Authoring Guide"
 description: "Guidelines and best practices for creating and authoring insights articles on Corso"
-last_updated: "2025-01-21"
+last_updated: "2025-12-20"
 category: "content"
 status: "active"
 ---
@@ -56,7 +56,7 @@ status: "published"  # Use "draft" to hide from public
 
 - `description`: Used for preview cards and SEO meta description
 - `updatedDate`: Only include if article was significantly updated after publication
-- `imageUrl`: Hero image URL (see [Hero Images](#hero-images) section)
+- `imageUrl`: Hero image URL (see Hero Images section below)
 - `heroCaption`: Caption text for hero image (displayed below image)
 - `categories`: Array of category objects with `slug` and `name`
 - `author`: Author information with optional avatar
@@ -73,7 +73,7 @@ status: "published"  # Use "draft" to hide from public
 - **Optimal**: 1920×1080 pixels (Full HD)
 - **Maximum**: 2560×1440 pixels (2K) for best quality without excessive file size
 
-### Best Practices
+### Hero Image Best Practices
 
 1. **Composition**: Important content should be centered, as edges may be cropped
 2. **File Format**: Use JPEG for photographs, PNG for graphics with transparency
@@ -111,7 +111,7 @@ Use headings to create a clear content hierarchy:
 1. **Descriptive Headings**: Use clear, descriptive headings that summarize the section
 2. **Consistency**: Maintain consistent heading style throughout the article
 3. **Anchor Links**: All headings automatically receive anchor IDs (e.g., `#introduction`)
-4. **Table of Contents**: Automatically generated from H2 and H3 headings (see [Table of Contents](#table-of-contents) section)
+4. **Table of Contents**: Automatically generated from H2 and H3 headings (see Table of Contents section below)
 
 ### Example Structure
 
@@ -190,7 +190,7 @@ Every article automatically includes a CTA section at the bottom with:
 - "Start for free" button (links to sign-up)
 - "Talk to sales" button (links to contact page)
 
-### Best Practices
+### CTA Best Practices
 
 1. **Avoid Redundancy**: Don't include additional CTAs in the article body that duplicate the built-in CTA
 2. **Natural Integration**: If you mention sign-up or contact, do so naturally within the content flow
@@ -266,7 +266,7 @@ author:
   avatar: "https://example.com/avatar.jpg"  # Optional
 ```
 
-### Best Practices
+### Author Best Practices
 
 - Use consistent author names across articles
 - Avatar images should be square (1:1 aspect ratio), minimum 200×200px
@@ -283,7 +283,7 @@ publishDate: "2025-01-20T00:00:00Z"
 updatedDate: "2025-01-20T15:30:00Z"  # Only if article was updated
 ```
 
-### Best Practices
+### Date Best Practices
 
 - **Publish Date**: Set to the intended publication date
 - **Updated Date**: Only include if article was significantly revised after publication
@@ -406,6 +406,6 @@ No additional styling is needed or supported in article content.
 
 ---
 
-**Last Updated**: January 21, 2025  
+**Last Updated**: December 20, 2025  
 **Maintained By**: Platform Team  
-**Questions**: Contact platform@corso.io
+**Questions**: Contact [platform@corso.io](mailto:platform@corso.io)

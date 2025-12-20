@@ -3,9 +3,7 @@ export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-import { http, readJsonOnce, withErrorHandlingEdge as withErrorHandling, withRateLimitEdge as withRateLimit } from "@/lib/api";
-import { getEnvEdge } from '@/lib/api/edge';
-import * as httpHelpers from '@/lib/api/response/http';
+import { getEnvEdge, http, readJsonOnce, withErrorHandlingEdge as withErrorHandling, withRateLimitEdge as withRateLimit } from "@/lib/api/edge";
 import { handleCors } from '@/lib/middleware/http/cors';
 import {
     cspViolationBodySchema,
@@ -127,6 +125,6 @@ export const POST = post;
 // CORS preflight handler (Edge)
 export const OPTIONS = (req: Request) => {
   const res = handleCors(req);
-  return res ?? httpHelpers.noContent();
+  return res ?? http.noContent();
 };
 

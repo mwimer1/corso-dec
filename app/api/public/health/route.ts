@@ -3,7 +3,7 @@ export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-import { getEnvEdge, http } from '@/lib/api';
+import { getEnvEdge, http } from '@/lib/api/edge';
 
 export async function GET(_req: Request) {
   const env = getEnvEdge();

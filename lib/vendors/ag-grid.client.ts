@@ -13,7 +13,6 @@ let registered = false;
  * 
  * @returns true if Enterprise is enabled, false otherwise
  */
-// eslint-disable-next-line import/no-unused-modules -- Used in entity-grid.tsx; rule doesn't detect cross-file usage
 export function isAgGridEnterpriseEnabled(): boolean {
   // Direct access allows Next.js to statically replace at build time
   // Using bracket notation to satisfy TypeScript index signature requirement
@@ -75,7 +74,6 @@ function getAgGridEnterpriseErrorMessage(): string {
  * 
  * @throws {Error} If Enterprise is disabled but server-side row model is used
  */
-// eslint-disable-next-line import/no-unused-modules -- Used in ag-grid-modules.ts and re-exported in ag-grid.ts; rule doesn't detect re-exports
 export function ensureAgGridRegistered(): void {
   if (registered) return;
   registered = true;
@@ -108,7 +106,6 @@ export function ensureAgGridRegistered(): void {
  * @param mode - Row model mode ('serverSide', 'clientSide', etc.)
  * @throws {Error} If Enterprise is required but not enabled
  */
-// eslint-disable-next-line import/no-unused-modules -- Used in entity-grid.tsx; rule doesn't detect cross-file usage
 export async function ensureAgGridReadyFor(mode: string): Promise<void> {
   ensureAgGridRegistered();
   

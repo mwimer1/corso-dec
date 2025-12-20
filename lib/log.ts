@@ -5,7 +5,7 @@
  * In production, they are no-ops to avoid polluting console output.
  */
 
-export const isDev = process.env.NODE_ENV !== 'production';
+const isDev = process.env.NODE_ENV !== 'production';
 
 /**
  * Log an error message in development mode only.

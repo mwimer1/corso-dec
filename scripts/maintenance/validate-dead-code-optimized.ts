@@ -12,9 +12,7 @@
  */
 
 import { execSync } from 'node:child_process';
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import path from 'node:path';
+import { writeFileSync } from 'node:fs';
 
 // Check for help
 if (process.argv.includes('--help') || process.argv.includes('-h')) {
@@ -50,12 +48,17 @@ const MADGE_CONFIG = {
 };
 
 // Exclusion patterns for orphans (more specific than cycles)
+// Exclude Next.js route convention files (used by filesystem routing, not imports)
+// These files are used by Next.js routing system, not imported via code
 const ORPHAN_EXCLUDE = [
   '(^|[\\\\/])lib[\\\\/]mocks[\\\\/]',
   '\\\\.d\\\\.ts$',
-  '(^|[\\\\/])app[\\\\/].*(page|layout|error|not-found|loading|global-error)\\\\.(ts|tsx)$',
-  '(^|[\\\\/])app[\\\\/]sitemap\\\\.ts$',
-  '(^|[\\\\/])app[\\\\/].*[\\\\/]route\\\\.ts$',
+  // Next.js route files: page.tsx, layout.tsx, error.tsx, etc.
+  '[\\\\/](page|layout|error|not-found|loading|global-error|template)\\\\.(ts|tsx)$',
+  // Next.js API routes
+  '[\\\\/]route\\\\.(ts|tsx)$',
+  // Next.js sitemap
+  '[\\\\/]sitemap\\\\.ts$',
 ].join('|');
 
 const ORPHAN_PATHS = ['app', 'components', 'lib', 'hooks', 'actions', 'contexts', 'types', 'styles'];
@@ -99,15 +102,34 @@ async function runMadgeChecks(): Promise<{ orphans: string[]; cycles: string[][]
   if (orphansResult.status === 'fulfilled') {
     try {
       const orphansData = JSON.parse(orphansResult.value.output);
+      let rawOrphans: string[] = [];
       if (Array.isArray(orphansData)) {
-        orphans = orphansData;
+        rawOrphans = orphansData;
       } else if (orphansData.orphans && Array.isArray(orphansData.orphans)) {
-        orphans = orphansData.orphans;
+        rawOrphans = orphansData.orphans;
       }
+      
+      // Filter out Next.js route convention files (used by filesystem routing, not imports)
+      const nextJsRoutePattern = /[\\/](page|layout|error|not-found|loading|global-error|template|route|sitemap)\.(ts|tsx)$/;
+      orphans = rawOrphans.filter(file => {
+        // Exclude .d.ts files
+        if (file.endsWith('.d.ts')) return false;
+        // Exclude lib/mocks
+        if (file.includes('lib/mocks/')) return false;
+        // Exclude Next.js route files
+        if (nextJsRoutePattern.test(file)) return false;
+        return true;
+      });
     } catch {
       // If JSON parsing fails, try to extract from text
       const lines = orphansResult.value.output.split('\n').filter(l => l.trim() && !l.includes('madge'));
-      orphans = lines;
+      const nextJsRoutePattern = /[\\/](page|layout|error|not-found|loading|global-error|template|route|sitemap)\.(ts|tsx)$/;
+      orphans = lines.filter(file => {
+        if (file.endsWith('.d.ts')) return false;
+        if (file.includes('lib/mocks/')) return false;
+        if (nextJsRoutePattern.test(file)) return false;
+        return true;
+      });
     }
   }
 
