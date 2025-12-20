@@ -29,6 +29,48 @@ interface ErrorWithCode extends Error {
 }
 
 /**
+ * Dev-only schema validation: Check if column field names match row keys
+ */
+function validateSchemaInDev(
+  entityId: string,
+  colDefs: Array<ColDef | ColGroupDef>,
+  firstRow: Record<string, unknown> | null | undefined
+): void {
+  // Only validate in development
+  const nodeEnv = typeof process !== 'undefined' && process.env ? process.env.NODE_ENV : undefined;
+  if (nodeEnv === 'production' || nodeEnv === 'test') {
+    return;
+  }
+
+  if (!firstRow || typeof firstRow !== 'object') {
+    return;
+  }
+
+  const rowKeys = new Set(Object.keys(firstRow));
+  const missingFields: string[] = [];
+
+  for (const colDef of colDefs) {
+    // ColGroupDef doesn't have a field property, only ColDef does
+    if ('field' in colDef && colDef.field) {
+      const field = colDef.field;
+      if (typeof field === 'string' && !rowKeys.has(field)) {
+        missingFields.push(field);
+      }
+    }
+  }
+
+  if (missingFields.length > 0) {
+    const sampleKeys = Array.from(rowKeys).slice(0, 10).join(', ');
+    console.warn(
+      `⚠️ [${entityId}] Schema mismatch detected: Column fields not found in row data\n` +
+      `Missing fields: ${missingFields.join(', ')}\n` +
+      `Sample row keys: ${sampleKeys}${rowKeys.size > 10 ? '...' : ''}\n` +
+      `Check that column accessors match JSON keys in mock data or database schema.`
+    );
+  }
+}
+
+/**
  * Error display component for AG Grid Enterprise configuration issues.
  */
 function AgGridEnterpriseError({ error }: { error: Error }) {
@@ -200,6 +242,9 @@ export default function EntityGrid({
   const updateDatasource = useCallback((api: GridApi | null, currentOrgId: string | null) => {
     if (!api) return;
     
+    // Track if we've validated schema (only validate once per datasource instance)
+    let hasValidatedSchema = false;
+    
     api.setGridOption('serverSideDatasource', {
       async getRows(p: IServerSideGetRowsParams) {
         // In relaxed mode, allow API call even if orgId is null
@@ -208,6 +253,13 @@ export default function EntityGrid({
           // Pass orgId to fetcher to include X-Corso-Org-Id header in API request (if available)
           // If orgId is null, fetcher won't set the header, allowing API to use fallback logic
           const r = await config.fetcher(p.request, posthog.get_distinct_id?.() ?? 'anon', currentOrgId);
+          
+          // Dev-only schema validation (only on first successful load)
+          if (!hasValidatedSchema && r.rows && r.rows.length > 0) {
+            validateSchemaInDev(config.id, colDefs, r.rows[0] as Record<string, unknown>);
+            hasValidatedSchema = true;
+          }
+          
           p.success({
             rowData: r.rows,
             ...(r.totalSearchCount != null ? { rowCount: r.totalSearchCount } : {}),
@@ -223,7 +275,7 @@ export default function EntityGrid({
         }
       },
     });
-  }, [config, posthog, setSearchCount, onLoadError]);
+  }, [config, posthog, setSearchCount, onLoadError, colDefs]);
 
   const onGridReady = useCallback((params: GridReadyEvent) => {
     const api = params.api;

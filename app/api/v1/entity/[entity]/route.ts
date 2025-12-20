@@ -5,13 +5,14 @@ export const revalidate = 0;
 
 import { http, withErrorHandlingEdge as withErrorHandling, withRateLimitEdge as withRateLimit } from '@/lib/api';
 import { handleCors } from '@/lib/middleware';
+import { getEntityConfig } from '@/lib/services/entity/config';
 import type { EntityFetchParams } from '@/lib/services/entity/contracts';
 import { getEntityPage } from '@/lib/services/entity/pages';
 import { isRelaxedAuthMode } from '@/lib/shared/config/auth-mode';
 import {
-    EntityListQuerySchema,
-    EntityParamSchema,
-    type EntityParam,
+  EntityListQuerySchema,
+  EntityParamSchema,
+  type EntityParam,
 } from '@/lib/validators';
 import { auth, clerkClient } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
@@ -21,6 +22,42 @@ import { NextResponse } from 'next/server';
 async function toNextResponse(response: Response): Promise<NextResponse> {
   const body = await response.json();
   return NextResponse.json(body, { status: response.status, headers: response.headers });
+}
+
+/**
+ * Get allowed sort field names for an entity (only columns where sortable !== false)
+ */
+async function getAllowedSortFields(entity: EntityParam): Promise<Set<string>> {
+  try {
+    const columns = await getEntityConfig(entity);
+    return new Set(
+      columns
+        .filter((col) => col.sortable !== false)
+        .map((col) => col.accessor)
+    );
+  } catch (error) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(`[entity route] Failed to load sort fields for ${entity}:`, error);
+    }
+    return new Set();
+  }
+}
+
+/**
+ * Get allowed filter field names for an entity (all column accessors, filterable by default)
+ */
+async function getAllowedFilterFields(entity: EntityParam): Promise<Set<string>> {
+  try {
+    const columns = await getEntityConfig(entity);
+    // For now treat all accessors as filterable.
+    // If/when TableColumnConfig adds `filterable`, update this to respect it.
+    return new Set(columns.map((col) => col.accessor));
+  } catch (error) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(`[entity route] Failed to load filter fields for ${entity}:`, error);
+    }
+    return new Set();
+  }
 }
 
 export async function OPTIONS(req: Request) {
@@ -202,11 +239,48 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
       details: qpParsed.error.flatten(),
     }));
   }
-  const { page, pageSize, sortBy, sortDir, search } = qpParsed.data;
+  const { page, pageSize, sortBy: sortByParam, sortDir: sortDirParam, search } = qpParsed.data;
+
+  // Load column config once if needed for validation (avoid duplicate loads)
+  const filtersParam = sp.get('filters');
+  const needsValidation = sortByParam || filtersParam;
+  let allowedSortFields: Set<string> | undefined;
+  let allowedFilterFields: Set<string> | undefined;
+  
+  if (needsValidation) {
+    // Load both sets in parallel to optimize when both are needed
+    if (sortByParam && filtersParam) {
+      [allowedSortFields, allowedFilterFields] = await Promise.all([
+        getAllowedSortFields(entity),
+        getAllowedFilterFields(entity),
+      ]);
+    } else if (sortByParam) {
+      allowedSortFields = await getAllowedSortFields(entity);
+    } else {
+      allowedFilterFields = await getAllowedFilterFields(entity);
+    }
+  }
+
+  // Validate sortBy against allowed sort fields
+  let sortBy: string | undefined = sortByParam;
+  let sortDir: 'asc' | 'desc' | undefined = sortDirParam;
+  if (sortBy && allowedSortFields) {
+    if (!allowedSortFields.has(sortBy)) {
+      // Invalid sortBy: log warning in dev, ignore sortBy (fall back to no sort)
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn(
+          `[entity route] Invalid sortBy field "${sortBy}" for entity "${entity}". ` +
+          `Allowed fields: ${Array.from(allowedSortFields).join(', ')}. ` +
+          `Ignoring sortBy and using default sort.`
+        );
+      }
+      sortBy = undefined;
+      sortDir = undefined;
+    }
+  }
 
   // Parse filters JSON if provided
   let filters: EntityFetchParams['filters'];
-  const filtersParam = sp.get('filters');
   if (filtersParam) {
     try {
       const parsed = JSON.parse(filtersParam);
@@ -214,8 +288,35 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
       if (!Array.isArray(parsed)) {
         return await toNextResponse(http.badRequest('Invalid filters format: must be an array', { code: 'INVALID_FILTERS' }));
       }
-      // Type assertion with validation that op matches allowed values
-      filters = parsed as EntityFetchParams['filters'];
+      
+      // Validate filter field names against allowed filter fields
+      if (!allowedFilterFields) {
+        allowedFilterFields = await getAllowedFilterFields(entity);
+      }
+      const validFilters: Array<{ field: string; op: 'eq' | 'contains' | 'gt' | 'lt' | 'gte' | 'lte' | 'in' | 'between' | 'bool'; value: unknown }> = [];
+      const invalidFields: string[] = [];
+      
+      for (const filter of parsed) {
+        if (filter && typeof filter === 'object' && 'field' in filter) {
+          const field = filter.field;
+          if (typeof field === 'string' && allowedFilterFields.has(field)) {
+            validFilters.push(filter as { field: string; op: 'eq' | 'contains' | 'gt' | 'lt' | 'gte' | 'lte' | 'in' | 'between' | 'bool'; value: unknown });
+          } else if (typeof field === 'string') {
+            invalidFields.push(field);
+          }
+        }
+      }
+      
+      if (invalidFields.length > 0) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn(
+            `[entity route] Invalid filter fields for entity "${entity}": ${invalidFields.join(', ')}. ` +
+            `These filters will be ignored.`
+          );
+        }
+      }
+      
+      filters = validFilters.length > 0 ? (validFilters as EntityFetchParams['filters']) : undefined;
     } catch (_e) {
       return await toNextResponse(http.badRequest('Invalid filters format', { code: 'INVALID_FILTERS' }));
     }
@@ -224,7 +325,7 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
   const result = await getEntityPage(entity, {
     page,
     pageSize,
-    sort: sortBy ? { column: sortBy, direction: sortDir } : { column: '', direction: 'asc' },
+    sort: sortBy && sortDir ? { column: sortBy, direction: sortDir } : { column: '', direction: 'asc' as const },
     ...(search ? { search } : {}),
     ...(filters ? { filters } : {}),
   });
