@@ -1,15 +1,15 @@
 "use client";
 
-import { Button } from "@/components/ui/atoms";
+import { Badge, Button, Input } from "@/components/ui/atoms";
 import { devError, devWarn } from "@/lib/log";
 import { cn } from "@/styles";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 // Grid state context removed - using local state instead
 import type { AgGridReact } from 'ag-grid-react';
-import { ArrowDownToLine, CopyPlus, FileDown, ListRestart, Maximize2, RefreshCcw, Save, Trash } from 'lucide-react';
+import { ArrowDownToLine, CopyPlus, FileDown, ListRestart, Maximize2, RefreshCcw, Save, Search, Trash } from 'lucide-react';
 import type React from 'react';
 import type { Dispatch, SetStateAction } from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 // GridSaveAsDialog removed - using simple prompt for now
 // Simple number formatting function (can be replaced with numeral if needed)
 const formatNumber = (num: string | null): string => {
@@ -136,15 +136,39 @@ export function GridMenubar(props: GridMenubarProps) {
     }
   };
 
+  // Saved searches filtering for searchable dropdown
+  const [savedSearchQuery, setSavedSearchQuery] = useState("");
+  const savedStatesArray = useMemo(() => Object.values(savedStates), [savedStates]);
+  const filteredSavedStates = useMemo(() => {
+    if (!savedSearchQuery.trim()) return savedStatesArray;
+    const query = savedSearchQuery.toLowerCase();
+    return savedStatesArray.filter((state) =>
+      state.state_name.toLowerCase().includes(query)
+    );
+  }, [savedStatesArray, savedSearchQuery]);
+
+  // Determine if current saved search is the default
+  const isDefaultSavedSearch = useCallback(
+    (stateName: string) => stateName === props.initDefaultGridName,
+    [props.initDefaultGridName]
+  );
+
   return (
     <>
-      <div className="flex items-center justify-between w-full px-4 py-2 border-b border-border bg-background/95 backdrop-blur-sm">
+      <div className="flex items-center justify-between w-full px-2 py-2 bg-background/95 backdrop-blur-sm">
         {/* Left side: Saved Searches and Tools */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {/* Saved Searches menu */}
-          <DropdownMenu.Root>
+          <DropdownMenu.Root
+            onOpenChange={(open) => {
+              // Reset search query when dropdown closes
+              if (!open) {
+                setSavedSearchQuery("");
+              }
+            }}
+          >
             <DropdownMenu.Trigger asChild>
-              <Button variant="ghost" size="sm" className="h-8">
+              <Button variant="ghost" size="sm" className="h-9">
                 Saved Searches
               </Button>
             </DropdownMenu.Trigger>
@@ -153,27 +177,78 @@ export function GridMenubar(props: GridMenubarProps) {
                 sideOffset={2}
                 className={cn("md:min-w-[285px] border border-border shadow-md p-0 overflow-hidden rounded-md bg-background")}
               >
-                {Object.values(savedStates).map((state) => (
+                {/* Search input */}
+                {savedStatesArray.length > 0 && (
+                  <div className="p-2 border-b border-border">
+                    <div className="relative">
+                      <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        type="text"
+                        placeholder="Search saved searches..."
+                        value={savedSearchQuery}
+                        onChange={(e) => setSavedSearchQuery(e.target.value)}
+                        className="pl-8 h-8"
+                        iconPadding={false}
+                        onKeyDown={(e) => {
+                          // Prevent dropdown from closing on input interaction
+                          e.stopPropagation();
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Empty state */}
+                {savedStatesArray.length === 0 && (
+                  <div className="p-4 text-center">
+                    <p className="text-sm font-medium text-foreground mb-1">
+                      No saved searches yet
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Save your current view to create one
+                    </p>
+                  </div>
+                )}
+
+                {/* Filtered results */}
+                {filteredSavedStates.length === 0 && savedStatesArray.length > 0 && (
+                  <div className="p-4 text-center">
+                    <p className="text-sm text-muted-foreground">
+                      No saved searches match "{savedSearchQuery}"
+                    </p>
+                  </div>
+                )}
+
+                {filteredSavedStates.map((state) => (
                   <DropdownMenu.Item
                     key={state.state_name}
                     className={cn(
-                      "relative flex items-center pr-2 py-1.5 cursor-pointer group",
+                      "relative flex items-center gap-2 pr-2 py-1.5 cursor-pointer group",
                       "hover:bg-accent border-b last:border-b-0 rounded-none",
                       currentSaveStateName === state.state_name && "bg-accent text-accent-foreground"
                     )}
                     onSelect={() => {
                       props.applyState(state.grid_state);
                       setCurrentSaveStateName(state.state_name);
+                      setSavedSearchQuery(""); // Reset search on selection
                     }}
                   >
-                    <span>{state.state_name}</span>
+                    <span className="flex-1 truncate">{state.state_name}</span>
+                    {isDefaultSavedSearch(state.state_name) && (
+                      <Badge color="secondary" className="text-xs">
+                        Default
+                      </Badge>
+                    )}
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         handleDelete(state.state_name);
                       }}
-                      className="absolute right-2 text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:opacity-100"
-                      aria-label="Delete state"
+                      className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:opacity-100"
+                      aria-label="Delete saved search"
                     >
                       <Trash className="h-4 w-4" />
                     </button>
@@ -186,7 +261,7 @@ export function GridMenubar(props: GridMenubarProps) {
           {/* Tools menu */}
           <DropdownMenu.Root>
             <DropdownMenu.Trigger asChild>
-              <Button variant="ghost" size="sm" className="h-8">
+              <Button variant="ghost" size="sm" className="h-9">
                 Tools
               </Button>
             </DropdownMenu.Trigger>
@@ -289,7 +364,7 @@ export function GridMenubar(props: GridMenubarProps) {
         </div>
 
         {/* Right side: results count -> action buttons (grouped) */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           {/* Results count */}
           <div className="flex items-center gap-1.5 text-sm font-medium">
             <span className="text-foreground">{formatNumber(props.searchCount)}</span>
@@ -297,10 +372,10 @@ export function GridMenubar(props: GridMenubarProps) {
           </div>
 
           {/* Action buttons group: Export, Reset, Refresh */}
-          <div className="flex items-center gap-2 border-l border-border pl-4">
+          <div className="flex items-center gap-1">
             <button
               onClick={() => props.gridRef?.current?.api.exportDataAsCsv()}
-              className="p-1.5 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               aria-label="Export as CSV"
               title="Export as CSV"
             >
@@ -317,7 +392,7 @@ export function GridMenubar(props: GridMenubarProps) {
                   devError("Failed to reset the grid:", error);
                 }
               }}
-              className="p-1.5 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               aria-label="Reset grid"
               title="Reset filters and columns"
             >
@@ -332,7 +407,7 @@ export function GridMenubar(props: GridMenubarProps) {
                   devError("Failed to refresh the grid:", error);
                 }
               }}
-              className="p-1.5 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               aria-label="Refresh grid"
               title="Refresh data"
             >
@@ -341,10 +416,10 @@ export function GridMenubar(props: GridMenubarProps) {
           </div>
 
           {/* Save actions group: Save As, Save */}
-          <div className="flex items-center gap-2 border-l border-border pl-4">
+          <div className="flex items-center gap-1">
             <button
               onClick={handleSaveAsClick}
-              className="p-1.5 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               aria-label="Save grid as"
               title="Save current view as new"
             >
@@ -354,7 +429,7 @@ export function GridMenubar(props: GridMenubarProps) {
             <button
               onClick={handleSave}
               disabled={!props.currentState}
-              className="p-1.5 rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:focus-visible:ring-0"
+              className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:focus-visible:ring-0"
               aria-label="Save grid"
               title="Save current view"
             >
