@@ -136,10 +136,16 @@ interface ErrorWithStatus extends Error {
 
 /**
  * Minimal type for API error response
+ * Matches the format returned by http.error(): { success: false, error: { code, message, details? } }
  */
 interface ApiErrorResponse {
   success?: boolean;
-  error?: string;
+  error?: {
+    code?: string;
+    message?: string;
+    details?: unknown;
+  };
+  // Legacy format support (for backward compatibility)
   message?: string;
   code?: string;
 }
@@ -188,15 +194,26 @@ export function createEntityFetcher(entity: GridId): EntityFetcher {
         // Runtime guard: ensure errorBody is an object
         if (errorBody && typeof errorBody === 'object') {
           const error = errorBody as ApiErrorResponse;
-          // Handle both { success: false, error: "...", code: "..." } and { error: "...", code: "..." } formats
-          const message = error?.error || error?.message || errorMessage;
-          errorCode = error?.code;
+          // Extract message from nested error object: { success: false, error: { code, message } }
+          // Also support legacy flat format: { error: "...", code: "..." }
+          const apiErrorMessage = 
+            (error?.error && typeof error.error === 'object' && error.error.message)
+              ? error.error.message
+              : (typeof error?.error === 'string' ? error.error : undefined);
+          const apiErrorCode = 
+            (error?.error && typeof error.error === 'object' && error.error.code)
+              ? error.error.code
+              : error?.code;
+          
+          // Use extracted message or fallback to top-level message or default
+          const message = apiErrorMessage || error?.message || errorMessage;
+          errorCode = apiErrorCode;
         
           // Provide clear messages for common status codes
           if (res.status === 401) {
-            errorMessage = 'Unauthorized: Please sign in again.';
+            errorMessage = apiErrorMessage || 'Unauthorized: Please sign in again.';
           } else if (res.status === 403) {
-            errorMessage = error?.error || `Forbidden: You do not have permission to access this resource.`;
+            errorMessage = apiErrorMessage || `Forbidden: You do not have permission to access this resource.`;
             if (errorCode) {
               errorMessage += ` (${errorCode})`;
             }

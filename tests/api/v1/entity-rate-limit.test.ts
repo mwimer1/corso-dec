@@ -1,6 +1,6 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { withRateLimitEdge } from '@/lib/middleware/edge/rate-limit';
 import { NextRequest } from 'next/server';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock the auth function
 const mockAuth = vi.fn();
@@ -42,6 +42,7 @@ describe('Rate Limiting - Entity Routes', () => {
     vi.clearAllMocks();
     mockAuth.mockResolvedValue({
       userId: 'test-user-123',
+      orgId: 'test-org-123',
       has: vi.fn().mockReturnValue(true),
     });
     mockGetEntityPage.mockResolvedValue({

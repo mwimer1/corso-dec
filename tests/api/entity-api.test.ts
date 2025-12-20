@@ -17,6 +17,7 @@ vi.mock('@/lib/services/entity/pages', () => ({
 vi.mock('@clerk/nextjs/server', () => ({
   auth: vi.fn().mockResolvedValue({
     userId: 'user_123',
+    orgId: 'test-org-123',
     has: vi.fn().mockReturnValue(true)
   })
 }));
@@ -34,22 +35,25 @@ describe('Entity API Contract Tests', () => {
       expect(response.status).toBe(200);
       const body = await response.json();
 
-      // Main API returns flat structure: { data, total, page, pageSize }
+      // Response format: { success: true, data: { data, total, page, pageSize } }
+      expect(body).toHaveProperty('success');
+      expect(body.success).toBe(true);
       expect(body).toHaveProperty('data');
-      expect(body).toHaveProperty('total');
-      expect(body).toHaveProperty('page');
-      expect(body).toHaveProperty('pageSize');
+      expect(body.data).toHaveProperty('data');
+      expect(body.data).toHaveProperty('total');
+      expect(body.data).toHaveProperty('page');
+      expect(body.data).toHaveProperty('pageSize');
 
-      expect(Array.isArray(body.data)).toBe(true);
-      expect(typeof body.total).toBe('number');
-      expect(typeof body.page).toBe('number');
-      expect(typeof body.pageSize).toBe('number');
+      expect(Array.isArray(body.data.data)).toBe(true);
+      expect(typeof body.data.total).toBe('number');
+      expect(typeof body.data.page).toBe('number');
+      expect(typeof body.data.pageSize).toBe('number');
 
       // Verify data structure
-      expect(body.data.length).toBeGreaterThan(0);
-      expect(body.data[0]).toHaveProperty('id');
-      expect(body.data[0]).toHaveProperty('name');
-      expect(body.data[0]).toHaveProperty('status');
+      expect(body.data.data.length).toBeGreaterThan(0);
+      expect(body.data.data[0]).toHaveProperty('id');
+      expect(body.data.data[0]).toHaveProperty('name');
+      expect(body.data.data[0]).toHaveProperty('status');
     });
 
     it('handles pagination parameters correctly', async () => {
@@ -63,9 +67,10 @@ describe('Entity API Contract Tests', () => {
       expect(response.status).toBe(200);
       const body = await response.json();
 
-      expect(body.page).toBe(1);
-      expect(body.pageSize).toBe(5);
-      expect(Array.isArray(body.data)).toBe(true);
+      expect(body.success).toBe(true);
+      expect(body.data.page).toBe(1);
+      expect(body.data.pageSize).toBe(5);
+      expect(Array.isArray(body.data.data)).toBe(true);
     });
 
     it('handles sorting parameters correctly', async () => {
@@ -79,8 +84,9 @@ describe('Entity API Contract Tests', () => {
       expect(response.status).toBe(200);
       const body = await response.json();
 
-      expect(body).toHaveProperty('data');
-      expect(Array.isArray(body.data)).toBe(true);
+      expect(body.success).toBe(true);
+      expect(body.data).toHaveProperty('data');
+      expect(Array.isArray(body.data.data)).toBe(true);
     });
 
     it('handles search parameters correctly', async () => {
@@ -94,8 +100,9 @@ describe('Entity API Contract Tests', () => {
       expect(response.status).toBe(200);
       const body = await response.json();
 
-      expect(body).toHaveProperty('data');
-      expect(Array.isArray(body.data)).toBe(true);
+      expect(body.success).toBe(true);
+      expect(body.data).toHaveProperty('data');
+      expect(Array.isArray(body.data.data)).toBe(true);
     });
 
     it('handles filter parameters correctly', async () => {
@@ -110,8 +117,9 @@ describe('Entity API Contract Tests', () => {
       expect(response.status).toBe(200);
       const body = await response.json();
 
-      expect(body).toHaveProperty('data');
-      expect(Array.isArray(body.data)).toBe(true);
+      expect(body.success).toBe(true);
+      expect(body.data).toHaveProperty('data');
+      expect(Array.isArray(body.data.data)).toBe(true);
     });
   });
 

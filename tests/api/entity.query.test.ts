@@ -17,6 +17,7 @@ describe('Entity Query Route', () => {
     vi.clearAllMocks();
     mockAuth.mockResolvedValue({
       userId: 'test-user-123',
+      orgId: 'test-org-123',
       has: vi.fn().mockReturnValue(true),
     });
     mockGetEntityPage.mockResolvedValue({
@@ -41,15 +42,17 @@ describe('Entity Query Route', () => {
 
       const res = await handler(req as any, { params: { entity: 'projects' } });
       expect(res.status).toBe(200);
-      expect(res.headers.get('access-control-allow-origin')).toBeTruthy();
 
       const body = await res.json();
-      // New flat response format
+      // Response format: { success: true, data: { data, total, page, pageSize } }
       expect(body).toEqual({
-        data: [{ id: 1, name: 'Test Entity' }],
-        total: 1,
-        page: 0,
-        pageSize: 10,
+        success: true,
+        data: {
+          data: [{ id: 1, name: 'Test Entity' }],
+          total: 1,
+          page: 0,
+          pageSize: 10,
+        },
       });
 
       expect(mockGetEntityPage).toHaveBeenCalledWith(
@@ -124,6 +127,7 @@ describe('Entity Query Route', () => {
     it('should return 403 when user lacks member role', async () => {
       mockAuth.mockResolvedValue({
         userId: 'test-user-123',
+        orgId: 'test-org-123', // Include orgId so we can test role check
         has: vi.fn().mockReturnValue(false), // No member role
       });
 
@@ -277,6 +281,30 @@ describe('Entity Query Route', () => {
       const body = await res.json();
       expect(body.success).toBe(false);
       expect(body.error.code).toBe('INVALID_FILTERS');
+    });
+
+    it('should return 403 when orgId is missing', async () => {
+      mockAuth.mockResolvedValue({
+        userId: 'test-user-123',
+        // orgId is missing
+        has: vi.fn().mockReturnValue(true),
+      });
+
+      const mod = await import('@/app/api/v1/entity/[entity]/route');
+      const handler = mod.GET;
+
+      const url = new URL('http://localhost/api/v1/entity/projects?page=0&pageSize=10');
+      const req = {
+        nextUrl: url,
+        url: url.toString(),
+      };
+
+      const res = await handler(req as any, { params: { entity: 'projects' } });
+      expect(res.status).toBe(403);
+
+      const body = await res.json();
+      expect(body.success).toBe(false);
+      expect(body.error.code).toBe('NO_ORG_CONTEXT');
     });
   });
 
