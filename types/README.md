@@ -57,7 +57,7 @@ import type { NavItemData } from '@/types/shared/core/ui/types';
 
 Some type files are auto-generated and should not be edited manually:
 
-- `types/api/openapi.d.ts` - Generated from OpenAPI specification
+- `types/api/generated/openapi.d.ts` - Generated from OpenAPI specification (AUTO-GENERATED, do not edit)
   - **DO NOT EDIT** - Regenerate via: `pnpm openapi:gen`
   - This file is regenerated automatically during `pnpm typecheck` (via `pretypecheck` hook)
 

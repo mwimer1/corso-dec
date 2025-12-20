@@ -14,7 +14,7 @@ We maintain an OpenAPI v3.1 specification for the Corso API.
 - **Primary spec**: `api/openapi.yml` (manually maintained) - Source of truth for the API
 - **RBAC validation**: `tools/scripts/openapi-guard-rbac.ts` (automated security validation)
 - **Generated artifacts**: `api/openapi.json` (bundled via redocly for tooling)
-- **TypeScript types**: `types/api/openapi.d.ts` (auto-generated from spec)
+- **TypeScript types**: `types/api/generated/openapi.d.ts` (auto-generated from spec)
 
 ## Usage
 
@@ -288,7 +288,7 @@ get:
 ```bash
 # Error: TypeScript types not updated after API changes
 # Fix: Always regenerate types after API modifications
-pnpm openapi:gen  # Regenerates types/api/openapi.d.ts
+pnpm openapi:gen  # Regenerates types/api/generated/openapi.d.ts
 ```
 
 #### Breaking Changes in PRs

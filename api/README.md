@@ -13,7 +13,7 @@ This directory contains the complete OpenAPI specification ecosystem for Corso's
 ### Key Components
 - **Source**: `api/openapi.yml` (authoritative OpenAPI 3.1.0 specification - 581 lines)
 - **Generated**: `api/openapi.json` (bundled JSON matching YAML exactly - 1,088 lines)
-- **Types**: `types/api/openapi.d.ts` (auto-generated TypeScript interfaces)
+- **Types**: `types/api/generated/openapi.d.ts` (auto-generated TypeScript interfaces)
 - **Validation**: RBAC guard with `tools/scripts/openapi-guard-rbac.ts`
 
 ## Core Capabilities
@@ -58,13 +58,13 @@ api/
 ```
 
 ### Generated Artifacts
-- `types/api/openapi.d.ts` — Auto-generated TypeScript interfaces (from openapi.json)
+- `types/api/generated/openapi.d.ts` — Auto-generated TypeScript interfaces (from openapi.json)
 - `types/api/request/` — Request-specific type definitions
 - `types/api/response/` — Response-specific type definitions
 
 ### File Relationships
 - **openapi.yml** → **openapi.json** (via `pnpm openapi:bundle`)
-- **openapi.json** → **types/api/openapi.d.ts** (via `openapi-typescript`)
+- **openapi.json** → **types/api/generated/openapi.d.ts** (via `openapi-typescript`)
 
 ## API Endpoints
 
@@ -136,7 +136,7 @@ x-public: true  # No authentication required
 
 ### TypeScript Integration
 ```typescript
-import type { operations } from '@/types/api/openapi';
+import type { operations } from '@/types/api';
 
 // Type-safe API operations
 type ChatProcessOp = operations['dashboard_chat_process'];
@@ -193,7 +193,7 @@ pnpm exec redocly lint api/openapi.yml
 pnpm openapi:rbac:check
 
 # Preview generated types (first 20 lines)
-pnpm openapi:types && head -20 types/api/openapi.d.ts
+pnpm openapi:types && head -20 types/api/generated/openapi.d.ts
 
 # Compare specs for differences
 pnpm openapi:diff
@@ -215,7 +215,7 @@ pnpm openapi:gen && pnpm openapi:rbac:check
 
 ### Quick Navigation
 - **Source of Truth**: `api/openapi.yml` (authoritative specification - 581 lines)
-- **Generated Files**: `api/openapi.json` (bundled - 1,088 lines) + `types/api/openapi.d.ts`
+- **Generated Files**: `api/openapi.json` (bundled - 1,088 lines) + `types/api/generated/openapi.d.ts`
 - **Security Validation**: `tools/scripts/openapi-guard-rbac.ts` (RBAC compliance)
 
 ### Current State (2025-01-03)

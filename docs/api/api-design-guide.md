@@ -58,7 +58,7 @@ pnpm openapi:docs
 
 **Generated Artifacts:**
 - `api/openapi.json` - Bundled JSON (via `pnpm openapi:bundle`)
-- `types/api/openapi.d.ts` - TypeScript types (via `pnpm openapi:types`)
+- `types/api/generated/openapi.d.ts` - TypeScript types (via `pnpm openapi:types`)
 
 ### Specification Structure
 

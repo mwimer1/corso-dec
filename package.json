@@ -69,7 +69,7 @@
     "docs:links": "tsx scripts/maintenance/validate-docs.ts",
     "openapi:bundle": "redocly bundle api/openapi.yml -o api/openapi.json --ext json",
     "openapi:lint": "spectral lint api/openapi.yml",
-    "openapi:types": "openapi-typescript api/openapi.json -o types/api/openapi.d.ts",
+    "openapi:types": "openapi-typescript api/openapi.json -o types/api/generated/openapi.d.ts",
     "openapi:gen": "pnpm openapi:bundle && pnpm openapi:lint && pnpm openapi:types",
     "openapi:rbac:check": "tsx scripts/ci/openapi-guard-rbac.ts",
     "openapi:diff": "node scripts/openapi/openapi-diff.mjs",

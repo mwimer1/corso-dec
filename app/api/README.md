@@ -244,7 +244,7 @@ curl -X POST http://localhost:3000/api/v1/ai/chat \
 
 The OpenAPI specification (`api/openapi.yml`) is the **single source of truth** for all API documentation. It generates:
 - `api/openapi.json` - Bundled JSON specification
-- `types/api/openapi.d.ts` - TypeScript types for API clients
+- `types/api/generated/openapi.d.ts` - TypeScript types for API clients (AUTO-GENERATED)
 
 ### Commands
 
