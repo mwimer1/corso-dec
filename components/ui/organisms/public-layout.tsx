@@ -73,22 +73,18 @@ export function PublicLayout({
         className={cn(
           stickyHeader &&
             "sticky top-0 z-50 border-b border-border bg-surface transition-shadow data-[scrolled=true]:shadow-sm",
+          "relative",
           headerClassName,
         )}
       >
-        <div
-          className={cn(
-            containerWithPaddingVariants({ maxWidth: "7xl", padding: "lg" }),
-            "relative"
-          )}
-        >
+        <div className={cn(containerWithPaddingVariants({ maxWidth: "7xl", padding: "lg" }))}>
           <Navbar 
             mode={navMode} 
             {...(navItems && { items: navItems })}
             {...(navMode === "insights" || navMode === "landing" ? { forceShowCTAs: true } : {})}
           />
-          {showReadingProgress && <ReadingProgress />}
         </div>
+        {showReadingProgress && <ReadingProgress />}
       </header>
       <main
         id="main-content"

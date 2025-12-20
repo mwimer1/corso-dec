@@ -38,6 +38,20 @@ export function ArticleHeader({
 }: ArticleHeaderProps): React.ReactElement {
   return (
     <header className={cn("space-y-3 sm:space-y-4", className)}>
+      {/* Categories (eyebrow) */}
+      {categories && categories.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {categories.map((category) => (
+            <span
+              key={category.slug}
+              className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20 transition-colors"
+            >
+              {category.name}
+            </span>
+          ))}
+        </div>
+      )}
+
       {/* Article Title */}
       <SectionHeader 
         headingLevel={1} 
@@ -52,20 +66,6 @@ export function ArticleHeader({
         {...(readingTime && { readingTime })}
         {...(author && { author })}
       />
-
-      {/* Categories */}
-      {categories && categories.length > 0 && (
-        <div className="flex flex-wrap gap-2 pt-1">
-          {categories.map((category) => (
-            <span
-              key={category.slug}
-              className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20 transition-colors"
-            >
-              {category.name}
-            </span>
-          ))}
-        </div>
-      )}
     </header>
   );
 }

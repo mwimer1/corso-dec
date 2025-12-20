@@ -36,7 +36,7 @@ export function ArticleImage({
 }: ArticleImageProps): React.ReactElement {
   if (variant === "thumbnail") {
     return (
-      <figure className={cn("flex-shrink-0", className)}>
+      <figure className={cn("not-prose flex-shrink-0", className)}>
         <div className="relative w-[200px] h-[200px] sm:w-[240px] sm:h-[240px] lg:w-[280px] lg:h-[280px] overflow-hidden rounded-lg bg-muted border border-border shadow-sm">
           <Image
             src={src}
@@ -59,15 +59,16 @@ export function ArticleImage({
     );
   }
 
+  // hero variant
   return (
-    <figure className={cn("mx-auto w-full max-w-3xl sm:max-w-4xl lg:max-w-5xl", className)}>
-      <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg bg-muted">
+    <figure className={cn("not-prose mx-auto w-full max-w-3xl md:max-w-4xl", className)}>
+      <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg bg-muted border border-border shadow-md">
         <Image
           src={src}
           alt={alt}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-          className="object-cover transition-transform duration-300 hover:scale-105"
+          className="object-cover"
           loading={loading}
           priority={priority}
           placeholder="blur"
