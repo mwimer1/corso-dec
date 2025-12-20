@@ -1,7 +1,7 @@
 // Auth Sign-In page. Keep config exports primitive and avoid named re-exports.
-import { AuthShell } from '@/components/auth';
+import { AuthShell, ClerkLoading } from '@/components/auth';
 import { publicEnv } from '@/lib/shared/config/client';
-import { SignIn } from '@clerk/nextjs';
+import { ClerkLoaded, ClerkLoading as ClerkLoadingState, SignIn } from '@clerk/nextjs';
 import type { Metadata } from 'next';
 
 export const runtime = 'nodejs';
@@ -23,28 +23,36 @@ export default function SignInPage() {
 
   return (
     <AuthShell titleSr="Sign in to your account">
-      <div className="mx-auto w-full max-w-md text-foreground">
-        {/* single border owned by the Clerk card */}
-        <SignIn
-          routing="path"
-          path={signInPath}
-          signUpUrl={signUpUrl}
-          redirectUrl={afterSignInUrl ?? signInRedirectFallback}
-          appearance={{
-            elements: {
-              rootBox: 'w-full',
-              card: 'bg-surface text-foreground border border-border shadow-[var(--shadow-card)] rounded-xl',
-              headerTitle: 'text-2xl font-semibold',
-              headerSubtitle: 'text-sm text-muted-foreground',
-              socialButtonsBlockButton: 'bg-surface border border-border hover:bg-surface/80',
-              dividerLine: 'bg-border',
-              dividerText: 'text-muted-foreground',
-              formButtonPrimary:
-                'bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-primary/40',
-            },
-          }}
-        />
-      </div>
+      <ClerkLoadingState>
+        <div className="mx-auto w-full max-w-md text-foreground">
+          <ClerkLoading />
+        </div>
+      </ClerkLoadingState>
+
+      <ClerkLoaded>
+        <div className="mx-auto w-full max-w-md text-foreground">
+          {/* single border owned by the Clerk card */}
+          <SignIn
+            routing="path"
+            path={signInPath}
+            signUpUrl={signUpUrl}
+            redirectUrl={afterSignInUrl ?? signInRedirectFallback}
+            appearance={{
+              elements: {
+                rootBox: 'w-full',
+                card: 'bg-surface text-foreground border border-border shadow-[var(--shadow-card)] rounded-xl',
+                headerTitle: 'text-2xl font-semibold',
+                headerSubtitle: 'text-sm text-muted-foreground',
+                socialButtonsBlockButton: 'bg-surface border border-border hover:bg-surface/80',
+                dividerLine: 'bg-border',
+                dividerText: 'text-muted-foreground',
+                formButtonPrimary:
+                  'bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-primary/40',
+              },
+            }}
+          />
+        </div>
+      </ClerkLoaded>
     </AuthShell>
   );
 }
