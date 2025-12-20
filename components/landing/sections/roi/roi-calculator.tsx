@@ -9,7 +9,8 @@ import { calcRoi, clamp } from "@/lib/marketing/client";
 import { APP_LINKS } from '@/lib/shared';
 import { trackNavClick } from "@/lib/shared/analytics/track";
 import { ChevronDown } from "lucide-react";
-import React, { useId, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { RoiOutputPanel } from "./roi-output-panel";
 import cls from "./roi.module.css";
 
@@ -23,6 +24,81 @@ export const ROICalculator: React.FC = () => {
   const [closeRate, setCloseRate] = useState<number>(20);
   const [dealSize, setDealSize] = useState<number>(20000);
   const [assumptionsOpen, setAssumptionsOpen] = useState<boolean>(false);
+  const assumptionsTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const assumptionsOverlayRef = useRef<HTMLDivElement | null>(null);
+  const closeTimerRef = useRef<number | null>(null);
+  const [assumptionsPos, setAssumptionsPos] = useState<{ left: number; top: number } | null>(null);
+
+  const clearCloseTimer = useCallback(() => {
+    if (closeTimerRef.current) {
+      window.clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+  }, []);
+
+  const updateAssumptionsPos = useCallback(() => {
+    const el = assumptionsTriggerRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+
+    // Keep the overlay within viewport bounds.
+    const overlayWidth = 320;
+    const margin = 16;
+    const left = Math.min(Math.max(margin, rect.left), window.innerWidth - overlayWidth - margin);
+
+    setAssumptionsPos({ left, top: rect.top });
+  }, []);
+
+  const openAssumptions = useCallback(() => {
+    clearCloseTimer();
+    updateAssumptionsPos();
+    setAssumptionsOpen(true);
+  }, [clearCloseTimer, updateAssumptionsPos]);
+
+  const scheduleCloseAssumptions = useCallback(() => {
+    clearCloseTimer();
+    closeTimerRef.current = window.setTimeout(() => setAssumptionsOpen(false), 120);
+  }, [clearCloseTimer]);
+
+  // Keep overlay anchored on scroll/resize while open.
+  useEffect(() => {
+    if (!assumptionsOpen) return;
+    updateAssumptionsPos();
+
+    const onScroll = () => updateAssumptionsPos();
+    const onResize = () => updateAssumptionsPos();
+
+    window.addEventListener("scroll", onScroll, true);
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("scroll", onScroll, true);
+      window.removeEventListener("resize", onResize);
+    };
+  }, [assumptionsOpen, updateAssumptionsPos]);
+
+  // Close on Escape / outside click.
+  useEffect(() => {
+    if (!assumptionsOpen) return;
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setAssumptionsOpen(false);
+    };
+
+    const onPointerDown = (e: PointerEvent) => {
+      const target = e.target as Node | null;
+      if (!target) return;
+      if (assumptionsTriggerRef.current?.contains(target)) return;
+      if (assumptionsOverlayRef.current?.contains(target)) return;
+      setAssumptionsOpen(false);
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("pointerdown", onPointerDown, true);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("pointerdown", onPointerDown, true);
+    };
+  }, [assumptionsOpen]);
 
   const { newDeals, workdaysSaved, totalRevenue } = useMemo(
     () => calcRoi({ leads, closeRate, dealSize }),
@@ -68,10 +144,11 @@ export const ROICalculator: React.FC = () => {
                   max={100000}
                   onChange={(v) => setLeads(clamp(v, 1, 100000))}
                   step={10}
-                  increaseAria="Increase leads by 10"
-                  decreaseAria="Decrease leads by 10"
+                  increaseAria="Increase leads identified by 10"
+                  decreaseAria="Decrease leads identified by 10"
                   className={cls['numberField'] || ''}
                   ariaDescribedBy={`${ids.leads}-hint ${ids.leads}-microcopy`}
+                  formatWithCommas
                 />
                 <p id={`${ids.leads}-hint`} className="sr-only">Annual number of new leads identified.</p>
               </div>
@@ -110,6 +187,7 @@ export const ROICalculator: React.FC = () => {
                     decreaseAria="Decrease average deal size by $10,000"
                     className={cls['numberField'] || ''}
                     ariaDescribedBy={`${ids.dealSize}-hint`}
+                    formatWithCommas
                   />
                 </div>
                 <p id={`${ids.dealSize}-hint`} className="sr-only">Average value of each closed deal in dollars.</p>
@@ -150,10 +228,15 @@ export const ROICalculator: React.FC = () => {
             />
             <div className="mt-4 text-sm text-left">
               <button
+                ref={assumptionsTriggerRef}
                 type="button"
-                onClick={() => setAssumptionsOpen((v) => !v)}
+                onMouseEnter={openAssumptions}
+                onMouseLeave={scheduleCloseAssumptions}
+                onFocus={openAssumptions}
+                onBlur={scheduleCloseAssumptions}
+                onClick={() => (assumptionsOpen ? setAssumptionsOpen(false) : openAssumptions())}
                 aria-expanded={assumptionsOpen}
-                aria-controls="roi-assumptions"
+                aria-controls="roi-assumptions-overlay"
                 className="inline-flex items-center gap-1 text-muted-foreground underline decoration-dotted underline-offset-2 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded"
                 title="View assumptions"
               >
@@ -164,19 +247,32 @@ export const ROICalculator: React.FC = () => {
                 />
               </button>
 
-              {assumptionsOpen && (
-                <div
-                  id="roi-assumptions"
-                  className="mt-2 rounded-lg border border-border bg-[hsl(var(--muted))]/30 p-3 text-sm leading-normal text-muted-foreground"
-                >
-                  <ul className="list-disc pl-4 space-y-1">
-                    <li>We assume ~2 hours saved per lead.</li>
-                    <li>8 hours = 1 workday.</li>
-                    <li>New Deals = Leads × (Close Rate/100).</li>
-                    <li>Revenue = New Deals × Avg. Deal Size.</li>
-                  </ul>
-                </div>
-              )}
+              {assumptionsOpen && assumptionsPos && typeof document !== "undefined"
+                ? createPortal(
+                    <div
+                      ref={assumptionsOverlayRef}
+                      id="roi-assumptions-overlay"
+                      role="dialog"
+                      aria-label="ROI calculator assumptions"
+                      onMouseEnter={openAssumptions}
+                      onMouseLeave={scheduleCloseAssumptions}
+                      style={{
+                        left: assumptionsPos.left,
+                        top: assumptionsPos.top,
+                        transform: "translateY(calc(-100% - 8px))",
+                      }}
+                      className="fixed z-[80] w-[320px] max-w-[calc(100vw-2rem)] rounded-lg border border-border bg-popover p-3 text-sm leading-normal text-popover-foreground shadow-lg"
+                    >
+                      <ul className="list-disc pl-4 space-y-1">
+                        <li>We assume ~2 hours saved per lead.</li>
+                        <li>8 hours = 1 workday.</li>
+                        <li>New Deals = Leads × (Close Rate/100).</li>
+                        <li>Revenue = New Deals × Avg. Deal Size.</li>
+                      </ul>
+                    </div>,
+                    document.body
+                  )
+                : null}
             </div>
           </div>
         </div>

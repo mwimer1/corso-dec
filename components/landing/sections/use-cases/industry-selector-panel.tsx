@@ -159,11 +159,54 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
                   </li>
                 ))}
               </ul>
+
+              {/* Outcomes + CTAs belong with the narrative (better conversion flow) */}
+              <div className="mt-lg space-y-md">
+                {/* Outcomes block (chips only; avoid duplicative summary line) */}
+                <div className="space-y-sm">
+                  <p className="text-sm font-semibold text-foreground">Typical outcomes</p>
+
+                  {metrics.length > 0 && (
+                    <div className="flex flex-wrap gap-sm" aria-label="Impact metrics">
+                      {metrics.map((metric) => (
+                        <Badge key={metric} color="secondary" className="text-xs">
+                          {metric}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* CTAs */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-sm">
+                  <Link
+                    href={APP_LINKS.FOOTER.CONTACT}
+                    onClick={() => trackNavClick('Talk to sales', APP_LINKS.FOOTER.CONTACT)}
+                    className={cn(
+                      buttonVariants({ variant: 'secondary' }),
+                      navbarStyleVariants().button(),
+                      'w-full sm:w-auto'
+                    )}
+                  >
+                    Talk to sales
+                  </Link>
+                  <Link
+                    href={APP_LINKS.NAV.SIGNUP}
+                    onClick={() => trackNavClick('Start for free', APP_LINKS.NAV.SIGNUP)}
+                    className={cn(
+                      buttonVariants({ variant: 'default' }),
+                      navbarStyleVariants().button(),
+                      'w-full sm:w-auto'
+                    )}
+                  >
+                    Start for free
+                  </Link>
+                </div>
+              </div>
             </div>
 
-            {/* Right: Preview visual + Outcomes + CTAs */}
-            <div className="lg:col-span-5 space-y-md">
-              {/* Proof visual preview */}
+            {/* Right: Preview visual only (hide on mobile to reduce scrolling) */}
+            <div className="lg:col-span-5 hidden lg:block">
               {activeIndustry.previewImageSrc ? (
                 <div className="rounded-xl overflow-hidden bg-muted/30 aspect-[4/3] relative">
                   <Image
@@ -191,52 +234,6 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
                   </CardContent>
                 </Card>
               )}
-
-              {/* Outcomes block (simplified: chips + one short line) */}
-              <div className="space-y-sm">
-                <p className="text-sm font-semibold text-foreground">Typical outcomes</p>
-
-                {metrics.length > 0 && (
-                  <div className="flex flex-wrap gap-sm" aria-label="Impact metrics">
-                    {metrics.map((metric) => (
-                      <Badge key={metric} color="secondary" className="text-xs">
-                        {metric}
-                      </Badge>
-                    ))}
-                  </div>
-                )}
-
-                {/* Single short summary line (avoid repeating chips content) */}
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  {activeIndustry.impact.split('.')[0]}.
-                </p>
-              </div>
-
-              {/* CTAs */}
-              <div className="flex flex-col sm:flex-row sm:items-center gap-sm pt-sm">
-                <Link
-                  href={APP_LINKS.FOOTER.CONTACT}
-                  onClick={() => trackNavClick('Talk to sales', APP_LINKS.FOOTER.CONTACT)}
-                  className={cn(
-                    buttonVariants({ variant: 'secondary' }),
-                    navbarStyleVariants().button(),
-                    'w-full sm:w-auto'
-                  )}
-                >
-                  Talk to sales
-                </Link>
-                <Link
-                  href={APP_LINKS.NAV.SIGNUP}
-                  onClick={() => trackNavClick('Start for free', APP_LINKS.NAV.SIGNUP)}
-                  className={cn(
-                    buttonVariants({ variant: 'default' }),
-                    navbarStyleVariants().button(),
-                    'w-full sm:w-auto'
-                  )}
-                >
-                  Start for free
-                </Link>
-              </div>
             </div>
           </div>
         </div>

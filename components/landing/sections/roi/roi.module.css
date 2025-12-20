@@ -87,7 +87,7 @@
 
 .numberField :global(input) {
   width: 100%;
-  height: 3rem; /* Increased from 2.75rem for better touch targets */
+  height: 3.5rem; /* Extra vertical room so steppers don't sit flush */
   padding: 0.625rem 3.25rem 0.625rem 0.875rem; /* Increased right padding to accommodate steppers */
   border-radius: 0.5rem;
   border: 1px solid hsl(var(--primary-foreground) / 25%);
@@ -117,11 +117,12 @@
 .numberField :global([data-stepper]) {
   position: absolute;
   right: 0.5rem;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 0.5rem;
+  bottom: 0.5rem;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  justify-content: center;
+  gap: 0.125rem; /* tighter so it fits comfortably */
   z-index: 1;
 }
 
@@ -129,7 +130,7 @@
 .numberField :global([data-stepper] button[aria-label^="Increase"]),
 .numberField :global([data-stepper] button[aria-label^="Decrease"]) {
   width: 2rem;
-  height: 1.25rem;
+  height: 1.125rem;
   border-radius: 0.5rem;
   display: grid;
   place-items: center;
