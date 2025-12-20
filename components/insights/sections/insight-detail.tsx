@@ -36,6 +36,11 @@ interface InsightDetailProps extends React.HTMLAttributes<HTMLDivElement> {
   breadcrumbs?: Array<{ label: string; href: string }>;
 }
 
+// NOTE: Do not add page-level CTAs to InsightDetail.
+// The canonical marketing CTA is FooterCTA, rendered via:
+// PublicLayout → FooterSystem → FooterCTA
+// See: components/ui/organisms/footer-system/footer-cta.tsx
+
 export const InsightDetail = React.forwardRef<
   HTMLDivElement,
   InsightDetailProps
@@ -172,6 +177,7 @@ export const InsightDetail = React.forwardRef<
             alt={title}
             variant="hero"
             {...(initialData.heroCaption && { caption: initialData.heroCaption })}
+            loading="lazy"
             priority={false}
           />
         ) : null}
