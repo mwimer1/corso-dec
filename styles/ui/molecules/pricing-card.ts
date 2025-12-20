@@ -13,8 +13,11 @@ const pricingCardVariants = tv({
       'relative flex flex-col rounded-2xl border-2 bg-surface shadow-card',
       'transition-all duration-200',
     ],
+    header: [
+      'flex items-start justify-between gap-3',
+    ],
     popularBadge: [
-      'absolute -top-3 left-6 z-10 rounded-md bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground shadow-sm',
+      'inline-flex items-center rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground shadow-sm whitespace-nowrap',
     ],
     title: ['text-xl font-semibold text-foreground'],
     // Price styling: remove large vertical margins so priceNote sits directly below

@@ -64,12 +64,13 @@ export const PricingCard = React.forwardRef<HTMLDivElement, PricingCardProps>(
 
     return (
       <div ref={ref} className={cn(styles.container(), className)}>
-        {/* "Most Popular" badge (if applicable) */}
-        {isPopular && (
-          <span className={styles.popularBadge()}>Most&nbsp;Popular</span>
-        )}
-        {/* Header */}
-        <h3 className={styles.title()}>{title}</h3>
+        {/* Header with title and badge */}
+        <div className={styles.header()}>
+          <h3 className={styles.title()}>{title}</h3>
+          {isPopular && (
+            <span className={styles.popularBadge()}>Most&nbsp;Popular</span>
+          )}
+        </div>
         <p className={styles.price()}>{priceText}</p>
         {plan.priceNote && <p className={styles.priceNote()}>{plan.priceNote}</p>}
         {description && <p className={styles.description()}>{description}</p>}
