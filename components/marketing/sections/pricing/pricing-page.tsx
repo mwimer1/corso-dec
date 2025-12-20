@@ -81,9 +81,6 @@ export const PricingPage = React.forwardRef<HTMLDivElement, PricingPageProps>(
           <PricingHeader
             {...(headerTitle ? { title: headerTitle } : {})}
             {...(headerSubtitle ? { subtitle: headerSubtitle } : {})}
-            toggle={
-              <p className="text-sm text-muted-foreground">Annual billing (20% off) available after signup</p>
-            }
           />
         </FullWidthSection>
 
