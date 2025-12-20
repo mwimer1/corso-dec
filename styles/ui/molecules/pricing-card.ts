@@ -14,7 +14,7 @@ const pricingCardVariants = tv({
       'transition-all duration-200',
     ],
     popularBadge: [
-      'absolute top-0 left-6 z-10 rounded-[10px] bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground',
+      'absolute -top-3 left-6 z-10 rounded-md bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground shadow-sm',
     ],
     title: ['text-xl font-semibold text-foreground'],
     // Price styling: remove large vertical margins so priceNote sits directly below
