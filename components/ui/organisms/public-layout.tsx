@@ -71,10 +71,15 @@ export function PublicLayout({
         data-sticky-nav
         data-scrolled={scrolled ? 'true' : 'false'}
         className={cn(
-          stickyHeader &&
-            "sticky top-0 z-50 border-b border-border bg-surface transition-shadow data-[scrolled=true]:shadow-sm",
-          "relative",
           headerClassName,
+          // IMPORTANT:
+          // Do not combine Tailwind position utilities on this element.
+          // With tailwind-merge (or similar), later position utilities win.
+          // - stickyHeader=true => use `sticky` (also provides positioning context for absolute children)
+          // - stickyHeader=false => use `relative` (for absolute children positioning)
+          stickyHeader
+            ? "sticky top-0 z-50 border-b border-border bg-surface transition-shadow data-[scrolled=true]:shadow-sm"
+            : "relative",
         )}
       >
         <div className={cn(containerWithPaddingVariants({ maxWidth: "7xl", padding: "lg" }))}>
