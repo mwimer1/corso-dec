@@ -62,7 +62,13 @@ export function ArticleImage({
   // hero variant
   return (
     <figure className={cn("not-prose mx-auto w-full max-w-3xl md:max-w-4xl", className)}>
-      <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg bg-muted border border-border shadow-md">
+      <div
+        className={cn(
+          "relative w-full overflow-hidden rounded-lg bg-muted border border-border shadow-md",
+          // Standardized hero height per breakpoint (prevents massive heroes on wide screens)
+          "h-[200px] sm:h-[260px] lg:h-[320px]"
+        )}
+      >
         <Image
           src={src}
           alt={alt}

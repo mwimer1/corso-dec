@@ -6,7 +6,6 @@
 import { useArticleAnalytics } from "@/components/insights/hooks/use-article-analytics";
 import { ArticleHeader } from "@/components/insights/widgets/article-header";
 import { ArticleImage } from "@/components/insights/widgets/article-image";
-import { Breadcrumbs } from "@/components/insights/widgets/breadcrumbs";
 import { RelatedArticles } from "@/components/insights/widgets/related-articles";
 import { TableOfContents } from "@/components/insights/widgets/table-of-contents";
 import { resolveInsightImageUrl } from "@/lib/marketing/insights/image-resolver";
@@ -16,6 +15,7 @@ import { containerWithPaddingVariants } from "@/styles/ui/shared/container-helpe
 import type { InsightItem } from "@/types/marketing";
 import DOMPurify from "dompurify";
 import type { Metadata } from "next";
+import Link from "next/link";
 import * as React from "react";
 
 interface InsightDetailProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -156,31 +156,41 @@ export const InsightDetail = React.forwardRef<
         )}
       >
         {/* Note: Structured data is now handled server-side in the page component for better SEO */}
+        {/* Breadcrumbs UI intentionally removed for a cleaner editorial detail page.
+            SEO breadcrumbs (JSON-LD) are handled in the route and should remain unchanged. */}
 
-        {breadcrumbs && breadcrumbs.length > 0 && (
-          <Breadcrumbs items={breadcrumbs} />
-        )}
+        {/* Article Header + Hero (editorial stacked layout) - wrapped in not-prose to prevent Typography margins */}
+        <div className="not-prose space-y-4 sm:space-y-5">
+          <div>
+            <Link
+              href="/insights"
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <span aria-hidden>←</span>
+              Back to Insights
+            </Link>
+          </div>
 
-        {/* Article Header + Hero (editorial stacked layout) */}
-        <ArticleHeader
-          title={title}
-          {...(publishDate && { publishDate })}
-          {...(updatedDate && { updatedDate })}
-          {...(readingTime && { readingTime })}
-          {...(author && { author })}
-          {...(categories && { categories })}
-        />
-
-        {resolvedImageUrl ? (
-          <ArticleImage
-            src={resolvedImageUrl}
-            alt={title}
-            variant="hero"
-            {...(initialData.heroCaption && { caption: initialData.heroCaption })}
-            loading="lazy"
-            priority={false}
+          <ArticleHeader
+            title={title}
+            {...(publishDate && { publishDate })}
+            {...(updatedDate && { updatedDate })}
+            {...(readingTime && { readingTime })}
+            {...(author && { author })}
+            {...(categories && { categories })}
           />
-        ) : null}
+
+          {resolvedImageUrl ? (
+            <ArticleImage
+              src={resolvedImageUrl}
+              alt={title}
+              variant="hero"
+              {...(initialData.heroCaption && { caption: initialData.heroCaption })}
+              loading="lazy"
+              priority={false}
+            />
+          ) : null}
+        </div>
 
         {/* Table of Contents - Mobile: above content, Desktop: sticky aside */}
         <TableOfContents content={sanitizedContent} />
