@@ -173,14 +173,16 @@ import { useRouter } from "next/navigation";
 import ScrollToFAQ from "./scroll-to-faq";
 import { landingNavItems } from "@/components/landing/layout/nav.config";
 
-// Transform PRICING_UI data into PricingPlan format (monthly only)
+// Transform PRICING_UI data into PricingPlan format (monthly pricing only)
 const pricingPlans = Object.entries(PRICING_UI).map(([key, plan]) => ({
   slug: key,
   title: plan.label,
   priceText: formatPriceUSD(plan.monthlyUsd) + '/mo',
+  priceNote: 'billed monthly',
   description: plan.tagline,
   features: plan.features,
-  ctaText: "Sign up",
+  ctaText: "Start free",
+  popular: plan.popular,
 }));
 
 // FAQ data
@@ -228,8 +230,6 @@ export default function PublicPricingPage() {
         faqs={faqItems}
         headerTitle="Choose Your Plan"
         headerSubtitle="Start with a 7-day free trial — no credit card required."
-        billingCycle={billingCycle}
-        onBillingCycleChange={setBillingCycle}
         onPlanSelect={handlePlanSelect}
       />
     </PublicLayout>

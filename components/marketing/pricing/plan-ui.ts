@@ -1,7 +1,7 @@
 export type PlanKey = 'starter' | 'plus' | 'pro';
-export type BillingCycle = 'monthly' | 'annual';
 
 // UI-facing plan data (safe to render on client). Tie to billing config later if desired.
+// Note: Public pricing page shows monthly pricing only. Annual pricing (20% off) is available after signup.
 export const PRICING_UI: Record<PlanKey, {
   label: string;
   monthlyUsd: number;

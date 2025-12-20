@@ -10,11 +10,11 @@ import { tv } from '@/styles/utils';
 const pricingCardVariants = tv({
   slots: {
     container: [
-      'flex flex-col rounded-2xl border-2 bg-surface shadow-card',
+      'relative flex flex-col rounded-2xl border-2 bg-surface shadow-card',
       'transition-all duration-200',
     ],
     popularBadge: [
-      'mb-3 self-start rounded-[10px] bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground',
+      'absolute top-0 left-6 z-10 rounded-[10px] bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground',
     ],
     title: ['text-xl font-semibold text-foreground'],
     // Price styling: remove large vertical margins so priceNote sits directly below

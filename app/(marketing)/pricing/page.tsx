@@ -7,12 +7,10 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 import { formatPriceUSD, PRICING_UI, PublicLayout } from "@/components";
+import { landingNavItems } from "@/components/landing/layout/nav.config";
 import { PricingPage } from "@/components/marketing";
 import { useRouter } from "next/navigation";
-import { useState, useMemo } from "react";
-import type { BillingCycle } from "@/components/marketing/pricing/plan-ui";
 import ScrollToFAQ from "./scroll-to-faq";
-import { landingNavItems } from "@/components/landing/layout/nav.config";
 
 // FAQ data
 const faqItems = [
@@ -44,23 +42,18 @@ const faqItems = [
 
 export default function PublicPricingPage() {
   const router = useRouter();
-  const [billingCycle, setBillingCycle] = useState<BillingCycle>("monthly");
 
-  // Transform PRICING_UI data into PricingPlan format with billing cycle support
-  const pricingPlans = useMemo(() => {
-    return Object.entries(PRICING_UI).map(([key, plan]) => ({
-      slug: key,
-      title: plan.label,
-      priceText: billingCycle === "annual" 
-        ? formatPriceUSD(plan.annualUsd) + '/mo'
-        : formatPriceUSD(plan.monthlyUsd) + '/mo',
-      annualPriceText: formatPriceUSD(plan.annualUsd) + '/mo',
-      description: plan.tagline,
-      features: plan.features,
-      ctaText: "Start free",
-      popular: plan.popular,
-    }));
-  }, [billingCycle]);
+  // Transform PRICING_UI data into PricingPlan format (monthly pricing only)
+  const pricingPlans = Object.entries(PRICING_UI).map(([key, plan]) => ({
+    slug: key,
+    title: plan.label,
+    priceText: formatPriceUSD(plan.monthlyUsd) + '/mo',
+    priceNote: 'billed monthly',
+    description: plan.tagline,
+    features: plan.features,
+    ctaText: "Start free",
+    popular: plan.popular,
+  }));
 
   const handlePlanSelect = (planSlug: string) => {
     // Persist selected plan (already handled by PricingPage component)
@@ -76,8 +69,6 @@ export default function PublicPricingPage() {
         faqs={faqItems}
         headerTitle="Choose Your Plan"
         headerSubtitle="Start with a 7-day free trial — no credit card required."
-        billingCycle={billingCycle}
-        onBillingCycleChange={setBillingCycle}
         onPlanSelect={handlePlanSelect}
       />
     </PublicLayout>

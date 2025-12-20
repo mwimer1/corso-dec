@@ -1,11 +1,9 @@
 // components/marketing/pricing/pricing-page.tsx
 "use client";
 
-import type { BillingCycle } from "@/components/marketing/pricing/plan-ui";
 import type { PricingCardProps } from "@/components/ui/molecules";
 import { PricingCard } from "@/components/ui/molecules";
 import { FullWidthSection } from "@/components/ui/organisms";
-import { SegmentedControl } from "@/components/ui/segmented-control";
 import { cn } from "@/styles";
 import * as React from "react";
 import { FaqSectionFrame } from "../../widgets/faq-section-frame";
@@ -28,29 +26,23 @@ interface PricingPageProps extends React.HTMLAttributes<HTMLDivElement> {
   faqs: readonly FAQItem[];
   headerTitle?: string;
   headerSubtitle?: string;
-  /** Current billing cycle */
-  billingCycle?: BillingCycle;
-  /** Callback when billing cycle changes */
-  onBillingCycleChange?: (cycle: BillingCycle) => void;
   /** Optional analytics hook when a plan is selected */
   onPlanSelect?: (_planSlug: string) => void;
 }
 
-/** PricingPage – Complete pricing page with toggle, tiers, and FAQ. */
+/** PricingPage – Complete pricing page with tiers and FAQ. */
 export const PricingPage = React.forwardRef<HTMLDivElement, PricingPageProps>(
-  ({ plans, faqs, headerTitle, headerSubtitle, billingCycle = "monthly", onBillingCycleChange, onPlanSelect, className, ...props }, ref) => {
+  ({ plans, faqs, headerTitle, headerSubtitle, onPlanSelect, className, ...props }, ref) => {
     // Local PLANS constant (derived from props) so we can map consistently
     const PLANS: ExtendedPricingPlan[] = plans;
 
-    // Adapter: map ExtendedPricingPlan -> PricingCardProps (pricing shown based on billing cycle)
+    // Adapter: map ExtendedPricingPlan -> PricingCardProps (always shows monthly pricing)
     function toPricingCardProps(plan: ExtendedPricingPlan): PricingCardProps {
       const slug = (plan as any).slug ?? plan.title ?? "plan";
-      const priceText = billingCycle === "annual" && plan.annualPriceText 
-        ? plan.annualPriceText 
-        : plan.priceText;
+      const priceText = plan.priceText;
 
       // Small note shown directly under the price (subtle, italic)
-      const priceNote = billingCycle === "annual" ? 'billed annually' : 'billed monthly';
+      const priceNote = 'billed monthly';
       const description = plan.description ?? undefined;
 
       const p = {
@@ -90,15 +82,7 @@ export const PricingPage = React.forwardRef<HTMLDivElement, PricingPageProps>(
             {...(headerTitle ? { title: headerTitle } : {})}
             {...(headerSubtitle ? { subtitle: headerSubtitle } : {})}
             toggle={
-              <SegmentedControl<BillingCycle>
-                value={billingCycle}
-                onChange={(cycle) => onBillingCycleChange?.(cycle)}
-                options={[
-                  { id: "monthly", label: "Monthly" },
-                  { id: "annual", label: "Annual (Save 20%)" },
-                ]}
-                className="flex items-center gap-2"
-              />
+              <p className="text-sm text-muted-foreground">Annual billing (20% off) available after signup</p>
             }
           />
         </FullWidthSection>
