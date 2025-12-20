@@ -74,38 +74,36 @@ export const InsightsList = React.forwardRef<HTMLDivElement, InsightsListProps>(
         )}
         {...props}
       >
-        <div className="mx-auto">
-          <ul
-            role="list"
-            className={cn(
-              // Responsive grid: 1 column mobile, 2 columns tablet, 3 columns desktop
-              "grid gap-6 sm:gap-8 lg:gap-10",
-              "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
-              "list-none p-0 m-0"
-            )}
-            aria-label="Insights articles"
-          >
-            {insights.map((insight) => {
-              const imageSrc = resolveInsightImageUrl(insight);
-              return (
-                <li key={insight.id} className="m-0 p-0 list-none">
-                  <InsightCard
-                    href={`/insights/${insight.slug}`}
-                    title={insight.title}
-                    excerpt={insight.description || undefined}
-                    image={{ src: imageSrc, alt: insight.title }}
-                    category={insight.categories?.[0]?.name || undefined}
-                    date={insight.publishDate || undefined}
-                    readingTime={insight.readingTime ? `${insight.readingTime} min read` : undefined}
-                    author={insight.author ? {
-                      name: insight.author.name
-                    } : undefined}
-                  />
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+        <ul
+          role="list"
+          className={cn(
+            // Responsive grid: 1 column mobile, 2 columns tablet, 3 columns desktop
+            "grid gap-6 sm:gap-8",
+            "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
+            "list-none p-0 m-0"
+          )}
+          aria-label="Insights articles"
+        >
+          {insights.map((insight) => {
+            const imageSrc = resolveInsightImageUrl(insight);
+            return (
+              <li key={insight.id} className="m-0 p-0 list-none">
+                <InsightCard
+                  href={`/insights/${insight.slug}`}
+                  title={insight.title}
+                  excerpt={insight.description || undefined}
+                  image={{ src: imageSrc, alt: insight.title }}
+                  category={insight.categories?.[0]?.name || undefined}
+                  date={insight.publishDate || undefined}
+                  readingTime={insight.readingTime ? `${insight.readingTime} min read` : undefined}
+                  author={insight.author ? {
+                    name: insight.author.name
+                  } : undefined}
+                />
+              </li>
+            );
+          })}
+        </ul>
       </div>
     );
   },

@@ -9,10 +9,7 @@ import { ArticleImage } from "@/components/insights/widgets/article-image";
 import { Breadcrumbs } from "@/components/insights/widgets/breadcrumbs";
 import { RelatedArticles } from "@/components/insights/widgets/related-articles";
 import { TableOfContents } from "@/components/insights/widgets/table-of-contents";
-import { Button } from "@/components/ui/atoms";
-import { LinkTrack } from "@/components/ui/molecules";
 import { resolveInsightImageUrl } from "@/lib/marketing/insights/image-resolver";
-import { APP_LINKS } from "@/lib/shared";
 import { cn } from "@/styles";
 import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
 import { containerWithPaddingVariants } from "@/styles/ui/shared/container-helpers";
@@ -194,22 +191,6 @@ export const InsightDetail = React.forwardRef<
           aria-label="Article content"
           itemProp="articleBody"
         />
-
-        {/* Call-to-Action: prompt user to sign up or contact sales */}
-        <section className="mt-8 sm:mt-12">
-          <div className="rounded-lg border border-border bg-muted p-6 text-center">
-            <h3 className="text-xl font-semibold text-foreground">Ready to unlock insights?</h3>
-            <p className="mt-2 text-base text-foreground/80">Start your free trial today, or talk to our team about your needs.</p>
-            <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button asChild variant="default" size="lg">
-                <LinkTrack href={APP_LINKS.NAV.SIGNUP} label="insight:cta:signup">Start for free</LinkTrack>
-              </Button>
-              <Button asChild variant="secondary" size="lg">
-                <LinkTrack href="/contact" label="insight:cta:contact">Talk to sales</LinkTrack>
-              </Button>
-            </div>
-          </div>
-        </section>
 
         {relatedArticles.length > 0 && (
           <aside 
