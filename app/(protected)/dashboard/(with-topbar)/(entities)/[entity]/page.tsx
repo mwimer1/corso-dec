@@ -10,40 +10,26 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-type EntitySlug = string;
+// Helper to derive title from entity ID (capitalize first letter)
+function getEntityTitle(entity: string): string {
+  return entity.charAt(0).toUpperCase() + entity.slice(1);
+}
 
-const ENTITY_CONFIG: Record<string, { title: string; subtitle: string; loadingText: string; pageSize: number }> = {
-  addresses: {
-    title: "Addresses",
-    subtitle: "Browse and manage all addresses.",
-    loadingText: "Loading addresses table...",
-    pageSize: 10,
-  },
-  companies: {
-    title: "Companies",
-    subtitle: "Browse and manage all companies.",
-    loadingText: "Loading companies table...",
-    pageSize: 10,
-  },
-  projects: {
-    title: "Projects",
-    subtitle: "Browse and manage all projects.",
-    loadingText: "Loading projects table...",
-    pageSize: 10,
-  },
-};
-
-
-export async function generateMetadata({ params }: { params: Promise<{ entity: EntitySlug }> }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ entity: string }> }): Promise<Metadata> {
   const data = EntityParamSchema.safeParse(await params);
   if (!data.success) notFound();
 
   const { entity } = data.data;
-  const config = ENTITY_CONFIG[entity];
-  if (!config) notFound();
+  // Validate entity exists in registry via getEntityConfig
+  try {
+    getEntityConfig(entity as 'projects' | 'addresses' | 'companies');
+  } catch {
+    notFound();
+  }
 
+  const title = getEntityTitle(entity);
   return {
-    title: `${config.title} | Dashboard | Corso`,
+    title: `${title} | Dashboard | Corso`,
     description: `View and manage all ${entity} in your dashboard.`,
   };
 }
@@ -60,9 +46,7 @@ export default async function EntityPage({ params }: { params: Promise<{ entity:
   }
 
   if (isGridEntity(entity)) {
-    const config = ENTITY_CONFIG[entity];
-    if (!config) return notFound();
-
+    // Use registry as single source of truth
     const gridConfig = getEntityConfig(entity as 'projects' | 'addresses' | 'companies');
     return <EntityGridHost config={gridConfig} /> as unknown as React.JSX.Element;
   }

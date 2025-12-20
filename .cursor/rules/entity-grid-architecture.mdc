@@ -105,6 +105,69 @@ ensureAgGridRegistered(); // From lib/vendors/ag-grid.client.ts
 ModuleRegistry.registerModules([AllEnterpriseModule]); // Includes ServerSideRowModelModule
 ```
 
+## Recent Fixes & Implementation Details
+
+### SSRM Callback Pattern
+The grid uses AG Grid's expected SSRM callback pattern:
+```typescript
+params.api.setGridOption('serverSideDatasource', {
+  async getRows(p: IServerSideGetRowsParams) {
+    try {
+      const r = await config.fetcher(p.request, distinctId);
+      p.success({ rowData: r.rows, rowCount: r.totalSearchCount });
+    } catch (e) {
+      p.fail(); // Required: AG Grid expects fail() on error
+      onLoadError?.(e);
+    }
+  },
+});
+```
+
+### Credentials Configuration
+Fetchers use `credentials: 'include'` to send cookies with same-origin requests:
+```typescript
+const res = await fetch(`/api/v1/entity/${entity}?${sp.toString()}`, { 
+  credentials: 'include' 
+});
+```
+**Note**: This ensures authentication cookies are sent for same-origin API requests. Cross-origin scenarios require CORS configuration.
+
+### Schema Mapping
+Column definitions use framework-agnostic `TableColumnConfig` schema that adapts to AG Grid `ColDef`:
+- `accessor` → `field` (data field path)
+- `label` → `headerName` (display label)
+- `format` → formatter functions (currency, date, etc.)
+- Adapter: `lib/services/entity/adapters/aggrid.ts` (`toColDef()`)
+
+### RBAC Enforcement
+API routes enforce organization-scoped RBAC:
+- Authentication required (Clerk `userId`)
+- Organization context required (`orgId`)
+- Role check: `has({ role: 'org:member' })` (org:member or higher)
+- **Important**: Use `org:member` (organization role), not `member` (org-less role)
+
+## Known Limitations
+
+### Filtering
+- **Limited filter operations**: Only `eq`, `contains`, `gt`, `lt`, `gte`, `lte`, `in`, `between`, `bool` supported
+- **No client-side filtering**: All filters applied server-side via API
+- **No filter persistence**: Filters reset on page refresh (saved views can preserve state)
+- **Text filters**: Only `contains` and `equals` supported (no `startsWith`/`endsWith`)
+
+### Sorting
+- **Single-column sorting**: Only first sort in `sortModel` array is applied by API
+- **No multi-column sorting**: AG Grid UI allows multi-column but API uses only first sort
+
+### Type Safety
+- **`as any` usage**: Some AG Grid prop types require `as any` casts due to strict TypeScript types:
+  - `statusBar`, `sideBar`, `paginationPageSizeSelector`, `rowSelection`, `selectionColumnDef`
+  - `onStateUpdated`, `noRowsOverlayComponent`
+- **Runtime validation**: API responses validated at runtime, not compile-time
+
+### Performance
+- **Server-side pagination required**: Large datasets require proper pagination (no client-side virtualization for full dataset)
+- **Bundle size**: AG Grid Enterprise adds significant bundle weight (~500KB+ gzipped)
+
 ## Rules
 - Do not deep-import renderers; import directly from `shared/renderers/` (no barrel after cleanup).
 - Keep server-only code out of `@/components/**` (client bundles).
