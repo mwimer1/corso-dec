@@ -27,7 +27,7 @@ export function Breadcrumbs({ items, className }: BreadcrumbsProps): React.React
   return (
     <nav
       aria-label="Breadcrumb"
-      className={cn("flex items-center gap-2 text-sm text-muted-foreground mb-6", className)}
+      className={cn("flex items-center gap-2 text-sm text-muted-foreground", className)}
     >
       {items.map((item, index) => {
         const isLast = index === items.length - 1;

@@ -153,27 +153,35 @@ export const InsightDetail = React.forwardRef<
         {/* Note: Structured data is now handled server-side in the page component for better SEO */}
 
         {breadcrumbs && breadcrumbs.length > 0 && (
-          <div>
-            <Breadcrumbs items={breadcrumbs} />
-          </div>
+          <Breadcrumbs items={breadcrumbs} />
         )}
 
-        <ArticleHeader
-          title={title}
-          {...(publishDate && { publishDate })}
-          {...(updatedDate && { updatedDate })}
-          {...(readingTime && { readingTime })}
-          {...(author && { author })}
-          {...(categories && { categories })}
-        />
+        {/* Header and Image Side-by-Side Layout */}
+        <div className="flex flex-col md:flex-row md:items-start md:gap-8 lg:gap-12">
+          {/* Header Content - Left Side */}
+          <div className="flex-1 min-w-0">
+            <ArticleHeader
+              title={title}
+              {...(publishDate && { publishDate })}
+              {...(updatedDate && { updatedDate })}
+              {...(readingTime && { readingTime })}
+              {...(author && { author })}
+              {...(categories && { categories })}
+            />
+          </div>
 
-        <ArticleImage
-          src={resolvedImageUrl}
-          alt={title}
-          {...(initialData.heroCaption && { caption: initialData.heroCaption })}
-          loading="lazy"
-          priority={false}
-        />
+          {/* Image - Right Side (Smaller) */}
+          <div className="flex-shrink-0 mt-6 md:mt-0 md:self-start">
+            <ArticleImage
+              src={resolvedImageUrl}
+              alt={title}
+              variant="thumbnail"
+              {...(initialData.heroCaption && { caption: initialData.heroCaption })}
+              loading="lazy"
+              priority={false}
+            />
+          </div>
+        </div>
 
         {/* Table of Contents - Mobile: above content, Desktop: sticky aside */}
         <TableOfContents content={sanitizedContent} />
