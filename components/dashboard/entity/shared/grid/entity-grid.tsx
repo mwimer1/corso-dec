@@ -5,10 +5,11 @@
 import { devError } from '@/lib/log';
 import { ensureAgGridReadyFor, isAgGridEnterpriseEnabled } from '@/lib/vendors/ag-grid.client';
 import type { EntityGridProps } from '@/types/dashboard';
+import { useOrganization } from '@clerk/nextjs';
 import type { ColDef, ColGroupDef, GridApi, GridReadyEvent, IServerSideGetRowsParams } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 // PostHog removed — no-op helper kept inline (no external dependency)
 type _PosthogLite = {
   get_distinct_id?: () => string;
@@ -109,6 +110,11 @@ export default function EntityGrid({
   const searchParams = useSearchParams();
   const gridName = searchParams.get('gridName');
   const defaultGridName = searchParams.get('defaultGridName');
+  
+  // Get organization ID from Clerk (required for tenant-scoped API requests)
+  const { organization, isLoaded: orgLoaded } = useOrganization();
+  // Derive orgId: only use it when organization is loaded to avoid stale data
+  const orgId = orgLoaded ? (organization?.id ?? null) : null;
 
   // Ensure AG Grid modules are registered before mounting
   useEffect(() => {
@@ -179,12 +185,28 @@ export default function EntityGrid({
     );
   }, []);
 
-  const onGridReady = useCallback((params: GridReadyEvent) => {
-    setGridApi(params.api);
-    params.api.setGridOption('serverSideDatasource', {
+  // Store grid API in a ref so we can update datasource when orgId changes
+  const gridApiRef = useRef<GridApi | null>(null);
+
+  // Function to update datasource with current orgId
+  const updateDatasource = useCallback((api: GridApi | null, currentOrgId: string | null) => {
+    if (!api) return;
+    
+    api.setGridOption('serverSideDatasource', {
       async getRows(p: IServerSideGetRowsParams) {
+        // If orgId is not available but organization data has loaded, show error
+        if (!currentOrgId && orgLoaded) {
+          const error = new Error('No active organization. Please ensure you are a member of an organization.') as Error & { code?: string; status?: number };
+          error.code = 'NO_ORG_CONTEXT';
+          error.status = 403;
+          p.fail();
+          onLoadError?.(error);
+          return;
+        }
+        
         try {
-          const r = await config.fetcher(p.request, posthog.get_distinct_id?.() ?? 'anon');
+          // Pass orgId to fetcher to include X-Corso-Org-Id header in API request
+          const r = await config.fetcher(p.request, posthog.get_distinct_id?.() ?? 'anon', currentOrgId);
           p.success({
             rowData: r.rows,
             ...(r.totalSearchCount != null ? { rowCount: r.totalSearchCount } : {}),
@@ -200,11 +222,31 @@ export default function EntityGrid({
         }
       },
     });
-    params.api.sizeColumnsToFit();
+  }, [config, posthog, setSearchCount, onLoadError, orgLoaded]);
+
+  const onGridReady = useCallback((params: GridReadyEvent) => {
+    const api = params.api;
+    setGridApi(api);
+    gridApiRef.current = api;
+    
+    // Set up datasource with current orgId
+    updateDatasource(api, orgId);
+    
+    api.sizeColumnsToFit();
     if (!(gridName || defaultGridName)) {
-      params.api.applyColumnState({ state: config.defaultSortModel });
+      api.applyColumnState({ state: config.defaultSortModel });
     }
-  }, [config, posthog, gridName, defaultGridName, setSearchCount, onLoadError]);
+  }, [config, gridName, defaultGridName, orgId, updateDatasource]);
+
+  // Refresh datasource when orgId changes (e.g., when organization loads)
+  useEffect(() => {
+    if (gridApiRef.current && orgLoaded) {
+      // Only update if orgId is available (not null) or if it changed from null to a value
+      updateDatasource(gridApiRef.current, orgId);
+      // Refresh the grid to reload data with new orgId
+      gridApiRef.current.refreshServerSide({ purge: true });
+    }
+  }, [orgId, orgLoaded, updateDatasource]);
 
   // Show error state if initialization failed
   if (initError) {

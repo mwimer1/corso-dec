@@ -14,6 +14,7 @@ export type EntityFetchResult = { rows: unknown[]; totalSearchCount?: number | n
 export type EntityFetcher = (
   req: IServerSideGetRowsParams['request'],
   distinctId: string,
+  orgId?: string | null,
 ) => Promise<EntityFetchResult>;
 
 export type GridId = 'projects' | 'addresses' | 'companies';

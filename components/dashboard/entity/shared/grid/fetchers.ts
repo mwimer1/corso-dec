@@ -168,7 +168,7 @@ type ApiSuccessResponse =
   | ApiDataPayload;
 
 export function createEntityFetcher(entity: GridId): EntityFetcher {
-  return async (request, _distinctId) => {
+  return async (request, _distinctId, orgId) => {
     const { page, sortBy, sortDir } = mapAgRequestToPagingAndSort(request as unknown as AgServerRequest);
     const requestWithFilters = request as unknown as AgRequestWithFilters;
     const filters = mapAgFiltersToApiFilters(requestWithFilters?.filterModel);
@@ -183,7 +183,16 @@ export function createEntityFetcher(entity: GridId): EntityFetcher {
       sp.set('filters', JSON.stringify(filters));
     }
 
-    const res = await fetch(`/api/v1/entity/${entity}?${sp.toString()}`, { credentials: 'include' });
+    // Build headers with org ID if provided
+    const headers: Record<string, string> = {};
+    if (orgId) {
+      headers['X-Corso-Org-Id'] = orgId;
+    }
+
+    const res = await fetch(`/api/v1/entity/${entity}?${sp.toString()}`, { 
+      credentials: 'include',
+      ...(Object.keys(headers).length > 0 ? { headers } : {}),
+    });
     if (!res.ok) {
       // Attempt to parse error response body safely
       let errorMessage = `Entity query failed (${entity}): HTTP ${res.status}`;
