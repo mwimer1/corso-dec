@@ -48,7 +48,7 @@
       "@shared/utils/dates": ["types/shared/utils/dates/types.ts"],
       "@/shared/performance/cache-config/types": ["types/shared/performance/cache-config/types.ts"],
       "@shared/feature-flags": ["types/shared/feature-flags/types.ts"],
-      "@shared/validation/sql-safety": ["types/validators/validation/sql-safety/types.ts"],
+      "@shared/validation/sql-safety": ["types/validators/sql-safety/types.ts"],
       "@shared/data/status": ["types/shared/data/status/types.ts"],
       "@/shared/config/base/types": ["types/shared/config/base/types.ts"],
       "@/types/api": ["types/api/index.ts"],
@@ -144,7 +144,6 @@
       "@/types/chat/visualization": ["types/chat/visualization/types.ts"],
 
       // Dashboard analytics types path mappings
-      "@/types/dashboard/analytics/clickhouse": ["types/dashboard/analytics/clickhouse/types.ts"],
       // Security types path mappings
       "@/types/security/policy": ["types/security/policy/types.ts"],
       "@/types/security/prompt-guard": ["types/security/prompt-guard/types.ts"],

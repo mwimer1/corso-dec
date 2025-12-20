@@ -1,16 +1,14 @@
 // types/shared/index.ts - Main shared types barrel export
 // Explicit exports for better tooling support and clarity
+//
+// NOTE: Shared exports are for truly cross-cutting primitives (dates, UI nav, etc).
+// Avoid re-exporting domain-owned types (auth, chat, security) to prevent cycles.
+// Import domain types directly from their canonical locations instead.
 
 // Core foundational types
 export type {
     GetEntityPageDataParams, Row
 } from './core/entity/types';
-
-// Auth types
-export type {
-    Permission
-} from '../auth';
-
 
 export type {
     NavItemData
