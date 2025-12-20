@@ -13,8 +13,8 @@ status: "draft"
 
 **Key Points:**
 
-- **5 Workflows**: 5 active production + 1 reusable workflow
-- **2 Custom Actions**: Essential composite actions for CI/CD orchestration
+- **8 Workflows**: 8 active production workflows + 1 reusable workflow
+- **1 Custom Action**: Essential composite action for CI/CD orchestration
 - **Zero-Trust Security**: 100% SHA-pinned actions, automated validation, fork isolation
 - **AI-Optimized**: Structured outputs for intelligent workflow automation
 - **Streamlined**: Reduced maintenance overhead while preserving critical functionality
@@ -35,7 +35,7 @@ status: "draft"
 
 ## Overview
 
-This directory contains a streamlined CI/CD ecosystem with 6 core GitHub Actions workflows, 2 essential custom actions, security scanning configurations, and minimal automation scripts. The system maintains zero-trust security principles with AI-optimized structured outputs while reducing maintenance overhead.
+This directory contains a streamlined CI/CD ecosystem with 8 active GitHub Actions workflows, 1 essential custom action, security scanning configurations, and minimal automation scripts. The system maintains zero-trust security principles with AI-optimized structured outputs while reducing maintenance overhead.
 
 ### Architecture (2025)
 
@@ -80,8 +80,8 @@ Visual testing can be restored post-MVP launch by:
 **Refactoring Results**: Successfully streamlined .github directory by removing redundant workflows and configurations while preserving critical functionality.
 
 #### **Simplification Statistics**
-- **Workflows Removed**: 10 redundant workflows (from 17 to 6 core workflows)
-- **Actions Removed**: 2 custom actions (from 4 to 2 essential actions)
+- **Workflows Removed**: 10 redundant workflows (from 17 to 8 core workflows)
+- **Actions Removed**: 3 custom actions (from 4 to 1 essential action)
 - **Templates Removed**: Complete templates directory and all issue templates
 - **READMEs Consolidated**: 6 subdirectory READMEs removed, consolidated into main README
 - **Maintenance Reduction**: ~70% reduction in CI/CD maintenance overhead
@@ -97,9 +97,7 @@ Visual testing can be restored post-MVP launch by:
 
 ```
 .github/
-├── actions/                 # 2 essential custom composite actions
-│   ├── detect-context/      # Security context detection
-│   │   └── action.yml       # Action definition
+├── actions/                 # 1 essential custom composite action
 │   └── setup-node-pnpm/     # Node.js + pnpm environment setup
 │       └── action.yml       # Action definition
 ├── codeql/                  # CodeQL security scanning configuration
@@ -108,15 +106,16 @@ Visual testing can be restored post-MVP launch by:
 │   └── codeql-config.yml    # CodeQL configuration
 ├── scripts/                 # GitHub-specific automation scripts
 │   └── update-action-shas.sh # SHA pinning automation script
-├── workflows/               # 6 core GitHub Actions workflows
+├── workflows/               # 8 active GitHub Actions workflows
 │   ├── _reusable-node-job.yml # Reusable workflow component
 │   ├── ci.yml               # Core CI/CD pipeline
+│   ├── deploy.yml           # Automated deployment
 │   ├── openapi.yml          # OpenAPI spec validation
 │   ├── pr-checks.yml        # PR performance analysis
 │   ├── quality.yml          # Code quality checks (integrated)
+│   ├── scheduled-maintenance.yml # Scheduled maintenance tasks
 │   ├── security-audit.yml   # Security scanning & audit
-│   ├── validate-cursor-rules.yml # AI agent rule validation
-│   └── visual.yml           # Visual testing & Chromatic
+│   └── validate-cursor-rules.yml # AI agent rule validation
 ├── CODEOWNERS               # Simplified code ownership requirements
 ├── dependabot.yml           # Automated dependency updates
 ├── labels.yml               # Essential GitHub label configuration
@@ -160,14 +159,13 @@ Live map of our streamlined CI/CD pipeline. **All active workflows use SHA-pinne
 
 ## Custom Actions
 
-**Library**: 2 essential composite actions in `.github/actions/` for consistent CI/CD execution.
+**Library**: 1 essential composite action in `.github/actions/` for consistent CI/CD execution.
 
 ### Available Actions
 
 | Action | Purpose | Usage Pattern | Key Features |
 |--------|---------|---------------|--------------|
 | `setup-node-pnpm` | Node.js + pnpm environment setup | High (every CI job) | Corepack, caching, version validation |
-| `detect-context` | Security context and environment detection | High (security workflows) | Fork detection, secret availability, security levels |
 
 ### Action Architecture
 
@@ -215,7 +213,7 @@ The `.github/` directory contains additional configuration files that support th
 - **`dependabot.yml`**: Automated dependency updates with development/production/security grouping
 - **Security Routing**: Critical security areas require security team approval
 - **Automated Updates**: Weekly dependency updates with proper categorization
-- **Label Management**: Standardized GitHub labels synced automatically
+- **Label Management**: Standardized GitHub labels configuration (manual setup)
 - **PR Quality**: Structured PR templates with quality gates checklists
 
 ## Best Practices
@@ -302,8 +300,8 @@ The CI/CD pipeline implements comprehensive security measures with zero-trust pr
 
 ## 🎯 Key Takeaways (2025)
 
-- **5 Workflows**: 5 active production + 1 reusable workflow
-- **2 Custom Actions**: Essential composite actions for CI/CD orchestration
+- **8 Workflows**: 8 active production workflows + 1 reusable workflow
+- **1 Custom Action**: Essential composite action for CI/CD orchestration
 - **1 Automation Script**: GitHub-specific maintenance and SHA pinning tools
 - **Zero-Trust Security**: 100% SHA-pinned actions, automated validation, fork isolation
 - **AI-Optimized**: Structured programmatic access points for intelligent automation
@@ -320,8 +318,8 @@ The CI/CD pipeline implements comprehensive security measures with zero-trust pr
 
 | Metric | Current Value | Target | Status |
 |--------|---------------|--------|--------|
-| **Active Workflows** | 5 | N/A | ✅ Streamlined |
-| **Custom Actions** | 2 | N/A | ✅ Essential |
+| **Active Workflows** | 8 | N/A | ✅ Streamlined |
+| **Custom Actions** | 1 | N/A | ✅ Essential |
 | **Reusable Components** | 1 | N/A | ✅ Efficient |
 | **Automation Scripts** | 1 | N/A | ✅ Active |
 | **Avg Pipeline Time** | 6-8 min | <10 min | ✅ Optimized |
@@ -338,4 +336,4 @@ The CI/CD pipeline implements comprehensive security measures with zero-trust pr
 
 ### 2025 Refactor Complete
 
-Successfully streamlined .github directory by removing 10 redundant workflows and consolidating functionality into 6 core workflows. Eliminated 2 non-essential custom actions and removed complex issue template system. Maintained zero-trust security principles while reducing maintenance overhead by ~70%.
+Successfully streamlined .github directory by removing 10 redundant workflows and consolidating functionality into 8 core workflows. Eliminated 1 non-essential custom action and removed complex issue template system. Maintained zero-trust security principles while reducing maintenance overhead by ~70%.
