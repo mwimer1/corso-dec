@@ -2,8 +2,14 @@ import { describe, expect, it, vi } from 'vitest';
 
 // Mock the auth function
 const mockAuth = vi.fn();
+const mockClerkClient = {
+  users: {
+    getOrganizationMembershipList: vi.fn(),
+  },
+};
 vi.mock('@clerk/nextjs/server', () => ({
   auth: () => mockAuth(),
+  clerkClient: mockClerkClient,
 }));
 
 // Mock the entity service pages (replaces fetchEntityData)
@@ -19,6 +25,9 @@ describe('Entity Query Route', () => {
       userId: 'test-user-123',
       orgId: 'test-org-123',
       has: vi.fn().mockReturnValue(true),
+    });
+    mockClerkClient.users.getOrganizationMembershipList.mockResolvedValue({
+      data: [],
     });
     mockGetEntityPage.mockResolvedValue({
       data: [{ id: 1, name: 'Test Entity' }],
@@ -288,6 +297,10 @@ describe('Entity Query Route', () => {
         userId: 'test-user-123',
         // orgId is missing
         has: vi.fn().mockReturnValue(true),
+      });
+      // Mock clerkClient to return empty organizations list (simulating user with no orgs)
+      mockClerkClient.users.getOrganizationMembershipList.mockResolvedValue({
+        data: [],
       });
 
       const mod = await import('@/app/api/v1/entity/[entity]/route');
