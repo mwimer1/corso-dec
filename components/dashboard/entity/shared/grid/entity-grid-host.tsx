@@ -68,10 +68,20 @@ export default function EntityGridHost({ config }: { config: EntityGridConfig })
     }
   }, []);
 
+  const [retryCooldown, setRetryCooldown] = React.useState(false);
+  
   const handleRetry = React.useCallback(() => {
+    if (retryCooldown) return;
+    
     setLoadError(null);
+    setRetryCooldown(true);
     gridRef.current?.api?.refreshServerSide();
-  }, []);
+    
+    // Disable retry button for 2 seconds to prevent spam
+    setTimeout(() => {
+      setRetryCooldown(false);
+    }, 2000);
+  }, [retryCooldown]);
 
   return (
     <div className="flex flex-col h-full w-full" id="corso-grid">
@@ -88,18 +98,18 @@ export default function EntityGridHost({ config }: { config: EntityGridConfig })
         } else if (status === 403) {
           // Show specific message based on error code
           if (errorCode === 'NO_ORG_CONTEXT') {
-            errorMessage = 'No active organization. Please create or join an organization to continue.';
+            errorMessage = 'No organization selected. (Strict mode.)';
           } else if (errorCode === 'FORBIDDEN') {
-            // Extract required roles from details if available
-            const details = errorWithStatus?.details;
-            const requiredRoles = (details && typeof details === 'object' && 'requiredRoles' in details)
-              ? (details as { requiredRoles?: string[] }).requiredRoles
-              : ['org:member', 'org:admin', 'org:owner'];
-            const rolesText = requiredRoles?.join(', ') || 'org:member, org:admin, or org:owner';
-            errorMessage = `You do not have permission to access this resource. Required roles: ${rolesText}.`;
+            errorMessage = 'Insufficient permissions.';
           } else {
             // Use API error message if available, otherwise fallback
             errorMessage = loadError.message || 'You do not have permission to access this resource.';
+          }
+        } else if (status === 429) {
+          if (errorCode === 'RATE_LIMITED') {
+            errorMessage = 'Too many requests. Wait 10–30 seconds and retry.';
+          } else {
+            errorMessage = loadError.message || 'Too many requests. Please wait and try again.';
           }
         } else if (status) {
           // For other status codes, use the error message from the fetcher (already includes status)
@@ -107,7 +117,7 @@ export default function EntityGridHost({ config }: { config: EntityGridConfig })
         }
         
         return (
-          <div className="px-6 md:px-8 pt-2">
+          <div className="px-2 pt-2">
             <div
               role="alert"
               className="flex items-center gap-2 px-3 py-2 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md"
@@ -116,7 +126,8 @@ export default function EntityGridHost({ config }: { config: EntityGridConfig })
               <span className="flex-1">{errorMessage}</span>
               <button
                 onClick={handleRetry}
-                className="text-sm font-medium underline hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded px-2 py-1 -mr-2"
+                disabled={retryCooldown}
+                className="text-sm font-medium underline hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded px-2 py-1 -mr-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label="Retry loading data"
               >
                 Retry
@@ -125,7 +136,7 @@ export default function EntityGridHost({ config }: { config: EntityGridConfig })
           </div>
         );
       })()}
-      <div className="px-6 md:px-8 pb-2">
+      <div className="px-2 pb-2">
         <GridMenubar
           searchCount={searchCount}
           gridId={config.id}
@@ -142,7 +153,7 @@ export default function EntityGridHost({ config }: { config: EntityGridConfig })
           onRetry={handleRetry}
         />
       </div>
-      <div className="flex-1 min-h-0 px-6 md:px-8">
+      <div className="flex-1 min-h-0 px-2">
         <EntityGrid
           config={config}
           gridRef={gridRef as React.RefObject<AgGridReact>}

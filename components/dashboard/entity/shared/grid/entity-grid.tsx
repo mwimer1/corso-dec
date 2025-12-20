@@ -3,6 +3,7 @@
 // AG Grid registration is handled in the useEffect hook via ensureAgGridReadyFor().
 // This ensures registration happens client-side after mount when environment variables are available.
 import { devError } from '@/lib/log';
+import { isRelaxedAuthMode } from '@/lib/shared/config/auth-mode';
 import { ensureAgGridReadyFor, isAgGridEnterpriseEnabled } from '@/lib/vendors/ag-grid.client';
 import type { EntityGridProps } from '@/types/dashboard';
 import { useOrganization } from '@clerk/nextjs';
@@ -111,10 +112,17 @@ export default function EntityGrid({
   const gridName = searchParams.get('gridName');
   const defaultGridName = searchParams.get('defaultGridName');
   
-  // Get organization ID from Clerk (required for tenant-scoped API requests)
+  // Check auth mode
+  const isRelaxed = isRelaxedAuthMode();
+  
+  // Get organization ID from Clerk (required for tenant-scoped API requests in strict mode)
   const { organization, isLoaded: orgLoaded } = useOrganization();
   // Derive orgId: only use it when organization is loaded to avoid stale data
+  // In relaxed mode, orgId can be null and grid will still work
   const orgId = orgLoaded ? (organization?.id ?? null) : null;
+  
+  // Track last orgId to prevent unnecessary refreshes
+  const lastOrgIdRef = useRef<string | null>(null);
 
   // Ensure AG Grid modules are registered before mounting
   useEffect(() => {
@@ -194,8 +202,8 @@ export default function EntityGrid({
     
     api.setGridOption('serverSideDatasource', {
       async getRows(p: IServerSideGetRowsParams) {
-        // Allow API call even if orgId is null - let API fallback handle org resolution
-        // The API will return NO_ORG_CONTEXT if no org can be resolved
+        // In relaxed mode, allow API call even if orgId is null
+        // In strict mode, the API will return NO_ORG_CONTEXT if no org can be resolved
         try {
           // Pass orgId to fetcher to include X-Corso-Org-Id header in API request (if available)
           // If orgId is null, fetcher won't set the header, allowing API to use fallback logic
@@ -223,7 +231,9 @@ export default function EntityGrid({
     gridApiRef.current = api;
     
     // Set up datasource with current orgId
+    // In relaxed mode, allow null orgId; in strict mode, will fail gracefully if no org
     updateDatasource(api, orgId);
+    lastOrgIdRef.current = orgId;
     
     api.sizeColumnsToFit();
     if (!(gridName || defaultGridName)) {
@@ -232,14 +242,33 @@ export default function EntityGrid({
   }, [config, gridName, defaultGridName, orgId, updateDatasource]);
 
   // Refresh datasource when orgId changes (e.g., when organization loads)
+  // Only refresh if orgId actually changed between non-null values, or null → value
+  // Never refresh in relaxed mode when orgId is null (no-op refresh)
   useEffect(() => {
-    if (gridApiRef.current && orgLoaded) {
-      // Only update if orgId is available (not null) or if it changed from null to a value
-      updateDatasource(gridApiRef.current, orgId);
-      // Refresh the grid to reload data with new orgId
-      gridApiRef.current.refreshServerSide({ purge: true });
+    if (!gridApiRef.current || !orgLoaded) return;
+    
+    const lastOrgId = lastOrgIdRef.current;
+    const currentOrgId = orgId;
+    
+    // Skip refresh if orgId hasn't changed
+    if (lastOrgId === currentOrgId) return;
+    
+    // In strict mode, don't refresh if orgId is null (wait for org to load)
+    if (!isRelaxed && currentOrgId === null) {
+      return;
     }
-  }, [orgId, orgLoaded, updateDatasource]);
+    
+    // Only refresh if orgId changed from one value to another (including null → value)
+    // Skip refresh if both are null (no-op)
+    if (lastOrgId === null && currentOrgId === null) {
+      return;
+    }
+    
+    // Update datasource and refresh
+    updateDatasource(gridApiRef.current, currentOrgId);
+    lastOrgIdRef.current = currentOrgId;
+    gridApiRef.current.refreshServerSide({ purge: true });
+  }, [orgId, orgLoaded, updateDatasource, isRelaxed]);
 
   // Show error state if initialization failed
   if (initError) {

@@ -222,22 +222,9 @@ export function createEntityFetcher(entity: GridId): EntityFetcher {
               : error?.details;
           
           // Use extracted message or fallback to top-level message or default
-          const message = apiErrorMessage || error?.message || errorMessage;
+          errorMessage = apiErrorMessage || error?.message || errorMessage;
           errorCode = apiErrorCode;
           errorDetails = apiErrorDetails;
-        
-          // Provide clear messages for common status codes
-          if (res.status === 401) {
-            errorMessage = apiErrorMessage || 'Unauthorized: Please sign in again.';
-          } else if (res.status === 403) {
-            // Don't append code to message here - let the UI component decide based on code
-            errorMessage = apiErrorMessage || `Forbidden: You do not have permission to access this resource.`;
-          } else {
-            errorMessage = message;
-            if (errorCode) {
-              errorMessage += ` (code: ${errorCode})`;
-            }
-          }
         }
       } catch {
         // If JSON parsing fails, use status-based messages
@@ -245,15 +232,22 @@ export function createEntityFetcher(entity: GridId): EntityFetcher {
           errorMessage = 'Unauthorized: Please sign in again.';
         } else if (res.status === 403) {
           errorMessage = 'Forbidden: You do not have permission to access this resource.';
+        } else if (res.status === 429) {
+          errorMessage = 'Too many requests. Please wait and try again.';
+          errorCode = 'RATE_LIMITED';
         } else {
           errorMessage = `Entity query failed (${entity}): HTTP ${res.status}`;
         }
       }
       
+      // Create error with status, code, and details for UI to distinguish error types
       const error = new Error(errorMessage) as ErrorWithStatus;
       error.status = res.status;
       if (errorCode) {
         error.code = errorCode;
+      } else if (res.status === 429) {
+        // Default to RATE_LIMITED for 429 if code not provided
+        error.code = 'RATE_LIMITED';
       }
       if (errorDetails !== undefined) {
         error.details = errorDetails;

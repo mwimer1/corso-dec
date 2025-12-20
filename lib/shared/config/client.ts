@@ -93,6 +93,9 @@ const PublicEnvSchema = z.object({
 
   // Mock AI mode for development/testing (bypasses real API calls)
   NEXT_PUBLIC_USE_MOCK_AI: z.string().optional(),
+
+  // Auth mode: 'strict' (default) requires org membership, 'relaxed' allows any signed-in user
+  NEXT_PUBLIC_AUTH_MODE: z.enum(['strict', 'relaxed']).optional(),
 }).strict();
 
 type PublicEnv = z.infer<typeof PublicEnvSchema>;
@@ -201,6 +204,9 @@ export const publicEnv: PublicEnv = (() => {
 
     // Mock AI mode for development/testing
     NEXT_PUBLIC_USE_MOCK_AI: safeGetEnv('NEXT_PUBLIC_USE_MOCK_AI'),
+
+    // Auth mode
+    NEXT_PUBLIC_AUTH_MODE: safeGetEnv('NEXT_PUBLIC_AUTH_MODE'),
   };
 
   _cache = PublicEnvSchema.parse(obj);

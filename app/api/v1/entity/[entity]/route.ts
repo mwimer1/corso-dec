@@ -7,6 +7,7 @@ import { http, withErrorHandlingEdge as withErrorHandling, withRateLimitEdge as 
 import { handleCors } from '@/lib/middleware';
 import type { EntityFetchParams } from '@/lib/services/entity/contracts';
 import { getEntityPage } from '@/lib/services/entity/pages';
+import { isRelaxedAuthMode } from '@/lib/shared/config/auth-mode';
 import {
   EntityListQuerySchema,
   EntityParamSchema,
@@ -29,131 +30,153 @@ export async function OPTIONS(req: Request) {
 }
 
 const handler = async (req: NextRequest, ctx: { params: { entity: string } }): Promise<NextResponse> => {
-  // Authentication & RBAC
+  // Authentication (always required)
   const { userId, has, orgId: activeOrgId } = await auth();
   if (!userId) {
     return await toNextResponse(http.error(401, 'Unauthorized', { code: 'HTTP_401' }));
   }
   
-  // Define allowed roles (consistent across all RBAC checks)
+  // Check auth mode
+  const isRelaxed = isRelaxedAuthMode();
+  
+  // Define allowed roles (for strict mode only)
   const allowedRoles = ['org:member', 'org:admin', 'org:owner'] as const;
   
-  // Resolve effective organization ID in priority order:
-  // 1. X-Corso-Org-Id header (explicit tenant selection)
-  // 2. auth().orgId (active org in Clerk session)
-  // 3. Fallback: first org from user's memberships
+  // Resolve effective organization ID (skip in relaxed mode if no org present)
   let orgId: string | null = null;
   let effectiveOrgIdSource: 'header' | 'active' | 'fallback' | null = null;
   
-  // Check header if available
-  if (req.headers) {
-    orgId = req.headers.get('x-corso-org-id') || req.headers.get('X-Corso-Org-Id') || null;
-    effectiveOrgIdSource = orgId ? 'header' : null;
-  }
-  
-  if (!orgId) {
-    orgId = activeOrgId ?? null;
-    effectiveOrgIdSource = orgId ? 'active' : null;
-  }
-  
-  if (!orgId) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.debug('[entity route] No active organization found for userId:', userId, '- attempting to fetch user organizations');
+  if (!isRelaxed) {
+    // Strict mode: resolve org ID in priority order:
+    // 1. X-Corso-Org-Id header (explicit tenant selection)
+    // 2. auth().orgId (active org in Clerk session)
+    // 3. Fallback: first org from user's memberships
+    if (req.headers) {
+      orgId = req.headers.get('x-corso-org-id') || req.headers.get('X-Corso-Org-Id') || null;
+      effectiveOrgIdSource = orgId ? 'header' : null;
     }
     
-    try {
-      // Get user's organization memberships and use the first one
-      // Note: clerkClient may be a function in some Clerk versions, but types suggest it's an object
-      const client = typeof clerkClient === 'function' ? await clerkClient() : clerkClient;
-      const orgMemberships = await client.users.getOrganizationMembershipList({
-        userId,
-        limit: 1,
-      });
+    if (!orgId) {
+      orgId = activeOrgId ?? null;
+      effectiveOrgIdSource = orgId ? 'active' : null;
+    }
+    
+    if (!orgId) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.debug('[entity route] No active organization found for userId:', userId, '- attempting to fetch user organizations');
+      }
       
-      if (orgMemberships.data && orgMemberships.data.length > 0 && orgMemberships.data[0]) {
-        orgId = orgMemberships.data[0].organization.id;
-        effectiveOrgIdSource = 'fallback';
+      try {
+        // Get user's organization memberships and use the first one
+        // Note: clerkClient may be a function in some Clerk versions, but types suggest it's an object
+        const client = typeof clerkClient === 'function' ? await clerkClient() : clerkClient;
+        const orgMemberships = await client.users.getOrganizationMembershipList({
+          userId,
+          limit: 1,
+        });
+        
+        if (orgMemberships.data && orgMemberships.data.length > 0 && orgMemberships.data[0]) {
+          orgId = orgMemberships.data[0].organization.id;
+          effectiveOrgIdSource = 'fallback';
+          if (process.env.NODE_ENV !== 'production') {
+            console.debug('[entity route] Using first organization from memberships:', orgId);
+          }
+        }
+      } catch (error) {
         if (process.env.NODE_ENV !== 'production') {
-          console.debug('[entity route] Using first organization from memberships:', orgId);
+          console.debug('[entity route] Failed to fetch user organizations:', error);
+        }
+        // Continue to error handling below
+      }
+    }
+    
+    // Check for organization (required in strict mode)
+    if (!orgId) {
+      return await toNextResponse(http.error(403, 'No active organization. Please create or join an organization to continue.', { 
+        code: 'NO_ORG_CONTEXT',
+        details: {
+          message: 'You must be a member of an organization to access this resource. If you are a member, please ensure an organization is selected in your session.',
+        }
+      }));
+    }
+  } else {
+    // Relaxed mode: try to get orgId from header or active session, but don't require it
+    if (req.headers) {
+      orgId = req.headers.get('x-corso-org-id') || req.headers.get('X-Corso-Org-Id') || null;
+      effectiveOrgIdSource = orgId ? 'header' : null;
+    }
+    
+    if (!orgId) {
+      orgId = activeOrgId ?? null;
+      effectiveOrgIdSource = orgId ? 'active' : null;
+    }
+    // In relaxed mode, orgId can be null - we'll use userId as tenant fallback
+  }
+  
+  // Enforce RBAC (skip in relaxed mode)
+  if (!isRelaxed && orgId) {
+    try {
+      const effectiveOrgId = orgId;
+      const isActiveOrg = effectiveOrgId === activeOrgId && effectiveOrgIdSource === 'active';
+      
+      if (isActiveOrg) {
+        // When using active org, use the standard has() check for each allowed role
+        const hasAllowedRole = allowedRoles.some((role) => has({ role }));
+        
+        if (!hasAllowedRole) {
+          if (process.env.NODE_ENV !== 'production') {
+            console.debug('[entity route] RBAC check failed for userId:', userId, 'orgId:', effectiveOrgId, 'allowedRoles:', allowedRoles);
+          }
+          return await toNextResponse(http.error(403, 'Insufficient permissions', { 
+            code: 'FORBIDDEN',
+            details: {
+              requiredRoles: allowedRoles,
+            }
+          }));
+        }
+      } else {
+        // When using fallback org or header-specified org, verify membership directly
+        const client = typeof clerkClient === 'function' ? await clerkClient() : clerkClient;
+        const membership = await client.users.getOrganizationMembershipList({
+          userId,
+          limit: 100,
+        });
+        const hasMembership = membership.data?.some(
+          (m: { organization: { id: string }; role: string }) => {
+            const role = m.role as string;
+            return m.organization.id === effectiveOrgId && allowedRoles.includes(role as typeof allowedRoles[number]);
+          }
+        );
+        
+        if (!hasMembership) {
+          if (process.env.NODE_ENV !== 'production') {
+            console.debug('[entity route] User does not have allowed role in organization:', effectiveOrgId, 'allowedRoles:', allowedRoles);
+          }
+          return await toNextResponse(http.error(403, 'Insufficient permissions', { 
+            code: 'FORBIDDEN',
+            details: {
+              requiredRoles: allowedRoles,
+            }
+          }));
         }
       }
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.debug('[entity route] Failed to fetch user organizations:', error);
+        console.debug('[entity route] Failed to verify organization membership:', error);
       }
-      // Continue to error handling below
+      return await toNextResponse(http.error(403, 'Insufficient permissions', { 
+        code: 'FORBIDDEN',
+        details: {
+          requiredRoles: allowedRoles,
+        }
+      }));
     }
   }
   
-  // Check for organization (required for organization-scoped operations)
-  if (!orgId) {
-    return await toNextResponse(http.error(403, 'No active organization. Please create or join an organization to continue.', { 
-      code: 'NO_ORG_CONTEXT',
-      details: {
-        message: 'You must be a member of an organization to access this resource. If you are a member, please ensure an organization is selected in your session.',
-      }
-    }));
-  }
-  
-  // Enforce RBAC: user must have one of the allowed roles in the effective organization
-  // Note: When using a fallback orgId, we need to check role for that specific org
-  // Clerk organization roles use the format: org:member, org:admin, etc.
-  try {
-    const effectiveOrgId = orgId;
-    const isActiveOrg = effectiveOrgId === activeOrgId && effectiveOrgIdSource === 'active';
-    
-    if (isActiveOrg) {
-      // When using active org, use the standard has() check for each allowed role
-      const hasAllowedRole = allowedRoles.some((role) => has({ role }));
-      
-      if (!hasAllowedRole) {
-        if (process.env.NODE_ENV !== 'production') {
-          console.debug('[entity route] RBAC check failed for userId:', userId, 'orgId:', effectiveOrgId, 'allowedRoles:', allowedRoles);
-        }
-        return await toNextResponse(http.error(403, 'Insufficient permissions', { 
-          code: 'FORBIDDEN',
-          details: {
-            requiredRoles: allowedRoles,
-          }
-        }));
-      }
-    } else {
-      // When using fallback org or header-specified org, verify membership directly
-      const client = typeof clerkClient === 'function' ? await clerkClient() : clerkClient;
-      const membership = await client.users.getOrganizationMembershipList({
-        userId,
-        limit: 100,
-      });
-      const hasMembership = membership.data?.some(
-        (m: { organization: { id: string }; role: string }) => {
-          const role = m.role as string;
-          return m.organization.id === effectiveOrgId && allowedRoles.includes(role as typeof allowedRoles[number]);
-        }
-      );
-      
-      if (!hasMembership) {
-        if (process.env.NODE_ENV !== 'production') {
-          console.debug('[entity route] User does not have allowed role in organization:', effectiveOrgId, 'allowedRoles:', allowedRoles);
-        }
-        return await toNextResponse(http.error(403, 'Insufficient permissions', { 
-          code: 'FORBIDDEN',
-          details: {
-            requiredRoles: allowedRoles,
-          }
-        }));
-      }
-    }
-  } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.debug('[entity route] Failed to verify organization membership:', error);
-    }
-    return await toNextResponse(http.error(403, 'Insufficient permissions', { 
-      code: 'FORBIDDEN',
-      details: {
-        requiredRoles: allowedRoles,
-      }
-    }));
-  }
+  // Determine tenant ID: use orgId if available, otherwise userId in relaxed mode
+  // Note: This is for potential tenant scoping in downstream code, but currently
+  // getEntityPage doesn't use tenant ID directly - it's handled at the data layer
+  const _tenantId = orgId || (isRelaxed ? userId : null);
 
   // Entity param validation
   const entityParsed = EntityParamSchema.safeParse((ctx.params?.entity ?? '').toLowerCase());
