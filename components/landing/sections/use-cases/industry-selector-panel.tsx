@@ -1,5 +1,6 @@
 'use client';
 
+import { Badge, Card, CardContent } from '@/components/ui/atoms';
 import type { UseCaseKey } from '@/lib/marketing/client';
 import { APP_LINKS } from '@/lib/shared';
 import { trackNavClick } from '@/lib/shared/analytics/track';
@@ -7,8 +8,9 @@ import { cn } from '@/styles';
 import { buttonVariants } from '@/styles/ui/atoms/button-variants';
 import { navbarStyleVariants } from '@/styles/ui/organisms/navbar-variants';
 import { Building2, Check, Hammer, Package, Shield } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 interface Industry {
   key: UseCaseKey;
@@ -17,6 +19,8 @@ interface Industry {
   description: string;
   benefits: string[];
   impact: string;
+  previewImageSrc?: string;
+  previewImageAlt?: string;
 }
 
 interface IndustrySelectorPanelProps {
@@ -24,7 +28,7 @@ interface IndustrySelectorPanelProps {
 }
 
 /**
- * Parses impact string into metric badges.
+ * Parses impact string into metric badges (limited to 2-3 for cleaner UI).
  * Example: "Agencies report 20–35% more qualified conversations and 10–18% higher close rates."
  * Returns: ["20–35% more qualified conversations", "10–18% higher close rates"]
  */
@@ -33,7 +37,8 @@ function parseImpactMetrics(impact: string): string[] {
   const parts = impact.split(/\s+and\s+|\s+&\s+/i);
   return parts
     .map((part) => part.trim().replace(/\.$/, '')) // Remove trailing period
-    .filter((part) => part.length > 0);
+    .filter((part) => part.length > 0)
+    .slice(0, 3); // Limit to 3 chips max
 }
 
 export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps) {
@@ -86,16 +91,17 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
   }
 
   return (
-    <div className="rounded-xl border border-border bg-surface shadow-card p-lg">
+    <div className="rounded-2xl border border-border bg-surface shadow-card p-lg">
       <div className="flex flex-col gap-lg">
-        {/* Unified segmented tabs (mobile scroll, desktop grid) */}
+        {/* Unified segmented tabs container (Attio-inspired: single container, no individual borders) */}
         <div
           role="tablist"
           aria-orientation="horizontal"
           aria-label="Industry selection"
           className={cn(
-            'flex gap-sm overflow-x-auto pb-2 -mx-2 px-2',
-            'lg:mx-0 lg:px-0 lg:overflow-visible lg:grid lg:grid-cols-4 lg:gap-sm'
+            'rounded-xl bg-muted/50 p-1',
+            'flex gap-1 overflow-x-auto',
+            'lg:grid lg:grid-cols-4 lg:gap-1 lg:overflow-visible'
           )}
         >
           {industries.map((industry, index) => {
@@ -114,11 +120,11 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
                 tabIndex={isSelected ? 0 : -1}
                 className={cn(
                   'flex items-center justify-center lg:justify-start gap-2',
-                  'whitespace-nowrap rounded-xl border px-4 py-2 text-sm font-medium transition-colors',
+                  'whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium transition-all',
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                   isSelected
-                    ? 'bg-primary text-primary-foreground border-primary shadow-sm'
-                    : 'bg-background text-foreground border-border hover:bg-surface-hover hover:border-border'
+                    ? 'bg-background text-foreground shadow-sm ring-1 ring-primary/20'
+                    : 'bg-transparent text-muted-foreground hover:bg-background/50 hover:text-foreground'
                 )}
                 onClick={() => setActiveKey(industry.key)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
@@ -155,28 +161,59 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
               </ul>
             </div>
 
-            {/* Right: Outcomes + CTAs */}
-            <div className="lg:col-span-5">
-              <div className="rounded-xl border border-border bg-background p-md">
-                <p className="text-sm font-semibold text-foreground mb-sm">Typical outcomes</p>
+            {/* Right: Preview visual + Outcomes + CTAs */}
+            <div className="lg:col-span-5 space-y-md">
+              {/* Proof visual preview */}
+              {activeIndustry.previewImageSrc ? (
+                <div className="rounded-xl overflow-hidden bg-muted/30 aspect-[4/3] relative">
+                  <Image
+                    src={activeIndustry.previewImageSrc}
+                    alt={activeIndustry.previewImageAlt || `${activeIndustry.title} preview`}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 33vw"
+                  />
+                </div>
+              ) : (
+                <Card variant="default" className="rounded-xl overflow-hidden">
+                  <CardContent className="p-md bg-gradient-to-br from-muted/50 to-muted/30 aspect-[4/3] flex items-center justify-center">
+                    <div className="text-center space-y-2">
+                      <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                        {React.createElement(INDUSTRY_ICONS[activeIndustry.key], {
+                          className: 'h-6 w-6 text-primary',
+                          'aria-hidden': true,
+                        })}
+                      </div>
+                      <p className="text-xs text-muted-foreground font-medium">
+                        {activeIndustry.title}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Outcomes block (simplified: chips + one short line) */}
+              <div className="space-y-sm">
+                <p className="text-sm font-semibold text-foreground">Typical outcomes</p>
 
                 {metrics.length > 0 && (
                   <div className="flex flex-wrap gap-sm" aria-label="Impact metrics">
                     {metrics.map((metric) => (
-                      <span
-                        key={metric}
-                        className="inline-flex items-center rounded-full border border-border bg-surface-hover px-3 py-1 text-xs font-medium text-foreground"
-                      >
+                      <Badge key={metric} color="secondary" className="text-xs">
                         {metric}
-                      </span>
+                      </Badge>
                     ))}
                   </div>
                 )}
 
-                <p className="mt-sm text-sm text-muted-foreground">{activeIndustry.impact}</p>
+                {/* Single short summary line (avoid repeating chips content) */}
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  {activeIndustry.impact.split('.')[0]}.
+                </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row sm:items-center gap-sm mt-md">
+              {/* CTAs */}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-sm pt-sm">
                 <Link
                   href={APP_LINKS.FOOTER.CONTACT}
                   onClick={() => trackNavClick('Talk to sales', APP_LINKS.FOOTER.CONTACT)}

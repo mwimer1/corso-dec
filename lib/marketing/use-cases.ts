@@ -7,6 +7,8 @@ const zUseCase = z.object({
   description: z.string().min(1),
   benefits: z.array(z.string().min(1)).min(1).max(6),
   impact: z.string().min(1),
+  previewImageSrc: z.string().url().optional(),
+  previewImageAlt: z.string().min(1).optional(),
 }).strict();
 
 export type UseCaseKey = 'insurance' | 'suppliers' | 'construction' | 'developers';

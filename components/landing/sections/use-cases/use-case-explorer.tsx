@@ -10,6 +10,8 @@ interface Industry {
   description: string;
   benefits: string[];
   impact: string;
+  previewImageSrc?: string;
+  previewImageAlt?: string;
 }
 
 export default function IndustryExplorer() {
@@ -21,6 +23,8 @@ export default function IndustryExplorer() {
     description: data.description,
     benefits: data.benefits,
     impact: data.impact,
+    ...(data.previewImageSrc && { previewImageSrc: data.previewImageSrc }),
+    ...(data.previewImageAlt && { previewImageAlt: data.previewImageAlt }),
   }));
 
   // Removed inner section wrapper - parent FullWidthSection provides full-bleed background and border
