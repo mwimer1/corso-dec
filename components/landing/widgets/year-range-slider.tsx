@@ -16,6 +16,11 @@ type Props = {
   compact?: boolean;
   /** Optional class on outer wrapper */
   className?: string;
+  /**
+   * Whether to show the current range as a badge next to the label.
+   * Default: true (backwards compatible).
+   */
+  showSelectedIndicator?: boolean;
 };
 
 /** Controlled range slider with optional inline value "bubbles" (no custom Slider props required). */
@@ -28,6 +33,7 @@ export const YearRangeSlider: React.FC<Props> = ({
   showBubbles = true,
   compact = false,
   className,
+  showSelectedIndicator = true,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -43,9 +49,11 @@ export const YearRangeSlider: React.FC<Props> = ({
     <div className={`${compact ? "mb-2" : "mb-6"} px-1 ${className ?? ""}`.trim()}>
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-base font-medium text-foreground">Year range</h3>
-        <span className="rounded border border-border bg-surface px-2 py-1 text-xs text-muted-foreground">
-          {min} — {max}
-        </span>
+        {showSelectedIndicator && (
+          <span className="rounded border border-border bg-surface px-2 py-1 text-xs text-muted-foreground">
+            {min} — {max}
+          </span>
+        )}
       </div>
       <div ref={containerRef} className="relative">
         {bubbles}

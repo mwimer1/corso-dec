@@ -12,6 +12,11 @@ type Props = {
   onSelect: (item: string) => void;
   id?: string;
   className?: string;
+  /**
+   * Whether to show the current selected value as a small badge next to the title.
+   * Default: true (backwards compatible).
+   */
+  showSelectedIndicator?: boolean;
 };
 
 /** A compact, a11y-friendly dropdown replacement for FilterPills. */
@@ -22,6 +27,7 @@ export function FilterSelect({
   onSelect,
   id,
   className,
+  showSelectedIndicator = true,
 }: Props) {
   const norm = (v: string) =>
     title.toLowerCase().includes("property") && v === "All" ? "All Types" : v;
@@ -30,7 +36,7 @@ export function FilterSelect({
     <div className={cn("space-y-2", className)}>
       <div className="flex items-center justify-between">
         <h3 className="text-base font-medium text-foreground">{title}</h3>
-        {selected && (
+        {selected && showSelectedIndicator && (
           <span className="rounded border border-border bg-surface px-2 py-1 text-xs text-muted-foreground">
             {norm(selected)}
           </span>

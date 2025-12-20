@@ -209,16 +209,16 @@ export const MarketInsightsSection: React.FC<Props> = ({
       aria-labelledby="market-insights-title"
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 items-start gap-12">
-        <div className="mb-8 lg:mb-0">
+        <div className="mb-8 lg:mb-0 max-w-prose">
           <h2 id="market-insights-title" className="text-4xl font-bold tracking-tight text-foreground">
             Explore Real Data in Action
           </h2>
           <p className="text-lg text-muted-foreground mt-4">
             See how Corso transforms building-permit data into actionable business intelligence across different views.
           </p>
-          <ul className="list-disc list-inside mt-6 space-y-2 text-foreground">
+          <ul className="list-disc list-outside pl-5 mt-6 space-y-2 text-muted-foreground">
             <li>Filter by territory, property type, and year range</li>
-            <li>Compare job value vs project count</li>
+            <li>Compare job value vs. project count</li>
             <li>Export-ready insights for GTM teams</li>
           </ul>
           <div className="flex gap-3 mt-6">
@@ -230,7 +230,7 @@ export const MarketInsightsSection: React.FC<Props> = ({
             </Button>
           </div>
         </div>
-        <Card className="bg-surface rounded-xl border border-border shadow-md">
+        <Card variant="highlight">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
@@ -254,30 +254,75 @@ export const MarketInsightsSection: React.FC<Props> = ({
             <Statistics totalProjects={totalProjects} totalJobValue={totalJobValue} averageJobValue={avgJobValue} valueClassName="text-primary" compact className="border-b-0 mt-0 mb-4" />
             <Chart data={filtered} loading={loading} variant="bare" />
           </CardContent>
-          <CardFooter>
-            <div className="grid grid-cols-1 lg:grid-cols-3 items-start gap-4">
-              <div className="lg:col-span-1 lg:max-w-[48ch]">
-                <YearRangeSlider value={range} onChange={setRange} onCommit={onRangeCommit} minYear={minYear} maxYear={maxYear} {...(!dense ? {} : { showBubbles: false })} compact />
+          <CardFooter className="block mt-4 border-t border-border/60 pt-4">
+            <div className="flex flex-col gap-4 lg:flex-row lg:flex-wrap lg:items-end">
+              <div className="w-full lg:flex-1 lg:min-w-[280px]">
+                <YearRangeSlider
+                  value={range}
+                  onChange={setRange}
+                  onCommit={onRangeCommit}
+                  minYear={minYear}
+                  maxYear={maxYear}
+                  compact
+                  className="mb-0"
+                  showSelectedIndicator={false}
+                  {...(!dense ? {} : { showBubbles: false })}
+                />
               </div>
-              <div className="lg:col-span-2">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                  {controlsVariant === "dropdown" ? (
-                    <>
-                      <FilterSelect title="Select Territory" items={territories} {...(territory !== undefined && { selected: territory })} onSelect={onTerritorySelect} id="territory-select" />
-                      <FilterSelect title="Select Property Type" items={propertyTypes} {...(propType !== undefined && { selected: propType })} onSelect={onPropertySelect} id="property-select" />
-                      <Button variant="secondary" size="sm" onClick={handleReset}>Reset</Button>
-                    </>
-                  ) : (
-                    <>
-                      <FilterPills title="Select Territory" items={territories} {...(territory !== undefined && { selected: territory })} onSelect={onTerritorySelect} id="territory-pills" />
-                      <FilterPills title="Select Property Type" items={propertyTypes} {...(propType !== undefined && { selected: propType })} onSelect={onPropertySelect} id="property-pills" />
-                      <Button variant="secondary" size="sm" onClick={handleReset}>Reset</Button>
-                    </>
-                  )}
-                </div>
-              </div>
+
+              {controlsVariant === "dropdown" ? (
+                <>
+                  <FilterSelect
+                    title="Select Territory"
+                    items={territories}
+                    {...(territory !== undefined && { selected: territory })}
+                    onSelect={onTerritorySelect}
+                    id="territory-select"
+                    className="w-full lg:w-[12rem]"
+                    showSelectedIndicator={false}
+                  />
+                  <FilterSelect
+                    title="Select Property Type"
+                    items={propertyTypes}
+                    {...(propType !== undefined && { selected: propType })}
+                    onSelect={onPropertySelect}
+                    id="property-select"
+                    className="w-full lg:w-[12rem]"
+                    showSelectedIndicator={false}
+                  />
+                </>
+              ) : (
+                <>
+                  <FilterPills
+                    title="Select Territory"
+                    items={territories}
+                    {...(territory !== undefined && { selected: territory })}
+                    onSelect={onTerritorySelect}
+                    id="territory-pills"
+                    showSelectedIndicator={false}
+                  />
+                  <FilterPills
+                    title="Select Property Type"
+                    items={propertyTypes}
+                    {...(propType !== undefined && { selected: propType })}
+                    onSelect={onPropertySelect}
+                    id="property-pills"
+                    showSelectedIndicator={false}
+                  />
+                </>
+              )}
+
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handleReset}
+                className="w-full lg:w-auto lg:self-end"
+              >
+                Reset
+              </Button>
             </div>
-            <p className="text-xs text-muted-foreground mt-4">Sample view • Updated regularly</p>
+
+            <p className="mt-4 text-xs text-muted-foreground">Sample view • Updated regularly</p>
           </CardFooter>
         </Card>
       </div>

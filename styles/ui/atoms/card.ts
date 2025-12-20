@@ -26,6 +26,9 @@ const cardVariants = tv({
       ghost: {
         root: 'border-0 shadow-none',
       },
+      highlight: {
+        root: 'rounded-xl shadow-md',
+      },
     },
   },
   defaultVariants: {
