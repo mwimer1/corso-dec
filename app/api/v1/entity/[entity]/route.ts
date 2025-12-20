@@ -9,9 +9,9 @@ import type { EntityFetchParams } from '@/lib/services/entity/contracts';
 import { getEntityPage } from '@/lib/services/entity/pages';
 import { isRelaxedAuthMode } from '@/lib/shared/config/auth-mode';
 import {
-  EntityListQuerySchema,
-  EntityParamSchema,
-  type EntityParam,
+    EntityListQuerySchema,
+    EntityParamSchema,
+    type EntityParam,
 } from '@/lib/validators';
 import { auth, clerkClient } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
