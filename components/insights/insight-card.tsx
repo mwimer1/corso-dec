@@ -72,8 +72,8 @@ export function InsightCard({
           <Link
             href={href}
             className={cn(
-              'block h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm',
-              variant === 'overlay' ? 'text-white hover:text-white/90' : 'hover:text-primary'
+              'block h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm no-underline',
+              variant === 'overlay' ? 'text-white hover:text-white/90' : 'text-foreground hover:text-primary'
             )}
             aria-label={`Read article: ${title}`}
           >

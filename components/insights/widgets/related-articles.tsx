@@ -25,7 +25,7 @@ export function RelatedArticles({ articles, className }: RelatedArticlesProps) {
 
   return (
     <section 
-      className={cn("space-y-6 sm:space-y-8", className)} 
+      className={cn("not-prose space-y-6 sm:space-y-8", className)} 
       aria-labelledby="related-articles-heading"
     >
       <header className="space-y-2">
