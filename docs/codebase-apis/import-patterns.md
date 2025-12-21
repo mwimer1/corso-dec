@@ -283,7 +283,7 @@ import { getEnv } from '@/lib/server/env';
 // Integrations (@/lib/integrations)
 import { stripe } from '@/lib/integrations/stripe';
 import { createOpenAIClient } from '@/lib/integrations/openai/server';
-import { supabaseApi } from '@/lib/integrations/supabase/api';
+import { createSupabaseClient } from '@/lib/integrations/supabase/server';
 
 // Database & Analytics (@/lib/integrations)
 import { createSafeSqlBuilder } from '@/lib/integrations/database/builder';

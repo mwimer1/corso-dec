@@ -1,7 +1,7 @@
+import { ContactSchema } from "@/lib/validators/contact";
+import { EntityQueryRequestSchema } from "@/lib/validators/entityQuery";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
-import { EntityQueryRequestSchema } from "@/lib/validators/entityQuery";
-import { ContactSchema } from "@/lib/validators/contact";
 
 // Define schemas directly in the test to avoid circular dependencies
 const passwordResetSchema = z.object({

@@ -56,7 +56,7 @@
     "lib/middleware/http/cors.ts -> @/api/edge",
     "lib/middleware/http/rate-limit.ts -> @/ratelimiting/core",
     "lib/middleware/http/rate-limit.ts -> @/ratelimiting/types",
-    "lib/middleware/http/security-headers.ts -> @/server/env",
+    "lib/middleware/http/headers.ts -> @/server/env",
     "lib/mocks/mappers/projects.adapter.ts -> @/validators/mock-projects",
     "lib/mocks/mappers/projects.adapter.ts -> @/shared/config/client",
     "lib/ratelimiting/store.ts -> @/server/env",
