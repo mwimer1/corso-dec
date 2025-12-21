@@ -63,6 +63,7 @@ After pulling the repository, complete this checklist to ensure full compliance 
 - [ ] Verify pnpm version: `pnpm -v` should show 10.15.0 or compatible
 
 ✅ **Domain-Specific Setup**
+- [ ] **Dashboard**: See `docs/development/dashboard-setup.md` for complete dashboard setup guide (mock DB, relaxed auth, column config, etc.)
 - [ ] **Analytics Features**: Set `CLICKHOUSE_URL`, `CLICKHOUSE_DATABASE`, `CLICKHOUSE_PASSWORD` in `.env.local` for warehouse queries
 - [ ] **AI Features**: Add `OPENAI_API_KEY` to `.env.local` for AI-powered features
 - [ ] **Mock Database**: Set `CORSO_USE_MOCK_DB=true` in `.env.local` for dashboard entity queries (uses checked-in JSON fixtures from `public/__mockdb__/`)
