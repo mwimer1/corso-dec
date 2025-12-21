@@ -3,9 +3,6 @@
 
 $baseUrl = "https://raw.githubusercontent.com/Corso222/corso-mvp/main"
 $files = @(
-    "db/addresses.csv",
-    "db/companies.csv", 
-    "db/projects.csv",
     "public/demos/addresses-interface.png",
     "public/demos/companies-interface.png",
     "public/demos/corso-ai-interface.png",

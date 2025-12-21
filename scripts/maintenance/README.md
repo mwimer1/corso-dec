@@ -31,7 +31,6 @@ This README is generated from a single template (`README.scripts.hbs`).
 - **fix-links.ts** – Use the refactored link fixes for all sets
 - **gen-variants-index.ts** – ⛔ Explicit skip-list to prevent reintroducing removed aggregators
 - **generate-alias-doc.ts** – Load and fully parse tsconfig (handles &#x60;extends&#x60;, JSONC, etc.).
-- **generate-mock-json.ts** – scripts/maintenance/generate-mock-json.ts
 - **generate-readme.ts** – scripts/maintenance/generate-readme.ts
 - **inject-frontmatter.ts** – /*.md&#x27;,
 - **kill-orphans.ts** – Cross-platform script to kill orphaned Node.js processes

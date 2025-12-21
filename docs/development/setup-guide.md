@@ -65,8 +65,7 @@ After pulling the repository, complete this checklist to ensure full compliance 
 ✅ **Domain-Specific Setup**
 - [ ] **Analytics Features**: Set `CLICKHOUSE_URL`, `CLICKHOUSE_DATABASE`, `CLICKHOUSE_PASSWORD` in `.env.local` for warehouse queries
 - [ ] **AI Features**: Add `OPENAI_API_KEY` to `.env.local` for AI-powered features
-- [ ] **Mock Database**: Set `CORSO_USE_MOCK_DB=true` in `.env.local` for dashboard entity queries (uses CSV data from `/db` directory)
-- [ ] **Build Mock DB**: Run `pnpm mockdb:build` to generate JSON files for mock mode
+- [ ] **Mock Database**: Set `CORSO_USE_MOCK_DB=true` in `.env.local` for dashboard entity queries (uses checked-in JSON fixtures from `public/__mockdb__/`)
 
 ### Development Server Commands
 - **`pnpm dev`** - Starts Next.js development server only (no Storybook)
@@ -177,7 +176,7 @@ to be copy‑paste friendly and CI‑ready.
 > Mock Mode (JSON-backed tables)
 >
 > - Set `CORSO_USE_MOCK_DB=true` in `.env.local` to serve dashboard entity tables from JSON files in `public/__mockdb__/`.
-> - JSON files are generated from CSV seeds in `db/*.csv` by running `pnpm gen:mockdb`.
+> - JSON fixtures are checked into the repo under `public/__mockdb__/` (no generation step required).
 > - Edge-compatible (uses `fetch()` to load JSON, no Node `fs`). Supports
 > eq/contains/gt/lt/gte/lte/in/between/bool filters, global search, sorting (numbers/strings/dates),
 > and pagination via `getEntityPage()` service.

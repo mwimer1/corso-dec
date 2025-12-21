@@ -708,7 +708,7 @@ const { data, isLoading, error } = useWarehouseQuery(
 
 ## Mock backend (development setup)
 
-When `CORSO_USE_MOCK_DB` is enabled, warehouse queries are served by a mock backend that reads from `db/*.csv` and `db/*.xlsx`.
+When `CORSO_USE_MOCK_DB` is enabled, warehouse queries are served by a mock backend that reads from checked-in JSON fixtures in `public/__mockdb__/`.
 
 - API route: `app/api/v1/entity/{entity}/query/route.ts` (for entity queries)
 - Reader: `lib/integrations/clickhouse/server.ts`

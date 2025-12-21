@@ -10,12 +10,8 @@ status: "draft"
 ## CORSO_USE_MOCK_DB
 
 - Type: "true" | "false"
-- Purpose: When set to "true" in development, entity data routes (projects, companies, addresses) read from static JSON files generated from the CSVs under `/db`.
-- Source: JSON files are generated to `public/__mockdb__/{companies,projects,addresses}.json` by running:
-
-```bash
-pnpm gen:mockdb
-```
+- Purpose: When set to "true" in development, entity data routes (projects, companies, addresses) read from static JSON fixtures under `public/__mockdb__/`.
+- Source of truth: The JSON fixtures in `public/__mockdb__/` are checked into the repo (no CSV generation step).
 
 - **Canonical Flag**: `CORSO_USE_MOCK_DB` is the primary environment variable for enabling mock database mode.
 - **Legacy Support**: The app accepts `USE_MOCK_DB` (server-side) and `NEXT_PUBLIC_USE_MOCK_DB` (client-side) for backward compatibility in the current release, but these are deprecated and will be removed in a future version.
@@ -52,8 +48,7 @@ The mock database feature has complex runtime dependencies that developers must 
 - **Test Environment**: Tests automatically use mock mode when `NODE_ENV === 'test'` (no flag needed in test setup)
 
 **Hidden Dependencies:**
-- Mock JSON files must be generated via `pnpm mockdb:build` command
-- Files are served from `public/__mockdb__/` directory (Edge-compatible)
+- Mock JSON files live in `public/__mockdb__/` and are served from that directory (Edge-compatible)
 - Entity routes automatically detect and use mock data when flag is enabled
 - No UI changes required - uses existing data fetching patterns
 

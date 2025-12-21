@@ -19,7 +19,6 @@
   },
   "scripts": {
     "typecheck:fast": "tsc -p config/typescript/tsconfig.tooling.json --noEmit",
-    "gen:mockdb": "tsx scripts/maintenance/generate-mock-json.ts",
     "validate:mock-schema": "tsx scripts/maintenance/validate-mock-schema.ts",
     "verify:edge": "tsx scripts/verify-edge-safe.ts",
     "verify:env": "tsx scripts/verify-env-usage.ts",
@@ -94,7 +93,7 @@
     "build": "next build && pnpm run typecheck",
     "cleanup:next": "rimraf .next && pnpm next build",
     "predev": "tsx scripts/maintenance/ensure-ports.ts --DevPort 3000 --PlaywrightPort 9323 && tsx scripts/maintenance/kill-orphans.ts --max-age 30",
-    "dev": "pnpm run gen:mockdb && pnpm run dev:next",
+    "dev": "pnpm run dev:next",
     "dev:trace-deprecations": "cross-env NODE_OPTIONS=--trace-deprecation pnpm run dev:next",
     "dev:next": "cross-env NODE_OPTIONS=--no-deprecation next dev --turbo --hostname localhost -p 3000",
     "dev:clean:orphans": "tsx scripts/maintenance/kill-orphans.ts --max-age 240",
