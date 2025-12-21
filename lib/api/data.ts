@@ -2,7 +2,7 @@
 // Edge-safe adapter to serve entity page data, sourcing from public/__mockdb__ when mock flag is on.
 import { getEnvEdge } from '@/lib/api/edge';
 import { processQuery, type MockFilter, type MockQueryParams, type MockSort } from '@/lib/mocks/shared';
-import { normalizeCompanyRow } from './mock-normalizers';
+import { normalizeAddressRow, normalizeCompanyRow, normalizeProjectRow } from './mock-normalizers';
 
 type Filter = MockFilter;
 type Sort = MockSort;
@@ -54,10 +54,14 @@ export async function getEntityPage(
   }
   let all = (await res.json()) as Record<string, unknown>[];
 
-  // Apply normalization for companies to ensure complete, realistic data
+  // Apply normalization for entities to ensure complete, realistic data
   // This only runs in mock mode and does not affect production data paths
   if (params.entity === 'companies') {
     all = all.map((row, index) => normalizeCompanyRow(row, index));
+  } else if (params.entity === 'projects') {
+    all = all.map((row, index) => normalizeProjectRow(row, index));
+  } else if (params.entity === 'addresses') {
+    all = all.map((row, index) => normalizeAddressRow(row, index));
   }
 
   // Process query using shared utilities

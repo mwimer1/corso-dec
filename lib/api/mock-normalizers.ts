@@ -335,3 +335,206 @@ export function normalizeCompanyRow(
   return normalized;
 }
 
+/**
+ * Parses a date string in various formats and extracts year and month
+ * Supports formats like "12/19/2000", "2000-12-19", "2000/12/19"
+ */
+function parseDateFields(dateStr: string | undefined | null): { year: number | null; month: number | null } {
+  if (!dateStr || typeof dateStr !== 'string') {
+    return { year: null, month: null };
+  }
+
+  try {
+    // Try parsing as MM/DD/YYYY or M/D/YYYY
+    const mmddyyyy = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/;
+    const match1 = dateStr.match(mmddyyyy);
+    if (match1) {
+      const month = parseInt(match1[1]!, 10);
+      const year = parseInt(match1[3]!, 10);
+      if (month >= 1 && month <= 12 && year > 1900 && year < 2100) {
+        return { year, month };
+      }
+    }
+
+    // Try parsing as YYYY-MM-DD or YYYY/MM/DD
+    const yyyymmdd = /^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/;
+    const match2 = dateStr.match(yyyymmdd);
+    if (match2) {
+      const year = parseInt(match2[1]!, 10);
+      const month = parseInt(match2[2]!, 10);
+      if (month >= 1 && month <= 12 && year > 1900 && year < 2100) {
+        return { year, month };
+      }
+    }
+
+    // Try parsing as Date object
+    const date = new Date(dateStr);
+    if (!isNaN(date.getTime())) {
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1; // getMonth() returns 0-11
+      if (year > 1900 && year < 2100) {
+        return { year, month };
+      }
+    }
+  } catch {
+    // Fall through to return null
+  }
+
+  return { year: null, month: null };
+}
+
+/**
+ * Normalizes a project row from mock JSON to ensure computed fields are present
+ * Specifically computes effective_year and effective_month from effective_date
+ * 
+ * This function is deterministic and only adds missing fields.
+ */
+export function normalizeProjectRow(
+  row: Record<string, unknown>,
+  _index: number
+): Record<string, unknown> {
+  // Preserve existing values
+  const normalized: Record<string, unknown> = { ...row };
+
+  // Only compute if fields are missing (don't overwrite existing values)
+  if (!normalized['effective_year'] || normalized['effective_year'] === null) {
+    const effectiveDate = normalized['effective_date'];
+    const { year } = parseDateFields(
+      typeof effectiveDate === 'string' ? effectiveDate : undefined
+    );
+    normalized['effective_year'] = year;
+  }
+
+  if (!normalized['effective_month'] || normalized['effective_month'] === null) {
+    const effectiveDate = normalized['effective_date'];
+    const { month } = parseDateFields(
+      typeof effectiveDate === 'string' ? effectiveDate : undefined
+    );
+    normalized['effective_month'] = month;
+  }
+
+  // Preserve all other fields exactly as they are
+  return normalized;
+}
+
+/**
+ * Parses a full address string into components
+ * Supports formats like "2386 Main Dr, McKinney, TX 75069"
+ * Returns parsed components or null if parsing fails
+ */
+function parseFullAddress(fullAddress: string | undefined | null): {
+  street: string | null;
+  city: string | null;
+  state: string | null;
+  zipcode: string | null;
+} {
+  if (!fullAddress || typeof fullAddress !== 'string') {
+    return { street: null, city: null, state: null, zipcode: null };
+  }
+
+  try {
+    // Pattern: "STREET, CITY, STATE ZIPCODE" or "STREET, CITY, STATE  ZIPCODE"
+    // Examples: "2386 Main Dr, McKinney, TX 75069"
+    const pattern = /^(.+?),\s*(.+?),\s*([A-Z]{2})\s+(\d{5}(?:-\d{4})?)$/;
+    const match = fullAddress.match(pattern);
+    
+    if (match) {
+      return {
+        street: match[1]?.trim() || null,
+        city: match[2]?.trim() || null,
+        state: match[3]?.trim() || null,
+        zipcode: match[4]?.trim() || null,
+      };
+    }
+
+    // Fallback: try to extract at least city, state, zip from end
+    // Pattern: ", CITY, STATE ZIP" at the end
+    const endPattern = /,\s*([^,]+?),\s*([A-Z]{2})\s+(\d{5}(?:-\d{4})?)$/;
+    const endMatch = fullAddress.match(endPattern);
+    
+    if (endMatch) {
+      const street = fullAddress.substring(0, fullAddress.indexOf(',')).trim();
+      return {
+        street: street || null,
+        city: endMatch[1]?.trim() || null,
+        state: endMatch[2]?.trim() || null,
+        zipcode: endMatch[3]?.trim() || null,
+      };
+    }
+  } catch {
+    // Fall through to return null
+  }
+
+  return { street: null, city: null, state: null, zipcode: null };
+}
+
+/**
+ * Checks if an address string contains numbers (suitable for mailers)
+ */
+function hasAddressNumbers(address: string | undefined | null): boolean {
+  if (!address || typeof address !== 'string') {
+    return false;
+  }
+  // Check if address starts with a number or contains a number pattern
+  return /^\d+/.test(address.trim()) || /\d+/.test(address);
+}
+
+/**
+ * Normalizes an address row from mock JSON to ensure all required fields are present
+ * Parses full_address into separate components if they're missing
+ * 
+ * This function is deterministic and only adds missing fields.
+ */
+export function normalizeAddressRow(
+  row: Record<string, unknown>,
+  _index: number
+): Record<string, unknown> {
+  // Preserve existing values
+  const normalized: Record<string, unknown> = { ...row };
+
+  const fullAddress = normalized['full_address'] as string | undefined;
+
+  // Parse full_address if city, state, or zipcode are missing
+  const needsParsing = !normalized['city'] || !normalized['state'] || !normalized['zipcode'];
+  
+  if (needsParsing && fullAddress) {
+    const parsed = parseFullAddress(fullAddress);
+    
+    if (!normalized['city'] && parsed.city) {
+      normalized['city'] = parsed.city;
+    }
+    
+    if (!normalized['state'] && parsed.state) {
+      normalized['state'] = parsed.state;
+    }
+    
+    if (!normalized['zipcode'] && parsed.zipcode) {
+      // Ensure zipcode is a string (column config expects string)
+      normalized['zipcode'] = String(parsed.zipcode);
+    }
+  }
+
+  // Ensure zipcode is a string if it exists but is a number
+  if (normalized['zipcode'] && typeof normalized['zipcode'] === 'number') {
+    normalized['zipcode'] = String(normalized['zipcode']);
+  }
+
+  // Compute full_address_has_numbers if missing
+  if (normalized['full_address_has_numbers'] === undefined || normalized['full_address_has_numbers'] === null) {
+    normalized['full_address_has_numbers'] = hasAddressNumbers(fullAddress);
+  }
+
+  // Ensure property_type_major_category exists (set to empty string if missing, not null)
+  if (normalized['property_type_major_category'] === undefined || normalized['property_type_major_category'] === null) {
+    normalized['property_type_major_category'] = '';
+  }
+
+  // Ensure property_type_sub_category exists (set to empty string if missing, not null)
+  if (normalized['property_type_sub_category'] === undefined || normalized['property_type_sub_category'] === null) {
+    normalized['property_type_sub_category'] = '';
+  }
+
+  // Preserve all other fields exactly as they are
+  return normalized;
+}
+

@@ -6,6 +6,7 @@ import { cn } from "@/styles";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 // Grid state context removed - using local state instead
 import { useUser } from '@clerk/nextjs';
+import type { CsvExportParams, ProcessCellForExportParams } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
 import { ArrowDownToLine, CopyPlus, FileDown, ListRestart, Maximize2, RefreshCcw, Save, Search, Trash } from 'lucide-react';
 import type React from 'react';
@@ -20,6 +21,76 @@ const formatNumber = (num: string | null): string => {
   if (n >= 1000) return `${(n / 1000).toFixed(1)}K`;
   return n.toString();
 };
+
+/**
+ * Creates CSV export parameters that process cells to match grid display
+ * Uses valueGetter and valueFormatter to ensure exported values match what's shown in the grid
+ */
+function createCsvExportParams(gridApi: AgGridReact['api']): CsvExportParams {
+  return {
+    processCellCallback: (params: ProcessCellForExportParams): string => {
+      const { column, node, value } = params;
+      
+      if (!column || !node) {
+        return value ?? '';
+      }
+
+      // Get the column definition to check for valueGetter and valueFormatter
+      const colDef = column.getColDef();
+      
+      // First, apply valueGetter if it exists to get the computed value
+      let computedValue: unknown = value;
+      if (colDef.valueGetter && typeof colDef.valueGetter === 'function') {
+        try {
+          // Create params for valueGetter
+          const getterParams = {
+            data: node.data,
+            node: node,
+            colDef: colDef,
+            column: column,
+            api: gridApi,
+            columnApi: gridApi,
+            getValue: (field: string) => {
+              // Helper to get field value from node data
+              return node.data?.[field];
+            },
+          };
+          computedValue = colDef.valueGetter(getterParams as any);
+        } catch (error) {
+          // If valueGetter fails, use raw value
+          devWarn('CSV export: valueGetter failed', error);
+          computedValue = value;
+        }
+      }
+      
+      // Then, apply valueFormatter if it exists
+      if (colDef.valueFormatter && typeof colDef.valueFormatter === 'function') {
+        try {
+          // Create a params object similar to what valueFormatter expects
+          const formatterParams = {
+            value: computedValue,
+            data: node.data,
+            node: node,
+            colDef: colDef,
+            column: column,
+            api: gridApi,
+            columnApi: gridApi,
+          };
+          
+          const formatted = colDef.valueFormatter(formatterParams as any);
+          return formatted ?? '';
+        } catch (error) {
+          // If formatter fails, fall back to computed value
+          devWarn('CSV export: valueFormatter failed', error);
+          return String(computedValue ?? '');
+        }
+      }
+      
+      // No formatter, return computed value (or raw value if no valueGetter)
+      return String(computedValue ?? value ?? '');
+    },
+  };
+}
 
 // Local style tokens for toolbar dropdowns (maintainability + consistency)
 const TOOLBAR_HOVER_BG = "hover:bg-black/5";
@@ -403,7 +474,12 @@ export function GridMenubar(props: GridMenubarProps) {
                 <div className={DROPDOWN_SECTION_LABEL_CLASS}>Export</div>
                 {/* Export CSV */}
                 <DropdownMenu.Item
-                  onSelect={() => props.gridRef?.current?.api.exportDataAsCsv()}
+                  onSelect={() => {
+                    const api = props.gridRef?.current?.api;
+                    if (api) {
+                      api.exportDataAsCsv(createCsvExportParams(api));
+                    }
+                  }}
                   className={cn(DROPDOWN_ITEM_BASE_CLASS, DROPDOWN_ITEM_INTERACTION_CLASS)}
                 >
                   <ArrowDownToLine className="h-4 w-4" />
@@ -457,7 +533,12 @@ export function GridMenubar(props: GridMenubarProps) {
           {/* Action buttons group: Export, Reset, Refresh */}
           <div className="flex items-center gap-1">
             <button
-              onClick={() => props.gridRef?.current?.api.exportDataAsCsv()}
+              onClick={() => {
+                const api = props.gridRef?.current?.api;
+                if (api) {
+                  api.exportDataAsCsv(createCsvExportParams(api));
+                }
+              }}
               className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-black/5 active:bg-black/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               aria-label="Export as CSV"
               title="Export as CSV"
