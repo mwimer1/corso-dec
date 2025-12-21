@@ -53,7 +53,7 @@ function ChatComposer(props: ChatComposerProps) {
   }, [value, onInputAutoGrow]);
 
   return (
-    <div className="mx-auto w-full max-w-3xl rounded-2xl bg-surface p-3 shadow-sm" role="region" aria-label="Message composer">
+    <div className="mx-auto w-full max-w-3xl lg:max-w-4xl 2xl:max-w-5xl rounded-2xl bg-surface p-3 shadow-sm" role="region" aria-label="Message composer">
       <textarea
         ref={inputRef}
         value={value}

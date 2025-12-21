@@ -108,7 +108,7 @@ export default function ChatWindow() {
       {/* Messages list */}
       <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto bg-background flex flex-col justify-end">
         {hasHistory ? (
-          <div className="mx-auto w-full max-w-3xl px-6 py-4">
+          <div className="mx-auto w-full max-w-3xl lg:max-w-4xl 2xl:max-w-5xl px-6 py-4">
             <ul role="log" aria-live="polite" aria-relevant="additions" className="space-y-4">
               {messages.map((m) => (
                 <li key={m.id}>
@@ -118,7 +118,7 @@ export default function ChatWindow() {
             </ul>
           </div>
         ) : (
-          <div className="mx-auto w-full max-w-3xl px-6 pt-6 pb-3">
+          <div className="mx-auto w-full max-w-3xl lg:max-w-4xl 2xl:max-w-5xl px-6 pt-6 pb-3">
             <ChatWelcome onPreset={handleSelectFollowUp} {...(firstName ? { firstName } : {})} />
           </div>
         )}
@@ -128,7 +128,7 @@ export default function ChatWindow() {
       <div className="bg-background px-6 py-5 flex-shrink-0 border-t-[var(--chat-composer-border)] border-border">
         {/* Server-only placeholder to preserve layout pre-hydration; mark as region for a11y */}
         {!hydrated && (
-          <div className="mx-auto w-full max-w-3xl rounded-2xl bg-surface p-3 shadow-sm" role="region" aria-hidden="true">
+          <div className="mx-auto w-full max-w-3xl lg:max-w-4xl 2xl:max-w-5xl rounded-2xl bg-surface p-3 shadow-sm" role="region" aria-hidden="true">
             {/* Empty shell matches sizing of composer */}
           </div>
         )}

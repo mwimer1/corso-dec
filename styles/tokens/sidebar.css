@@ -1,7 +1,7 @@
 /* Sidebar tokens - single source of truth for sidebar design variables */
 :root {
   /* Sidebar tokens */
-  --sb-width-expanded: 280px;
+  --sb-width-expanded: 240px;
   --sb-item-h: 44px; /* Slightly reduced for better density */
   --sb-border: hsl(0deg 0% 90%);
   --sb-border-hover: hsl(0deg 0% 85%);

@@ -35,7 +35,7 @@ const containerMaxWidthVariants = tv({
       '7xl': 'max-w-7xl',
       full: 'max-w-full',
       // Custom fixed widths
-      dashboard: 'max-w-screen-2xl',
+      dashboard: 'max-w-[1600px]',
       // Responsive viewport-based
       viewport: 'max-w-screen',
       viewportLarge: 'max-w-screen',
