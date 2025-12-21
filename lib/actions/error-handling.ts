@@ -1,8 +1,8 @@
 // lib/actions/shared/error-handling.ts
 // server-agnostic helpers (no server-only import required)
 
-import { formatErrorMessage, normalizeUnknownError } from "@/lib/shared/errors/error-utils";
 import { ApplicationError, ErrorCategory, ErrorSeverity } from "@/lib/shared";
+import { formatErrorMessage, normalizeUnknownError } from "@/lib/shared/errors/error-utils";
 
 /**
  * Standardized internal error handler.

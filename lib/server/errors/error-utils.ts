@@ -1,10 +1,10 @@
 // lib/server/errors/error-utils.ts
 import 'server-only';
 
-import { ZodError } from 'zod';
-import { ApplicationError } from '@/lib/shared/errors/application-error';
 import type { ApiError, ApiErrorCode } from '@/lib/api/response/api-error';
+import { ApplicationError } from '@/lib/shared/errors/application-error';
 import { formatErrorMessage, normalizeUnknownError } from '@/lib/shared/errors/error-utils';
+import { ZodError } from 'zod';
 
 // Re-export shared error utilities for backward compatibility
 export { formatErrorMessage, normalizeUnknownError };

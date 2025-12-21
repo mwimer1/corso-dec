@@ -6,7 +6,7 @@ import 'server-only';
  */
 
 // Re-export server-only action utilities
-export { checkRateLimit, ACTION_RATE_LIMITS as RATE_LIMITS } from '@/lib/ratelimiting';
+export { ACTION_RATE_LIMITS as RATE_LIMITS, checkRateLimit } from '@/lib/ratelimiting';
 // Rate limiting moved to direct middleware imports
 
 // ClickHouse exports (consolidated under lib/integrations/clickhouse/server.ts)
@@ -21,8 +21,8 @@ export { clickhouse, clickhouseQuery } from '@/lib/integrations/clickhouse';
 // Error types (server facade)
 export { ApplicationError, ErrorCategory, ErrorSeverity } from '@/lib/shared';
 // Re-export api-error types from edge-safe location (for backward compatibility)
-export type { ApiError, ApiErrorCode } from '@/lib/api/response/api-error';
 export { fail } from '@/lib/api/response/api-error';
+export type { ApiError, ApiErrorCode } from '@/lib/api/response/api-error';
 export * from './errors/error-utils';
 
 // OpenAI (server) exports
