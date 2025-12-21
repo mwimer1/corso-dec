@@ -6,10 +6,8 @@ import { ClerkEventsHandler } from '@/components/auth';
 import { getEnv } from '@/lib/server/env';
 import { latoVariable } from "@/styles/fonts";
 import "@/styles/globals.css";
-// AG Grid base styles (must be imported before theme overrides)
+// AG Grid custom theme overrides (Theming API compatible)
 import '@/styles/ui/ag-grid.theme.css';
-import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-quartz.css';
 import type { Viewport } from "next";
 import Script from 'next/script';
 import type { ReactNode } from "react";

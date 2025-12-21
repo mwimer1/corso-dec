@@ -9,6 +9,7 @@ import { cn } from '@/styles';
 import type { EntityGridProps } from '@/types/dashboard';
 import { useOrganization } from '@clerk/nextjs';
 import type { ColDef, ColGroupDef, GridApi, GridReadyEvent, IServerSideGetRowsParams } from 'ag-grid-community';
+import { themeQuartz } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -366,7 +367,7 @@ export default function EntityGrid({
       )}
     >
       <AgGridReact
-        theme="legacy"
+        theme={themeQuartz}
         rowModelType="serverSide"
         onGridReady={onGridReady}
         columnDefs={colDefs}
