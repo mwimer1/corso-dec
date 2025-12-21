@@ -170,7 +170,7 @@ export default function EntityGridHost({ config }: { config: EntityGridConfig })
           currentState={currentState}
           unsavedState={false}
           gridRef={gridRef as React.RefObject<AgGridReact>}
-          coreGridTheme="ag-theme-quartz"
+          coreGridTheme="corso-ag-grid"
           setCoreGridTheme={() => {}}
           initDefaultGridName={defaultGridName}
           initGridName={gridName}

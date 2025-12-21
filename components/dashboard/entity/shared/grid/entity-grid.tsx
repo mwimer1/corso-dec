@@ -5,11 +5,11 @@
 import { devError } from '@/lib/log';
 import { isRelaxedAuthMode } from '@/lib/shared/config/auth-mode';
 import { ensureAgGridReadyFor, isAgGridEnterpriseEnabled } from '@/lib/vendors/ag-grid.client';
+import { corsoAgGridTheme } from '@/lib/vendors/ag-grid.theme';
 import { cn } from '@/styles';
 import type { EntityGridProps } from '@/types/dashboard';
 import { useOrganization } from '@clerk/nextjs';
 import type { ColDef, ColGroupDef, GridApi, GridReadyEvent, IServerSideGetRowsParams } from 'ag-grid-community';
-import { themeQuartz } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -361,13 +361,13 @@ export default function EntityGrid({
       id={`${config.id}-grid`} 
       style={style} 
       className={cn(
-        'ag-theme-quartz', 
+        'corso-ag-grid',
         density === 'compact' ? 'ag-density-compact' : 'ag-density-comfortable',
         className
       )}
     >
       <AgGridReact
-        theme={themeQuartz}
+        theme={corsoAgGridTheme}
         rowModelType="serverSide"
         onGridReady={onGridReady}
         columnDefs={colDefs}
