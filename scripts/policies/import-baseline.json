@@ -2,8 +2,11 @@
   "description": "Baseline of existing cross-domain leaf imports. New violations will fail the test.",
   "offenders": [
     "lib/actions/error-handling.ts -> @/shared/errors/error-utils",
+    "lib/middleware/edge/error-handler.ts -> @/shared/errors/api-error-conversion",
     "lib/server/errors/error-utils.ts -> @/api/response/api-error",
+    "lib/server/errors/error-utils.ts -> @/shared/errors/api-error-conversion",
     "lib/server/index.ts -> @/api/response/api-error",
+    "lib/shared/errors/api-error-conversion.ts -> @/api/response/api-error",
     "lib/api/data.ts -> @/mocks/shared",
     "lib/api/edge.ts -> @/types/shared/config/base/types",
     "lib/api/edge.ts -> @/middleware/edge/error-handler",
