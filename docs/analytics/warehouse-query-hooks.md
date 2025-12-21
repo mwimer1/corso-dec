@@ -712,7 +712,7 @@ When `CORSO_USE_MOCK_DB` is enabled, warehouse queries are served by a mock back
 
 - API route: `app/api/v1/entity/{entity}/query/route.ts` (for entity queries)
 - Reader: `lib/integrations/clickhouse/server.ts`
-- Data and usage: see `db/README.md`
+- Data source: Mock JSON files in `public/__mockdb__/{companies,projects,addresses}.json` (canonical source, edit directly to change mock data)
 
 ---
 
