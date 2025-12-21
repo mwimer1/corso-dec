@@ -21,16 +21,21 @@ import {
 // Generic helpers (centralised, pure)
 // ---------------------------------------------------------------------------
 
-// Private: unused error formatting utilities
-// These functions are not imported from shared but from server/errors instead.
-// Keeping for potential future use but not exported from shared barrel.
-// export function formatErrorMessage(err: unknown, fallback = 'An unknown error occurred'): string {
-//   return err instanceof Error ? (err.message || fallback) : String(err ?? fallback);
-// }
-//
-// export function normalizeUnknownError(err: unknown, fallback = 'Internal error'): Error {
-//   return err instanceof Error ? err : new Error(String(err ?? fallback));
-// }
+/**
+ * Format an error message, falling back to a default if needed.
+ * Pure function, edge-safe.
+ */
+export function formatErrorMessage(err: unknown, fallback = 'An unknown error occurred'): string {
+  return err instanceof Error ? (err.message || fallback) : String(err ?? fallback);
+}
+
+/**
+ * Normalize an unknown error to an Error instance.
+ * Pure function, edge-safe.
+ */
+export function normalizeUnknownError(err: unknown, fallback = 'Internal error'): Error {
+  return err instanceof Error ? err : new Error(String(err ?? fallback));
+}
 
 // Internal type for classifyError return value
 type ErrorKind = 'expected' | 'unexpected';

@@ -1,7 +1,9 @@
 {
   "description": "Baseline of existing cross-domain leaf imports. New violations will fail the test.",
   "offenders": [
-    "lib/actions/error-handling.ts -> @/server/errors/error-utils",
+    "lib/actions/error-handling.ts -> @/shared/errors/error-utils",
+    "lib/server/errors/error-utils.ts -> @/api/response/api-error",
+    "lib/server/index.ts -> @/api/response/api-error",
     "lib/api/data.ts -> @/mocks/shared",
     "lib/api/edge.ts -> @/types/shared/config/base/types",
     "lib/api/edge.ts -> @/middleware/edge/error-handler",
@@ -46,7 +48,7 @@
     "lib/middleware/edge/rate-limit.ts -> @/ratelimiting/adapters/memory",
     "lib/middleware/edge/rate-limit.ts -> @/ratelimiting/key",
     "lib/middleware/edge/error-handler.ts -> @/monitoring/core/logger-edge",
-    "lib/middleware/edge/error-handler.ts -> @/server/errors/api-error",
+    "lib/middleware/edge/error-handler.ts -> @/api/response/api-error",
     "lib/middleware/edge/error-handler.ts -> @/shared/errors/application-error",
     "lib/middleware/http/cors.ts -> @/api/edge",
     "lib/middleware/http/rate-limit.ts -> @/ratelimiting/core",

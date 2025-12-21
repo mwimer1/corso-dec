@@ -1,4 +1,7 @@
-// lib/shared/errors/api-error.ts
+/**
+ * @fileoverview Edge-safe API error types and response helpers
+ * @description Types and helpers for API error responses. Edge-compatible (uses NextResponse).
+ */
 import { NextResponse } from 'next/server';
 
 export type ApiErrorCode =
@@ -20,12 +23,13 @@ export type ApiError = {
   details?: unknown;
 };
 
-
+/**
+ * Creates an error response with standardized format.
+ * Edge-safe (uses NextResponse which is available in Edge runtime).
+ */
 export const fail = (error: ApiError, init?: ResponseInit) =>
   NextResponse.json<{ success: false; error: ApiError }>(
     { success: false, error },
     { status: init?.status ?? 500, ...init },
   );
-
-
 

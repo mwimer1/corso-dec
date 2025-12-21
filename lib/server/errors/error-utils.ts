@@ -3,9 +3,11 @@ import 'server-only';
 
 import { ZodError } from 'zod';
 import { ApplicationError } from '@/lib/shared/errors/application-error';
-import type { ApiError, ApiErrorCode } from './api-error';
+import type { ApiError, ApiErrorCode } from '@/lib/api/response/api-error';
+import { formatErrorMessage, normalizeUnknownError } from '@/lib/shared/errors/error-utils';
 
-// Re-export shared error utilities (none currently needed)
+// Re-export shared error utilities for backward compatibility
+export { formatErrorMessage, normalizeUnknownError };
 
 /**
  * Helper function to normalize error code mapping
@@ -79,12 +81,6 @@ export function toApiError(err: unknown): ApiError {
 // ---------------------------------------------------------------------------
 // Generic helpers (centralised, pure)
 // ---------------------------------------------------------------------------
-
-export function formatErrorMessage(err: unknown, fallback = 'An unknown error occurred'): string {
-  return err instanceof Error ? (err.message || fallback) : String(err ?? fallback);
-}
-
-export function normalizeUnknownError(err: unknown, fallback = 'Internal error'): Error {
-  return err instanceof Error ? err : new Error(String(err ?? fallback));
-}
+// formatErrorMessage and normalizeUnknownError are now imported from shared
+// and re-exported above for backward compatibility
 
