@@ -195,6 +195,7 @@
     "audit:orphans:drops": "tsx scripts/audit/orphans.ts --only DROP --stdout --paths-only",
     "audit:orphans:drop-json": "tsx scripts/audit/orphans.ts --only DROP --stdout",
     "audit:orphans:apply": "tsx scripts/audit/orphans.ts --apply --yes",
+    "audit:orphans:high-signal": "pnpm audit:orphans && pnpm exec tsx scripts/analysis/filter-orphans-high-signal.ts",
     "audit:full": "pnpm exec tsx scripts/lint/audit-verification-matrix.ts && pnpm audit:ai && pnpm audit:atomic && pnpm audit:performance && pnpm bundlesize",
     "audit:performance": "echo 'audit-bundle-performance.js not found - bundle analysis handled by check-bundle-size.ts'",
     "audit:secrets": "tsx scripts/lint/audit-workflow-secrets.ts",

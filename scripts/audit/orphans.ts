@@ -23,29 +23,22 @@ import { parseArgs } from 'node:util';
 import type { SourceFile } from 'ts-morph';
 import { Project } from 'ts-morph';
 import { z } from 'zod';
-import { findTextReferences } from './utils';
 import {
-  toProjectRelativePosix,
-  normalizePosix,
-  toAbsPosix,
-  resolvePathAlias,
+  findDynamicImports,
+  isBarrelFile,
   isNextJsRoute,
   isStyleFile,
-  isBarrelFile,
-  findDynamicImports,
+  normalizePosix,
+  resolvePathAlias,
+  toAbsPosix,
+  toProjectRelativePosix,
 } from '../audit-lib/orphan-utils';
+import { findTextReferences } from './utils';
 
 // Re-export for testing
-export { findTextReferences };
 export {
-  toProjectRelativePosix,
-  normalizePosix,
-  toAbsPosix,
-  resolvePathAlias,
-  isNextJsRoute,
-  isStyleFile,
-  isBarrelFile,
-  findDynamicImports,
+  findDynamicImports, findTextReferences, isBarrelFile, isNextJsRoute,
+  isStyleFile, normalizePosix, resolvePathAlias, toAbsPosix, toProjectRelativePosix
 };
 
 // Robust resolver for module specifiers (with tiny cache)
@@ -345,8 +338,25 @@ const candidates = await globby(
   ['**/*.{ts,tsx,js,jsx}'],
   { ignore: [...CONFIG.EXCLUDE_PATTERNS] }
 );
+// Convention files that should be excluded from orphan detection
+// (consumed by tooling/CLI, not imported via TS)
+const CONVENTION_FILE_PATTERNS = [
+  /^next-env\.d\.ts$/,                      // Next.js generated types
+  /^instrumentation(-client)?\.ts$/,        // Next.js instrumentation hooks
+  /^playwright\.config\./,                  // Playwright E2E test config
+  /^tailwind\.config\./,                    // Tailwind CSS config
+  /^postcss\.config\./,                     // PostCSS config
+  /^vitest\.config\./,                      // Vitest test config
+  /^config\/postcss\.config\.js$/,          // Root PostCSS config
+  /^public\/mockServiceWorker\.js$/,        // MSW worker (URL referenced)
+  /^types\/.*\.d\.ts$/,                     // Type declarations (module augmentation)
+  /^config\/domain-map\.ts$/,               // Architecture config (dependency-cruiser)
+] as const;
+
 const filteredCandidates = candidates.filter((rel: string) => {
   if (!argv.includeIndex && isIndexBarrel(rel)) return false;
+  // Exclude convention files (tooling/CLI consumed, not TS imported)
+  if (CONVENTION_FILE_PATTERNS.some(pattern => pattern.test(rel))) return false;
   return true;
 });
 

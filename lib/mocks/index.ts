@@ -6,7 +6,7 @@
 
 // Client-safe utilities and types
 export * from './mappers/projects.adapter';
-export * from './normalize';
+// normalize removed - was unused (normalizeCompany, normalizeAddress not used)
 export * from './shared';
 
 

@@ -6,7 +6,7 @@ import 'server-only';
  */
 
 // Re-export server-only action utilities
-export { ACTION_RATE_LIMITS as RATE_LIMITS, checkRateLimit } from '@/lib/ratelimiting';
+export { checkRateLimit, ACTION_RATE_LIMITS as RATE_LIMITS } from '@/lib/ratelimiting';
 // Rate limiting moved to direct middleware imports
 
 // ClickHouse exports (consolidated under lib/integrations/clickhouse/server.ts)
@@ -28,7 +28,7 @@ export * from './errors/error-utils';
 // directly from their new locations if required.
 
 // Streaming exports
-export * from './streaming/ndjson';
+// ndjson removed - was empty/unused
 
 // Shared (server utils) exports
 export * from './shared/query-utils';
@@ -44,11 +44,11 @@ export { logger } from '@/lib/monitoring';
 export { currentRuntime, isEdge, isNode, type NextRuntime } from './runtime';
 
 // Performance monitoring
-export * from './performance/database-metrics';
+// database-metrics removed - was empty/unused
 
 // Feature flags (server-only)
 export * from './feature-flags/builder';
-export * from './feature-flags/feature-flag-validator';
+// feature-flag-validator removed - was empty/unused
 export * from './feature-flags/feature-flags';
 export * from './feature-flags/resolvers';
 
