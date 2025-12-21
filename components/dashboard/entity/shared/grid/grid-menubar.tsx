@@ -5,8 +5,8 @@ import { devError, devWarn } from "@/lib/log";
 import { cn } from "@/styles";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 // Grid state context removed - using local state instead
-import type { AgGridReact } from 'ag-grid-react';
 import { useUser } from '@clerk/nextjs';
+import type { AgGridReact } from 'ag-grid-react';
 import { ArrowDownToLine, CopyPlus, FileDown, ListRestart, Maximize2, RefreshCcw, Save, Search, Trash } from 'lucide-react';
 import type React from 'react';
 import type { Dispatch, SetStateAction } from 'react';
@@ -20,6 +20,20 @@ const formatNumber = (num: string | null): string => {
   if (n >= 1000) return `${(n / 1000).toFixed(1)}K`;
   return n.toString();
 };
+
+// Local style tokens for toolbar dropdowns (maintainability + consistency)
+const TOOLBAR_HOVER_BG = "hover:bg-black/5";
+const TOOLBAR_FOCUS_VISIBLE_BG = "focus-visible:bg-black/5";
+const TOOLBAR_OPEN_BG = "data-[state=open]:bg-black/5";
+
+const DROPDOWN_CONTENT_CLASS = "z-[2000] md:min-w-[285px] border border-border shadow-lg p-1 rounded-md bg-background overflow-hidden";
+
+const DROPDOWN_ITEM_BASE_CLASS = "flex items-center gap-2 rounded-sm px-2 py-2 text-sm cursor-pointer";
+const DROPDOWN_ITEM_INTERACTION_CLASS = "hover:bg-black/5 focus:bg-black/5";
+
+const SAVED_SEARCH_ITEM_BASE_CLASS = "relative flex items-center gap-2 pr-2 py-2 rounded-sm cursor-pointer group text-sm";
+const DROPDOWN_ITEM_ACTIVE_CLASS = "bg-black/10 text-foreground";
+const DROPDOWN_SECTION_LABEL_CLASS = "px-2 py-1 text-[11px] font-medium text-muted-foreground uppercase tracking-wide select-none";
 
 interface GridMenubarProps {
   beta?: boolean;
@@ -219,18 +233,19 @@ export function GridMenubar(props: GridMenubarProps) {
             }}
           >
             <DropdownMenu.Trigger asChild>
-              <Button variant="ghost" size="sm" className="h-9">
+              <Button variant="ghost" size="sm" className={cn("h-9", TOOLBAR_HOVER_BG, TOOLBAR_OPEN_BG, TOOLBAR_FOCUS_VISIBLE_BG)}>
                 Saved Searches
               </Button>
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
               <DropdownMenu.Content
                 sideOffset={2}
-                className={cn("md:min-w-[285px] border border-border shadow-md p-0 overflow-hidden rounded-md bg-background")}
+                align="start"
+                className={cn(DROPDOWN_CONTENT_CLASS)}
               >
                 {/* Search input */}
                 {savedStatesArray.length > 0 && (
-                  <div className="p-2 border-b border-border">
+                  <div className="px-2 pt-1 pb-2">
                     <div className="relative">
                       <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
@@ -251,14 +266,17 @@ export function GridMenubar(props: GridMenubarProps) {
                     </div>
                   </div>
                 )}
+                {savedStatesArray.length > 0 && (
+                  <DropdownMenu.Separator className="my-1 h-px bg-border" />
+                )}
 
                 {/* Empty state */}
                 {savedStatesArray.length === 0 && (
-                  <div className="p-4 text-center">
+                  <div className="px-3 py-4 text-center">
                     <p className="text-sm font-medium text-foreground mb-1">
                       No saved searches yet
                     </p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-muted-foreground mt-1">
                       Save your current view to create one
                     </p>
                   </div>
@@ -266,7 +284,7 @@ export function GridMenubar(props: GridMenubarProps) {
 
                 {/* Filtered results */}
                 {filteredSavedStates.length === 0 && savedStatesArray.length > 0 && (
-                  <div className="p-4 text-center">
+                  <div className="px-3 py-4 text-center">
                     <p className="text-sm text-muted-foreground">
                       No saved searches match "{savedSearchQuery}"
                     </p>
@@ -277,9 +295,9 @@ export function GridMenubar(props: GridMenubarProps) {
                   <DropdownMenu.Item
                     key={state.state_name}
                     className={cn(
-                      "relative flex items-center gap-2 pr-2 py-1.5 cursor-pointer group",
-                      "hover:bg-accent border-b last:border-b-0 rounded-none",
-                      currentSaveStateName === state.state_name && "bg-accent text-accent-foreground"
+                      SAVED_SEARCH_ITEM_BASE_CLASS,
+                      DROPDOWN_ITEM_INTERACTION_CLASS,
+                      currentSaveStateName === state.state_name && DROPDOWN_ITEM_ACTIVE_CLASS
                     )}
                     onSelect={() => {
                       props.applyState(state.grid_state);
@@ -312,12 +330,18 @@ export function GridMenubar(props: GridMenubarProps) {
           {/* Tools menu */}
           <DropdownMenu.Root>
             <DropdownMenu.Trigger asChild>
-              <Button variant="ghost" size="sm" className="h-9">
+              <Button variant="ghost" size="sm" className={cn("h-9", TOOLBAR_HOVER_BG, TOOLBAR_OPEN_BG, TOOLBAR_FOCUS_VISIBLE_BG)}>
                 Tools
               </Button>
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
-              <DropdownMenu.Content className={cn("md:min-w-48 border border-border shadow-md p-0 overflow-hidden rounded-md bg-background")}>
+              <DropdownMenu.Content
+                sideOffset={2}
+                align="start"
+                className={cn(DROPDOWN_CONTENT_CLASS)}
+              >
+                {/* View section */}
+                <div className={DROPDOWN_SECTION_LABEL_CLASS}>View</div>
                 {/* Reload */}
                 <DropdownMenu.Item
                   onSelect={() => {
@@ -327,7 +351,7 @@ export function GridMenubar(props: GridMenubarProps) {
                       devError("Failed to refresh the grid:", error);
                     }
                   }}
-                  className={cn("px-2 py-1.5 cursor-pointer hover:bg-accent flex items-center gap-2 border-b last:border-b-0 rounded-none")}
+                  className={cn(DROPDOWN_ITEM_BASE_CLASS, DROPDOWN_ITEM_INTERACTION_CLASS)}
                 >
                   <RefreshCcw className="h-4 w-4" />
                   <span>Reload</span>
@@ -344,19 +368,21 @@ export function GridMenubar(props: GridMenubarProps) {
                       devError("Failed to reset the grid:", error);
                     }
                   }}
-                  className={cn("px-2 py-1.5 cursor-pointer hover:bg-accent flex items-center gap-2 border-b last:border-b-0 rounded-none")}
+                  className={cn(DROPDOWN_ITEM_BASE_CLASS, DROPDOWN_ITEM_INTERACTION_CLASS)}
                 >
                   <ListRestart className="h-4 w-4" />
                   <span>Reset</span>
                 </DropdownMenu.Item>
 
-                <DropdownMenu.Separator className="border-b border-border" />
+                <DropdownMenu.Separator className="my-1 h-px bg-border" />
 
+                {/* Saved views section */}
+                <div className={DROPDOWN_SECTION_LABEL_CLASS}>Saved views</div>
                 {/* Save */}
                 <DropdownMenu.Item
                   onSelect={handleSave}
                   disabled={!props.currentState}
-                  className={cn("px-2 py-1.5 cursor-pointer hover:bg-accent flex items-center gap-2 border-b last:border-b-0 rounded-none", !props.currentState && "opacity-50 cursor-not-allowed")}
+                  className={cn(DROPDOWN_ITEM_BASE_CLASS, DROPDOWN_ITEM_INTERACTION_CLASS, !props.currentState && "opacity-50 cursor-not-allowed")}
                 >
                   <Save className="h-4 w-4" />
                   <span>Save</span>
@@ -365,18 +391,20 @@ export function GridMenubar(props: GridMenubarProps) {
                 {/* Save As */}
                 <DropdownMenu.Item
                   onSelect={handleSaveAsClick}
-                  className={cn("px-2 py-1.5 cursor-pointer hover:bg-accent flex items-center gap-2 border-b last:border-b-0 rounded-none")}
+                  className={cn(DROPDOWN_ITEM_BASE_CLASS, DROPDOWN_ITEM_INTERACTION_CLASS)}
                 >
                   <CopyPlus className="h-4 w-4" />
                   <span>Save as</span>
                 </DropdownMenu.Item>
 
-                <DropdownMenu.Separator className="border-b border-border" />
+                <DropdownMenu.Separator className="my-1 h-px bg-border" />
 
+                {/* Export section */}
+                <div className={DROPDOWN_SECTION_LABEL_CLASS}>Export</div>
                 {/* Export CSV */}
                 <DropdownMenu.Item
                   onSelect={() => props.gridRef?.current?.api.exportDataAsCsv()}
-                  className={cn("px-2 py-1.5 cursor-pointer hover:bg-accent flex items-center gap-2 border-b last:border-b-0 rounded-none")}
+                  className={cn(DROPDOWN_ITEM_BASE_CLASS, DROPDOWN_ITEM_INTERACTION_CLASS)}
                 >
                   <ArrowDownToLine className="h-4 w-4" />
                   <span>Export as CSV</span>
@@ -392,19 +420,21 @@ export function GridMenubar(props: GridMenubarProps) {
                         devError('Excel export failed. Enterprise features may not be available.', error);
                       }
                     }}
-                    className={cn("px-2 py-1.5 cursor-pointer hover:bg-accent flex items-center gap-2 border-b last:border-b-0 rounded-none")}
+                    className={cn(DROPDOWN_ITEM_BASE_CLASS, DROPDOWN_ITEM_INTERACTION_CLASS)}
                   >
                     <FileDown className="h-4 w-4" />
                     <span>Export as Excel</span>
                   </DropdownMenu.Item>
                 )}
 
-                <DropdownMenu.Separator className="border-b border-border" />
+                <DropdownMenu.Separator className="my-1 h-px bg-border" />
 
+                {/* Display section */}
+                <div className={DROPDOWN_SECTION_LABEL_CLASS}>Display</div>
                 {/* Toggle Fullscreen */}
                 <DropdownMenu.Item
                   onSelect={toggleFullscreen}
-                  className={cn("px-2 py-1.5 cursor-pointer hover:bg-accent flex items-center gap-2 border-b last:border-b-0 rounded-none")}
+                  className={cn(DROPDOWN_ITEM_BASE_CLASS, DROPDOWN_ITEM_INTERACTION_CLASS)}
                 >
                   <Maximize2 className="h-4 w-4" />
                   <span>Fullscreen</span>
