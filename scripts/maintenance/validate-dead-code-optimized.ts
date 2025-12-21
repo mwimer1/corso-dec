@@ -12,7 +12,8 @@
  */
 
 import { execSync } from 'node:child_process';
-import { writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 // Check for help
 if (process.argv.includes('--help') || process.argv.includes('-h')) {
@@ -62,6 +63,17 @@ const ORPHAN_EXCLUDE = [
 ].join('|');
 
 const ORPHAN_PATHS = ['app', 'components', 'lib', 'hooks', 'actions', 'contexts', 'types', 'styles'];
+
+// Load allowlist
+function loadAllowlist(): Set<string> {
+  try {
+    const allowlistPath = join(process.cwd(), 'scripts', 'audit', 'orphans.allowlist.json');
+    const allowlistData = JSON.parse(readFileSync(allowlistPath, 'utf-8'));
+    return new Set(allowlistData.files || []);
+  } catch {
+    return new Set();
+  }
+}
 
 async function runMadgeChecks(): Promise<{ orphans: string[]; cycles: string[][] }> {
   console.log('🔍 Analyzing dependency graph with Madge (running checks in parallel)...');
@@ -154,19 +166,29 @@ async function runMadgeChecks(): Promise<{ orphans: string[]; cycles: string[][]
 async function main() {
   try {
     const { orphans, cycles } = await runMadgeChecks();
+    const allowlist = loadAllowlist();
+
+    // Filter out allowlisted files
+    const unallowlistedOrphans = orphans.filter(file => !allowlist.has(file));
+    const allowlistedCount = orphans.length - unallowlistedOrphans.length;
 
     // Report results
     console.log('\n📊 Dead Code Analysis Results:\n');
 
     // Orphans
-    if (orphans.length > 0) {
-      console.log(`❌ Found ${orphans.length} orphaned file(s):`);
-      orphans.slice(0, 10).forEach(file => {
+    if (unallowlistedOrphans.length > 0) {
+      console.log(`❌ Found ${unallowlistedOrphans.length} orphaned file(s) (${allowlistedCount} allowlisted):`);
+      unallowlistedOrphans.slice(0, 10).forEach(file => {
         console.log(`   - ${file}`);
       });
-      if (orphans.length > 10) {
-        console.log(`   ... and ${orphans.length - 10} more`);
+      if (unallowlistedOrphans.length > 10) {
+        console.log(`   ... and ${unallowlistedOrphans.length - 10} more`);
       }
+      if (allowlistedCount > 0) {
+        console.log(`\n   ℹ️  ${allowlistedCount} file(s) are allowlisted and excluded from validation`);
+      }
+    } else if (orphans.length > 0) {
+      console.log(`✅ All ${orphans.length} orphaned file(s) are allowlisted`);
     } else {
       console.log('✅ No orphaned files found');
     }
@@ -191,6 +213,12 @@ async function main() {
         orphans: {
           count: orphans.length,
           files: orphans,
+          allowlisted: allowlistedCount,
+          unallowlisted: unallowlistedOrphans.length,
+        },
+        unallowlistedOrphans: {
+          count: unallowlistedOrphans.length,
+          files: unallowlistedOrphans,
         },
         cycles: {
           count: cycles.length,
@@ -201,8 +229,8 @@ async function main() {
       console.log(`\n💾 Results saved to ${jsonOut}`);
     }
 
-    // Exit with error if issues found
-    if (orphans.length > 0 || cycles.length > 0) {
+    // Exit with error if unallowlisted issues found
+    if (unallowlistedOrphans.length > 0 || cycles.length > 0) {
       console.log('\n❌ Dead code validation failed');
       process.exit(1);
     } else {

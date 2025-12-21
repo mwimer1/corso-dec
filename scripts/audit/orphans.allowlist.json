@@ -10,7 +10,6 @@
     "components/ui/atoms/index.ts",
     "components/ui/molecules/index.ts",
     "components/ui/organisms/index.ts",
-    "hooks/index.ts",
     "types/shared/index.ts",
     "types/api/index.ts",
     "types/api/generated/openapi.d.ts",
@@ -20,7 +19,17 @@
     "components/dashboard/corso-ai-mode.tsx",
     "components/dashboard/entity/shared/renderers/value-formatter.ts",
     "config/domain-map.ts",
-    "types/config/security/types.ts"
+    "types/config/security/types.ts",
+    "hooks/shared/index.ts",
+    "lib/auth/authorization/roles.ts",
+    "lib/auth/server.ts",
+    "lib/integrations/clickhouse/security.ts",
+    "lib/integrations/env/index.ts",
+    "lib/middleware/http/error-handler.ts",
+    "lib/security/index.ts",
+    "lib/server/db/index.ts",
+    "lib/services/index.ts",
+    "lib/vendors/ag-grid.ts"
   ],
   "notes": {
     "types/api/generated/openapi.d.ts": "AUTO-GENERATED - Do not delete. Regenerated via pnpm openapi:gen",
@@ -29,7 +38,17 @@
     "components/dashboard/corso-ai-mode.tsx": "Used indirectly via barrel export (components/dashboard/index.ts)",
     "components/dashboard/entity/shared/renderers/value-formatter.ts": "Used indirectly by AG Grid column definitions",
     "config/domain-map.ts": "Architecture config consumed by dependency-cruiser (not imported via TS)",
-    "types/config/security/types.ts": "Type augmentation/module declaration (referenced via tsconfig path mapping)"
+    "types/config/security/types.ts": "Type augmentation/module declaration (referenced via tsconfig path mapping)",
+    "hooks/shared/index.ts": "Barrel for shared hooks (useSubscriptionStatus, useArrowKeyNavigation) - used in components",
+    "lib/auth/authorization/roles.ts": "assertRole function used in tests and test setup",
+    "lib/auth/server.ts": "requireUserId function used in tests (deprecated but still referenced)",
+    "lib/integrations/clickhouse/security.ts": "mapClickhouseError used via require() in query-utils.ts",
+    "lib/integrations/env/index.ts": "getEnv functions used extensively throughout codebase",
+    "lib/middleware/http/error-handler.ts": "withErrorHandlingEdge used extensively in API routes",
+    "lib/security/index.ts": "maskSensitiveData exported and used in multiple files",
+    "lib/server/db/index.ts": "getTenantScopedSupabaseClient used in API routes and tests",
+    "lib/services/index.ts": "Entity column configs (ADDRESSES_COLUMNS, etc.) used in tests and components",
+    "lib/vendors/ag-grid.ts": "ensureAgGridRegistered used in test setup and components"
   }
 }
 

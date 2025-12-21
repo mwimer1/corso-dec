@@ -319,7 +319,6 @@ export default [
           'app/**/_theme.tsx',
           'components/dashboard/corso-ai-mode.tsx',
           'components/dashboard/entity/addresses/config.ts',
-          'components/dashboard/entity/shared/grid/ag-grid-modules.ts',
           'components/dashboard/entity/shared/renderers/value-formatter.ts',
           'components/dashboard/header/dashboard-header.tsx',
           // UI components - exported via barrel and used via @/components
