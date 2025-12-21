@@ -89,8 +89,56 @@ describe('Entity API Contract Tests', () => {
       expect(Array.isArray(body.data.data)).toBe(true);
     });
 
-    it('handles search parameters correctly', async () => {
+    it('handles search parameters correctly for projects', async () => {
       const url = new URL('http://localhost:3000/api/v1/entity/projects?search=test');
+      const req = {
+        nextUrl: url,
+        url: url.toString(),
+      };
+      const response = await MainGET(req as any, { params: { entity: 'projects' } });
+
+      expect(response.status).toBe(200);
+      const body = await response.json();
+
+      expect(body.success).toBe(true);
+      expect(body.data).toHaveProperty('data');
+      expect(Array.isArray(body.data.data)).toBe(true);
+    });
+
+    it('handles search parameters correctly for companies', async () => {
+      const url = new URL('http://localhost:3000/api/v1/entity/companies?search=test');
+      const req = {
+        nextUrl: url,
+        url: url.toString(),
+      };
+      const response = await MainGET(req as any, { params: { entity: 'companies' } });
+
+      expect(response.status).toBe(200);
+      const body = await response.json();
+
+      expect(body.success).toBe(true);
+      expect(body.data).toHaveProperty('data');
+      expect(Array.isArray(body.data.data)).toBe(true);
+    });
+
+    it('handles search parameters correctly for addresses', async () => {
+      const url = new URL('http://localhost:3000/api/v1/entity/addresses?search=test');
+      const req = {
+        nextUrl: url,
+        url: url.toString(),
+      };
+      const response = await MainGET(req as any, { params: { entity: 'addresses' } });
+
+      expect(response.status).toBe(200);
+      const body = await response.json();
+
+      expect(body.success).toBe(true);
+      expect(body.data).toHaveProperty('data');
+      expect(Array.isArray(body.data.data)).toBe(true);
+    });
+
+    it('handles empty search parameter gracefully', async () => {
+      const url = new URL('http://localhost:3000/api/v1/entity/projects?search=');
       const req = {
         nextUrl: url,
         url: url.toString(),

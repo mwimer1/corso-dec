@@ -9,6 +9,7 @@ import { queryEntityCount, queryEntityData } from '@/lib/integrations/clickhouse
 import { getEnv } from '@/lib/server/env';
 import { publicEnv } from '@/lib/shared/config/client';
 import { loadGridConfig } from './config';
+import { getSearchFields } from './search-fields';
 
 export async function fetchEntityData<T extends BaseRow = BaseRow>(
   slug: string,
@@ -113,11 +114,21 @@ export async function fetchEntityData<T extends BaseRow = BaseRow>(
       }
     }
 
-    // Build search condition
+    // Build search condition using entity-specific searchable fields
     if (params.search && params.search.trim()) {
-      const searchParamKey = `p${paramCounter++}`;
-      whereConditions.push(`(name LIKE {${searchParamKey}:String} OR description LIKE {${searchParamKey}:String})`);
-      paramsObj[searchParamKey] = `%${params.search}%`;
+      const searchFields = getSearchFields(entity);
+      
+      // Only add search condition if entity has configured searchable fields
+      if (searchFields.length > 0) {
+        const searchParamKey = `p${paramCounter++}`;
+        // Build OR condition: (field1 LIKE ... OR field2 LIKE ...)
+        const searchConditions = searchFields.map(field => 
+          `${field} LIKE {${searchParamKey}:String}`
+        ).join(' OR ');
+        whereConditions.push(`(${searchConditions})`);
+        paramsObj[searchParamKey] = `%${params.search}%`;
+      }
+      // If no search fields configured, silently ignore search (no error)
     }
 
     // Build ORDER BY clause

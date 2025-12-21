@@ -86,7 +86,7 @@ describe('Entity Service Actions', () => {
       );
     });
 
-    it('should handle search parameters', async () => {
+    it('should handle search parameters for companies with correct fields', async () => {
       const { fetchEntityData } = await import('@/lib/services/entity/actions');
 
       await fetchEntityData('companies', undefined, {
@@ -96,10 +96,87 @@ describe('Entity Service Actions', () => {
         search: 'test company',
       });
 
+      // Verify SQL contains OR condition for company_name and company_description
       expect(mockQueryEntityData).toHaveBeenCalledWith(
-        expect.stringContaining('SELECT'),
+        expect.stringMatching(/company_name LIKE.*OR.*company_description LIKE/),
         expect.objectContaining({
           p1: '%test company%', // search parameter
+        })
+      );
+    });
+
+    it('should handle search parameters for projects with correct fields', async () => {
+      const { fetchEntityData } = await import('@/lib/services/entity/actions');
+
+      await fetchEntityData('projects', undefined, {
+        page: 0,
+        pageSize: 10,
+        sort: { column: 'id', direction: 'asc' },
+        search: 'test project',
+      });
+
+      // Verify SQL contains OR condition for description, building_permit_id, and city
+      expect(mockQueryEntityData).toHaveBeenCalledWith(
+        expect.stringMatching(/description LIKE.*OR.*building_permit_id LIKE.*OR.*city LIKE/),
+        expect.objectContaining({
+          p1: '%test project%', // search parameter
+        })
+      );
+    });
+
+    it('should handle search parameters for addresses with correct fields', async () => {
+      const { fetchEntityData } = await import('@/lib/services/entity/actions');
+
+      await fetchEntityData('addresses', undefined, {
+        page: 0,
+        pageSize: 10,
+        sort: { column: 'id', direction: 'asc' },
+        search: '123 main',
+      });
+
+      // Verify SQL contains OR condition for full_address, city, state, and zipcode
+      expect(mockQueryEntityData).toHaveBeenCalledWith(
+        expect.stringMatching(/full_address LIKE.*OR.*city LIKE.*OR.*state LIKE.*OR.*zipcode LIKE/),
+        expect.objectContaining({
+          p1: '%123 main%', // search parameter
+        })
+      );
+    });
+
+    it('should ignore search when search query is empty', async () => {
+      const { fetchEntityData } = await import('@/lib/services/entity/actions');
+
+      await fetchEntityData('projects', undefined, {
+        page: 0,
+        pageSize: 10,
+        sort: { column: 'id', direction: 'asc' },
+        search: '', // empty search
+      });
+
+      // Verify SQL does NOT contain LIKE conditions for search
+      expect(mockQueryEntityData).toHaveBeenCalledWith(
+        expect.not.stringMatching(/LIKE/),
+        expect.not.objectContaining({
+          p1: expect.stringContaining('%'),
+        })
+      );
+    });
+
+    it('should ignore search when search query is only whitespace', async () => {
+      const { fetchEntityData } = await import('@/lib/services/entity/actions');
+
+      await fetchEntityData('projects', undefined, {
+        page: 0,
+        pageSize: 10,
+        sort: { column: 'id', direction: 'asc' },
+        search: '   ', // whitespace only
+      });
+
+      // Verify SQL does NOT contain LIKE conditions for search
+      expect(mockQueryEntityData).toHaveBeenCalledWith(
+        expect.not.stringMatching(/LIKE/),
+        expect.not.objectContaining({
+          p1: expect.stringContaining('%'),
         })
       );
     });
