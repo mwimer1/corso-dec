@@ -130,7 +130,7 @@
       "@tests/support/*": ["tests/support/*"],
 
       // Auth types path mappings
-      "@/types/auth/authorization": ["types/auth/authorization/types.ts"],
+      // "@/types/auth/authorization": ["types/auth/authorization/types.ts"], // REMOVED: File deleted (unused)
       "@/types/auth/credential": ["types/auth/credential/types.ts"],
       "@/types/auth/member": ["types/auth/member/types.ts"],
       "@/types/auth/organization": ["types/auth/organization/types.ts"],
@@ -145,7 +145,7 @@
 
       // Dashboard analytics types path mappings
       // Security types path mappings
-      "@/types/security/policy": ["types/security/policy/types.ts"],
+      // "@/types/security/policy": ["types/security/policy/types.ts"], // REMOVED: File deleted (unused)
       "@/types/security/prompt-guard": ["types/security/prompt-guard/types.ts"],
 
       // Config types path mappings

@@ -16,7 +16,6 @@ This directory contains all TypeScript type definitions for the Corso codebase, 
 
 ```typescript
 // Direct imports from canonical locations
-import type { Permission } from '@/types/auth/authorization/types';
 import type { ISODateString } from '@/types/shared/utils/dates/types';
 import type { ChatMessage } from '@/types/chat/message/types';
 import type { Database } from '@/types/integrations/supabase/core/types';

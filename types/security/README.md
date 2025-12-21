@@ -10,18 +10,9 @@ Type definitions for security policies, rules, and related security features.
 
 ## Import Patterns
 
-**Prefer direct imports** from the specific type file:
+**Note:** Security policy types have been removed as they were unused in the codebase. Security configuration is handled via runtime code in `lib/security/` rather than type definitions.
 
-```typescript
-// ✅ Preferred: Direct imports
-import type { SecurityPolicy, SecurityRule } from '@/types/security/policy/types';
-```
-
-## Available Types
-
-- `types/security/policy/types.ts` - Security policy and rule definitions
-  - `SecurityPolicy` - Security policy configuration
-  - `SecurityRule` - Individual security rule definition
+If security policy types are needed in the future, they should be defined based on actual implementation requirements.
 
 ## Note on Prompt Guard Types
 

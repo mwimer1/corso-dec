@@ -486,8 +486,8 @@ fi
 import type { Permission } from '@/types/auth'; // Creates cycle!
 
 // ✅ SOLUTION: Keep canonical types in domain, remove duplicates
-// types/shared/core/references/types.ts
-import type { Permission } from '@/types/auth/authorization/types';
+// Note: Auth types were removed as unused. Use Clerk types directly:
+// import type { User } from '@clerk/nextjs/server';
 ```bash
 
 #### 2. Barrel Import Cycles (RESOLVED)
