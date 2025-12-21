@@ -18,6 +18,16 @@ vi.mock('@/lib/services/entity/pages', () => ({
   getEntityPage: (...args: any[]) => mockGetEntityPage(...args),
 }));
 
+// Mock getEntityConfig to return mock columns that include test fields
+vi.mock('@/lib/services/entity/config', () => ({
+  getEntityConfig: vi.fn().mockResolvedValue([
+    { accessor: 'name', sortable: true },
+    { accessor: 'status', sortable: true },
+    { accessor: 'priority', sortable: true },
+    { accessor: 'id', sortable: true },
+  ]),
+}));
+
 describe('Entity Query Route', () => {
   beforeEach(() => {
     vi.clearAllMocks();

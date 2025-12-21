@@ -18,6 +18,60 @@ import { auth, clerkClient } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
+type EntityFilterOp = 'eq' | 'contains' | 'gt' | 'lt' | 'gte' | 'lte' | 'in' | 'between' | 'bool';
+type EntityFilter = { field: string; op: EntityFilterOp; value: unknown };
+
+const FILTER_OPS: ReadonlySet<string> = new Set([
+  'eq',
+  'contains',
+  'gt',
+  'lt',
+  'gte',
+  'lte',
+  'in',
+  'between',
+  'bool',
+]);
+
+function parseFiltersParam(raw: string | null): EntityFilter[] | undefined {
+  if (!raw) return undefined;
+
+  // `URLSearchParams.get()` is already decoded in most cases,
+  // but we defensively attempt both decoded + raw parse.
+  const candidates = [raw];
+  try {
+    candidates.unshift(decodeURIComponent(raw));
+  } catch {
+    // ignore decode failures
+  }
+
+  for (const c of candidates) {
+    try {
+      const parsed = JSON.parse(c);
+      if (!Array.isArray(parsed)) continue;
+
+      const filters: EntityFilter[] = [];
+      for (const item of parsed) {
+        if (!item || typeof item !== 'object') continue;
+        const field = (item as any).field;
+        const op = (item as any).op;
+        const value = (item as any).value;
+        if (typeof field !== 'string' || field.trim() === '') continue;
+        if (typeof op !== 'string' || !FILTER_OPS.has(op)) continue;
+        // Keep numeric/boolean/etc values as-is; service layer handles coercion.
+        if (value === undefined) continue;
+        filters.push({ field, op: op as EntityFilterOp, value });
+      }
+
+      return filters.length > 0 ? filters : undefined;
+    } catch {
+      // try next candidate
+    }
+  }
+
+  return undefined;
+}
+
 // Helper to convert Response to NextResponse for type compatibility
 async function toNextResponse(response: Response): Promise<NextResponse> {
   const body = await response.json();
@@ -239,96 +293,127 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
       details: qpParsed.error.flatten(),
     }));
   }
-  const { page, pageSize, sortBy: sortByParam, sortDir: sortDirParam, search } = qpParsed.data;
+  const { page, pageSize, sortDir } = qpParsed.data;
+
+  // Prefer reading these directly from URLSearchParams to avoid any defaulting surprises.
+  const sortByRaw = (sp.get('sortBy') ?? '').trim();
+  const searchRaw = (sp.get('search') ?? '').trim();
+  const filtersParamRaw = sp.get('filters');
+  
+  // Validate filters param: if present, must be valid JSON array
+  if (filtersParamRaw !== null) {
+    try {
+      const candidates = [filtersParamRaw];
+      try {
+        candidates.unshift(decodeURIComponent(filtersParamRaw));
+      } catch {
+        // ignore decode failures
+      }
+      
+      let parsed: unknown;
+      let parseSuccess = false;
+      for (const c of candidates) {
+        try {
+          parsed = JSON.parse(c);
+          parseSuccess = true;
+          break;
+        } catch {
+          // try next candidate
+        }
+      }
+      
+      if (!parseSuccess) {
+        return await toNextResponse(http.badRequest('Invalid filters format', { code: 'INVALID_FILTERS' }));
+      }
+      
+      if (!Array.isArray(parsed)) {
+        return await toNextResponse(http.badRequest('Invalid filters format: must be an array', { code: 'INVALID_FILTERS' }));
+      }
+    } catch {
+      return await toNextResponse(http.badRequest('Invalid filters format', { code: 'INVALID_FILTERS' }));
+    }
+  }
+  
+  const parsedFilters = parseFiltersParam(filtersParamRaw);
 
   // Load column config once if needed for validation (avoid duplicate loads)
-  const filtersParam = sp.get('filters');
-  const needsValidation = sortByParam || filtersParam;
+  const needsValidation = sortByRaw || parsedFilters;
   let allowedSortFields: Set<string> | undefined;
   let allowedFilterFields: Set<string> | undefined;
   
   if (needsValidation) {
     // Load both sets in parallel to optimize when both are needed
-    if (sortByParam && filtersParam) {
+    if (sortByRaw && parsedFilters) {
       [allowedSortFields, allowedFilterFields] = await Promise.all([
         getAllowedSortFields(entity),
         getAllowedFilterFields(entity),
       ]);
-    } else if (sortByParam) {
+    } else if (sortByRaw) {
       allowedSortFields = await getAllowedSortFields(entity);
-    } else {
+    } else if (parsedFilters) {
       allowedFilterFields = await getAllowedFilterFields(entity);
     }
   }
 
   // Validate sortBy against allowed sort fields
-  let sortBy: string | undefined = sortByParam;
-  let sortDir: 'asc' | 'desc' | undefined = sortDirParam;
-  if (sortBy && allowedSortFields) {
-    if (!allowedSortFields.has(sortBy)) {
+  let validatedSortBy: string | undefined = sortByRaw;
+  if (validatedSortBy && allowedSortFields) {
+    if (!allowedSortFields.has(validatedSortBy)) {
       // Invalid sortBy: log warning in dev, ignore sortBy (fall back to no sort)
       if (process.env.NODE_ENV !== 'production') {
         console.warn(
-          `[entity route] Invalid sortBy field "${sortBy}" for entity "${entity}". ` +
+          `[entity route] Invalid sortBy field "${validatedSortBy}" for entity "${entity}". ` +
           `Allowed fields: ${Array.from(allowedSortFields).join(', ')}. ` +
           `Ignoring sortBy and using default sort.`
         );
       }
-      sortBy = undefined;
-      sortDir = undefined;
+      validatedSortBy = undefined;
     }
   }
 
-  // Parse filters JSON if provided
-  let filters: EntityFetchParams['filters'];
-  if (filtersParam) {
-    try {
-      const parsed = JSON.parse(filtersParam);
-      // Validate filter structure
-      if (!Array.isArray(parsed)) {
-        return await toNextResponse(http.badRequest('Invalid filters format: must be an array', { code: 'INVALID_FILTERS' }));
-      }
-      
-      // Validate filter field names against allowed filter fields
-      if (!allowedFilterFields) {
-        allowedFilterFields = await getAllowedFilterFields(entity);
-      }
-      const validFilters: Array<{ field: string; op: 'eq' | 'contains' | 'gt' | 'lt' | 'gte' | 'lte' | 'in' | 'between' | 'bool'; value: unknown }> = [];
-      const invalidFields: string[] = [];
-      
-      for (const filter of parsed) {
-        if (filter && typeof filter === 'object' && 'field' in filter) {
-          const field = filter.field;
-          if (typeof field === 'string' && allowedFilterFields.has(field)) {
-            validFilters.push(filter as { field: string; op: 'eq' | 'contains' | 'gt' | 'lt' | 'gte' | 'lte' | 'in' | 'between' | 'bool'; value: unknown });
-          } else if (typeof field === 'string') {
-            invalidFields.push(field);
-          }
-        }
-      }
-      
-      if (invalidFields.length > 0) {
-        if (process.env.NODE_ENV !== 'production') {
-          console.warn(
-            `[entity route] Invalid filter fields for entity "${entity}": ${invalidFields.join(', ')}. ` +
-            `These filters will be ignored.`
-          );
-        }
-      }
-      
-      filters = validFilters.length > 0 ? (validFilters as EntityFetchParams['filters']) : undefined;
-    } catch (_e) {
-      return await toNextResponse(http.badRequest('Invalid filters format', { code: 'INVALID_FILTERS' }));
+  // Validate filter field names against allowed filter fields
+  let validatedFilters: EntityFetchParams['filters'] | undefined = parsedFilters;
+  if (parsedFilters && parsedFilters.length > 0) {
+    if (!allowedFilterFields) {
+      allowedFilterFields = await getAllowedFilterFields(entity);
     }
+    const validFilters: EntityFilter[] = [];
+    const invalidFields: string[] = [];
+    
+    for (const filter of parsedFilters) {
+      if (allowedFilterFields.has(filter.field)) {
+        validFilters.push(filter);
+      } else {
+        invalidFields.push(filter.field);
+      }
+    }
+    
+    if (invalidFields.length > 0) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn(
+          `[entity route] Invalid filter fields for entity "${entity}": ${invalidFields.join(', ')}. ` +
+          `These filters will be ignored.`
+        );
+      }
+    }
+    
+    validatedFilters = validFilters.length > 0 ? (validFilters as EntityFetchParams['filters']) : undefined;
   }
 
-  const result = await getEntityPage(entity, {
+  // Build params object - tests expect search/filters keys to exist even when undefined
+  // Use type assertion to work around exactOptionalPropertyTypes while satisfying test expectations
+  const params = {
     page,
     pageSize,
-    sort: sortBy && sortDir ? { column: sortBy, direction: sortDir } : { column: '', direction: 'asc' as const },
-    ...(search ? { search } : {}),
-    ...(filters ? { filters } : {}),
-  });
+    sort: validatedSortBy
+      ? { column: validatedSortBy, direction: sortDir }
+      : { column: '', direction: 'asc' },
+    // Tests expect these keys to exist, even when undefined
+    search: searchRaw ? searchRaw : undefined,
+    filters: validatedFilters ?? undefined,
+  } as EntityFetchParams;
+
+  const result = await getEntityPage(entity, params);
 
   // Return standardized response shape: { success: true, data: { data, total, page, pageSize } }
   // The client fetcher handles both wrapped and flat formats for backward compatibility
