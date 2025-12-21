@@ -19,7 +19,7 @@ export { UserSchema } from './auth/user-validation';
 
 // Entity query validators (only keeping used schemas)
 
-// Mock project validators (CSV processing)
+// Mock project validators (JSON fixtures processing)
 export {
     CanonicalProject,
     CanonicalProjectsFile, RawProjectRow, toISODateOrNullExport

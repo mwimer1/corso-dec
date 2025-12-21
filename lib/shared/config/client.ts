@@ -43,7 +43,7 @@ export const logger = {
  * All other environment variables are server-only and will be undefined.
  *
  * Hidden Dependencies:
- * - USE_MOCK_DB: Enables CSV-backed mock database for development
+ * - CORSO_USE_MOCK_DB: Enables mock database mode using JSON fixtures in public/__mockdb__/ for development
  * - NEXT_PUBLIC_APP_URL: Required for proper client-side navigation
  * - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: Required for client-side authentication
  * - NEXT_PUBLIC_SUPABASE_URL/KEY: Required for client-side database access

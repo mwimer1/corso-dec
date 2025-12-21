@@ -1,17 +1,17 @@
 /**
- * Adapts vendor/aggregated CSV project rows into the canonical "ProjectsFile" row shape
+ * Adapts raw project data (from JSON fixtures) into the canonical "ProjectsFile" row shape
  * expected by the dashboard and Zod file schema.
  *
  * We keep Zod schemas .strict() and do all widening/narrowing here.
  */
+import { isProduction } from '@/lib/shared/config/client';
 import type { TRawProjectRow } from '@/lib/validators/mock-projects';
 import {
-    CanonicalProject,
-    CanonicalProjectsFile,
-    RawProjectRow,
-    toISODateOrNullExport,
+  CanonicalProject,
+  CanonicalProjectsFile,
+  RawProjectRow,
+  toISODateOrNullExport,
 } from '@/lib/validators/mock-projects';
-import { isProduction } from '@/lib/shared/config/client';
 import type { z } from 'zod';
 
 // RawProjectCsvRow schema and type removed as unused
@@ -19,7 +19,7 @@ import type { z } from 'zod';
 
 
 /**
- * Map one raw CSV row (unknown/dirty) → canonical project row consumed by ProjectsFile.
+ * Map one raw project row (unknown/dirty) → canonical project row consumed by ProjectsFile.
  * This keeps the validator strict while making the data source flexible.
  */
 export function adaptProjectsFile(rawFile: unknown): z.infer<typeof CanonicalProjectsFile> {
