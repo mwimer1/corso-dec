@@ -103,7 +103,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added `getSSRSecurityNonce()` for Server Components/layouts to retrieve the nonce via `next/headers`
   - Updated `app/(marketing)/layout.tsx` and `app/(auth)/layout.tsx` to pass `{ nonce }` to Next.js `<Script>` (beforeInteractive)
   - Resolves hydration error caused by `<Script>` rendering with `nonce={undefined}` on server vs empty on client
-  - Files: `middleware.ts`, `lib/middleware/http/security-headers.ts`, `lib/middleware/index.ts`, `app/(marketing)/layout.tsx`, `app/(auth)/layout.tsx`
+  - Files: `middleware.ts`, `lib/middleware/http/headers.ts`, `lib/middleware/index.ts`, `app/(marketing)/layout.tsx`, `app/(auth)/layout.tsx`
 
   - `pnpm docs:aliases` - Updates README.md with current alias table from tsconfig
   - `pnpm docs:aliases:check` - CI-safe check mode that fails if documentation is out of date

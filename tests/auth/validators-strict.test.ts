@@ -1,3 +1,5 @@
+import { ContactSchema } from "@/lib/validators/contact";
+import { EntityQueryRequestSchema } from "@/lib/validators/entityQuery";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
@@ -6,13 +8,6 @@ const passwordResetSchema = z.object({
   email: z.string().email(),
   new_password: z.string().min(1),
   confirm_password: z.string().min(1),
-}).strict();
-
-const ContactSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(100, 'Name is too long'),
-  email: z.string().email('Invalid email format'),
-  company: z.string().optional(),
-  message: z.string().min(10, 'Message must be at least 10 characters').max(2000, 'Message is too long'),
 }).strict();
 
 describe("strict validation", () => {
@@ -68,6 +63,31 @@ describe("strict validation", () => {
     if (result.success) {
       expect(result.data.name).toBe("Test User");
       expect(result.data.email).toBe("test@example.com");
+    }
+  });
+
+  it("rejects extra fields in EntityQueryRequestSchema (API request body)", () => {
+    const validInput = {
+      page: { index: 0, size: 50 },
+      filter: { status: "active" },
+      sort: [{ field: "name", dir: "asc" as const }],
+    };
+    const extraFieldInput = {
+      ...validInput,
+      extraField: "should not be allowed",
+      page: {
+        ...validInput.page,
+        extraPageField: "also not allowed",
+      },
+    };
+
+    const validResult = EntityQueryRequestSchema.safeParse(validInput);
+    const extraFieldResult = EntityQueryRequestSchema.safeParse(extraFieldInput);
+
+    expect(validResult.success).toBe(true);
+    expect(extraFieldResult.success).toBe(false);
+    if (!extraFieldResult.success) {
+      expect(extraFieldResult.error.issues.some(issue => issue.code === "unrecognized_keys")).toBe(true);
     }
   });
 });
