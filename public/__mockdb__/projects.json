@@ -74,12 +74,12 @@
     "full_address": "850 S JUPITER RD, GARLAND, TX 75042",
     "attom_id": 33361956,
     "contractor_names": "Fast Signs",
-    "homeowner_names": "North Texas Property Group",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Signage",
     "project_types_list": [
       "Signage"
-    ]
+    ],
+    "project_types": "Signage"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -90,7 +90,7 @@
     "description": "Meter base repair",
     "project_name": null,
     "status": "complete",
-    "job_value": 600,
+    "job_value": 0,
     "fees": 40,
     "id_contractor": "DKA7m2",
     "cid_company_name": "01fc9c6c19129f2aa22d2ea0be657058",
@@ -158,10 +158,11 @@
     "contractor_names": "Prism Electric",
     "homeowner_names": "Jupiter Road Baptist Church",
     "year": 2000,
-    "project_types": "Electrical",
     "project_types_list": [
-      "Electrical"
-    ]
+      "Electrical",
+      "Commercial"
+    ],
+    "project_types": "Electrical, Commercial"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -172,7 +173,7 @@
     "description": "Seasonal activities",
     "project_name": null,
     "status": "COMPLETE",
-    "job_value": 1200,
+    "job_value": 0,
     "fees": 100,
     "id_contractor": "DKArex",
     "cid_company_name": "28b5f862893411dd79a3e7de252a06b8",
@@ -238,10 +239,12 @@
     "full_address": "2140 N JUPITER RD, GARLAND, TX 75044",
     "attom_id": 41760978,
     "contractor_names": "the Home Depot - Home Services",
-    "homeowner_names": "Heritage Community Church",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Other",
-    "project_types_list": []
+    "project_types_list": [
+      "Residential"
+    ],
+    "project_types": "Residential"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -318,12 +321,12 @@
     "full_address": "1901 N JUPITER RD, GARLAND, TX 75042",
     "attom_id": 47336598,
     "contractor_names": "Waldrum Lighting & Signs",
-    "homeowner_names": "DFW Holdings LLC",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Signage",
     "project_types_list": [
       "Signage"
-    ]
+    ],
+    "project_types": "Signage"
   },
   {
     "date_last_updated": "10/2/2023",
@@ -335,7 +338,7 @@
     "project_name": null,
     "status": "complete",
     "job_value": 7000,
-    "fees": 170,
+    "fees": null,
     "id_contractor": null,
     "cid_company_name": null,
     "cid_property_owner": null,
@@ -400,15 +403,16 @@
     "full_address": "825 JUNE DR, GARLAND, TX 75040",
     "attom_id": 166657804,
     "contractor_names": null,
-    "homeowner_names": "Linda Martinez",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Bathroom remodel, Home addition, Plumbing, Electrical",
     "project_types_list": [
-      "Bathroom remodel",
-      "Home addition",
+      "Electrical",
       "Plumbing",
-      "Electrical"
-    ]
+      "Bathroom Remodel",
+      "Residential",
+      "Home Addition"
+    ],
+    "project_types": "Electrical, Plumbing, Bathroom Remodel, Residential, Home Addition"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -419,7 +423,7 @@
     "description": "Gas test",
     "project_name": null,
     "status": "APPROVED",
-    "job_value": 500,
+    "job_value": 0,
     "fees": 20,
     "id_contractor": "6bl1xl",
     "cid_company_name": "ad19ddd5edb8761b211340464e59432c",
@@ -485,12 +489,13 @@
     "full_address": "629 JOYCE DR, GARLAND, TX 75040",
     "attom_id": 36449729,
     "contractor_names": "Schrade Plumbing",
-    "homeowner_names": "Maria Johnson",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Plumbing",
     "project_types_list": [
-      "Plumbing"
-    ]
+      "Plumbing",
+      "Residential"
+    ],
+    "project_types": "Plumbing, Residential"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -502,7 +507,7 @@
     "project_name": null,
     "status": "complete",
     "job_value": 4800,
-    "fees": 150,
+    "fees": 0,
     "id_contractor": "ELvkY4",
     "cid_company_name": "07d0f08fec27c8b71e5b14f65230690e",
     "cid_property_owner": null,
@@ -567,10 +572,12 @@
     "full_address": "512 JOYCE DR, GARLAND, TX 75040",
     "attom_id": 10093257,
     "contractor_names": "Electra Plus; Rustown Homes INC",
-    "homeowner_names": "Jennifer Lee",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Other",
-    "project_types_list": []
+    "project_types_list": [
+      "Residential"
+    ],
+    "project_types": "Residential"
   },
   {
     "date_last_updated": "10/2/2023",
@@ -582,7 +589,7 @@
     "project_name": null,
     "status": "complete",
     "job_value": 38000,
-    "fees": 225,
+    "fees": 0,
     "id_contractor": "PxymDb",
     "cid_company_name": "b9bca7f0af78685119e4c117c0f165e1",
     "cid_property_owner": null,
@@ -647,14 +654,15 @@
     "full_address": "402 JARRELL CIR, GARLAND, TX 75042",
     "attom_id": 44676036,
     "contractor_names": "Mainstream Plumbing; Odaniel AIR; Ramirez Electric; Restoration Management Consultants",
-    "homeowner_names": "Michael Harris",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Plumbing, Electrical, HVAC",
     "project_types_list": [
-      "Plumbing",
       "Electrical",
-      "HVAC"
-    ]
+      "HVAC",
+      "Plumbing",
+      "Residential"
+    ],
+    "project_types": "Electrical, HVAC, Plumbing, Residential"
   },
   {
     "date_last_updated": "10/2/2023",
@@ -665,7 +673,7 @@
     "description": "Meter base repair/new service",
     "project_name": null,
     "status": "COMPLETE",
-    "job_value": 5200,
+    "job_value": 0,
     "fees": 20,
     "id_contractor": "8orgxD",
     "cid_company_name": "1e051aa624a5b0264d593735d420ac06",
@@ -731,12 +739,13 @@
     "full_address": "1621 JAMES DR, GARLAND, TX 75042",
     "attom_id": 34609254,
     "contractor_names": "Lydon Paul (master)",
-    "homeowner_names": "William Johnson",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Electrical",
     "project_types_list": [
-      "Electrical"
-    ]
+      "Electrical",
+      "Residential"
+    ],
+    "project_types": "Electrical, Residential"
   },
   {
     "date_last_updated": "4/12/2021",
@@ -747,7 +756,7 @@
     "description": "Temp sales trailer",
     "project_name": null,
     "status": "APPROVED",
-    "job_value": 1600,
+    "job_value": 0,
     "fees": 95,
     "id_contractor": "3mbAql",
     "cid_company_name": "8d0755f3b207f6de0732cc3bc4fd87d8",
@@ -813,10 +822,12 @@
     "full_address": "1901 JADE CT, GARLAND, TX 75040",
     "attom_id": 44547765,
     "contractor_names": "Plantation Homes",
-    "homeowner_names": "Patricia Harris",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Other",
-    "project_types_list": []
+    "project_types_list": [
+      "Residential"
+    ],
+    "project_types": "Residential"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -893,13 +904,13 @@
     "full_address": "506 IVY WAY, GARLAND, TX 75043",
     "attom_id": 166652172,
     "contractor_names": "Clutter Electric",
-    "homeowner_names": "Robert Wilson",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Electrical, Pool/Spa",
     "project_types_list": [
       "Electrical",
-      "Pool/Spa"
-    ]
+      "Pool / Spa"
+    ],
+    "project_types": "Electrical, Pool / Spa"
   },
   {
     "date_last_updated": "4/12/2021",
@@ -910,7 +921,7 @@
     "description": "Carport",
     "project_name": null,
     "status": "COMPLETE",
-    "job_value": 700,
+    "job_value": 0,
     "fees": 50,
     "id_contractor": "50w4xk",
     "cid_company_name": "cb81311493fe61e0317ab812a2a34303",
@@ -976,10 +987,12 @@
     "full_address": "1021 HERITAGE DR, GARLAND, TX 75043",
     "attom_id": 166659429,
     "contractor_names": "Metro Patio & Carport Inc",
-    "homeowner_names": "Daniel Brown",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Other",
-    "project_types_list": []
+    "project_types_list": [
+      "Garage Construction"
+    ],
+    "project_types": "Garage Construction"
   },
   {
     "date_last_updated": "10/2/2023",
@@ -991,7 +1004,7 @@
     "project_name": null,
     "status": "complete",
     "job_value": 18500,
-    "fees": 240,
+    "fees": 0,
     "id_contractor": "KkyrV6",
     "cid_company_name": "a04291ec8425131df739816d6d714eb3",
     "cid_property_owner": null,
@@ -1056,13 +1069,13 @@
     "full_address": "3449 HEATHER HILL DR, GARLAND, TX 75044",
     "attom_id": 33354799,
     "contractor_names": "Hobert Pools; Positive Electric; Water Works",
-    "homeowner_names": "Linda Jackson",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Electrical, Pool/Spa",
     "project_types_list": [
       "Electrical",
-      "Pool/Spa"
-    ]
+      "Pool / Spa"
+    ],
+    "project_types": "Electrical, Pool / Spa"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -1073,7 +1086,7 @@
     "description": "Founation repair",
     "project_name": null,
     "status": "VOID",
-    "job_value": 34500,
+    "job_value": 0,
     "fees": 25,
     "id_contractor": "KNdrve",
     "cid_company_name": "7da8e0bad165712dbb09132fc9299a84",
@@ -1139,12 +1152,12 @@
     "full_address": "5309 HEATHER GLEN DR, GARLAND, TX 75043",
     "attom_id": 4237129,
     "contractor_names": "Advanced Foundation Repair",
-    "homeowner_names": "William Garcia",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Foundation",
     "project_types_list": [
-      "Foundation"
-    ]
+      "Foundations"
+    ],
+    "project_types": "Foundations"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -1155,8 +1168,8 @@
     "description": "Foundation repair",
     "project_name": null,
     "status": "complete",
-    "job_value": 9100,
-    "fees": 160,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "KNdrve",
     "cid_company_name": "7da8e0bad165712dbb09132fc9299a84",
     "cid_property_owner": null,
@@ -1221,12 +1234,12 @@
     "full_address": "5309 HEATHER GLEN DR, GARLAND, TX 75043",
     "attom_id": 4237129,
     "contractor_names": "Advanced Foundation Repair",
-    "homeowner_names": "Linda White",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Foundation",
     "project_types_list": [
-      "Foundation"
-    ]
+      "Foundations"
+    ],
+    "project_types": "Foundations"
   },
   {
     "date_last_updated": "10/9/2023",
@@ -1238,7 +1251,7 @@
     "project_name": null,
     "status": "complete",
     "job_value": 98479,
-    "fees": 315,
+    "fees": 0,
     "id_contractor": "EgN4bb",
     "cid_company_name": "36f951ef5ffcc467b324ee4eea6094f4",
     "cid_property_owner": null,
@@ -1303,14 +1316,16 @@
     "full_address": "318 HAVENWOOD LN, GARLAND, TX 75043",
     "attom_id": 47311231,
     "contractor_names": "Choice Homes; Imperial Electric; J&S AIR; KMP 2 (kennedale Mansfield Plumbing )",
-    "homeowner_names": "Susan Wilson",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Plumbing, Electrical, HVAC",
     "project_types_list": [
-      "Plumbing",
       "Electrical",
-      "HVAC"
-    ]
+      "HVAC",
+      "Plumbing",
+      "Residential",
+      "New Construction"
+    ],
+    "project_types": "Electrical, HVAC, Plumbing, Residential, New Construction"
   },
   {
     "date_last_updated": "10/2/2023",
@@ -1322,7 +1337,7 @@
     "project_name": null,
     "status": "complete",
     "job_value": 110857,
-    "fees": 325,
+    "fees": 0,
     "id_contractor": "EgN4bb",
     "cid_company_name": "39be3bb81282c739628b25a42031dd5f",
     "cid_property_owner": null,
@@ -1387,14 +1402,16 @@
     "full_address": "314 HAVENWOOD LN, GARLAND, TX 75043",
     "attom_id": 47497166,
     "contractor_names": "Choice Homes; Corral Fence CO; Imperial Electric; J&S AIR; KMP 2 (kennedale Mansfield Plumbing )",
-    "homeowner_names": "Maria Moore",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Plumbing, Electrical, HVAC",
     "project_types_list": [
-      "Plumbing",
       "Electrical",
-      "HVAC"
-    ]
+      "HVAC",
+      "Plumbing",
+      "Residential",
+      "New Construction"
+    ],
+    "project_types": "Electrical, HVAC, Plumbing, Residential, New Construction"
   },
   {
     "date_last_updated": "10/2/2023",
@@ -1406,7 +1423,7 @@
     "project_name": null,
     "status": "complete",
     "job_value": 105336,
-    "fees": 330,
+    "fees": 0,
     "id_contractor": "EgN4bb",
     "cid_company_name": "39be3bb81282c739628b25a42031dd5f",
     "cid_property_owner": null,
@@ -1471,14 +1488,16 @@
     "full_address": "310 HAVENWOOD LN, GARLAND, TX 75043",
     "attom_id": 14811094,
     "contractor_names": "Choice Homes; Corral Fence CO; Imperial Electric; J&S AIR; KMP 2 (kennedale Mansfield Plumbing )",
-    "homeowner_names": "David Moore",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Plumbing, Electrical, HVAC",
     "project_types_list": [
-      "Plumbing",
       "Electrical",
-      "HVAC"
-    ]
+      "HVAC",
+      "Plumbing",
+      "Residential",
+      "New Construction"
+    ],
+    "project_types": "Electrical, HVAC, Plumbing, Residential, New Construction"
   },
   {
     "date_last_updated": "4/12/2021",
@@ -1555,10 +1574,13 @@
     "full_address": "302 HAVENWOOD LN, GARLAND, TX 75043",
     "attom_id": 47486431,
     "contractor_names": "Choice Homes; Corral Fence Co",
-    "homeowner_names": "Anthony Taylor",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Other",
-    "project_types_list": []
+    "project_types_list": [
+      "Residential",
+      "New Construction"
+    ],
+    "project_types": "Residential, New Construction"
   },
   {
     "date_last_updated": "10/9/2023",
@@ -1570,7 +1592,7 @@
     "project_name": null,
     "status": "complete",
     "job_value": 115331,
-    "fees": 280,
+    "fees": 0,
     "id_contractor": "EgN4bb",
     "cid_company_name": "39be3bb81282c739628b25a42031dd5f",
     "cid_property_owner": null,
@@ -1635,14 +1657,16 @@
     "full_address": "221 HAVENWOOD LN, GARLAND, TX 75043",
     "attom_id": 4241734,
     "contractor_names": "Choice Homes; Corral Fence CO; Imperial Electric; J&S AIR; KMP 2 (kennedale Mansfield Plumbing )",
-    "homeowner_names": "Christopher Jackson",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Plumbing, Electrical, HVAC",
     "project_types_list": [
-      "Plumbing",
       "Electrical",
-      "HVAC"
-    ]
+      "HVAC",
+      "Plumbing",
+      "Residential",
+      "New Construction"
+    ],
+    "project_types": "Electrical, HVAC, Plumbing, Residential, New Construction"
   },
   {
     "date_last_updated": "10/9/2023",
@@ -1654,7 +1678,7 @@
     "project_name": null,
     "status": "complete",
     "job_value": 94179,
-    "fees": 310,
+    "fees": 0,
     "id_contractor": "EgN4bb",
     "cid_company_name": "39be3bb81282c739628b25a42031dd5f",
     "cid_property_owner": null,
@@ -1719,14 +1743,16 @@
     "full_address": "202 HAVENWOOD LN, GARLAND, TX 75043",
     "attom_id": 4321202,
     "contractor_names": "Choice Homes; Corral Fence CO; Imperial Electric; J&S AIR; KMP 2 (kennedale Mansfield Plumbing )",
-    "homeowner_names": "Susan Wilson",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Plumbing, Electrical, HVAC",
     "project_types_list": [
-      "Plumbing",
       "Electrical",
-      "HVAC"
-    ]
+      "HVAC",
+      "Plumbing",
+      "Residential",
+      "New Construction"
+    ],
+    "project_types": "Electrical, HVAC, Plumbing, Residential, New Construction"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -1737,8 +1763,8 @@
     "description": "Meter base repair",
     "project_name": null,
     "status": "complete",
-    "job_value": 1600,
-    "fees": 65,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "ybe11D",
     "cid_company_name": "ddb35012ce160c2994de2f14a68b6ac6",
     "cid_property_owner": null,
@@ -1803,12 +1829,13 @@
     "full_address": "120 W HARVARD DR, GARLAND, TX 75041",
     "attom_id": 44669770,
     "contractor_names": "ALL IN ONE Electrical INC",
-    "homeowner_names": "David Miller",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Electrical",
     "project_types_list": [
-      "Electrical"
-    ]
+      "Electrical",
+      "Residential"
+    ],
+    "project_types": "Electrical, Residential"
   },
   {
     "date_last_updated": "2/21/2022",
@@ -1819,8 +1846,8 @@
     "description": "New single family dwelling jl/cv",
     "project_name": null,
     "status": "ISSUED",
-    "job_value": 512800,
-    "fees": 365,
+    "job_value": 0,
+    "fees": 0,
     "id_contractor": "v6dpNK",
     "cid_company_name": "4272a9d6bb084a57503f618fc95a4bb4",
     "cid_property_owner": "b8c22ae1de2400822c9a48118f92f802",
@@ -1887,8 +1914,11 @@
     "contractor_names": "D AND G PROPERTIES",
     "homeowner_names": "GENE KIZZIAR",
     "year": 2000,
-    "project_types": "Other",
-    "project_types_list": []
+    "project_types_list": [
+      "Residential",
+      "New Construction"
+    ],
+    "project_types": "Residential, New Construction"
   },
   {
     "date_last_updated": "10/2/2023",
@@ -1967,10 +1997,10 @@
     "contractor_names": "Ben F Clark",
     "homeowner_names": "Alfred Ford",
     "year": 2000,
-    "project_types": "Roofing",
     "project_types_list": [
       "Roofing"
-    ]
+    ],
+    "project_types": "Roofing"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -1981,7 +2011,7 @@
     "description": "Tear off old roof and replace le",
     "project_name": null,
     "status": "expired",
-    "job_value": 33000,
+    "job_value": 0,
     "fees": 40,
     "id_contractor": "aBmBYp",
     "cid_company_name": "47085db67345c2ba18c13340118e03fb",
@@ -2049,10 +2079,11 @@
     "contractor_names": "AAA Auger",
     "homeowner_names": "Alfred Ford",
     "year": 2000,
-    "project_types": "Roofing",
     "project_types_list": [
+      "Residential",
       "Roofing"
-    ]
+    ],
+    "project_types": "Residential, Roofing"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -2063,8 +2094,8 @@
     "description": "Pool mj/cv",
     "project_name": null,
     "status": "final",
-    "job_value": 6400,
-    "fees": 135,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "9B7E5W",
     "cid_company_name": "b497424195adec7902385af95f8ee8a8",
     "cid_property_owner": "e8736dc7281aabce7147570060f8e4e7",
@@ -2131,11 +2162,11 @@
     "contractor_names": "Pacesetter Pools",
     "homeowner_names": "Greg Behm",
     "year": 2000,
-    "project_types": "Electrical, Pool/Spa",
     "project_types_list": [
       "Electrical",
-      "Pool/Spa"
-    ]
+      "Pool / Spa"
+    ],
+    "project_types": "Electrical, Pool / Spa"
   },
   {
     "date_last_updated": "9/6/2021",
@@ -2146,7 +2177,7 @@
     "description": "Relay water service le",
     "project_name": null,
     "status": "expired",
-    "job_value": 4400,
+    "job_value": null,
     "fees": 35,
     "id_contractor": "y87wx3",
     "cid_company_name": "816fb10305c90c545030dd3268024468",
@@ -2214,10 +2245,11 @@
     "contractor_names": "Nichols Plumbing",
     "homeowner_names": "Richard Bailey",
     "year": 2000,
-    "project_types": "Plumbing",
     "project_types_list": [
-      "Plumbing"
-    ]
+      "Plumbing",
+      "Residential"
+    ],
+    "project_types": "Plumbing, Residential"
   },
   {
     "date_last_updated": "12/6/2021",
@@ -2228,8 +2260,8 @@
     "description": "Fire repair roof (mech and electrical included) cmh/le",
     "project_name": null,
     "status": "expired",
-    "job_value": 8000,
-    "fees": 135,
+    "job_value": null,
+    "fees": null,
     "id_contractor": null,
     "cid_company_name": "da2ff7bc80143b95a8375fb0c2aa78ed",
     "cid_property_owner": "c6b3f092637dd4873b4da7be195b5419",
@@ -2296,10 +2328,11 @@
     "contractor_names": "Micahel I Hayes",
     "homeowner_names": "Michael I Hayes",
     "year": 2000,
-    "project_types": "Mechanical",
     "project_types_list": [
+      "Residential",
       "Mechanical"
-    ]
+    ],
+    "project_types": "Residential, Mechanical"
   },
   {
     "date_last_updated": "12/6/2021",
@@ -2310,8 +2343,8 @@
     "description": "Fire repair roof (mech and electrical included) cmh/le",
     "project_name": null,
     "status": "expired",
-    "job_value": 7500,
-    "fees": 190,
+    "job_value": null,
+    "fees": null,
     "id_contractor": null,
     "cid_company_name": "da2ff7bc80143b95a8375fb0c2aa78ed",
     "cid_property_owner": "c6b3f092637dd4873b4da7be195b5419",
@@ -2378,10 +2411,11 @@
     "contractor_names": "Micahel I Hayes",
     "homeowner_names": "Michael I Hayes",
     "year": 2000,
-    "project_types": "Electrical",
     "project_types_list": [
-      "Electrical"
-    ]
+      "Electrical",
+      "Residential"
+    ],
+    "project_types": "Electrical, Residential"
   },
   {
     "date_last_updated": "12/6/2021",
@@ -2460,11 +2494,11 @@
     "contractor_names": "Micahel I Hayes",
     "homeowner_names": "Michael I Hayes",
     "year": 2000,
-    "project_types": "Roofing, Electrical",
     "project_types_list": [
-      "Roofing",
-      "Electrical"
-    ]
+      "Electrical",
+      "Roofing"
+    ],
+    "project_types": "Electrical, Roofing"
   },
   {
     "date_last_updated": "12/6/2021",
@@ -2475,8 +2509,8 @@
     "description": "Fire repair roof (mech and electrical included) cmh/le",
     "project_name": null,
     "status": "expired",
-    "job_value": 6900,
-    "fees": 125,
+    "job_value": null,
+    "fees": null,
     "id_contractor": null,
     "cid_company_name": "da2ff7bc80143b95a8375fb0c2aa78ed",
     "cid_property_owner": "c6b3f092637dd4873b4da7be195b5419",
@@ -2543,8 +2577,10 @@
     "contractor_names": "Micahel I Hayes",
     "homeowner_names": "Michael I Hayes",
     "year": 2000,
-    "project_types": "Other",
-    "project_types_list": []
+    "project_types_list": [
+      "Residential"
+    ],
+    "project_types": "Residential"
   },
   {
     "date_last_updated": "10/2/2023",
@@ -2623,8 +2659,10 @@
     "contractor_names": "Buss Aluminum",
     "homeowner_names": "Ken Moore",
     "year": 2000,
-    "project_types": "Other",
-    "project_types_list": []
+    "project_types_list": [
+      "Garage Construction"
+    ],
+    "project_types": "Garage Construction"
   },
   {
     "date_last_updated": "10/2/2023",
@@ -2635,8 +2673,8 @@
     "description": "Aluminum carport 18 x 20 mj/bj",
     "project_name": null,
     "status": "expired",
-    "job_value": 11200,
-    "fees": 190,
+    "job_value": null,
+    "fees": null,
     "id_contractor": null,
     "cid_company_name": "cc18cc070354409a98445d1600931e4f",
     "cid_property_owner": "b5e4e0e186f03de8fce74a70a6877841",
@@ -2703,8 +2741,10 @@
     "contractor_names": "Buss Aluminum",
     "homeowner_names": "Ken Moore",
     "year": 2000,
-    "project_types": "Other",
-    "project_types_list": []
+    "project_types_list": [
+      "Residential"
+    ],
+    "project_types": "Residential"
   },
   {
     "date_last_updated": "12/11/2021",
@@ -2715,7 +2755,7 @@
     "description": "Water heater cv",
     "project_name": null,
     "status": "EXPIRED",
-    "job_value": 3000,
+    "job_value": 0,
     "fees": 35,
     "id_contractor": "o5OnW8",
     "cid_company_name": "233a61f68e46a81e8397707f1d9b889d",
@@ -2783,10 +2823,10 @@
     "contractor_names": "D AND D PLUMBING",
     "homeowner_names": "MAHALIK, ROBERT",
     "year": 2000,
-    "project_types": "Plumbing",
     "project_types_list": [
       "Plumbing"
-    ]
+    ],
+    "project_types": "Plumbing"
   },
   {
     "date_last_updated": "12/6/2021",
@@ -2797,8 +2837,8 @@
     "description": "Install inground gunite pool mj/eg",
     "project_name": null,
     "status": "expired",
-    "job_value": 3200,
-    "fees": 120,
+    "job_value": 0,
+    "fees": 0,
     "id_contractor": "VJr3q9",
     "cid_company_name": "176efea6f859d645f6629458dcdd2a5f",
     "cid_property_owner": "7ec0c1e0f894edfbb71f008c3b10b674",
@@ -2865,11 +2905,11 @@
     "contractor_names": "Alcala's Plumbing",
     "homeowner_names": "Rick James",
     "year": 2000,
-    "project_types": "Plumbing, Pool/Spa",
     "project_types_list": [
       "Plumbing",
-      "Pool/Spa"
-    ]
+      "Pool / Spa"
+    ],
+    "project_types": "Plumbing, Pool / Spa"
   },
   {
     "date_last_updated": "12/6/2021",
@@ -2880,8 +2920,8 @@
     "description": "Install inground gunite pool mj/eg",
     "project_name": null,
     "status": "final",
-    "job_value": 8100,
-    "fees": 180,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "Eg4y6A",
     "cid_company_name": "a5b56d60eb4f2e1bba3ebdb7b5c6f623",
     "cid_property_owner": "7ec0c1e0f894edfbb71f008c3b10b674",
@@ -2948,11 +2988,11 @@
     "contractor_names": "Positive Electric",
     "homeowner_names": "Rick James",
     "year": 2000,
-    "project_types": "Electrical, Pool/Spa",
     "project_types_list": [
       "Electrical",
-      "Pool/Spa"
-    ]
+      "Pool / Spa"
+    ],
+    "project_types": "Electrical, Pool / Spa"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -3031,8 +3071,10 @@
     "contractor_names": "Premier Pools",
     "homeowner_names": "Rilk James",
     "year": 2000,
-    "project_types": "Other",
-    "project_types_list": []
+    "project_types_list": [
+      "Patios"
+    ],
+    "project_types": "Patios"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -3111,10 +3153,10 @@
     "contractor_names": "Premier Pools",
     "homeowner_names": "Rick James",
     "year": 2000,
-    "project_types": "Pool/Spa",
     "project_types_list": [
-      "Pool/Spa"
-    ]
+      "Pool / Spa"
+    ],
+    "project_types": "Pool / Spa"
   },
   {
     "date_last_updated": "12/6/2021",
@@ -3125,8 +3167,8 @@
     "description": "Arbor gm/le",
     "project_name": null,
     "status": "expired",
-    "job_value": 800,
-    "fees": 30,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "4yEk12",
     "cid_company_name": "b32f0c9fdf961d3905b353f840717a4a",
     "cid_property_owner": "2e84483916f59ae81d712acb83a936b9",
@@ -3193,8 +3235,10 @@
     "contractor_names": "Premier Pools",
     "homeowner_names": "Rilk James",
     "year": 2000,
-    "project_types": "Other",
-    "project_types_list": []
+    "project_types_list": [
+      "Residential"
+    ],
+    "project_types": "Residential"
   },
   {
     "date_last_updated": "12/6/2021",
@@ -3205,8 +3249,8 @@
     "description": "Install inground grinite pool mj/eg",
     "project_name": null,
     "status": "expired",
-    "job_value": 95800,
-    "fees": 300,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "4yEk12",
     "cid_company_name": "b32f0c9fdf961d3905b353f840717a4a",
     "cid_property_owner": "7ec0c1e0f894edfbb71f008c3b10b674",
@@ -3273,10 +3317,11 @@
     "contractor_names": "Premier Pools",
     "homeowner_names": "Rick James",
     "year": 2000,
-    "project_types": "Pool/Spa",
     "project_types_list": [
-      "Pool/Spa"
-    ]
+      "Pool / Spa",
+      "Residential"
+    ],
+    "project_types": "Pool / Spa, Residential"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -3355,11 +3400,12 @@
     "contractor_names": "Aqua Power Elec Inc",
     "homeowner_names": "Horrigan",
     "year": 2000,
-    "project_types": "Mechanical, HVAC",
     "project_types_list": [
-      "Mechanical",
-      "HVAC"
-    ]
+      "HVAC",
+      "Residential",
+      "Mechanical"
+    ],
+    "project_types": "HVAC, Residential, Mechanical"
   },
   {
     "date_last_updated": "7/10/2021",
@@ -3370,8 +3416,8 @@
     "description": "Adding bathroom to house gmle",
     "project_name": null,
     "status": "expired",
-    "job_value": 717800,
-    "fees": 395,
+    "job_value": null,
+    "fees": null,
     "id_contractor": null,
     "cid_company_name": "450ca3e1299c9feb3e31700653f8656d",
     "cid_property_owner": "401b4b1fa050df8e00ee9a9f365a38b6",
@@ -3438,11 +3484,13 @@
     "contractor_names": "Rigoberto Angulo",
     "homeowner_names": "Angulo",
     "year": 2000,
-    "project_types": "Bathroom remodel, Electrical",
     "project_types_list": [
-      "Bathroom remodel",
-      "Electrical"
-    ]
+      "Electrical",
+      "Bathroom Remodel",
+      "Residential",
+      "New Construction"
+    ],
+    "project_types": "Electrical, Bathroom Remodel, Residential, New Construction"
   },
   {
     "date_last_updated": "7/10/2021",
@@ -3521,10 +3569,11 @@
     "contractor_names": "Rigoberto Angulo",
     "homeowner_names": "Angulo",
     "year": 2000,
-    "project_types": "Bathroom remodel",
     "project_types_list": [
-      "Bathroom remodel"
-    ]
+      "Bathroom Remodel",
+      "Residential"
+    ],
+    "project_types": "Bathroom Remodel, Residential"
   },
   {
     "date_last_updated": "7/10/2021",
@@ -3535,8 +3584,8 @@
     "description": "Adding bathroom to house gmle",
     "project_name": null,
     "status": "expired",
-    "job_value": 600100,
-    "fees": 380,
+    "job_value": null,
+    "fees": null,
     "id_contractor": null,
     "cid_company_name": "450ca3e1299c9feb3e31700653f8656d",
     "cid_property_owner": "401b4b1fa050df8e00ee9a9f365a38b6",
@@ -3603,10 +3652,12 @@
     "contractor_names": "Rigoberto Angulo",
     "homeowner_names": "Angulo",
     "year": 2000,
-    "project_types": "Bathroom remodel",
     "project_types_list": [
-      "Bathroom remodel"
-    ]
+      "Bathroom Remodel",
+      "Residential",
+      "New Construction"
+    ],
+    "project_types": "Bathroom Remodel, Residential, New Construction"
   },
   {
     "date_last_updated": "7/4/2022",
@@ -3617,7 +3668,7 @@
     "description": "Replace a/c/heat and ductwork, 4 ton a/c;100, 000 btu gas heat",
     "project_name": null,
     "status": "expired",
-    "job_value": 12000,
+    "job_value": 0,
     "fees": 35,
     "id_contractor": "Vw4J25",
     "cid_company_name": "8853cd981a19f7b72a7ab2c65a994a30",
@@ -3685,11 +3736,12 @@
     "contractor_names": "A1 AIR Conditioning",
     "homeowner_names": "Joe Strong",
     "year": 2000,
-    "project_types": "Mechanical, HVAC",
     "project_types_list": [
-      "Mechanical",
-      "HVAC"
-    ]
+      "HVAC",
+      "Residential",
+      "Mechanical"
+    ],
+    "project_types": "HVAC, Residential, Mechanical"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -3700,8 +3752,8 @@
     "description": "Remodel mj",
     "project_name": null,
     "status": "final",
-    "job_value": 1900,
-    "fees": 95,
+    "job_value": null,
+    "fees": null,
     "id_contractor": null,
     "cid_company_name": "45172f3e522d4c6cafaca42922ccdac5",
     "cid_property_owner": "cd133270cf962d6e37e15137330be869",
@@ -3768,10 +3820,11 @@
     "contractor_names": "Joe Strawn",
     "homeowner_names": "Betty Dean",
     "year": 2000,
-    "project_types": "Electrical",
     "project_types_list": [
-      "Electrical"
-    ]
+      "Electrical",
+      "Residential"
+    ],
+    "project_types": "Electrical, Residential"
   },
   {
     "date_last_updated": "4/12/2021",
@@ -3782,7 +3835,7 @@
     "description": "Installing 2 1/2 ton air conditioning unit  coil , 70 bt furnace eg",
     "project_name": null,
     "status": "expired",
-    "job_value": 9700,
+    "job_value": null,
     "fees": 35,
     "id_contractor": null,
     "cid_company_name": "d33b0eebf4c5bce6831fe7fc826e053e",
@@ -3850,11 +3903,12 @@
     "contractor_names": "Spencer AIR Cond",
     "homeowner_names": "Thoung",
     "year": 2000,
-    "project_types": "Mechanical, HVAC",
     "project_types_list": [
-      "Mechanical",
-      "HVAC"
-    ]
+      "HVAC",
+      "Residential",
+      "Mechanical"
+    ],
+    "project_types": "HVAC, Residential, Mechanical"
   },
   {
     "date_last_updated": "5/10/2021",
@@ -3865,7 +3919,7 @@
     "description": "Rerun gas to cook top cv",
     "project_name": null,
     "status": "final",
-    "job_value": 7800,
+    "job_value": null,
     "fees": 35,
     "id_contractor": "XA410q",
     "cid_company_name": "0e170a55f7ca66b418db2a9bdbe7b602",
@@ -3931,12 +3985,12 @@
     "full_address": "522 SOUTHRIDGE WAY, IRVING, TX 75063",
     "attom_id": 3527013,
     "contractor_names": "Pottsy Plumbing",
-    "homeowner_names": "Linda Davis",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Plumbing",
     "project_types_list": [
       "Plumbing"
-    ]
+    ],
+    "project_types": "Plumbing"
   },
   {
     "date_last_updated": "12/6/2021",
@@ -3948,7 +4002,7 @@
     "project_name": null,
     "status": "NONE",
     "job_value": 18013,
-    "fees": 235,
+    "fees": null,
     "id_contractor": "5w1kGO",
     "cid_company_name": "f770de9f5ea328434883c8f3a83873d2",
     "cid_property_owner": "31da7022734297e820f33ae9d9684d9f",
@@ -4015,10 +4069,10 @@
     "contractor_names": "Challenger Pools",
     "homeowner_names": "Linda Taylor",
     "year": 2000,
-    "project_types": "Pool/Spa",
     "project_types_list": [
-      "Pool/Spa"
-    ]
+      "Pool / Spa"
+    ],
+    "project_types": "Pool / Spa"
   },
   {
     "date_last_updated": "7/28/2023",
@@ -4029,14 +4083,14 @@
     "description": "Remodel rebuild a hole in the room to original jfh/c",
     "project_name": null,
     "status": "final",
-    "job_value": 2100,
-    "fees": 65,
+    "job_value": null,
+    "fees": null,
     "id_contractor": null,
     "cid_company_name": "3f7e18619d7fddb997fd850f037b3928",
     "cid_property_owner": "214539c117f937a64cc0537ee9ab6cf0",
     "property_legal_description": null,
     "property_type_description": null,
-    "property_type_sub_category": "OTHER",
+    "property_type_sub_category": null,
     "property_address_type_key": null,
     "address_type_description": null,
     "subdivision": null,
@@ -4047,7 +4101,7 @@
     "house_number": null,
     "street_direction": null,
     "street_name": null,
-    "city": "IRVING",
+    "city": null,
     "state": null,
     "zipcode": null,
     "zipcode4": null,
@@ -4097,8 +4151,10 @@
     "contractor_names": "Rono Benitez",
     "homeowner_names": "Robert Smith",
     "year": 2000,
-    "project_types": "Other",
-    "project_types_list": []
+    "project_types_list": [
+      "Remodel"
+    ],
+    "project_types": "Remodel"
   },
   {
     "date_last_updated": "12/6/2021",
@@ -4109,8 +4165,8 @@
     "description": "New pool jfh/le",
     "project_name": null,
     "status": "expired",
-    "job_value": 61300,
-    "fees": 315,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "5w1kGO",
     "cid_company_name": "f770de9f5ea328434883c8f3a83873d2",
     "cid_property_owner": "31da7022734297e820f33ae9d9684d9f",
@@ -4177,10 +4233,11 @@
     "contractor_names": "Challenger Pools",
     "homeowner_names": "Linda Taylor",
     "year": 2000,
-    "project_types": "Pool/Spa",
     "project_types_list": [
-      "Pool/Spa"
-    ]
+      "Pool / Spa",
+      "Residential"
+    ],
+    "project_types": "Pool / Spa, Residential"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -4191,8 +4248,8 @@
     "description": "Inground pool. Ch",
     "project_name": null,
     "status": "final",
-    "job_value": 6700,
-    "fees": 195,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "bqk9w9",
     "cid_company_name": "cd0da7ac2216bb87af6931a4d66e28eb",
     "cid_property_owner": "17e52ab131ce7567d91d104ed3c6b643",
@@ -4259,11 +4316,11 @@
     "contractor_names": "Water Works Plumbing",
     "homeowner_names": "Kumpe",
     "year": 2000,
-    "project_types": "Plumbing, Pool/Spa",
     "project_types_list": [
       "Plumbing",
-      "Pool/Spa"
-    ]
+      "Pool / Spa"
+    ],
+    "project_types": "Plumbing, Pool / Spa"
   },
   {
     "date_last_updated": "10/2/2023",
@@ -4274,8 +4331,8 @@
     "description": "Inground pool. Ch",
     "project_name": null,
     "status": "final",
-    "job_value": 7900,
-    "fees": 130,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "Eg4y6A",
     "cid_company_name": "a5b56d60eb4f2e1bba3ebdb7b5c6f623",
     "cid_property_owner": "17e52ab131ce7567d91d104ed3c6b643",
@@ -4342,11 +4399,11 @@
     "contractor_names": "Positive Electric",
     "homeowner_names": "Kumpe",
     "year": 2000,
-    "project_types": "Electrical, Pool/Spa",
     "project_types_list": [
       "Electrical",
-      "Pool/Spa"
-    ]
+      "Pool / Spa"
+    ],
+    "project_types": "Electrical, Pool / Spa"
   },
   {
     "date_last_updated": "4/12/2021",
@@ -4358,7 +4415,7 @@
     "project_name": null,
     "status": "NONE",
     "job_value": 23000,
-    "fees": 240,
+    "fees": null,
     "id_contractor": "o3pkg6",
     "cid_company_name": "850a9d6f47f714107ea48687e0dd7392",
     "cid_property_owner": "17e52ab131ce7567d91d104ed3c6b643",
@@ -4425,10 +4482,10 @@
     "contractor_names": "Hobert Pools",
     "homeowner_names": "Kumpe",
     "year": 2000,
-    "project_types": "Pool/Spa",
     "project_types_list": [
-      "Pool/Spa"
-    ]
+      "Pool / Spa"
+    ],
+    "project_types": "Pool / Spa"
   },
   {
     "date_last_updated": "10/2/2023",
@@ -4439,7 +4496,7 @@
     "description": "Install 90, 000 btu 3 1/2 ton coil le",
     "project_name": null,
     "status": "expired",
-    "job_value": 9000,
+    "job_value": null,
     "fees": 35,
     "id_contractor": null,
     "cid_company_name": "d33b0eebf4c5bce6831fe7fc826e053e",
@@ -4507,11 +4564,12 @@
     "contractor_names": "Spencer AIR Cond",
     "homeowner_names": "Richardson",
     "year": 2000,
-    "project_types": "Mechanical, HVAC",
     "project_types_list": [
-      "Mechanical",
-      "HVAC"
-    ]
+      "HVAC",
+      "Residential",
+      "Mechanical"
+    ],
+    "project_types": "HVAC, Residential, Mechanical"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -4522,8 +4580,8 @@
     "description": "Const on agunite pool and spa mj/eg",
     "project_name": null,
     "status": "final",
-    "job_value": 6800,
-    "fees": 140,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "bqk9w9",
     "cid_company_name": "cd0da7ac2216bb87af6931a4d66e28eb",
     "cid_property_owner": "9f3ca3db2e5c7c503d93e3fc6e891969",
@@ -4590,11 +4648,11 @@
     "contractor_names": "Water Works Plumbing",
     "homeowner_names": "Boone",
     "year": 2000,
-    "project_types": "Plumbing, Pool/Spa",
     "project_types_list": [
       "Plumbing",
-      "Pool/Spa"
-    ]
+      "Pool / Spa"
+    ],
+    "project_types": "Plumbing, Pool / Spa"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -4605,8 +4663,8 @@
     "description": "Const on agunite pool and spa mj/eg",
     "project_name": null,
     "status": "expired",
-    "job_value": 6100,
-    "fees": 125,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "ZvWlPn",
     "cid_company_name": "318450a04661827ab5407c7a63912d8f",
     "cid_property_owner": "9f3ca3db2e5c7c503d93e3fc6e891969",
@@ -4673,11 +4731,11 @@
     "contractor_names": "Aquatech",
     "homeowner_names": "Boone",
     "year": 2000,
-    "project_types": "Electrical, Pool/Spa",
     "project_types_list": [
       "Electrical",
-      "Pool/Spa"
-    ]
+      "Pool / Spa"
+    ],
+    "project_types": "Electrical, Pool / Spa"
   },
   {
     "date_last_updated": "12/6/2021",
@@ -4756,10 +4814,10 @@
     "contractor_names": "Robertson Pools",
     "homeowner_names": "Boone",
     "year": 2000,
-    "project_types": "Pool/Spa",
     "project_types_list": [
-      "Pool/Spa"
-    ]
+      "Pool / Spa"
+    ],
+    "project_types": "Pool / Spa"
   },
   {
     "date_last_updated": "12/6/2021",
@@ -4770,8 +4828,8 @@
     "description": "Const on agunite pool and spa mj/eg",
     "project_name": null,
     "status": "expired",
-    "job_value": 66300,
-    "fees": 275,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "n9l92P",
     "cid_company_name": "f7435961378b952ce7ef84c8f98106f4",
     "cid_property_owner": "9f3ca3db2e5c7c503d93e3fc6e891969",
@@ -4838,10 +4896,11 @@
     "contractor_names": "Robertson Pools",
     "homeowner_names": "Boone",
     "year": 2000,
-    "project_types": "Pool/Spa",
     "project_types_list": [
-      "Pool/Spa"
-    ]
+      "Pool / Spa",
+      "Residential"
+    ],
+    "project_types": "Pool / Spa, Residential"
   },
   {
     "date_last_updated": "11/22/2021",
@@ -4920,10 +4979,10 @@
     "contractor_names": "Seco Construction",
     "homeowner_names": "Kimberlin, Glen & Debi",
     "year": 2000,
-    "project_types": "Electrical",
     "project_types_list": [
       "Electrical"
-    ]
+    ],
+    "project_types": "Electrical"
   },
   {
     "date_last_updated": "6/5/2023",
@@ -4935,7 +4994,7 @@
     "project_name": null,
     "status": "issued",
     "job_value": 150,
-    "fees": 95,
+    "fees": null,
     "id_contractor": null,
     "cid_company_name": "c0afa0bfdaa1cb0756d8e9a2df81f1b4",
     "cid_property_owner": "6ce627d2451a0fcddf8906409297e3c0",
@@ -5002,10 +5061,10 @@
     "contractor_names": "T Bar Fence",
     "homeowner_names": "First Texas Homes Inc",
     "year": 2000,
-    "project_types": "Fence",
     "project_types_list": [
-      "Fence"
-    ]
+      "Fences"
+    ],
+    "project_types": "Fences"
   },
   {
     "date_last_updated": "7/28/2023",
@@ -5016,14 +5075,14 @@
     "description": "Mechanical permit - remodel - change of use from tattoo parlor to bar for whiskey bar - c-1000 commercial remodel",
     "project_name": "303 W 5th St",
     "status": "final",
-    "job_value": 9800,
+    "job_value": null,
     "fees": 70,
     "id_contractor": null,
     "cid_company_name": "061d5042879db84f478c9e3fd6bfd45c",
     "cid_property_owner": null,
     "property_legal_description": null,
     "property_type_description": null,
-    "property_type_sub_category": "OTHER",
+    "property_type_sub_category": null,
     "property_address_type_key": null,
     "address_type_description": null,
     "subdivision": null,
@@ -5034,7 +5093,7 @@
     "house_number": null,
     "street_direction": null,
     "street_name": null,
-    "city": "IRVING",
+    "city": null,
     "state": null,
     "zipcode": null,
     "zipcode4": null,
@@ -5082,12 +5141,13 @@
     "full_address": null,
     "attom_id": 167075867,
     "contractor_names": "James Slaughter; Phillip Miller",
-    "homeowner_names": "Heritage Community Church",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "HVAC",
     "project_types_list": [
-      "HVAC"
-    ]
+      "Mechanical",
+      "Remodel"
+    ],
+    "project_types": "Mechanical, Remodel"
   },
   {
     "date_last_updated": "11/22/2021",
@@ -5098,8 +5158,8 @@
     "description": "Fire repair w/electrical. (2-trade permit). Ch",
     "project_name": null,
     "status": "expired",
-    "job_value": 7000,
-    "fees": 160,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "98zvp8",
     "cid_company_name": "a3d21dcffb3ba99227202ca5665783c5",
     "cid_property_owner": "a468cbd48b67cf928c711993a40596bf",
@@ -5166,10 +5226,11 @@
     "contractor_names": "Seco Construction",
     "homeowner_names": "Kimberlin, Glen & Debi",
     "year": 2000,
-    "project_types": "Electrical",
     "project_types_list": [
-      "Electrical"
-    ]
+      "Electrical",
+      "Residential"
+    ],
+    "project_types": "Electrical, Residential"
   },
   {
     "date_last_updated": "12/6/2021",
@@ -5180,7 +5241,7 @@
     "description": "Replace 3 ton outdoor air conditioning unit cv",
     "project_name": null,
     "status": "expired",
-    "job_value": 3500,
+    "job_value": null,
     "fees": 35,
     "id_contractor": null,
     "cid_company_name": "d33b0eebf4c5bce6831fe7fc826e053e",
@@ -5248,11 +5309,12 @@
     "contractor_names": "Spencer AIR Cond",
     "homeowner_names": "Akacali",
     "year": 2000,
-    "project_types": "Mechanical, HVAC",
     "project_types_list": [
-      "Mechanical",
-      "HVAC"
-    ]
+      "HVAC",
+      "Residential",
+      "Mechanical"
+    ],
+    "project_types": "HVAC, Residential, Mechanical"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -5263,8 +5325,8 @@
     "description": "Pool ch/bj",
     "project_name": null,
     "status": "issued",
-    "job_value": 7800,
-    "fees": 195,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "bqk9w9",
     "cid_company_name": "cd0da7ac2216bb87af6931a4d66e28eb",
     "cid_property_owner": "c800b82b9f1ee2796ff80cf11f886efb",
@@ -5331,11 +5393,11 @@
     "contractor_names": "Water Works Plumbing",
     "homeowner_names": "Vith",
     "year": 2000,
-    "project_types": "Plumbing, Pool/Spa",
     "project_types_list": [
       "Plumbing",
-      "Pool/Spa"
-    ]
+      "Pool / Spa"
+    ],
+    "project_types": "Plumbing, Pool / Spa"
   },
   {
     "date_last_updated": "7/25/2022",
@@ -5347,7 +5409,7 @@
     "project_name": null,
     "status": "NONE",
     "job_value": 30000,
-    "fees": 240,
+    "fees": null,
     "id_contractor": "n9l92P",
     "cid_company_name": "f7435961378b952ce7ef84c8f98106f4",
     "cid_property_owner": "c800b82b9f1ee2796ff80cf11f886efb",
@@ -5414,10 +5476,10 @@
     "contractor_names": "Robertson Pools",
     "homeowner_names": "Vith",
     "year": 2000,
-    "project_types": "Pool/Spa",
     "project_types_list": [
-      "Pool/Spa"
-    ]
+      "Pool / Spa"
+    ],
+    "project_types": "Pool / Spa"
   },
   {
     "date_last_updated": "7/25/2022",
@@ -5428,8 +5490,8 @@
     "description": "Pool ch/bj",
     "project_name": null,
     "status": "issued",
-    "job_value": 43900,
-    "fees": 245,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "n9l92P",
     "cid_company_name": "f7435961378b952ce7ef84c8f98106f4",
     "cid_property_owner": "c800b82b9f1ee2796ff80cf11f886efb",
@@ -5496,10 +5558,11 @@
     "contractor_names": "Robertson Pools",
     "homeowner_names": "Vith",
     "year": 2000,
-    "project_types": "Pool/Spa",
     "project_types_list": [
-      "Pool/Spa"
-    ]
+      "Pool / Spa",
+      "Residential"
+    ],
+    "project_types": "Pool / Spa, Residential"
   },
   {
     "date_last_updated": "12/6/2021",
@@ -5510,7 +5573,7 @@
     "description": "Water heater bj",
     "project_name": null,
     "status": "expired",
-    "job_value": 1400,
+    "job_value": 0,
     "fees": 35,
     "id_contractor": "o5OnW8",
     "cid_company_name": "233a61f68e46a81e8397707f1d9b889d",
@@ -5578,10 +5641,10 @@
     "contractor_names": "D AND D PLUMBING",
     "homeowner_names": "RON FARR",
     "year": 2000,
-    "project_types": "Plumbing",
     "project_types_list": [
       "Plumbing"
-    ]
+    ],
+    "project_types": "Plumbing"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -5592,7 +5655,7 @@
     "description": "70, 000 btu installed le",
     "project_name": null,
     "status": "expired",
-    "job_value": 9600,
+    "job_value": null,
     "fees": 35,
     "id_contractor": null,
     "cid_company_name": "d33b0eebf4c5bce6831fe7fc826e053e",
@@ -5660,11 +5723,12 @@
     "contractor_names": "Spencer AIR Cond",
     "homeowner_names": "Williams",
     "year": 2000,
-    "project_types": "Mechanical, HVAC",
     "project_types_list": [
-      "Mechanical",
-      "HVAC"
-    ]
+      "HVAC",
+      "Residential",
+      "Mechanical"
+    ],
+    "project_types": "HVAC, Residential, Mechanical"
   },
   {
     "date_last_updated": "12/6/2021",
@@ -5675,7 +5739,7 @@
     "description": "Upgrade service 200 amp le",
     "project_name": null,
     "status": "expired",
-    "job_value": 844200,
+    "job_value": 0,
     "fees": 35,
     "id_contractor": "JBkdzG",
     "cid_company_name": "3c0d23d269faf73c0c1118cad8b9d229",
@@ -5743,10 +5807,12 @@
     "contractor_names": "C AND B ELECTRIC CO; C&B Electric CO",
     "homeowner_names": "CUMMINS",
     "year": 2000,
-    "project_types": "Electrical",
     "project_types_list": [
-      "Electrical"
-    ]
+      "Electrical",
+      "Residential",
+      "New Construction"
+    ],
+    "project_types": "Electrical, Residential, New Construction"
   },
   {
     "date_last_updated": "7/10/2021",
@@ -5757,8 +5823,8 @@
     "description": "Inground gunite swimming pool mj/eg",
     "project_name": null,
     "status": "expired",
-    "job_value": 8300,
-    "fees": 180,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "bVyOvx",
     "cid_company_name": "4f20564224071954c1cb1c473b775fc1",
     "cid_property_owner": "c8f1a6edeb199d36e8f9d96dd4d8839c",
@@ -5825,11 +5891,11 @@
     "contractor_names": "California Design",
     "homeowner_names": "John Hirth",
     "year": 2000,
-    "project_types": "Electrical, Pool/Spa",
     "project_types_list": [
       "Electrical",
-      "Pool/Spa"
-    ]
+      "Pool / Spa"
+    ],
+    "project_types": "Electrical, Pool / Spa"
   },
   {
     "date_last_updated": "7/10/2021",
@@ -5840,8 +5906,8 @@
     "description": "Inground gunite swimming pool mj/eg",
     "project_name": null,
     "status": "expired",
-    "job_value": 71400,
-    "fees": 250,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "bVyOvx",
     "cid_company_name": "4f20564224071954c1cb1c473b775fc1",
     "cid_property_owner": "c8f1a6edeb199d36e8f9d96dd4d8839c",
@@ -5908,10 +5974,11 @@
     "contractor_names": "California Design",
     "homeowner_names": "John Hirth",
     "year": 2000,
-    "project_types": "Pool/Spa",
     "project_types_list": [
-      "Pool/Spa"
-    ]
+      "Pool / Spa",
+      "Residential"
+    ],
+    "project_types": "Pool / Spa, Residential"
   },
   {
     "date_last_updated": "10/2/2023",
@@ -5990,8 +6057,10 @@
     "contractor_names": "John Huffman - Self",
     "homeowner_names": "Sue Haley Huffman",
     "year": 2000,
-    "project_types": "Other",
-    "project_types_list": []
+    "project_types_list": [
+      "Residential"
+    ],
+    "project_types": "Residential"
   },
   {
     "date_last_updated": "12/6/2021",
@@ -6002,8 +6071,8 @@
     "description": "Repairing home mj/eg",
     "project_name": null,
     "status": "expired",
-    "job_value": 1700,
-    "fees": 125,
+    "job_value": 0,
+    "fees": 0,
     "id_contractor": "PG670P",
     "cid_company_name": "56cad90c45da35e6a3c95c8a8299d3b4",
     "cid_property_owner": "783dc1b40713589b9ceeb0bd6b048f75",
@@ -6070,8 +6139,10 @@
     "contractor_names": "John Huffman",
     "homeowner_names": "Sue Haley Huffman",
     "year": 2000,
-    "project_types": "Other",
-    "project_types_list": []
+    "project_types_list": [
+      "Residential"
+    ],
+    "project_types": "Residential"
   },
   {
     "date_last_updated": "7/28/2023",
@@ -6082,14 +6153,14 @@
     "description": "Install smoke detectors in bedrooms bj",
     "project_name": null,
     "status": "expired",
-    "job_value": 7400,
+    "job_value": null,
     "fees": 35,
     "id_contractor": null,
     "cid_company_name": "ee9784a38249ed02d1cddee95ca15789",
     "cid_property_owner": "1efbd4756c194bfa93a49dba51379076",
     "property_legal_description": null,
     "property_type_description": null,
-    "property_type_sub_category": "OTHER",
+    "property_type_sub_category": null,
     "property_address_type_key": null,
     "address_type_description": null,
     "subdivision": null,
@@ -6100,7 +6171,7 @@
     "house_number": null,
     "street_direction": null,
     "street_name": null,
-    "city": "IRVING",
+    "city": null,
     "state": null,
     "zipcode": null,
     "zipcode4": null,
@@ -6150,10 +6221,10 @@
     "contractor_names": "Cathey Service INC",
     "homeowner_names": "Twin Wells Apts",
     "year": 2000,
-    "project_types": "Electrical",
     "project_types_list": [
       "Electrical"
-    ]
+    ],
+    "project_types": "Electrical"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -6164,7 +6235,7 @@
     "description": "Install one ton HVAC system le",
     "project_name": null,
     "status": "expired",
-    "job_value": 4800,
+    "job_value": 0,
     "fees": 35,
     "id_contractor": "KNdZD6",
     "cid_company_name": "45cb2fc0191db856865d5e5eb88795b3",
@@ -6232,12 +6303,13 @@
     "contractor_names": "H AND G SYSTEMS INC; H&G Systems INC",
     "homeowner_names": "VERIZON SOUTHWEST",
     "year": 2000,
-    "project_types": "Mechanical, HVAC, Commercial renovation",
     "project_types_list": [
-      "Mechanical",
       "HVAC",
-      "Commercial renovation"
-    ]
+      "Commercial Renovation",
+      "Commercial",
+      "Mechanical"
+    ],
+    "project_types": "HVAC, Commercial Renovation, Commercial, Mechanical"
   },
   {
     "date_last_updated": "5/2/2022",
@@ -6248,7 +6320,7 @@
     "description": "Replace water heater cv",
     "project_name": null,
     "status": "expired",
-    "job_value": 1600,
+    "job_value": null,
     "fees": 35,
     "id_contractor": "NDZ7rr",
     "cid_company_name": "9dfb2922ac9645782cb337199a25df02",
@@ -6316,10 +6388,10 @@
     "contractor_names": "RON Brackett",
     "homeowner_names": "Schultz",
     "year": 2000,
-    "project_types": "Plumbing",
     "project_types_list": [
       "Plumbing"
-    ]
+    ],
+    "project_types": "Plumbing"
   },
   {
     "date_last_updated": "5/2/2022",
@@ -6331,7 +6403,7 @@
     "project_name": null,
     "status": "NONE",
     "job_value": 7000,
-    "fees": 165,
+    "fees": null,
     "id_contractor": "7PpnBo",
     "cid_company_name": "287306d368f2dcb25c521dbe10216dc4",
     "cid_property_owner": "ddf2a17153e73a2a6996282304eb1f53",
@@ -6398,8 +6470,10 @@
     "contractor_names": "Alfredo Garcia",
     "homeowner_names": "Hernandez, Francisco",
     "year": 2000,
-    "project_types": "Other",
-    "project_types_list": []
+    "project_types_list": [
+      "Garage Construction"
+    ],
+    "project_types": "Garage Construction"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -6410,7 +6484,7 @@
     "description": "Replacing furnace only eg",
     "project_name": null,
     "status": "expired",
-    "job_value": 2200,
+    "job_value": null,
     "fees": 35,
     "id_contractor": "0yKZb3",
     "cid_company_name": "c0ef411a2f2a184166bd25472d5db2f4",
@@ -6478,11 +6552,12 @@
     "contractor_names": "BON AIR Service CO",
     "homeowner_names": "Raul Luna",
     "year": 2000,
-    "project_types": "Mechanical, HVAC",
     "project_types_list": [
-      "Mechanical",
-      "HVAC"
-    ]
+      "HVAC",
+      "Residential",
+      "Mechanical"
+    ],
+    "project_types": "HVAC, Residential, Mechanical"
   },
   {
     "date_last_updated": "9/6/2021",
@@ -6561,10 +6636,10 @@
     "contractor_names": "Troy Pools",
     "homeowner_names": "Mr & Mrs Assaly",
     "year": 2000,
-    "project_types": "Pool/Spa",
     "project_types_list": [
-      "Pool/Spa"
-    ]
+      "Pool / Spa"
+    ],
+    "project_types": "Pool / Spa"
   },
   {
     "date_last_updated": "9/6/2021",
@@ -6575,8 +6650,8 @@
     "description": "Pool & spa. Ch",
     "project_name": null,
     "status": "expired",
-    "job_value": 94500,
-    "fees": 320,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "Anl8Yg",
     "cid_company_name": "f629b4c49e11e7356a80ce37eff6c169",
     "cid_property_owner": "ba2af2d55e4c78da2f5dc4337c984db4",
@@ -6643,10 +6718,11 @@
     "contractor_names": "Troy Pools",
     "homeowner_names": "Mr & Mrs Assaly",
     "year": 2000,
-    "project_types": "Pool/Spa",
     "project_types_list": [
-      "Pool/Spa"
-    ]
+      "Pool / Spa",
+      "Residential"
+    ],
+    "project_types": "Pool / Spa, Residential"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -6657,8 +6733,8 @@
     "description": "Parking lot addtional parking cmh/eg",
     "project_name": null,
     "status": "CLOSED",
-    "job_value": 1844000,
-    "fees": 455,
+    "job_value": 0,
+    "fees": 0,
     "id_contractor": "kbxJBB",
     "cid_company_name": "a1e1290e620ff3bf789abaf135e92e38",
     "cid_property_owner": "17347d629713ebc48426e5f081fe7e7c",
@@ -6725,10 +6801,10 @@
     "contractor_names": "NTEX PLMB CO; Ntex Plumbing CO",
     "homeowner_names": "TRAMMELL CROW COMPANY",
     "year": 2000,
-    "project_types": "Plumbing",
     "project_types_list": [
       "Plumbing"
-    ]
+    ],
+    "project_types": "Plumbing"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -6739,8 +6815,8 @@
     "description": "Parking lot addtional parking cmh/eg",
     "project_name": null,
     "status": "CLOSED",
-    "job_value": 79500,
-    "fees": 300,
+    "job_value": 0,
+    "fees": 0,
     "id_contractor": "6qmO2J",
     "cid_company_name": "13a11fce50bca23f145fe21af4ba3e52",
     "cid_property_owner": "17347d629713ebc48426e5f081fe7e7c",
@@ -6807,8 +6883,10 @@
     "contractor_names": "ROGERS O'BRIEN",
     "homeowner_names": "TRAMMELL CROW COMPANY",
     "year": 2000,
-    "project_types": "Other",
-    "project_types_list": []
+    "project_types_list": [
+      "Commercial"
+    ],
+    "project_types": "Commercial"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -6819,8 +6897,8 @@
     "description": "New construction cmc/le",
     "project_name": null,
     "status": "final",
-    "job_value": 9768300,
-    "fees": 510,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "E6Ggvq",
     "cid_company_name": "6c3f98ce19a890c486f7c0fd76600f0a",
     "cid_property_owner": "ebf64f6e47cac2c07ed284209aa449b8",
@@ -6887,10 +6965,10 @@
     "contractor_names": "Merit Mech Services",
     "homeowner_names": "Frank Parr Auto Plex",
     "year": 2000,
-    "project_types": "Mechanical",
     "project_types_list": [
       "Mechanical"
-    ]
+    ],
+    "project_types": "Mechanical"
   },
   {
     "date_last_updated": "10/2/2023",
@@ -6901,8 +6979,8 @@
     "description": "New construction cmc/le",
     "project_name": null,
     "status": "final",
-    "job_value": 1927900,
-    "fees": 465,
+    "job_value": 0,
+    "fees": 0,
     "id_contractor": "o71mKK",
     "cid_company_name": "c23ad18532319c7f21be7b7c5a664c33",
     "cid_property_owner": "ebf64f6e47cac2c07ed284209aa449b8",
@@ -6969,8 +7047,10 @@
     "contractor_names": "WB Kibler",
     "homeowner_names": "Frank Parr Auto Plex",
     "year": 2000,
-    "project_types": "Other",
-    "project_types_list": []
+    "project_types_list": [
+      "Commercial"
+    ],
+    "project_types": "Commercial"
   },
   {
     "date_last_updated": "4/12/2021",
@@ -7049,11 +7129,11 @@
     "contractor_names": "Primitivo Avila Rojas",
     "homeowner_names": "Same",
     "year": 2000,
-    "project_types": "Multi-room remodel, Home addition",
     "project_types_list": [
-      "Multi-room remodel",
-      "Home addition"
-    ]
+      "Multi-room Remodel",
+      "Home Addition"
+    ],
+    "project_types": "Multi-room Remodel, Home Addition"
   },
   {
     "date_last_updated": "7/28/2023",
@@ -7065,13 +7145,13 @@
     "project_name": null,
     "status": "Work Completed",
     "job_value": 2000,
-    "fees": 135,
+    "fees": null,
     "id_contractor": "5w1lwP",
     "cid_company_name": "c597e545b64989558051d137dcdb6d6a",
     "cid_property_owner": "b6f924be792078cf146874af68f86406",
     "property_legal_description": null,
     "property_type_description": null,
-    "property_type_sub_category": "OTHER",
+    "property_type_sub_category": null,
     "property_address_type_key": null,
     "address_type_description": null,
     "subdivision": null,
@@ -7082,7 +7162,7 @@
     "house_number": null,
     "street_direction": null,
     "street_name": null,
-    "city": "IRVING",
+    "city": null,
     "state": null,
     "zipcode": null,
     "zipcode4": null,
@@ -7132,8 +7212,11 @@
     "contractor_names": "NA/",
     "homeowner_names": "CHURCH OF INCARNATION",
     "year": 2000,
-    "project_types": "Other",
-    "project_types_list": []
+    "project_types_list": [
+      "Temporary Structure",
+      "Remodel"
+    ],
+    "project_types": "Temporary Structure, Remodel"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -7212,11 +7295,13 @@
     "contractor_names": "AAA Auger",
     "homeowner_names": "Herman Garza",
     "year": 2000,
-    "project_types": "Mechanical, HVAC",
     "project_types_list": [
-      "Mechanical",
-      "HVAC"
-    ]
+      "HVAC",
+      "Residential",
+      "New Construction",
+      "Mechanical"
+    ],
+    "project_types": "HVAC, Residential, New Construction, Mechanical"
   },
   {
     "date_last_updated": "7/10/2021",
@@ -7295,11 +7380,11 @@
     "contractor_names": "Eloy Corral",
     "homeowner_names": "Eloy & Thelma Corral",
     "year": 2000,
-    "project_types": "Patio, Roofing",
     "project_types_list": [
-      "Patio",
+      "Patios",
       "Roofing"
-    ]
+    ],
+    "project_types": "Patios, Roofing"
   },
   {
     "date_last_updated": "10/2/2023",
@@ -7310,8 +7395,8 @@
     "description": "Re building patio & roof gm/eg",
     "project_name": null,
     "status": "issued",
-    "job_value": 14000,
-    "fees": 220,
+    "job_value": null,
+    "fees": null,
     "id_contractor": null,
     "cid_company_name": "8676b50fc0f0a39b0db6d8b9c2617834",
     "cid_property_owner": "ce847606568e4a7792edeede36957987",
@@ -7378,11 +7463,12 @@
     "contractor_names": "Eloy Corral",
     "homeowner_names": "Eloy & Thelma Corral",
     "year": 2000,
-    "project_types": "Patio, Roofing",
     "project_types_list": [
-      "Patio",
+      "Patios",
+      "Residential",
       "Roofing"
-    ]
+    ],
+    "project_types": "Patios, Residential, Roofing"
   },
   {
     "date_last_updated": "12/6/2021",
@@ -7393,7 +7479,7 @@
     "description": "Repair main sewer line eg",
     "project_name": null,
     "status": "expired",
-    "job_value": 8500,
+    "job_value": null,
     "fees": 35,
     "id_contractor": "OBeWay",
     "cid_company_name": "22e58ce344d28d36e1aef092d42b02ac",
@@ -7461,11 +7547,11 @@
     "contractor_names": "American Mechanical",
     "homeowner_names": "Rayo De Sol",
     "year": 2000,
-    "project_types": "Sewer lateral, Plumbing",
     "project_types_list": [
-      "Sewer lateral",
-      "Plumbing"
-    ]
+      "Plumbing",
+      "Sewer Laterals"
+    ],
+    "project_types": "Plumbing, Sewer Laterals"
   },
   {
     "date_last_updated": "10/2/2023",
@@ -7476,8 +7562,8 @@
     "description": "Storage building with electrical g",
     "project_name": null,
     "status": "final",
-    "job_value": 6600,
-    "fees": 150,
+    "job_value": null,
+    "fees": null,
     "id_contractor": null,
     "cid_company_name": "7dc16c8041540a6ff3b113300035595c",
     "cid_property_owner": "6fed0c378a4b4e8c1e7dc5c16dabb388",
@@ -7544,10 +7630,10 @@
     "contractor_names": "Benson Electric",
     "homeowner_names": "Minor",
     "year": 2000,
-    "project_types": "Electrical",
     "project_types_list": [
       "Electrical"
-    ]
+    ],
+    "project_types": "Electrical"
   },
   {
     "date_last_updated": "10/2/2023",
@@ -7626,10 +7712,10 @@
     "contractor_names": "Glen Minor",
     "homeowner_names": "Minor",
     "year": 2000,
-    "project_types": "Electrical",
     "project_types_list": [
       "Electrical"
-    ]
+    ],
+    "project_types": "Electrical"
   },
   {
     "date_last_updated": "10/2/2023",
@@ -7640,8 +7726,8 @@
     "description": "Storage building with electrical g",
     "project_name": null,
     "status": "expired",
-    "job_value": 6300,
-    "fees": 145,
+    "job_value": null,
+    "fees": null,
     "id_contractor": null,
     "cid_company_name": "7034ff75e13baa90744556663d13a88e",
     "cid_property_owner": "6fed0c378a4b4e8c1e7dc5c16dabb388",
@@ -7708,10 +7794,11 @@
     "contractor_names": "Glen Minor",
     "homeowner_names": "Minor",
     "year": 2000,
-    "project_types": "Electrical",
     "project_types_list": [
-      "Electrical"
-    ]
+      "Electrical",
+      "Residential"
+    ],
+    "project_types": "Electrical, Residential"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -7722,8 +7809,8 @@
     "description": "Adding bedroom & addition bathroom with elec/plumbing mj/eg",
     "project_name": null,
     "status": "expired",
-    "job_value": 10900,
-    "fees": 180,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "0yxnDe",
     "cid_company_name": "7468fabe30c73cafea7ffbd39d103a3c",
     "cid_property_owner": "6ddea3c05c289c99222443b10b2a39ea",
@@ -7790,12 +7877,13 @@
     "contractor_names": "Adams Plumbing",
     "homeowner_names": "Stanley Newville",
     "year": 2000,
-    "project_types": "Bathroom remodel, Home addition, Plumbing",
     "project_types_list": [
-      "Bathroom remodel",
-      "Home addition",
-      "Plumbing"
-    ]
+      "Plumbing",
+      "Bathroom Remodel",
+      "Residential",
+      "Home Addition"
+    ],
+    "project_types": "Plumbing, Bathroom Remodel, Residential, Home Addition"
   },
   {
     "date_last_updated": "1/3/2022",
@@ -7806,7 +7894,7 @@
     "description": "Install smoke detectord in bedrooms bj",
     "project_name": null,
     "status": "expired",
-    "job_value": 2800,
+    "job_value": null,
     "fees": 35,
     "id_contractor": "8or0aw",
     "cid_company_name": "ee9784a38249ed02d1cddee95ca15789",
@@ -7874,10 +7962,11 @@
     "contractor_names": "Cathey Service INC",
     "homeowner_names": "Twin Wells Apts",
     "year": 2000,
-    "project_types": "Electrical",
     "project_types_list": [
-      "Electrical"
-    ]
+      "Electrical",
+      "Residential"
+    ],
+    "project_types": "Electrical, Residential"
   },
   {
     "date_last_updated": "7/28/2023",
@@ -7895,7 +7984,7 @@
     "cid_property_owner": "a14842ab84d552658be6f7acfcb0610e",
     "property_legal_description": null,
     "property_type_description": null,
-    "property_type_sub_category": "OTHER",
+    "property_type_sub_category": null,
     "property_address_type_key": null,
     "address_type_description": null,
     "subdivision": null,
@@ -7906,7 +7995,7 @@
     "house_number": null,
     "street_direction": null,
     "street_name": null,
-    "city": "IRVING",
+    "city": null,
     "state": null,
     "zipcode": null,
     "zipcode4": null,
@@ -7956,8 +8045,10 @@
     "contractor_names": "Baker Bros Install",
     "homeowner_names": "Archie Richardson",
     "year": 2000,
-    "project_types": "Other",
-    "project_types_list": []
+    "project_types_list": [
+      "Siding"
+    ],
+    "project_types": "Siding"
   },
   {
     "date_last_updated": "7/28/2023",
@@ -7968,14 +8059,14 @@
     "description": "Vinyl siding-will not meet full comparable w/building standards",
     "project_name": null,
     "status": "expired",
-    "job_value": 600,
-    "fees": 20,
+    "job_value": null,
+    "fees": null,
     "id_contractor": null,
     "cid_company_name": "b695938f6fd58e2adb0b15e261740ed2",
     "cid_property_owner": "a14842ab84d552658be6f7acfcb0610e",
     "property_legal_description": null,
     "property_type_description": null,
-    "property_type_sub_category": "OTHER",
+    "property_type_sub_category": null,
     "property_address_type_key": null,
     "address_type_description": null,
     "subdivision": null,
@@ -7986,7 +8077,7 @@
     "house_number": null,
     "street_direction": null,
     "street_name": null,
-    "city": "IRVING",
+    "city": null,
     "state": null,
     "zipcode": null,
     "zipcode4": null,
@@ -8036,8 +8127,10 @@
     "contractor_names": "Baker Bros Install",
     "homeowner_names": "Archie Richardson",
     "year": 2000,
-    "project_types": "Other",
-    "project_types_list": []
+    "project_types_list": [
+      "Siding"
+    ],
+    "project_types": "Siding"
   },
   {
     "date_last_updated": "8/8/2022",
@@ -8048,7 +8141,7 @@
     "description": "Install smoke detectors in bedrooms bj",
     "project_name": null,
     "status": "expired",
-    "job_value": 5300,
+    "job_value": null,
     "fees": 35,
     "id_contractor": "8or0aw",
     "cid_company_name": "ee9784a38249ed02d1cddee95ca15789",
@@ -8116,10 +8209,11 @@
     "contractor_names": "Cathey Service INC",
     "homeowner_names": "Twin Wells Apts",
     "year": 2000,
-    "project_types": "Electrical",
     "project_types_list": [
-      "Electrical"
-    ]
+      "Electrical",
+      "Residential"
+    ],
+    "project_types": "Electrical, Residential"
   },
   {
     "date_last_updated": "4/12/2021",
@@ -8130,7 +8224,7 @@
     "description": "Replace approach gm/le",
     "project_name": null,
     "status": "final",
-    "job_value": 3700,
+    "job_value": null,
     "fees": 35,
     "id_contractor": null,
     "cid_company_name": "1e7f2b3ef43e5a29602fe2c5af050fb9",
@@ -8198,10 +8292,10 @@
     "contractor_names": "Jim Stump Cement Cont",
     "homeowner_names": "Kroenlein",
     "year": 2000,
-    "project_types": "Paving/Driveway/Sidewalk",
     "project_types_list": [
-      "Paving/Driveway/Sidewalk"
-    ]
+      "Paving (Driveways/Sidewalks)"
+    ],
+    "project_types": "Paving (Driveways/Sidewalks)"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -8212,8 +8306,8 @@
     "description": "Enclose garage to make into a bedroom includes electrical cv",
     "project_name": null,
     "status": "final",
-    "job_value": 689600,
-    "fees": 365,
+    "job_value": null,
+    "fees": null,
     "id_contractor": null,
     "cid_company_name": "0077a9dfdf7738f226b9b08c13d53b61",
     "cid_property_owner": null,
@@ -8278,12 +8372,14 @@
     "full_address": "3118 RIDGEVIEW LN, IRVING, TX 75062",
     "attom_id": 50534442,
     "contractor_names": "Julio Perez",
-    "homeowner_names": "James Martinez",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Electrical",
     "project_types_list": [
-      "Electrical"
-    ]
+      "Electrical",
+      "Residential",
+      "New Construction"
+    ],
+    "project_types": "Electrical, Residential, New Construction"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -8362,10 +8458,11 @@
     "contractor_names": "Julio Perez",
     "homeowner_names": "Chism, John E&",
     "year": 2000,
-    "project_types": "Electrical",
     "project_types_list": [
-      "Electrical"
-    ]
+      "Electrical",
+      "Residential"
+    ],
+    "project_types": "Electrical, Residential"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -8376,8 +8473,8 @@
     "description": "Enclose garage to make into a bedroom includes electrical cv",
     "project_name": null,
     "status": "expired",
-    "job_value": 798900,
-    "fees": 375,
+    "job_value": null,
+    "fees": null,
     "id_contractor": null,
     "cid_company_name": "0077a9dfdf7738f226b9b08c13d53b61",
     "cid_property_owner": null,
@@ -8442,12 +8539,14 @@
     "full_address": "3118 RIDGEVIEW LN, IRVING, TX 75062",
     "attom_id": 50534442,
     "contractor_names": "Julio Perez",
-    "homeowner_names": "David Garcia",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Electrical",
     "project_types_list": [
-      "Electrical"
-    ]
+      "Electrical",
+      "Residential",
+      "New Construction"
+    ],
+    "project_types": "Electrical, Residential, New Construction"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -8458,8 +8557,8 @@
     "description": "New single family dwelling mj/le/cv",
     "project_name": null,
     "status": "expired",
-    "job_value": 351400,
-    "fees": 380,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "ZV7ENa",
     "cid_company_name": "b057e23b99c284ce6020c7951b1c1720",
     "cid_property_owner": "25f9c714d5d1ece67a1999569652bb1b",
@@ -8526,10 +8625,12 @@
     "contractor_names": "JOE Swartz Electric",
     "homeowner_names": "Grand Homes",
     "year": 2000,
-    "project_types": "Electrical",
     "project_types_list": [
-      "Electrical"
-    ]
+      "Electrical",
+      "Residential",
+      "New Construction"
+    ],
+    "project_types": "Electrical, Residential, New Construction"
   },
   {
     "date_last_updated": "4/12/2021",
@@ -8540,8 +8641,8 @@
     "description": "New single family dwelling mj/le/cv",
     "project_name": null,
     "status": "final",
-    "job_value": 334300,
-    "fees": 335,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "XA410q",
     "cid_company_name": "0e170a55f7ca66b418db2a9bdbe7b602",
     "cid_property_owner": "25f9c714d5d1ece67a1999569652bb1b",
@@ -8608,10 +8709,12 @@
     "contractor_names": "Pottsy Plumbing",
     "homeowner_names": "Grand Homes",
     "year": 2000,
-    "project_types": "Plumbing",
     "project_types_list": [
-      "Plumbing"
-    ]
+      "Plumbing",
+      "Residential",
+      "New Construction"
+    ],
+    "project_types": "Plumbing, Residential, New Construction"
   },
   {
     "date_last_updated": "6/17/2024",
@@ -8622,8 +8725,8 @@
     "description": "New single family dwelling mj/le/cv",
     "project_name": null,
     "status": "final",
-    "job_value": 853600,
-    "fees": 415,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "Kk7kdn",
     "cid_company_name": "cd412f8dcb43c9a966871807f68e56b8",
     "cid_property_owner": "25f9c714d5d1ece67a1999569652bb1b",
@@ -8690,11 +8793,13 @@
     "contractor_names": "Reliant Heating & A/C",
     "homeowner_names": "Grand Homes",
     "year": 2000,
-    "project_types": "Mechanical, HVAC",
     "project_types_list": [
-      "Mechanical",
-      "HVAC"
-    ]
+      "HVAC",
+      "Residential",
+      "New Construction",
+      "Mechanical"
+    ],
+    "project_types": "HVAC, Residential, New Construction, Mechanical"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -8705,8 +8810,8 @@
     "description": "New single family dwelling mj/le/cv",
     "project_name": null,
     "status": "final",
-    "job_value": 520300,
-    "fees": 410,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "ZV7ENa",
     "cid_company_name": "b057e23b99c284ce6020c7951b1c1720",
     "cid_property_owner": "25f9c714d5d1ece67a1999569652bb1b",
@@ -8773,10 +8878,12 @@
     "contractor_names": "JOE Swartz Electric",
     "homeowner_names": "Grand Homes",
     "year": 2000,
-    "project_types": "Electrical",
     "project_types_list": [
-      "Electrical"
-    ]
+      "Electrical",
+      "Residential",
+      "New Construction"
+    ],
+    "project_types": "Electrical, Residential, New Construction"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -8788,7 +8895,7 @@
     "project_name": null,
     "status": "NONE",
     "job_value": 12000,
-    "fees": 215,
+    "fees": null,
     "id_contractor": "p7LyY6",
     "cid_company_name": "68902d8694aa6e6f9e7c0bf7a571410d",
     "cid_property_owner": "60663090f4a881c155be7b5ea99295e9",
@@ -8855,8 +8962,8 @@
     "contractor_names": "D.R. Horton",
     "homeowner_names": "DR Horton",
     "year": 2000,
-    "project_types": "Other",
-    "project_types_list": []
+    "project_types_list": [],
+    "project_types": "Parent"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -8867,8 +8974,8 @@
     "description": "Retainin wall mj",
     "project_name": null,
     "status": "CLOSED",
-    "job_value": 700,
-    "fees": 55,
+    "job_value": 0,
+    "fees": 0,
     "id_contractor": "p7LyY6",
     "cid_company_name": "68902d8694aa6e6f9e7c0bf7a571410d",
     "cid_property_owner": null,
@@ -8933,12 +9040,13 @@
     "full_address": "3310 RICCI LN, IRVING, TX 75062",
     "attom_id": 640695,
     "contractor_names": "D.R. Horton",
-    "homeowner_names": "Michael Brown",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Retaining wall",
     "project_types_list": [
-      "Retaining wall"
-    ]
+      "Residential",
+      "Retaining Walls"
+    ],
+    "project_types": "Residential, Retaining Walls"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -8950,7 +9058,7 @@
     "project_name": null,
     "status": "NONE",
     "job_value": 12000,
-    "fees": 185,
+    "fees": null,
     "id_contractor": "p7LyY6",
     "cid_company_name": "68902d8694aa6e6f9e7c0bf7a571410d",
     "cid_property_owner": "60663090f4a881c155be7b5ea99295e9",
@@ -9017,10 +9125,10 @@
     "contractor_names": "D.R. Horton",
     "homeowner_names": "DR Horton",
     "year": 2000,
-    "project_types": "Retaining wall",
     "project_types_list": [
-      "Retaining wall"
-    ]
+      "Retaining Walls"
+    ],
+    "project_types": "Retaining Walls"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -9031,8 +9139,8 @@
     "description": "Retaining wall mj",
     "project_name": null,
     "status": "CLOSED",
-    "job_value": 4900,
-    "fees": 180,
+    "job_value": 0,
+    "fees": 0,
     "id_contractor": "p7LyY6",
     "cid_company_name": "68902d8694aa6e6f9e7c0bf7a571410d",
     "cid_property_owner": null,
@@ -9097,12 +9205,13 @@
     "full_address": "3306 RICCI LN, IRVING, TX 75062",
     "attom_id": 2588448,
     "contractor_names": "D.R. Horton",
-    "homeowner_names": "Christopher Garcia",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Retaining wall",
     "project_types_list": [
-      "Retaining wall"
-    ]
+      "Residential",
+      "Retaining Walls"
+    ],
+    "project_types": "Residential, Retaining Walls"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -9114,7 +9223,7 @@
     "project_name": null,
     "status": "NONE",
     "job_value": 12000,
-    "fees": 155,
+    "fees": null,
     "id_contractor": "p7LyY6",
     "cid_company_name": "68902d8694aa6e6f9e7c0bf7a571410d",
     "cid_property_owner": "60663090f4a881c155be7b5ea99295e9",
@@ -9181,8 +9290,8 @@
     "contractor_names": "D.R. Horton",
     "homeowner_names": "DR Horton",
     "year": 2000,
-    "project_types": "Other",
-    "project_types_list": []
+    "project_types_list": [],
+    "project_types": "Parent"
   },
   {
     "date_last_updated": "7/28/2023",
@@ -9193,14 +9302,14 @@
     "description": "Electrical permit - new - new 2sty residence w/att garage porch-patio - r- 101 single family houses",
     "project_name": "2800 Waymaker Wy Unit 68",
     "status": "final",
-    "job_value": 6800,
+    "job_value": null,
     "fees": 165,
     "id_contractor": null,
     "cid_company_name": "bcbc035c0d704c5845af28c4dc016305",
     "cid_property_owner": null,
     "property_legal_description": null,
     "property_type_description": null,
-    "property_type_sub_category": "OTHER",
+    "property_type_sub_category": null,
     "property_address_type_key": null,
     "address_type_description": null,
     "subdivision": null,
@@ -9211,7 +9320,7 @@
     "house_number": null,
     "street_direction": null,
     "street_name": null,
-    "city": "IRVING",
+    "city": null,
     "state": null,
     "zipcode": null,
     "zipcode4": null,
@@ -9259,12 +9368,15 @@
     "full_address": null,
     "attom_id": 52908724,
     "contractor_names": "JSL Construction; Ringo Electric INC",
-    "homeowner_names": "Irving ISD",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Electrical",
     "project_types_list": [
-      "Electrical"
-    ]
+      "Electrical",
+      "Garage Construction",
+      "Decks & Porches",
+      "Patios"
+    ],
+    "project_types": "Electrical, Garage Construction, Decks & Porches, Patios"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -9275,8 +9387,8 @@
     "description": "Retaning wall mj",
     "project_name": null,
     "status": "CLOSED",
-    "job_value": 1000,
-    "fees": 65,
+    "job_value": 0,
+    "fees": 0,
     "id_contractor": "p7LyY6",
     "cid_company_name": "68902d8694aa6e6f9e7c0bf7a571410d",
     "cid_property_owner": null,
@@ -9341,12 +9453,13 @@
     "full_address": "3302 RICCI LN, IRVING, TX 75062",
     "attom_id": 2588449,
     "contractor_names": "D.R. Horton",
-    "homeowner_names": "Linda Moore",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Retaining wall",
     "project_types_list": [
-      "Retaining wall"
-    ]
+      "Residential",
+      "Retaining Walls"
+    ],
+    "project_types": "Residential, Retaining Walls"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -9357,7 +9470,7 @@
     "description": "Install 100, 000 btu furnace le",
     "project_name": null,
     "status": "expired",
-    "job_value": 2700,
+    "job_value": null,
     "fees": 35,
     "id_contractor": null,
     "cid_company_name": "d33b0eebf4c5bce6831fe7fc826e053e",
@@ -9425,11 +9538,12 @@
     "contractor_names": "Spencer AIR Cond",
     "homeowner_names": "Cross",
     "year": 2000,
-    "project_types": "Mechanical, HVAC",
     "project_types_list": [
-      "Mechanical",
-      "HVAC"
-    ]
+      "HVAC",
+      "Residential",
+      "Mechanical"
+    ],
+    "project_types": "HVAC, Residential, Mechanical"
   },
   {
     "date_last_updated": "3/7/2022",
@@ -9440,8 +9554,8 @@
     "description": "New detached residence house mm/le",
     "project_name": null,
     "status": "final",
-    "job_value": 312100,
-    "fees": 355,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "Gkxvdx",
     "cid_company_name": "30204c5aa1da998f97314b09195776c4",
     "cid_property_owner": "6c2f09f317dd550914465222574320af",
@@ -9508,10 +9622,12 @@
     "contractor_names": "Marys Electric Co",
     "homeowner_names": "Dr Tylock",
     "year": 2000,
-    "project_types": "Electrical",
     "project_types_list": [
-      "Electrical"
-    ]
+      "Electrical",
+      "Residential",
+      "New Construction"
+    ],
+    "project_types": "Electrical, Residential, New Construction"
   },
   {
     "date_last_updated": "3/7/2022",
@@ -9590,10 +9706,10 @@
     "contractor_names": "Leisure Living Pools",
     "homeowner_names": "Gary Tylock",
     "year": 2000,
-    "project_types": "Pool/Spa",
     "project_types_list": [
-      "Pool/Spa"
-    ]
+      "Pool / Spa"
+    ],
+    "project_types": "Pool / Spa"
   },
   {
     "date_last_updated": "4/12/2021",
@@ -9604,7 +9720,7 @@
     "description": "Addition 3 ton air conditioning & 3 ton fan coil cv",
     "project_name": null,
     "status": "expired",
-    "job_value": 10800,
+    "job_value": null,
     "fees": 35,
     "id_contractor": null,
     "cid_company_name": "d33b0eebf4c5bce6831fe7fc826e053e",
@@ -9672,12 +9788,13 @@
     "contractor_names": "Spencer AIR Cond",
     "homeowner_names": "McGarity",
     "year": 2000,
-    "project_types": "Home addition, Mechanical, HVAC",
     "project_types_list": [
-      "Home addition",
+      "HVAC",
+      "Residential",
       "Mechanical",
-      "HVAC"
-    ]
+      "Home Addition"
+    ],
+    "project_types": "HVAC, Residential, Mechanical, Home Addition"
   },
   {
     "date_last_updated": "12/6/2021",
@@ -9688,7 +9805,7 @@
     "description": "Replaced 3 ton heat/air system eg",
     "project_name": null,
     "status": "expired",
-    "job_value": 3200,
+    "job_value": 0,
     "fees": 35,
     "id_contractor": "aBn72q",
     "cid_company_name": "ee7e90da548038d90eb72d4bedf9e236",
@@ -9756,11 +9873,12 @@
     "contractor_names": "A/C Lady Heat & AIR; A/C LADY HEAT AND AIR",
     "homeowner_names": "Linda Whittington",
     "year": 2000,
-    "project_types": "Mechanical, HVAC",
     "project_types_list": [
-      "Mechanical",
-      "HVAC"
-    ]
+      "HVAC",
+      "Residential",
+      "Mechanical"
+    ],
+    "project_types": "HVAC, Residential, Mechanical"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -9771,8 +9889,8 @@
     "description": "New const. Assistsed living *replaces permit b901198* cmh/c",
     "project_name": null,
     "status": "FINALED",
-    "job_value": 4112800,
-    "fees": 520,
+    "job_value": 0,
+    "fees": null,
     "id_contractor": "dXao2G",
     "cid_company_name": "dccf70efa1229be3f9727a7c3a02fa43",
     "cid_property_owner": "0541328d28a1bf36810d79c23690a44f",
@@ -9839,8 +9957,11 @@
     "contractor_names": "Embree Construction",
     "homeowner_names": "Alternative Living Services",
     "year": 2000,
-    "project_types": "Other",
-    "project_types_list": []
+    "project_types_list": [
+      "Commercial",
+      "New Construction"
+    ],
+    "project_types": "Commercial, New Construction"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -9851,8 +9972,8 @@
     "description": "New const. Assistsed living *replaces permit b901198* cmh/c",
     "project_name": null,
     "status": "final",
-    "job_value": 351000,
-    "fees": 380,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "6b5lpB",
     "cid_company_name": "dccf70efa1229be3f9727a7c3a02fa43",
     "cid_property_owner": "0541328d28a1bf36810d79c23690a44f",
@@ -9919,10 +10040,11 @@
     "contractor_names": "Embree Construction",
     "homeowner_names": "Alternative Living Services",
     "year": 2000,
-    "project_types": "Electrical",
     "project_types_list": [
-      "Electrical"
-    ]
+      "Electrical",
+      "New Construction"
+    ],
+    "project_types": "Electrical, New Construction"
   },
   {
     "date_last_updated": "5/27/2024",
@@ -10001,8 +10123,10 @@
     "contractor_names": "Embree Construction",
     "homeowner_names": "Alternative Living Services",
     "year": 2000,
-    "project_types": "Other",
-    "project_types_list": []
+    "project_types_list": [
+      "New Construction"
+    ],
+    "project_types": "New Construction"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -10013,8 +10137,8 @@
     "description": "Foundation only jfh/le",
     "project_name": null,
     "status": "final",
-    "job_value": 27100,
-    "fees": 195,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "2Av7yw",
     "cid_company_name": "2e591e63ff690e3f45595509231e540e",
     "cid_property_owner": "fc28e0c27cfc97648d6db2d23db40c71",
@@ -10081,11 +10205,11 @@
     "contractor_names": "Leland Collier Elect",
     "homeowner_names": "Carrollton Farmers Branch Scho",
     "year": 2000,
-    "project_types": "Foundation, Electrical",
     "project_types_list": [
-      "Foundation",
-      "Electrical"
-    ]
+      "Electrical",
+      "Foundations"
+    ],
+    "project_types": "Electrical, Foundations"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -10096,8 +10220,8 @@
     "description": "New 250, 000sf high school w/playing feilds jh/lde",
     "project_name": null,
     "status": "FINALED",
-    "job_value": 293000,
-    "fees": 375,
+    "job_value": 0,
+    "fees": null,
     "id_contractor": "yLe0rp",
     "cid_company_name": "4361318953e0b0aa100c0520743336e6",
     "cid_property_owner": "cd324af241f9c7c52f4610896430d09e",
@@ -10164,8 +10288,10 @@
     "contractor_names": "Charter Builders, Inc",
     "homeowner_names": "Carrollton/farmers Branch Isd",
     "year": 2000,
-    "project_types": "Other",
-    "project_types_list": []
+    "project_types_list": [
+      "Commercial"
+    ],
+    "project_types": "Commercial"
   },
   {
     "date_last_updated": "7/28/2023",
@@ -10176,14 +10302,14 @@
     "description": "Electrical permit - remodel - connect m/h electrical srv only eud - residential",
     "project_name": "7601 Daffan La Unit 418",
     "status": "final",
-    "job_value": 2200,
+    "job_value": null,
     "fees": 64,
     "id_contractor": null,
     "cid_company_name": "1ab60f235ac402b4c35afdf4d95f3b40",
     "cid_property_owner": null,
     "property_legal_description": null,
     "property_type_description": null,
-    "property_type_sub_category": "OTHER",
+    "property_type_sub_category": null,
     "property_address_type_key": null,
     "address_type_description": null,
     "subdivision": null,
@@ -10194,7 +10320,7 @@
     "house_number": null,
     "street_direction": null,
     "street_name": null,
-    "city": "IRVING",
+    "city": null,
     "state": null,
     "zipcode": null,
     "zipcode4": null,
@@ -10242,12 +10368,13 @@
     "full_address": null,
     "attom_id": 167588060,
     "contractor_names": "MED TEX Electric",
-    "homeowner_names": "Summit Commercial Partners",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Electrical",
     "project_types_list": [
-      "Electrical"
-    ]
+      "Electrical",
+      "Remodel"
+    ],
+    "project_types": "Electrical, Remodel"
   },
   {
     "date_last_updated": "4/25/2022",
@@ -10258,8 +10385,8 @@
     "description": "Adding 3 driveway approaches jfh/eg",
     "project_name": null,
     "status": "final",
-    "job_value": 2600,
-    "fees": 140,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "NDzxrv",
     "cid_company_name": "3fa611048df6649022874e559cf12776",
     "cid_property_owner": null,
@@ -10324,12 +10451,12 @@
     "full_address": "8401 VALLEY RANCH PKWY E, IRVING, TX 75063",
     "attom_id": 167906592,
     "contractor_names": "Sizelove Const CO I",
-    "homeowner_names": "Lone Star Retail LLC",
+    "homeowner_names": null,
     "year": 2000,
-    "project_types": "Paving/Driveway/Sidewalk",
     "project_types_list": [
-      "Paving/Driveway/Sidewalk"
-    ]
+      "Paving (Driveways/Sidewalks)"
+    ],
+    "project_types": "Paving (Driveways/Sidewalks)"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -10341,7 +10468,7 @@
     "project_name": null,
     "status": "NONE",
     "job_value": 30000000,
-    "fees": 630,
+    "fees": null,
     "id_contractor": "yLe0rp",
     "cid_company_name": "4361318953e0b0aa100c0520743336e6",
     "cid_property_owner": "cd324af241f9c7c52f4610896430d09e",
@@ -10408,8 +10535,10 @@
     "contractor_names": "Charter Builders, Inc",
     "homeowner_names": "Carrollton/farmers Branch Isd",
     "year": 2000,
-    "project_types": "Other",
-    "project_types_list": []
+    "project_types_list": [
+      "New Construction"
+    ],
+    "project_types": "New Construction"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -10421,7 +10550,7 @@
     "project_name": null,
     "status": "NONE",
     "job_value": 6800000,
-    "fees": 495,
+    "fees": null,
     "id_contractor": "yLe0rp",
     "cid_company_name": "4361318953e0b0aa100c0520743336e6",
     "cid_property_owner": "181c7937d8257275d0342fb16fb93695",
@@ -10488,10 +10617,10 @@
     "contractor_names": "Charter Builders, Inc",
     "homeowner_names": "Carrollton-farmers Branch Scho",
     "year": 2000,
-    "project_types": "Foundation",
     "project_types_list": [
-      "Foundation"
-    ]
+      "Foundations"
+    ],
+    "project_types": "Foundations"
   },
   {
     "date_last_updated": "6/7/2024",
@@ -10502,8 +10631,8 @@
     "description": "Foundation only jfh/le",
     "project_name": null,
     "status": "final",
-    "job_value": 6100,
-    "fees": 145,
+    "job_value": null,
+    "fees": null,
     "id_contractor": "yLe0rp",
     "cid_company_name": "fa4cb6ba6dc476940f2067095ded016d",
     "cid_property_owner": "fc28e0c27cfc97648d6db2d23db40c71",
@@ -10570,10 +10699,11 @@
     "contractor_names": "Charter Builders INC",
     "homeowner_names": "Carrollton Farmers Branch Scho",
     "year": 2000,
-    "project_types": "Foundation",
     "project_types_list": [
-      "Foundation"
-    ]
+      "Commercial",
+      "Foundations"
+    ],
+    "project_types": "Commercial, Foundations"
   },
   {
     "date_last_updated": "9/6/2021",
@@ -10652,12 +10782,13 @@
     "contractor_names": "BP Construction",
     "homeowner_names": "Otto, Kevin",
     "year": 2000,
-    "project_types": "Bathroom remodel, Kitchen remodel, Multi-room remodel",
     "project_types_list": [
-      "Bathroom remodel",
-      "Kitchen remodel",
-      "Multi-room remodel"
-    ]
+      "Kitchen Remodel",
+      "Bathroom Remodel",
+      "Residential",
+      "Multi-room Remodel"
+    ],
+    "project_types": "Kitchen Remodel, Bathroom Remodel, Residential, Multi-room Remodel"
   },
   {
     "date_last_updated": "9/6/2021",
@@ -10668,8 +10799,8 @@
     "description": "Remodel kitchen bathroom & 2 bdrms. Ch",
     "project_name": null,
     "status": "expired",
-    "job_value": 11700,
-    "fees": 210,
+    "job_value": 0,
+    "fees": 0,
     "id_contractor": "gq3Jwn",
     "cid_company_name": "a8aa117f67d747df88a124619d13ba96",
     "cid_property_owner": "31f8821489f0e315fc9338556952bd62",
@@ -10736,12 +10867,13 @@
     "contractor_names": "BP Construction",
     "homeowner_names": "Otto, Kevin",
     "year": 2000,
-    "project_types": "Bathroom remodel, Kitchen remodel, Multi-room remodel",
     "project_types_list": [
-      "Bathroom remodel",
-      "Kitchen remodel",
-      "Multi-room remodel"
-    ]
+      "Kitchen Remodel",
+      "Bathroom Remodel",
+      "Residential",
+      "Multi-room Remodel"
+    ],
+    "project_types": "Kitchen Remodel, Bathroom Remodel, Residential, Multi-room Remodel"
   },
   {
     "date_last_updated": "10/2/2023",
@@ -10752,7 +10884,7 @@
     "description": "Install 70, 000 btu furnace cv",
     "project_name": null,
     "status": "expired",
-    "job_value": 3900,
+    "job_value": null,
     "fees": 35,
     "id_contractor": null,
     "cid_company_name": "d33b0eebf4c5bce6831fe7fc826e053e",
@@ -10820,11 +10952,11 @@
     "contractor_names": "Spencer AIR Cond",
     "homeowner_names": "Lueke",
     "year": 2000,
-    "project_types": "Mechanical, HVAC",
     "project_types_list": [
-      "Mechanical",
-      "HVAC"
-    ]
+      "HVAC",
+      "Mechanical"
+    ],
+    "project_types": "HVAC, Mechanical"
   },
   {
     "date_last_updated": "4/12/2021",
@@ -10835,7 +10967,7 @@
     "description": "Water heater le",
     "project_name": null,
     "status": "expired",
-    "job_value": 2900,
+    "job_value": null,
     "fees": 35,
     "id_contractor": "NDZ7rr",
     "cid_company_name": "9dfb2922ac9645782cb337199a25df02",
@@ -10903,10 +11035,10 @@
     "contractor_names": "RON Brackett",
     "homeowner_names": "Arizpe",
     "year": 2000,
-    "project_types": "Plumbing",
     "project_types_list": [
       "Plumbing"
-    ]
+    ],
+    "project_types": "Plumbing"
   },
   {
     "date_last_updated": "3/7/2022",
@@ -10985,9 +11117,9 @@
     "contractor_names": "Jon Wright Roofing",
     "homeowner_names": "Burcham",
     "year": 2000,
-    "project_types": "Roofing",
     "project_types_list": [
       "Roofing"
-    ]
+    ],
+    "project_types": "Roofing"
   }
 ]
