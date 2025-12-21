@@ -18,7 +18,7 @@ export const companiesConfig: EntityGridConfig = {
   defaultColDef: createDefaultColDef(),
   defaultSortModel: [{ colId: 'job_value_ttm', sort: 'desc' }],
   fetcher: createEntityFetcher('companies'),
-  ui: { rowHeight: 38, headerHeight: 40 },
+  ui: { rowHeight: 40, headerHeight: 40 },
 };
 
 

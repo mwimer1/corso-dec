@@ -5,12 +5,14 @@
 import { devError } from '@/lib/log';
 import { isRelaxedAuthMode } from '@/lib/shared/config/auth-mode';
 import { ensureAgGridReadyFor, isAgGridEnterpriseEnabled } from '@/lib/vendors/ag-grid.client';
+import { cn } from '@/styles';
 import type { EntityGridProps } from '@/types/dashboard';
 import { useOrganization } from '@clerk/nextjs';
 import type { ColDef, ColGroupDef, GridApi, GridReadyEvent, IServerSideGetRowsParams } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createDefaultSideBar } from '../ag-grid-config';
 // PostHog removed — no-op helper kept inline (no external dependency)
 type _PosthogLite = {
   get_distinct_id?: () => string;
@@ -143,7 +145,7 @@ function AgGridEnterpriseError({ error }: { error: Error }) {
 }
 
 export default function EntityGrid({
-  config, gridRef, setSearchCount, onStateUpdated, onLoadError, className, style,
+  config, gridRef, setSearchCount, onStateUpdated, onLoadError, className, style, density = 'comfortable',
 }: EntityGridProps) {
   const [, setGridApi] = useState<GridApi | null>(null);
   const [ready, setReady] = useState(false);
@@ -212,8 +214,14 @@ export default function EntityGrid({
   }, [config, onLoadError]);
 
   const statusBar = useMemo(() => config.ui?.statusBar ?? {
-    statusPanels: [{ statusPanel: 'agFilteredRowCountComponent' }, { statusPanel: 'agAggregationComponent' }],
+    statusPanels: [
+      { statusPanel: 'agFilteredRowCountComponent' },
+      { statusPanel: 'agSelectedRowCountComponent' },
+      { statusPanel: 'agAggregationComponent' },
+    ],
   }, [config]);
+
+  const sideBar = useMemo(() => config.ui?.sideBar ?? createDefaultSideBar(), [config]);
 
   const selectionColumnDef = useMemo(() => config.ui?.selectionColumnDef ?? ({
     sortable: false, width: 50, maxWidth: 50, suppressHeaderMenuButton: true, pinned: 'left' as const,
@@ -342,18 +350,32 @@ export default function EntityGrid({
     );
   }
 
+  // Calculate row/header heights based on density
+  const rowHeight = density === 'compact' ? 32 : (config.ui?.rowHeight ?? 40);
+  const headerHeight = density === 'compact' ? 32 : (config.ui?.headerHeight ?? 40);
+  const groupHeaderHeight = density === 'compact' ? 22 : (config.ui?.groupHeaderHeight ?? 26);
+  
   return (
-    <div id={`${config.id}-grid`} style={style} className={className}>
+    <div 
+      id={`${config.id}-grid`} 
+      style={style} 
+      className={cn(
+        'ag-theme-quartz', 
+        density === 'compact' ? 'ag-density-compact' : 'ag-density-comfortable',
+        className
+      )}
+    >
       <AgGridReact
+        theme="legacy"
         rowModelType="serverSide"
         onGridReady={onGridReady}
         columnDefs={colDefs}
         defaultColDef={{ ...config.defaultColDef, enableRowGroup: false } as any}
         statusBar={statusBar as any}
-        sideBar={config.ui?.sideBar as any}
-        rowHeight={config.ui?.rowHeight ?? 40}
-        headerHeight={config.ui?.headerHeight ?? 40}
-        groupHeaderHeight={config.ui?.groupHeaderHeight ?? 26}
+        sideBar={sideBar as any}
+        rowHeight={rowHeight}
+        headerHeight={headerHeight}
+        groupHeaderHeight={groupHeaderHeight}
         animateRows
         pagination
         paginationPageSizeSelector={[10, 50, 100] as any}
@@ -364,6 +386,7 @@ export default function EntityGrid({
         cellSelection
         allowContextMenuWithControlKey
         enableCharts={false}
+        suppressMultiSort
         onStateUpdated={onStateUpdated as any}
         noRowsOverlayComponent={noRowsOverlayComponent as any}
       />

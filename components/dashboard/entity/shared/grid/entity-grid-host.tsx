@@ -29,6 +29,8 @@ interface ErrorWithStatus extends Error {
   details?: unknown;
 }
 
+type DensityMode = 'comfortable' | 'compact';
+
 export default function EntityGridHost({ config }: { config: EntityGridConfig }) {
   const gridRef = React.useRef<AgGridReact | null>(null);
   const [searchCount, setSearchCount] = React.useState<string | null>(null);
@@ -38,6 +40,30 @@ export default function EntityGridHost({ config }: { config: EntityGridConfig })
   const gridName = searchParams.get('gridName');
   const defaultGridName = searchParams.get('defaultGridName');
   const hasEnterprise = publicEnv.NEXT_PUBLIC_AGGRID_ENTERPRISE === '1';
+  
+  // Density state with localStorage persistence
+  const densityStorageKey = `corso:gridDensity:${config.id}`;
+  const [density, setDensity] = React.useState<DensityMode>(() => {
+    if (typeof window === 'undefined') return 'comfortable';
+    try {
+      const stored = localStorage.getItem(densityStorageKey);
+      if (stored === 'comfortable' || stored === 'compact') {
+        return stored as DensityMode;
+      }
+    } catch {
+      // Ignore localStorage errors
+    }
+    return 'comfortable';
+  });
+  
+  const handleDensityChange = React.useCallback((newDensity: DensityMode) => {
+    setDensity(newDensity);
+    try {
+      localStorage.setItem(densityStorageKey, newDensity);
+    } catch {
+      // Ignore localStorage errors
+    }
+  }, [densityStorageKey]);
 
   const handleStateUpdated = React.useCallback((event: StateUpdatedEvent) => {
     // Extract state from AG Grid StateUpdatedEvent and convert to GridState format
@@ -151,6 +177,8 @@ export default function EntityGridHost({ config }: { config: EntityGridConfig })
           hasEnterprise={hasEnterprise}
           loadError={!!loadError}
           onRetry={handleRetry}
+          density={density}
+          onDensityChange={handleDensityChange}
         />
       </div>
       <div className="flex-1 min-h-0 px-[1px] pb-[1px]">
@@ -161,6 +189,7 @@ export default function EntityGridHost({ config }: { config: EntityGridConfig })
           onStateUpdated={handleStateUpdated}
           onLoadError={setLoadError}
           className="h-full w-full"
+          density={density}
         />
       </div>
     </div>

@@ -13,6 +13,17 @@
   --ag-grid-size: 6px;
 }
 
+/* Density modes: Comfortable (default) and Compact */
+.ag-theme-quartz.ag-density-comfortable {
+  --ag-font-size: 13px;
+  --ag-grid-size: 6px;
+}
+
+.ag-theme-quartz.ag-density-compact {
+  --ag-font-size: 12px;
+  --ag-grid-size: 4px;
+}
+
 .ag-theme-quartz .ag-root-wrapper {
   border: 1px solid var(--ag-border-color);
   border-radius: var(--radius-lg);

@@ -13,6 +13,7 @@ let registered = false;
  * 
  * @returns true if Enterprise is enabled, false otherwise
  */
+ 
 export function isAgGridEnterpriseEnabled(): boolean {
   // Direct access allows Next.js to statically replace at build time
   // Using bracket notation to satisfy TypeScript index signature requirement
@@ -74,6 +75,7 @@ function getAgGridEnterpriseErrorMessage(): string {
  * 
  * @throws {Error} If Enterprise is disabled but server-side row model is used
  */
+// eslint-disable-next-line import/no-unused-modules -- Used in test setup (tests/support/setup/vitest.setup.shared.ts) and re-exported via lib/vendors/ag-grid.ts
 export function ensureAgGridRegistered(): void {
   if (registered) return;
   registered = true;
@@ -106,6 +108,7 @@ export function ensureAgGridRegistered(): void {
  * @param mode - Row model mode ('serverSide', 'clientSide', etc.)
  * @throws {Error} If Enterprise is required but not enabled
  */
+ 
 export async function ensureAgGridReadyFor(mode: string): Promise<void> {
   ensureAgGridRegistered();
   

@@ -8,7 +8,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useUser } from '@clerk/nextjs';
 import type { CsvExportParams, ProcessCellForExportParams } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
-import { ArrowDownToLine, CopyPlus, FileDown, ListRestart, Maximize2, RefreshCcw, Save, Search, Trash } from 'lucide-react';
+import { ArrowDownToLine, Columns, CopyPlus, FileDown, GripVertical, ListRestart, Maximize2, RefreshCcw, Save, Search, Trash } from 'lucide-react';
 import type React from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -106,6 +106,8 @@ const SAVED_SEARCH_ITEM_BASE_CLASS = "relative flex items-center gap-2 pr-2 py-2
 const DROPDOWN_ITEM_ACTIVE_CLASS = "bg-black/10 text-foreground";
 const DROPDOWN_SECTION_LABEL_CLASS = "px-2 py-1 text-[11px] font-medium text-muted-foreground uppercase tracking-wide select-none";
 
+type DensityMode = 'comfortable' | 'compact';
+
 interface GridMenubarProps {
   beta?: boolean;
   searchCount: string | null;
@@ -121,6 +123,8 @@ interface GridMenubarProps {
   hasEnterprise?: boolean;
   loadError?: boolean;
   onRetry?: () => void;
+  density?: DensityMode;
+  onDensityChange?: (density: DensityMode) => void;
 }
 
 export function GridMenubar(props: GridMenubarProps) {
@@ -129,9 +133,43 @@ export function GridMenubar(props: GridMenubarProps) {
   const storageKey = `corso:gridSavedStates:${userId}:${props.gridId}`;
 
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isSideBarOpen, setIsSideBarOpen] = useState(false);
   const [currentSaveStateName, setCurrentSaveStateName] = useState<string | null>(null);
   // Grid state functionality removed - using local state management
   const [savedStates, setSavedStates] = useState<Record<string, { state_name: string; grid_state: any }>>({});
+  
+  // Density state with localStorage persistence
+  const densityStorageKey = `corso:gridDensity:${userId}:${props.gridId}`;
+  const [density, setDensity] = useState<DensityMode>(() => {
+    if (typeof window === 'undefined') return 'comfortable';
+    try {
+      const stored = localStorage.getItem(densityStorageKey);
+      if (stored === 'comfortable' || stored === 'compact') {
+        return stored as DensityMode;
+      }
+    } catch {
+      // Ignore localStorage errors
+    }
+    return 'comfortable';
+  });
+  
+  // Sync density with parent if provided
+  useEffect(() => {
+    if (props.density && props.density !== density) {
+      setDensity(props.density);
+    }
+  }, [props.density, density]);
+  
+  // Persist density changes
+  const handleDensityChange = useCallback((newDensity: DensityMode) => {
+    setDensity(newDensity);
+    try {
+      localStorage.setItem(densityStorageKey, newDensity);
+    } catch {
+      // Ignore localStorage errors
+    }
+    props.onDensityChange?.(newDensity);
+  }, [densityStorageKey, props]);
   
   // Load saved states from localStorage on mount
   useEffect(() => {
@@ -203,6 +241,22 @@ export function GridMenubar(props: GridMenubarProps) {
     }
   }, []);
 
+  const toggleSideBar = useCallback(() => {
+    const api = props.gridRef?.current?.api;
+    if (!api) return;
+
+    const newState = !isSideBarOpen;
+    setIsSideBarOpen(newState);
+
+    if (newState) {
+      api.setSideBarVisible(true);
+      api.openToolPanel('columns');
+    } else {
+      api.closeToolPanel();
+      api.setSideBarVisible(false);
+    }
+  }, [isSideBarOpen, props.gridRef]);
+
   useEffect(() => {
     if (!hasInitialized.current && Object.keys(savedStates).length > 0) {
       hasInitialized.current = true;
@@ -229,11 +283,23 @@ export function GridMenubar(props: GridMenubarProps) {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      // Only handle shortcuts when not typing in inputs/editable elements
+      const target = event.target as HTMLElement;
+      const isInputElement = target.tagName === 'INPUT' || 
+                            target.tagName === 'TEXTAREA' || 
+                            target.isContentEditable ||
+                            target.closest('[contenteditable="true"]') !== null;
+
+      if (isInputElement) {
+        return; // Don't intercept keyboard shortcuts when user is typing
+      }
+
       if (event.key === 'Escape' && isFullscreen) {
         document.exitFullscreen();
         setIsFullscreen(false);
       }
-      if (event.key === 'F' && (event.ctrlKey || event.metaKey)) {
+      // Changed from F to Ctrl/Cmd+Shift+F to avoid conflicts with browser find and typing
+      if (event.key === 'F' && (event.ctrlKey || event.metaKey) && event.shiftKey) {
         event.preventDefault();
         toggleFullscreen();
       }
@@ -507,6 +573,16 @@ export function GridMenubar(props: GridMenubarProps) {
 
                 {/* Display section */}
                 <div className={DROPDOWN_SECTION_LABEL_CLASS}>Display</div>
+                {/* Density Toggle */}
+                <DropdownMenu.Item
+                  onSelect={() => {
+                    handleDensityChange(density === 'comfortable' ? 'compact' : 'comfortable');
+                  }}
+                  className={cn(DROPDOWN_ITEM_BASE_CLASS, DROPDOWN_ITEM_INTERACTION_CLASS)}
+                >
+                  <GripVertical className="h-4 w-4" />
+                  <span>{density === 'comfortable' ? 'Compact' : 'Comfortable'}</span>
+                </DropdownMenu.Item>
                 {/* Toggle Fullscreen */}
                 <DropdownMenu.Item
                   onSelect={toggleFullscreen}
@@ -530,8 +606,33 @@ export function GridMenubar(props: GridMenubarProps) {
             <span className="text-muted-foreground">results</span>
           </div>
 
-          {/* Action buttons group: Export, Reset, Refresh */}
+          {/* Action buttons group: Density, Columns, Export, Reset, Refresh */}
           <div className="flex items-center gap-1">
+            <button
+              onClick={() => {
+                handleDensityChange(density === 'comfortable' ? 'compact' : 'comfortable');
+              }}
+              className={cn(
+                "h-9 w-9 flex items-center justify-center rounded-md hover:bg-black/5 active:bg-black/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                density === 'compact' && "bg-black/10"
+              )}
+              aria-label={`Switch to ${density === 'comfortable' ? 'compact' : 'comfortable'} density`}
+              title={`Switch to ${density === 'comfortable' ? 'compact' : 'comfortable'} density`}
+            >
+              <GripVertical className="h-4 w-4" />
+            </button>
+            <button
+              onClick={toggleSideBar}
+              className={cn(
+                "h-9 w-9 flex items-center justify-center rounded-md hover:bg-black/5 active:bg-black/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                isSideBarOpen && "bg-black/10"
+              )}
+              aria-label="Toggle columns panel"
+              title="Toggle columns panel"
+            >
+              <Columns className="h-4 w-4" />
+            </button>
+
             <button
               onClick={() => {
                 const api = props.gridRef?.current?.api;

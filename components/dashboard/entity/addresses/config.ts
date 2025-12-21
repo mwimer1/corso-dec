@@ -20,7 +20,7 @@ export const addressesConfig: EntityGridConfig = {
   defaultColDef: createDefaultColDef(),
   defaultSortModel: [{ colId: 'total_job_value', sort: 'desc' }],
   fetcher: createEntityFetcher('addresses'),
-  ui: { rowHeight: 38, headerHeight: 40, groupHeaderHeight: 26 },
+  ui: { rowHeight: 40, headerHeight: 40, groupHeaderHeight: 26 },
 };
 
 
