@@ -3,9 +3,9 @@
  * @description Validates that error conversion logic works correctly and consistently.
  */
 
-import { describe, expect, it } from 'vitest';
 import { ApplicationError, ErrorCategory, ErrorSeverity } from '@/lib/shared';
 import { normalizeErrorCode, toApiErrorBase } from '@/lib/shared/errors/api-error-conversion';
+import { describe, expect, it } from 'vitest';
 import { ZodError } from 'zod';
 
 describe('normalizeErrorCode', () => {
