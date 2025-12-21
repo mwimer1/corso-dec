@@ -84,7 +84,7 @@ export default function EntityGridHost({ config }: { config: EntityGridConfig })
   }, [retryCooldown]);
 
   return (
-    <div className="flex flex-col h-full w-full" id="corso-grid">
+    <div className="flex flex-col h-full w-full" id="corso-grid" data-testid="entity-grid">
       {/* Error alert above toolbar */}
       {loadError && (() => {
         const errorWithStatus = loadError as ErrorWithStatus;

@@ -417,7 +417,7 @@ export function GridMenubar(props: GridMenubarProps) {
         {/* Right side: results count -> action buttons (grouped) */}
         <div className="flex items-center gap-3">
           {/* Results count */}
-          <div className="flex items-center gap-1.5 text-sm font-medium">
+          <div className="flex items-center gap-1.5 text-sm font-medium" data-testid="entity-results-count">
             <Badge color="secondary" className="tabular-nums">
               {formatNumber(props.searchCount)}
             </Badge>
