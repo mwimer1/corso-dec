@@ -146,7 +146,7 @@ function AgGridEnterpriseError({ error }: { error: Error }) {
 }
 
 export default function EntityGrid({
-  config, gridRef, setSearchCount, onStateUpdated, onLoadError, className, style, density = 'comfortable',
+  config, gridRef, setSearchCount, onStateUpdated, onLoadError, className, style, density = 'comfortable', search,
 }: EntityGridProps) {
   const [, setGridApi] = useState<GridApi | null>(null);
   const [ready, setReady] = useState(false);
@@ -247,8 +247,8 @@ export default function EntityGrid({
   // Store grid API in a ref so we can update datasource when orgId changes
   const gridApiRef = useRef<GridApi | null>(null);
 
-  // Function to update datasource with current orgId
-  const updateDatasource = useCallback((api: GridApi | null, currentOrgId: string | null) => {
+  // Function to update datasource with current orgId and search
+  const updateDatasource = useCallback((api: GridApi | null, currentOrgId: string | null, currentSearch?: string) => {
     if (!api) return;
     
     // Track if we've validated schema (only validate once per datasource instance)
@@ -259,9 +259,9 @@ export default function EntityGrid({
         // In relaxed mode, allow API call even if orgId is null
         // In strict mode, the API will return NO_ORG_CONTEXT if no org can be resolved
         try {
-          // Pass orgId to fetcher to include X-Corso-Org-Id header in API request (if available)
+          // Pass orgId and search to fetcher to include in API request
           // If orgId is null, fetcher won't set the header, allowing API to use fallback logic
-          const r = await config.fetcher(p.request, posthog.get_distinct_id?.() ?? 'anon', currentOrgId);
+          const r = await config.fetcher(p.request, posthog.get_distinct_id?.() ?? 'anon', currentOrgId, currentSearch);
           
           // Dev-only schema validation (only on first successful load)
           if (!hasValidatedSchema && r.rows && r.rows.length > 0) {
@@ -291,16 +291,16 @@ export default function EntityGrid({
     setGridApi(api);
     gridApiRef.current = api;
     
-    // Set up datasource with current orgId
+    // Set up datasource with current orgId and search
     // In relaxed mode, allow null orgId; in strict mode, will fail gracefully if no org
-    updateDatasource(api, orgId);
+    updateDatasource(api, orgId, search);
     lastOrgIdRef.current = orgId;
     
     api.sizeColumnsToFit();
     if (!(gridName || defaultGridName)) {
       api.applyColumnState({ state: config.defaultSortModel });
     }
-  }, [config, gridName, defaultGridName, orgId, updateDatasource]);
+  }, [config, gridName, defaultGridName, orgId, search, updateDatasource]);
 
   // Refresh datasource when orgId changes (e.g., when organization loads)
   // Only refresh if orgId actually changed between non-null values, or null → value
@@ -326,10 +326,31 @@ export default function EntityGrid({
     }
     
     // Update datasource and refresh
-    updateDatasource(gridApiRef.current, currentOrgId);
+    updateDatasource(gridApiRef.current, currentOrgId, search);
     lastOrgIdRef.current = currentOrgId;
     gridApiRef.current.refreshServerSide({ purge: true });
-  }, [orgId, orgLoaded, updateDatasource, isRelaxed]);
+  }, [orgId, orgLoaded, search, updateDatasource, isRelaxed]);
+
+  // Refresh datasource when search changes (separate from orgId changes)
+  const lastSearchRef = useRef<string | undefined>(search);
+  const isInitialMountRef = useRef(true);
+  useEffect(() => {
+    if (!gridApiRef.current) return;
+    
+    // Skip on initial mount (handled by onGridReady)
+    if (isInitialMountRef.current) {
+      isInitialMountRef.current = false;
+      lastSearchRef.current = search;
+      return;
+    }
+    
+    // Only refresh if search actually changed
+    if (lastSearchRef.current !== search) {
+      updateDatasource(gridApiRef.current, orgId, search);
+      gridApiRef.current.refreshServerSide({ purge: true });
+      lastSearchRef.current = search;
+    }
+  }, [search, orgId, updateDatasource]);
 
   // Show error state if initialization failed
   if (initError) {

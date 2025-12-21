@@ -8,7 +8,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useUser } from '@clerk/nextjs';
 import type { CsvExportParams, ProcessCellForExportParams } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
-import { ArrowDownToLine, Columns, CopyPlus, FileDown, GripVertical, ListRestart, Maximize2, RefreshCcw, Save, Search, Trash } from 'lucide-react';
+import { ArrowDownToLine, Columns, CopyPlus, FileDown, GripVertical, ListRestart, Maximize2, RefreshCcw, Save, Search, Trash, X } from 'lucide-react';
 import type React from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -125,6 +125,8 @@ interface GridMenubarProps {
   onRetry?: () => void;
   density?: DensityMode;
   onDensityChange?: (density: DensityMode) => void;
+  searchQuery?: string;
+  setSearchQuery?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export function GridMenubar(props: GridMenubarProps) {
@@ -281,6 +283,9 @@ export function GridMenubar(props: GridMenubarProps) {
   }, [savedStates, props]);
 
 
+  // Search input ref for keyboard shortcut
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       // Only handle shortcuts when not typing in inputs/editable elements
@@ -292,6 +297,13 @@ export function GridMenubar(props: GridMenubarProps) {
 
       if (isInputElement) {
         return; // Don't intercept keyboard shortcuts when user is typing
+      }
+
+      // Ctrl/Cmd+K to focus search input
+      if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+        event.preventDefault();
+        searchInputRef.current?.focus();
+        return;
       }
 
       if (event.key === 'Escape' && isFullscreen) {
@@ -500,6 +512,8 @@ export function GridMenubar(props: GridMenubarProps) {
                     try {
                       props.gridRef?.current?.api.setFilterModel(null);
                       props.gridRef?.current?.api.resetColumnState();
+                      // Clear search query
+                      props.setSearchQuery?.('');
                       props.gridRef?.current?.api.refreshServerSide();
                     } catch (error) {
                       devError("Failed to reset the grid:", error);
@@ -594,6 +608,33 @@ export function GridMenubar(props: GridMenubarProps) {
               </DropdownMenu.Content>
             </DropdownMenu.Portal>
           </DropdownMenu.Root>
+
+          {/* Global Quick Search */}
+          {props.searchQuery !== undefined && props.setSearchQuery && (
+            <div className="relative w-64">
+              <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+              <Input
+                ref={searchInputRef}
+                type="text"
+                placeholder="Search... (Ctrl+K)"
+                value={props.searchQuery}
+                onChange={(e) => props.setSearchQuery?.(e.target.value)}
+                className="pl-8 pr-8 h-9 text-sm"
+                iconPadding={false}
+                aria-label="Search across all columns"
+              />
+              {props.searchQuery && (
+                <button
+                  onClick={() => props.setSearchQuery?.('')}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded"
+                  aria-label="Clear search"
+                  title="Clear search"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Right side: results count -> action buttons (grouped) */}
@@ -652,6 +693,8 @@ export function GridMenubar(props: GridMenubarProps) {
                 try {
                   props.gridRef?.current?.api.setFilterModel(null);
                   props.gridRef?.current?.api.resetColumnState();
+                  // Clear search query
+                  props.setSearchQuery?.('');
                   props.gridRef?.current?.api.refreshServerSide();
                 } catch (error) {
                   devError("Failed to reset the grid:", error);
@@ -659,7 +702,7 @@ export function GridMenubar(props: GridMenubarProps) {
               }}
               className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-black/5 active:bg-black/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               aria-label="Reset grid"
-              title="Reset filters and columns"
+              title="Reset filters, columns, and search"
             >
               <ListRestart className="h-4 w-4" />
             </button>

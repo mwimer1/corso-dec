@@ -65,6 +65,19 @@ export default function EntityGridHost({ config }: { config: EntityGridConfig })
     }
   }, [densityStorageKey]);
 
+  // Search state (not persisted to localStorage - not part of saved views)
+  const [searchQuery, setSearchQuery] = React.useState<string>('');
+  
+  // Debounced search query (300ms delay) to avoid excessive API calls
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = React.useState<string>('');
+  
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
   const handleStateUpdated = React.useCallback((event: StateUpdatedEvent) => {
     // Extract state from AG Grid StateUpdatedEvent and convert to GridState format
     // Note: AG Grid v31+ uses api.getColumnState() instead of columnApi
@@ -179,6 +192,8 @@ export default function EntityGridHost({ config }: { config: EntityGridConfig })
           onRetry={handleRetry}
           density={density}
           onDensityChange={handleDensityChange}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
         />
       </div>
       <div className="flex-1 min-h-0 px-[1px] pb-[1px]">
@@ -190,6 +205,7 @@ export default function EntityGridHost({ config }: { config: EntityGridConfig })
           onLoadError={setLoadError}
           className="h-full w-full"
           density={density}
+          search={debouncedSearchQuery}
         />
       </div>
     </div>

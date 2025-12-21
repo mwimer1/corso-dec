@@ -170,7 +170,7 @@ type ApiSuccessResponse =
   | ApiDataPayload;
 
 export function createEntityFetcher(entity: GridId): EntityFetcher {
-  return async (request, _distinctId, orgId) => {
+  return async (request, _distinctId, orgId, search) => {
     const { page, sortBy, sortDir } = mapAgRequestToPagingAndSort(request as unknown as AgServerRequest);
     const requestWithFilters = request as unknown as AgRequestWithFilters;
     const filters = mapAgFiltersToApiFilters(requestWithFilters?.filterModel);
@@ -183,6 +183,9 @@ export function createEntityFetcher(entity: GridId): EntityFetcher {
     if (filters && filters.length > 0) {
       // Do not double-encode. Let URLSearchParams handle encoding.
       sp.set('filters', JSON.stringify(filters));
+    }
+    if (search && search.trim()) {
+      sp.set('search', search.trim());
     }
 
     // Build headers with org ID if provided

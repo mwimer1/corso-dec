@@ -15,6 +15,7 @@ export type EntityFetcher = (
   req: IServerSideGetRowsParams['request'],
   distinctId: string,
   orgId?: string | null,
+  search?: string,
 ) => Promise<EntityFetchResult>;
 
 export type GridId = 'projects' | 'addresses' | 'companies';
@@ -48,4 +49,5 @@ export type EntityGridProps = {
   className?: string;
   style?: React.CSSProperties;
   density?: 'comfortable' | 'compact';
+  search?: string;
 };
