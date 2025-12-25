@@ -64,7 +64,6 @@
       "@/lib/server": ["lib/server/index.ts"],
       "@/lib/*": ["lib/*"],
       "@/lib/api": ["lib/api/index.ts"],
-      "@/lib/api/auth": ["lib/api/auth.ts"],
       "@/lib/api/client": ["lib/api/client.ts"],
       "@/lib/api/response/http": ["lib/api/response/http.ts"],
       "@/lib/auth/server": ["lib/auth/server.ts"],

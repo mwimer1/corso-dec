@@ -105,7 +105,7 @@ if (!parsed.success) {
 ### Core Imports
 ```typescript
 // Authentication & User Context
-import { requireUserId } from '@/lib/api/auth';
+import { requireUserId } from '@/lib/auth/server'; // Server-only - import directly
 import { auth, clerkClient } from '@clerk/nextjs/server';
 
 // Validation Schemas
