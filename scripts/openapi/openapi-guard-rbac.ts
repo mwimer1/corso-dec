@@ -1,4 +1,5 @@
-// TODO: MOVE to scripts/ci/, uses internal imports (@/config and @/lib)
+// scripts/openapi/openapi-guard-rbac.ts
+// Validates OpenAPI spec for RBAC compliance and tenant isolation
 import fs from "node:fs";
 import path from "node:path";
 

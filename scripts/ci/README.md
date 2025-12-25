@@ -24,6 +24,6 @@ This README is generated from a single template (`README.scripts.hbs`).
 - **cleanup-branches.ts** – Branch Cleanup Script
 - **ensure-api-in-v1-or-internal.ts** – Enforces API route placement &amp; runtime declarations.
 - **generate-bundle-report.ts** – Generate bundle size comparison report
-- **openapi-guard-rbac.ts** – TODO: MOVE to scripts/ci/, uses internal imports (@/config and @/lib)
+- **openapi-guard-rbac.ts** – Moved to scripts/openapi/openapi-guard-rbac.ts
 - **quality-gates-local.ts** – scripts/quality-gates-local.ts
 - **validate-cursor-rules.ts** – scripts/ci/validate-cursor-rules.ts

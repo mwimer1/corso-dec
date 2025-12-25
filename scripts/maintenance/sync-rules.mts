@@ -22,7 +22,7 @@ function ensureDir(p: string) {
   if (!existsSync(p)) mkdirSync(p, { recursive: true });
 }
 
-function main() {
+async function main() {
   ensureDir(CURSOR_RULES_DIR);
 
   if (!existsSync(CANONICAL)) {
@@ -49,19 +49,10 @@ function main() {
   writeFileSync(AGENT_OUT, agentMd, 'utf8');
   console.log(`[rules:sync] Wrote ${AGENT_OUT}`);
 
-  // Build a minimal _index.json inventory for .cursor/rules
-  const files = readdirSync(CURSOR_RULES_DIR)
-    .filter((f) => f !== '_index.json')
-    .filter((f) => f.endsWith('.md') || f.endsWith('.mdc'))
-    .sort();
-
-  const index = {
-    generatedAt: new Date().toISOString(),
-    canonical: 'corso-assistant.mdc',
-    files,
-  };
-
-  writeFileSync(RULES_INDEX, JSON.stringify(index, null, 2) + '\n', 'utf8');
+  // Build a minimal _index.json inventory for .cursor/rules using shared library
+  const { buildMinimalIndex, writeIndex } = await import('../rules/lib/build-index');
+  const index = buildMinimalIndex(CURSOR_RULES_DIR, 'corso-assistant.mdc');
+  writeIndex(RULES_INDEX, index);
   console.log(`[rules:sync] Wrote ${RULES_INDEX}`);
 
   console.log('[rules:sync] Done.');
