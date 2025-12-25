@@ -47,7 +47,9 @@ This README is generated from a single template (`README.scripts.hbs`).
 - **styles-comprehensive-audit.ts** – scripts/maintenance/styles-comprehensive-audit.ts
 - **types-exports-audit.ts** – pnpm audit:types-exports           # Run all checks and report issues
 - **validate-dead-code-optimized.ts** – Optimized Dead Code Validation
-- **validate-doc-links.ts** – /*.md&#x60;,
+- **validate-docs.ts** – Comprehensive documentation validation (includes link checking, freshness, metrics, linting, and index validation)
+
+Note: `validate-doc-links.ts` was consolidated into `validate-docs.ts` in Sprint 3.
 - **validate-docs-on-commit.ts** – scripts/validate-docs-on-commit.ts
 - **validate-docs.ts** – Checks if markdown-link-check tool is available
 - **validate-mock-schema.ts** – Known optional/computed fields that may not exist in mock data

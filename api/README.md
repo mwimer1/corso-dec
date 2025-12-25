@@ -14,7 +14,7 @@ This directory contains the complete OpenAPI specification ecosystem for Corso's
 - **Source**: `api/openapi.yml` (authoritative OpenAPI 3.1.0 specification - 581 lines)
 - **Generated**: `api/openapi.json` (bundled JSON matching YAML exactly - 1,088 lines)
 - **Types**: `types/api/generated/openapi.d.ts` (auto-generated TypeScript interfaces)
-- **Validation**: RBAC guard with `tools/scripts/openapi-guard-rbac.ts`
+- **Validation**: RBAC guard with `scripts/openapi/openapi-guard-rbac.ts`
 
 ## Core Capabilities
 
@@ -216,7 +216,7 @@ pnpm openapi:gen && pnpm openapi:rbac:check
 ### Quick Navigation
 - **Source of Truth**: `api/openapi.yml` (authoritative specification - 581 lines)
 - **Generated Files**: `api/openapi.json` (bundled - 1,088 lines) + `types/api/generated/openapi.d.ts`
-- **Security Validation**: `tools/scripts/openapi-guard-rbac.ts` (RBAC compliance)
+- **Security Validation**: `scripts/openapi/openapi-guard-rbac.ts` (RBAC compliance)
 
 ### Current State (2025-01-03)
 - **Complete Spec**: `openapi.yml` contains all current API endpoints

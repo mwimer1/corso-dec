@@ -16,5 +16,7 @@ This README is generated from a single template (`README.scripts.hbs`).
 ## Scripts in `scripts/validation`
 
 - **lib-structure.ts** – Lib Structure Validator
-- **validate-links.ts** – Convert /(group) and segment folders to public URL
-- **verify-intradomain-barrels.ts** – This script is typically invoked via: pnpm audit:barrels --only intradomain
+
+Note: `validate-links.ts` and `verify-intradomain-barrels.ts` were consolidated in Sprint 3:
+- Link validation is now part of `scripts/maintenance/validate-docs.ts`
+- Intradomain barrel validation is now part of `scripts/maintenance/check-barrels.ts`

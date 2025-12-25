@@ -28,7 +28,7 @@ This document summarizes the implementation of high-priority items from the Main
 
 **Rationale**:
 - `validate-docs.ts` is more comprehensive (uses external tool for link checking)
-- `validate-doc-links.ts` only checks filesystem paths, no external link validation
+- Filesystem-based link checking from `validate-doc-links.ts` was merged into `validate-docs.ts` in Sprint 3
 - Consolidating reduces confusion about which command to use
 
 **Files Modified**:

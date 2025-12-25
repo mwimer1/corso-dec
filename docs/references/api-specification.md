@@ -12,7 +12,7 @@ status: "draft"
 We maintain an OpenAPI v3.1 specification for the Corso API.
 
 - **Primary spec**: `api/openapi.yml` (manually maintained) - Source of truth for the API
-- **RBAC validation**: `tools/scripts/openapi-guard-rbac.ts` (automated security validation)
+- **RBAC validation**: `scripts/openapi/openapi-guard-rbac.ts` (automated security validation)
 - **Generated artifacts**: `api/openapi.json` (bundled via redocly for tooling)
 - **TypeScript types**: `types/api/generated/openapi.d.ts` (auto-generated from spec)
 
@@ -55,7 +55,7 @@ pnpm openapi:sdk
 ## Scope
 
 - **Primary spec**: `api/openapi.yml` is manually maintained with comprehensive API documentation
-- **RBAC validation**: `tools/scripts/openapi-guard-rbac.ts` validates security annotations
+- **RBAC validation**: `scripts/openapi/openapi-guard-rbac.ts` validates security annotations
 - **Schema integration**: Route handlers use Zod schemas for validation and error responses
 - **Error handling**: Standard error envelope from `lib/shared/errors/api-error.ts`
   - API responses use: `{ success: false, error: { code, message, details? } }`
@@ -71,7 +71,7 @@ pnpm openapi:sdk
 ## RBAC Guard Integration
 
 ### Enhanced Security Validation
-The RBAC guard (`tools/scripts/openapi-guard-rbac.ts`) performs comprehensive security validation:
+The RBAC guard (`scripts/openapi/openapi-guard-rbac.ts`) performs comprehensive security validation:
 
 **Automated Checks:**
 - ✅ All `bearerAuth` operations have `x-corso-rbac` or `x-public`
