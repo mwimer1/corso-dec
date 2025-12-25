@@ -105,9 +105,11 @@ config/
 
 | File | Purpose | Key Rules |
 |------|---------|--------------|
-| `security-policy.json` | Application security baseline | SQL injection, prompt injection, DDoS protection |
+| `security-policy.json` | Application security baseline (documentation-only) | SQL injection, prompt injection, DDoS protection |
 | `.gitleaks.toml` | Secret scanning patterns | API keys, tokens, credentials detection |
 | `edge-compat.config.json` | Edge runtime validation | Node.js API restrictions, package allowlists |
+
+**Note**: `security-policy.json` is documentation-only and not enforced by runtime or CI. It serves as a reference for security policies and best practices.
 
 ### 🔄 Development Workflow
 

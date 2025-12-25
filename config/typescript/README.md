@@ -94,6 +94,7 @@ tsconfig.json (root)
 | `tsconfig.testing.json` | Test files and utilities | `tests/**/*`, `**/*.stories.tsx`, `vitest*.ts` | Composite, comprehensive coverage |
 | `tsconfig.tooling.json` | Build tools and scripts | `scripts/**/*`, `config/**/*`, `eslint-plugin-corso/**/*` | Composite, tool-specific settings |
 | `tsconfig.eslint.json` | ESLint comprehensive coverage | All TypeScript files | Full project coverage for linting |
+| `tsconfig.prod.json` | Production strictness checks | All source files (excludes tests/stories) | Enhanced unused variable/parameter checks |
 
 ## Individual Configurations
 
@@ -226,6 +227,26 @@ tsconfig.json (root)
 - Full project coverage
 - ESLint-specific optimizations
 - Comprehensive file inclusion
+
+### `tsconfig.prod.json` - Production Strictness
+
+**Purpose**: Enhanced type checking for production code with stricter unused variable/parameter detection.
+
+**Includes**:
+- All source files (`app/`, `components/`, `lib/`, `hooks/`, `actions/`, `contexts/`, `styles/`, `types/`)
+- Excludes test files, stories, scripts, and documentation
+
+**Key Settings**:
+- Extends `tsconfig.json` (solution config)
+- `noUnusedLocals: true` - Flags unused local variables
+- `noUnusedParameters: true` - Flags unused function parameters
+- Used by `pnpm typecheck:prod` for production code validation
+
+**Usage**:
+```bash
+# Run production strictness checks
+pnpm typecheck:prod
+```
 
 ## Path Alias System
 
