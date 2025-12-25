@@ -17,16 +17,19 @@ const isCode = (p: string) => /\.(ts|tsx|js|jsx)$/.test(p);
  * 1. @/lib/server (exact) or @/lib/server/...
  * 2. Dynamic imports: import('@/lib/server...')
  * 3. Relative imports: ../server/, ../../server/, ../lib/server/
+ * 4. Type-only imports: import type from '@/lib/server...'
  */
 const SERVER_IMPORT_PATTERNS = [
-  // Pattern 1: @/lib/server (exact) or @/lib/server/... in from statements
-  /from\s+['"]@\/lib\/server(?:\/|['"])/,
+  // Pattern 1: @/lib/server (exact) or @/lib/server/... in from statements (including import type)
+  /(?:import\s+type\s+.*\s+from|from)\s+['"]@\/lib\/server(?:\/|['"])/,
   // Pattern 2: Dynamic imports: import('@/lib/server...') or import("@/lib/server...")
   /import\s*\(\s*['"]@\/lib\/server/,
   // Pattern 3: Relative imports to ../server/ or ../../server/ (conservative: require ../ or ../.. prefix)
-  /from\s+['"](\.[.]\/)+server(?:\/|['"])/,
+  // Also handles import type
+  /(?:import\s+type\s+.*\s+from|from)\s+['"](\.[.]\/)+server(?:\/|['"])/,
   // Pattern 4: Relative imports to ../lib/server/ or ../../lib/server/
-  /from\s+['"](\.[.]\/)+lib\/server(?:\/|['"])/,
+  // Also handles import type
+  /(?:import\s+type\s+.*\s+from|from)\s+['"](\.[.]\/)+lib\/server(?:\/|['"])/,
 ];
 
 /**
@@ -127,6 +130,31 @@ describe('lib boundary guards', () => {
 
     it('does NOT detect @/lib/server-side (different path)', () => {
       const code = "import x from '@/lib/server-side/utils';";
+      expect(hasServerImport(code)).toBe(false);
+    });
+
+    it('detects import type from @/lib/server', () => {
+      const code = "import type { Env } from '@/lib/server';";
+      expect(hasServerImport(code)).toBe(true);
+    });
+
+    it('detects import type from @/lib/server/env', () => {
+      const code = "import type { Env } from '@/lib/server/env';";
+      expect(hasServerImport(code)).toBe(true);
+    });
+
+    it('detects import type with relative path ../server/', () => {
+      const code = "import type { Config } from '../server/config';";
+      expect(hasServerImport(code)).toBe(true);
+    });
+
+    it('detects import type with relative path ../../lib/server/', () => {
+      const code = "import type { Env } from '../../lib/server/env';";
+      expect(hasServerImport(code)).toBe(true);
+    });
+
+    it('does NOT detect import type from unrelated paths', () => {
+      const code = "import type { Config } from '@/lib/shared/config';";
       expect(hasServerImport(code)).toBe(false);
     });
   });

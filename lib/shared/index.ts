@@ -1,18 +1,15 @@
-// Expose only client-safe public env from shared barrel. Server-only env helpers
-// must be imported from `@/lib/server/env` directly in server code.
-// REMOVED: publicEnv, getPublicEnv - Users import directly from @/lib/shared/config/client
-
-// lib/shared/index.ts
+/**
+ * @fileoverview Shared library barrel - client-safe exports only
+ * @description Exports only client-safe utilities to maintain runtime boundary safety.
+ *              Server-only helpers must be imported directly from @/lib/server/* modules.
+ *              Re-exports were reduced to prevent accidental server-only imports in client code.
+ */
 
 /**
  * Exports all shared cache utilities (shared, server/client-safe).
  */
 export * from './cache/lru-cache';
 export * from './cache/simple-cache';
-/**
- * Exports clientLogger, httpFetch for client-safe logging and environment access.
- * REMOVED: clientLogger, httpFetch - Users import directly from @/lib/shared/config/client
- */
 /**
  * NOTE: `metricsCfg` is server-only and must not be re-exported from the
  * shared barrel. Import `metricsCfg` directly from `lib/shared/config/runtime`
@@ -75,10 +72,6 @@ export * from './format/numbers';
  */
 // Removed: export * from './utils/layout'; - all exports were unused per dead code audit
 /**
- * Exports shared form utilities (shared, server/client-safe).
- * REMOVED: useZodForm, InferForm - Utilities removed as unused (no React Hook Form adoption)
- */
-/**
  * Exports client-safe validation helpers and schemas only.
  * Server-only validation utilities are available via @/lib/shared/server
  */
@@ -91,19 +84,15 @@ export { assertZodSchema } from './validation/assert';
 // Marketing pricing facades should be imported from marketing domain directly
 
 // Align shared types consumed by lib/index.ts re-exports
-// REMOVED: ValidationResult - Users import directly from @/lib/validators/shared/types
 
 // Note: For backwards compatibility with direct file imports,
 // compatibility stubs are available in the deprecated/ directory.
 // These will be removed in a future version - use the barrel exports above instead.
 
 /** Misc config helpers */
-// REMOVED: createConfig, configOwnership - Users import directly from @/lib/shared/config-utils
 
 // Additional public surface (edge/client-safe)
 // Analytics client-safe facade removed; import dashboard types directly if needed
-// REMOVED: SortLike, entityTableKey - Users import directly from @/lib/shared/table/query-keys
-// REMOVED: Visibility, usePersistedColumnVisibility - Users import directly from @/lib/shared/table/use-persisted-column-visibility
 
 // Asset resolver exports (Supabase-only canonical resolver)
 export * from './assets/cdn';

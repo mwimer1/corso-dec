@@ -24,7 +24,7 @@ if (typeof fetch === "undefined") {
 }
 
 // Register AG Grid modules for tests (required for AG Grid v34+)
-import { ensureAgGridRegistered } from '../../../lib/vendors/ag-grid';
+import { ensureAgGridRegistered } from '../../../lib/vendors/ag-grid.client';
 ensureAgGridRegistered();
 
 // Stub server-only side-effect module
