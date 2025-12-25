@@ -390,6 +390,9 @@ export default [
           // UI molecules with barrel exports
           'components/ui/molecules/**/*.tsx',
           'components/ui/molecules/**/*.ts',
+          // UI patterns exported via barrel and used in production
+          'components/ui/patterns/**/*.tsx',
+          'components/ui/patterns/**/*.ts',
           // Components used via dynamic imports
           'components/ui/organisms/**/*.tsx',
           'components/ui/organisms/**/*.ts',

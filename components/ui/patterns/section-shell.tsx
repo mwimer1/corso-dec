@@ -22,7 +22,6 @@ interface SectionShellProps extends React.HTMLAttributes<HTMLElement> {
  * SectionShell – Shared layout shell for page sections.
  * Provides a full-width section with optional guidelines and centered content container.
  */
-// eslint-disable-next-line import/no-unused-modules -- False positive: component is used in insights-section.tsx and landing-section.tsx, but ESLint doesn't detect the usage
 export function SectionShell({
   tone = "surface",
   guidelines,
