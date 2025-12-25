@@ -35,7 +35,7 @@
 
 ## 📋 Next Steps: Manual QA Required
 
-See `PRICING_PAGE_QA_CHECKLIST.md` for comprehensive manual testing checklist.
+See [`pricing-page-qa-checklist.md`](../qa/pricing-page-qa-checklist.md) for comprehensive manual testing checklist.
 
 **Critical verification points:**
 1. Pricing cards visible above fold on 1366×768 and 1440×900 viewports

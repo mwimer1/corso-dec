@@ -4,6 +4,8 @@
 **Repository:** mwimer1/corso-dec  
 **Purpose:** Verify AG Grid baseline before implementing changes
 
+> **Note:** This is a comprehensive implementation audit. For version conflict resolution details, see [`ag-grid-versions-20251012.md`](./ag-grid-versions-20251012.md).
+
 ---
 
 ## 1. AG Grid Versions & Enterprise Status

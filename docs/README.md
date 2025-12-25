@@ -122,12 +122,38 @@ This directory contains comprehensive documentation covering architecture, devel
 
 ### 🔍 Audits & Maintenance
 
-Historical audit reports and maintenance documentation:
+**Maintenance Documentation:**
 - [Maintenance Audit Implementation](maintenance/MAINTENANCE_AUDIT_IMPLEMENTATION.md)
 - [Remaining Action Items](maintenance/REMAINING_ACTION_ITEMS.md)
 - [Consolidation Summary](maintenance/CONSOLIDATION_SUMMARY.md)
+- [Data Layer Hardening Summary](maintenance/data-layer-hardening-summary.md)
+- [P1 Polish Summary](maintenance/p1-polish-summary.md)
+- [Refactor Implementation Plan](maintenance/refactor-implementation-plan.md)
+
+**Audit Reports:**
+- [AG Grid Implementation Audit](audits/ag-grid-implementation-audit-20250128.md) - Comprehensive AG Grid baseline audit
+- [AG Grid Versions Audit](audits/ag-grid-versions-20251012.md) - Version conflict resolution (resolved)
 - [Production Audit (Archived)](audits/production-audit-20250115.md)
 - [Domain6 Review (Archived)](audits/domain6-review-guide-20250115.md)
+
+### ✅ QA & Verification
+
+Quality assurance checklists and verification guides:
+- [Manual Verification Guide](qa/manual-verification-guide.md)
+- [Verification Steps](qa/verification-steps.md)
+- [Verification Summary](qa/verification-summary.md)
+- [Pricing Page QA Checklist](qa/pricing-page-qa-checklist.md)
+
+### 📝 Feature Notes & Design
+
+Feature implementation summaries and design documents:
+- [Global Quick Search Design (Sprint 8)](feature-notes/global-quick-search-design-sprint-8.md)
+- [Pricing Page Implementation Summary](feature-notes/pricing-page-implementation-summary.md)
+
+### 🏗️ Architecture Notes
+
+Architecture explanations and design decisions:
+- [Request Storm Check Explained](architecture/request-storm-check-explained.md)
 
 ## 🗺️ Quick Navigation
 
