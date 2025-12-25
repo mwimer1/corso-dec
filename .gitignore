@@ -62,6 +62,7 @@ coverage/
 # Testing
 test-results/
 test-reports/
+__test_lib_structure__/
 # Reports (generated) — keep folder visible but ignore contents
 full-deps.json
 shared-deps.json
