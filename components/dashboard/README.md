@@ -50,10 +50,10 @@ For detailed entity grid documentation, see [`entity/README.md`](./entity/README
 
 ### Adding New Components
 
-1. Create component in appropriate subdirectory
-2. Export from barrel file (`index.ts`) if needed
-3. Follow TypeScript strict mode and component design system patterns
-4. Add tests for new components
+1. **Client Components**: Add to `components/dashboard/` and export from `index.ts`
+2. **Server Components**: Add to `components/dashboard/entity/` and export from `server.ts`
+3. **Entity Grid / Table UI**: Add to `components/dashboard/entity/shared/` (grid, menubar, dialogs) and export from the nearest barrel
+4. **Components**: Add new dashboard components to appropriate subdirectories
 
 ### Dependencies
 
@@ -63,6 +63,8 @@ For detailed entity grid documentation, see [`entity/README.md`](./entity/README
 
 ## Related Documentation
 
-- [`entity/README.md`](./entity/README.md) - Entity grid architecture details
-- [`../lib/services/entity/README.md`](../../lib/services/entity/README.md) - Entity service layer
-- [`.cursor/rules/entity-grid-architecture.mdc`](../../.cursor/rules/entity-grid-architecture.mdc) - Architecture rules
+- [Entity Grid (AG Grid)](./entity/README.md#ag-grid-styling) - Table system + styling/formatting standards
+- [AG Grid Theme Overrides](../../styles/ui/ag-grid.theme.css) - Quartz theme variables + Corso CSS overrides
+- [Chat System](../chat/README.md) - AI assistant integration
+- [Widget System](./widgets/README.md) - KPI cards and charts
+- [Layout System](./layout/README.md) - Dashboard structure

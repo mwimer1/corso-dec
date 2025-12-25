@@ -183,6 +183,20 @@ Column definitions are framework-agnostic using `TableColumnConfig` schema.
 - Maps `label` → `headerName`
 - Applies formatters based on `format` type
 
+## AG Grid Styling
+
+Entity tables use **AG Grid Quartz** with Corso-specific CSS overrides.
+
+**Source of truth**
+- Theme variables + UI overrides: `styles/ui/ag-grid.theme.css`
+- Per-entity density: `ui: { rowHeight, headerHeight }` in `components/dashboard/entity/<entity>/config.ts`
+- Enterprise/module registration: `@/lib/vendors/ag-grid/register` (do not register modules directly in components)
+
+**Change discipline**
+- Keep selectors scoped under the grid theme/wrapper (e.g., `.ag-theme-quartz` and your app wrapper class) to avoid global AG Grid regressions
+- Prefer RTL-safe rules (`.ag-ltr` / `.ag-rtl`) for directional tweaks
+- For micro-alignment (e.g., 1px checkbox alignment), prefer `transform` nudges over layout-affecting padding/width hacks
+
 ## Adding a New Entity
 
 ### Step 1: Create Column Configuration
