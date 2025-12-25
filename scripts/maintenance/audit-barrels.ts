@@ -88,7 +88,7 @@ async function runPolicyCheck(): Promise<CheckResult> {
 async function runIntradomainCheck(): Promise<CheckResult> {
   try {
     console.log('🔍 Running intradomain root barrel check...');
-    execSync('pnpm tsx scripts/validation/verify-intradomain-barrels.ts', {
+    execSync('pnpm tsx scripts/maintenance/check-barrels.ts --intradomain-only', {
       stdio: 'inherit',
       cwd: process.cwd(),
     });

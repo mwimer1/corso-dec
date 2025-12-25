@@ -1,11 +1,19 @@
 #!/usr/bin/env tsx
 /**
  * @fileoverview Validate barrel export integrity in lib/ domains
- * @description Ensures all exports from domain index.ts files resolve to files within the same domain
+ * @description Ensures all exports from domain index.ts files resolve to files within the same domain.
+ * Also checks for intradomain root barrel circular dependencies.
+ * 
+ * Consolidates:
+ * - Barrel export integrity validation (original check-barrels.ts)
+ * - Intradomain root barrel import validation (from verify-intradomain-barrels.ts)
  */
 
 import { readdir, readFile, stat } from 'node:fs/promises';
-import { join } from 'node:path';
+import { readFileSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { posix } from 'node:path';
+import { globby } from 'globby';
 
 const LIB_DIR = join(process.cwd(), 'lib');
 
@@ -123,18 +131,87 @@ async function checkBarrels(): Promise<{ success: boolean; errors: string[] }> {
 }
 
 /**
+ * Validates intradomain root barrel imports (from verify-intradomain-barrels.ts)
+ * Prevents circular dependencies by detecting when domain index files import their own root barrel
+ */
+async function checkIntradomainBarrels(): Promise<{ success: boolean; errors: string[] }> {
+  const errors: string[] = [];
+  const aliasRoots = [
+    ['lib', '@/lib/'],
+    ['components', '@/components/'],
+    ['types', '@/types/'],
+  ] as const;
+
+  const domainIndexes = await globby([
+    'lib/*/index.ts',
+    'components/*/index.ts',
+    'types/*/index.ts',
+  ], { gitignore: true });
+
+  for (const file of domainIndexes) {
+    const src = readFileSync(file, 'utf8');
+    const dir = dirname(file).split(posix.sep).pop()!;
+    const lines = src.split('\n');
+
+    for (const raw of lines) {
+      const line = raw.trim();
+      if (!line.startsWith('import ')) continue;
+      const m = line.match(/from\s+['"]([^'"]+)['"]/);
+      if (!m) continue;
+      const spec = m[1];
+      if (!spec || spec.startsWith('./') || spec.startsWith('../')) continue;
+      for (const [root, alias] of aliasRoots) {
+        if (file.startsWith(`${root}/`)) {
+          if (spec === `${alias}${dir}` || spec.startsWith(`${alias}${dir}/`)) {
+            errors.push(`${file}: imports its own domain root barrel (${spec}) -> avoid cycles`);
+          }
+        }
+      }
+    }
+  }
+
+  if (errors.length > 0) {
+    console.error('Intradomain root barrel check failed:');
+    errors.forEach(e => console.error(`  - ${e}`));
+    return { success: false, errors };
+  }
+
+  console.log('✅ Intradomain root barrel check passed');
+  return { success: true, errors: [] };
+}
+
+/**
  * Main entry point
  */
 async function main() {
-  try {
-    const result = await checkBarrels();
+  const args = process.argv.slice(2);
+  const intradomainOnly = args.includes('--intradomain-only') || args.includes('--intradomain');
 
-    if (!result.success) {
-      console.error('\n❌ Barrel validation failed');
-      process.exit(1);
+  try {
+    if (intradomainOnly) {
+      // When --intradomain-only flag is used, only run intradomain check
+      const result = await checkIntradomainBarrels();
+      if (!result.success) {
+        console.error('\n❌ Intradomain barrel validation failed');
+        process.exit(1);
+      } else {
+        console.log('\n✅ Intradomain barrel validation passed');
+        process.exit(0);
+      }
     } else {
-      console.log('\n✅ Barrel validation passed');
-      process.exit(0);
+      // Full validation (default)
+      const [barrelResult, intradomainResult] = await Promise.all([
+        checkBarrels(),
+        checkIntradomainBarrels(),
+      ]);
+
+      if (!barrelResult.success || !intradomainResult.success) {
+        console.error('\n❌ Barrel validation failed');
+        process.exit(1);
+      } else {
+        console.log('\n✅ Barrel validation passed');
+        process.exit(0);
+      }
     }
   } catch (error) {
     console.error('❌ Unexpected error during barrel validation:', error);
