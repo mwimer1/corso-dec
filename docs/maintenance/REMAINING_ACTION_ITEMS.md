@@ -231,4 +231,5 @@ pnpm maintenance scan styles
 
 - [Maintenance Audit Implementation](./MAINTENANCE_AUDIT_IMPLEMENTATION.md)
 - [Consolidation Summary](./CONSOLIDATION_SUMMARY.md)
+- [Config Audit Sprint 3 Findings](./config-audit-sprint3-findings.md) - Orphaned config triage results
 - [Maintenance Standards](./MAINTENANCE_STANDARDS.md) (to be created)

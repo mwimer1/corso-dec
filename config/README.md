@@ -18,7 +18,7 @@ This directory contains global configuration files for the Corso app. These file
 | **Quality** | `.prettierrc.js`, `.stylelintrc.cjs` | Code formatting and linting |
 | **Security** | `security-policy.json`, `.gitleaks.toml` | Security scanning and policies |
 | **Testing** | | E2E testing configuration |
-| **Workflow** | `commitlint.config.js`, `codemod-imports.toml` | Development workflow |
+| **Workflow** | `commitlint.config.js` | Development workflow |
 
 ## 🎯 Purpose
 
@@ -32,8 +32,6 @@ This directory contains global configuration files for the Corso app. These file
 
 ```
 config/
-├── marketing/
-│   └── links.ts              # Marketing-specific link configuration
 ├── security/
 │   └── rbac-roles.json       # Role-based access control definitions
 ├── typescript/
@@ -57,7 +55,6 @@ config/
 ├── .dependency-cruiser.cjs  # Dependency analysis rules
 ├── .gitleaks.toml           # Secret scanning configuration
 ├── .markdown-link-check.json # Link validation rules
-├── codemod-imports.toml     # Deprecated import mappings (historical reference)
 ├── commitlint.config.cjs    # Commit message validation (in project root)
 ├── domain-map.ts            # Domain boundaries & facades
 ├── edge-compat.config.json  # Edge runtime compatibility
@@ -116,7 +113,6 @@ config/
 | File | Purpose | Configuration |
 |------|---------|--------------|
 | `commitlint.config.cjs` | Commit message standards | Conventional commits, scoped messages (in project root) |
-| `codemod-imports.toml` | Automated refactoring | Deprecated import mappings (historical reference) |
 | `domain-map.ts` | Architecture boundaries | Domain mapping, facade definitions |
 
 ### 📊 Documentation & Analysis
@@ -134,9 +130,6 @@ config/
 | *(No npm-specific config in config/ - see root `.npmrc` for cross-tool npm settings)* |
 
 ### 🏷️ Subdirectories
-
-#### `marketing/`
-- **`links.ts`** - Marketing-specific link constants (separated from shared config)
 
 #### `security/`
 - **`rbac-roles.json`** - Role-based access control role definitions
