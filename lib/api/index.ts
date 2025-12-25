@@ -3,7 +3,7 @@
  * @description Edge-safe API utilities with clear runtime boundaries.
  * @runtime Mixed (Edge-safe + Server-only exports)
  */
-export * from './auth';
+// NOTE: ./auth.ts was removed - import from @/lib/auth/server instead
 export * from './client';
 export * from './edge';
 export * from './response/http';

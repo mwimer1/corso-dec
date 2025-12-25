@@ -15,7 +15,6 @@ export const LIB_POLICIES: BarrelDomainPolicy[] = [
       'lib/api/response/**',
       'lib/api/billing/**',
       'lib/api/internal/**',
-      'lib/api/auth.ts',
       'lib/api/env.ts',
       // generic server internals
       '**/*.server.ts',

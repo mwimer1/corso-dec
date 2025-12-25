@@ -1,8 +1,13 @@
 /**
  * Development-only logging utilities.
  * 
+ * Dev-only logger; prefer @/lib/monitoring in production code.
+ * 
  * These functions only log in development mode (NODE_ENV !== 'production').
  * In production, they are no-ops to avoid polluting console output.
+ * 
+ * Used by client components for development debugging. Production logging
+ * should use the monitoring utilities from @/lib/monitoring instead.
  */
 
 const isDev = process.env.NODE_ENV !== 'production';
