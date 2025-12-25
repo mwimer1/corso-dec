@@ -182,7 +182,7 @@ describe('TablePro', () => {
   - `tests/support/test-factories/provider-test-factory.tsx`
 - Run duplication scans locally and in CI:
   - `pnpm jscpd:tests`
-- The generator `scripts/tests/generate-component-tests.ts` now emits factory-based tests by default.
+- Test generators should emit factory-based tests by default (see `tests/support/test-factories/`).
 
 ```typescript
 import { renderHook, waitFor } from '@testing-library/react';

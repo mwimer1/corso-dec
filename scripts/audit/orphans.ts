@@ -33,7 +33,76 @@ import {
   toAbsPosix,
   toProjectRelativePosix,
 } from '../audit-lib/orphan-utils';
-import { findTextReferences } from './utils';
+
+/**
+ * Find text references to a file path in reference directories (docs, tests, scripts, etc.)
+ * Searches for the file path as a string in files within the specified directories.
+ * This is a simplified synchronous implementation that searches a limited set of files.
+ */
+function findTextReferences(filePath: string, searchDirs: string[]): boolean {
+  try {
+    const fileName = nodePath.basename(filePath);
+    const relPath = normalizePosix(filePath);
+    
+    // Search patterns: filename, relative path, absolute path variants
+    const searchPatterns = [
+      fileName,
+      relPath,
+      filePath.replace(/\\/g, '/'),
+      `"${relPath}"`,
+      `'${relPath}'`,
+      `\`${relPath}\``,
+    ];
+
+    // Use a simple recursive directory search instead of globby.sync
+    function searchDirectory(dir: string): boolean {
+      try {
+        const entries = nodeFs.readdirSync(dir, { withFileTypes: true });
+        for (const entry of entries) {
+          const fullPath = nodePath.join(dir, entry.name);
+          
+          // Skip common exclusions
+          if (entry.name.startsWith('.') || 
+              entry.name === 'node_modules' || 
+              entry.name === '.next' || 
+              entry.name === 'dist') {
+            continue;
+          }
+          
+          if (entry.isDirectory()) {
+            if (searchDirectory(fullPath)) return true;
+          } else if (entry.isFile() && /\.(md|txt|ts|tsx|js|jsx|json)$/.test(entry.name)) {
+            try {
+              const content = nodeFs.readFileSync(fullPath, 'utf8');
+              if (searchPatterns.some(pattern => content.includes(pattern))) {
+                return true;
+              }
+            } catch {
+              // Skip files that can't be read
+              continue;
+            }
+          }
+        }
+      } catch {
+        // Skip directories that can't be read
+      }
+      return false;
+    }
+
+    for (const dirPattern of searchDirs) {
+      // Remove glob patterns and search actual directories
+      const dir = dirPattern.replace(/\/\*\*$/, '').replace(/\*\*/g, '');
+      if (nodeFs.existsSync(dir) && nodeFs.statSync(dir).isDirectory()) {
+        if (searchDirectory(dir)) return true;
+      }
+    }
+  } catch {
+    // Return false on any error (conservative - don't mark as referenced if search fails)
+    return false;
+  }
+  
+  return false;
+}
 
 // Re-export for testing
 export {
