@@ -1,9 +1,9 @@
 // scripts/rules/lib/build-index.ts
 // Shared library for building cursor rules index files
 
+import matter from 'gray-matter';
 import fs from 'node:fs';
 import path from 'node:path';
-import matter from 'gray-matter';
 
 export interface RuleIndexItem {
   rule_id: string;
