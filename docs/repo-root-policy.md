@@ -106,6 +106,9 @@ This document defines what files and directories belong in the repository root v
 - Check for duplicate configs across root and `config/`
 - Verify all root files are actively used or required for auto-discovery
 
+**Last root audit**: 2025-12-25  
+*Next audit due: 2026-03-25 (quarterly)*
+
 **Before removing root files:**
 1. Search repository for references: `rg -n "<filename>" .`
 2. Check `package.json` scripts for usage
@@ -115,6 +118,8 @@ This document defines what files and directories belong in the repository root v
 
 ---
 
-**Last Updated**: 2025-01-28  
+**Last Updated**: 2025-12-25  
+**Last Root Audit**: 2025-12-25  
+**Next Audit Due**: 2026-03-25 (quarterly)  
 **Maintained By**: Platform Team
 
