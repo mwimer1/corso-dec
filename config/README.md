@@ -15,7 +15,7 @@ This directory contains global configuration files for the Corso app. These file
 |----------|-----------|---------|
 | **Build** | `next.config.mjs`, `postcss.config.js` | Next.js and CSS processing |
 | **TypeScript** | `typescript/` | Comprehensive type checking system |
-| **Quality** | `.prettierrc.js`, `.stylelintrc.cjs`, `.yamllint.yml` | Code formatting and linting |
+| **Quality** | `.prettierrc.js`, `.stylelintrc.cjs` | Code formatting and linting |
 | **Security** | `security-policy.json`, `.gitleaks.toml` | Security scanning and policies |
 | **Testing** | | E2E testing configuration |
 | **Workflow** | `commitlint.config.js`, `codemod-imports.toml` | Development workflow |
@@ -53,13 +53,10 @@ config/
 │   └── tsconfig.lib.tsbuildinfo
 ├── .prettierrc.js           # Code formatting rules
 ├── .stylelintrc.cjs         # CSS linting configuration
-├── .yamllint.yml            # YAML linting rules
 ├── .cspell.json             # Spell checking dictionary
-├── .bundlesizerc            # Bundle size limits
 ├── .dependency-cruiser.cjs  # Dependency analysis rules
 ├── .gitleaks.toml           # Secret scanning configuration
 ├── .markdown-link-check.json # Link validation rules
-├── .npmrc                   # npm-specific configuration
 ├── codemod-imports.toml     # Deprecated import mappings (historical reference)
 ├── commitlint.config.cjs    # Commit message validation (in project root)
 ├── domain-map.ts            # Domain boundaries & facades
@@ -102,7 +99,6 @@ config/
 |------|---------|--------------|
 | `.prettierrc.js` | Code formatting standards | Semi-colons, single quotes, 100 char width |
 | `.stylelintrc.cjs` | CSS/stylesheet linting | Tailwind integration, custom rules, token enforcement |
-| `.yamllint.yml` | YAML file validation | 2-space indentation, document start handling |
 | `.cspell.json` | Spell checking | Project-specific technical terms |
 
 ### 🔒 Security & Compliance
@@ -128,13 +124,12 @@ config/
 | `typedoc.json` | API documentation generation | HTML docs in `docs/api/` |
 | `.markdown-link-check.json` | Link validation | Broken link detection with retries |
 | `.dependency-cruiser.cjs` | Dependency analysis | Circular dependency detection |
-| `.bundlesizerc` | Bundle size monitoring | 250KB limit enforcement |
 
 ### 📦 Package Management
 
 | File | Purpose | Configuration |
 |------|---------|--------------|
-| `.npmrc` | npm-specific settings | Separated from pnpm configuration |
+| *(No npm-specific config in config/ - see root `.npmrc` for cross-tool npm settings)* |
 
 ### 🏷️ Subdirectories
 
@@ -179,7 +174,7 @@ tsconfig.json (solution)
 - **Performance-optimized config** for fast development feedback
 
 ### Code Quality Gates
-- **Multi-layer linting**: ESLint, Stylelint, YAML linting
+- **Multi-layer linting**: ESLint, Stylelint
 - **Automated formatting**: Prettier with consistent rules
 - **Spell checking**: Custom dictionary for technical terms
 
