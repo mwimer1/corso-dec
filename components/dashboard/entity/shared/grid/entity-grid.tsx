@@ -224,9 +224,20 @@ export default function EntityGrid({
 
   const sideBar = useMemo(() => config.ui?.sideBar ?? createDefaultSideBar(), [config]);
 
-  const selectionColumnDef = useMemo(() => config.ui?.selectionColumnDef ?? ({
-    sortable: false, width: 50, maxWidth: 50, suppressHeaderMenuButton: true, pinned: 'left' as const,
-  }), [config]);
+  const selectionColumnDef = useMemo(
+    () =>
+      config.ui?.selectionColumnDef ??
+      ({
+        sortable: false,
+        width: 50,
+        maxWidth: 50,
+        suppressHeaderMenuButton: true,
+        pinned: 'left' as const,
+        cellClass: 'corso-selection-column-cell',
+        headerClass: 'corso-selection-column-header',
+      }),
+    [config],
+  );
 
   const rowSelection = useMemo(() => config.ui?.rowSelection ?? ({
     mode: 'multiRow' as const, groupSelects: 'descendants' as const, hideDisabledCheckboxes: true,

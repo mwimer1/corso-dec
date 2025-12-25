@@ -43,3 +43,33 @@
   background: var(--ag-selected-row-background-color) !important;
 }
 
+/* --- Selection Column Styling --- */
+
+/* Center body checkbox */
+.corso-ag-grid .corso-selection-column-cell {
+  padding-left: 0;
+  padding-right: 0;
+}
+.corso-ag-grid .corso-selection-column-cell .ag-cell-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Center header checkbox */
+.corso-ag-grid .corso-selection-column-header .ag-header-cell-comp-wrapper,
+.corso-ag-grid .corso-selection-column-header .ag-header-cell-label {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Remove the *extra* pinned boundary divider (the one that causes "double line") */
+.corso-ag-grid .ag-pinned-left-header,
+.corso-ag-grid .ag-pinned-left-cols-viewport,
+.corso-ag-grid .ag-pinned-left-cols-container {
+  border-right: none;
+}
+
