@@ -9,11 +9,10 @@
  * - Intradomain root barrel import validation (from verify-intradomain-barrels.ts)
  */
 
-import { readdir, readFile, stat } from 'node:fs/promises';
-import { readFileSync } from 'node:fs';
-import { join, dirname } from 'node:path';
-import { posix } from 'node:path';
 import { globby } from 'globby';
+import { readFileSync } from 'node:fs';
+import { readdir, readFile, stat } from 'node:fs/promises';
+import { dirname, join, posix } from 'node:path';
 
 const LIB_DIR = join(process.cwd(), 'lib');
 

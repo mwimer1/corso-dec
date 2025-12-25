@@ -13,8 +13,6 @@
  */
 
 import { execSync } from 'node:child_process';
-import { existsSync } from 'node:fs';
-import path from 'node:path';
 
 const args = process.argv.slice(2);
 const only = args.includes('--only') ? args[args.indexOf('--only') + 1] : undefined;
