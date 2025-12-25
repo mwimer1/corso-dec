@@ -168,6 +168,7 @@ tsconfig.json (solution)
   - Vitest (via `vite-tsconfig-paths`)
   - IDEs (via TypeScript language server)
 - **ESLint configuration** at project root (`eslint.config.mjs`)
+  - **Note**: We use ESLint flat config (`eslint.config.mjs`), but `eslint-plugin-import`'s `import/no-unused-modules` rule currently requires a legacy `.eslintrc.json` (containing only `ignorePatterns`) to resolve file ignores. The `.eslintrc.json` file at the project root serves this purpose and should not be removed.
 - **Vitest configuration** at project root (moved from `config/` for discoverability)
 
 ## ⚙️ Key Configuration Highlights

@@ -1,4 +1,34 @@
 {
-  "ignorePatterns": []
+  "ignorePatterns": [
+    ".next/**",
+    "node_modules/**",
+    "out/**",
+    "build/**",
+    "dist/**",
+    "eslint-plugin-corso/dist/**",
+    "eslint-plugin-corso/src/**",
+    "dev-tools/coverage/**",
+    "coverage/**",
+    "reports/**",
+    "*.js",
+    "scripts/**/*.js",
+    "jest/**",
+    "public/**",
+    "CorsoAI/**",
+    "pnpm-lock.yaml",
+    "tsconfig.tsbuildinfo",
+    "dependency-graph.{dot,svg}",
+    "styles/build/tailwind.css",
+    "**/*.d.ts",
+    ".githooks/**",
+    "var/**",
+    ".cache/**",
+    ".turbo/**",
+    "docs/index.ts",
+    "docs/examples/**",
+    "grid-reference/**",
+    "playwright-report/**",
+    "tmp/**"
+  ]
 }
 
