@@ -1,19 +1,15 @@
 ---
 title: "types/security"
-last_updated: "2025-12-15"
+last_updated: "2025-12-25"
 category: "automation"
 ---
 
-# Security Types
+# Repository Scripts & Docs
 
-Type definitions for security policies, rules, and related security features.
+This README is generated from a single template (`README.scripts.hbs`).
 
-## Import Patterns
+- Directory: `types/security`
+- Last updated: `2025-12-25`
 
-**Note:** Security policy types have been removed as they were unused in the codebase. Security configuration is handled via runtime code in `lib/security/` rather than type definitions.
+> Edit the template or the generator context to change all READMEs consistently.
 
-If security policy types are needed in the future, they should be defined based on actual implementation requirements.
-
-## Note on Prompt Guard Types
-
-Prompt guard types were previously located here but have been removed as dead code. If you need prompt guard functionality, check the security implementation in `lib/security/`.

@@ -1,75 +1,15 @@
 ---
-status: active
-last_updated: 2025-12-25
+title: "components/dashboard"
+last_updated: "2025-12-25"
+category: "automation"
 ---
 
-# Dashboard Components
+# Repository Scripts & Docs
 
-Dashboard components provide the UI for authenticated user experiences including entity management (projects, companies, addresses), chat interface, and account settings.
+This README is generated from a single template (`README.scripts.hbs`).
 
-## Structure
+- Directory: `components/dashboard`
+- Last updated: `2025-12-25`
 
-- **`entity/`** - Entity grid components for tabular data display (projects, companies, addresses)
-- **`chat/`** - Chat interface components (CorsoAI assistant)
-- **`layout/`** - Dashboard layout components (sidebar, shell)
+> Edit the template or the generator context to change all READMEs consistently.
 
-## Entity Grid Architecture
-
-Entity grids use a standardized architecture built on AG Grid Enterprise with server-side row model (SSRM):
-
-### Core Components
-
-1. **`EntityGrid`** (`entity/shared/grid/entity-grid.tsx`) - Core grid component with SSRM integration
-2. **`EntityGridHost`** (`entity/shared/grid/entity-grid-host.tsx`) - Host component with toolbar and error handling
-3. **Entity Configs** (`entity/{projects,addresses,companies}/config.ts`) - Per-entity configuration
-
-### Architecture Overview
-
-```
-Route → EntityGridHost → EntityGrid → AG Grid (SSRM)
-         ↓                ↓
-    GridMenubar    createEntityFetcher
-```
-
-### Data Flow
-
-1. User interacts with grid (sort, filter, paginate)
-2. AG Grid SSRM calls `getRows()` callback with request params
-3. `createEntityFetcher()` transforms AG Grid request to API format
-4. Fetcher calls `/api/v1/entity/{entity}` with query params
-5. API returns paginated data + total count
-6. AG Grid displays results via `params.success()`
-
-For detailed entity grid documentation, see [`entity/README.md`](./entity/README.md).
-
-## Key Features
-
-- **Server-side pagination** - Efficient handling of large datasets
-- **Server-side sorting** - Sort operations performed on backend
-- **Filtering** - Client-side filter UI with server-side application (limited filter types supported)
-- **Type safety** - Full TypeScript support with framework-agnostic column definitions
-- **Error handling** - Graceful error states with retry functionality
-- **RBAC integration** - Role-based access control enforced server-side
-
-## Development
-
-### Adding New Components
-
-1. **Client Components**: Add to `components/dashboard/` and export from `index.ts`
-2. **Server Components**: Add to `components/dashboard/entity/` and export from `server.ts`
-3. **Entity Grid / Table UI**: Add to `components/dashboard/entity/shared/` (grid, menubar, dialogs) and export from the nearest barrel
-4. **Components**: Add new dashboard components to appropriate subdirectories
-
-### Dependencies
-
-- **AG Grid Enterprise** - Required for server-side row model (`NEXT_PUBLIC_AGGRID_ENTERPRISE=1`)
-- **React Query** - Not used directly in entity grids (native AG Grid SSRM)
-- **Clerk** - Authentication and RBAC
-
-## Related Documentation
-
-- [Entity Grid (AG Grid)](./entity/README.md#ag-grid-styling) - Table system + styling/formatting standards
-- [AG Grid Theme Overrides](../../styles/ui/ag-grid.theme.css) - Quartz theme variables + Corso CSS overrides
-- [Chat System](../chat/README.md) - AI assistant integration
-- [Widget System](./widgets/README.md) - KPI cards and charts
-- [Layout System](./layout/README.md) - Dashboard structure

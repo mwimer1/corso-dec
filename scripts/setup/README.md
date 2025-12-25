@@ -1,6 +1,6 @@
 ---
 title: "scripts/setup"
-last_updated: "2025-12-15"
+last_updated: "2025-12-25"
 category: "automation"
 ---
 
@@ -9,7 +9,7 @@ category: "automation"
 This README is generated from a single template (`README.scripts.hbs`).
 
 - Directory: `scripts/setup`
-- Last updated: `2025-12-15`
+- Last updated: `2025-12-25`
 
 > Edit the template or the generator context to change all READMEs consistently.
 
@@ -19,7 +19,6 @@ This README is generated from a single template (`README.scripts.hbs`).
 - **install-gitleaks.ts** – Prefer winget; fallback to choco
 - **setup-branch.ts** – Best-effort: do not throw; leave non-zero exit visible but continue
 - **setup-docs-environment.ts** – scripts/setup/setup-docs-environment.ts
-- **start-dev-server.ts** – scripts/setup/start-dev-server.ts
 - **validate-ai-agent-environment.ts** – scripts/setup/validate-ai-agent-environment.ts
 - **validate-atomic-design.ts** – scripts/setup/validate-atomic-design.ts
 - **validate-env.ts** – scripts/setup/validate-env.ts

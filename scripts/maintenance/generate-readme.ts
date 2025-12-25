@@ -12,7 +12,7 @@ import { globbySync } from 'globby';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { parseMd, stringifyMd } from './_utils/frontmatter';
-import { readBarrelExports, readBarrelReferencedModules } from './barrel-helpers';
+import { readBarrelExports, readBarrelReferencedModules } from '../utils/barrel-utils';
 import { LIB_POLICIES } from './barrel.config';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));

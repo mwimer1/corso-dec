@@ -1,36 +1,15 @@
 ---
 title: "types/auth"
-last_updated: "2025-12-15"
+last_updated: "2025-12-25"
 category: "automation"
 ---
 
-# Auth Types
+# Repository Scripts & Docs
 
-Type definitions for authentication, authorization, and user management.
+This README is generated from a single template (`README.scripts.hbs`).
 
-## Import Patterns
+- Directory: `types/auth`
+- Last updated: `2025-12-25`
 
-**Prefer direct imports** from the specific type file. The `types/auth/index.ts` barrel was removed to prevent circular dependencies.
+> Edit the template or the generator context to change all READMEs consistently.
 
-```typescript
-// ✅ Preferred: Direct imports (when types exist)
-// Note: Most auth types are provided by Clerk (@clerk/nextjs)
-// Custom types are defined only when extending Clerk functionality
-```
-
-### ❌ Avoid
-
-```typescript
-// ❌ Barrel removed - do not use
-import type { Permission } from '@/types/auth';
-```
-
-## Available Types
-
-**Note:** Most authentication and authorization types are provided by Clerk (`@clerk/nextjs`). Custom types in this directory are only defined when extending Clerk's functionality for organization-scoped features.
-
-Previously defined types (Permission, Role, UserRole) have been removed as they were unused in the codebase. If RBAC types are needed in the future, they should be defined based on actual usage requirements.
-
-## Note
-
-Most user and session management is handled by Clerk (`@clerk/nextjs`). Custom types here extend Clerk's functionality for organization-scoped RBAC.

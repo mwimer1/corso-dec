@@ -23,34 +23,8 @@ export interface DocsProcessingResult {
 }
 
 /**
- * Common pattern for reading barrel exports
- */
-export async function readBarrelExports(domainPath: string): Promise<string[]> {
-  try {
-    const indexPath = path.join(domainPath, 'index.ts');
-    const content = await fs.readFile(indexPath, 'utf8');
-
-    // Recognize both export * from './x' and export { A, default as B } from './y'
-    const starRegex = /export\s+\*\s+from\s+["']\.\/(.*?)["'];?/g;
-    const namedRegex = /export\s+\{[^}]*\}\s+from\s+["']\.\/(.*?)["'];?/g;
-
-    const modules: string[] = [];
-    let m: RegExpExecArray | null;
-    while ((m = starRegex.exec(content))) {
-      if (m[1]) modules.push(m[1]);
-    }
-    while ((m = namedRegex.exec(content))) {
-      if (m[1]) modules.push(m[1]);
-    }
-
-    return Array.from(new Set(modules));
-  } catch {
-    return [];
-  }
-}
-
-/**
  * Common pattern for building exports list
+ * Note: For reading barrel exports, import directly from '../utils/barrel-utils'
  */
 export function buildExportsList(domain: string, exports: string[]): string[] {
   if (exports.length === 0) {

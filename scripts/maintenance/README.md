@@ -1,6 +1,6 @@
 ---
 title: "scripts/maintenance"
-last_updated: "2025-12-15"
+last_updated: "2025-12-25"
 category: "automation"
 ---
 
@@ -9,7 +9,7 @@ category: "automation"
 This README is generated from a single template (`README.scripts.hbs`).
 
 - Directory: `scripts/maintenance`
-- Last updated: `2025-12-15`
+- Last updated: `2025-12-25`
 
 > Edit the template or the generator context to change all READMEs consistently.
 
@@ -17,10 +17,11 @@ This README is generated from a single template (`README.scripts.hbs`).
 
 - **audit-barrels.ts** – Unified Barrel Audit
 - **audit-unused-tokens.ts** – Skip build directories
-- **barrel-helpers.ts** – noop
 - **barrel.config.ts** – &#x27;,
 - **check-barrels.ts** – Ensures all exports from domain index.ts files resolve to files within the same domain
+- **check-readme-freshness.ts** – Check README freshness - validates that README files with frontmatter
 - **clean-next-build.ts** – Cross-platform script to clean .next directory before build
+- **clean-typescript-cache.ts** – scripts/maintenance/clean-typescript-cache.ts
 - **cleanup-cursor.ts** – Cross-platform script to preview or delete .cursor directories older than 1 day
 - **docs-patterns-common.ts** – Common utilities for documentation maintenance scripts
 - **enhance-readmes.ts** – scripts/enhance-readmes.ts
@@ -49,3 +50,4 @@ This README is generated from a single template (`README.scripts.hbs`).
 - **validate-doc-links.ts** – /*.md&#x60;,
 - **validate-docs-on-commit.ts** – scripts/validate-docs-on-commit.ts
 - **validate-docs.ts** – Checks if markdown-link-check tool is available
+- **validate-mock-schema.ts** – Known optional/computed fields that may not exist in mock data

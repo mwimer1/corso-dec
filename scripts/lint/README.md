@@ -1,6 +1,6 @@
 ---
 title: "scripts/lint"
-last_updated: "2025-12-15"
+last_updated: "2025-12-25"
 category: "automation"
 ---
 
@@ -9,7 +9,7 @@ category: "automation"
 This README is generated from a single template (`README.scripts.hbs`).
 
 - Directory: `scripts/lint`
-- Last updated: `2025-12-15`
+- Last updated: `2025-12-25`
 
 > Edit the template or the generator context to change all READMEs consistently.
 
@@ -18,8 +18,8 @@ This README is generated from a single template (`README.scripts.hbs`).
 - **audit-ai-security.ts** – /*.ts&#x60;, &#x60;${chatComponents}/*
 - **audit-breakpoints.ts** – /*.{ts,tsx,css,mdx}&#x27;,
 - **audit-workflow-secrets.ts** – Initialize report
-- **check-circular-deps.ts** – scripts/lint/check-circular-deps.ts
 - **check-css-paths.ts** – scripts/lint/check-css-paths.ts
+- **check-deprecations-util-extend.ts** – Regression check for util._extend deprecation warnings
 - **check-edge-compat.ts** – /{page,layout,route,error}.{ts,tsx} that export: export const runtime &#x3D; &#x27;edge&#x27;
 - **check-forbidden-files.ts** – Check for forbidden files in the repository
 - **check-lockfile-major.ts** – Fallback to regex if YAML parse fails
@@ -35,9 +35,7 @@ This README is generated from a single template (`README.scripts.hbs`).
 - **forbid-scripts-barrels.ts** – No description available
 - **no-binary-fonts.ts** – &#x27;,
 - **no-deprecated-imports.ts** – Patterns that capture only actual module specifiers in import/export/require/dynamic import
-- **schema-alignment-check.ts** – /*.ts&#x27;).forEach((f: SourceFile) &#x3D;&gt; schemaFiles.push(f));
 - **token-syntax-audit.ts** – scripts/token-syntax-audit.ts
-- **validate-data.ts** – Import DataPipelineMonitor dynamically to avoid build-time errors when the
 - **validate-effect-deps.ts** – scripts/validate-effect-deps.ts
 - **validate-package-json.ts** – scripts/lint/validate-package-json.ts
 - **verify-ai-tools.ts** – AI Agent Tools Verification Script

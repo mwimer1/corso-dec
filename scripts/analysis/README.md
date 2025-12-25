@@ -1,6 +1,6 @@
 ---
 title: "scripts/analysis"
-last_updated: "2025-12-15"
+last_updated: "2025-12-25"
 category: "automation"
 ---
 
@@ -9,12 +9,13 @@ category: "automation"
 This README is generated from a single template (`README.scripts.hbs`).
 
 - Directory: `scripts/analysis`
-- Last updated: `2025-12-15`
+- Last updated: `2025-12-25`
 
 > Edit the template or the generator context to change all READMEs consistently.
 
 ## Scripts in `scripts/analysis`
 
+- **filter-orphans-high-signal.ts** – Filter orphan report to show only high-signal candidates
 - **generate-agent-index.ts** – /route.ts&quot;, &quot;app/*
 - **purge-styles.ts** – Purge now-unreferenced style source files after trimming barrels.
 - **scan-atoms-usage.ts** – Scan usage for atoms barrels (styles/components).

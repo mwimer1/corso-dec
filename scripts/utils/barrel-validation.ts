@@ -1,10 +1,10 @@
 // scripts/utils/barrel-validation.ts
 // Provide a single API with both sync/async variants;
 // delegate to existing helpers to avoid behavior drift.
-export { validateBarrelFile as validateBarrelFileSync } from '@/scripts/maintenance/barrel-helpers';
+export { validateBarrelFileSync } from './barrel-utils';
 export { validateBarrelFileAsyncFn as validateBarrelFileAsync };
 
-import { validateBarrelFile as validateBarrelFileAsyncFn } from '@/scripts/utils/barrel-utils';
+import { validateBarrelFile as validateBarrelFileAsyncFn } from './barrel-utils';
 
 // Optional convenience alias matching most call-sites (async version):
 export const validateBarrelFile = validateBarrelFileAsyncFn;

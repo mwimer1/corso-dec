@@ -1,31 +1,15 @@
 ---
-title: "QA & Verification"
-description: "Quality assurance checklists, verification guides, and testing documentation."
+title: "docs/qa"
 last_updated: "2025-12-25"
-category: "qa"
+category: "automation"
 ---
 
-# QA & Verification Documentation
+# Repository Scripts & Docs
 
-Quality assurance checklists, verification guides, and testing documentation for the Corso platform.
+This README is generated from a single template (`README.scripts.hbs`).
 
-## 📋 Verification Guides
+- Directory: `docs/qa`
+- Last updated: `2025-12-25`
 
-- **[Manual Verification Guide](manual-verification-guide.md)** - Step-by-step manual verification procedures
-- **[Verification Steps](verification-steps.md)** - Detailed verification workflow
-- **[Verification Summary](verification-summary.md)** - Summary of verification results and findings
-
-## ✅ QA Checklists
-
-- **[Pricing Page QA Checklist](pricing-page-qa-checklist.md)** - Comprehensive manual testing checklist for pricing page
-
-## 🔗 Related Documentation
-
-- [Testing Strategy](../testing-quality/testing-strategy.md) - Automated testing patterns and best practices
-- [Quality Gates](../cicd-workflow/quality-gates.md) - CI/CD quality validation standards
-- [Production Readiness](../production/production-readiness-checklist.md) - Pre-deployment checklist
-
----
-
-**Last Updated**: 2025-01-28
+> Edit the template or the generator context to change all READMEs consistently.
 

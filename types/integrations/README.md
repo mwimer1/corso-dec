@@ -1,37 +1,15 @@
 ---
 title: "types/integrations"
-last_updated: "2025-12-15"
+last_updated: "2025-12-25"
 category: "automation"
 ---
 
-# Integration Types
+# Repository Scripts & Docs
 
-Type definitions for third-party service integrations.
+This README is generated from a single template (`README.scripts.hbs`).
 
-## Import Patterns
+- Directory: `types/integrations`
+- Last updated: `2025-12-25`
 
-**Prefer direct imports** from the specific type file. While `types/integrations/index.ts` barrel exists, direct imports are recommended to prevent circular dependencies.
+> Edit the template or the generator context to change all READMEs consistently.
 
-```typescript
-// ✅ Preferred: Direct imports
-import type { Database } from '@/types/integrations/supabase/core/types';
-import type { SQLExecutionOptions, SupabaseApiJwtExchangeResponse } from '@/types/integrations/supabase/api/types';
-```
-
-### ⚠️ Barrel Available (but discouraged)
-
-```typescript
-// ⚠️ Barrel exists but direct imports preferred
-import type { Database } from '@/types/integrations';
-```
-
-## Available Types
-
-- `types/integrations/supabase/core/types.ts` - Supabase core types (Database)
-- `types/integrations/supabase/api/types.ts` - Supabase API types (SQLExecutionOptions, SupabaseApiJwtExchangeResponse)
-
-## Note
-
-Clerk types are consumed directly from `@clerk/nextjs` and `@clerk/backend` - no custom types needed here.
-
-OpenAI, Redis, and ClickHouse integration types were removed as unused exports.
