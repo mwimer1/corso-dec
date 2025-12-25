@@ -33,6 +33,14 @@ vi.mock('@/lib/integrations/database/scope', () => ({
   validateSQLScope: (sql: string, expectedOrgId?: string) => mockValidateSQLScope(sql, expectedOrgId),
 }));
 
+// Mock getEnv - route uses OPENAI_SQL_MODEL
+vi.mock('@/lib/server/env', () => ({
+  getEnv: () => ({
+    OPENAI_SQL_MODEL: 'gpt-4o-mini',
+    // Add other env vars if route usage expands
+  }),
+}));
+
 describe("API v1: ai/generate-sql route", () => {
   beforeEach(() => {
     vi.clearAllMocks();
