@@ -1,7 +1,7 @@
 ---
 title: "Tools Scripts"
 description: "Documentation and resources for documentation functionality. Located in tools-scripts/."
-last_updated: "2025-12-15"
+last_updated: "2025-12-25"
 category: "documentation"
 status: "draft"
 ---
@@ -35,17 +35,45 @@ pnpm validate:env             # Validate environment variables
 ```
 
 #### Quality Gates
-```bash
-# Comprehensive validation (98% ESLint-based)
-pnpm quality:local             # typecheck + lint + test + remaining AST-Grep
 
-# Individual checks
-pnpm typecheck                 # TypeScript validation
+**Canonical Commands** (use these):
+```bash
+# Full local validation (recommended for pre-commit)
+pnpm quality:local             # Includes: typecheck + lint + test + bundle size + AST-Grep + more
+
+# CI-grade validation (optimized for speed)
+pnpm quality:ci                # Essential checks only: lint + typecheck + test + docs
+
+# Comprehensive validation suite
+pnpm validate                  # Includes dead-code check, full validation pipeline
+```
+
+**When to use each:**
+- **`quality:local`** - Use before committing locally. Most comprehensive check including bundle size validation, full linting, and all quality gates.
+- **`quality:ci`** - Used by CI pipeline. Faster execution with essential checks only (excludes bundle size for speed).
+- **`validate`** - Comprehensive validation including dead-code detection. Good for thorough pre-commit checks.
+
+**Individual Quality Checks:**
+```bash
+pnpm typecheck                 # TypeScript validation (fast feedback)
 pnpm lint                      # ESLint validation (uses cache for faster reruns)
 pnpm lint:full                 # Full lint (rebuilds plugin + lint scripts + lint) - use for CI/pre-commit
 pnpm test                      # Vitest test suite
 pnpm validate:cursor-rules     # Custom security rules
+pnpm docs:validate            # Documentation quality checks
 ```
+
+**Deprecated Commands** (migrate to canonical):
+
+| Old Command | New Command | Notes |
+|------------|------------|-------|
+| `deadcode` | `validate:dead-code` | Use canonical command |
+| `lint:unused` | `validate:dead-code` | Use canonical command |
+| `validate:dup` | `validate:duplication` | Use canonical command |
+| `docs:check` | `docs:validate` | Use canonical command |
+| `validate:barrels` | `audit:barrels --only constants` | Use canonical command |
+| `barrels:policy:check` | `audit:barrels --only policy` | Use canonical command |
+| `verify:no-intradomain-root-barrels` | `audit:barrels --only intradomain` | Use canonical command |
 
 #### Development Workflow
 ```bash
@@ -169,12 +197,20 @@ pnpm test                      # Run relevant tests
 
 ### Before Commit
 ```bash
-# Quality assurance
-pnpm quality:local             # Full validation
+# Quality assurance (recommended)
+pnpm quality:local             # Full validation (includes bundle size, all checks)
+
+# Alternative: comprehensive validation
+pnpm validate                  # Includes dead-code detection
+
+# Individual checks (if needed)
+pnpm typecheck                 # Fast TypeScript check
+pnpm lint                      # Code quality check
+pnpm test                      # Run tests
 pnpm validate:cursor-rules     # Security checks
 
 # Documentation
-pnpm docs:links                # Check documentation links
+pnpm docs:validate            # Full documentation validation
 ```
 
 ### Code Review
@@ -256,4 +292,4 @@ chmod +x scripts/**/*.sh
 
 ---
 
-**Last updated:** 2025-12-15
+**Last updated:** 2025-12-25

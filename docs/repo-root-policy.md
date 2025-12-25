@@ -1,6 +1,6 @@
 ---
 title: "Repository Root Policy"
-description: ``"Guidelines for what belongs in the repository root vs. organized subdirectories."
+description: "Guidelines for what belongs in the repository root vs. organized subdirectories."
 last_updated: "2025-12-25"
 category: "documentation"
 ---

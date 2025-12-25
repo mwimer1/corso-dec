@@ -1,7 +1,7 @@
 ---
 title: "Corso"
 description: "Next.js monorepo for Corso platform - data analytics and insights platform with AI-powered SQL generation and visualization."
-last_updated: "2025-12-19"
+last_updated: "2025-12-25"
 category: "project"
 ---
 
@@ -125,10 +125,27 @@ pnpm test                   # Run test suite
 ```
 
 ### Quality Gates
+
+**Canonical Commands** (use these):
 ```bash
-pnpm quality:local          # Full local validation
-pnpm quality:ci              # CI-grade validation
+pnpm quality:local          # Full local validation (recommended for pre-commit)
+pnpm quality:ci             # CI-grade validation (optimized for speed)
+pnpm validate               # Comprehensive validation suite (includes dead-code check)
 ```
+
+**When to use each:**
+- **`quality:local`** - Use before committing locally. Includes bundle size checks, full linting, and comprehensive validation.
+- **`quality:ci`** - Used by CI pipeline. Faster, essential checks only (no bundle size).
+- **`validate`** - Comprehensive validation including dead-code detection. Good for thorough checks.
+
+**Deprecated Commands** (migrate to canonical):
+
+| Old Command | New Command | Notes |
+|------------|------------|-------|
+| `deadcode` | `validate:dead-code` | Use canonical command |
+| `lint:unused` | `validate:dead-code` | Use canonical command |
+| `validate:dup` | `validate:duplication` | Use canonical command |
+| `docs:check` | `docs:validate` | Use canonical command |
 
 ### Documentation
 ```bash
@@ -223,4 +240,4 @@ For detailed contributing guidelines, see [Contributing Guide](docs/contributing
 
 ---
 
-**Last Updated**: 2025-12-15
+**Last Updated**: 2025-12-25
