@@ -3,10 +3,10 @@
   "version": 1,
   "generatedAt": "<fill-on-first-run>",
   "tools": {
-    "knip": { "path": ".reports/knip.json" },
-    "tsPrune": { "path": ".reports/ts-prune.txt" }
+    "knip": { "path": "reports/dependencies/knip.json" },
+    "tsPrune": { "path": "reports/dependencies/ts-prune.txt" }
   },
-  "notes": "This file anchors the initial unused-exports baseline. CI updates artifacts in .reports/; keep this file for historical diffs."
+  "notes": "This file anchors the initial unused-exports baseline. CI updates artifacts in reports/; keep this file for historical diffs."
 }
 
 
