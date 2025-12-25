@@ -1,3 +1,8 @@
+---
+status: stable
+last_updated: 2025-01-28
+---
+
 # Pricing Page Implementation Summary
 
 ## ✅ Completed Changes

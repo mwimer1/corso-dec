@@ -1,7 +1,7 @@
 ---
 title: "QA & Verification"
 description: "Quality assurance checklists, verification guides, and testing documentation."
-last_updated: "2025-01-28"
+last_updated: "2025-12-25"
 category: "qa"
 ---
 

@@ -1,3 +1,8 @@
+---
+status: active
+last_updated: 2025-12-25
+---
+
 # Entity Grid Components
 
 Standardized AG Grid Enterprise implementation for entity management (projects, companies, addresses) with server-side row model (SSRM).

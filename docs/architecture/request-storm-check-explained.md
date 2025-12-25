@@ -1,3 +1,8 @@
+---
+status: active
+last_updated: 2025-12-25
+---
+
 # Request Storm Check - Explained
 
 ## What is a "Request Storm"?

@@ -1,3 +1,8 @@
+---
+status: active
+last_updated: 2025-12-25
+---
+
 # Entity Service Layer
 
 Service layer for entity data operations (projects, companies, addresses) supporting both ClickHouse and mock database modes.

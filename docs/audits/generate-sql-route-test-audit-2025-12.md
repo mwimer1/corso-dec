@@ -34,7 +34,7 @@ All 15 tests in `generate-sql.route.test.ts` pass successfully:
 
 **Issue:** Route calls `getEnv()` from `@/lib/server/env` but test file didn't mock it.
 
-**Location:** 
+**Location:**
 - Route: `app/api/v1/ai/generate-sql/route.ts:98`
 - Test: `tests/chat/generate-sql.route.test.ts`
 

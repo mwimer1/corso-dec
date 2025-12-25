@@ -1,3 +1,8 @@
+---
+status: active
+last_updated: 2025-12-25
+---
+
 # P0 Hardening Verification Steps
 
 ## ✅ Step 1: Code Status

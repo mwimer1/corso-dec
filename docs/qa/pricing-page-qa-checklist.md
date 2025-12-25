@@ -1,3 +1,8 @@
+---
+status: active
+last_updated: 2025-12-25
+---
+
 # Pricing Page QA Checklist
 
 **Date:** 2025-01-XX  

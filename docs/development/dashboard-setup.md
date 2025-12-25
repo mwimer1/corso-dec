@@ -1,7 +1,7 @@
 ---
 title: "Dashboard Setup & Quickstart"
 description: "Quickstart guide for running the dashboard locally with mock data, relaxed auth, and all development features."
-last_updated: "2025-01-15"
+last_updated: "2025-12-25"
 category: "documentation"
 status: "active"
 ---
@@ -43,9 +43,9 @@ pnpm dev
 
 ### Visit Dashboard
 Open your browser and navigate to:
-- **Projects**: http://localhost:3000/dashboard/projects
-- **Companies**: http://localhost:3000/dashboard/companies
-- **Addresses**: http://localhost:3000/dashboard/addresses
+- **Projects**: <http://localhost:3000/dashboard/projects>
+- **Companies**: <http://localhost:3000/dashboard/companies>
+- **Addresses**: <http://localhost:3000/dashboard/addresses>
 
 You should see a working data grid with mock data!
 
@@ -54,7 +54,7 @@ You should see a working data grid with mock data!
 ### Strict Mode (Default)
 - **Requires**: Organization membership + RBAC role checks
 - **Use case**: Production, multi-tenant scenarios
-- **Behavior**: 
+- **Behavior:**
   - User must belong to an organization
   - User must have `org:member`, `org:admin`, or `org:owner` role
   - API endpoints enforce RBAC checks

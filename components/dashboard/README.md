@@ -1,3 +1,8 @@
+---
+status: active
+last_updated: 2025-12-25
+---
+
 # Dashboard Components
 
 Dashboard components provide the UI for authenticated user experiences including entity management (projects, companies, addresses), chat interface, and account settings.

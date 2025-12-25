@@ -1,3 +1,8 @@
+---
+status: stable
+last_updated: 2025-01-28
+---
+
 # AG Grid Implementation Audit Report
 
 **Date:** 2025-01-28  

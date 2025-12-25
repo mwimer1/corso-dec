@@ -1,3 +1,8 @@
+---
+status: stable
+last_updated: 2025-12-20
+---
+
 # Orphan File Triage Report
 
 **Generated:** 2025-12-20  
@@ -66,7 +71,7 @@ This file is exported but usage is unclear:
 
 1. **`lib/mocks/normalize.ts`**
    - Status: Contains `normalizeCompany` function but usage unclear
-   - Evidence: 
+   - Evidence:
      - File has implementation for `normalizeCompany`
      - No grep matches for `normalizeCompany` usage
      - Mentioned in `docs/references/deps.md` but not imported anywhere
@@ -75,7 +80,7 @@ This file is exported but usage is unclear:
 
 2. **`playwright.config.ts`**
    - Status: **KEEP** - Playwright config file (used by E2E tests)
-   - Evidence: 
+   - Evidence:
      - `@playwright/test` is in dependencies
      - Used by E2E tests in `tests/e2e/`
      - Referenced in package.json scripts (`test:e2e`)
@@ -86,7 +91,7 @@ This file is exported but usage is unclear:
 
 These files are used but in ways the static analyzer doesn't detect:
 
-#### Components
+#### Components (False Positives)
 1. **`components/dashboard/corso-ai-mode.tsx`**
    - Status: **KEEP** - Used indirectly via barrel export
    - Evidence:

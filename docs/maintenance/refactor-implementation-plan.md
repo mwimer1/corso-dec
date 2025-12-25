@@ -1,3 +1,8 @@
+---
+status: stable
+last_updated: 2025-01-28
+---
+
 # Landing Page Use Cases Refactor — Tactical Implementation Plan
 
 ## 📋 Executive Summary

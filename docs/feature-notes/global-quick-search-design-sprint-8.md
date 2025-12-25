@@ -1,3 +1,8 @@
+---
+status: stable
+last_updated: 2025-01-28
+---
+
 # Sprint 8 — Global Quick Search: Design Document
 
 ## Overview
@@ -29,7 +34,7 @@ if (params.search && params.search.trim()) {
 
 ## Design Decision: Backend Contract
 
-### ✅ Backend Already Supports Search!
+### ✅ Backend Already Supports Search
 
 **Discovery**: The SSRM fetcher uses GET `/api/v1/entity/${entity}?...` which already supports `search` parameter via `EntityListQuerySchema`. No backend changes needed!
 
@@ -79,7 +84,7 @@ export const ENTITY_SEARCH_FIELDS: Record<EntityKind, string[]> = {
 
 **Note**: OpenAPI spec should document the GET route's `search` parameter if not already documented.
 
-### Phase 2: UI Implementation (Ready to Start)
+### Phase 2: UI Implementation (Ready to Start) - Design
 
 #### 2.1 Search Input Component
 **Location**: `components/dashboard/entity/shared/grid/grid-menubar.tsx`
@@ -183,12 +188,12 @@ const fetcher = useMemo(
 
 ## Implementation Plan
 
-### Phase 1: Backend Contract ✅ COMPLETE
+### Phase 1: Backend Contract ✅ COMPLETE - Summary
 **Status**: Backend already supports search via GET route. No changes needed.
 
 **Future Enhancement**: Entity-specific searchable fields configuration
 
-### Phase 2: UI Implementation (Ready to Start)
+### Phase 2: UI Implementation (Ready to Start) - Future Work
 1. Add search input to `GridMenubar`
 2. Implement debounced search state
 3. Update fetcher to include search parameter

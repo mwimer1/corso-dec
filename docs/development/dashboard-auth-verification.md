@@ -1,3 +1,8 @@
+---
+status: active
+last_updated: 2025-12-25
+---
+
 # Dashboard Auth Mode Verification Guide
 
 ## Quick Verification Checklist

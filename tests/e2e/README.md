@@ -1,3 +1,8 @@
+---
+status: active
+last_updated: 2025-12-25
+---
+
 # E2E Tests
 
 End-to-end smoke tests for dashboard functionality using Playwright.
