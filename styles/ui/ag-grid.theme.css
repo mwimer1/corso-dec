@@ -50,35 +50,47 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0;
-  text-align: center;
+  /* give breathing room from the grid edge; scales with your density modes via --ag-grid-size */
+  padding: 0 calc(var(--ag-grid-size) * 1.5);
+  box-sizing: border-box;
 }
 
 /* Ensure wrapper also centers content */
 .corso-ag-grid .corso-selection-column-cell .ag-cell-wrapper {
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: center !important;
   align-items: center;
   padding: 0;
 }
 
 /* AG Grid adds LTR/RTL padding on the selection checkbox container.
-   Remove it in the dedicated selection column so the checkbox is truly centered. */
+   Remove it in the dedicated selection column so the checkbox is truly centered.
+   Use margin-inline: auto for centering (works with flex or block layout). */
 .corso-ag-grid .corso-selection-column-cell .ag-selection-checkbox {
+  padding: 0 !important;
+  margin-inline: auto;
+}
+
+.corso-ag-grid .corso-selection-column-header .ag-selection-checkbox {
   padding: 0 !important;
   margin: 0 !important;
 }
 
+.corso-ag-grid .corso-selection-column-header .ag-header-select-all {
+  padding: 0 !important;
+}
+
 /* Center header checkbox - target the header cell wrappers */
 .corso-ag-grid .corso-selection-column-header.ag-header-cell {
-  padding: 0;
+  padding: 0 calc(var(--ag-grid-size) * 1.5);
+  box-sizing: border-box;
 }
 
 .corso-ag-grid .corso-selection-column-header .ag-header-cell-comp-wrapper {
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: center !important;
   align-items: center;
   padding: 0;
 }
@@ -86,16 +98,24 @@
 .corso-ag-grid .corso-selection-column-header .ag-header-cell-label {
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: center !important;
   align-items: center;
   padding: 0;
 }
 
-/* Header select-all wrapper can have its own spacing; normalize it too */
-.corso-ag-grid .corso-selection-column-header .ag-header-select-all,
-.corso-ag-grid .corso-selection-column-header .ag-selection-checkbox {
-  padding: 0 !important;
-  margin: 0 !important;
+/* Center the header "select all" container reliably */
+.corso-ag-grid .corso-selection-column-header .ag-header-select-all {
+  margin-inline: auto;
+}
+
+/* 1px nudge: header select-all is slightly left vs body checkboxes */
+.corso-ag-grid.ag-ltr .corso-selection-column-header .ag-header-select-all {
+  transform: translateX(1px);
+}
+
+/* RTL-safe mirror */
+.corso-ag-grid.ag-rtl .corso-selection-column-header .ag-header-select-all {
+  transform: translateX(-1px);
 }
 
 /* Remove the *extra* pinned boundary divider (the one that causes "double line") */
