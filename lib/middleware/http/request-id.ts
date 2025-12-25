@@ -36,14 +36,21 @@ export function getRequestId(req?: Request | NextRequest): string {
 }
 
 export function addRequestIdHeader(res: Response | NextResponse, requestId: string): NextResponse {
-  const response =
-    res instanceof NextResponse
-      ? res
-      : new NextResponse(res.body, {
-          status: res.status,
-          headers: res.headers,
-        });
-  response.headers.set('X-Request-ID', requestId);
-  return exposeHeader(response, 'X-Request-ID');
+  if (res instanceof NextResponse) {
+    res.headers.set('X-Request-ID', requestId);
+    return exposeHeader(res, 'X-Request-ID');
+  }
+
+  // Clone to avoid stream-lock issues
+  const cloned = res.clone();
+
+  const next = new NextResponse(cloned.body ?? null, {
+    status: cloned.status,
+    statusText: cloned.statusText,
+    headers: cloned.headers,
+  });
+
+  next.headers.set('X-Request-ID', requestId);
+  return exposeHeader(next, 'X-Request-ID');
 }
 
