@@ -110,6 +110,8 @@ Thumbs.db
 *.swp
 *.swo
 *~
+# VS Code workspace files (personal preference)
+*.code-workspace
 
 # Temporary files
 tmp/

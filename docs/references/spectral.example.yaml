@@ -1,3 +1,13 @@
+# Example Spectral Configuration
+# 
+# This file is for reference only and is NOT used by the Spectral CLI.
+# The canonical Spectral configuration is located at `.spectral.yaml` in the repository root.
+#
+# Spectral auto-discovers `.spectral.yaml` in the root directory when running:
+#   pnpm openapi:lint
+#
+# This example shows a minimal OAS3 ruleset for reference purposes.
+
 # Minimal local Spectral ruleset for OAS3 validation
 formats: [oas3]
 rules:
