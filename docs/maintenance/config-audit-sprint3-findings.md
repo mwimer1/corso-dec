@@ -51,7 +51,7 @@ This document summarizes findings from Sprint Batch 3, which triaged orphaned co
 
 ### 3. Legacy ESLint Rule: `cache-exports-prevention`
 
-**Status**: ⚠️ **EQUIVALENT MISSING** - Rule intent not currently enforced
+**Status**: ✅ **CLOSED** - Rule re-implemented and enforced
 
 **Original Rule Intent**:
 The legacy rule `config/eslint/cache-exports-prevention.json` enforced:
@@ -82,23 +82,25 @@ The legacy rule `config/eslint/cache-exports-prevention.json` enforced:
 }
 ```
 
+**Action Taken**:
+- ✅ Created `lib/shared/cache/index.ts` barrel file exporting both cache modules
+- ✅ Added ESLint rule to `eslint.config.mjs` enforcing barrel imports (Policy A)
+- ✅ Fixed all existing violations:
+  - `lib/shared/feature-flags/core.ts` → now uses `@/lib/shared/cache`
+  - `lib/shared/errors/reporting.ts` → now uses `@/lib/shared/cache`
+- ✅ Verified no violations remain via grep
+- ✅ All validation passes (typecheck, lint, test)
+
 **Current State**:
-- ❌ No equivalent rule exists in `eslint.config.mjs`
-- ✅ Cache utilities are exported from `lib/shared/index.ts` barrel:
+- ✅ Equivalent rule exists in `eslint.config.mjs` (no-restricted-imports patterns)
+- ✅ Cache utilities are exported from `lib/shared/cache/index.ts` barrel:
   ```typescript
-  export * from './cache/lru-cache';
-  export * from './cache/simple-cache';
+  export * from './lru-cache';
+  export * from './simple-cache';
   ```
-- ⚠️ Direct imports still occur:
-  - `lib/shared/feature-flags/core.ts` → `@/lib/shared/cache/simple-cache`
-  - `lib/shared/errors/reporting.ts` → `@/lib/shared/cache/lru-cache`
+- ✅ All imports now use the canonical barrel `@/lib/shared/cache`
 
-**Recommendation**:
-- **Option A**: Add equivalent rule to `eslint.config.mjs` to enforce barrel exports
-- **Option B**: Refactor direct imports to use barrel exports (`@/lib/shared`)
-- **Option C**: Document as intentional deviation if direct imports are preferred
-
-**Priority**: Medium (code consistency improvement, not critical)
+**Canonical Import Surface**: `@/lib/shared/cache`
 
 ---
 
@@ -108,10 +110,12 @@ The legacy rule `config/eslint/cache-exports-prevention.json` enforced:
 - ✅ Removed references to non-existent `config/marketing/links.ts`
 - ✅ Removed references to non-existent `config/codemod-imports.toml`
 - ✅ Updated `config/README.md` to reflect actual file structure
+- ✅ Re-implemented ESLint rule `cache-exports-prevention` with Policy A enforcement
+- ✅ Created `lib/shared/cache/index.ts` barrel file
+- ✅ Fixed all existing cache import violations
 
 ### Remaining Items
-- ⚠️ Legacy ESLint rule `cache-exports-prevention` has no equivalent
-- 📋 Decision needed: Re-implement rule or document intentional deviation
+- ✅ All items completed
 
 ### Impact
 - **Documentation**: Now accurately reflects actual config structure

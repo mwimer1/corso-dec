@@ -492,6 +492,14 @@ export default [
               'group': ['@/lib/shared/constants/*'],
               'message': "Use the barrel '@/lib/shared/constants' instead of deep imports.",
             },
+            {
+              'group': [
+                '@/lib/shared/cache/lru-cache',
+                '@/lib/shared/cache/simple-cache',
+              ],
+              'message':
+                "Policy A: import cache utilities from the barrel '@/lib/shared/cache' instead of deep file imports.",
+            },
           ]
         }
       ],

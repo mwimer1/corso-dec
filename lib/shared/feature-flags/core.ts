@@ -1,6 +1,6 @@
 // lib/shared/feature-flags/core.ts
 import type { FeatureFlagConfig } from '@/types/shared';
-import { simpleCacheManager } from '@/lib/shared/cache/simple-cache';
+import { simpleCacheManager } from '@/lib/shared/cache';
 
 /**
  * Feature flag system core implementation
