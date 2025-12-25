@@ -56,7 +56,6 @@ This document defines what files and directories belong in the repository root v
 
 ### Configuration (`config/`)
 - **TypeScript**: `config/typescript/` - TypeScript project configurations
-- **ESLint**: `config/eslint/` - ESLint rule configurations
 - **Security**: `config/security/` - Security policy configurations
 
 ### Reports (`reports/`)
