@@ -1,6 +1,13 @@
-# Generate SQL Route Test Audit - January 2025
+---
+title: "Generate SQL Route Test Audit"
+description: "Audit of generate-sql route tests to identify potential failure modes and test setup issues."
+last_updated: "2025-12-25"
+category: "testing"
+status: "resolved"
+---
+# Generate SQL Route Test Audit - December 2025
 
-**Date:** 2025-01-15  
+**Date:** 2025-12-25  
 **Branch:** main  
 **HEAD:** f57eaf9bf5952ed5342b42988752be833361a925  
 **Status:** ✅ All tests passing (15/15)

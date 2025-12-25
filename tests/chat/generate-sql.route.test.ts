@@ -1,3 +1,5 @@
+// Note: TypeScript language server may show false positives for these imports,
+// but typecheck passes and modules are correctly exported from @/lib/shared
 import { ApplicationError, ErrorCategory, ErrorSeverity } from '@/lib/shared';
 import { SecurityError } from '@/lib/shared/errors/types';
 import { beforeEach, describe, expect, it, vi } from "vitest";
