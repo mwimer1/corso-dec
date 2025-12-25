@@ -16,11 +16,12 @@ import { exposeHeader } from './headers';
  */
 export function getRequestId(req?: Request | NextRequest): string {
   // Priority: x-request-id > x-correlation-id > platform IDs (x-vercel-id, cf-ray) > generated
+  const headers = req?.headers;
   let id: string | null | undefined =
-    req?.headers.get('x-request-id') ||
-    req?.headers.get('x-correlation-id') ||
-    req?.headers.get('x-vercel-id') ||
-    req?.headers.get('cf-ray');
+    headers?.get('x-request-id') ||
+    headers?.get('x-correlation-id') ||
+    headers?.get('x-vercel-id') ||
+    headers?.get('cf-ray');
   if (!id || typeof id !== 'string') {
     try {
       const globalCrypto: any = (globalThis as any)?.crypto;
