@@ -1063,7 +1063,6 @@ export default [
         {
           paths: [
             { name: '@/lib/auth/server', message: 'Server-only. Do not import from edge-safe barrel lib/api/index.ts.' },
-            { name: './streaming/ndjson-route', message: 'Node-only. Do not re-export from edge-safe barrel.' },
           ],
         },
       ],
