@@ -1,6 +1,10 @@
 # PowerShell script to download LFS files from GitHub
 # This attempts to download files directly, bypassing LFS restrictions
 
+# Get script directory and compute repo root
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$repoRoot = Resolve-Path (Join-Path $scriptDir "..\..")
+
 $baseUrl = "https://raw.githubusercontent.com/Corso222/corso-mvp/main"
 $files = @(
     "public/demos/addresses-interface.png",
@@ -29,7 +33,7 @@ $files = @(
 
 foreach ($file in $files) {
     $url = "$baseUrl/$file"
-    $localPath = $file
+    $localPath = Join-Path $repoRoot $file
     
     # Create directory if it doesn't exist
     $dir = Split-Path -Parent $localPath

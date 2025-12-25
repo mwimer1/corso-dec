@@ -21,7 +21,7 @@ Knip is our primary dead code detection tool. It analyzes the entire codebase an
 pnpm validate:dead-code  # Run Knip
 ```
 
-**Configuration:** See `knip.json` in the repository root.
+**Configuration:** See `.knip.jsonc` in the repository root.
 
 ### Secondary Tools
 

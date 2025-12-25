@@ -60,7 +60,7 @@ All batches passed:
 2. **`docs/maintenance/dead-code-next-steps.md`** - Action items for Batch 2 & 3
 3. **`docs/maintenance/dead-code-batch2-summary.md`** - Batch 2 findings
 4. **`docs/maintenance/dead-code-batch3-summary.md`** - Batch 3 findings
-5. **`knip.json`** - Dead code detection configuration
+5. **`.knip.jsonc`** - Dead code detection configuration
 
 ## Key Learnings
 
@@ -93,7 +93,7 @@ If exports continue to be flagged but are intentionally kept:
 - ✅ **0 breaking changes** (all quality gates passing)
 - ✅ **Public API preserved** (all integration/server exports verified)
 - ✅ **Documentation complete** (workflow and findings documented)
-- ✅ **Tooling configured** (knip.json with proper exclusions)
+- ✅ **Tooling configured** (.knip.jsonc with proper exclusions)
 
 ## Next Steps
 

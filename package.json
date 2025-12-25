@@ -103,7 +103,7 @@
     "tailwind:build": "tailwindcss -c tailwind.config.ts -i styles/globals.css -o styles/build/tailwind.css --minify",
     "tailwind:watch": "tailwindcss -c tailwind.config.ts -i styles/globals.css -o styles/build/tailwind.css --watch",
     "pretest": "pnpm --filter @corso/eslint-plugin run build",
-    "validate:duplication": "pnpm dlx jscpd --config .jscpd.json",
+    "validate:duplication": "pnpm dlx jscpd --config jscpd.config.json",
     "validate:boundaries:client-server": "tsx scripts/maintenance/boundaries/check-cross-boundary.ts",
     "validate:zod:strict": "tsx scripts/maintenance/zod/strict-audit.ts",
     "validate:boundaries:deep": "tsx scripts/maintenance/boundaries/check-deep-imports.ts",

@@ -1,7 +1,13 @@
 # Setup script for Corso development environment
 # Run this AFTER installing Node.js
 
+# Get script directory and navigate to repo root
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$repoRoot = Resolve-Path (Join-Path $scriptDir "..\..")
+Set-Location $repoRoot
+
 Write-Host "🚀 Setting up Corso development environment..." -ForegroundColor Cyan
+Write-Host "Working directory: $repoRoot" -ForegroundColor Gray
 
 # Check Node.js
 Write-Host "`n📦 Checking Node.js..." -ForegroundColor Yellow

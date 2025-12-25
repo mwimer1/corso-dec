@@ -35,7 +35,7 @@ What it runs (in order):
     - Statements ≥ 80%
   - Reports: `coverage/lcov.info`, `coverage/`
 - Circular dependencies: `pnpm madge:ci`
-- Duplication (token‑based): `pnpm jscpd:ci` (≤ 2% threshold; config at `.jscpd.json`)
+- Duplication (token‑based): `pnpm jscpd:ci` (≤ 2% threshold; config at `jscpd.config.json`)
 - Docs validation: `pnpm docs:validate`
 
 Local parity
@@ -52,7 +52,7 @@ Local parity
 
 Artifacts and visibility
 - Coverage artifact uploaded as `coverage-lcov` (file: `coverage/lcov.info`).
-- Duplicate detection configured via `.jscpd.json` with ≤ 2% threshold.
+- Duplicate detection configured via `jscpd.config.json` with ≤ 2% threshold.
 
 Notes
 - Uses repository composite action `./.github/actions/setup-node-pnpm` for consistent Node/pnpm setup.

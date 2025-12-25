@@ -38,7 +38,7 @@ This document summarizes the consolidation work completed as part of the Mainten
 - `jscpd:report`, `jscpd:ci`, `jscpd:sarif`, etc. (multiple variants)
 
 **After**: Unified approach
-- `validate:duplication` - **Primary command** (uses `.jscpd.json` config)
+- `validate:duplication` - **Primary command** (uses `jscpd.config.json` config)
 - `validate:dup` - Alias to `validate:duplication`
 - Specialized `jscpd:*` commands remain for specific use cases:
   - `jscpd:ci` - CI-specific settings

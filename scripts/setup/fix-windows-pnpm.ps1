@@ -25,6 +25,8 @@ Remove-Item -Path "pnpm-lock.yaml" -Force -ErrorAction SilentlyContinue
 Remove-Item -Path "node_modules" -Recurse -Force -ErrorAction SilentlyContinue
 
 # 5) Reinstall with Windows-friendly node-linker for THIS run only
+# Note: This temporarily overrides .pnpmrc (which uses hoisted) with isolated mode
+# as a troubleshooting step. The canonical config in .pnpmrc uses hoisted for Windows compatibility.
 Write-Host "5) Reinstalling dependencies (--node-linker=isolated)..." -ForegroundColor Yellow
 pnpm install --node-linker=isolated
 

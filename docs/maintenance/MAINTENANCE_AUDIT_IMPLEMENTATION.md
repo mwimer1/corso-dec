@@ -65,15 +65,15 @@ This document tracks the implementation of improvements identified in the Mainte
 #### 2. Duplication Detection Consolidation
 **Status**: ✅ Completed
 **Changes**:
-- Updated `validate:dup` to use `.jscpd.json` config directly instead of custom wrapper
+- Updated `validate:dup` to use `jscpd.config.json` config directly instead of custom wrapper
 - Added `validate:duplication` as alias for consistency
-- Updated `.jscpd.json` to include console reporter and proper output directory
+- Updated `jscpd.config.json` to include console reporter and proper output directory
 - Added deprecation notice to `scripts/maintenance/duplication/run-jscpd.ts`
 - **Note**: Specialized `jscpd:*` scripts remain for specific use cases (docs, tests, SARIF output)
 
 **Files Modified**:
 - `package.json`: Updated `validate:dup` and added `validate:duplication`
-- `.jscpd.json`: Enhanced config with console reporter
+- `jscpd.config.json`: Enhanced config with console reporter
 - `scripts/maintenance/duplication/run-jscpd.ts`: Added deprecation notice
 
 #### 3. Naming Standardization
