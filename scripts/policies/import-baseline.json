@@ -52,6 +52,8 @@
     "lib/middleware/edge/error-handler.ts -> @/monitoring/core/logger-edge",
     "lib/middleware/edge/error-handler.ts -> @/api/response/api-error",
     "lib/middleware/edge/error-handler.ts -> @/shared/errors/application-error",
+    "lib/middleware/http/with-error-handling-node.ts -> @/api/response/api-error",
+    "lib/middleware/http/with-error-handling-node.ts -> @/shared/errors/api-error-conversion",
     "lib/middleware/http/cors.ts -> @/api/edge",
     "lib/middleware/http/rate-limit.ts -> @/ratelimiting/core",
     "lib/middleware/http/rate-limit.ts -> @/ratelimiting/types",
