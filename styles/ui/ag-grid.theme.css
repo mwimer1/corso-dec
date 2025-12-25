@@ -45,25 +45,57 @@
 
 /* --- Selection Column Styling --- */
 
-/* Center body checkbox */
-.corso-ag-grid .corso-selection-column-cell {
-  padding-left: 0;
-  padding-right: 0;
+/* Center body checkbox - target the cell itself */
+.corso-ag-grid .corso-selection-column-cell.ag-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  text-align: center;
 }
+
+/* Ensure wrapper also centers content */
 .corso-ag-grid .corso-selection-column-cell .ag-cell-wrapper {
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0;
 }
 
-/* Center header checkbox */
-.corso-ag-grid .corso-selection-column-header .ag-header-cell-comp-wrapper,
+/* AG Grid adds LTR/RTL padding on the selection checkbox container.
+   Remove it in the dedicated selection column so the checkbox is truly centered. */
+.corso-ag-grid .corso-selection-column-cell .ag-selection-checkbox {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Center header checkbox - target the header cell wrappers */
+.corso-ag-grid .corso-selection-column-header.ag-header-cell {
+  padding: 0;
+}
+
+.corso-ag-grid .corso-selection-column-header .ag-header-cell-comp-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+
 .corso-ag-grid .corso-selection-column-header .ag-header-cell-label {
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0;
+}
+
+/* Header select-all wrapper can have its own spacing; normalize it too */
+.corso-ag-grid .corso-selection-column-header .ag-header-select-all,
+.corso-ag-grid .corso-selection-column-header .ag-selection-checkbox {
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 /* Remove the *extra* pinned boundary divider (the one that causes "double line") */
