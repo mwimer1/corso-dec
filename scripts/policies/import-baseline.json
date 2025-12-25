@@ -49,6 +49,7 @@
     "lib/middleware/edge/rate-limit.ts -> @/monitoring/core/logger-edge",
     "lib/middleware/edge/rate-limit.ts -> @/ratelimiting/adapters/memory",
     "lib/middleware/edge/rate-limit.ts -> @/ratelimiting/key",
+    "lib/middleware/http/with-rate-limit-node.ts -> @/ratelimiting/key",
     "lib/middleware/edge/error-handler.ts -> @/monitoring/core/logger-edge",
     "lib/middleware/edge/error-handler.ts -> @/api/response/api-error",
     "lib/middleware/edge/error-handler.ts -> @/shared/errors/application-error",

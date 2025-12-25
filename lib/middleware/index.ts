@@ -11,6 +11,11 @@ export { addRequestIdHeader, getRequestId } from './http/request-id';
 export { withErrorHandlingEdge } from './edge/error-handler';
 export { withRateLimitEdge } from './edge/rate-limit';
 
+// ── Node.js Runtime Middleware ────────────────────────────────────
+// Note: These are server-only and should NOT be imported in Edge routes
+export { withErrorHandlingNode } from './http/with-error-handling-node';
+export { withRateLimitNode } from './http/with-rate-limit-node';
+
 // Note: Server-side rate limiting available via '@/lib/ratelimiting/middleware'
 // withApiWrappers removed - use makeEdgeRoute() or individual wrapper composition
 

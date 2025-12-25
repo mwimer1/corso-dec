@@ -1,32 +1,55 @@
 // Node.js specific test setup - server-side mocks
 
+import { NextResponse } from 'next/server';
 import { vi } from 'vitest';
 import { ApplicationError, ErrorCategory, ErrorSeverity } from '../../../lib/shared';
 
 // Mock minimal lib/api barrel used by API routes in tests
+// Returns real NextResponse objects so Node wrappers can properly handle them
 vi.mock('@/lib/api', async (importOriginal) => {
   const actual = await importOriginal<any>();
 
   const http = {
-    ok: (data: any) => ({
-      status: 200,
-      headers: new Headers(),
-      json: async () => ({ success: true, data }),
-    }),
-    badRequest: (message: string, meta?: any) => ({
-      status: 400,
-      headers: new Headers(),
-      json: async () => ({ success: false, error: { code: meta?.code ?? 'VALIDATION_ERROR', message } }),
-    }),
-    error: (status: number, message: string, meta?: any) => ({
-      status,
-      headers: new Headers(),
-      json: async () => ({ success: false, error: { code: meta?.code ?? `ERROR_${status}`, message, details: meta?.details } }),
-    }),
-    noContent: () => ({
-      status: 204,
-      headers: new Headers(),
-    }),
+    ok: (data: any, init: ResponseInit = {}) => {
+      const headers = new Headers(init.headers);
+      headers.set('content-type', 'application/json; charset=utf-8');
+      return NextResponse.json({ success: true, data }, { status: 200, headers });
+    },
+    
+    badRequest: (message: string, opts: { code?: string; details?: unknown; headers?: HeadersInit } = {}, init: ResponseInit = {}) => {
+      const allHeaders = new Headers({ 'content-type': 'application/json; charset=utf-8', ...(opts.headers ?? {}), ...(init.headers ?? {}) });
+      return NextResponse.json(
+        { success: false, error: { code: opts.code ?? 'VALIDATION_ERROR', message, details: opts.details } },
+        { status: 400, headers: allHeaders }
+      );
+    },
+    
+    error: (status: number, message: string, opts: { code?: string; details?: unknown; headers?: HeadersInit } = {}, init: ResponseInit = {}) => {
+      const allHeaders = new Headers({ 'content-type': 'application/json; charset=utf-8', ...(opts.headers ?? {}), ...(init.headers ?? {}) });
+      return NextResponse.json(
+        { success: false, error: { code: opts.code ?? `ERROR_${status}`, message, details: opts.details } },
+        { status, headers: allHeaders }
+      );
+    },
+    
+    forbidden: (message = 'Forbidden', opts: { code?: string; details?: unknown; headers?: HeadersInit } = {}, init: ResponseInit = {}) => {
+      const allHeaders = new Headers({ 'content-type': 'application/json; charset=utf-8', ...(opts.headers ?? {}), ...(init.headers ?? {}) });
+      return NextResponse.json(
+        { success: false, error: { code: opts.code ?? 'FORBIDDEN', message, details: opts.details } },
+        { status: 403, headers: allHeaders }
+      );
+    },
+    
+    notFound: (message = 'Not Found', opts: { code?: string; details?: unknown; headers?: HeadersInit } = {}, init: ResponseInit = {}) => {
+      const allHeaders = new Headers({ 'content-type': 'application/json; charset=utf-8', ...(opts.headers ?? {}), ...(init.headers ?? {}) });
+      return NextResponse.json(
+        { success: false, error: { code: opts.code ?? 'NOT_FOUND', message, details: opts.details } },
+        { status: 404, headers: allHeaders }
+      );
+    },
+    
+    noContent: (init: ResponseInit = {}) =>
+      new NextResponse(null, { status: 204, ...init }),
   };
 
   function withErrorHandlingEdge(fn: any) {

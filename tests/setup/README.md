@@ -55,7 +55,7 @@ The `tests/setup/` directory contains the core configuration files that set up t
 
 ### Basic Test Setup
 ```typescript
-import { ensureAgGridRegistered } from '@/lib/vendors/ag-grid';
+import { ensureAgGridRegistered } from '@/lib/vendors/ag-grid.client';
 import { vi } from 'vitest';
 import { ApplicationError, ErrorCategory, ErrorSeverity } from '@/lib/shared/errors';
 

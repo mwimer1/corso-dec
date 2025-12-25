@@ -20,7 +20,8 @@
 
 // app/api/v1/user/route.ts
 // Requires member role – enforced via Clerk v6 RBAC below
-import { http, validateJson, withErrorHandlingEdge as withErrorHandling, withRateLimitEdge as withRateLimit } from "@/lib/api";
+import { http, validateJson } from "@/lib/api";
+import { withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit } from "@/lib/middleware";
 import { corsHeaders, handleCors } from '@/lib/middleware';
 // withApiWrappers is re-exported from lib/api to keep imports consistent in tests
 import { UserSchema } from "@/lib/validators";

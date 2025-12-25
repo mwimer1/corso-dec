@@ -22,7 +22,8 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-import { http, withErrorHandlingEdge as withErrorHandling, withRateLimitEdge as withRateLimit } from '@/lib/api';
+import { http } from '@/lib/api';
+import { withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit } from '@/lib/middleware';
 import { validateSQLScope } from '@/lib/integrations/database/scope';
 import { createOpenAIClient } from '@/lib/integrations/openai/server';
 import { handleCors } from '@/lib/middleware';

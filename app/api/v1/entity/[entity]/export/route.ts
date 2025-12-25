@@ -1,5 +1,6 @@
 // Node.js required: ClickHouse database operations
-import { http, withErrorHandlingEdge as withErrorHandling, withRateLimitEdge as withRateLimit } from '@/lib/api';
+import { http } from '@/lib/api';
+import { withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit } from '@/lib/middleware';
 import { handleCors } from '@/lib/middleware';
 import { auth } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
