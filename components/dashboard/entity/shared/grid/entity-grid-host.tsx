@@ -175,7 +175,7 @@ export default function EntityGridHost({ config }: { config: EntityGridConfig })
           </div>
         );
       })()}
-      <div className="px-[1px] pb-[1px]">
+      <div>
         <GridMenubar
           searchCount={searchCount}
           gridId={config.id}
@@ -196,7 +196,7 @@ export default function EntityGridHost({ config }: { config: EntityGridConfig })
           setSearchQuery={setSearchQuery}
         />
       </div>
-      <div className="flex-1 min-h-0 px-[1px] pb-[1px]">
+      <div className="flex-1 min-h-0">
         <EntityGrid
           config={config}
           gridRef={gridRef as React.RefObject<AgGridReact>}
