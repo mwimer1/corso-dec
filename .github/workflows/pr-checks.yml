@@ -67,7 +67,8 @@ jobs:
       fetch_depth: 0
       install: true
       run: |
-        # Analyze current bundle size
+        # Analyze current bundle size (on PR branch)
+        PR_BRANCH=$(git rev-parse --abbrev-ref HEAD)
         pnpm bundlesize:ci > bundle-size-current.json
 
         # Get base branch bundle size
@@ -76,8 +77,11 @@ jobs:
         pnpm build
         pnpm bundlesize:ci > bundle-size-base.json || echo '{"totalGzippedSize": 0}' > bundle-size-base.json
 
-        # Generate report
-        node scripts/generate-bundle-report.mjs \
+        # Checkout back to PR branch to generate report (untracked JSON files persist across checkouts)
+        git checkout $PR_BRANCH
+
+        # Generate report (both JSON files available as untracked files)
+        pnpm -s bundlesize:report \
           --current=bundle-size-current.json \
           --base=bundle-size-base.json \
           --output=bundle-report.md

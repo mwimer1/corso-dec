@@ -345,7 +345,7 @@ Bundle size checks run automatically in CI:
 pnpm bundlesize:ci > bundle-report.json
 
 # Compare with previous build
-node scripts/generate-bundle-report.mjs
+pnpm -s bundlesize:report --current=bundle-size-current.json --base=bundle-size-base.json
 ```
 
 ### Lighthouse CI

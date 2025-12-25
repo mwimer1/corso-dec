@@ -26,5 +26,5 @@ This README is generated from a single template (`README.scripts.hbs`).
 - **ensure-api-in-v1-or-internal.ts** – Enforces API route placement &amp; runtime declarations.
 - **openapi-guard-rbac.ts** – TODO: MOVE to scripts/ci/, uses internal imports (@/config and @/lib)
 - **quality-gates-local.ts** – &#x27; });
-- **validate-cursor-rules.ts** – scripts/validate-cursor-rules.ts
+- **validate-cursor-rules.ts** – scripts/ci/validate-cursor-rules.ts
 - **validate-scripts-vs-tools.ts** – scripts/ci/validate-scripts-vs-tools.ts

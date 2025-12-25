@@ -4,13 +4,13 @@ on:
   pull_request:
     paths:
       - ".cursor/rules/**.mdc"
-      - "scripts/validate-cursor-rules.ts"
+      - "scripts/ci/validate-cursor-rules.ts"
       - "docs/**"
   push:
     branches: [ main ]
     paths:
       - ".cursor/rules/**.mdc"
-      - "scripts/validate-cursor-rules.ts"
+      - "scripts/ci/validate-cursor-rules.ts"
       - "docs/**"
 
 permissions:
