@@ -206,14 +206,25 @@ export const categorySlugify = (input: CategoryInput): string => {
 
 export type GetByCategoryParams = { slug: string; page?: number; pageSize?: number };
 
-export async function getInsightsByCategory({ slug, page = 1, pageSize = 10 }: GetByCategoryParams) {
-  // Use unified source selector instead of static imports
-  const categories = await getCategories();
+type GetInsightsByCategoryDeps = {
+  getAllInsights?: typeof getAllInsights;
+  getCategories?: typeof getCategories;
+};
+
+export async function getInsightsByCategory(
+  { slug, page = 1, pageSize = 10 }: GetByCategoryParams,
+  deps: GetInsightsByCategoryDeps = {}
+) {
+  const getCategoriesFn = deps.getCategories ?? getCategories;
+  const getAllInsightsFn = deps.getAllInsights ?? getAllInsights;
+
+  // Unified selector by default; tests can inject deps for determinism
+  const categories = await getCategoriesFn();
   const categorySlugLower = slug.toLowerCase();
   const category = categories.find(c => c.slug.toLowerCase() === categorySlugLower) ?? null;
   if (!category) return { items: [], total: 0, category: null };
 
-  const allInsights = await getAllInsights();
+  const allInsights = await getAllInsightsFn();
   const ts = (d?: string | number | Date) => (d ? new Date(d).getTime() : 0);
   const all = allInsights
     .filter(i => (i.categories || []).some(cat => cat.slug?.toLowerCase() === categorySlugLower))
