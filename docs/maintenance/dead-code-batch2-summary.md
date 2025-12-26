@@ -41,7 +41,7 @@ After thorough investigation of Batch 2 domains (`lib/shared`, `lib/validators`,
 
 #### `lib/validators/**`
 - `UserSchema` - Exported, may be used for type inference
-- `ContactSchema` - Used in `actions/marketing/contact-form.ts`
+- `ContactSchema` - Used in `app/(marketing)/contact/actions.ts` (feature-colocated Server Action)
 - `ClerkEventEnvelope`, `ClerkUserPayload` - Used in webhook handlers
 - `BaseRowSchema`, `CompanyRowSchema`, etc. - Used in entity validators and data processing (previously used in removed `lib/mocks/entity-data.server.ts`)
 - `EntityParamSchema`, `EntityListQuerySchema` - Used in `app/api/v1/entity/[entity]/route.ts`

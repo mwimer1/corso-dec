@@ -262,7 +262,6 @@ The path alias system provides consistent import resolution across all configura
   "@/app/*": ["./app/*"],
   "@/components/*": ["./components/*"],
   "@/hooks/*": ["./hooks/*"],
-  "@/actions/*": ["./actions/*"],
   "@/contexts/*": ["./contexts/*"],
   "@/tests/*": ["./tests/*"]
 }

@@ -285,7 +285,7 @@ import {
     ContactFormWrapper,
     LegalPageSection,
 } from "@/components/marketing";
-import { submitContactForm } from "@/actions";
+import { submitContactForm } from "./contact/actions";
 import type { ContactFormSubmitData } from "@/types/forms";
 import type { Metadata } from "next";
 
@@ -722,7 +722,7 @@ export default function NotFound() {
 | `InsightsList` | `components/insights/sections/insights-list.tsx` | Blog articles list (3×2 grid) |
 | `PRICING_UI` | `lib/marketing/pricing/plan-ui.ts` | Plan configuration |
 | `staticInsights` | `lib/marketing/insights/static-data.ts` | Blog data (6 mock articles) |
-| `submitContactForm` | `actions/marketing/contact-form.ts` → `app/(marketing)/contact/actions.ts` (PR5.2) | Contact server action |
+| `submitContactForm` | `app/(marketing)/contact/actions.ts` | Contact server action (feature-colocated) |
 
 ## 🧪 Development
 

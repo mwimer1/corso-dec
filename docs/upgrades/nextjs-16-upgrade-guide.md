@@ -39,7 +39,7 @@ This guide provides a comprehensive, production-ready upgrade path from Next.js 
 
 ### ⚠️ Issues Found
 1. **Async params**: `app/(marketing)/insights/categories/[category]/page.tsx` uses sync params
-2. **Async headers()**: `actions/marketing/contact-form.ts` calls `headers()` without await
+2. **Async headers()**: `app/(marketing)/contact/actions.ts` calls `headers()` with await (fixed in PR5.2)
 3. **Webpack config**: `config/next.config.mjs` has custom webpack configuration (needs Turbopack migration plan)
 4. **Experimental Clerk**: `components/billing/subscription-client.tsx` uses `@clerk/nextjs/experimental`
 5. **searchParams**: API routes use `URL.searchParams` (compatible), but no page components use `searchParams` props (good)
@@ -107,7 +107,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
 
 #### 2.2 Fix Async headers() Call
 
-**File**: `actions/marketing/contact-form.ts`
+**File**: `app/(marketing)/contact/actions.ts` (moved from `actions/marketing/contact-form.ts` in PR5.2)
 
 **Current** (line 19):
 ```typescript
@@ -386,7 +386,7 @@ export default async function Page({
 #### 6.3 Verify All headers() and cookies() Usage
 
 **Files to check**:
-- `actions/marketing/contact-form.ts` ❌ (fix in Phase 2.2)
+- `app/(marketing)/contact/actions.ts` ✅ (fixed in PR5.2 - now feature-colocated)
 - `docs/security/auth-patterns.md` (documentation only)
 
 **Search for any other usage**:

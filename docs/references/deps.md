@@ -92,7 +92,7 @@ pnpm validate:orphans
 
 **Expected output:**
 ```
-actions/index.ts
+app/(marketing)/contact/actions.ts (feature-colocated Server Action)
 app/(auth)/error.tsx
 components/dashboard/entity/shared/dynamic-grid-renderer.tsx
 # ... legitimate orphans only

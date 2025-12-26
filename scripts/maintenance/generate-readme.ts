@@ -186,27 +186,28 @@ function isInternalToPolicy(rootDir: string, candidateRelPath: string): boolean 
 
 
 const CONFIGS: DomainConfig[] = [
-    {
-        name: 'Actions',
-        baseDir: path.join(ROOT, 'actions'),
-        // Root-aware: single README and single barrel at actions/index.ts
-        getDomains: () => [''],
-        getExports: (domainPath: string) => {
-            const actionFiles = globbySync(['**/*.ts', '!index.ts', '!**/*.test.ts', '!**/schemas.ts'], { cwd: domainPath });
-            return actionFiles.map((relPath) => {
-                const noExt = relPath.replace(/\.ts$/, '');
-                if (noExt.endsWith('/index')) {
-                    return noExt.replace(/\/index$/, '');
-                }
-                return noExt;
-            });
-        },
-        buildReadmeTable: (exports: string[], _domain: string, kind: ReadmeKind = 'Action') => {
-            const rows = exports.map((a) => `| \`${a}\` |  | \`@/actions\` |`).join('\n');
-            return `| ${kind} | Purpose | Import Path |\n|--------|---------|-------------|\n${rows}`;
-        },
-        checkBarrel: true,
-    },
+    // Note: Actions directory was removed in PR5.2 - Server Actions are now feature-colocated
+    // This entry is commented out but kept for reference
+    // {
+    //     name: 'Actions',
+    //     baseDir: path.join(ROOT, 'actions'),
+    //     getDomains: () => [''],
+    //     getExports: (domainPath: string) => {
+    //         const actionFiles = globbySync(['**/*.ts', '!index.ts', '!**/*.test.ts', '!**/schemas.ts'], { cwd: domainPath });
+    //         return actionFiles.map((relPath) => {
+    //             const noExt = relPath.replace(/\.ts$/, '');
+    //             if (noExt.endsWith('/index')) {
+    //                 return noExt.replace(/\/index$/, '');
+    //             }
+    //             return noExt;
+    //         });
+    //     },
+    //     buildReadmeTable: (exports: string[], _domain: string, kind: ReadmeKind = 'Action') => {
+    //         const rows = exports.map((a) => `| \`${a}\` |  | \`@/actions\` |`).join('\n');
+    //         return `| ${kind} | Purpose | Import Path |\n|--------|---------|-------------|\n${rows}`;
+    //     },
+    //     checkBarrel: true,
+    // },
     {
         name: 'Components',
         baseDir: path.join(ROOT, 'components'),

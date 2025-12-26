@@ -1,4 +1,4 @@
-import { submitContactForm } from '@/actions/marketing/contact-form';
+import { submitContactForm } from '@/app/(marketing)/contact/actions';
 import { ApplicationError } from '@/lib/actions';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 

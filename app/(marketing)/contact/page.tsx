@@ -1,6 +1,6 @@
 // FILE: app/(marketing)/contact/page.tsx
 // Runtime: kept on nodejs due to Clerk keyless telemetry (see app/(marketing)/README.md)
-import { submitContactForm } from "@/actions";
+import { submitContactForm } from "./actions";
 import { MarketingContainer } from "@/components/marketing";
 import { ContactFormWrapper, ContactInfo, ContactLayout } from "@/components/marketing";
 import type { ContactFormSubmitData } from "@/types/forms";
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 } satisfies Metadata;
 
 export default function ContactPage() {
-  // Server action for contact form submissions
+  // Server action for contact form submissions (colocated with feature)
   const handleFormSubmit = async (data: ContactFormSubmitData): Promise<void> => {
     "use server";
     await submitContactForm(data);

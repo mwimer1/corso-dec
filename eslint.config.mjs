@@ -297,7 +297,6 @@ export default [
           'contexts/**/*.{ts,tsx}',
           'lib/**/*.{ts,tsx}',
           'hooks/**/*.{ts,tsx}',
-          'actions/**/*.{ts,tsx}',
         ],
         ignoreExports: [
           '**/index.ts',
@@ -316,6 +315,7 @@ export default [
           'app/**/providers.tsx',
           'app/**/*provider.tsx',
           'app/**/_theme.tsx',
+          'app/**/actions.ts', // Server Actions are feature-colocated and used by page components
           'components/dashboard/corso-ai-mode.tsx',
           'components/dashboard/entities/addresses/config.ts',
           'components/dashboard/entities/shared/renderers/value-formatter.ts',
@@ -341,8 +341,8 @@ export default [
           'lib/security/**/*.ts',
           // Core utilities - public API types and error handling
           'lib/core/**/*.ts',
-          // Actions - server actions used in forms and components
-          'actions/**/*.ts',
+          // Note: actions/ directory was removed in PR5.2 - Server Actions are now feature-colocated
+          // 'actions/**/*.ts', // Removed - Server Actions are feature-colocated
           // Hooks - React hooks used in components
           'hooks/**/*.ts',
           // Contexts - React context providers used in app
@@ -676,7 +676,8 @@ export default [
   // 1a ) Action domain boundaries
   //---------------------------------------------------------------------------
   {
-    files: ['actions/**'],
+    // Note: actions/ directory was removed in PR5.2 - Server Actions are now feature-colocated
+    // files: ['actions/**'], // Removed
     plugins: {
       // boundaries,  // TEMPORARY: Disabled for performance
       corso
@@ -926,7 +927,7 @@ export default [
           'zones': [
             {
               'target': './types',
-              'from': ['./lib', './app', './components', './actions', './hooks'],
+              'from': ['./lib', './app', './components', './hooks'],
               'message': 'Cannot import runtime code from lib/app/components/actions/hooks into types/ - use type imports only'
             }
           ]
@@ -988,12 +989,8 @@ export default [
   //---------------------------------------------------------------------------
   // 5 ) Overrides for specific files
   //---------------------------------------------------------------------------
-  {
-    files: ['actions/index.ts'],
-    rules: {
-      'corso/require-action-readme': 'off'
-    }
-  },
+  // Note: actions/ directory was removed in PR5.2 - Server Actions are now feature-colocated
+  // This rule configuration is kept for reference but actions/index.ts no longer exists
   // Enforce http helper usage in API routes
   {
     files: ['app/api/**/route.ts'],

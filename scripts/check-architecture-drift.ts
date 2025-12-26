@@ -22,15 +22,15 @@ interface CheckResult {
 const checks: CheckResult[] = [];
 
 // Check 1: actions/README.md doesn't contain banned phrases
-// Note: actions/ directory will be removed in PR5.2, but this check remains for now
+// Note: actions/ directory was removed in PR5.2 - Server Actions are now feature-colocated
 function checkActionsReadme(): CheckResult {
   const readmePath = join(REPO_ROOT, 'actions', 'README.md');
   if (!existsSync(readmePath)) {
-    // actions/README.md may not exist after PR5.2 - this is expected
+    // actions/README.md should not exist after PR5.2 - this is expected
     return {
       name: 'actions/README.md exists',
       passed: true,
-      message: 'actions/README.md not found (expected after PR5.2)',
+      message: 'actions/README.md not found (expected - Server Actions are feature-colocated)',
     };
   }
 
@@ -176,13 +176,15 @@ async function checkDashboardQueryReferences(): Promise<CheckResult> {
 }
 
 // Check 3: actions/index.ts exports only existing files
+// Note: actions/ directory was removed in PR5.2 - Server Actions are now feature-colocated
 function checkActionsExports(): CheckResult {
   const indexPath = join(REPO_ROOT, 'actions', 'index.ts');
   if (!existsSync(indexPath)) {
+    // actions/index.ts should not exist after PR5.2 - this is expected
     return {
       name: 'actions/index.ts exports',
-      passed: false,
-      message: 'actions/index.ts not found',
+      passed: true,
+      message: 'actions/index.ts not found (expected - Server Actions are feature-colocated)',
     };
   }
 

@@ -82,7 +82,7 @@ const handleFormSubmit = async (data: ContactFormData) => {
 };
 ```
 
-**Note:** Server Actions are colocated with the feature. The marketing contact form action will be moved from `actions/marketing/contact-form.ts` to `app/(marketing)/contact/actions.ts` in PR5.2.
+**Note:** Server Actions are colocated with the feature. The marketing contact form action is located at `app/(marketing)/contact/actions.ts`.
 
 **Key Features:**
 - Bot protection (Turnstile)

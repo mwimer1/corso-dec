@@ -19,8 +19,10 @@ import { join } from 'node:path';
 import type { CheckResult } from './check-common.js';
 
 const TOP_LEVEL_ACTIONS_DIR = 'actions';
+// Strict enforcement enabled by default after PR5.2 (actions/ directory removed)
+// Can be disabled for testing by setting CORSO_ENFORCE_NO_TOP_ACTIONS=0
 const ENFORCE_ENV_VAR = 'CORSO_ENFORCE_NO_TOP_ACTIONS';
-const ENFORCE_STRICT = process.env[ENFORCE_ENV_VAR] === '1';
+const ENFORCE_STRICT = process.env[ENFORCE_ENV_VAR] !== '0';
 
 async function checkNoTopActions(): Promise<CheckResult[]> {
   const results: CheckResult[] = [];
@@ -36,14 +38,8 @@ async function checkNoTopActions(): Promise<CheckResult[]> {
       `  Shared helpers belong in lib/actions/ (this is allowed).\n` +
       `  Remove ${TOP_LEVEL_ACTIONS_DIR}/ and colocate actions with their features.`;
 
-    if (ENFORCE_STRICT) {
-      violations.push(message);
-    } else {
-      warnings.push(
-        `${message}\n` +
-        `  (Warning mode: This will become an error after PR5.2. Set ${ENFORCE_ENV_VAR}=1 to enable strict mode.)`
-      );
-    }
+    // Strict enforcement enabled by default after PR5.2
+    violations.push(message);
   }
 
   if (violations.length > 0) {

@@ -18,7 +18,8 @@ const DOC_HINTS: Record<string, string> = {
   'lib/index.ts': '// 📚 Docs: ./docs/BESTPRACTICES.md#environment-access-patterns',
   'types/index.ts': '// 📚 Docs: ./docs/BESTPRACTICES.md#type-safety-patterns',
   'hooks/index.ts': '// 📚 Docs: ./docs/BESTPRACTICES.md#hook-composition',
-  'actions/index.ts': '// 📚 Docs: ./docs/security/security-policy.md#server-actions',
+  // Note: actions/index.ts was removed in PR5.2 - Server Actions are now feature-colocated
+  // 'actions/index.ts': '// 📚 Docs: ./docs/security/security-policy.md#server-actions',
   'styles/index.ts': '// 📚 Docs: ./docs/VARIANTS.md#design-tokens',
 };
 

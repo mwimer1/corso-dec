@@ -150,7 +150,6 @@
     "lint:types": "pnpm exec eslint \"types/**/*.{ts,tsx}\" --max-warnings=0",
     "lint:lib": "pnpm exec eslint \"lib/**/*.{ts,tsx}\" --max-warnings=0",
     "lint:hooks": "pnpm exec eslint \"hooks/**/*.{ts,tsx}\" --max-warnings=0",
-    "lint:actions": "pnpm exec eslint \"actions/**/*.{ts,tsx}\" --max-warnings=0",
     "lint:contexts": "pnpm exec eslint \"contexts/**/*.{ts,tsx}\" --max-warnings=0",
     "lint:app": "pnpm exec eslint \"app/**/*.{ts,tsx}\" --max-warnings=0",
     "lint:components": "pnpm exec eslint \"components/**/*.{ts,tsx}\" --max-warnings=0",
