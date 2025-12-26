@@ -1,0 +1,29 @@
+{
+  "id": "future-of-project-controls-ai-platforms",
+  "slug": "future-of-project-controls-ai-platforms",
+  "title": "The Future of Project Controls: From Spreadsheets to AI-Driven Platforms",
+  "description": "Project controls are moving from spreadsheets to AI-driven platforms. These new tools integrate cost and schedule data, providing predictive insights.",
+  "publishDate": "2025-12-10T09:00:00Z",
+  "imageUrl": "/demos/corso-ai-interface.png",
+  "categories": [
+    {
+      "slug": "cost-management",
+      "name": "Cost Management"
+    },
+    {
+      "slug": "technology",
+      "name": "Technology"
+    },
+    {
+      "slug": "innovation",
+      "name": "Innovation"
+    }
+  ],
+  "readingTime": 7,
+  "author": {
+    "name": "Construction Econ Lead",
+    "avatar": null
+  },
+  "content": "<p>Project controls have long relied on spreadsheets and manual processes, but AI-driven platforms are transforming how construction firms manage cost and schedule. These new tools integrate data from multiple sources, apply machine learning algorithms, and provide predictive insights that help teams stay ahead of problems.</p>\n<p>This article examines the evolution of project controls technology, the capabilities of AI-driven platforms, and how construction firms are using these tools to improve project predictability and performance.</p>"
+}
+

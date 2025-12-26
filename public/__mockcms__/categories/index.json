@@ -1,30 +1,35 @@
 [
   {
-    "slug": "general",
-    "name": "General"
-  },
-  {
     "slug": "technology",
     "name": "Technology"
-  },
-  {
-    "slug": "market-analysis",
-    "name": "Market Analysis"
   },
   {
     "slug": "sustainability",
     "name": "Sustainability"
   },
   {
-    "slug": "cost-management",
-    "name": "Cost Management"
-  },
-  {
     "slug": "safety",
     "name": "Safety"
   },
   {
+    "slug": "market-analysis",
+    "name": "Market Analysis"
+  },
+  {
+    "slug": "cost-management",
+    "name": "Cost Management"
+  },
+  {
     "slug": "data",
     "name": "Data"
+  },
+  {
+    "slug": "operations",
+    "name": "Operations"
+  },
+  {
+    "slug": "innovation",
+    "name": "Innovation"
   }
 ]
+

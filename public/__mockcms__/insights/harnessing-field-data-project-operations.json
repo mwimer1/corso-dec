@@ -1,0 +1,25 @@
+{
+  "id": "harnessing-field-data-project-operations",
+  "slug": "harnessing-field-data-project-operations",
+  "title": "Harnessing Field Data: Improving Project Operations through Real-Time Insights",
+  "description": "How real-time field data (daily logs, IoT sensors) improves project operations. Using live insights to adjust resources and boost productivity on site.",
+  "publishDate": "2025-02-10T09:00:00Z",
+  "imageUrl": "/demos/projects-interface.png",
+  "categories": [
+    {
+      "slug": "operations",
+      "name": "Operations"
+    },
+    {
+      "slug": "data",
+      "name": "Data"
+    }
+  ],
+  "readingTime": 6,
+  "author": {
+    "name": "Field Ops Analyst",
+    "avatar": null
+  },
+  "content": "<p>Modern construction sites generate vast amounts of data every day—from digital daily logs to IoT sensor readings. When harnessed effectively, this real-time field data becomes a powerful tool for improving project operations and productivity.</p>\n<p>This article examines how construction teams are using live data insights to make immediate operational adjustments, optimize resource allocation, and enhance overall project performance.</p>"
+}
+

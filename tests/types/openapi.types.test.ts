@@ -1,6 +1,7 @@
 import { describe, expectTypeOf, it } from 'vitest';
 
 // Type-only import through the barrel
+// eslint-disable-next-line corso/no-cross-domain-imports, corso/no-deep-imports
 import type { operations, paths } from '@/types/api';
 
 describe('OpenAPI types are present and shaped', () => {

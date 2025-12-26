@@ -1,0 +1,25 @@
+{
+  "id": "construction-forecasting-integrating-schedule-cost",
+  "slug": "construction-forecasting-integrating-schedule-cost",
+  "title": "Construction Forecasting: Integrating Schedule and Cost for Accurate Projections",
+  "description": "Integrating schedule and cost tracking for more accurate project forecasts. Shows how linking time & budget data spots risks early and improves predictability.",
+  "publishDate": "2025-03-16T09:00:00Z",
+  "imageUrl": "/demos/projects-interface.png",
+  "categories": [
+    {
+      "slug": "cost-management",
+      "name": "Cost Management"
+    },
+    {
+      "slug": "operations",
+      "name": "Operations"
+    }
+  ],
+  "readingTime": 6,
+  "author": {
+    "name": "Field Ops Analyst",
+    "avatar": null
+  },
+  "content": "<p>Traditional project management often treats schedule and cost as separate concerns, but they are deeply interconnected. When schedule delays occur, costs typically increase. When budgets are constrained, schedules may need adjustment. Integrating schedule and cost data provides a more holistic view of project health.</p>\n<p>This article explores how construction firms are linking time and budget tracking to create more accurate forecasts, identify risks early, and improve overall project predictability.</p>"
+}
+

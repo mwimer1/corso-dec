@@ -1,0 +1,25 @@
+{
+  "id": "breaking-down-data-silos",
+  "slug": "breaking-down-data-silos",
+  "title": "Data Silos in Construction: Breaking Down Barriers for Enterprise Insights",
+  "description": "How construction firms can break down internal data silos by integrating systems and sharing information across departments to enable enterprise-wide insights.",
+  "publishDate": "2025-08-13T09:00:00Z",
+  "imageUrl": "/demos/companies-interface.png",
+  "categories": [
+    {
+      "slug": "data",
+      "name": "Data"
+    },
+    {
+      "slug": "technology",
+      "name": "Technology"
+    }
+  ],
+  "readingTime": 6,
+  "author": {
+    "name": "Corso Research",
+    "avatar": null
+  },
+  "content": "<p>Many construction firms struggle with data silos—information trapped in separate systems, departments, or projects. These silos prevent organizations from gaining enterprise-wide insights and making data-driven decisions at scale.</p>\n<p>This article examines strategies for breaking down data silos in construction, including system integration approaches, data governance practices, and organizational changes needed to enable true enterprise-wide analytics.</p>"
+}
+

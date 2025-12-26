@@ -1,0 +1,29 @@
+{
+  "id": "human-side-construction-tech",
+  "slug": "human-side-construction-tech",
+  "title": "The Human Side of Construction Tech: Change Management for Successful Implementation",
+  "description": "Focuses on the human side of adopting construction tech: how training, leadership buy-in, and addressing resistance can ensure new tools are embraced.",
+  "publishDate": "2025-07-22T09:00:00Z",
+  "imageUrl": "/demos/companies-interface.png",
+  "categories": [
+    {
+      "slug": "technology",
+      "name": "Technology"
+    },
+    {
+      "slug": "operations",
+      "name": "Operations"
+    },
+    {
+      "slug": "innovation",
+      "name": "Innovation"
+    }
+  ],
+  "readingTime": 5,
+  "author": {
+    "name": "Corso Research",
+    "avatar": null
+  },
+  "content": "<p>Technology adoption in construction isn't just about selecting the right tools—it's about ensuring people actually use them. The most sophisticated software or hardware will fail if workers resist it or don't understand its value. Successful tech implementation requires careful attention to the human factors.</p>\n<p>This article explores change management strategies for construction technology adoption, including training approaches, leadership engagement, and techniques for overcoming resistance to ensure new tools deliver their intended benefits.</p>"
+}
+
