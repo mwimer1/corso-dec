@@ -69,3 +69,23 @@ pnpm guards:temp
 
 **Configuration:**
 - Edit `TEMP_DIRECTORIES` array to add more directories to check
+
+### check-no-top-actions.ts
+
+Prevents reintroduction of a top-level `actions/` directory. Server Actions should be feature-colocated (e.g., `app/(marketing)/contact/actions.ts`), not in a top-level directory.
+
+**Usage:**
+```bash
+pnpm guards:no-top-actions
+```
+
+**What it checks:**
+- Fails if `actions/` directory exists at repo root
+- Allows `lib/actions/` (shared helper utilities)
+- Warning mode by default (allows actions/ temporarily until PR5.2)
+- Strict mode: Set `CORSO_ENFORCE_NO_TOP_ACTIONS=1` to enable errors
+
+**Configuration:**
+- Default: Warning mode (allows actions/ to exist temporarily)
+- Set `CORSO_ENFORCE_NO_TOP_ACTIONS=1` environment variable to enable strict enforcement
+- After PR5.2, CI should set this env var to enforce the policy

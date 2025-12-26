@@ -72,26 +72,22 @@ See guardrail: `pnpm guards:placeholders` to prevent new placeholder directories
 
 The `tmp/` directory is gitignored and used for temporary build artifacts and analysis outputs. Files in `tmp/` are not tracked in git and should not be committed.
 
-### `actions/` vs `app/api/`
+### Server Actions vs API Routes
 
-**When to use `actions/`:**
-- Form submissions (e.g., contact forms)
-- Simple mutations from client components
-- Direct function calls (no HTTP overhead needed)
-- Operations that don't need streaming
+**Server Actions:**
+- **Location**: Colocated with the feature (e.g., `app/(marketing)/contact/actions.ts`)
+- **Use for**: Form submissions, simple mutations from client components
+- **Characteristics**: Direct function calls (no HTTP overhead), type-safe, automatic request/response handling
 
-**When to use `app/api/`:**
-- HTTP endpoints for external clients
-- Streaming responses (NDJSON format)
-- OpenAPI documentation required
-- Complex operations with multiple steps
-- External integrations (webhooks, third-party APIs)
+**API Routes (`app/api/`):**
+- **Use for**: HTTP endpoints for external clients, streaming responses (NDJSON), OpenAPI documentation, complex operations, external integrations
 
-**Example:** The contact form uses `actions/marketing/contact-form.ts` because it's a simple form submission. Chat processing uses `app/api/v1/ai/chat/route.ts` because it requires streaming NDJSON responses.
+**Example:** The contact form uses a Server Action (colocated with the feature) because it's a simple form submission. Chat processing uses `app/api/v1/ai/chat/route.ts` because it requires streaming NDJSON responses.
+
+**Important:** Do not create a top-level `actions/` directory. Server Actions are feature-colocated. The `lib/actions/` directory contains shared helper utilities only.
 
 For detailed guidance, see:
 - [Actions vs API Routes](docs/architecture/actions-vs-api-routes.md) - Decision guide
-- [Actions README](actions/README.md) - Server actions documentation
 - [API Routes README](app/api/README.md) - API routes documentation
 
 ## Quick Start

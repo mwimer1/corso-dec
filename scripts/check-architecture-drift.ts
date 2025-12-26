@@ -22,13 +22,15 @@ interface CheckResult {
 const checks: CheckResult[] = [];
 
 // Check 1: actions/README.md doesn't contain banned phrases
+// Note: actions/ directory will be removed in PR5.2, but this check remains for now
 function checkActionsReadme(): CheckResult {
   const readmePath = join(REPO_ROOT, 'actions', 'README.md');
   if (!existsSync(readmePath)) {
+    // actions/README.md may not exist after PR5.2 - this is expected
     return {
       name: 'actions/README.md exists',
-      passed: false,
-      message: 'actions/README.md not found',
+      passed: true,
+      message: 'actions/README.md not found (expected after PR5.2)',
     };
   }
 

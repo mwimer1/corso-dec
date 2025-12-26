@@ -10,21 +10,31 @@ status: "active"
 
 This codebase uses two patterns for server-side operations:
 
-- **Server Actions** (`'use server'`) in `/actions` - Direct function calls from components
+- **Server Actions** (`'use server'`) - Feature-colocated, direct function calls from components
 - **API Routes** (`route.ts`) in `/app/api` - HTTP endpoints with OpenAPI documentation
 
 This guide explains when to use each pattern with concrete examples from our codebase.
 
+**Important:** Server Actions are **feature-colocated** and should live with the feature (e.g., `app/(marketing)/contact/actions.ts`). Do not create or use a top-level `actions/` directory. The `lib/actions/` directory contains shared helper utilities only.
+
 ## Principles
 
-### Server Actions (`/actions`)
+### Server Actions (Feature-Colocated)
 **Purpose:** Direct function calls from React components, optimized for form submissions and simple mutations.
+
+**Location:** Server Actions are **colocated with the feature**:
+- `app/(marketing)/contact/actions.ts` - Marketing contact form action
+- `app/(protected)/dashboard/[feature]/actions.ts` - Dashboard feature actions
+- Near the component that uses them (same route segment)
 
 **Characteristics:**
 - Zero HTTP overhead (direct function calls)
 - Type-safe with TypeScript
 - Automatic request/response handling by Next.js
 - Best for: Form submissions, simple mutations, component-to-server communication
+- **Feature-local**: Actions live with the feature, not in a top-level directory
+
+**Important:** Do not create or use a top-level `actions/` directory. The `lib/actions/` directory contains shared helper utilities only (validation, error handling, etc.).
 
 ### API Routes (`/app/api`)
 **Purpose:** Standard HTTP endpoints for external clients, streaming, and complex operations.
@@ -39,8 +49,8 @@ This guide explains when to use each pattern with concrete examples from our cod
 
 | Use Case | Pattern | Example in Codebase |
 |----------|---------|-------------------|
-| Form submission | **Server Action** | `actions/marketing/contact-form.ts` |
-| Simple mutation from component | **Server Action** | (Future: user preferences) |
+| Form submission | **Server Action** | `app/(marketing)/contact/actions.ts` (after PR5.2) |
+| Simple mutation from component | **Server Action** | Feature-colocated actions |
 | Streaming responses (NDJSON) | **API Route** | `/api/v1/ai/chat` |
 | SQL generation | **API Route** | `/api/v1/ai/generate-sql` |
 | Entity queries | **API Route** | `/api/v1/entity/[entity]/query` |
@@ -52,24 +62,27 @@ This guide explains when to use each pattern with concrete examples from our cod
 
 ### ✅ Server Action: Contact Form
 
-**Location:** `actions/marketing/contact-form.ts`
+**Location:** `app/(marketing)/contact/actions.ts` (after PR5.2 migration)
 
 **Why Server Action:**
 - Simple form submission
 - Direct component call (no HTTP needed)
 - No streaming required
 - Internal use only
+- **Feature-colocated**: Lives with the contact form feature
 
 **Usage:**
 ```typescript
 // app/(marketing)/contact/page.tsx
-import { submitContactForm } from '@/actions';
+import { submitContactForm } from './actions';
 
 const handleFormSubmit = async (data: ContactFormData) => {
   'use server';
   await submitContactForm(data);
 };
 ```
+
+**Note:** Server Actions are colocated with the feature. The marketing contact form action will be moved from `actions/marketing/contact-form.ts` to `app/(marketing)/contact/actions.ts` in PR5.2.
 
 **Key Features:**
 - Bot protection (Turnstile)
@@ -159,8 +172,7 @@ const response = await fetch('/api/v1/entity/projects/query', {
 1. Create `app/api/v1/[path]/route.ts`
 2. Add OpenAPI spec entry in `api/openapi.yml`
 3. Update client code to use `fetch()` instead of direct function call
-4. Remove action from `/actions`
-5. Update `actions/index.ts` exports
+4. Remove action from feature location (e.g., `app/(marketing)/contact/actions.ts`)
 
 **Example Migration:**
 ```typescript
@@ -188,11 +200,10 @@ export async function POST(req: NextRequest) {
 - Direct component call sufficient
 
 **Steps:**
-1. Create action in `/actions/[domain]/[name].ts`
-2. Export from `actions/index.ts`
-3. Update component to call action directly
-4. Remove API route
-5. Update OpenAPI spec (remove endpoint)
+1. Create action colocated with feature (e.g., `app/(marketing)/contact/actions.ts`)
+2. Update component to import and call action directly
+3. Remove API route
+4. Update OpenAPI spec (remove endpoint)
 
 **Note:** This migration is rare. Most operations stay as API routes once created.
 
@@ -297,7 +308,7 @@ controller.enqueue(encoder.encode(JSON.stringify(chunk) + '\n'));
 
 **Server Actions:**
 - Not documented in OpenAPI (internal use only)
-- Documented in `actions/README.md` instead
+- Documented inline with the feature or in feature-specific READMEs
 
 ## Testing Requirements
 
@@ -314,10 +325,11 @@ controller.enqueue(encoder.encode(JSON.stringify(chunk) + '\n'));
 
 ## Related Documentation
 
-- [Actions README](../../actions/README.md) - Server actions guide
 - [API Routes README](../../app/api/README.md) - API routes guide
 - [OpenAPI Specification](../../api/README.md) - API specification
 - [Security Standards](../../.cursor/rules/security-standards.mdc) - Security patterns
+
+**Note:** Server Actions are feature-colocated and do not have a separate top-level directory. See feature-specific documentation for action details.
 
 ---
 

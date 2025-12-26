@@ -10,7 +10,7 @@ status: "active"
 
 This directory contains HTTP API routes for the Corso application. All public endpoints are versioned under `/api/v1/*` and documented in the OpenAPI specification.
 
-**Related:** For server actions (form submissions), see [Actions README](../../actions/README.md). For guidance on choosing between actions and API routes, see [Actions vs API Routes](../../docs/architecture/actions-vs-api-routes.md).
+**Related:** For server actions (form submissions), see [Actions vs API Routes](../../docs/architecture/actions-vs-api-routes.md). Server Actions are feature-colocated (not in a top-level directory).
 
 ## API Structure
 
@@ -267,8 +267,7 @@ For complete OpenAPI documentation, see [api/README.md](../../api/README.md).
 
 ## Related Documentation
 
-- [Actions vs API Routes](../../docs/architecture/actions-vs-api-routes.md) - Decision guide
-- [Actions README](../../actions/README.md) - Server actions guide
+- [Actions vs API Routes](../../docs/architecture/actions-vs-api-routes.md) - Decision guide (includes Server Actions)
 - [OpenAPI Specification](../../api/README.md) - Complete API specification
 - [Security Standards](../../.cursor/rules/security-standards.mdc) - Security patterns
 
