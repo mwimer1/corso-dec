@@ -90,9 +90,6 @@
       // Hooks
       "@/hooks/*": ["hooks/*"],
       "@/hooks/protected": ["hooks/index.ts"],
-      "@/hooks/dashboard/analytics": ["hooks/dashboard/analytics/index.ts"],
-      "@/hooks/dashboard/user-data": ["hooks/dashboard/user-data/index.ts"],
-      "@/hooks/shared": ["hooks/shared/index.ts"],
 
       // Contexts
       "@/contexts": ["contexts/index.ts"],

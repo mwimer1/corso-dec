@@ -22,7 +22,7 @@ import type { CheckResult } from './check-common.js';
  */
 const ALLOWED_PLACEHOLDER_DIRECTORIES = new Set<string>([
   // Parent directories that contain actual code subdirectories (not truly placeholder)
-  'hooks', // Contains hooks/shared/ with actual code (hooks/chat/ moved to components/chat/hooks/)
+  // hooks/ - All hooks moved to domain homes (components/ui/hooks/, components/chat/hooks/, etc.)
 ]);
 
 /**

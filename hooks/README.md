@@ -2,39 +2,41 @@
 
 React hooks for the Corso application.
 
-## Structure
+## Current State
 
-Active hooks are organized as follows:
+All hooks have been moved to their domain homes:
 
-- **`hooks/shared/`** - Shared React hooks used across domains
-  - `ui/use-arrow-key-navigation.ts` - Keyboard navigation utilities
-  - Note: `use-subscription-status` moved to `components/ui/hooks/use-subscription-status.ts`
+- **UI Hooks**: `components/ui/hooks/`
+  - `use-subscription-status.ts` - Subscription status hook
+  - `use-arrow-key-navigation.ts` - Keyboard navigation utilities
 
-- **`hooks/chat/`** - (Moved to `components/chat/hooks/`)
-  - Chat hooks have been relocated to `components/chat/hooks/use-chat.ts`
+- **Chat Hooks**: `components/chat/hooks/`
+  - `use-chat.ts` - Chat functionality hook
 
-## Future Organization
-
-Domain-specific hooks should be moved to their respective domain locations:
-- Dashboard hooks → `lib/dashboard/hooks/` or `components/dashboard/hooks/`
-- Integration hooks → `lib/integrations/hooks/`
-- Marketing hooks → `lib/marketing/hooks/` or `components/marketing/hooks/`
-- Security hooks → `lib/security/hooks/`
-
-This consolidation will improve discoverability and reduce directory sprawl.
+- **Domain-Specific Hooks**: Located in their respective component directories
+  - `components/landing/hooks/use-animated-number.ts`
+  - `components/insights/hooks/use-article-analytics.ts`
 
 ## Usage
 
 ```typescript
-// UI hooks (moved to components/ui/hooks/)
+// UI hooks
 import { useSubscriptionStatus } from '@/components/ui/hooks/use-subscription-status';
+import { useArrowKeyNavigation } from '@/components/ui/hooks/use-arrow-key-navigation';
 
-// Shared hooks
-import { useArrowKeyNavigation } from '@/hooks/shared/ui';
+// Chat hooks
+import { useChat } from '@/components/chat/hooks/use-chat';
 
-// Chat hooks (moved to components/chat/hooks/)
+// Via barrel exports
+import { useSubscriptionStatus, useArrowKeyNavigation } from '@/components/ui/shared';
 import { useChat } from '@/components/chat';
 ```
+
+## Organization Principles
+
+- **Domain-colocated**: Hooks live with the components that use them
+- **Shared UI hooks**: Common UI hooks in `components/ui/hooks/`
+- **No top-level hooks/**: All hooks have been moved to their domain homes
 
 ## Related Documentation
 
@@ -43,4 +45,4 @@ import { useChat } from '@/components/chat';
 
 ---
 
-_Last updated: 2025-01-03_
+_Last updated: 2025-01-29_
