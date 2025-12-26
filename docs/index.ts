@@ -21,10 +21,6 @@ export const docs = [
     "title": ".vscode"
   },
   {
-    "path": "actions/readme.md",
-    "title": "Actions"
-  },
-  {
     "path": "api/readme.md",
     "title": "API — OpenAPI Specs & Tooling"
   },

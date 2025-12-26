@@ -10,8 +10,8 @@
  *   pnpm guards:no-top-actions
  *
  * Environment variable:
- *   CORSO_ENFORCE_NO_TOP_ACTIONS=1 - Enable strict enforcement (errors instead of warnings)
- *   Default: Warning mode (allows actions/ to exist temporarily until PR5.2)
+ *   CORSO_ENFORCE_NO_TOP_ACTIONS=0 - Disable strict enforcement (for testing only)
+ *   Default: Strict enforcement (fails CI/build if top-level actions/ exists)
  */
 
 import { existsSync } from 'node:fs';
