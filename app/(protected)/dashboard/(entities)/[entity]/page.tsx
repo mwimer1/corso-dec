@@ -40,7 +40,7 @@ export default async function EntityPage({ params }: { params: Promise<{ entity:
 
   const { entity } = parsed.data;
 
-  // Chat entity is handled in (no-topbar) route group
+  // Chat entity is handled separately at /dashboard/chat
   if (isChatEntity(entity)) {
     return notFound();
   }
@@ -53,3 +53,4 @@ export default async function EntityPage({ params }: { params: Promise<{ entity:
 
   return notFound();
 }
+

@@ -69,10 +69,9 @@ api/
 ## API Endpoints
 
 ### Core Infrastructure
-- `GET /api/status/health` — Public health check endpoint (monitoring)
-- `GET /health` — Simple heartbeat endpoint (uptime monitors)
-- `HEAD /health` — Lightweight health check (HEAD request)
-- `POST /api/public/csp-report` — CSP violation reporting (Edge-safe)
+- `GET /api/health` — Public health check endpoint (monitoring)
+- `GET /api/health/clickhouse` — ClickHouse connectivity health check
+- `POST /api/v1/csp-report` — CSP violation reporting (Edge-safe)
 
 ### AI Services (`/api/v1/ai/*`)
 - `POST /api/v1/ai/chat` — AI chat processing with NDJSON streaming

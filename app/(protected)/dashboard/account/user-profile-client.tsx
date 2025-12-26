@@ -1,11 +1,5 @@
-// Moved account page into dashboard so sidebar remains visible
-"use client";
+'use client';
 
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-
-import { AuthCard } from "@/components";
 import nextDynamic from "next/dynamic";
 
 const UserProfile = nextDynamic(
@@ -26,19 +20,18 @@ const UserProfile = nextDynamic(
   }
 );
 
-export default function DashboardAccountPage() {
+export function UserProfileClient() {
   return (
-    <AuthCard>
-      <UserProfile
-        routing="path"
-        path="/dashboard/account"
-        appearance={{
-          elements: {
-            card: "p-lg shadow-panel rounded-lg",
-            rootBox: "w-full max-w-2xl",
-          },
-        }}
-      />
-    </AuthCard>
+    <UserProfile
+      routing="path"
+      path="/dashboard/account"
+      appearance={{
+        elements: {
+          card: "p-lg shadow-panel rounded-lg",
+          rootBox: "w-full max-w-2xl",
+        },
+      }}
+    />
   );
 }
+

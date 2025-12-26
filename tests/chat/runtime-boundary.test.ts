@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 // Use static analysis to check exports without importing the module
 // This avoids evaluating React components and their dependencies
 const ROOT = process.cwd();
-const pagePath = join(ROOT, 'app/(protected)/dashboard/(with-topbar)/(entities)/[entity]/page.tsx');
+const pagePath = join(ROOT, 'app/(protected)/dashboard/(entities)/[entity]/page.tsx');
 
 describe('chat route runtime boundary', () => {
   it('exports Node runtime and disables caching', () => {

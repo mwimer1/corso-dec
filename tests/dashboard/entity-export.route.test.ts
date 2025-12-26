@@ -25,7 +25,7 @@ describe('Entity Export Route', () => {
   });
 
   describe('GET /api/v1/entity/{entity}/export', () => {
-    it('should return 501 Not Implemented (export functionality removed)', async () => {
+    it('should return 410 Gone with deprecation headers (export functionality removed)', async () => {
       const mod = await import('@/app/api/v1/entity/[entity]/export/route');
       const handler = mod.GET;
 
@@ -35,12 +35,17 @@ describe('Entity Export Route', () => {
       });
 
       const res = await handler(req as any, { params: { entity: 'projects' } });
-      expect(res.status).toBe(501);
+      expect(res.status).toBe(410);
 
       const body = await res.json();
       expect(body.success).toBe(false);
-      expect(body.error.code).toBe('NOT_IMPLEMENTED');
-      expect(body.error.message).toContain('Export functionality was removed during the entity grid migration');
+      expect(body.error.code).toBe('EXPORT_REMOVED');
+      expect(body.error.message).toContain('Gone - Export feature no longer available');
+
+      // Check deprecation headers
+      expect(res.headers.get('Deprecation')).toBe('true');
+      expect(res.headers.get('Sunset')).toBeTruthy();
+      expect(res.headers.get('Link')).toContain('/api/v1/entity/{entity}/query');
     });
 
     it('should return 401 for unauthenticated user', async () => {

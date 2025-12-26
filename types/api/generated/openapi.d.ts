@@ -61,7 +61,7 @@ export interface paths {
         };
         /**
          * Search insights content
-         * @description Public search endpoint for insights and articles
+         * @description Public search endpoint for insights and articles with pagination support
          */
         get: operations["insights_search"];
         put?: never;
@@ -181,6 +181,7 @@ export interface paths {
         };
         /**
          * Export entity data
+         * @deprecated
          * @description Export entity data in CSV or XLSX format
          */
         get: operations["entity_export"];
@@ -666,11 +667,15 @@ export interface operations {
     };
     insights_search: {
         parameters: {
-            query?: {
+            query: {
                 /** @description Search query string */
-                q?: string;
+                q: string;
                 /** @description Filter by category slug */
                 category?: string;
+                /** @description Maximum number of results to return */
+                limit?: number;
+                /** @description Number of results to skip (for pagination) */
+                offset?: number;
             };
             header?: never;
             path?: never;
@@ -696,7 +701,8 @@ export interface operations {
                      *               "name": "Market Analysis",
                      *               "slug": "market-analysis"
                      *             }
-                     *           ]
+                     *           ],
+                     *           "url": "/insights/market-trends-2024"
                      *         }
                      *       ]
                      *     }
@@ -715,6 +721,11 @@ export interface operations {
                                 /** @example market-analysis */
                                 slug?: string;
                             }[];
+                            /**
+                             * @description Relative URL path to the insight article
+                             * @example /insights/market-trends-2024
+                             */
+                            url?: string;
                         }[];
                     };
                 };
@@ -1015,6 +1026,18 @@ export interface operations {
             400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
+            /** @description Gone - Export feature no longer available */
+            410: {
+                headers: {
+                    Deprecation?: string;
+                    Sunset?: string;
+                    Link?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
             429: components["responses"]["RateLimited"];
             500: components["responses"]["InternalError"];
         };

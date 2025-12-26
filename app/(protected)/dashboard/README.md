@@ -11,52 +11,37 @@ The dashboard provides authenticated users with entity management (projects, com
 
 ```
 app/(protected)/dashboard/
-├── layout.tsx                 # Root layout: auth only (no shell)
+├── layout.tsx                 # Root layout: auth + DashboardLayout wrapper
 ├── page.tsx                   # Index route: redirects to /dashboard/chat
 ├── error.tsx                  # Error boundary
-├── (no-topbar)/               # Route group: chat and full-height pages
-│   ├── layout.tsx             # Dashboard shell + sidebar (no top bar)
-│   └── chat/
-│       └── page.tsx           # CorsoAI chat (default dashboard landing)
-└── (with-topbar)/             # Route group: entity and settings pages
-    ├── layout.tsx             # Dashboard shell + sidebar (no top bar)
-    ├── (entities)/
-    │   └── [entity]/
-    │       └── page.tsx       # Dynamic entity pages (addresses/companies/projects)
-    ├── account/
-    │   └── page.tsx           # Clerk UserProfile integration
-    └── subscription/
-        └── page.tsx           # Personal billing & subscription management
+├── chat/
+│   └── page.tsx               # CorsoAI chat (default dashboard landing)
+├── (entities)/
+│   └── [entity]/
+│       └── page.tsx           # Dynamic entity pages (addresses/companies/projects)
+├── account/
+│   ├── layout.tsx             # Account metadata layout
+│   └── page.tsx               # Clerk UserProfile integration
+└── subscription/
+    ├── layout.tsx             # Subscription metadata layout
+    └── page.tsx               # Personal billing & subscription management
 ```
 
 ## Key Routes
 
-| Path | Purpose | Implementation | Layout Group |
-|------|---------|----------------|--------------|
-| `/dashboard` | Redirects to `/dashboard/chat` (default dashboard landing) | `page.tsx` (redirect) | N/A (redirect only) |
-| `/dashboard/chat` | CorsoAI chat assistant (default dashboard landing) | `(no-topbar)/chat/page.tsx` | `(no-topbar)` |
-| `/dashboard/addresses` | Address/property management | `(with-topbar)/(entities)/[entity]/page.tsx` | `(with-topbar)` |
-| `/dashboard/companies` | Company/contractor management | `(with-topbar)/(entities)/[entity]/page.tsx` | `(with-topbar)` |
-| `/dashboard/projects` | Project/permit management | `(with-topbar)/(entities)/[entity]/page.tsx` | `(with-topbar)` |
-| `/dashboard/account` | User profile management via Clerk | `(with-topbar)/account/page.tsx` | `(with-topbar)` |
-| `/dashboard/subscription` | Personal billing & subscription management | `(with-topbar)/subscription/page.tsx` | `(with-topbar)` |
+| Path | Purpose | Implementation |
+|------|---------|----------------|
+| `/dashboard` | Redirects to `/dashboard/chat` (default dashboard landing) | `page.tsx` (redirect) |
+| `/dashboard/chat` | CorsoAI chat assistant (default dashboard landing) | `chat/page.tsx` |
+| `/dashboard/addresses` | Address/property management | `(entities)/[entity]/page.tsx` |
+| `/dashboard/companies` | Company/contractor management | `(entities)/[entity]/page.tsx` |
+| `/dashboard/projects` | Project/permit management | `(entities)/[entity]/page.tsx` |
+| `/dashboard/account` | User profile management via Clerk | `account/page.tsx` |
+| `/dashboard/subscription` | Personal billing & subscription management | `subscription/page.tsx` |
 
 ## Route Groups
 
-### `(no-topbar)/` Route Group
-- **Purpose:** Organizes chat and other full-height pages
-- **Layout:** Renders `DashboardLayout` (no top bar - removed globally)
-- **Routes:** Chat (default dashboard landing)
-- **Use Case:** Full-height content like chat interfaces
-
-### `(with-topbar)/` Route Group
-- **Purpose:** Organizes entity pages and settings pages
-- **Layout:** Renders `DashboardLayout` (no top bar - removed globally)
-- **Routes:** Entity pages (projects, companies, addresses), account, subscription
-- **Use Case:** Pages with toolbars, tables, or settings that render their own headings if needed
-- **Note:** The route group name is kept for organizational purposes but no longer controls top bar rendering
-
-### `(entities)/` Route Group (nested under `(with-topbar)`)
+### `(entities)/` Route Group
 - **Purpose:** Organizes entity management using dynamic routing
 - **Dynamic Route:** `[entity]` parameter supports `addresses`, `companies`, `projects`
 - **Dynamic Rendering:** Pages are rendered dynamically (`dynamic = 'force-dynamic'`) with no static generation
@@ -72,38 +57,18 @@ app/(protected)/dashboard/
 ## Layouts
 
 ### Root Layout (`layout.tsx`)
-Handles authentication only. Route groups provide their own layout wrappers.
+Handles authentication and wraps all dashboard pages with `DashboardLayout`. All dashboard routes share the same layout wrapper.
 
 ```tsx
-// layout.tsx - Root layout with authentication only
+// layout.tsx - Root layout with authentication and DashboardLayout wrapper
 export default async function Layout({ children }) {
   const { userId } = await auth();
   if (!userId) redirect('/sign-in');
-  return <>{children}</>;
-}
-```
-
-### No Top Bar Layout (`(no-topbar)/layout.tsx`)
-Renders the dashboard shell (sidebar + main content). Used for chat and other full-height pages.
-
-```tsx
-// (no-topbar)/layout.tsx
-export default function NoTopBarLayout({ children }) {
   return <DashboardLayout>{children}</DashboardLayout>;
 }
 ```
 
-### With Top Bar Layout (`(with-topbar)/layout.tsx`)
-Renders the dashboard shell (sidebar + main content). Used for entity pages and settings.
-
-```tsx
-// (with-topbar)/layout.tsx
-export default function WithTopBarLayout({ children }) {
-  return <DashboardLayout>{children}</DashboardLayout>;
-}
-```
-
-**Note:** The top bar has been removed globally from all dashboard routes to maximize vertical space. Both route groups now render the same layout.
+**Note:** The top bar has been removed globally from all dashboard routes to maximize vertical space. All routes (chat, entities, account, subscription) share the same layout without a top bar.
 
 ## Implementation
 
@@ -122,17 +87,13 @@ export async function generateMetadata({ params }: { params: Promise<{ entity: s
   const parsed = EntityParamSchema.safeParse(await params);
   if (!parsed.success) notFound();
   const entity = parsed.data.entity;
-  const config = {
-    addresses: { title: 'Addresses' },
-    companies: { title: 'Companies' },
-    projects: { title: 'Projects' },
-  }[entity]!;
-  return { title: `${config.title} | Dashboard | Corso`, description: `View and manage all ${entity}.` };
+  const title = entity.charAt(0).toUpperCase() + entity.slice(1);
+  return { title: `${title} | Dashboard | Corso`, description: `View and manage all ${entity} in your dashboard.` };
 }
 
 export default async function EntityPage({ params }: { params: Promise<{ entity: string }> }) {
   const parsed = EntityParamSchema.safeParse(await params);
-  if (!parsed.success) notFound();
+  if (!parsed.success) return notFound();
   const config = getEntityConfig(parsed.data.entity as 'projects'|'addresses'|'companies');
   return <EntityGridHost config={config} />;
 }
