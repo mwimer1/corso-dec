@@ -4,7 +4,7 @@ import * as React from 'react';
 export * from './ui/use-arrow-key-navigation';
 
 // --- cross-cutting root hook(s) ---
-export * from './use-subscription-status';
+// use-subscription-status moved to components/ui/hooks/use-subscription-status.ts
 
 // --- lightweight shared types used by data hooks ---
 export type QueryOpts<_TArgs = Record<string, unknown>, TData = unknown> = {

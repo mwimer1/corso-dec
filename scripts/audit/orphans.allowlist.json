@@ -37,7 +37,7 @@
     "components/dashboard/entity/shared/renderers/value-formatter.ts": "Used indirectly by AG Grid column definitions",
     "config/domain-map.ts": "Architecture config consumed by dependency-cruiser (not imported via TS)",
     "types/config/security/types.ts": "Type augmentation/module declaration (referenced via tsconfig path mapping)",
-    "hooks/shared/index.ts": "Barrel for shared hooks (useSubscriptionStatus, useArrowKeyNavigation) - used in components",
+    "hooks/shared/index.ts": "Barrel for shared hooks (useArrowKeyNavigation, createWarehouseQueryHook, useStreamingFetch) - used in components",
     "lib/auth/authorization/roles.ts": "assertRole function used in tests and test setup",
     "lib/auth/server.ts": "requireUserId function used in tests (deprecated but still referenced)",
     "lib/integrations/clickhouse/security.ts": "mapClickhouseError used via require() in query-utils.ts",

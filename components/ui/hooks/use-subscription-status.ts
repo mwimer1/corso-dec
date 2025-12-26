@@ -1,4 +1,4 @@
-// hooks/shared/use-subscription-status.ts
+// components/ui/hooks/use-subscription-status.ts
 "use client";
 
 import { useUser } from "@clerk/nextjs";

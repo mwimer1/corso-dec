@@ -12,6 +12,7 @@ From `components/chat/index.ts`:
 
 - **Main Components**: `ChatPage`, `ChatWindow`
 - **Widgets**: `ChatTable`, `ChatWelcome`, `FollowUpChips`
+- **Hooks**: `useChat` - Chat state management hook
 
 ## Usage in App Routes
 
@@ -28,8 +29,17 @@ Chat components are used in:
 - **CVA Variants**: Component variants in `styles/ui/**`
 - **Design Tokens**: Uses CSS custom properties from design system
 
+## Hooks
+
+- **`useChat`**: Located in `components/chat/hooks/use-chat.ts`
+  - Manages chat state (messages, processing status, errors)
+  - Handles message sending with streaming support
+  - Provides chat history persistence
+  - Used by `ChatWindow` and other chat components
+
 ## Server/Client Notes
 
 - **Client components**: All chat components require client-side interactivity (`"use client"` directive)
 - **Real-time updates**: Components handle real-time message updates and user interactions
+- **Hooks**: Chat hooks are client-only and use React state management
 

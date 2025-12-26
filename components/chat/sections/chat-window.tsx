@@ -1,6 +1,6 @@
 "use client";
 
-import { useChat } from '@/hooks/chat/use-chat';
+import { useChat } from '../hooks/use-chat';
 import { useUser } from '@clerk/nextjs';
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';

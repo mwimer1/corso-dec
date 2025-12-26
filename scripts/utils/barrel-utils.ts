@@ -490,7 +490,7 @@ export function getImportantDirectories(): string[] {
 export function shouldExcludeFromBarrelRequirements(dirPath: string): boolean {
   const normalized = dirPath.replace(/\\/g, '/');
   // Skip consolidated hook directories that no longer need index files
-  return normalized.includes('/hooks/billing/') || normalized.includes('/hooks/chat/') || normalized.includes('/hooks/dashboard/');
+  return normalized.includes('/hooks/billing/');
 }
 
 /* -------------------------------------------------------------------------- */
@@ -785,7 +785,7 @@ export function hasPlaceholderExportsSync(content: string): boolean {
  * Check if barrel should be excluded from requirements (sync version)
  */
 export function shouldExcludeFromBarrelRequirementsSync(indexPath: string): boolean {
-  // heuristic: consolidated root barrels (e.g., hooks/shared, hooks/dashboard) may be intentionally empty
+  // heuristic: consolidated root barrels (e.g., hooks/shared) may be intentionally empty
   const norm = normalizePath(indexPath);
   return /hooks\/shared\/index\.ts$/.test(norm) ||
          /hooks\/dashboard\/index\.ts$/.test(norm) ||

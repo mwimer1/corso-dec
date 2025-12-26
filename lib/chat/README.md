@@ -1,15 +1,25 @@
+# Chat Logic
+
+Non-UI chat logic and utilities.
+
+## Purpose
+
+Contains server-side and client-safe chat processing logic, separate from UI components and hooks.
+
+## Structure
+
+- **`client/`** - Client-side chat processing (streaming, message handling)
+- **`query/`** - Query intent detection
+- **`rag-context/`** - RAG context and history management
+- **`types/`** - Chat type definitions
+
+## Related
+
+- **UI Components**: `components/chat/` - Chat UI components
+- **Chat Hooks**: `components/chat/hooks/use-chat.ts` - Chat state management hook
+- **API Routes**: `app/api/v1/ai/chat/` - Chat API endpoint
+
 ---
-title: "lib/chat"
-last_updated: "2025-12-25"
-category: "automation"
----
 
-# Repository Scripts & Docs
-
-This README is generated from a single template (`README.scripts.hbs`).
-
-- Directory: `lib/chat`
-- Last updated: `2025-12-25`
-
-> Edit the template or the generator context to change all READMEs consistently.
+_Last updated: 2025-01-03_
 

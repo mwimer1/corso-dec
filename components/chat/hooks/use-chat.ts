@@ -1,5 +1,5 @@
 'use client';
-// hooks/chat/use-chat.ts
+// components/chat/hooks/use-chat.ts
 /**
  * Robust chat state hook – works with **either**
  * • a streaming async-iterable **or**

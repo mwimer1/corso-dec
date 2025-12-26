@@ -57,6 +57,26 @@ import { SectionHeader } from '@/components/ui/patterns';
 - **Molecules**: Mix of server and client components
 - **Organisms**: Complex components, often client-only (Navbar, Footer)
 
+## Hooks
+
+UI-specific React hooks are located in `components/ui/hooks/`:
+
+- **`use-subscription-status.ts`** - Subscription status management hook
+  - Uses Clerk's `useUser` hook
+  - Manages subscription plan label and loading state
+  - Available via `@/components/ui/shared` barrel
+
+## Directory Guidelines
+
+- **`components/ui/*`** - UI components, utilities, and UI hooks
+  - UI-specific React hooks belong in `components/ui/hooks/`
+  - Shared UI utilities in `components/ui/shared/`
+- **`lib/shared/*`** - Non-UI shared utilities (validation, config, types)
+  - No React hooks or UI-specific code
+  - Client-safe utilities that don't depend on React
+
+**Avoid creating new top-level "shared" roots** - use `components/ui/shared/` for UI utilities or `lib/shared/` for non-UI utilities.
+
 ## Related
 
 - [Atoms](./atoms/README.md) - Basic building blocks

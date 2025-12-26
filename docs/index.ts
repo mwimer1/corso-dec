@@ -249,28 +249,8 @@ export const docs = [
     "title": "Eslint Plugin Corso"
   },
   {
-    "path": "hooks/chat/readme.md",
-    "title": "hooks/chat"
-  },
-  {
-    "path": "hooks/dashboard/readme.md",
-    "title": "hooks/dashboard"
-  },
-  {
-    "path": "hooks/integrations/readme.md",
-    "title": "hooks/integrations"
-  },
-  {
-    "path": "hooks/marketing/readme.md",
-    "title": "hooks/marketing"
-  },
-  {
     "path": "hooks/readme.md",
     "title": "hooks"
-  },
-  {
-    "path": "hooks/security/readme.md",
-    "title": "hooks/security"
   },
   {
     "path": "lib/actions/readme.md",

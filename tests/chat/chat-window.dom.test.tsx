@@ -1,5 +1,5 @@
 import { ChatWindow } from '@/components/chat';
-import * as useChatModule from '@/hooks/chat/use-chat';
+import * as useChatModule from '@/components/chat/hooks/use-chat';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 

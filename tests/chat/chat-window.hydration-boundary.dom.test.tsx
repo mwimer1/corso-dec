@@ -1,7 +1,7 @@
 import ChatWindow from '@/components/chat/sections/chat-window';
 import { render, screen, waitFor } from '@testing-library/react';
 
-import * as useChatModule from '@/hooks/chat/use-chat';
+import * as useChatModule from '@/components/chat/hooks/use-chat';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('ChatWindow hydration boundary', () => {

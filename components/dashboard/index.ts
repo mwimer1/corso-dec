@@ -35,7 +35,7 @@ export * from './header/dashboard-header';
 // barrel under components/dashboard/entity/client.ts
 
 // ===== UTILITY COMPONENTS =====
-// Chat primitives are provided by `@/components/chat` and `@/hooks/chat`.
+// Chat primitives are provided by `@/components/chat` (includes `useChat` hook).
 
 // ===== SERVER-ONLY COMPONENTS =====
 // Server-only dashboard components and pages are NOT exported here to avoid

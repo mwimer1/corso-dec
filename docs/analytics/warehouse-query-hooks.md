@@ -700,7 +700,7 @@ const { data, isLoading, error } = useWarehouseQuery(
 ## Related Documentation
 
 - [Shared Hooks](../../hooks/shared/README.md) - Hook implementation details
-- [Dashboard Hooks](../../hooks/dashboard/README.md) - Domain-specific usage
+- [Hooks Overview](../../hooks/README.md) - Hook organization and patterns
 - [ClickHouse Performance Guide](./clickhouse-recommendations.md) - Database optimization
 - [Security Standards](../security/README.md) - Security implementation
 

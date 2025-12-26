@@ -1,7 +1,7 @@
 "use client";
 
 // Feature flags removed - using default behavior
-import { useSubscriptionStatus } from "@/hooks/shared/use-subscription-status";
+import { useSubscriptionStatus } from "@/components/ui/hooks/use-subscription-status";
 import {
     getAvailableNavItems,
     isNavItemActive,

@@ -28,7 +28,7 @@ After thorough investigation of Batch 2 domains (`lib/shared`, `lib/validators`,
 #### `lib/shared/**`
 - `LRUCache` - Used in `lib/shared/errors/reporting.ts`
 - `simpleCacheManager` - Used in `lib/shared/feature-flags/core.ts` and `lib/server/feature-flags/feature-flags.ts`
-- `reportBrowserError` - Used in `hooks/security/security-hooks.ts`
+- `reportBrowserError` - Used in error reporting (hooks/security/ was removed as placeholder)
 - `IValidationError` - Used internally in `lib/shared/errors/validation-error.ts`
 - `SecurityValidationError` - Used in `lib/shared/errors/error-utils.ts`
 - `getFeatureFlags` - Used internally in feature flags core
