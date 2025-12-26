@@ -14,7 +14,8 @@ function verifyTailwindConfigStructure(src: string): boolean {
 }
 
 describe('Breakpoint triangulation across sources', () => {
-  const tailwindPath = join(process.cwd(), 'styles', 'tailwind.config.ts');
+  // Check root tailwind.config.ts (the actual config, not the styles/ re-export)
+  const tailwindPath = join(process.cwd(), 'tailwind.config.ts');
   const tailwindSrc = readFileSync(tailwindPath, 'utf8');
 
   const tailwindUsesBreakpoint = verifyTailwindConfigStructure(tailwindSrc);
