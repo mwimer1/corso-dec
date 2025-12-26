@@ -50,7 +50,7 @@ API route tests validate Next.js API handlers for correct behavior, error handli
 | `/api/v1/entity/{entity}/query` | `v1/entity-query-*.test.ts` | ✅ | Entity queries, pagination, filtering |
 | `/api/v1/entity/{entity}` | `v1/entity-*.test.ts` | ✅ | Entity base operations |
 | `/api/v1/subscription/status` | `v1/subscription-status.test.ts` | ✅ | Route module loading, response type |
-| `/api/insights/search` | `insights-search.test.ts` | ✅ | Search functionality, response format |
+| `/api/v1/insights/search` | `insights-search.test.ts` | ✅ | Search functionality, response format |
 | `/api/public/csp-report` | `public/csp-report.test.ts` | ✅ | Content Security Policy validation |
 
 ## Testing Patterns

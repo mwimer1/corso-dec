@@ -1,14 +1,15 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Account | Dashboard | Corso',
-  description: 'Manage your account settings and profile',
+  title: 'Subscription | Dashboard | Corso',
+  description: 'Manage your subscription and billing',
 };
 
-export default function AccountLayout({
+export default function SubscriptionLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return <>{children}</>;
 }
+
