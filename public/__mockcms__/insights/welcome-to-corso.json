@@ -1,0 +1,18 @@
+{
+  "id": "welcome",
+  "slug": "welcome-to-corso",
+  "title": "Welcome to Corso Insights",
+  "description": "An introduction to Corso's comprehensive insights platform, designed to provide actionable intelligence for construction professionals and industry stakeholders.",
+  "publishDate": "2025-01-01T09:00:00Z",
+  "imageUrl": "/demos/projects-interface.png",
+  "categories": [
+    {
+      "slug": "general",
+      "name": "General"
+    }
+  ],
+  "content": "\n      <p>We're excited to launch Corso Insights, a dedicated platform for construction industry professionals seeking data-driven insights and market intelligence.</p>\n\n      <h2>What is Corso?</h2>\n      <p>Corso is a comprehensive construction management platform that combines project management, financial tracking, and business intelligence into a single, unified solution. Our mission is to empower construction companies with the tools and insights they need to build more efficiently and profitably.</p>\n\n      <h2>Why Insights Matter</h2>\n      <p>In today's competitive construction landscape, data-driven decision making is no longer optional—it's essential. Corso Insights provides:</p>\n      <ul>\n        <li><strong>Market Analysis:</strong> Real-time trends and forecasts for construction materials, labor costs, and regional markets</li>\n        <li><strong>Project Intelligence:</strong> Performance metrics and benchmarking data from thousands of completed projects</li>\n        <li><strong>Industry Reports:</strong> In-depth analysis of construction technology, sustainability practices, and regulatory changes</li>\n        <li><strong>Best Practices:</strong> Proven strategies for cost optimization, risk management, and operational efficiency</li>\n      </ul>\n\n      <h2>Our Commitment</h2>\n      <p>Corso Insights is committed to delivering accurate, actionable intelligence that helps construction professionals make informed decisions. Our team of industry experts and data analysts work continuously to ensure our content reflects the latest market conditions and emerging trends.</p>\n\n      <p>Stay tuned for regular updates, deep-dive analyses, and practical guides that will help you navigate the evolving construction industry landscape.</p>\n    ",
+  "author": {
+    "name": "Corso Team"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "id": "trends",
+  "slug": "industry-trends",
+  "title": "Top Industry Trends",
+  "description": "Key construction tech trends to watch.",
+  "publishDate": "2025-02-15T10:00:00Z",
+  "imageUrl": "/demos/projects-interface.png",
+  "categories": [
+    {
+      "slug": "technology",
+      "name": "Technology"
+    }
+  ],
+  "content": "<p>Here are the latest trends...</p>",
+  "author": {
+    "name": "Corso Research"
+  }
+}

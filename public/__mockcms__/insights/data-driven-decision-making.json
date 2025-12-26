@@ -1,0 +1,18 @@
+{
+  "id": "data-insights-1",
+  "slug": "data-driven-decision-making",
+  "title": "Data-Driven Decision Making in Construction",
+  "description": "How construction companies are leveraging data analytics for better project outcomes.",
+  "publishDate": "2025-03-01T10:00:00Z",
+  "imageUrl": "/demos/projects-interface.png",
+  "categories": [
+    {
+      "slug": "data",
+      "name": "Data"
+    }
+  ],
+  "content": "<p>Construction companies are increasingly using data analytics to improve project outcomes and operational efficiency...</p>",
+  "author": {
+    "name": "Data Analytics Team"
+  }
+}

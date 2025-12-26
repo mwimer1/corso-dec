@@ -18,6 +18,41 @@ status: "draft"
 - **Deprecation Note**: Use `CORSO_USE_MOCK_DB` for all new code. Legacy flags are maintained only for existing configurations.
 - Edge-safety: API routes run on Edge and fetch mock JSON from `/__mockdb__/...`, avoiding any Node `fs` usage.
 
+## CORSO_USE_MOCK_CMS
+
+- Type: "true" | "false" | undefined
+- Purpose: When set to "true" in development, marketing content (insights, articles) is read from static JSON fixtures under `public/__mockcms__/` instead of markdown files or a real CMS.
+- Source of truth: The JSON fixtures in `public/__mockcms__/` are checked into the repo (generated via `pnpm port:mockcms:insights`).
+- Default behavior:
+  - **Dev/test**: Defaults to `true` (enabled) unless explicitly set to `false`
+  - **Production**: Defaults to `false` (disabled) unless explicitly set to `true`
+- Build-safety: Uses filesystem reads (Node.js runtime), avoiding self-HTTP fetch during build.
+- Content source precedence:
+  1. If `CORSO_USE_MOCK_CMS=true` → use mock CMS fixtures
+  2. Else if `CORSO_CMS_PROVIDER=directus` → use Directus adapter
+  3. Else → use legacy adapter (markdown/static fallback)
+
+## CORSO_CMS_PROVIDER
+
+- Type: "legacy" | "directus" | undefined
+- Purpose: Selects the CMS provider when not using mock CMS mode.
+- Default: "legacy" (markdown/static content)
+- Options:
+  - `"legacy"`: Uses existing markdown files from `content/insights/articles/` or static fallback
+  - `"directus"`: Uses Directus CMS (requires `DIRECTUS_URL` and `DIRECTUS_TOKEN`)
+
+## DIRECTUS_URL
+
+- Type: URL string
+- Purpose: Directus CMS instance URL (only used when `CORSO_CMS_PROVIDER=directus`).
+- Example: `https://cms.example.com`
+
+## DIRECTUS_TOKEN
+
+- Type: string
+- Purpose: Directus authentication token (only used when `CORSO_CMS_PROVIDER=directus`).
+- Security: Server-only variable, never exposed to client.
+
 ## NEXT_PUBLIC_USE_MOCK_AI
 
 - Type: "true" | "1" | undefined
@@ -92,15 +127,16 @@ import { getEnv } from '@/lib/server/env';  // Will fail - Edge runtime cannot a
 
 #### Environment Access Layering
 
-**Server Environment (`getEnv()`)**:
-- Contains all server-side environment variables including `CORSO_USE_MOCK_DB`
+**Server Environment (`getEnv()`)**: 
+- Contains all server-side environment variables including `CORSO_USE_MOCK_DB`, `CORSO_USE_MOCK_CMS`, `CORSO_CMS_PROVIDER`, `DIRECTUS_URL`, `DIRECTUS_TOKEN`
 - Available only in Node.js runtime (server components, API routes, server actions)
 - Includes sensitive configuration like database URLs, API keys, secrets
 - **Not available in Edge runtime or client-side code**
 
-**Edge Environment (`getEnvEdge()`)**:
+**Edge Environment (`getEnvEdge()`)**: 
 - Subset of environment variables safe for Edge runtime
-- Excludes server-only variables like `CORSO_USE_MOCK_DB`
+- Excludes server-only variables like `CORSO_USE_MOCK_DB`, `CORSO_USE_MOCK_CMS`, `DIRECTUS_URL`, `DIRECTUS_TOKEN`
+- Includes `CORSO_USE_MOCK_CMS` for Edge-compatible content source selection
 - Available in Edge functions, client components, and shared utilities
 - Only includes `NEXT_PUBLIC_*` prefixed variables and build-time constants
 

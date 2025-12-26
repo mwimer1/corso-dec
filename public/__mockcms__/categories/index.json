@@ -1,0 +1,30 @@
+[
+  {
+    "slug": "general",
+    "name": "General"
+  },
+  {
+    "slug": "technology",
+    "name": "Technology"
+  },
+  {
+    "slug": "market-analysis",
+    "name": "Market Analysis"
+  },
+  {
+    "slug": "sustainability",
+    "name": "Sustainability"
+  },
+  {
+    "slug": "cost-management",
+    "name": "Cost Management"
+  },
+  {
+    "slug": "safety",
+    "name": "Safety"
+  },
+  {
+    "slug": "data",
+    "name": "Data"
+  }
+]

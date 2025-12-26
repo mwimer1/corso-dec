@@ -14,6 +14,7 @@ type EdgeEnv = Pick<
   | 'CSP_REPORT_LOG'
   | 'CSP_REPORT_MAX_LOGS'
   | 'CORSO_USE_MOCK_DB'
+  | 'CORSO_USE_MOCK_CMS'
   | 'CORS_ORIGINS'
 > & {
   /** Alias for CORS_ORIGINS for compatibility */
@@ -29,6 +30,7 @@ export function getEnvEdge(): EdgeEnv {
   if (typeof e['CSP_REPORT_LOG'] !== 'undefined') out.CSP_REPORT_LOG = String(e['CSP_REPORT_LOG']);
   if (typeof e['CSP_REPORT_MAX_LOGS'] !== 'undefined') (out as any).CSP_REPORT_MAX_LOGS = Number(e['CSP_REPORT_MAX_LOGS']);
   if (typeof e['CORSO_USE_MOCK_DB'] !== 'undefined') (out as any).CORSO_USE_MOCK_DB = (String(e['CORSO_USE_MOCK_DB']) === 'true' ? 'true' : 'false');
+  if (typeof e['CORSO_USE_MOCK_CMS'] !== 'undefined') (out as any).CORSO_USE_MOCK_CMS = (String(e['CORSO_USE_MOCK_CMS']) === 'true' ? 'true' : 'false');
   if (typeof e['CORS_ORIGINS'] !== 'undefined') out.CORS_ORIGINS = String(e['CORS_ORIGINS']);
   if (typeof e['CORS_ALLOWED_ORIGINS'] !== 'undefined') (out as any).CORS_ALLOWED_ORIGINS = e['CORS_ALLOWED_ORIGINS'];
   return out as EdgeEnv;

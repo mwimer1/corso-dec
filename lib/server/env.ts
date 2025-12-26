@@ -109,6 +109,21 @@ export function getEnv(): ValidatedEnv {
 
     // Content/Insights
     INSIGHTS_SOURCE: g('INSIGHTS_SOURCE'),
+    
+    // Mock CMS flag (mirrors CORSO_USE_MOCK_DB pattern)
+    CORSO_USE_MOCK_CMS: (() => {
+      const v = g('CORSO_USE_MOCK_CMS') as string | undefined;
+      if (!v) return undefined;
+      const s = String(v).trim().toLowerCase();
+      return (s === '1' || s === 'true') ? 'true' : 'false';
+    })(),
+    
+    // CMS provider selector
+    CORSO_CMS_PROVIDER: g('CORSO_CMS_PROVIDER'),
+    
+    // Directus connection (used only if CORSO_CMS_PROVIDER === "directus")
+    DIRECTUS_URL: g('DIRECTUS_URL'),
+    DIRECTUS_TOKEN: g('DIRECTUS_TOKEN'),
   } as ValidatedEnv;
 
   return _cache!;

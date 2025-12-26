@@ -1,0 +1,18 @@
+{
+  "id": "market-analysis",
+  "slug": "construction-market-analysis-2025",
+  "title": "Construction Market Analysis 2025",
+  "description": "Comprehensive analysis of construction industry trends and forecasts.",
+  "publishDate": "2025-01-15T11:00:00Z",
+  "imageUrl": "/demos/projects-interface.png",
+  "categories": [
+    {
+      "slug": "market-analysis",
+      "name": "Market Analysis"
+    }
+  ],
+  "content": "<p>Detailed market insights and predictions for the construction sector...</p>",
+  "author": {
+    "name": "Market Research Team"
+  }
+}

@@ -48,6 +48,16 @@ export interface ValidatedEnv {
 
   // Mock DB flag (normalized; prefer CORSO_USE_MOCK_DB with legacy fallbacks)
   CORSO_USE_MOCK_DB?: 'true' | 'false';
+  
+  // Mock CMS flag (mirrors CORSO_USE_MOCK_DB pattern)
+  CORSO_USE_MOCK_CMS?: 'true' | 'false';
+  
+  // CMS provider selector
+  CORSO_CMS_PROVIDER?: string;
+  
+  // Directus connection (used only if CORSO_CMS_PROVIDER === "directus")
+  DIRECTUS_URL?: string;
+  DIRECTUS_TOKEN?: string;
 
   // Auth / SSO
   CLERK_SECRET_KEY?: string;
