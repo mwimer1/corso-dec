@@ -61,7 +61,7 @@ export interface paths {
         };
         /**
          * Search insights content
-         * @description Public search endpoint for insights and articles
+         * @description Public search endpoint for insights and articles with pagination support
          */
         get: operations["insights_search"];
         put?: never;
@@ -667,11 +667,15 @@ export interface operations {
     };
     insights_search: {
         parameters: {
-            query?: {
+            query: {
                 /** @description Search query string */
-                q?: string;
+                q: string;
                 /** @description Filter by category slug */
                 category?: string;
+                /** @description Maximum number of results to return */
+                limit?: number;
+                /** @description Number of results to skip (for pagination) */
+                offset?: number;
             };
             header?: never;
             path?: never;
@@ -697,7 +701,8 @@ export interface operations {
                      *               "name": "Market Analysis",
                      *               "slug": "market-analysis"
                      *             }
-                     *           ]
+                     *           ],
+                     *           "url": "/insights/market-trends-2024"
                      *         }
                      *       ]
                      *     }
@@ -716,6 +721,11 @@ export interface operations {
                                 /** @example market-analysis */
                                 slug?: string;
                             }[];
+                            /**
+                             * @description Relative URL path to the insight article
+                             * @example /insights/market-trends-2024
+                             */
+                            url?: string;
                         }[];
                     };
                 };
