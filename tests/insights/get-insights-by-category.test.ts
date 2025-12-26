@@ -46,5 +46,34 @@ describe('getInsightsByCategory', () => {
     expect(res.total).toBe(0);
     expect(res.category).toBeNull();
   });
+
+  it('uses injected deps and does not invoke unified selector', async () => {
+    // Use sentinel data to verify injected deps are used
+    const sentinelInsights = [
+      { slug: 'sentinel-1', title: 'Sentinel 1', publishDate: '2025-01-01', categories: [{ name: 'Test', slug: 'test' }] },
+    ];
+    const sentinelCategories = [{ slug: 'test', name: 'Test' }];
+
+    const sentinelGetAllInsights = vi.fn().mockResolvedValue(sentinelInsights);
+    const sentinelGetCategories = vi.fn().mockResolvedValue(sentinelCategories);
+
+    const res = await content.getInsightsByCategory(
+      { slug: 'test', page: 1, pageSize: 10 },
+      { getAllInsights: sentinelGetAllInsights, getCategories: sentinelGetCategories }
+    );
+
+    // Verify injected functions were called
+    expect(sentinelGetAllInsights).toHaveBeenCalledTimes(1);
+    expect(sentinelGetCategories).toHaveBeenCalledTimes(1);
+
+    // Verify result matches sentinel data
+    expect(res.total).toBe(1);
+    expect(res.category?.slug).toBe('test');
+    expect(res.items[0]?.slug).toBe('sentinel-1');
+
+    // Verify original mocks were NOT called (proving unified selector wasn't invoked)
+    expect(getAllInsights).not.toHaveBeenCalled();
+    expect(getCategories).not.toHaveBeenCalled();
+  });
 });
 

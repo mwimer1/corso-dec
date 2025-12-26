@@ -263,6 +263,89 @@ mockClerkAuth('user-id', 'member');
 mockClerkAuth(null);
 ```
 
+### ESM Mocking & Dependency Injection
+
+#### The Problem with `vi.spyOn()` in ESM
+
+Under ESM (ECMAScript Modules), `vi.spyOn()` has limitations when spying on functions from the same module:
+
+- **Module namespace immutability**: ESM exports are immutable, so spies may not reliably intercept calls
+- **Direct function binding**: When a function calls another function from the same module via direct binding (not through the module namespace), spies won't intercept
+- **Module caching**: Modules are cached, so environment variable changes may not take effect if the module was already loaded
+
+#### Solution: Dependency Injection
+
+For functions that need to be testable, prefer dependency injection over spying:
+
+```typescript
+// ✅ CORRECT: Accept optional dependencies
+export async function getInsightsByCategory(
+  params: GetByCategoryParams,
+  deps: { getAllInsights?: typeof getAllInsights; getCategories?: typeof getCategories } = {}
+) {
+  const getAllInsightsFn = deps.getAllInsights ?? getAllInsights;
+  const getCategoriesFn = deps.getCategories ?? getCategories;
+  
+  // Use injected deps or fall back to default implementation
+  const categories = await getCategoriesFn();
+  const allInsights = await getAllInsightsFn();
+  // ... rest of implementation
+}
+```
+
+**In tests:**
+```typescript
+// ✅ CORRECT: Inject mock functions directly
+const mockGetAllInsights = vi.fn().mockResolvedValue([...]);
+const mockGetCategories = vi.fn().mockResolvedValue([...]);
+
+const result = await getInsightsByCategory(
+  { slug: 'data' },
+  { getAllInsights: mockGetAllInsights, getCategories: mockGetCategories }
+);
+
+expect(mockGetAllInsights).toHaveBeenCalled();
+```
+
+#### Testing Source Selection & Module Singletons
+
+When testing code that uses module-level singletons (e.g., cached source selection), you may need to reset the singleton:
+
+```typescript
+import { __resetContentSourceForTests } from '@/lib/marketing/insights/source';
+
+beforeEach(() => {
+  // Disable mock CMS to use legacy adapter
+  process.env.CORSO_USE_MOCK_CMS = 'false';
+  // Reset cached source so environment change takes effect
+  __resetContentSourceForTests();
+});
+
+afterEach(() => {
+  delete process.env.CORSO_USE_MOCK_CMS;
+  __resetContentSourceForTests();
+});
+```
+
+**Alternative: Module Reset (slower but more thorough)**
+```typescript
+import { vi } from 'vitest';
+
+beforeEach(() => {
+  vi.resetModules(); // Clears module cache (slower but more thorough)
+  process.env.CORSO_USE_MOCK_CMS = 'false';
+});
+```
+
+#### When to Use Each Approach
+
+| Approach | Use When | Pros | Cons |
+|----------|----------|------|------|
+| **Dependency Injection** | Testing functions that call other functions | Deterministic, fast, no module cache issues | Requires code changes |
+| **`vi.spyOn()`** | Testing cross-module calls or external dependencies | No code changes needed | May not work with same-module calls in ESM |
+| **`__resetContentSourceForTests()`** | Testing source selection or singleton behavior | Fast, targeted reset | Requires test-only helper function |
+| **`vi.resetModules()`** | Testing module-level state changes | Thorough, clears all module cache | Slower, may break other tests |
+
 ### Creating Test Requests
 ```typescript
 import { createTestRequest } from '@/tests/support/harness/request';

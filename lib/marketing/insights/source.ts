@@ -70,3 +70,13 @@ export function getContentSource(): InsightContentSource {
   return _source;
 }
 
+/**
+ * Test-only helper to reset the cached content source.
+ * Use this in tests that need to change CORSO_USE_MOCK_CMS or provider selection between cases.
+ * 
+ * @internal - Do not call from production code
+ */
+export function __resetContentSourceForTests(): void {
+  _source = undefined;
+}
+
