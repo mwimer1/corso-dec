@@ -20,6 +20,7 @@ const UserProfile = nextDynamic(
   }
 );
 
+// eslint-disable-next-line import/no-unused-modules -- Used by page.tsx in same directory
 export function UserProfileClient() {
   return (
     <UserProfile
