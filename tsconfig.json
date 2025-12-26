@@ -129,7 +129,8 @@
     "types/**/*.tsx",
     ".next/types/**/*.ts",
     "assets/**/*.ts",
-    "assets/**/*.tsx"
+    "assets/**/*.tsx",
+    "tailwind.config.ts"
   ]
 }
 

@@ -1,3 +1,10 @@
+/**
+ * This is the only Tailwind config; fallbacks must match token defaults exactly.
+ * 
+ * Token contract: CSS tokens in styles/tokens/*.css are canonical.
+ * Tailwind config fallbacks (var(--token, fallback)) must match token defaults
+ * to prevent "two sources of truth" configuration drift.
+ */
 import typography from '@tailwindcss/typography';
 import type { Config } from 'tailwindcss';
 import animate from 'tailwindcss-animate';
