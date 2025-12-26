@@ -1651,14 +1651,14 @@ status: "generated"
     ├── .prettierrc.js
     ├── .spectral.yaml
     ├── .stylelintignore
-    ├── AUDIT_CONSISTENCY_SUMMARY.md
+    ├── docs/maintenance/_reports/AUDIT_CONSISTENCY_SUMMARY.md
     ├── CHANGELOG.md
     ├── commitlint.config.cjs
-    ├── DASHBOARD_CONSOLIDATION_SUMMARY.md
-    ├── EMPTY_DIRECTORIES_CLEANUP.md
+    ├── docs/maintenance/_reports/DASHBOARD_CONSOLIDATION_SUMMARY.md
+    ├── docs/maintenance/_reports/EMPTY_DIRECTORIES_CLEANUP.md
     ├── eslint.config.mjs
     ├── EXECUTION_PLAN.md
-    ├── HEALTH_ALIASES_SUMMARY.md
+    ├── docs/maintenance/_reports/HEALTH_ALIASES_SUMMARY.md
     ├── INSIGHTS_SEARCH_IMPLEMENTATION.md
     ├── instrumentation-client.ts
     ├── instrumentation.ts
@@ -1673,7 +1673,7 @@ status: "generated"
     ├── proxy.ts
     ├── README.md
     ├── sgconfig.yml
-    ├── SPRINT3_SUMMARY.md
+    ├── docs/maintenance/_reports/SPRINT3_SUMMARY.md
     ├── tailwind.config.ts
     ├── ts-prune-allowlist.txt
     ├── tsconfig.json

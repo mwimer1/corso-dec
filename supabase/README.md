@@ -47,10 +47,10 @@ supabase/
 │   ├── 20250813121000_mv_projects_daily_counts.sql
 │   └── 20250814090000_presence_v2.sql
 ├── ast-greprc.yml           # SQL linting rules for migrations
-├── .temp/                   # Temporary files and CLI version tracking
-│   └── cli-latest           # Latest Supabase CLI version (v2.39.2)
 └── README.md                # This documentation
 ```
+
+**Note:** The `.temp/` directory (Supabase CLI temporary files) is gitignored and should not be committed.
 
 ## 🔄 Database Migrations
 

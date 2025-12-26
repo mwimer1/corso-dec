@@ -189,9 +189,9 @@ This document summarizes the documentation, OpenAPI, and test consistency update
 ## Related Documents
 
 - `EXECUTION_PLAN.md` - Initial audit execution plan
-- `HEALTH_ALIASES_SUMMARY.md` - Health endpoint alias implementation
-- `EMPTY_DIRECTORIES_CLEANUP.md` - Empty directory removal
-- `DASHBOARD_CONSOLIDATION_SUMMARY.md` - Dashboard route group consolidation
+- `HEALTH_ALIASES_SUMMARY.md` - Health endpoint alias implementation (moved to `docs/maintenance/_reports/`)
+- `EMPTY_DIRECTORIES_CLEANUP.md` - Empty directory removal (moved to `docs/maintenance/_reports/`)
+- `DASHBOARD_CONSOLIDATION_SUMMARY.md` - Dashboard route group consolidation (moved to `docs/maintenance/_reports/`)
 - `INSIGHTS_SEARCH_IMPLEMENTATION.md` - Insights search implementation
 
 ---

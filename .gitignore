@@ -118,6 +118,8 @@ Thumbs.db
 tmp/
 temp/
 .tmp/
+supabase/.temp/
+.clerk/.tmp/
 
 # Package manager files
 .yarn-integrity
