@@ -1,5 +1,10 @@
 /* FILE: styles/tokens/colors.css */
 
+/* 
+ * Dark mode is controlled via .dark class; do not add prefers-color-scheme blocks.
+ * The .dark class is applied by NextThemes (or equivalent) based on user preference.
+ */
+
 /* Base color system - CSS custom properties for runtime theming */
 :root {
   /* Brand colors - unified primary as brand blue */
@@ -46,45 +51,7 @@
   --surface-selected: 221.2 83.2% 95%;
 }
 
-/* Dark mode color overrides */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --primary: 221 86% 54%; /* Same brand blue in dark mode */
-    --primary-foreground: 210 40% 98%;
-
-    /* Secondary - darker tint for dark backgrounds */
-    --secondary: 221 86% 20%;
-    --secondary-foreground: 210 40% 98%;
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --surface: 222.2 84% 4.9%;
-    --surface-contrast: 217.2 32.6% 17.5%;
-    --text-high: 210 40% 98%;
-    --text-medium: 215 20.2% 65.1%;
-    --text-low: 215 20.2% 72%;
-    --border: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
-
-    /* Extended semantic tokens */
-    --muted: 223 47% 11%;
-    --muted-foreground: 215 20.2% 72%;
-    --info: 217.2 91.2% 59.8%;
-    --overlay: 0 0% 0%;
-    --input: 217.2 32.6% 17.5%;
-    --surface-hover: 222.2 47.4% 11.2%;
-    --surface-selected: 217.2 91.2% 20%;
-
-    /* State colors remain the same in dark mode for accessibility */
-    --success: 142.1 70.6% 35%;
-    --success-foreground: 0 0% 100%;
-    --warning: 37.7 92.1% 50.2%;
-    --warning-foreground: 210 40% 98%;
-    --danger: 0 84.2% 50%;
-    --danger-foreground: 0 0% 98%;
-  }
-}
-
-/* Manual dark mode via NextThemes */
+/* Dark mode via .dark class (applied by NextThemes) */
 :root.dark {
   --primary: 221 86% 54%; /* Same brand blue in dark mode */
   --primary-foreground: 210 40% 98%;

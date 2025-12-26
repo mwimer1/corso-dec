@@ -1,4 +1,18 @@
 /* FILE: styles/tokens/auth.css */
+
+/**
+ * Route Theme: Auth
+ * 
+ * Purpose: Minimal authentication pages (sign-in, sign-up) with neutral, professional styling.
+ * 
+ * Override Policy:
+ * - ✅ ALLOWED: Color tokens (--primary, --secondary, --background, --foreground, --surface)
+ * - ✅ ALLOWED: Semantic color aliases (--success, --warning, --danger, etc.)
+ * - ❌ FORBIDDEN: Structural tokens (--space-*, --text-*, --radius-*, --shadow-*, --duration-*)
+ * 
+ * Rationale: Route themes should only customize colors to maintain visual identity while
+ * preserving consistent spacing, typography, and interaction patterns across the app.
+ */
 :root[data-route-theme="auth"] {
   --background: 0 0% 98%;
   --foreground: 240 10% 3.9%;
@@ -13,15 +27,7 @@
   --secondary-foreground: 0 0% 100%;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root[data-route-theme="auth"] {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    /* Match surface to background in dark mode */
-    --surface: 222.2 84% 4.9%;
-  }
-}
-
+/* Dark mode overrides (via .dark class) */
 .dark[data-route-theme="auth"],
 .dark [data-route-theme="auth"] {
   --background: 222.2 84% 4.9%;

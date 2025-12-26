@@ -1,6 +1,18 @@
 /* FILE: styles/tokens/storybook.css */
 
-/* Storybook-specific theme tokens for component previews */
+/**
+ * Route Theme: Storybook
+ * 
+ * Purpose: Component preview environment with consistent, neutral styling for design system showcase.
+ * 
+ * Override Policy:
+ * - ✅ ALLOWED: Color tokens (--primary, --secondary, --background, --foreground, --surface)
+ * - ✅ ALLOWED: Semantic color aliases (--success, --warning, --danger, etc.)
+ * - ❌ FORBIDDEN: Structural tokens (--space-*, --text-*, --radius-*, --shadow-*, --duration-*)
+ * 
+ * Rationale: Route themes should only customize colors to maintain visual identity while
+ * preserving consistent spacing, typography, and interaction patterns across the app.
+ */
 :root[data-route-theme="storybook"] {
   --background: 0 0% 100%;
   --foreground: 222.2 47.4% 11.2%;
@@ -14,18 +26,7 @@
   --border: 214.3 31.8% 89%;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root[data-route-theme="storybook"] {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --surface: 222.2 84% 4.9%;
-    --surface-contrast: 217.2 32.6% 17.5%;
-    --border: 217.2 32.6% 17.5%;
-  }
-}
-
+/* Dark mode overrides (via .dark class) */
 .dark[data-route-theme="storybook"],
 .dark [data-route-theme="storybook"] {
   --background: 222.2 84% 4.9%;

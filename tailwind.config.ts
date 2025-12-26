@@ -4,6 +4,8 @@
  * Token contract: CSS tokens in styles/tokens/*.css are canonical.
  * Tailwind config fallbacks (var(--token, fallback)) must match token defaults
  * to prevent "two sources of truth" configuration drift.
+ * 
+ * Validation: Run `pnpm check:tokens` to enforce this contract.
  */
 import typography from '@tailwindcss/typography';
 import type { Config } from 'tailwindcss';
@@ -38,7 +40,7 @@ const config: Config = {
         // Design token mapping - unified primary as brand blue
         primary: {
           DEFAULT: 'hsl(var(--primary, 221 86% 54%))',
-          foreground: 'hsl(var(--primary-foreground, 210 40% 98%))',
+          foreground: 'hsl(var(--primary-foreground, 0 0% 98%))',
         },
         secondary: {
           DEFAULT: 'hsl(var(--secondary, 221 86% 90%))',
@@ -52,7 +54,7 @@ const config: Config = {
           hover: 'hsl(var(--surface-hover, 0 0% 93%))',
           selected: 'hsl(var(--surface-selected, 221.2 83.2% 95%))',
         },
-        border: 'hsl(var(--border, 214.3 31.8% 91.4%))',
+        border: 'hsl(var(--border, 214.3 31.8% 89%))',
         'border-subtle': 'hsl(var(--border-subtle, 214.3 31.8% 96%))',
         input: 'hsl(var(--input, 214.3 31.8% 91.4%))',
         ring: 'hsl(var(--ring, 221.2 83.2% 53.3%))',
@@ -120,8 +122,8 @@ const config: Config = {
         DEFAULT: 'var(--radius-md, 0.375rem)',
       },
       fontFamily: {
-        sans: ['var(--font-sans, ui-sans-serif, system-ui)'],
-        mono: ['var(--font-mono, ui-monospace, SFMono-Regular)'],
+        sans: ['var(--font-sans, lato, system-ui, -apple-system, blinkmacsystemfont, "Segoe UI", roboto, sans-serif)'],
+        mono: ['var(--font-mono, ui-monospace, sfmono-regular, "SF Mono", consolas, "Liberation Mono", menlo, monospace)'],
       },
       fontSize: {
         // Design token mapping for typography
