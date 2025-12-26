@@ -35,7 +35,7 @@ const InsightPreviewSchema = z
     author: z
       .object({
         name: z.string(),
-        avatar: z.string().optional(),
+        avatar: z.string().nullish(),
       })
       .strict()
       .optional(),
