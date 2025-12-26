@@ -1,15 +1,36 @@
----
-title: "components/ui/organisms/navbar"
-last_updated: "2025-12-25"
-category: "automation"
----
+# Navbar Component
 
-# Repository Scripts & Docs
+## Purpose
 
-This README is generated from a single template (`README.scripts.hbs`).
+Main navigation bar for public pages (landing, marketing) with responsive menu, authentication state, and theme switching.
 
-- Directory: `components/ui/organisms/navbar`
-- Last updated: `2025-12-25`
+## Key Files
 
-> Edit the template or the generator context to change all READMEs consistently.
+- `navbar.tsx` - Main navbar component (public export)
+- `index.ts` - Internal navbar helpers and utilities
 
+## Usage
+
+```tsx
+import { Navbar } from '@/components/ui/organisms';
+
+<Navbar />
+```
+
+## Features
+
+- Responsive mobile menu
+- Authentication state integration (Clerk)
+- Theme switching (light/dark mode)
+- Active route highlighting
+
+## Styling
+
+- Uses Tailwind CSS with marketing design tokens
+- Responsive breakpoints for mobile/desktop
+- Theme-aware styling
+
+## Client/Server Notes
+
+- Navbar is a client component (requires interactivity and authentication state)
+- Internal helpers remain in `navbar/index.ts` to avoid self-import cycles

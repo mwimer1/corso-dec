@@ -9,7 +9,7 @@
     "pnpm": ">=10"
   },
   "lint-staged": {
-    "*.{ts,tsx}": "eslint --fix",
+    "*.{ts,tsx}": "eslint --fix --no-error-on-unmatched-pattern",
     "*": [
       "tsx ./scripts/lint/no-binary-fonts.ts"
     ],
@@ -117,8 +117,8 @@
     "test:e2e:install": "playwright install --with-deps chromium",
     "jscpd:tests": "pnpm dlx jscpd tests --reporters console --format typescript --format tsx --min-lines 15",
     "lint:dup-tests-ci": "pnpm jscpd:tests",
-    "lint": "pnpm exec eslint . --cache --cache-location node_modules/.cache/eslint/.eslintcache --cache-strategy content && pnpm ast-grep:scan",
-    "lint:eslint": "pnpm exec eslint .",
+    "lint": "pnpm exec eslint . --cache --cache-location node_modules/.cache/eslint/.eslintcache --cache-strategy content --no-error-on-unmatched-pattern && pnpm ast-grep:scan",
+    "lint:eslint": "pnpm exec eslint . --no-error-on-unmatched-pattern",
     "lint:ast-grep": "pnpm run ast-grep:scan",
     "lint:deprecations": "tsx scripts/lint/check-deprecations-util-extend.ts",
     "lint:ci": "pnpm run -s lint:eslint --max-warnings=0 && pnpm run -s lint:ast-grep",

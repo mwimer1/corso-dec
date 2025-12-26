@@ -1,15 +1,28 @@
----
-title: "components/dashboard/entity/projects"
-last_updated: "2025-12-25"
-category: "automation"
----
+# Projects Entity Grid
 
-# Repository Scripts & Docs
+## Purpose
 
-This README is generated from a single template (`README.scripts.hbs`).
+Entity grid configuration for projects table with columns, filters, and data fetching.
 
-- Directory: `components/dashboard/entity/projects`
-- Last updated: `2025-12-25`
+## Key Files
 
-> Edit the template or the generator context to change all READMEs consistently.
+- `config.ts` - Projects grid configuration (columns, fetcher)
 
+## Usage
+
+```tsx
+import { getEntityConfig } from '@/components/dashboard/entity';
+
+const config = getEntityConfig('projects');
+```
+
+## Configuration
+
+- Column definitions: `lib/services/entity/projects/columns.config.ts`
+- API endpoint: `/api/v1/entity/projects`
+- Server-side pagination and filtering
+
+## Client/Server Notes
+
+- Config is server-safe (no client dependencies)
+- Grid rendering is client-only (AG Grid)

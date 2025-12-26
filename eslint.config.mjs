@@ -307,7 +307,6 @@ export default [
           '**/__fixtures__/**/*',
           '**/tests/**/*',
           '**/*.test.tsx',
-          '**/*.mdx',
           'app/**/page.tsx',
           'app/**/layout.tsx',
           'app/**/route.ts',

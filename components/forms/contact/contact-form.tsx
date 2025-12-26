@@ -5,7 +5,7 @@ import { MessageSquareIcon } from "@/components/ui/atoms";
 import { Button } from "@/components/ui/atoms/button";
 import { Spinner } from "@/components/ui/atoms/spinner";
 import { FieldRenderer } from "../primitives/field-renderer";
-import { publicEnv } from "@/lib/shared";
+import { publicEnv } from "@/lib/shared/config/client";
 
 import { cn } from "@/styles";
 import {

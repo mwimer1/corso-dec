@@ -1,15 +1,28 @@
----
-title: "components/dashboard/entity/addresses"
-last_updated: "2025-12-25"
-category: "automation"
----
+# Addresses Entity Grid
 
-# Repository Scripts & Docs
+## Purpose
 
-This README is generated from a single template (`README.scripts.hbs`).
+Entity grid configuration for addresses table with columns, filters, and data fetching.
 
-- Directory: `components/dashboard/entity/addresses`
-- Last updated: `2025-12-25`
+## Key Files
 
-> Edit the template or the generator context to change all READMEs consistently.
+- `config.ts` - Addresses grid configuration (columns, fetcher)
 
+## Usage
+
+```tsx
+import { getEntityConfig } from '@/components/dashboard/entity';
+
+const config = getEntityConfig('addresses');
+```
+
+## Configuration
+
+- Column definitions: `lib/services/entity/addresses/columns.config.ts`
+- API endpoint: `/api/v1/entity/addresses`
+- Server-side pagination and filtering
+
+## Client/Server Notes
+
+- Config is server-safe (no client dependencies)
+- Grid rendering is client-only (AG Grid)

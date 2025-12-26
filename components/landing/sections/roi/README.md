@@ -1,15 +1,18 @@
----
-title: "components/landing/sections/roi"
-last_updated: "2025-12-25"
-category: "automation"
----
+# ROI Section Component
 
-# Repository Scripts & Docs
+## Purpose
 
-This README is generated from a single template (`README.scripts.hbs`).
+Return on investment (ROI) calculator or showcase section for landing pages.
 
-- Directory: `components/landing/sections/roi`
-- Last updated: `2025-12-25`
+## Usage
 
-> Edit the template or the generator context to change all READMEs consistently.
+Used in landing pages to highlight ROI benefits and value proposition.
 
+## Styling
+
+- Uses Tailwind CSS with marketing design tokens
+- Responsive layout
+
+## Client/Server Notes
+
+- ROI section is a client component (interactive calculator if present)

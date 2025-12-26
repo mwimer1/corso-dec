@@ -1,15 +1,19 @@
----
-title: "components/ui/molecules/shared"
-last_updated: "2025-12-25"
-category: "automation"
----
+# Shared Molecule Components
 
-# Repository Scripts & Docs
+## Purpose
 
-This README is generated from a single template (`README.scripts.hbs`).
+Shared utilities and helpers used across multiple molecule components.
 
-- Directory: `components/ui/molecules/shared`
-- Last updated: `2025-12-25`
+## Key Files
 
-> Edit the template or the generator context to change all READMEs consistently.
+- Shared type definitions
+- Common utility functions
+- Shared styling constants
 
+## Usage
+
+Internal module - imported by other molecule components, not directly used in app code.
+
+## Client/Server Notes
+
+- Contents vary by specific utility (check individual exports)

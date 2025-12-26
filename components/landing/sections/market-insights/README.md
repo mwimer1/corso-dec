@@ -1,15 +1,18 @@
----
-title: "components/landing/sections/market-insights"
-last_updated: "2025-12-25"
-category: "automation"
----
+# Market Insights Section Component
 
-# Repository Scripts & Docs
+## Purpose
 
-This README is generated from a single template (`README.scripts.hbs`).
+Market insights showcase section for landing pages, displaying data visualizations or key metrics.
 
-- Directory: `components/landing/sections/market-insights`
-- Last updated: `2025-12-25`
+## Usage
 
-> Edit the template or the generator context to change all READMEs consistently.
+Used in landing pages to highlight market insights and data-driven value.
 
+## Styling
+
+- Uses Tailwind CSS with marketing design tokens
+- Responsive layout
+
+## Client/Server Notes
+
+- Market insights section is a client component (interactive visualizations if present)

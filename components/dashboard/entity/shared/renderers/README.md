@@ -1,15 +1,26 @@
----
-title: "components/dashboard/entity/shared/renderers"
-last_updated: "2025-12-25"
-category: "automation"
----
+# Entity Grid Renderers
 
-# Repository Scripts & Docs
+## Purpose
 
-This README is generated from a single template (`README.scripts.hbs`).
+Cell renderers and value formatters for entity grid columns (currency, dates, status badges, etc.).
 
-- Directory: `components/dashboard/entity/shared/renderers`
-- Last updated: `2025-12-25`
+## Key Files
 
-> Edit the template or the generator context to change all READMEs consistently.
+- `value-formatter.ts` - Value formatting utilities
+- Cell renderer components (if present)
 
+## Usage
+
+Used by column definitions in `lib/services/entity/<entity>/columns.config.ts` to format cell values.
+
+## Features
+
+- Currency formatting
+- Date/time formatting
+- Status badge rendering
+- Custom cell renderers (favicons, links, etc.)
+
+## Client/Server Notes
+
+- Formatters are pure functions (server-safe)
+- Renderers are client components (React components)
