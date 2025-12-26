@@ -164,7 +164,7 @@
     "lint:no-direct-process-env": "pnpm exec eslint --rule 'corso/no-direct-process-env: error' '**/*.{ts,tsx}'",
     "lint:server-env-imports": "pnpm exec eslint --rule 'corso/require-server-env-imports: error' 'lib/**/*.ts' 'app/**/*.{ts,tsx}'",
     "lint:no-server-reexports": "pnpm exec eslint --rule 'corso/no-server-reexports: error' 'components/**/*.{ts,tsx}' 'lib/shared/**/*.{ts,tsx}'",
-    "lint:no-deprecated-imports": "pnpm exec eslint --rule 'corso/no-deprecated-lib-imports: error' '**/*.{ts,tsx}'",
+    "lint:no-deprecated-imports": "tsx scripts/lint/no-deprecated-imports.ts",
     "lint:no-runtime-in-types": "pnpm exec eslint --rule 'corso/no-runtime-in-types: error' 'types/**/*.{ts,tsx}'",
     "lint:no-await-headers": "pnpm exec eslint --rule 'corso/no-await-headers: error' '**/*.{ts,tsx}'",
     "lint:no-clerkclient-invoke": "pnpm exec eslint --rule 'corso/no-clerkclient-invoke: error' '**/*.{ts,tsx}'",
