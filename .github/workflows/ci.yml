@@ -105,6 +105,9 @@ jobs:
       - name: Set NODE_ENV for production builds
         run: echo "NODE_ENV=production" >> $GITHUB_ENV
 
+      - name: Style contract checks
+        run: pnpm check:styles
+
       - name: Run Linting
         run: pnpm lint:full && pnpm lint:css
 

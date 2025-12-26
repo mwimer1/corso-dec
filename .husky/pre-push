@@ -1,6 +1,10 @@
-#!/bin/sh
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/husky.sh"
+
 # Run Git LFS hook when available; otherwise no-op (silent)
 if command -v git-lfs >/dev/null 2>&1; then
   git lfs pre-push "$@"
 fi
-exit 0
+
+# Style contract checks
+pnpm check:styles
