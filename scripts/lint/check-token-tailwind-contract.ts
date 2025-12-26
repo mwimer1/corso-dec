@@ -123,8 +123,8 @@ function extractTailwindTokenUsage(): Array<{
   const usages: Array<{ token: string; fallback: string | null; context: string }> = [];
   
   // Match var(--token-name, fallback) or var(--token-name)
-  // Use a more precise regex that handles nested parentheses
-  const varRegex = /var\(--([a-z0-9-]+)(?:\s*,\s*([^)]+(?:\([^)]*\))*[^)]*))?\)/gi;
+  // Handle nested parentheses by matching balanced pairs
+  const varRegex = /var\(--([a-z0-9-]+)(?:\s*,\s*((?:[^()]|\([^()]*(?:\([^()]*(?:\([^()]*\)[^()]*)*\)[^()]*)*\))*))?\)/gi;
   let match;
   
   while ((match = varRegex.exec(strippedContent)) !== null) {

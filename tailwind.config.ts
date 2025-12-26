@@ -103,8 +103,8 @@ const config: Config = {
           foreground: 'hsl(var(--foreground, 222.2 47.4% 11.2%))',
         },
         accent: {
-          DEFAULT: 'hsl(var(--secondary, 217.2 91.2% 59.8%))',
-          foreground: 'hsl(var(--secondary-foreground, 210 40% 98%))',
+          DEFAULT: 'hsl(var(--secondary, 221 86% 90%))',
+          foreground: 'hsl(var(--secondary-foreground, 222.2 47.4% 11.2%))',
         },
       },
       borderRadius: {
