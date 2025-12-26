@@ -21,7 +21,7 @@ Add a global quick search feature to entity grids that allows users to search ac
 **The backend contract already supports search!** The SSRM fetcher uses the GET route which already accepts `search` as a query parameter. We can proceed directly to UI implementation.
 
 ### Search Field Limitations
-Current implementation in `lib/services/entity/actions.ts:117-121`:
+Current implementation in `lib/services/entities/actions.ts:117-121`:
 ```typescript
 if (params.search && params.search.trim()) {
   const searchParamKey = `p${paramCounter++}`;
@@ -45,7 +45,7 @@ if (params.search && params.search.trim()) {
 
 ### Future Enhancement: Entity-Specific Search Fields
 
-**Current Limitation**: Search only searches `name` and `description` fields (hardcoded in `lib/services/entity/actions.ts:119`)
+**Current Limitation**: Search only searches `name` and `description` fields (hardcoded in `lib/services/entities/actions.ts:119`)
 
 **Future Option**: Entity-specific searchable fields configuration
 
@@ -59,14 +59,14 @@ The GET route (`/api/v1/entity/[entity]`) already:
 - ✅ Works with existing filters/sort/pagination
 
 #### 1.1 Future Enhancement: Entity-Specific Search Fields
-**File**: `lib/services/entity/actions.ts`
+**File**: `lib/services/entities/actions.ts`
 
 **Current**: Hardcoded `name` and `description` fields
 **Future**: Entity-specific searchable fields configuration
 
 **Option 1**: Per-entity searchable fields in config
 ```typescript
-// lib/services/entity/search-fields.ts
+// lib/services/entities/search-fields.ts
 export const ENTITY_SEARCH_FIELDS: Record<EntityKind, string[]> = {
   projects: ['building_permit_id', 'description', 'city', 'state'],
   companies: ['name', 'description'],
@@ -87,7 +87,7 @@ export const ENTITY_SEARCH_FIELDS: Record<EntityKind, string[]> = {
 ### Phase 2: UI Implementation (Ready to Start) - Design
 
 #### 2.1 Search Input Component
-**Location**: `components/dashboard/entity/shared/grid/grid-menubar.tsx`
+**Location**: `components/dashboard/entities/shared/grid/grid-menubar.tsx`
 
 **Design:**
 - Search input in toolbar (left side, after Saved Searches)
@@ -119,7 +119,7 @@ useEffect(() => {
 ```
 
 #### 2.2 Update Fetcher to Include Search
-**File**: `components/dashboard/entity/shared/grid/fetchers.ts`
+**File**: `components/dashboard/entities/shared/grid/fetchers.ts`
 
 **Current**: Fetcher sends `filters`, `sort`, `page` via query params
 **Update**: Add `search` parameter to query string

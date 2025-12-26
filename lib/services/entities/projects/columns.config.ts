@@ -1,7 +1,7 @@
-// lib/services/entity/projects/columns.config.ts
+// lib/services/entities/projects/columns.config.ts
 
 /**
- * @module lib/services/entity/projects/columns.config
+ * @module lib/services/entities/projects/columns.config
  * @description Projects-specific column configurations for data grids and tables
  */
 

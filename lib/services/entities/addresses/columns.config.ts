@@ -1,7 +1,7 @@
-// lib/services/entity/addresses/columns.config.ts
+// lib/services/entities/addresses/columns.config.ts
 
 /**
- * @module lib/services/entity/addresses/columns.config
+ * @module lib/services/entities/addresses/columns.config
  * @description Addresses-specific column configurations for data grids and tables
  */
 

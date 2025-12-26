@@ -7,12 +7,12 @@ domains: ["ui"]
 enforcement: advise
 alwaysApply: true
 globs:
-  - "components/dashboard/entity/**"
+  - "components/dashboard/entities/**"
   - "lib/vendors/ag-grid/**"
 related_rules:
   - dashboard-components
   - component-design-system
-last_reviewed: "2025-01-28"
+last_reviewed: "2025-01-29"
 summary: Standardize AG Grid setup, registration, SSRM usage, and boundaries.
 ---
 
@@ -21,17 +21,17 @@ Define the standardized, flattened AG Grid architecture for dashboard entities (
 
 ## TL;DR
 - **Phase 3B Complete**: Legacy `col-defs.ts` files removed, full TableColumnConfig adoption
-- Framework-agnostic columns: `lib/services/entity/<entity>/columns.config.ts` with TableColumnConfig schema
-- Shared grid: `components/dashboard/entity/shared/grid/{EntityGrid.tsx, types.ts, ag-grid-modules.ts, fetchers.ts}`
-- Per-entity config: `components/dashboard/entity/<entity>/config.ts` wires async `colDefs` provider + fetcher
-- Typed registry and barrel: `components/dashboard/entity/index.ts` exports `getEntityConfig`, `EntityGrid`, types
+- Framework-agnostic columns: `lib/services/entities/<entity>/columns.config.ts` with TableColumnConfig schema
+- Shared grid: `components/dashboard/entities/shared/grid/{EntityGrid.tsx, types.ts, ag-grid-modules.ts, fetchers.ts}`
+- Per-entity config: `components/dashboard/entities/<entity>/config.ts` wires async `colDefs` provider + fetcher
+- Typed registry and barrel: `components/dashboard/entities/index.ts` exports `getEntityConfig`, `EntityGrid`, types
 - Route: `[entity]/page.tsx` validates with Zod and renders via registry
 - Client-safe fetchers: `createEntityFetcher(entity)` GETs from `/api/v1/entity/{entity}` with query params
 - Mock mode: set `CORSO_USE_MOCK_DB=true` to serve mock JSON via `getEntityPage()`
 
 ## File Layout
 ```
-components/dashboard/entity/
+components/dashboard/entities/
   shared/
     grid/
       EntityGrid.tsx
@@ -44,18 +44,18 @@ components/dashboard/entity/
       constants.ts
       helpers.tsx  # FaviconRenderer
   projects/
-    config.ts      # Uses PROJECTS_COLUMNS from lib/services/entity
+    config.ts      # Uses PROJECTS_COLUMNS from lib/services/entities
     index.ts
   addresses/
-    config.ts      # Uses ADDRESSES_COLUMNS from lib/services/entity
+    config.ts      # Uses ADDRESSES_COLUMNS from lib/services/entities
     index.ts
   companies/
-    config.ts      # Uses COMPANIES_COLUMNS from lib/services/entity
+    config.ts      # Uses COMPANIES_COLUMNS from lib/services/entities
     index.ts
   index.ts         # EntityGrid exports + registry + getEntityConfig
 
 # Column definitions now live in:
-lib/services/entity/
+lib/services/entities/
   projects/columns.config.ts    # TableColumnConfig definitions
   companies/columns.config.ts   # TableColumnConfig definitions
   addresses/columns.config.ts   # TableColumnConfig definitions
@@ -137,7 +137,7 @@ Column definitions use framework-agnostic `TableColumnConfig` schema that adapts
 - `accessor` → `field` (data field path)
 - `label` → `headerName` (display label)
 - `format` → formatter functions (currency, date, etc.)
-- Adapter: `lib/services/entity/adapters/aggrid.ts` (`toColDef()`)
+- Adapter: `lib/services/entities/adapters/aggrid.ts` (`toColDef()`)
 
 ### RBAC Enforcement
 API routes enforce organization-scoped RBAC:
@@ -171,7 +171,7 @@ API routes enforce organization-scoped RBAC:
 ## Rules
 - Do not deep-import renderers; import directly from `shared/renderers/` (no barrel after cleanup).
 - Keep server-only code out of `@/components/**` (client bundles).
-- Column definitions must use `TableColumnConfig` schema in `lib/services/entity/<entity>/columns.config.ts`.
+- Column definitions must use `TableColumnConfig` schema in `lib/services/entities/<entity>/columns.config.ts`.
 - Route options: export top-level literals (`runtime`, `dynamic`, `revalidate`). No `as const`.
 - **AG Grid registration**: Never call `ModuleRegistry.registerModules()` directly in components. Use `ensureAgGridRegistered()` from `@/lib/vendors/ag-grid.client`.
 

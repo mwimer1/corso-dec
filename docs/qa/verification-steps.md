@@ -78,7 +78,7 @@ http://localhost:3000/api/v1/entity/projects?page=0&pageSize=50&filters=%7B%22ba
 
 1. **Temporarily edit a colDef field:**
    ```typescript
-   // In components/dashboard/entity/projects/config.ts (or any entity config)
+   // In components/dashboard/entities/projects/config.ts (or any entity config)
    // Find a column accessor and temporarily change it to something fake
    // Example: Change 'effective_date' to 'fake_field_that_does_not_exist'
    ```

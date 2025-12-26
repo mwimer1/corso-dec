@@ -91,7 +91,7 @@ http://localhost:3000/api/v1/entity/projects?page=0&pageSize=50&filters=%7B%22ba
 
 ### 3.1 Temporarily break a column field
 
-1. Open: `components/dashboard/entity/projects/config.ts`
+1. Open: `components/dashboard/entities/projects/config.ts`
 2. Find the `defaultSortModel` (line 19) or any column in `PROJECTS_COLUMNS`
 3. Temporarily change a field name to something fake, e.g.:
    ```typescript
@@ -101,7 +101,7 @@ http://localhost:3000/api/v1/entity/projects?page=0&pageSize=50&filters=%7B%22ba
    // TEMPORARY CHANGE:
    defaultSortModel: [{ colId: 'fake_field_that_does_not_exist', sort: 'desc' }],
    ```
-   OR change a column accessor in `lib/services/entity/projects/columns.config.ts`:
+   OR change a column accessor in `lib/services/entities/projects/columns.config.ts`:
    ```typescript
    // BEFORE:
    { id: 'effective_date', label: 'Date', accessor: 'effective_date', ... },

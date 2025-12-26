@@ -8,7 +8,7 @@ last_updated: 2025-01-28
 ## ✅ All Changes Completed
 
 ### 1. Padding Fix (2px → 1px)
-**File:** `components/dashboard/entity/shared/grid/entity-grid-host.tsx`
+**File:** `components/dashboard/entities/shared/grid/entity-grid-host.tsx`
 
 **Changes:**
 - Toolbar wrapper: `px-2 pb-2` → `px-[1px] pb-[1px]`
@@ -19,7 +19,7 @@ last_updated: 2025-01-28
 ---
 
 ### 2. Icon Hover Color Fix (blue → grey)
-**File:** `components/dashboard/entity/shared/grid/grid-menubar.tsx`
+**File:** `components/dashboard/entities/shared/grid/grid-menubar.tsx`
 
 **Changes:**
 - All icon button hovers: `hover:bg-accent hover:text-accent-foreground active:bg-accent/80`
@@ -31,7 +31,7 @@ last_updated: 2025-01-28
 ---
 
 ### 3. Saved Searches Persistence (localStorage)
-**File:** `components/dashboard/entity/shared/grid/grid-menubar.tsx`
+**File:** `components/dashboard/entities/shared/grid/grid-menubar.tsx`
 
 **Changes:**
 - Added `useUser()` from `@clerk/nextjs` to get userId
@@ -45,7 +45,7 @@ last_updated: 2025-01-28
 ---
 
 ### 4. Results Count Polish (Badge)
-**File:** `components/dashboard/entity/shared/grid/grid-menubar.tsx`
+**File:** `components/dashboard/entities/shared/grid/grid-menubar.tsx`
 
 **Changes:**
 - Wrapped results count number in `<Badge color="secondary" className="tabular-nums">`
@@ -81,10 +81,10 @@ Before committing, verify:
 
 ## Files Modified
 
-1. `components/dashboard/entity/shared/grid/entity-grid-host.tsx`
+1. `components/dashboard/entities/shared/grid/entity-grid-host.tsx`
    - Padding adjustments (2px → 1px)
 
-2. `components/dashboard/entity/shared/grid/grid-menubar.tsx`
+2. `components/dashboard/entities/shared/grid/grid-menubar.tsx`
    - Icon hover color changes
    - localStorage persistence logic
    - Results count Badge wrapper

@@ -1,4 +1,4 @@
-// lib/services/entity/config.ts
+// lib/services/entities/config.ts
 // Pure configuration loader - no deps on actions or loader.
 import type { TableColumnConfig } from './types';
 import type { GridConfig, GridId } from './contracts';

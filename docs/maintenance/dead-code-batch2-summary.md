@@ -47,9 +47,9 @@ After thorough investigation of Batch 2 domains (`lib/shared`, `lib/validators`,
 - `EntityParamSchema`, `EntityListQuerySchema` - Used in `app/api/v1/entity/[entity]/route.ts`
 
 #### `lib/services/**`
-- Formatters (`dateFormatter`, `currencyFormatter`, etc.) - Used in `lib/services/entity/adapters/aggrid.ts`
+- Formatters (`dateFormatter`, `currencyFormatter`, etc.) - Used in `lib/services/entities/adapters/aggrid.ts`
 - `ADDRESSES_COLUMNS`, `COMPANIES_COLUMNS`, `PROJECTS_COLUMNS` - Used in entity config files
-- `getEntityPage` - Used in `lib/services/entity/actions.ts`
+- `getEntityPage` - Used in `lib/services/entities/actions.ts`
 - `getEntityConfig` - Used in dashboard route handlers
 - `TableColumnConfig` - Used in OpenAPI types
 

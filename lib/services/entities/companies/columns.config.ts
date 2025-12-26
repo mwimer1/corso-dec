@@ -1,7 +1,7 @@
-// lib/services/entity/companies/columns.config.ts
+// lib/services/entities/companies/columns.config.ts
 
 /**
- * @module lib/services/entity/companies/columns.config
+ * @module lib/services/entities/companies/columns.config
  * @description Companies-specific column configurations for data grids and tables
  */
 

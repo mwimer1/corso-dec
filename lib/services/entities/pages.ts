@@ -1,4 +1,4 @@
-// lib/services/entity/pages.ts
+// lib/services/entities/pages.ts
 // Shared entity data fetching service - source of truth for both internal and v1 APIs
 
 import type { BaseRow } from '@/types/dashboard';
