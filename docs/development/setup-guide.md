@@ -718,9 +718,130 @@ After modifying API routes:
 3. All bearer-authenticated operations require `x-corso-rbac` or `x-public` extension
 4. All bearer operations must include `OrgIdHeader` parameter for tenant isolation
 
+## 🔍 Dead Code & Unused Exports Audits
+
+### Source of Truth: CI (Linux)
+
+**Canonical audit results come from GitHub Actions (Linux runners).** This ensures consistent, reproducible results across the team and prevents "works on my machine" issues.
+
+### Windows Limitations
+
+Some audit tools have known Windows compatibility issues:
+
+- **Knip** (`pnpm validate:dead-code`): Fails on Windows due to native bindings blocked by Windows Application Control policy
+- **ts-prune** (`pnpm deadcode:test-only`): Has path issues with `pnpm exec` on Windows
+
+**Workaround for Windows developers:**
+- Use `pnpm validate:dead-code:optimized` (Madge-based, Windows-compatible)
+- Use `pnpm audit:orphans` (ts-morph-based, Windows-compatible)
+- For full analysis, check CI artifacts from the `dead-code-audit` workflow
+
+### Available Audit Commands
+
+#### Cross-Platform (Windows-compatible)
+
+```bash
+# Dead code check (orphans + circular dependencies)
+pnpm validate:dead-code:optimized
+
+# Detailed orphan audit (ts-morph-based)
+pnpm audit:orphans --out reports/orphan/orphan-report.json
+
+# High-signal orphan candidates only
+pnpm audit:orphans:high-signal
+```
+
+#### Linux/CI Only (May fail on Windows)
+
+```bash
+# Full Knip analysis (dead code + unused exports)
+pnpm validate:dead-code
+
+# Unused exports check (Knip-based)
+pnpm quality:exports:check
+
+# Test-only exports check (ts-prune-based)
+pnpm deadcode:test-only
+```
+
+### CI Workflow
+
+The `dead-code-audit` workflow runs automatically on:
+- Pull requests (when code paths change)
+- Pushes to `main`
+- Weekly schedule (Mondays at 2 AM UTC)
+- Manual trigger (`workflow_dispatch`)
+
+**Artifacts:**
+- `reports/orphan/orphan-report.json` - Detailed orphan file analysis
+- `reports/exports/unused-exports.report.json` - Unused exports JSON report
+- `reports/exports/unused-exports.summary.md` - Human-readable summary
+
+Download artifacts from the workflow run to review findings.
+
+### Audit Report Locations
+
+All audit reports are generated in the `reports/` directory:
+
+```
+reports/
+├── orphan/
+│   └── orphan-report.json          # Orphaned files analysis
+└── exports/
+    ├── unused-exports.report.json  # Unused exports (JSON)
+    └── unused-exports.summary.md   # Unused exports (Markdown)
+```
+
+**Note:** Reports are not committed to the repository. They are:
+- Generated locally when running audit commands
+- Uploaded as CI artifacts for each workflow run
+- Available for 30 days in GitHub Actions
+
+### Understanding Audit Results
+
+#### Orphaned Files
+
+Files that are not imported or referenced anywhere in the codebase. The audit tool:
+- Excludes Next.js convention files (`page.tsx`, `layout.tsx`, `route.ts`, etc.)
+- Excludes generated files (`.d.ts`, OpenAPI types)
+- Respects allowlist in `scripts/audit/orphans.allowlist.json`
+
+**Decision tree:**
+1. Is it a Next.js convention file? → Should be excluded (fix tooling config if it appears)
+2. Is it generated/tool-consumed? → Keep + document + allowlist
+3. Is it a barrel file? → Verify if part of public API before deleting
+4. Is it referenced dynamically? → Manual verification required
+5. Otherwise → Candidate for deletion (after typecheck/build/tests pass)
+
+#### Unused Exports
+
+Exports that are never imported. Treat as API surface hygiene:
+
+- **Internal-only exports**: Remove and simplify import sites
+- **Public API exports**: Either keep (with allowlist) or move to appropriate module
+- **Type-only exports**: Easy to clean, low risk
+- **Barrel inconsistencies**: Often create most of the "unused exports" noise
+
+#### Test-Only Exports
+
+Exports only referenced in test files. **Recommended action:**
+- Move helpers to `test-utils/` or colocated test helper modules
+- Stop exporting from production modules
+- Only allowlist if there's a deliberate policy for downstream users
+
+### Contributing Guidelines
+
+When working on dead code cleanup:
+
+1. **Check CI artifacts first** - Review the latest audit results from the workflow
+2. **Run local checks** - Use Windows-compatible commands for quick feedback
+3. **Verify before deleting** - Run `pnpm typecheck`, `pnpm build`, `pnpm test` after deletions
+4. **Update allowlists** - If keeping a file, add it to `scripts/audit/orphans.allowlist.json` with a reason
+5. **Small PRs** - Keep cleanup PRs focused and easy to review
+
 ## 🏷️ Tags
 
-`#development-environment` `#env-files` `#supabase` `#terminal` `#bracketed-paste` `#devcontainer` `#nextjs` `#ci`
+`#development-environment` `#env-files` `#supabase` `#terminal` `#bracketed-paste` `#devcontainer` `#nextjs` `#ci` `#dead-code` `#code-quality`
 
 ---
 
