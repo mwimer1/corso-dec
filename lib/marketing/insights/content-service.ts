@@ -16,7 +16,6 @@ import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
 import { unified } from 'unified';
 // Legacy imports (used by legacy adapter)
-import { CATEGORIES, staticInsights } from './static-data';
 
 const CONTENT_ROOT = path.join(process.cwd(), 'content', 'insights');
 const ARTICLES_DIR = path.join(CONTENT_ROOT, 'articles');
@@ -208,12 +207,16 @@ export const categorySlugify = (input: CategoryInput): string => {
 export type GetByCategoryParams = { slug: string; page?: number; pageSize?: number };
 
 export async function getInsightsByCategory({ slug, page = 1, pageSize = 10 }: GetByCategoryParams) {
-  const category = CATEGORIES.find(c => c.slug.toLowerCase() === slug.toLowerCase()) ?? null;
+  // Use unified source selector instead of static imports
+  const categories = await getCategories();
+  const categorySlugLower = slug.toLowerCase();
+  const category = categories.find(c => c.slug.toLowerCase() === categorySlugLower) ?? null;
   if (!category) return { items: [], total: 0, category: null };
 
+  const allInsights = await getAllInsights();
   const ts = (d?: string | number | Date) => (d ? new Date(d).getTime() : 0);
-  const all = staticInsights
-    .filter(i => (i.categories || []).some(cat => cat.slug?.toLowerCase() === slug.toLowerCase()))
+  const all = allInsights
+    .filter(i => (i.categories || []).some(cat => cat.slug?.toLowerCase() === categorySlugLower))
     .sort((a, b) => ts(b.publishDate) - ts(a.publishDate));
 
   const start = (page - 1) * pageSize;
