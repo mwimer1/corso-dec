@@ -33,7 +33,7 @@ export * from './header/dashboard-header';
 // client-facing barrel. Exporting server-only modules here would leak server
 // code into client bundles and break Next.js runtime boundaries.
 // Client-only helpers (if needed) should be exported from a dedicated client
-// barrel under components/dashboard/entity/client.ts
+// barrel under components/dashboard/entities/client.ts
 
 // ===== UTILITY COMPONENTS =====
 // Chat primitives are provided by `@/components/chat` (includes `useChat` hook).

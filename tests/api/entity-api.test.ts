@@ -2,7 +2,7 @@ import { GET as MainGET } from '@/app/api/v1/entity/[entity]/route';
 import { describe, expect, it, vi } from 'vitest';
 
 // Mock dependencies
-vi.mock('@/lib/services/entity/pages', () => ({
+vi.mock('@/lib/services/entities/pages', () => ({
   getEntityPage: vi.fn().mockResolvedValue({
     data: [
       { id: 1, name: 'Test Project', status: 'active' },

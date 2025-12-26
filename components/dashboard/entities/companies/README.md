@@ -18,7 +18,7 @@ const config = getEntityConfig('companies');
 
 ## Configuration
 
-- Column definitions: `lib/services/entity/companies/columns.config.ts`
+- Column definitions: `lib/services/entities/companies/columns.config.ts`
 - API endpoint: `/api/v1/entity/companies`
 - Server-side pagination and filtering
 

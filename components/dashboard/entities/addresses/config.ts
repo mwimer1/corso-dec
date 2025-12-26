@@ -1,12 +1,12 @@
 /** Note: Indirectly consumed via entity registry; allowlisted in unused-exports to avoid FP. */
 
 'use client';
-import { toColDef } from '@/lib/services/entity/adapters/aggrid';
-import { ADDRESSES_COLUMNS } from '@/lib/services/entity/addresses/columns.config';
+import { toColDef } from '@/lib/services/entities/adapters/aggrid';
+import { ADDRESSES_COLUMNS } from '@/lib/services/entities/addresses/columns.config';
+import type { EntityGridConfig } from '@/types/dashboard';
 import type { ColDef } from 'ag-grid-community';
 import { createDefaultColDef } from '../shared/ag-grid-config';
 import { createEntityFetcher } from '../shared/grid/fetchers';
-import type { EntityGridConfig } from '@/types/dashboard';
 
 async function resolveColDefs(): Promise<ColDef[]> {
   // Map framework-agnostic columns → AG Grid ColDef (lazy formatters)

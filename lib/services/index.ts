@@ -1,23 +1,23 @@
 // Client-safe exports only (no 'server-only' imports here)
 
 // Types and interfaces
-export * from './entity/contracts';
-export * from './entity/types';
+export * from './entities/contracts';
+export * from './entities/types';
 
 // Column configurations and utilities
-export { ADDRESSES_COLUMNS } from './entity/addresses/columns.config';
-export { COMPANIES_COLUMNS } from './entity/companies/columns.config';
-export { PROJECTS_COLUMNS } from './entity/projects/columns.config';
+export { ADDRESSES_COLUMNS } from './entities/addresses/columns.config';
+export { COMPANIES_COLUMNS } from './entities/companies/columns.config';
+export { PROJECTS_COLUMNS } from './entities/projects/columns.config';
 
 // Entity services barrel exports (consolidated from entity/index.ts)
-export type { TableColumnConfig } from './entity/types';
-export { getEntityConfig, loadGridConfig } from './entity/config';
-export type { GridConfig, GridId } from './entity/contracts';
+export { getEntityConfig, loadGridConfig } from './entities/config';
+export type { GridConfig, GridId } from './entities/contracts';
+export type { TableColumnConfig } from './entities/types';
 
 // Re-export adapters for client-side use
-export { toColDef } from './entity/adapters/aggrid';
+export { toColDef } from './entities/adapters/aggrid';
 
 // Column registry
-export * from './entity/columns/registry';
+export * from './entities/columns/registry';
 
 

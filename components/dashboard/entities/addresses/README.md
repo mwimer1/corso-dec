@@ -11,14 +11,14 @@ Entity grid configuration for addresses table with columns, filters, and data fe
 ## Usage
 
 ```tsx
-import { getEntityConfig } from '@/components/dashboard/entity';
+import { getEntityConfig } from '@/components/dashboard/entities';
 
 const config = getEntityConfig('addresses');
 ```
 
 ## Configuration
 
-- Column definitions: `lib/services/entity/addresses/columns.config.ts`
+- Column definitions: `lib/services/entities/addresses/columns.config.ts`
 - API endpoint: `/api/v1/entity/addresses`
 - Server-side pagination and filtering
 

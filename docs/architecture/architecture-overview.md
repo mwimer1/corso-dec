@@ -100,7 +100,7 @@ Clear separation between UI and data access:
 const { data } = useWarehouseQuery('SELECT * FROM projects');
 
 // ✅ CORRECT: Server component uses service layer
-import { fetchEntityData } from '@/lib/services/entity/actions';
+import { fetchEntityData } from '@/lib/services/entities/actions';
 
 // ❌ INCORRECT: Direct database import in component
 import { getClickHouseClient } from '@/lib/integrations/clickhouse/client';

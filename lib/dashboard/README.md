@@ -10,7 +10,7 @@ Contains server-side and client-safe dashboard logic, separate from UI component
 
 This directory is minimal and primarily contains legacy exports. Most dashboard functionality has been moved to:
 - **UI Components**: `components/dashboard/` - Dashboard UI components and layout
-- **Entity Services**: `lib/services/entity/` - Entity management logic
+- **Entity Services**: `lib/services/entities/` - Entity management logic
 
 ## Guidelines
 
@@ -21,7 +21,7 @@ This directory is minimal and primarily contains legacy exports. Most dashboard 
 ## Related
 
 - **UI Components**: `components/dashboard/` - Dashboard UI components
-- **Entity Services**: `lib/services/entity/` - Entity management services
+- **Entity Services**: `lib/services/entities/` - Entity management services
 - **Navigation**: `components/dashboard/layout/dashboard-nav.tsx` - Navigation items and utilities
 
 ---

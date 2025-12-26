@@ -130,7 +130,7 @@ export default [
             { name: '@/components/dashboard/table/table-body-virtual', message: 'Deprecated: AG Grid virtualization replaces this.' },
             { name: '@/components/dashboard/table/use-data-table', message: 'Deprecated: use AgGridContainer datasource approach.' },
             { name: '@/components/dashboard/table/table-chrome', message: 'Deprecated: use AgGridContainer.' },
-            { name: '@/lib/dashboard/**', message: 'lib/dashboard/** is deprecated. Use @/lib/services/entity/** instead.' },
+            { name: '@/lib/dashboard/**', message: 'lib/dashboard/** is deprecated. Use @/lib/services/entities/** instead.' },
             // Prevent re-introduction of legacy realtime stub
             { name: '@/lib/realtime/live', message: 'Removed legacy realtime stub. Use the event bus or queue service instead.' },
             // Block imports from shared variants barrel to encourage domain imports
@@ -317,14 +317,14 @@ export default [
           'app/**/*provider.tsx',
           'app/**/_theme.tsx',
           'components/dashboard/corso-ai-mode.tsx',
-          'components/dashboard/entity/addresses/config.ts',
-          'components/dashboard/entity/shared/renderers/value-formatter.ts',
+          'components/dashboard/entities/addresses/config.ts',
+          'components/dashboard/entities/shared/renderers/value-formatter.ts',
           'components/dashboard/header/dashboard-header.tsx',
           // UI components - exported via barrel and used via @/components
           'components/ui/segmented-control.tsx',
           // Entity configs - used internally via registry
-          'components/dashboard/entity/companies/config.ts',
-          'components/dashboard/entity/projects/config.ts',
+          'components/dashboard/entities/companies/config.ts',
+          'components/dashboard/entities/projects/config.ts',
           // Public API exports - legitimate unused exports
           'lib/api/**/*.ts',
           'lib/shared/**/*.ts',
@@ -347,7 +347,7 @@ export default [
           'contexts/**/*.tsx',
           'contexts/**/*.ts',
           // Entity services - used internally via registry
-          'lib/services/entity/**/*.ts',
+          'lib/services/entities/**/*.ts',
           // Dashboard utilities - used in dashboard routes
           'lib/dashboard/**/*.ts',
           // Marketing content services - server-side functions used in pages
@@ -360,8 +360,6 @@ export default [
           'lib/auth/**/*.ts',
           // Chat utilities - used in chat routes
           'lib/chat/**/*.ts',
-          // Entity registry - used internally
-          'lib/entities/**/*.ts',
           // Landing components - used via dynamic imports (next/dynamic, React.lazy)
           'components/landing/**/*.tsx',
           'components/landing/**/*.ts',
@@ -1112,7 +1110,7 @@ export default [
             },
             {
               group: ['@/lib/dashboard/**'],
-              message: 'lib/dashboard/** is deprecated. Use @/lib/services/entity/** instead.'
+              message: 'lib/dashboard/** is deprecated. Use @/lib/services/entities/** instead.'
             }
           ]
         }

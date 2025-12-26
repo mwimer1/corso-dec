@@ -43,15 +43,15 @@ const KNOWN_OPTIONAL_FIELDS: Record<string, Set<string>> = {
 async function getColumnConfigAccessors(entity: string): Promise<string[]> {
   switch (entity) {
     case 'projects': {
-      const mod = await import('../../lib/services/entity/projects/columns.config');
+      const mod = await import('../../lib/services/entities/projects/columns.config');
       return mod.PROJECTS_COLUMNS.map((col) => col.accessor);
     }
     case 'companies': {
-      const mod = await import('../../lib/services/entity/companies/columns.config');
+      const mod = await import('../../lib/services/entities/companies/columns.config');
       return mod.COMPANIES_COLUMNS.map((col) => col.accessor);
     }
     case 'addresses': {
-      const mod = await import('../../lib/services/entity/addresses/columns.config');
+      const mod = await import('../../lib/services/entities/addresses/columns.config');
       return mod.ADDRESSES_COLUMNS.map((col) => col.accessor);
     }
     default:

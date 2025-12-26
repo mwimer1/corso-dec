@@ -73,28 +73,28 @@ export const docs = [
     "title": "components/billing"
   },
   {
-    "path": "components/dashboard/entity/addresses/readme.md",
-    "title": "components/dashboard/entity/addresses"
+    "path": "components/dashboard/entities/addresses/readme.md",
+    "title": "components/dashboard/entities/addresses"
   },
   {
-    "path": "components/dashboard/entity/companies/readme.md",
-    "title": "components/dashboard/entity/companies"
+    "path": "components/dashboard/entities/companies/readme.md",
+    "title": "components/dashboard/entities/companies"
   },
   {
-    "path": "components/dashboard/entity/projects/readme.md",
-    "title": "components/dashboard/entity/projects"
+    "path": "components/dashboard/entities/projects/readme.md",
+    "title": "components/dashboard/entities/projects"
   },
   {
-    "path": "components/dashboard/entity/readme.md",
+    "path": "components/dashboard/entities/readme.md",
     "title": "Entity Grid Components"
   },
   {
-    "path": "components/dashboard/entity/shared/readme.md",
-    "title": "components/dashboard/entity/shared"
+    "path": "components/dashboard/entities/shared/readme.md",
+    "title": "components/dashboard/entities/shared"
   },
   {
-    "path": "components/dashboard/entity/shared/renderers/readme.md",
-    "title": "components/dashboard/entity/shared/renderers"
+    "path": "components/dashboard/entities/shared/renderers/readme.md",
+    "title": "components/dashboard/entities/shared/renderers"
   },
   {
     "path": "components/dashboard/layout/readme.md",
@@ -309,7 +309,7 @@ export const docs = [
     "title": "lib/server"
   },
   {
-    "path": "lib/services/entity/readme.md",
+    "path": "lib/services/entities/readme.md",
     "title": "Entity Service Layer"
   },
   {

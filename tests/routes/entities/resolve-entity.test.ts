@@ -1,4 +1,4 @@
-import { ALL_ENTITIES, isChatEntity, isGridEntity } from '@/lib/entities/registry';
+import { ALL_ENTITIES, isChatEntity, isGridEntity } from '@/lib/services/entities/registry';
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
 

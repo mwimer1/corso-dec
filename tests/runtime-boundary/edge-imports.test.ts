@@ -59,7 +59,7 @@ describe('Edge runtime boundary safety', () => {
       '@/lib/server/',
       '@/lib/integrations/clickhouse/',
       '@/lib/core/server',
-      '@/lib/services/entity/server',
+      '@/lib/services/entities/server',
       '@/lib/security',
       '@/lib/auth/authorization/',
       'next/server',

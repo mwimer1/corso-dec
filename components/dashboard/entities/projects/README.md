@@ -18,7 +18,7 @@ const config = getEntityConfig('projects');
 
 ## Configuration
 
-- Column definitions: `lib/services/entity/projects/columns.config.ts`
+- Column definitions: `lib/services/entities/projects/columns.config.ts`
 - API endpoint: `/api/v1/entity/projects`
 - Server-side pagination and filtering
 

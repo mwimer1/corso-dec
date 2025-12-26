@@ -1,9 +1,9 @@
-import { toColDef } from '@/lib/services/entity/adapters/aggrid';
+import { toColDef } from '@/lib/services/entities/adapters/aggrid';
 import type { TableColumnConfig } from '@/lib/validators/tableColumnConfig';
 import { describe, expect, it, vi } from 'vitest';
 
 // Mock the lazy-loaded formatters
-vi.mock('@/lib/services/entity/adapters/aggrid-formatters', () => ({
+vi.mock('@/lib/services/entities/adapters/aggrid-formatters', () => ({
   currencyFormatter: vi.fn((params) => `$${params.value}`),
   dateFormatter: vi.fn((params) => new Date(params.value).toLocaleDateString()),
   datetimeFormatter: vi.fn((params) => new Date(params.value).toLocaleString()),

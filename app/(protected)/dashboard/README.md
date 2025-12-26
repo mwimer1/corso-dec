@@ -76,7 +76,7 @@ export default async function Layout({ children }) {
 ```tsx
 // (entities)/[entity]/page.tsx - Dynamic entity handling via registry
 import { EntityParamSchema } from '@/lib/validators/entity';
-import { EntityGridHost, getEntityConfig } from '@/components/dashboard/entity';
+import { EntityGridHost, getEntityConfig } from '@/components/dashboard/entities';
 
 // Route config: dynamic rendering (no static generation)
 export const runtime = 'nodejs';
@@ -152,9 +152,9 @@ pnpm vitest run            # Test components
 |-----------|----------|---------|
 | `DashboardLayout` | `@/components/dashboard` | Main layout shell with sidebar (no top bar) |
 | `DashboardSidebar` | `@/components/dashboard/layout` | Collapsible sidebar navigation |
-| `EntityGridHost` | `@/components/dashboard/entity` | Client grid host via typed registry |
-| `EntityGrid` | `@/components/dashboard/entity/shared/grid` | AG Grid wrapper with server-side data source |
-| `GridMenubar` | `@/components/dashboard/entity/shared/grid` | Toolbar with saved searches, export, and grid controls |
+| `EntityGridHost` | `@/components/dashboard/entities` | Client grid host via typed registry |
+| `EntityGrid` | `@/components/dashboard/entities/shared/grid` | AG Grid wrapper with server-side data source |
+| `GridMenubar` | `@/components/dashboard/entities/shared/grid` | Toolbar with saved searches, export, and grid controls |
 
 ---
 

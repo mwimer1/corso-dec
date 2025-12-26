@@ -51,7 +51,7 @@ Update documentation and remove references from allowlists.
 **Current State**:
 - The barrel file does not exist
 - Only `value-formatter.ts` exists in the renderers directory
-- Imports use direct file paths (e.g., `@/components/dashboard/entity/shared/renderers/value-formatter`)
+- Imports use direct file paths (e.g., `@/components/dashboard/entities/shared/renderers/value-formatter`)
 - No action needed - already cleaned up
 
 ---

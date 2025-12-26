@@ -10,13 +10,13 @@ vi.mock('@clerk/nextjs/server', () => ({
 
 // Mock the entity service pages
 const mockGetEntityPage = vi.fn();
-vi.mock('@/lib/services/entity/pages', () => ({
+vi.mock('@/lib/services/entities/pages', () => ({
   getEntityPage: (...args: any[]) => mockGetEntityPage(...args),
 }));
 
 // Mock the entity config service
 const mockGetEntityConfig = vi.fn();
-vi.mock('@/lib/services/entity/config', () => ({
+vi.mock('@/lib/services/entities/config', () => ({
   getEntityConfig: (...args: any[]) => mockGetEntityConfig(...args),
 }));
 
