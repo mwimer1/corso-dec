@@ -1,15 +1,38 @@
----
-title: "components/insights"
-last_updated: "2025-12-25"
-category: "automation"
----
+# Insights Components
 
-# Repository Scripts & Docs
+Blog and article content components for insights pages.
 
-This README is generated from a single template (`README.scripts.hbs`).
+## Purpose
 
-- Directory: `components/insights`
-- Last updated: `2025-12-25`
+Provides components for displaying blog articles, insights, and related content with SEO optimization.
 
-> Edit the template or the generator context to change all READMEs consistently.
+## Public Exports
 
+From `components/insights/index.ts`:
+
+- **Layout**: `InsightsSection`, `InsightsNavbar`, navigation config
+- **Content**: `InsightDetail`, `InsightsList`, `InsightCard`, `InsightsHero`
+- **Filters**: `CategoryFilter`
+- **SEO**: `generateArticleMetadata` utility
+- **Hooks**: `useArticleAnalytics`
+- **Types**: `Category`, `CategoryFilterProps`, `InsightCardProps`
+
+## Usage in App Routes
+
+Insights components are used in:
+
+- **Insights pages**: `InsightsList`, `InsightDetail` in `/insights` routes
+- **Article pages**: `InsightDetail` with metadata generation for SEO
+- **Navigation**: `InsightsNavbar` for insights-specific navigation
+
+## Styling
+
+- **Tailwind CSS**: Primary styling approach
+- **CVA Variants**: Component variants in `styles/ui/**`
+- **CSS Modules**: Used for complex article layouts
+
+## Server/Client Notes
+
+- **Server components**: `InsightDetail`, `InsightsList` for SEO and initial render
+- **Client components**: `InsightsClient`, `CategoryFilter` for interactivity
+- **Metadata generation**: Server-side `generateArticleMetadata` for Next.js metadata API

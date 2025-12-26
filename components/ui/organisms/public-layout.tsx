@@ -2,6 +2,7 @@
 
 import { Button, SkipNavLink } from "@/components/ui/atoms";
 import { LinkTrack, ReadingProgress } from "@/components/ui/molecules";
+import { Footer } from "@/components/ui/organisms";
 import { APP_LINKS } from '@/lib/shared';
 import { cn } from "@/styles";
 import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
@@ -10,7 +11,6 @@ import type { NavItemData } from "@/types/shared";
 import { useAuth } from "@clerk/nextjs";
 import type { HTMLAttributes, ReactNode } from "react";
 import { useEffect, useState } from "react";
-import FooterSystem from "./footer-system/footer";
 import { Navbar } from "./navbar/navbar";
 
 interface PublicLayoutProps extends HTMLAttributes<HTMLElement> {
@@ -135,7 +135,7 @@ export function PublicLayout({
         </div>
       )}
 
-      <FooterSystem showCTA={showFooterCTA} />
+      <Footer showCTA={showFooterCTA} />
     </div>
   );
 }

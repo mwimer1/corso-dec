@@ -2,9 +2,6 @@
 export { Button } from './button.tsx';
 // Do not export a named Icon that does not exist; icon base is exported below
 
-// SSR-safe subset
-export * from './server-only';
-
 // Client-only atoms and additional exports used throughout the app
 export * from './badge';
 export * from './button';
@@ -29,10 +26,6 @@ export * from './slider';
 export * from './spinner';
 export * from './toggle';
 
-// New pattern surface atom (marketing / landing sections)
-export * from './section-surface';
-
-export * from './logo-dog';
 
 
 

@@ -8,7 +8,7 @@ import ChatWelcome from '../widgets/chat-welcome';
 import { MessageItem } from '../widgets/message-item';
 
 // Move dynamic import outside component to prevent remounting on re-renders
-const ChatComposer = dynamic(() => import('./chat-composer.client'), { ssr: false });
+const ChatComposer = dynamic(() => import('./chat-composer'), { ssr: false });
 
 export default function ChatWindow() {
   const { messages, isProcessing, sendMessage, stop, error, clearError, retryLastMessage } = useChat({ persistHistory: true, autoSave: true });

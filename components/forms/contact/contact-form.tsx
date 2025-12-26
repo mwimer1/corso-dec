@@ -4,9 +4,8 @@
 import { MessageSquareIcon } from "@/components/ui/atoms";
 import { Button } from "@/components/ui/atoms/button";
 import { Spinner } from "@/components/ui/atoms/spinner";
-// Public env access proxied via a local facade to satisfy boundaries
 import { FieldRenderer } from "../primitives/field-renderer";
-import { publicEnv } from "../primitives/public-env";
+import { publicEnv } from "@/lib/shared";
 
 import { cn } from "@/styles";
 import {

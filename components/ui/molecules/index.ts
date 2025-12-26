@@ -21,8 +21,6 @@ export * from './text-area';
 
 // ===== LAYOUT & STRUCTURE =====
 export * from './page-header';
-// Unified SectionHeader from patterns (supports both description and subtitle props)
-export { } from '../patterns/section-header';
 
 // ===== LOADING & SKELETONS =====
 export * from './loading-states';
