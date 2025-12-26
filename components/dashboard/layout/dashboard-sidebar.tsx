@@ -2,10 +2,6 @@
 
 // Feature flags removed - using default behavior
 import { useSubscriptionStatus } from "@/components/ui/hooks/use-subscription-status";
-import {
-    getAvailableNavItems,
-    isNavItemActive,
-} from "@/lib/dashboard";
 import { trackNavClick } from "@/lib/shared";
 import { useUser } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
@@ -14,6 +10,10 @@ import { SidebarItem } from "../sidebar/sidebar-item";
 import { SidebarRoot } from "../sidebar/sidebar-root";
 import { SidebarTop } from "../sidebar/sidebar-top";
 import { SidebarUserProfile } from "../sidebar/sidebar-user-profile";
+import {
+    getAvailableNavItems,
+    isNavItemActive,
+} from "./dashboard-nav";
 
 interface DashboardSidebarProps extends React.HTMLAttributes<HTMLElement> {
   sidebarCollapsed: boolean;

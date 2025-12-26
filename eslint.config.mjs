@@ -350,7 +350,6 @@ export default [
           'lib/services/entity/**/*.ts',
           // Dashboard utilities - used in dashboard routes
           'lib/dashboard/**/*.ts',
-          'lib/dashboard/**/*.tsx',
           // Marketing content services - server-side functions used in pages
           'lib/marketing/**/*.ts',
           // Mock utilities - used conditionally via dynamic imports

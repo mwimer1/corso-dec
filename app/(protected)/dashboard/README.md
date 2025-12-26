@@ -109,7 +109,7 @@ The dashboard layout no longer includes a global top bar to maximize vertical sp
 
 ## Navigation & Sidebar
 
-- **Dynamic Navigation:** Filtered by RBAC and feature flags via `@/lib/dashboard/nav.tsx`
+- **Dynamic Navigation:** Filtered by RBAC and feature flags via `@/components/dashboard/layout/dashboard-nav.tsx`
 - **Active State:** Applied for exact path matches
 - **Accessibility:** Proper ARIA labels and `aria-current="page"`
 - **RBAC Enforcement:** Navigation items are filtered by user role. Final access control is enforced server-side via API endpoints (UI gating provides UX but is not the sole protection)

@@ -1,6 +1,7 @@
 // ===== DASHBOARD CONTEXT =====
 // ===== LAYOUT =====
 export * from './layout/dashboard-layout';
+export * from './layout/dashboard-nav';
 export * from './layout/dashboard-sidebar';
 export * from './layout/dashboard-top-bar';
 

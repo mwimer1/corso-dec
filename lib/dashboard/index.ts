@@ -1,7 +1,6 @@
 // Dashboard barrel (canonical)
-// Keep table config surface minimal and nav canonical.
-
-export * from './nav';
+// NOTE: nav.tsx moved to components/dashboard/layout/dashboard-nav.tsx
+// This barrel is kept for backward compatibility but should be deprecated.
 
 // NOTE:
 // Removed previously re-exported legacy symbols due to no consumers /

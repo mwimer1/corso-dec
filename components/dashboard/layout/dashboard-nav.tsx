@@ -94,3 +94,4 @@ export function getAvailableNavItems(args?: {
   // Type assertion needed because filter may return fewer items
   return filtered as unknown as typeof DASHBOARD_NAV_ITEMS;
 }
+

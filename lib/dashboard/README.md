@@ -1,15 +1,29 @@
+# Dashboard Logic
+
+Non-UI dashboard logic and utilities.
+
+## Purpose
+
+Contains server-side and client-safe dashboard logic, separate from UI components.
+
+## Structure
+
+This directory is minimal and primarily contains legacy exports. Most dashboard functionality has been moved to:
+- **UI Components**: `components/dashboard/` - Dashboard UI components and layout
+- **Entity Services**: `lib/services/entity/` - Entity management logic
+
+## Guidelines
+
+- **No UI components** - UI components belong in `components/dashboard/`
+- **No React hooks** - React hooks belong in `components/dashboard/hooks/` or domain-specific locations
+- **Server/client-safe logic only** - Pure functions and utilities
+
+## Related
+
+- **UI Components**: `components/dashboard/` - Dashboard UI components
+- **Entity Services**: `lib/services/entity/` - Entity management services
+- **Navigation**: `components/dashboard/layout/dashboard-nav.tsx` - Navigation items and utilities
+
 ---
-title: "lib/dashboard"
-last_updated: "2025-12-25"
-category: "automation"
----
 
-# Repository Scripts & Docs
-
-This README is generated from a single template (`README.scripts.hbs`).
-
-- Directory: `lib/dashboard`
-- Last updated: `2025-12-25`
-
-> Edit the template or the generator context to change all READMEs consistently.
-
+_Last updated: 2025-01-03_

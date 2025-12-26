@@ -9,6 +9,7 @@ Main layout structure for the protected dashboard area, including sidebar naviga
 - `dashboard-layout.tsx` - Root layout wrapper with sidebar and top bar
 - `dashboard-sidebar.tsx` - Sidebar navigation component
 - `dashboard-top-bar.tsx` - Top bar with user profile and actions
+- `dashboard-nav.tsx` - Navigation items configuration and utilities (DASHBOARD_NAV_ITEMS, getAvailableNavItems, isNavItemActive)
 
 ## Usage
 
