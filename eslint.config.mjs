@@ -319,6 +319,8 @@ export default [
           'components/dashboard/corso-ai-mode.tsx',
           'components/dashboard/entities/addresses/config.ts',
           'components/dashboard/entities/shared/renderers/value-formatter.ts',
+          // Formatters - used via named imports in aggrid adapter
+          'lib/services/entities/adapters/aggrid-formatters.tsx',
           'components/dashboard/header/dashboard-header.tsx',
           // UI components - exported via barrel and used via @/components
           'components/ui/segmented-control.tsx',

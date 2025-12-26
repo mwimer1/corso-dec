@@ -1,7 +1,13 @@
 'use client';
-import type { TableColumnConfig } from '../types';
 import type { ColDef } from 'ag-grid-community';
-import * as fmt from './aggrid-formatters';
+import type { TableColumnConfig } from '../types';
+import {
+  currencyFormatter,
+  dateFormatter,
+  datetimeFormatter,
+  linkRenderer,
+  numberGetter,
+} from './aggrid-formatters';
 
 export function toColDef(cfg: TableColumnConfig): ColDef {
   const base: ColDef = {
@@ -19,13 +25,13 @@ export function toColDef(cfg: TableColumnConfig): ColDef {
 
   switch (cfg.format) {
     case 'currency':
-      return { ...base, valueGetter: fmt.numberGetter, valueFormatter: fmt.currencyFormatter };
+      return { ...base, valueGetter: numberGetter, valueFormatter: currencyFormatter };
     case 'date':
-      return { ...base, valueFormatter: fmt.dateFormatter };
+      return { ...base, valueFormatter: dateFormatter };
     case 'datetime':
-      return { ...base, valueFormatter: fmt.datetimeFormatter };
+      return { ...base, valueFormatter: datetimeFormatter };
     case 'link':
-      return { ...base, cellRenderer: fmt.linkRenderer };
+      return { ...base, cellRenderer: linkRenderer };
     default:
       return base;
   }
