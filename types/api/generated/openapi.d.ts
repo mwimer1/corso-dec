@@ -181,6 +181,7 @@ export interface paths {
         };
         /**
          * Export entity data
+         * @deprecated
          * @description Export entity data in CSV or XLSX format
          */
         get: operations["entity_export"];
@@ -1015,6 +1016,18 @@ export interface operations {
             400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
+            /** @description Gone - Export feature no longer available */
+            410: {
+                headers: {
+                    Deprecation?: string;
+                    Sunset?: string;
+                    Link?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
             429: components["responses"]["RateLimited"];
             500: components["responses"]["InternalError"];
         };

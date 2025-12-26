@@ -799,6 +799,7 @@
         ],
         "summary": "Export entity data",
         "description": "Export entity data in CSV or XLSX format",
+        "deprecated": true,
         "parameters": [
           {
             "name": "entity",
@@ -866,6 +867,37 @@
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
+          },
+          "410": {
+            "description": "Gone - Export feature no longer available",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "headers": {
+              "Deprecation": {
+                "schema": {
+                  "type": "string",
+                  "example": "true"
+                }
+              },
+              "Sunset": {
+                "schema": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2025-04-15T00:00:00Z"
+                }
+              },
+              "Link": {
+                "schema": {
+                  "type": "string",
+                  "example": "</api/v1/entity/{entity}/query>; rel=\"alternate\"; type=\"application/json\""
+                }
+              }
+            }
           },
           "429": {
             "$ref": "#/components/responses/RateLimited"

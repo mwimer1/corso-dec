@@ -1,7 +1,6 @@
 // Node.js required: ClickHouse database operations
 import { http } from '@/lib/api';
-import { withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit } from '@/lib/middleware';
-import { handleCors } from '@/lib/middleware';
+import { handleCors, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit } from '@/lib/middleware';
 import { auth } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
 
@@ -23,10 +22,20 @@ const handler = async (_req: NextRequest, _ctx: { params: { entity: string } }):
   }
 
   // Export functionality has been removed during entity grid migration
-  // TODO: Re-implement export functionality if needed
-  return http.error(501, 'Export functionality was removed during the entity grid migration', {
-    code: 'NOT_IMPLEMENTED',
-    details: 'Export functionality was removed during the entity grid migration. Contact development team if this feature is needed.',
+  // Return 410 Gone with deprecation headers
+  const sunsetDate = '2025-04-15'; // 90 days from 2025-01-15
+  return http.error(410, 'Gone - Export feature no longer available', {
+    code: 'EXPORT_REMOVED',
+    details: {
+      message: 'Export functionality was removed during the entity grid migration. Use entity query endpoints for data access.',
+      removedDate: '2025-01-15',
+      alternativeEndpoint: '/api/v1/entity/{entity}/query',
+    },
+    headers: {
+      'Deprecation': 'true',
+      'Sunset': new Date(sunsetDate).toUTCString(),
+      'Link': '</api/v1/entity/{entity}/query>; rel="alternate"; type="application/json"',
+    },
   });
 };
 

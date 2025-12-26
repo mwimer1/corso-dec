@@ -110,8 +110,8 @@ describe('Rate Limiting - Entity Routes', () => {
       const req = makeReq('1.2.3.4', 'http://localhost/api/v1/entity/projects/export');
       const res = await handler(req, { params: Promise.resolve({ entity: 'projects' }) });
 
-      // Export route returns 501 (not implemented), but should not be rate limited
-      expect([200, 501]).toContain(res.status);
+      // Export route returns 410 (gone/deprecated), but should not be rate limited
+      expect([200, 410]).toContain(res.status);
     });
 
     it('should return 429 when rate limit is exceeded', async () => {
