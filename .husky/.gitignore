@@ -5,5 +5,8 @@
 *.tmp
 *.log
 
+# Ignore Husky's generated internal directory (if it reappears)
+_/
+
 # Keep husky.sh tracked
 !husky.sh
