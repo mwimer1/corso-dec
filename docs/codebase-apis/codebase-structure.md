@@ -76,13 +76,13 @@ components/
 
 ### Lib Directory (`lib/`)
 
-Business domain organization:
+Business domain organization. **Domains live directly under `lib/`** (no intermediate "services" layer):
 
 ```text
 lib/
 ├── auth/                   # Authentication logic
 ├── billing/                # Billing and payments
-├── dashboard/              # Dashboard business logic
+├── entities/               # Entity management (projects, companies, addresses)
 ├── api/                    # API utilities and helpers
 ├── shared/                 # Cross-domain utilities
 ├── security/               # Security utilities
@@ -90,6 +90,8 @@ lib/
 ├── integrations/           # External service integrations
 └── README.md               # Library documentation
 ```
+
+**Note**: The `lib/services/` directory was removed in favor of direct domain structure. All domains (e.g., `lib/entities/`, `lib/auth/`) live directly under `lib/` following domain-driven architecture principles.
 
 ## 🚀 Development Patterns
 

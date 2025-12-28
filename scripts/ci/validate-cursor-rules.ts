@@ -55,6 +55,11 @@ for (const entry of fs.readdirSync(RULES_DIR)) {
   const raw = fs.readFileSync(full, "utf8");
   const parsed = matter(raw);
 
+  // Check for deprecated lib/services/entities references
+  if (raw.includes('lib/services/entities') || raw.includes('@/lib/services/entities')) {
+    problems.push(`${entry}: Contains deprecated 'lib/services/entities' reference. Use 'lib/entities' instead.`);
+  }
+
   try {
     const fm = cursorRuleFrontmatterSchema.parse(parsed.data);
 

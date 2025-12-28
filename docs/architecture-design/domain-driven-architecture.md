@@ -37,9 +37,11 @@ These guidelines ensure consistency, scalability, and maintainability as the cod
 
 ### 📁 **Domain Organization**
 
+**Domains MUST live directly under `lib/`** (no intermediate "services" layer):
+
 ```text
 lib/
-├── {domain}/                    # Business domain (e.g., auth, dashboard)
+├── {domain}/                    # Business domain (e.g., auth, entities, integrations)
 │   ├── index.ts                 # Client-safe barrel exports
 │   ├── server.ts                # Server-only barrel (if mixed domain)
 │   ├── README.md                # Domain documentation
@@ -47,6 +49,16 @@ lib/
 │       ├── index.ts            # Sub-domain barrel
 │       └── *.ts                # Implementation files
 ```
+
+**Forbidden Patterns:**
+- ❌ `lib/services/{domain}/` - Use `lib/{domain}/` instead
+- ❌ `lib/layers/{domain}/` - Domains are not organized by technical layers
+
+**Examples:**
+- ✅ `lib/entities/` - Entity management domain
+- ✅ `lib/auth/` - Authentication domain
+- ✅ `lib/integrations/` - External integrations domain
+- ❌ `lib/services/entities/` - Removed in favor of `lib/entities/`
 
 ### 🏷️ **Naming Conventions**
 
