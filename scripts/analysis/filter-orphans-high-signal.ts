@@ -11,11 +11,12 @@ interface OrphanReport {
   summary: {
     candidates: number;
     kept: number;
+    review?: number;
     droppable: number;
   };
   files: Array<{
     path: string;
-    status: 'DROP' | 'KEEP';
+    status: 'DROP' | 'KEEP' | 'REVIEW';
     reasons: string[];
     importers?: string[];
     exportRefs?: Array<{ export: string; refs: number }>;
@@ -58,6 +59,9 @@ function main() {
   console.log('📊 Orphan Report Summary:');
   console.log(`   Candidates: ${report.summary.candidates}`);
   console.log(`   Kept: ${report.summary.kept}`);
+  if (report.summary.review !== undefined) {
+    console.log(`   Review: ${report.summary.review}`);
+  }
   console.log(`   Droppable: ${report.summary.droppable}\n`);
 
   const dropFiles = report.files.filter(f => f.status === 'DROP');

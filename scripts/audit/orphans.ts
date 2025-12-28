@@ -319,7 +319,7 @@ const CONFIG = {
 
 const ArgSchema = z.object({
   out: z.string().default('reports/orphan/orphan-report.json'),
-  only: z.enum(['ALL','DROP','KEEP']).default('ALL'),
+  only: z.enum(['ALL','DROP','KEEP','REVIEW']).default('ALL'),
   apply: z.boolean().default(false),
   yes: z.boolean().default(false),
   stdout: z.boolean().default(false),
@@ -345,7 +345,7 @@ Usage:
 
 Options:
   --out <file>              Output file path (default: reports/orphan/orphan-report.json)
-  --only <type>             Filter results: ALL, DROP, or KEEP (default: ALL)
+  --only <type>             Filter results: ALL, DROP, KEEP, or REVIEW (default: ALL)
   --apply                   Apply deletions (requires --yes flag)
   --yes                     Skip confirmation prompt (CI only)
   --stdout                  Output results to stdout instead of file
@@ -429,7 +429,7 @@ const filteredCandidates = candidates.filter((rel: string) => {
   return true;
 });
 
-type FileStatus = 'DROP' | 'KEEP';
+type FileStatus = 'DROP' | 'KEEP' | 'REVIEW';
 type KeepReason =
   | 'KEEP_EXPORT_USED' | 'KEEP_ROUTES_IMPLICIT' | 'KEEP_BARREL_USED'
   | 'KEEP_DYNAMIC_IMPORT' | 'KEEP_TEST_REF' | 'KEEP_DOCS_REF'
@@ -521,10 +521,16 @@ for (const rel of filteredCandidates) {
     }
   } catch {}
 
-  // docs/tests textual ref → keep
+  // docs/tests textual ref → review (not keep, since not code-referenced)
   if (findTextReferences(rel, [...CONFIG.REFERENCE_DIRS])) {
-    record.status = 'KEEP';
-    record.reasons.push('KEEP_DOCS_REF');
+    // Only set REVIEW if no other KEEP reasons exist
+    if (record.status === 'DROP') {
+      record.status = 'REVIEW';
+      record.reasons.push('KEEP_DOCS_REF');
+    } else {
+      // If already KEEP for other reasons, just add the reason
+      record.reasons.push('KEEP_DOCS_REF');
+    }
   }
 
   results.push(record);
@@ -534,6 +540,7 @@ const outputFiles = argv.only === 'ALL' ? results : results.filter((r) => r.stat
 const summary = {
   candidates: filteredCandidates.length,
   kept: outputFiles.filter((r) => r.status === 'KEEP').length,
+  review: outputFiles.filter((r) => r.status === 'REVIEW').length,
   droppable: outputFiles.filter((r) => r.status === 'DROP').length,
 };
 
@@ -541,7 +548,20 @@ const summary = {
 const outDir = nodePath.dirname(argv.out);
 await fs.ensureDir(outDir);
 
-await fs.writeJson(argv.out, { summary, files: outputFiles }, { spaces: 2 });
+// Atomic file write: write to temp file then rename
+const tempFile = `${argv.out}.tmp`;
+await fs.writeJson(tempFile, { summary, files: outputFiles }, { spaces: 2 });
+await fs.move(tempFile, argv.out, { overwrite: true });
+
+// Print summary to console
+if (!argv.stdout) {
+  console.log(`\n📊 Orphan Audit Summary:`);
+  console.log(`   Candidates: ${summary.candidates}`);
+  console.log(`   Kept: ${summary.kept}`);
+  console.log(`   Review: ${summary.review}`);
+  console.log(`   Droppable: ${summary.droppable}`);
+  console.log(`\n📄 Report written to: ${argv.out}\n`);
+}
 
 if (argv.stdout) {
   if (argv.pathsOnly) {
