@@ -398,6 +398,8 @@ export default [
           'components/billing/**/*.ts',
           // UI shared utilities - analytics, etc.
           'components/ui/shared/**/*.ts',
+          // UI hooks - domain-colocated hooks used in UI components
+          'components/ui/hooks/**/*.ts',
         ],
       }],
 
