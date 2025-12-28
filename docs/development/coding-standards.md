@@ -152,11 +152,11 @@ const handler = () => {
 ```typescript
 // ✅ CORRECT: Server component (default)
 import { auth } from '@clerk/nextjs/server';
-import { getData } from '@/lib/services/data';
+import { getEntityPage } from '@/lib/entities/pages';
 
 export default async function Page() {
   const { userId } = await auth();
-  const data = await getData(userId);
+  const data = await getEntityPage('projects', { page: 0, pageSize: 10 });
   
   return <div>{/* Render data */}</div>;
 }

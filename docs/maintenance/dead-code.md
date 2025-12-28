@@ -85,7 +85,7 @@ Dead code removal is done in batches to minimize risk:
 
 ### Batch 2: Domain-Specific Cleanup
 
-**Scope:** Unused modules by domain (lib/shared, lib/validators, lib/services, lib/api)
+**Scope:** Unused modules by domain (lib/shared, lib/validators, lib/entities, lib/api)
 
 **Process:**
 1. Remove unused re-exports in domain's `index.ts`

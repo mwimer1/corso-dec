@@ -145,7 +145,7 @@ GET /api/v1/entity/projects?page=0&pageSize=50
 1. Edit the JSON file directly (e.g., `public/__mockdb__/projects.json`)
 2. Ensure the JSON is valid (use a JSON validator if needed)
 3. Ensure new fields match the column `accessor` values in column configs
-   - See `lib/services/entities/projects/columns.config.ts` for field names
+   - See `lib/entities/projects/columns.config.ts` for field names
    - See section 4 below for accessor → field mapping
 
 **Warning**: Invalid JSON will break the API endpoint. Always validate before saving.
@@ -174,8 +174,8 @@ GET /api/v1/entity/projects?page=0&pageSize=50
 
 The dashboard uses a two-layer architecture:
 
-1. **TableColumnConfig** (framework-agnostic) in `lib/services/entities/<entity>/columns.config.ts`
-2. **AG Grid ColDef** (AG Grid-specific) via adapter in `lib/services/entities/adapters/aggrid.ts`
+1. **TableColumnConfig** (framework-agnostic) in `lib/entities/<entity>/columns.config.ts`
+2. **AG Grid ColDef** (AG Grid-specific) via adapter in `lib/entities/adapters/aggrid.ts`
 
 ### Accessor → Field Mapping
 
@@ -534,7 +534,7 @@ See `tests/e2e/README.md` for detailed E2E test documentation.
 ## Additional Resources
 
 - **Dashboard Architecture**: See `components/dashboard/entities/README.md`
-- **Column Configuration**: See `lib/services/entities/<entity>/columns.config.ts`
+- **Column Configuration**: See `lib/entities/<entity>/columns.config.ts`
 - **API Routes**: See `app/api/v1/entity/[entity]/route.ts`
 - **Development Setup**: See `docs/development/setup-guide.md`
 

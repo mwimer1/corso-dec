@@ -10,7 +10,7 @@ status: "stable"
 
 ## Investigation Results
 
-After thorough investigation of Batch 2 domains (`lib/shared`, `lib/validators`, `lib/services`, `lib/api`), we found that **most exports flagged as "unused" are actually used**:
+After thorough investigation of Batch 2 domains (`lib/shared`, `lib/validators`, `lib/entities`, `lib/api`), we found that **most exports flagged as "unused" are actually used**:
 
 ### Findings
 
@@ -46,10 +46,10 @@ After thorough investigation of Batch 2 domains (`lib/shared`, `lib/validators`,
 - `BaseRowSchema`, `CompanyRowSchema`, etc. - Used in entity validators and data processing (previously used in removed `lib/mocks/entity-data.server.ts`)
 - `EntityParamSchema`, `EntityListQuerySchema` - Used in `app/api/v1/entity/[entity]/route.ts`
 
-#### `lib/services/**`
-- Formatters (`dateFormatter`, `currencyFormatter`, etc.) - Used in `lib/services/entities/adapters/aggrid.ts`
+#### `lib/entities/**`
+- Formatters (`dateFormatter`, `currencyFormatter`, etc.) - Used in `lib/entities/adapters/aggrid.ts`
 - `ADDRESSES_COLUMNS`, `COMPANIES_COLUMNS`, `PROJECTS_COLUMNS` - Used in entity config files
-- `getEntityPage` - Used in `lib/services/entities/actions.ts`
+- `getEntityPage` - Used in `lib/entities/actions.ts`
 - `getEntityConfig` - Used in dashboard route handlers
 - `TableColumnConfig` - Used in OpenAPI types
 

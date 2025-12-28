@@ -101,7 +101,7 @@ http://localhost:3000/api/v1/entity/projects?page=0&pageSize=50&filters=%7B%22ba
    // TEMPORARY CHANGE:
    defaultSortModel: [{ colId: 'fake_field_that_does_not_exist', sort: 'desc' }],
    ```
-   OR change a column accessor in `lib/services/entities/projects/columns.config.ts`:
+   OR change a column accessor in `lib/entities/projects/columns.config.ts`:
    ```typescript
    // BEFORE:
    { id: 'effective_date', label: 'Date', accessor: 'effective_date', ... },

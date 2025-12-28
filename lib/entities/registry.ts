@@ -1,4 +1,4 @@
-// lib/services/entities/registry.ts
+// lib/entities/registry.ts
 export function isGridEntity(x: string): x is 'projects' | 'companies' | 'addresses' {
   return (['projects', 'companies', 'addresses'] as readonly string[]).includes(x);
 }

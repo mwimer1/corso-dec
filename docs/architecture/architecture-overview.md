@@ -91,7 +91,7 @@ Clear separation between UI and data access:
 - **Client Components**: Use React Query hooks (`useWarehouseQuery`) that call API routes
 - **Server Components**: Can use direct database access via service layer
 - **API Routes**: All database queries go through `/api/v1/*` endpoints
-- **Service Layer**: Business logic in `lib/services/` and `lib/integrations/`
+- **Domain Layer**: Business logic in `lib/<domain>/` (e.g., `lib/entities/`, `lib/integrations/`)
 
 **Pattern:**
 ```typescript
@@ -100,7 +100,7 @@ Clear separation between UI and data access:
 const { data } = useWarehouseQuery('SELECT * FROM projects');
 
 // ✅ CORRECT: Server component uses service layer
-import { fetchEntityData } from '@/lib/services/entities/actions';
+import { fetchEntityData } from '@/lib/entities/actions';
 
 // ❌ INCORRECT: Direct database import in component
 import { getClickHouseClient } from '@/lib/integrations/clickhouse/client';

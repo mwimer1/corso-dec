@@ -313,8 +313,8 @@ export const docs = [
     "title": "lib/server"
   },
   {
-    "path": "lib/services/entities/readme.md",
-    "title": "lib/services/entities"
+    "path": "lib/entities/readme.md",
+    "title": "lib/entities"
   },
   {
     "path": "lib/shared/readme.md",

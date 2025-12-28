@@ -1,7 +1,7 @@
-// lib/services/entities/search-fields.ts
+// lib/entities/search-fields.ts
 
 /**
- * @module lib/services/entities/search-fields
+ * @module lib/entities/search-fields
  * @description Entity-specific searchable field configurations for global quick search
  * 
  * This module defines which database fields are searchable for each entity type.

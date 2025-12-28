@@ -104,7 +104,7 @@ These files are used but in ways the static analyzer doesn't detect:
    - Status: **KEEP** - Used by AG Grid column definitions
    - Evidence:
      - Exports `ValueCurrencyFormatter` and `DateEffectiveValueFormatter`
-     - Used in `lib/services/entity/adapters/aggrid.ts` via imports
+     - Used in `lib/entities/adapters/aggrid.ts` via imports
      - Note in file: "Indirectly consumed via AG Grid column definitions"
    - Action: **KEEP** - Add to orphan audit allowlist/exclusions
 

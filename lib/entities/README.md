@@ -1,12 +1,12 @@
 ---
-title: "lib/services/entities"
+title: "lib/entities"
 last_updated: "2025-01-29"
-category: "services"
+category: "domain"
 ---
 
-# Entity Services
+# Entity Domain
 
-Entity management service layer for dashboard data tables (projects, addresses, companies).
+Entity management domain for dashboard data tables (projects, addresses, companies).
 
 ## Purpose
 
@@ -15,7 +15,7 @@ Provides framework-agnostic column definitions, data fetching, and entity config
 ## Structure
 
 ```
-lib/services/entities/
+lib/entities/
   projects/
     columns.config.ts    # Projects column definitions (TableColumnConfig)
   companies/
@@ -34,15 +34,15 @@ lib/services/entities/
 
 ## Key Entry Points
 
-- **Column Definitions**: `lib/services/entities/<entity>/columns.config.ts` - Framework-agnostic column configs
-- **Data Fetching**: `lib/services/entities/actions.ts` - Server-side data fetching
-- **AG Grid Adapter**: `lib/services/entities/adapters/aggrid.ts` - Converts TableColumnConfig to AG Grid ColDef
+- **Column Definitions**: `lib/entities/<entity>/columns.config.ts` - Framework-agnostic column configs
+- **Data Fetching**: `lib/entities/actions.ts` - Server-side data fetching
+- **AG Grid Adapter**: `lib/entities/adapters/aggrid.ts` - Converts TableColumnConfig to AG Grid ColDef
 
 ## Usage
 
 ```typescript
 // Import column definitions
-import { PROJECTS_COLUMNS } from '@/lib/services/entities/projects/columns.config';
+import { PROJECTS_COLUMNS } from '@/lib/entities/projects/columns.config';
 
 // Use in entity grid config
 import { getEntityConfig } from '@/components/dashboard/entities';
