@@ -3,7 +3,7 @@ rule_id: dashboard-components
 title: Dashboard Components — Chat & Tables (Consolidated)
 owners:
   - platform@corso.io
-last_reviewed: "2025-10-13"
+last_reviewed: "2025-01-29"
 status: active
 domains: [components, dashboard, chat, tables]
 enforcement: warn
@@ -11,7 +11,7 @@ related_rules:
   - component-design-system
   - runtime-boundaries
 alwaysApply: false
-globs: ["components/dashboard/**/*.tsx", "lib/dashboard/entity/*.ts*"]
+globs: ["components/dashboard/**/*.tsx"]
 ---
 
 # Dashboard Components — Chat & Tables (Consolidated)
@@ -34,8 +34,8 @@ globs: ["components/dashboard/**/*.tsx", "lib/dashboard/entity/*.ts*"]
 - **API Endpoint**: `POST /api/v1/dashboard/chat/process` (streaming NDJSON chat processing)
 
 ### Table Components
-- `components/dashboard/table/*.tsx`
-- `lib/dashboard/entity/*.ts*`
+- `components/dashboard/entities/**/*.tsx` - Entity grid components
+- `lib/services/entities/**/*.ts` - Entity service layer
 
 ## 🛡️ Guardrails & Boundaries
 
@@ -45,9 +45,9 @@ globs: ["components/dashboard/**/*.tsx", "lib/dashboard/entity/*.ts*"]
 import { DashboardTable } from '@/components/dashboard';
 import { useDashboardData } from '@/lib/dashboard';
 
-// ✅ CORRECT: Server components use server barrels
-import { EntityListPage } from '@/components/dashboard/server';
-import { getEntityData } from '@/lib/dashboard/entity/server';
+// ✅ CORRECT: Server components use service layer
+import { EntityListPage } from '@/components/dashboard/entities';
+import { getEntityPage } from '@/lib/services/entities/pages';
 
 // ❌ INCORRECT: Server-only imports in client components
 // import { getClickhouse } from '@/lib/integrations/clickhouse/server';
@@ -55,7 +55,7 @@ import { getEntityData } from '@/lib/dashboard/entity/server';
 
 ### Import Boundaries
 - **Client**: `@/components/dashboard`, `@/lib/dashboard`
-- **Server**: `@/components/dashboard/server`, `@/lib/dashboard/entity/*`
+- **Server**: `@/components/dashboard/entities`, `@/lib/services/entities`
 - **No self-barrels**: Within `components/dashboard/**`, prefer relative/leaf imports rather than importing back through the dashboard barrel
 
 ### Styling Requirements
@@ -145,10 +145,10 @@ const columns = [
 ### Entity Data Helpers
 ```typescript
 // ✅ CORRECT: Server-side entity helpers
-import { getEntityData } from '@/lib/dashboard/entity/server';
+import { getEntityPage } from '@/lib/services/entities/pages';
 
 export async function EntityPage({ entity }: { entity: string }) {
-  const data = await getEntityData(entity);
+  const data = await getEntityPage(entity, { page: { index: 0, size: 50 } });
   return <EntityListPage data={data} />;
 }
 ```

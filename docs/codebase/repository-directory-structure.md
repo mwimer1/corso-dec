@@ -1,7 +1,7 @@
 ---
 title: "Repository Directory Structure"
 description: "Complete directory tree structure of the entire repository"
-last_updated: "2025-01-28"
+last_updated: "2025-01-29"
 category: "codebase"
 status: "generated"
 ---
@@ -14,7 +14,6 @@ status: "generated"
 > ```
 
 ## Directory Tree
-
 🌳 Directory Structure: .
 
 └── corso-code
@@ -71,11 +70,6 @@ status: "generated"
     │   ├── README.md
     │   ├── settings.json
     │   ├── tasks.json
-    ├── actions
-    │   ├── marketing
-    │   │   ├── contact-form.ts
-    │   ├── index.ts
-    │   ├── README.md
     ├── api
     │   ├── openapi.base.json
     │   ├── openapi.json
@@ -96,6 +90,7 @@ status: "generated"
     │   │   ├── README.md
     │   ├── (marketing)
     │   │   ├── contact
+    │   │   │   ├── actions.ts
     │   │   │   ├── page.tsx
     │   │   ├── cookies
     │   │   │   ├── page.tsx
@@ -212,6 +207,8 @@ status: "generated"
     │   │   ├── README.md
     │   │   ├── subscription-client.tsx
     │   ├── chat
+    │   │   ├── hooks
+    │   │   │   ├── use-chat.ts
     │   │   ├── sections
     │   │   │   ├── chat-composer.tsx
     │   │   │   ├── chat-page.tsx
@@ -226,7 +223,7 @@ status: "generated"
     │   │   ├── index.ts
     │   │   ├── README.md
     │   ├── dashboard
-    │   │   ├── entity
+    │   │   ├── entities
     │   │   │   ├── addresses
     │   │   │   │   ├── config.ts
     │   │   │   │   ├── README.md
@@ -253,6 +250,7 @@ status: "generated"
     │   │   │   ├── dashboard-header.tsx
     │   │   ├── layout
     │   │   │   ├── dashboard-layout.tsx
+    │   │   │   ├── dashboard-nav.tsx
     │   │   │   ├── dashboard-sidebar.tsx
     │   │   │   ├── dashboard-top-bar.tsx
     │   │   │   ├── README.md
@@ -417,6 +415,9 @@ status: "generated"
     │   │   │   ├── slider.tsx
     │   │   │   ├── spinner.tsx
     │   │   │   ├── toggle.tsx
+    │   │   ├── hooks
+    │   │   │   ├── use-arrow-key-navigation.ts
+    │   │   │   ├── use-subscription-status.ts
     │   │   ├── molecules
     │   │   │   ├── shared
     │   │   │   │   ├── README.md
@@ -559,6 +560,7 @@ status: "generated"
     │   │   ├── _generated
     │   │   │   ├── app-routes.md
     │   │   ├── app-directory-structure.md
+    │   │   ├── repository-directory-structure-temp.md
     │   │   ├── repository-directory-structure.md
     │   ├── codebase-apis
     │   │   ├── codebase-structure.md
@@ -668,23 +670,11 @@ status: "generated"
     │   ├── package.json
     │   ├── README.md
     ├── hooks
-    │   ├── chat
-    │   │   ├── README.md
-    │   │   ├── use-chat.ts
-    │   ├── dashboard
-    │   │   ├── README.md
-    │   ├── integrations
-    │   │   ├── README.md
-    │   ├── marketing
-    │   │   ├── README.md
-    │   ├── security
-    │   │   ├── README.md
     │   ├── shared
     │   │   ├── ui
     │   │   │   ├── use-arrow-key-navigation.ts
     │   │   ├── index.ts
     │   │   ├── README.md
-    │   │   ├── use-subscription-status.ts
     │   ├── README.md
     ├── lib
     │   ├── actions
@@ -728,10 +718,7 @@ status: "generated"
     │   │   ├── README.md
     │   ├── dashboard
     │   │   ├── index.ts
-    │   │   ├── nav.tsx
     │   │   ├── README.md
-    │   ├── entities
-    │   │   ├── registry.ts
     │   ├── integrations
     │   │   ├── clickhouse
     │   │   │   ├── client.ts
@@ -752,7 +739,11 @@ status: "generated"
     │   ├── marketing
     │   │   ├── insights
     │   │   │   ├── content-service.ts
+    │   │   │   ├── directus-adapter.ts
     │   │   │   ├── image-resolver.ts
+    │   │   │   ├── legacy-adapter.ts
+    │   │   │   ├── mockcms-adapter.ts
+    │   │   │   ├── source.ts
     │   │   │   ├── static-data.ts
     │   │   ├── client.ts
     │   │   ├── README.md
@@ -830,7 +821,7 @@ status: "generated"
     │   │   ├── README.md
     │   │   ├── runtime.ts
     │   ├── services
-    │   │   ├── entity
+    │   │   ├── entities
     │   │   │   ├── adapters
     │   │   │   │   ├── aggrid-formatters.tsx
     │   │   │   │   ├── aggrid.ts
@@ -850,6 +841,7 @@ status: "generated"
     │   │   │   ├── contracts.ts
     │   │   │   ├── pages.ts
     │   │   │   ├── README.md
+    │   │   │   ├── registry.ts
     │   │   │   ├── search-fields.ts
     │   │   │   ├── types.ts
     │   │   ├── index.ts
@@ -910,6 +902,30 @@ status: "generated"
     │   ├── log.ts
     │   ├── README.md
     ├── public
+    │   ├── __mockcms__
+    │   │   ├── categories
+    │   │   │   ├── index.json
+    │   │   ├── insights
+    │   │   │   ├── breaking-down-data-silos.json
+    │   │   │   ├── construction-forecasting-integrating-schedule-cost.json
+    │   │   │   ├── construction-market-outlook-2026.json
+    │   │   │   ├── controlling-cost-overruns-predictive-analytics.json
+    │   │   │   ├── data-driven-culture-best-practices.json
+    │   │   │   ├── data-driven-decision-making-jobsite.json
+    │   │   │   ├── future-of-project-controls-ai-platforms.json
+    │   │   │   ├── harnessing-field-data-project-operations.json
+    │   │   │   ├── human-side-construction-tech.json
+    │   │   │   ├── index.json
+    │   │   │   ├── leading-indicators-construction-safety.json
+    │   │   │   ├── managing-change-orders-agile-project-controls.json
+    │   │   │   ├── predictive-maintenance-construction-equipment.json
+    │   │   │   ├── resilient-construction-strategies.json
+    │   │   │   ├── rise-of-ai-iot-construction.json
+    │   │   │   ├── roi-of-safety-proactive-programs.json
+    │   │   │   ├── streamlining-procurement-digital-tools.json
+    │   │   │   ├── sustainable-construction-2030.json
+    │   │   │   ├── sustainable-materials-cost-balance.json
+    │   │   ├── _meta.json
     │   ├── __mockdb__
     │   │   ├── addresses.json
     │   │   ├── companies.json
@@ -920,7 +936,6 @@ status: "generated"
     │   │   ├── corso-ai-interface.png
     │   │   ├── projects-interface.png
     │   ├── insights
-    │   │   ├── corso-code.code-workspace
     │   │   ├── insights-construction-trends.png
     │   ├── favicon.ico
     │   ├── logo-dog.svg
@@ -966,7 +981,10 @@ status: "generated"
     │   │   ├── check-common.ts
     │   │   ├── check-deprecated-paths.ts
     │   │   ├── check-metadata.ts
+    │   │   ├── check-no-top-actions.ts
+    │   │   ├── check-placeholder-directories.ts
     │   │   ├── check-protected-auth.ts
+    │   │   ├── check-temp-directories.ts
     │   │   ├── cleanup-branches.ts
     │   │   ├── ensure-api-in-v1-or-internal.ts
     │   │   ├── generate-bundle-report.ts
@@ -1091,6 +1109,7 @@ status: "generated"
     │   │   ├── manage-docs.ts
     │   │   ├── normalize-doc-status.ts
     │   │   ├── normalize-frontmatter.ts
+    │   │   ├── port-static-insights-to-mockcms.ts
     │   │   ├── README.md
     │   │   ├── refresh-readmes.ts
     │   │   ├── replace-package-script-references.ts
@@ -1174,6 +1193,7 @@ status: "generated"
     │   │   ├── gen-type-audit.ts
     │   │   ├── jsinspect-to-sarif.ts
     │   │   ├── lastUpdated.ts
+    │   │   ├── list-drop-candidates.ts
     │   │   ├── logger.ts
     │   │   ├── monitor-cursor-rules-performance.js
     │   │   ├── README.md
@@ -1298,7 +1318,6 @@ status: "generated"
     │   ├── utils.ts
     ├── supabase
     │   ├── .temp
-    │   │   ├── cli-latest
     │   ├── migrations
     │   │   ├── 20240101000000_add_chat_messages_table.sql
     │   │   ├── 20240429000000_create_saved_tables.sql
@@ -1428,7 +1447,6 @@ status: "generated"
     │   │   ├── content-service.test.ts
     │   │   ├── get-insights-by-category.test.ts
     │   │   ├── insights.runtime.test.ts
-    │   │   ├── marketing-content-service.test.ts
     │   ├── integrations
     │   ├── lib
     │   │   ├── marketing
@@ -1513,6 +1531,7 @@ status: "generated"
     │   │   ├── register.static-import.guard.test.ts
     │   ├── README.md
     ├── tmp
+    │   ├── README.md
     │   ├── unused-exports-categorized.json
     │   ├── unused-exports.txt
     ├── types
@@ -1651,14 +1670,11 @@ status: "generated"
     ├── .prettierrc.js
     ├── .spectral.yaml
     ├── .stylelintignore
-    ├── docs/maintenance/_reports/AUDIT_CONSISTENCY_SUMMARY.md
     ├── CHANGELOG.md
     ├── commitlint.config.cjs
-    ├── docs/maintenance/_reports/DASHBOARD_CONSOLIDATION_SUMMARY.md
-    ├── docs/maintenance/_reports/EMPTY_DIRECTORIES_CLEANUP.md
+    ├── corso.code-workspace
     ├── eslint.config.mjs
     ├── EXECUTION_PLAN.md
-    ├── docs/maintenance/_reports/HEALTH_ALIASES_SUMMARY.md
     ├── INSIGHTS_SEARCH_IMPLEMENTATION.md
     ├── instrumentation-client.ts
     ├── instrumentation.ts
@@ -1673,10 +1689,9 @@ status: "generated"
     ├── proxy.ts
     ├── README.md
     ├── sgconfig.yml
-    ├── docs/maintenance/_reports/SPRINT3_SUMMARY.md
     ├── tailwind.config.ts
     ├── ts-prune-allowlist.txt
     ├── tsconfig.json
     ├── vitest.config.ts
 
-📊 Summary: 385 dirs, 1275 files, max depth: 6
+📊 Summary: 382 dirs, 1294 files, max depth: 6
