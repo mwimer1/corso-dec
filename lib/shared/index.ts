@@ -27,7 +27,6 @@ export type { ValidatedEnv } from '@/types/shared/config/base/types';
  * Exports all shared error classes and utilities (shared, server/client-safe).
  */
 export * from './errors/application-error';
-export * from './errors/browser';
 export * from './errors/error-utils';
 export * from './errors/reporting';
 export * from './errors/security-validation-error';

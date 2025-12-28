@@ -1,7 +1,10 @@
 #!/usr/bin/env tsx
 /**
- * List files from orphan report that are marked as DROP
- * or have minimal keep reasons (potential candidates)
+ * List files from orphan report that are actionable:
+ * - REVIEW: needs manual triage (only referenced in docs/tests)
+ * - DROP: safe to delete (no references)
+ * 
+ * REVIEW is shown first (triage queue), then DROP (delete candidates)
  */
 
 import fs from 'fs';
@@ -19,41 +22,41 @@ const report = JSON.parse(fs.readFileSync(reportPath, 'utf-8'));
 console.log('📊 Orphan Report Summary:');
 console.log(`   Candidates: ${report.summary.candidates}`);
 console.log(`   Kept: ${report.summary.kept}`);
+if (report.summary.review !== undefined) {
+  console.log(`   Review: ${report.summary.review}`);
+}
 console.log(`   Droppable: ${report.summary.droppable}\n`);
 
+const reviewFiles = report.files.filter((f: any) => f.status === 'REVIEW');
 const dropFiles = report.files.filter((f: any) => f.status === 'DROP');
 
-if (dropFiles.length === 0) {
-  console.log('✅ No files marked as DROP in current report.\n');
-  console.log('Note: The "68 droppable" count you saw earlier may have been from:');
-  console.log('  - A different run with different analysis');
-  console.log('  - Files that are now marked as KEEP due to keep reasons');
-  console.log('  - Files filtered out by high-signal script (tests/scripts/config)\n');
-  
-  // Show files with minimal keep reasons (potential candidates)
-  const minimalKeep = report.files.filter((f: any) => 
-    f.status === 'KEEP' && 
-    f.reasons.length === 1 && 
-    (f.reasons[0] === 'KEEP_DOCS_REF' || f.reasons[0] === 'KEEP_TEST_REF')
-  );
-  
-  if (minimalKeep.length > 0) {
-    console.log(`\n📋 Files with minimal keep reasons (${minimalKeep.length}):`);
-    console.log('   (These might be review candidates)\n');
-    minimalKeep.slice(0, 20).forEach((f: any) => {
-      console.log(`   - ${f.path} (${f.reasons.join(', ')})`);
-    });
-    if (minimalKeep.length > 20) {
-      console.log(`   ... and ${minimalKeep.length - 20} more`);
-    }
+// Show REVIEW first (triage queue)
+if (reviewFiles.length > 0) {
+  console.log(`\n🔍 REVIEW Files (${reviewFiles.length}) - Needs manual triage:`);
+  console.log('   (Only referenced in docs/tests; verify before deleting)\n');
+  reviewFiles.slice(0, 30).forEach((f: any) => {
+    console.log(`   - ${f.path} (${f.reasons.join(', ')})`);
+  });
+  if (reviewFiles.length > 30) {
+    console.log(`   ... and ${reviewFiles.length - 30} more`);
   }
-} else {
-  console.log(`\n🗑️  DROP Files (${dropFiles.length}):\n`);
+  console.log('');
+}
+
+// Then show DROP (delete candidates)
+if (dropFiles.length > 0) {
+  console.log(`\n🗑️  DROP Files (${dropFiles.length}) - Safe to delete:\n`);
   dropFiles.forEach((f: any) => {
     console.log(`   ${f.path}`);
     if (f.notes) {
       console.log(`      Note: ${f.notes}`);
     }
   });
+} else if (reviewFiles.length === 0) {
+  console.log('✅ No actionable files in current report.\n');
+  console.log('All files are either:');
+  console.log('  - Referenced in code (KEEP)');
+  console.log('  - Part of Next.js conventions (KEEP)');
+  console.log('  - Have dynamic imports (KEEP)');
 }
 

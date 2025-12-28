@@ -16,7 +16,6 @@ export { SidebarTop } from './sidebar/sidebar-top';
 export { SidebarUserProfile } from './sidebar/sidebar-user-profile';
 
 // ===== HEADER =====
-export * from './corso-ai-mode';
 export * from './header/dashboard-header';
 
 

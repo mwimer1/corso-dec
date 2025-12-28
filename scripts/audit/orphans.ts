@@ -432,7 +432,7 @@ const filteredCandidates = candidates.filter((rel: string) => {
 type FileStatus = 'DROP' | 'KEEP' | 'REVIEW';
 type KeepReason =
   | 'KEEP_EXPORT_USED' | 'KEEP_ROUTES_IMPLICIT' | 'KEEP_BARREL_USED'
-  | 'KEEP_DYNAMIC_IMPORT' | 'KEEP_TEST_REF' | 'KEEP_DOCS_REF'
+  | 'KEEP_DYNAMIC_IMPORT' | 'KEEP_DOCS_REF'
   | 'KEEP_STYLE_SIDE_EFFECT' | 'KEEP_ALLOWLIST';
 
 const results: Array<{

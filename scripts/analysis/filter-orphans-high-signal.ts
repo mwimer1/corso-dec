@@ -64,8 +64,12 @@ function main() {
   }
   console.log(`   Droppable: ${report.summary.droppable}\n`);
 
-  const dropFiles = report.files.filter(f => f.status === 'DROP');
-  const highSignalFiles = dropFiles.filter(f => !isExcluded(f.path));
+  // High-signal = actionable buckets: REVIEW (needs triage) + DROP (safe to delete)
+  // KEEP is not actionable, so we exclude it
+  const actionableFiles = report.files.filter(f => 
+    f.status === 'DROP' || f.status === 'REVIEW'
+  );
+  const highSignalFiles = actionableFiles.filter(f => !isExcluded(f.path));
 
   // Group by category
   const byCategory = {
@@ -115,9 +119,22 @@ function main() {
   }
 
   // Show excluded count for reference
-  const excludedCount = dropFiles.length - highSignalFiles.length;
+  const excludedCount = actionableFiles.length - highSignalFiles.length;
   if (excludedCount > 0) {
     console.log(`\n⚠️  Excluded ${excludedCount} files (tests, scripts, config files, conventions)`);
+  }
+  
+  // Show breakdown by status
+  const reviewCount = highSignalFiles.filter(f => f.status === 'REVIEW').length;
+  const dropCount = highSignalFiles.filter(f => f.status === 'DROP').length;
+  if (reviewCount > 0 || dropCount > 0) {
+    console.log(`\n📊 Breakdown:`);
+    if (reviewCount > 0) {
+      console.log(`   REVIEW (needs triage): ${reviewCount}`);
+    }
+    if (dropCount > 0) {
+      console.log(`   DROP (safe to delete): ${dropCount}`);
+    }
   }
 
   // Output paths-only list for piping
