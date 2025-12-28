@@ -47,6 +47,7 @@ export const DashboardLayout = React.forwardRef<
             "flex min-h-0 overflow-hidden flex-col bg-background",
             dashboardShellVariants({
               sidebar: sidebarCollapsed ? "collapsed" : "expanded",
+              maxWidth: "none",
             }),
             className,
           )}

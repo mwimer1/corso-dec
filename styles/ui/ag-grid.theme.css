@@ -26,7 +26,7 @@
 
 .corso-ag-grid .ag-root-wrapper {
   border: 1px solid var(--ag-border-color);
-  border-radius: var(--radius-lg);
+  border-radius: 0;
   background: var(--ag-background-color);
 }
 
