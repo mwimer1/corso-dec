@@ -5,6 +5,11 @@ import 'server-only';
 
 const toNum = (v?: string) =>
   v == null || v.trim() === '' || Number.isNaN(Number(v)) ? undefined : Number(v);
+const toBool = (v?: string, defaultValue?: boolean) => {
+  if (v == null || v === '') return defaultValue;
+  const s = String(v).trim().toLowerCase();
+  return s === '1' || s === 'true';
+};
 const toArr = (v?: string) => (v ? v.split(',').map((s) => s.trim()).filter(Boolean) : undefined);
 
 let _cache: ValidatedEnv | null = null;
@@ -48,6 +53,7 @@ export function getEnv(): ValidatedEnv {
       const s = String(v).trim().toLowerCase();
       return (s === '1' || s === 'true') ? 'true' : 'false';
     })(),
+    CORSO_MOCK_ORG_ID: g('CORSO_MOCK_ORG_ID') ?? 'demo-org',
 
     CLERK_SECRET_KEY: g('CLERK_SECRET_KEY'),
     TURNSTILE_SECRET_KEY: g('TURNSTILE_SECRET_KEY'),
@@ -61,6 +67,12 @@ export function getEnv(): ValidatedEnv {
     OPENAI_SLOW_THRESHOLD_MS: toNum(g('OPENAI_SLOW_THRESHOLD_MS')),
     OPENAI_RATE_LIMIT_PER_MIN: toNum(g('OPENAI_RATE_LIMIT_PER_MIN')),
     OPENAI_TOKENS_WARN_THRESHOLD: toNum(g('OPENAI_TOKENS_WARN_THRESHOLD')),
+
+    // OpenAI Responses API config (Sprint 0: scaffolding only)
+    AI_USE_RESPONSES: toBool(g('AI_USE_RESPONSES'), false),
+    AI_MAX_TOOL_CALLS: toNum(g('AI_MAX_TOOL_CALLS')) ?? 3,
+    AI_QUERY_TIMEOUT_MS: toNum(g('AI_QUERY_TIMEOUT_MS')) ?? 5000,
+    AI_TOTAL_TIMEOUT_MS: toNum(g('AI_TOTAL_TIMEOUT_MS')) ?? 60000,
 
     CLICKHOUSE_URL: g('CLICKHOUSE_URL'),
     CLICKHOUSE_READONLY_USER: g('CLICKHOUSE_READONLY_USER'),

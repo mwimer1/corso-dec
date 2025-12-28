@@ -23,6 +23,7 @@ import { http } from '@/lib/api';
 import { withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit } from '@/lib/middleware';
 import { clickhouseQuery } from '@/lib/integrations/clickhouse/server';
 import { validateSQLScope } from '@/lib/integrations/database/scope';
+import { queryMockDb } from '@/lib/integrations/mockdb';
 import { createOpenAIClient } from '@/lib/integrations/openai/server';
 import { handleCors } from '@/lib/middleware';
 import { getTenantContext } from '@/lib/server/db/tenant-context';
@@ -112,12 +113,25 @@ const executeSqlFunction: OpenAI.Chat.Completions.ChatCompletionTool = {
  */
 async function executeSqlAndFormat(sql: string, orgId: string): Promise<string> {
   try {
+    const env = getEnv();
+    // Determine if mock DB should be used (same logic as entity routes)
+    // Default to mock in dev/test unless explicitly disabled; production defaults to real DB
+    const useMock = (env.CORSO_USE_MOCK_DB ?? 'false') === 'true' || 
+                    (env.NODE_ENV !== 'production' && env.CORSO_USE_MOCK_DB !== 'false');
+    
+    // In mock mode, use mockOrgId from env for validation
+    const expectedOrgId = useMock ? (env.CORSO_MOCK_ORG_ID ?? 'demo-org') : orgId;
+    
     // Validate SQL before execution with tenant isolation
-    validateSQLScope(sql, orgId);
+    validateSQLScope(sql, expectedOrgId);
     
     // Execute query (limit results to 100 rows for chat display)
     const limitedSql = sql.includes('LIMIT') ? sql : `${sql} LIMIT 100`;
-    const results = await clickhouseQuery(limitedSql);
+    
+    // Route to mock DB or ClickHouse based on flag
+    const results = useMock 
+      ? await queryMockDb(limitedSql)
+      : await clickhouseQuery(limitedSql);
     
     if (!results || results.length === 0) {
       return 'The query returned no results.';

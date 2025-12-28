@@ -317,4 +317,5 @@ describe('POST /api/v1/ai/chat', () => {
       expect(typeof done).toBe('boolean');
     }
   });
+
 });

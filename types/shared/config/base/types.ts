@@ -48,6 +48,8 @@ export interface ValidatedEnv {
 
   // Mock DB flag (normalized; prefer CORSO_USE_MOCK_DB with legacy fallbacks)
   CORSO_USE_MOCK_DB?: 'true' | 'false';
+  // Mock DB organization ID (used when mock DB enabled)
+  CORSO_MOCK_ORG_ID?: string;
   
   // Mock CMS flag (mirrors CORSO_USE_MOCK_DB pattern)
   CORSO_USE_MOCK_CMS?: 'true' | 'false';
@@ -73,6 +75,11 @@ export interface ValidatedEnv {
   OPENAI_SLOW_THRESHOLD_MS?: number;
   OPENAI_RATE_LIMIT_PER_MIN?: number;
   OPENAI_TOKENS_WARN_THRESHOLD?: number;
+  // OpenAI Responses API (Sprint 0: scaffolding only)
+  AI_USE_RESPONSES?: boolean;
+  AI_MAX_TOOL_CALLS?: number;
+  AI_QUERY_TIMEOUT_MS?: number;
+  AI_TOTAL_TIMEOUT_MS?: number;
 
   // ClickHouse
   CLICKHOUSE_URL?: string;

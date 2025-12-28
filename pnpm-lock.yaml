@@ -28,6 +28,9 @@ importers:
       '@clickhouse/client':
         specifier: ^1.14.0
         version: 1.14.0
+      '@duckdb/node-api':
+        specifier: ^1.4.3-r.1
+        version: 1.4.3-r.1
       '@emotion/react':
         specifier: ^11.14.0
         version: 11.14.0(@types/react@19.2.7)(react@19.2.3)
@@ -131,8 +134,8 @@ importers:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       openai:
-        specifier: ^5.23.2
-        version: 5.23.2(ws@8.18.3)(zod@3.25.76)
+        specifier: ^6.15.0
+        version: 6.15.0(ws@8.18.3)(zod@3.25.76)
       postcss-import:
         specifier: ^16.1.1
         version: 16.1.1(postcss@8.5.6)
@@ -1287,6 +1290,37 @@ packages:
 
   '@dual-bundle/import-meta-resolve@4.2.1':
     resolution: {integrity: sha512-id+7YRUgoUX6CgV0DtuhirQWodeeA7Lf4i2x71JS/vtA5pRb/hIGWlw+G6MeXvsM+MXrz0VAydTGElX1rAfgPg==}
+
+  '@duckdb/node-api@1.4.3-r.1':
+    resolution: {integrity: sha512-/L6nywAWDnMptERJiO3npCu8XqWYGSo2prw6RvxERtjT9J95cnUP+WM6uNAm+Nw2uYDm8PvPO2kASC3Moh2bBA==}
+
+  '@duckdb/node-bindings-darwin-arm64@1.4.3-r.1':
+    resolution: {integrity: sha512-2dShpy8HmdLwfRLPI+KZaJXN+wA68gOsuAh//Q1C/X0tQbd97WxHo8u7lZqMhaJMvGaInVAxR+KoFSfG2M5jwA==}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@duckdb/node-bindings-darwin-x64@1.4.3-r.1':
+    resolution: {integrity: sha512-a6DUVpDolavw1ojq/IBKoEViGzL1oMIP5xlPrqEW+znyDxp85/UfZzCXnH+BYTKgLWBwCUcqlneMtCh4osZ9lQ==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@duckdb/node-bindings-linux-arm64@1.4.3-r.1':
+    resolution: {integrity: sha512-WQ/khu+KCEH34JxDAfa8IDCw0m5NUefpqT4izbH372OAAiY/858xrtcB8FYW0p9Yeb6P8dglHQ058FoLBQ7MhA==}
+    cpu: [arm64]
+    os: [linux]
+
+  '@duckdb/node-bindings-linux-x64@1.4.3-r.1':
+    resolution: {integrity: sha512-GWZPi+eAsv2/6TQch+b6AgnPiVnXjhmT7l9gbZMZ17fDSIkKXSbWa9Y3dDJ8amDu/IJpwBMFVovfLHrELbMmlA==}
+    cpu: [x64]
+    os: [linux]
+
+  '@duckdb/node-bindings-win32-x64@1.4.3-r.1':
+    resolution: {integrity: sha512-7II6t8/0opHz6NFosrn5VSv3uMadtOhVRfBK+HzEvxTSkGEpu6DzQ91mPaiehuFctdB2upPza4dP3rCLYDdHeQ==}
+    cpu: [x64]
+    os: [win32]
+
+  '@duckdb/node-bindings@1.4.3-r.1':
+    resolution: {integrity: sha512-I7rkYeNYDs9oV9AU076m9msrWb4wdVXapX1y2em8YkGItn4ehyp8q0KEJ2QZy45+PLqmkHt9b/QHlDo8xKnLZQ==}
 
   '@emnapi/core@1.7.1':
     resolution: {integrity: sha512-o1uhUASyo921r2XtHYOHy7gdkGLge8ghBEQHMWmyJFoXlpU58kIrhhN3w26lpQb6dspetweapMn2CSNwQ8I4wg==}
@@ -7546,12 +7580,12 @@ packages:
     resolution: {integrity: sha512-MVHddDVweXZF3awtlAS+6pgKLlm/JgxZ90+/NBurBoQctVOOB/zDdVjcyPzQ+0laDGbsWgrRkflI65sQeOgT9Q==}
     engines: {node: '>=8'}
 
-  openai@5.23.2:
-    resolution: {integrity: sha512-MQBzmTulj+MM5O8SKEk/gL8a7s5mktS9zUtAkU257WjvobGc9nKcBuVwjyEEcb9SI8a8Y2G/mzn3vm9n1Jlleg==}
+  openai@6.15.0:
+    resolution: {integrity: sha512-F1Lvs5BoVvmZtzkUEVyh8mDQPPFolq4F+xdsx/DO8Hee8YF3IGAlZqUIsF+DVGhqf4aU0a3bTghsxB6OIsRy1g==}
     hasBin: true
     peerDependencies:
       ws: ^8.17.1
-      zod: ^3.23.8
+      zod: ^3.25 || ^4.0
     peerDependenciesMeta:
       ws:
         optional: true
@@ -11001,6 +11035,33 @@ snapshots:
   '@discoveryjs/json-ext@0.5.7': {}
 
   '@dual-bundle/import-meta-resolve@4.2.1': {}
+
+  '@duckdb/node-api@1.4.3-r.1':
+    dependencies:
+      '@duckdb/node-bindings': 1.4.3-r.1
+
+  '@duckdb/node-bindings-darwin-arm64@1.4.3-r.1':
+    optional: true
+
+  '@duckdb/node-bindings-darwin-x64@1.4.3-r.1':
+    optional: true
+
+  '@duckdb/node-bindings-linux-arm64@1.4.3-r.1':
+    optional: true
+
+  '@duckdb/node-bindings-linux-x64@1.4.3-r.1':
+    optional: true
+
+  '@duckdb/node-bindings-win32-x64@1.4.3-r.1':
+    optional: true
+
+  '@duckdb/node-bindings@1.4.3-r.1':
+    optionalDependencies:
+      '@duckdb/node-bindings-darwin-arm64': 1.4.3-r.1
+      '@duckdb/node-bindings-darwin-x64': 1.4.3-r.1
+      '@duckdb/node-bindings-linux-arm64': 1.4.3-r.1
+      '@duckdb/node-bindings-linux-x64': 1.4.3-r.1
+      '@duckdb/node-bindings-win32-x64': 1.4.3-r.1
 
   '@emnapi/core@1.7.1':
     dependencies:
@@ -18225,7 +18286,7 @@ snapshots:
       is-docker: 2.2.1
       is-wsl: 2.2.0
 
-  openai@5.23.2(ws@8.18.3)(zod@3.25.76):
+  openai@6.15.0(ws@8.18.3)(zod@3.25.76):
     optionalDependencies:
       ws: 8.18.3
       zod: 3.25.76
