@@ -227,7 +227,7 @@ export async function getInsightsByCategory(
   const allInsights = await getAllInsightsFn();
   const ts = (d?: string | number | Date) => (d ? new Date(d).getTime() : 0);
   const all = allInsights
-    .filter(i => (i.categories || []).some(cat => cat.slug?.toLowerCase() === categorySlugLower))
+    .filter(i => (i.categories || []).some(cat => cat?.slug?.toLowerCase() === categorySlugLower))
     .sort((a, b) => ts(b.publishDate) - ts(a.publishDate));
 
   const start = (page - 1) * pageSize;

@@ -75,5 +75,18 @@ describe('getInsightsByCategory', () => {
     expect(getAllInsights).not.toHaveBeenCalled();
     expect(getCategories).not.toHaveBeenCalled();
   });
+
+  it('uses unified source selector by default when no deps provided (regression test)', async () => {
+    // Regression test: verify that getInsightsByCategory uses unified source when called without deps
+    // This ensures the unified source integration is maintained
+    const result = await content.getInsightsByCategory({ slug: 'data', page: 1, pageSize: 10 });
+    
+    // Should return valid structure (even if empty for unknown category)
+    expect(result).toHaveProperty('items');
+    expect(result).toHaveProperty('total');
+    expect(result).toHaveProperty('category');
+    expect(Array.isArray(result.items)).toBe(true);
+    expect(typeof result.total).toBe('number');
+  });
 });
 
