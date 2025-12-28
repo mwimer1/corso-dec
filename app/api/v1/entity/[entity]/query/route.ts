@@ -27,8 +27,8 @@ export const revalidate = 0;
 
 import { http, validateJson } from '@/lib/api';
 import { handleCors, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit } from '@/lib/middleware';
-import { getEntityConfig } from '@/lib/services/entities/config';
-import { getEntityPage } from '@/lib/services/entities/pages';
+import { getEntityConfig } from '@/lib/entities/config';
+import { getEntityPage } from '@/lib/entities/pages';
 import { EntityParamSchema, type EntityParam } from '@/lib/validators';
 import { EntityQueryRequestSchema } from '@/lib/validators/entityQuery';
 import { auth } from '@clerk/nextjs/server';

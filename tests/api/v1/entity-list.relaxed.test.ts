@@ -14,13 +14,13 @@ vi.mock('@clerk/nextjs/server', () => ({
 
 // Mock the entity service pages - will return mock DB data when CORSO_USE_MOCK_DB=true
 const mockGetEntityPage = vi.fn();
-vi.mock('@/lib/services/entities/pages', () => ({
+vi.mock('@/lib/entities/pages', () => ({
   getEntityPage: (...args: any[]) => mockGetEntityPage(...args),
 }));
 
 // Mock the entity config service
 const mockGetEntityConfig = vi.fn();
-vi.mock('@/lib/services/entities/config', () => ({
+vi.mock('@/lib/entities/config', () => ({
   getEntityConfig: (...args: any[]) => mockGetEntityConfig(...args),
 }));
 

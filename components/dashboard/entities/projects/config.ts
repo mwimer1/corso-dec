@@ -1,6 +1,6 @@
 'use client';
-import { toColDef } from '@/lib/services/entities/adapters/aggrid';
-import { PROJECTS_COLUMNS } from '@/lib/services/entities/projects/columns.config';
+import { toColDef } from '@/lib/entities/adapters/aggrid';
+import { PROJECTS_COLUMNS } from '@/lib/entities/projects/columns.config';
 import type { EntityGridConfig } from '@/types/dashboard';
 import type { ColDef } from 'ag-grid-community';
 import { createDefaultColDef } from '../shared/ag-grid-config';

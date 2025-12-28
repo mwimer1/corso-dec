@@ -4,10 +4,10 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 import { http } from '@/lib/api';
+import { getEntityConfig } from '@/lib/entities/config';
+import type { EntityFetchParams } from '@/lib/entities/contracts';
+import { getEntityPage } from '@/lib/entities/pages';
 import { handleCors, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit } from '@/lib/middleware';
-import { getEntityConfig } from '@/lib/services/entities/config';
-import type { EntityFetchParams } from '@/lib/services/entities/contracts';
-import { getEntityPage } from '@/lib/services/entities/pages';
 import { isRelaxedAuthMode } from '@/lib/shared/config/auth-mode';
 import {
   EntityListQuerySchema,

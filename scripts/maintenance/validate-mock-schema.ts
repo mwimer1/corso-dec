@@ -43,16 +43,16 @@ const KNOWN_OPTIONAL_FIELDS: Record<string, Set<string>> = {
 async function getColumnConfigAccessors(entity: string): Promise<string[]> {
   switch (entity) {
     case 'projects': {
-      const mod = await import('../../lib/services/entities/projects/columns.config');
-      return mod.PROJECTS_COLUMNS.map((col) => col.accessor);
+      const mod = await import('../../lib/entities/projects/columns.config');
+      return mod.PROJECTS_COLUMNS.map((col: { accessor: string }) => col.accessor);
     }
     case 'companies': {
-      const mod = await import('../../lib/services/entities/companies/columns.config');
-      return mod.COMPANIES_COLUMNS.map((col) => col.accessor);
+      const mod = await import('../../lib/entities/companies/columns.config');
+      return mod.COMPANIES_COLUMNS.map((col: { accessor: string }) => col.accessor);
     }
     case 'addresses': {
-      const mod = await import('../../lib/services/entities/addresses/columns.config');
-      return mod.ADDRESSES_COLUMNS.map((col) => col.accessor);
+      const mod = await import('../../lib/entities/addresses/columns.config');
+      return mod.ADDRESSES_COLUMNS.map((col: { accessor: string }) => col.accessor);
     }
     default:
       throw new Error(`Unknown entity type: ${entity}`);

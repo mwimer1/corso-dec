@@ -1,5 +1,5 @@
 import { EntityGridHost, getEntityConfig } from '@/components/dashboard/entities';
-import { isChatEntity, isGridEntity } from '@/lib/services/entities/registry';
+import { isChatEntity, isGridEntity } from '@/lib/entities/registry';
 import { EntityParamSchema } from '@/lib/validators/entity';
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";

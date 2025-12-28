@@ -1,4 +1,6 @@
-import { ADDRESSES_COLUMNS, COMPANIES_COLUMNS, PROJECTS_COLUMNS } from '@/lib/services';
+import { ADDRESSES_COLUMNS } from '@/lib/entities/addresses/columns.config';
+import { COMPANIES_COLUMNS } from '@/lib/entities/companies/columns.config';
+import { PROJECTS_COLUMNS } from '@/lib/entities/projects/columns.config';
 import { describe, expect, it } from 'vitest';
 
 describe('Entity Columns', () => {

@@ -1,4 +1,4 @@
-import { ENTITY_SEARCH_FIELDS, getSearchFields, hasSearchFields } from '@/lib/services/entities/search-fields';
+import { ENTITY_SEARCH_FIELDS, getSearchFields, hasSearchFields } from '@/lib/entities/search-fields';
 import { describe, expect, it } from 'vitest';
 
 describe('Entity Search Fields Configuration', () => {

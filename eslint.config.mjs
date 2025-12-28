@@ -320,7 +320,7 @@ export default [
           'components/dashboard/entities/addresses/config.ts',
           'components/dashboard/entities/shared/renderers/value-formatter.ts',
           // Formatters - used via named imports in aggrid adapter
-          'lib/services/entities/adapters/aggrid-formatters.tsx',
+          'lib/entities/adapters/aggrid-formatters.tsx',
           'components/dashboard/header/dashboard-header.tsx',
           // UI components - exported via barrel and used via @/components
           'components/ui/segmented-control.tsx',
@@ -349,7 +349,7 @@ export default [
           'contexts/**/*.tsx',
           'contexts/**/*.ts',
           // Entity services - used internally via registry
-          'lib/services/entities/**/*.ts',
+          'lib/entities/**/*.ts',
           // Dashboard utilities - used in dashboard routes
           'lib/dashboard/**/*.ts',
           // Marketing content services - server-side functions used in pages

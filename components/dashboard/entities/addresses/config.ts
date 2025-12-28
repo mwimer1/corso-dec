@@ -1,8 +1,8 @@
 /** Note: Indirectly consumed via entity registry; allowlisted in unused-exports to avoid FP. */
 
 'use client';
-import { toColDef } from '@/lib/services/entities/adapters/aggrid';
-import { ADDRESSES_COLUMNS } from '@/lib/services/entities/addresses/columns.config';
+import { toColDef } from '@/lib/entities/adapters/aggrid';
+import { ADDRESSES_COLUMNS } from '@/lib/entities/addresses/columns.config';
 import type { EntityGridConfig } from '@/types/dashboard';
 import type { ColDef } from 'ag-grid-community';
 import { createDefaultColDef } from '../shared/ag-grid-config';

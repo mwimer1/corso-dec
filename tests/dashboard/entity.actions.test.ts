@@ -25,7 +25,7 @@ vi.mock('@/lib/integrations/clickhouse/utils', () => ({
 }));
 
 // Mock the grid config loading
-vi.mock('@/lib/services/entities/config', () => ({
+vi.mock('@/lib/entities/config', () => ({
   loadGridConfig: vi.fn().mockResolvedValue({
     tableName: 'test_table',
     primaryKey: 'id',
@@ -52,7 +52,7 @@ describe('Entity Service Actions', () => {
 
   describe('fetchEntityData', () => {
     it('should fetch entity data successfully', async () => {
-      const { fetchEntityData } = await import('@/lib/services/entities/actions');
+      const { fetchEntityData } = await import('@/lib/entities/actions');
 
       const result = await fetchEntityData('projects', undefined, {
         page: 0,
@@ -87,7 +87,7 @@ describe('Entity Service Actions', () => {
     });
 
     it('should handle search parameters for companies with correct fields', async () => {
-      const { fetchEntityData } = await import('@/lib/services/entities/actions');
+      const { fetchEntityData } = await import('@/lib/entities/actions');
 
       await fetchEntityData('companies', undefined, {
         page: 0,
@@ -106,7 +106,7 @@ describe('Entity Service Actions', () => {
     });
 
     it('should handle search parameters for projects with correct fields', async () => {
-      const { fetchEntityData } = await import('@/lib/services/entities/actions');
+      const { fetchEntityData } = await import('@/lib/entities/actions');
 
       await fetchEntityData('projects', undefined, {
         page: 0,
@@ -125,7 +125,7 @@ describe('Entity Service Actions', () => {
     });
 
     it('should handle search parameters for addresses with correct fields', async () => {
-      const { fetchEntityData } = await import('@/lib/services/entities/actions');
+      const { fetchEntityData } = await import('@/lib/entities/actions');
 
       await fetchEntityData('addresses', undefined, {
         page: 0,
@@ -144,7 +144,7 @@ describe('Entity Service Actions', () => {
     });
 
     it('should ignore search when search query is empty', async () => {
-      const { fetchEntityData } = await import('@/lib/services/entities/actions');
+      const { fetchEntityData } = await import('@/lib/entities/actions');
 
       await fetchEntityData('projects', undefined, {
         page: 0,
@@ -163,7 +163,7 @@ describe('Entity Service Actions', () => {
     });
 
     it('should ignore search when search query is only whitespace', async () => {
-      const { fetchEntityData } = await import('@/lib/services/entities/actions');
+      const { fetchEntityData } = await import('@/lib/entities/actions');
 
       await fetchEntityData('projects', undefined, {
         page: 0,
@@ -182,7 +182,7 @@ describe('Entity Service Actions', () => {
     });
 
     it('should handle different filter operators', async () => {
-      const { fetchEntityData } = await import('@/lib/services/entities/actions');
+      const { fetchEntityData } = await import('@/lib/entities/actions');
 
       await fetchEntityData('addresses', undefined, {
         page: 0,
@@ -208,7 +208,7 @@ describe('Entity Service Actions', () => {
       mockGetEntityPage.mockRejectedValue(new Error('Mock DB not available'));
       mockQueryEntityData.mockRejectedValue(new Error('Database connection failed'));
 
-      const { fetchEntityData } = await import('@/lib/services/entities/actions');
+      const { fetchEntityData } = await import('@/lib/entities/actions');
 
       await expect(
         fetchEntityData('projects', undefined, {
@@ -224,7 +224,7 @@ describe('Entity Service Actions', () => {
       mockGetEntityPage.mockRejectedValue(new Error('Mock DB not available'));
       mockQueryEntityCount.mockRejectedValue(new Error('Count query failed'));
 
-      const { fetchEntityData } = await import('@/lib/services/entities/actions');
+      const { fetchEntityData } = await import('@/lib/entities/actions');
 
       const result = await fetchEntityData('projects', undefined, {
         page: 0,
