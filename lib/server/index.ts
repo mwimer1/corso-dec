@@ -18,6 +18,10 @@ export { clickhouse, clickhouseQuery } from '@/lib/integrations/clickhouse';
 // SQL scope helpers (server facade)
 // Note: validateSQLScope moved to direct imports from '@/lib/integrations/database/scope'
 
+// Database (tenant-scoped Supabase client)
+export { getTenantScopedSupabaseClient, withTenantClient } from './db/supabase-tenant-client';
+export { getTenantContext, type TenantContext } from './db/tenant-context';
+
 // Error types (server facade)
 export { ApplicationError, ErrorCategory, ErrorSeverity } from '@/lib/shared';
 // Re-export api-error types from edge-safe location (for backward compatibility)

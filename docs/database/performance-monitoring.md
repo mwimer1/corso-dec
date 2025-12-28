@@ -30,7 +30,7 @@ This document outlines the performance monitoring infrastructure for Supabase da
 
 ```typescript
 import { monitorQuery } from '@/lib/server/db/performance-monitor';
-import { withTenantClient } from '@/lib/server/db';
+import { withTenantClient } from '@/lib/server';
 
 // Monitor a single query
 const { result, metrics } = await monitorQuery(
@@ -255,7 +255,7 @@ SELECT public.cleanup_old_performance_metrics(30);
 
 ```typescript
 import { monitorQuery } from '@/lib/server/db/performance-monitor';
-import { withTenantClient } from '@/lib/server/db';
+import { withTenantClient } from '@/lib/server';
 import { http } from '@/lib/api';
 
 export async function GET(req: NextRequest) {
@@ -291,7 +291,7 @@ export async function GET(req: NextRequest) {
 
 ```typescript
 import { monitorQuery } from '@/lib/server/db/performance-monitor';
-import { withTenantClient } from '@/lib/server/db';
+import { withTenantClient } from '@/lib/server';
 
 export async function getProjectsByOrg(orgId: string) {
   const { result, metrics } = await monitorQuery(
