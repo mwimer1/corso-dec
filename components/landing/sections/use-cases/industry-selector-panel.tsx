@@ -1,16 +1,13 @@
 'use client';
 
-import { Badge, Card, CardContent } from '@/components/ui/atoms';
+import { Badge, Button, Card, CardContent } from '@/components/ui/atoms';
 import { TabSwitcher, type TabItem } from '@/components/ui/molecules';
 import type { UseCaseKey } from '@/lib/marketing/client';
 import { APP_LINKS } from '@/lib/shared';
 import { trackEvent, trackNavClick } from '@/lib/shared/analytics/track';
 import { cn } from '@/styles';
-import { buttonVariants } from '@/styles/ui/atoms/button-variants';
-import { navbarStyleVariants } from '@/styles/ui/organisms/navbar-variants';
 import { Check } from 'lucide-react';
-import Link from 'next/link';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { IndustryPreview } from './industry-preview';
 
 interface Industry {
@@ -44,14 +41,14 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
   const activeIndustry = validIndustries[activeIndex] ?? validIndustries[0] ?? null;
 
   // Fix invalid index if needed (use effect to avoid state update during render)
-  React.useEffect(() => {
+  useEffect(() => {
     if (validIndustries.length > 0 && activeIndex >= validIndustries.length) {
       setActiveIndex(0);
     }
   }, [activeIndex, validIndustries.length]);
 
   // Track analytics when industry changes due to user interaction
-  React.useEffect(() => {
+  useEffect(() => {
     // Skip if no valid industry or on initial mount
     if (!activeIndustry || !isUserInteraction || previousIndexRef.current === activeIndex) {
       return;
@@ -201,28 +198,22 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
 
                   {/* CTAs */}
                   <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-2">
-                    <Link
-                      href={APP_LINKS.FOOTER.CONTACT}
+                    <Button
+                      asLink={APP_LINKS.FOOTER.CONTACT}
+                      variant="secondary"
                       onClick={() => trackNavClick('Talk to sales', APP_LINKS.FOOTER.CONTACT)}
-                      className={cn(
-                        buttonVariants({ variant: 'secondary' }),
-                        navbarStyleVariants().button(),
-                        'w-full sm:w-auto'
-                      )}
+                      className="w-full sm:w-auto"
                     >
                       Talk to sales
-                    </Link>
-                    <Link
-                      href={APP_LINKS.NAV.SIGNUP}
+                    </Button>
+                    <Button
+                      asLink={APP_LINKS.NAV.SIGNUP}
+                      variant="default"
                       onClick={() => trackNavClick('Start for free', APP_LINKS.NAV.SIGNUP)}
-                      className={cn(
-                        buttonVariants({ variant: 'default' }),
-                        navbarStyleVariants().button(),
-                        'w-full sm:w-auto'
-                      )}
+                      className="w-full sm:w-auto"
                     >
                       Start for free
-                    </Link>
+                    </Button>
                   </div>
                 </div>
               </div>

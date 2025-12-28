@@ -2,16 +2,20 @@
 "use client";
 
 import { TabSwitcher, type TabItem } from "@/components/ui/molecules";
+import { trackEvent } from "@/lib/shared/analytics/track";
 import { cn } from "@/styles";
 import { containerWithPaddingVariants } from "@/styles/ui/shared/container-helpers";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 interface ProductShowcaseProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 /** ProductShowcase – Interactive dashboard view switcher using global TabSwitcher. */
 export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
   const [activeTab, setActiveTab] = React.useState(0);
+  const [isUserInteraction, setIsUserInteraction] = React.useState(false);
+  const previousTabRef = useRef<number>(0);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   // Detect horizontal scrollbar height and expose as CSS variable
   // This ensures sticky tabs at bottom of viewport are fully visible above the scrollbar
@@ -127,7 +131,39 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
     },
   ];
 
+  // Track analytics when tab changes due to user interaction
+  useEffect(() => {
+    // Don't track on initial mount
+    if (!isUserInteraction || previousTabRef.current === activeTab) {
+      return;
+    }
+
+    const currentTab = tabsData[activeTab];
+    if (currentTab) {
+      try {
+        trackEvent('product_showcase_tab_selected', {
+          tabId: currentTab.id,
+          tabLabel: currentTab.label,
+          section: 'product_showcase',
+        });
+      } catch (error) {
+        // Analytics failures should not break the UI
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn('[ProductShowcase] Analytics tracking failed:', error);
+        }
+      }
+    }
+
+    previousTabRef.current = activeTab;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, isUserInteraction]);
+
   const current = tabsData[activeTab];
+
+  const handleTabChange = (index: number) => {
+    setIsUserInteraction(true);
+    setActiveTab(index);
+  };
 
   return (
     <section 
@@ -157,7 +193,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
           <TabSwitcher
             tabs={tabsData}
             active={activeTab}
-            onTabChange={setActiveTab}
+            onTabChange={handleTabChange}
             alignment="center"
             variant="default"
             layout="grid"
@@ -179,9 +215,21 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
           id={`panel-${current?.id ?? 'active'}`}
           role="tabpanel"
           aria-labelledby={`tab-${current?.id ?? 'active'}`}
+          aria-live="polite"
           className="mt-2xl"
         >
-          {current ? current.content : null}
+          {current ? (
+            <div
+              ref={contentRef}
+              key={current.id}
+              className={cn(
+                // Transition animation - fade + slight slide (respects prefers-reduced-motion via CSS)
+                'animate-fadeIn'
+              )}
+            >
+              {current.content}
+            </div>
+          ) : null}
         </div>
       </div>
     </section>
