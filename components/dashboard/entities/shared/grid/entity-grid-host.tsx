@@ -10,6 +10,7 @@ import { useSearchParams } from 'next/navigation';
 import * as React from 'react';
 import EntityGrid from './entity-grid';
 import { GridMenubar } from './grid-menubar';
+import { useGridDensity } from './hooks/use-grid-density';
 
 /**
  * Minimal type for grid state applied by GridMenubar
@@ -29,8 +30,6 @@ interface ErrorWithStatus extends Error {
   details?: unknown;
 }
 
-type DensityMode = 'comfortable' | 'compact';
-
 export default function EntityGridHost({ config }: { config: EntityGridConfig }) {
   const gridRef = React.useRef<AgGridReact | null>(null);
   const [searchCount, setSearchCount] = React.useState<string | null>(null);
@@ -42,28 +41,9 @@ export default function EntityGridHost({ config }: { config: EntityGridConfig })
   const hasEnterprise = publicEnv.NEXT_PUBLIC_AGGRID_ENTERPRISE === '1';
   
   // Density state with localStorage persistence
-  const densityStorageKey = `corso:gridDensity:${config.id}`;
-  const [density, setDensity] = React.useState<DensityMode>(() => {
-    if (typeof window === 'undefined') return 'comfortable';
-    try {
-      const stored = localStorage.getItem(densityStorageKey);
-      if (stored === 'comfortable' || stored === 'compact') {
-        return stored as DensityMode;
-      }
-    } catch {
-      // Ignore localStorage errors
-    }
-    return 'comfortable';
+  const { density, setDensity: handleDensityChange } = useGridDensity({
+    gridId: config.id,
   });
-  
-  const handleDensityChange = React.useCallback((newDensity: DensityMode) => {
-    setDensity(newDensity);
-    try {
-      localStorage.setItem(densityStorageKey, newDensity);
-    } catch {
-      // Ignore localStorage errors
-    }
-  }, [densityStorageKey]);
 
   // Search state (not persisted to localStorage - not part of saved views)
   const [searchQuery, setSearchQuery] = React.useState<string>('');

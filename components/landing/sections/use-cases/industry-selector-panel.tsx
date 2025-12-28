@@ -2,26 +2,13 @@
 
 import { Badge, Button, Card, CardContent } from '@/components/ui/atoms';
 import { TabSwitcher, type TabItem } from '@/components/ui/molecules';
-import type { UseCaseKey } from '@/lib/marketing/client';
 import { APP_LINKS } from '@/lib/shared';
 import { trackEvent, trackNavClick } from '@/lib/shared/analytics/track';
 import { cn } from '@/styles';
 import { Check } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { IndustryPreview } from './industry-preview';
-
-interface Industry {
-  key: UseCaseKey;
-  title: string;
-  subtitle: string;
-  description: string;
-  benefits: string[];
-  impact: string;
-  impactMetrics?: string[];
-  previewImageSrc?: string;
-  previewImageAlt?: string;
-  previewImage?: { src: string; alt: string };
-}
+import type { Industry } from './types';
 
 interface IndustrySelectorPanelProps {
   industries: Industry[];

@@ -1,20 +1,8 @@
 import { SectionHeader } from '@/components/ui/patterns';
 import { zUseCaseMap, type UseCaseKey } from '@/lib/marketing/client';
 import { IndustrySelectorPanel } from './industry-selector-panel';
+import type { Industry } from './types';
 import { DEFAULT_USE_CASES } from './use-cases.data';
-
-interface Industry {
-  key: UseCaseKey;
-  title: string;
-  subtitle: string;
-  description: string;
-  benefits: string[];
-  impact: string;
-  impactMetrics?: string[];
-  previewImageSrc?: string;
-  previewImageAlt?: string;
-  previewImage?: { src: string; alt: string };
-}
 
 export default function IndustryExplorer() {
   // Production-safe validation

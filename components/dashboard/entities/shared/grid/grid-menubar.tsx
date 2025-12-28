@@ -12,6 +12,7 @@ import { ArrowDownToLine, Columns, CopyPlus, FileDown, GripVertical, ListRestart
 import type React from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useGridDensity } from './hooks/use-grid-density';
 // GridSaveAsDialog removed - using simple prompt for now
 // Simple number formatting function (can be replaced with numeral if needed)
 const formatNumber = (num: string | null): string => {
@@ -129,6 +130,21 @@ interface GridMenubarProps {
   setSearchQuery?: React.Dispatch<React.SetStateAction<string>>;
 }
 
+/**
+ * Resets the grid state (filters, columns, search) and refreshes data.
+ * Wraps grid API calls in try/catch for error handling.
+ */
+function resetGridState(props: GridMenubarProps) {
+  try {
+    props.gridRef?.current?.api.setFilterModel(null);
+    props.gridRef?.current?.api.resetColumnState();
+    props.setSearchQuery?.('');
+    props.gridRef?.current?.api.refreshServerSide();
+  } catch (error) {
+    devError("Failed to reset the grid:", error);
+  }
+}
+
 export function GridMenubar(props: GridMenubarProps) {
   const { user } = useUser();
   const userId = user?.id ?? 'anon';
@@ -141,37 +157,15 @@ export function GridMenubar(props: GridMenubarProps) {
   const [savedStates, setSavedStates] = useState<Record<string, { state_name: string; grid_state: any }>>({});
   
   // Density state with localStorage persistence
-  const densityStorageKey = `corso:gridDensity:${userId}:${props.gridId}`;
-  const [density, setDensity] = useState<DensityMode>(() => {
-    if (typeof window === 'undefined') return 'comfortable';
-    try {
-      const stored = localStorage.getItem(densityStorageKey);
-      if (stored === 'comfortable' || stored === 'compact') {
-        return stored as DensityMode;
-      }
-    } catch {
-      // Ignore localStorage errors
-    }
-    return 'comfortable';
+  // Use hook if no density prop provided (standalone mode), otherwise use controlled density from parent
+  const { density: localDensity, setDensity: setLocalDensity } = useGridDensity({
+    gridId: props.gridId,
+    userId,
+    ...(props.onDensityChange && { onDensityChange: props.onDensityChange }),
   });
   
-  // Sync density with parent if provided
-  useEffect(() => {
-    if (props.density && props.density !== density) {
-      setDensity(props.density);
-    }
-  }, [props.density, density]);
-  
-  // Persist density changes
-  const handleDensityChange = useCallback((newDensity: DensityMode) => {
-    setDensity(newDensity);
-    try {
-      localStorage.setItem(densityStorageKey, newDensity);
-    } catch {
-      // Ignore localStorage errors
-    }
-    props.onDensityChange?.(newDensity);
-  }, [densityStorageKey, props]);
+  const density = props.density ?? localDensity;
+  const handleDensityChange = props.onDensityChange ?? setLocalDensity;
   
   // Load saved states from localStorage on mount
   useEffect(() => {
@@ -508,17 +502,7 @@ export function GridMenubar(props: GridMenubarProps) {
 
                 {/* Reset */}
                 <DropdownMenu.Item
-                  onSelect={() => {
-                    try {
-                      props.gridRef?.current?.api.setFilterModel(null);
-                      props.gridRef?.current?.api.resetColumnState();
-                      // Clear search query
-                      props.setSearchQuery?.('');
-                      props.gridRef?.current?.api.refreshServerSide();
-                    } catch (error) {
-                      devError("Failed to reset the grid:", error);
-                    }
-                  }}
+                  onSelect={() => resetGridState(props)}
                   className={cn(DROPDOWN_ITEM_BASE_CLASS, DROPDOWN_ITEM_INTERACTION_CLASS)}
                 >
                   <ListRestart className="h-4 w-4" />
@@ -689,17 +673,7 @@ export function GridMenubar(props: GridMenubarProps) {
             </button>
 
             <button
-              onClick={() => {
-                try {
-                  props.gridRef?.current?.api.setFilterModel(null);
-                  props.gridRef?.current?.api.resetColumnState();
-                  // Clear search query
-                  props.setSearchQuery?.('');
-                  props.gridRef?.current?.api.refreshServerSide();
-                } catch (error) {
-                  devError("Failed to reset the grid:", error);
-                }
-              }}
+              onClick={() => resetGridState(props)}
               className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-black/5 active:bg-black/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               aria-label="Reset grid"
               title="Reset filters, columns, and search"
