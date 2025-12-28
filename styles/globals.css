@@ -133,6 +133,29 @@ html, body {
   100% { transform: rotate(360deg); }
 }
 
+/* Fade in animation for industry tab transitions */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
 /* Navbar scroll shadow class toggle */
 .navbar.scrolled {
   box-shadow: var(--nav-shadow);

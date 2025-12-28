@@ -1,5 +1,5 @@
 import { SectionHeader } from '@/components/ui/patterns';
-import type { UseCaseKey } from '@/lib/marketing/client';
+import { zUseCaseMap, type UseCaseKey } from '@/lib/marketing/client';
 import { IndustrySelectorPanel } from './industry-selector-panel';
 import { DEFAULT_USE_CASES } from './use-cases.data';
 
@@ -10,22 +10,49 @@ interface Industry {
   description: string;
   benefits: string[];
   impact: string;
+  impactMetrics?: string[];
   previewImageSrc?: string;
   previewImageAlt?: string;
+  previewImage?: { src: string; alt: string };
 }
 
 export default function IndustryExplorer() {
+  // Production-safe validation
+  let validatedData = DEFAULT_USE_CASES;
+  try {
+    zUseCaseMap.parse(DEFAULT_USE_CASES);
+  } catch (error) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('[IndustryExplorer] Invalid DEFAULT_USE_CASES:', error);
+    }
+    // In production, continue with data but log warning
+  }
+
   // Transform DEFAULT_USE_CASES into Industry array
-  const industries: Industry[] = Object.entries(DEFAULT_USE_CASES).map(([key, data]) => ({
-    key: key as UseCaseKey,
-    title: data.title,
-    subtitle: data.subtitle,
-    description: data.description,
-    benefits: data.benefits,
-    impact: data.impact,
-    ...(data.previewImageSrc && { previewImageSrc: data.previewImageSrc }),
-    ...(data.previewImageAlt && { previewImageAlt: data.previewImageAlt }),
-  }));
+  const industries: Industry[] = Object.entries(validatedData).map(([key, data]) => {
+    const industry: Industry = {
+      key: key as UseCaseKey,
+      title: data.title,
+      subtitle: data.subtitle,
+      description: data.description,
+      benefits: data.benefits,
+      impact: data.impact,
+    };
+    // Add optional fields only if they exist
+    if (data.impactMetrics) {
+      industry.impactMetrics = data.impactMetrics;
+    }
+    if (data.previewImage) {
+      industry.previewImage = data.previewImage;
+    }
+    if (data.previewImageSrc) {
+      industry.previewImageSrc = data.previewImageSrc;
+    }
+    if (data.previewImageAlt) {
+      industry.previewImageAlt = data.previewImageAlt;
+    }
+    return industry;
+  });
 
   // Removed inner section wrapper - parent FullWidthSection provides full-bleed background and border
   // Header is left-aligned to match the Industry Explorer content below

@@ -318,9 +318,7 @@ export default [
           'app/**/*provider.tsx',
           'app/**/_theme.tsx',
           'app/**/actions.ts', // Server Actions are feature-colocated and used by page components
-          'components/dashboard/corso-ai-mode.tsx',
           'components/dashboard/entities/addresses/config.ts',
-          'components/dashboard/entities/shared/renderers/value-formatter.ts',
           // Formatters - used via named imports in aggrid adapter
           'lib/entities/adapters/aggrid-formatters.tsx',
           'components/dashboard/header/dashboard-header.tsx',

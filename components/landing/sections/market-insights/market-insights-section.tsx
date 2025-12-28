@@ -4,7 +4,7 @@
 
 import { Button, Card, CardContent } from "@/components/ui/atoms";
 import { Badge } from "@/components/ui/atoms/badge";
-import { trackEvent, trackNavClick } from "@/lib/shared/analytics/track";
+import { trackEvent } from "@/lib/shared/analytics/track";
 import { cn } from "@/styles";
 import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
 import type { ChartDataPoint } from "@/types/marketing";

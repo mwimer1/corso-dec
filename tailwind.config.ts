@@ -228,6 +228,7 @@ const config: Config = {
         'accordion-up': 'accordion-up 0.2s ease-out',
         'fade-in': 'fade-in var(--duration-md, 300ms) ease-out both',
         'fade-up': 'fade-up var(--duration-md, 300ms) ease-out both',
+        'fadeIn': 'fadeIn 200ms ease-out',
       },
       animationDuration: {
         '75': 'var(--duration-75, 75ms)',
