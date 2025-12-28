@@ -366,7 +366,8 @@ button:focus-visible {
 
 **✅ CORRECT: Respect prefers-reduced-motion**
 ```typescript
-import { useReducedMotion } from '@/hooks/accessibility';
+// Note: useReducedMotion hook would be implemented in components/ui/hooks/ if needed
+// For now, use React's built-in media query hooks or CSS prefers-reduced-motion
 
 function AnimatedComponent() {
   const prefersReducedMotion = useReducedMotion();

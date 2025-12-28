@@ -309,7 +309,8 @@ function useCustomData() {
 ```typescript
 import { vi } from 'vitest';
 
-vi.mock('@/hooks', () => ({
+// Mock hooks from their domain locations, e.g.:
+// vi.mock('@/components/ui/hooks/use-arrow-key-navigation', () => ({
   useWarehouseQuery: vi.fn(() => ({
     data: mockProjects,
     isLoading: false,

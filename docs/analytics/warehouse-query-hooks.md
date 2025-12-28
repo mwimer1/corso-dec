@@ -37,8 +37,8 @@ These hooks consume the canonical warehouse endpoints/patterns. Avoid duplicatin
 
 ### Hook Hierarchy
 
-1. **Base Hooks** (`@/hooks/shared/analytics`) - Core functionality (`useWarehouseQueryBase`, `executeWarehouseQuery`)
-2. **Domain Hooks** (`@/hooks`) - Pre-configured for common use cases (no separate "core" file)
+1. **Base Hooks** - Core functionality would be domain-colocated if implemented
+2. **Domain Hooks** - Pre-configured for common use cases, domain-colocated (e.g., `components/dashboard/hooks/`)
 3. **UI Components** - Consume hooks for data rendering
 
 ---
@@ -66,7 +66,8 @@ function useWarehouseQueryBase<T = unknown>(options: WarehouseQueryBaseOptions<T
 ### Basic Usage
 
 ```typescript
-import { useWarehouseQueryBase } from '@/hooks/shared/analytics';
+// Note: Warehouse query hooks would be domain-colocated if implemented
+// import { useWarehouseQueryBase } from '@/components/dashboard/hooks/use-warehouse-query-base';
 
 interface Project {
   id: string;
@@ -121,7 +122,8 @@ Pre-configured hooks for common use cases. These wrap the base hook with sensibl
 For simple queries where you want automatic cache key generation based on the SQL.
 
 ```typescript
-import { useWarehouseQuery } from '@/hooks';
+// Note: Warehouse query hooks would be domain-colocated if implemented
+// import { useWarehouseQuery } from '@/components/dashboard/hooks/use-warehouse-query';
 
 const { data, isLoading, error } = useWarehouseQuery<Project>(
   'SELECT * FROM projects',
@@ -136,7 +138,8 @@ const { data, isLoading, error } = useWarehouseQuery<Project>(
 For complex queries with custom cache keys and 1-hour default stale time.
 
 ```typescript
-import { useWarehouseQueryCached } from '@/hooks';
+// Note: Warehouse query hooks would be domain-colocated if implemented
+// import { useWarehouseQueryCached } from '@/components/dashboard/hooks/use-warehouse-query-cached';
 
 const { data, isLoading, error } = useWarehouseQueryCached<Project>(
   ['projects', filters], // Custom cache key
@@ -153,7 +156,8 @@ const { data, isLoading, error } = useWarehouseQueryCached<Project>(
 For pre-configured dashboard grids that map to specific ClickHouse tables.
 
 ```typescript
-import { useDynamicGridData } from '@/hooks';
+// Note: Warehouse query hooks would be domain-colocated if implemented
+// import { useDynamicGridData } from '@/components/dashboard/hooks/use-dynamic-grid-data';
 
 const { data, isLoading, error } = useDynamicGridData('projects');
 
@@ -174,7 +178,8 @@ const { data, isLoading, error } = useDynamicGridData('companies', {
 Create custom warehouse query hooks with pre-configured behavior.
 
 ```typescript
-import { createWarehouseQueryHook } from '@/hooks/shared/analytics';
+// Note: Warehouse query hooks would be domain-colocated if implemented
+// import { createWarehouseQueryHook } from '@/components/dashboard/hooks/create-warehouse-query-hook';
 
 const useAnalyticsQuery = createWarehouseQueryHook({
   staleTime: 10 * 60 * 1000, // 10 minutes
@@ -699,9 +704,8 @@ const { data, isLoading, error } = useWarehouseQuery(
 
 ## Related Documentation
 
-- [Shared Hooks](../../hooks/shared/README.md) - Hook implementation details
-- [Hooks Overview](../../hooks/README.md) - Hook organization and patterns
 - [ClickHouse Performance Guide](./clickhouse-recommendations.md) - Database optimization
+- [Warehouse Queries API](../codebase-apis/warehouse-queries.md) - Canonical warehouse query patterns
 - [Security Standards](../security/README.md) - Security implementation
 
 ---

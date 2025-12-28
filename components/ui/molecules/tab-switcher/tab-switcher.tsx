@@ -1,6 +1,7 @@
 // components/ui/molecules/tab-switcher/tab-switcher.tsx
 "use client";
 
+import { useArrowKeyNavigation } from "@/components/ui/hooks/use-arrow-key-navigation";
 import {
     tabSwitcherVariants,
     type TabSwitcherVariantProps,
@@ -8,7 +9,6 @@ import {
 import { tabButtonVariants } from "@/styles/ui/molecules/tab-switcher";
 import { cn } from "@/styles/utils";
 import * as React from "react";
-import { useArrowKeyNavigation } from "../shared/use-arrow-key-navigation";
 import { getTabButtonClass } from "./tab-button-base";
 
 const UNDERLINE_CLASS_BY_COLOR = {

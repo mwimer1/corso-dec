@@ -298,7 +298,6 @@ export default [
           'components/**/*.{ts,tsx}',
           'contexts/**/*.{ts,tsx}',
           'lib/**/*.{ts,tsx}',
-          'hooks/**/*.{ts,tsx}',
         ],
         ignoreExports: [
           '**/index.ts',
@@ -343,8 +342,7 @@ export default [
           'lib/core/**/*.ts',
           // Note: actions/ directory was removed in PR5.2 - Server Actions are now feature-colocated
           // 'actions/**/*.ts', // Removed - Server Actions are feature-colocated
-          // Hooks - React hooks used in components
-          'hooks/**/*.ts',
+          // Note: hooks/ directory was removed - hooks are now domain-colocated (e.g., components/ui/hooks/, components/chat/hooks/)
           // Contexts - React context providers used in app
           'contexts/**/*.tsx',
           'contexts/**/*.ts',

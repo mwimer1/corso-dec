@@ -36,7 +36,7 @@ The platform enforces clean architectural boundaries through domain-driven desig
 
 ### Client Containers and Composition (UI ↔ Hooks)
 
-When composing UI from `@/components/**` with state/data from `@/hooks/**` inside `app/**` routes:
+When composing UI from `@/components/**` with state/data from domain-colocated hooks (e.g., `@/components/ui/hooks/**`, `@/components/chat/hooks/**`) inside `app/**` routes:
 
 - Keep a single client boundary per top-level segment (e.g., `app/(protected)/client.tsx`).
 - Do not place client modules named `client.tsx` deeper in the tree for the same segment; the rule `corso/one-client-boundary-per-segment` will flag this.

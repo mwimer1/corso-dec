@@ -42,7 +42,7 @@ For detailed directory structure and route organization, see:
 - `components/` - React components (atomic design system)
 - `lib/` - Business logic, utilities, configurations
 - `types/` - TypeScript type definitions
-- `hooks/` - React hooks
+- Hooks are domain-colocated (e.g., `components/ui/hooks/`, `components/chat/hooks/`)
 - `docs/` - Documentation
 - `api/` - OpenAPI specifications
 

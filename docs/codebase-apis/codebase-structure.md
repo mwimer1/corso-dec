@@ -19,7 +19,7 @@ corso-app/
 ├── components/             # React components (UI library)
 ├── lib/                    # Business logic, utilities, configurations
 ├── types/                  # TypeScript type definitions
-├── hooks/                  # React hooks
+# hooks/                   # Hooks are domain-colocated (components/*/hooks/, components/ui/hooks/)
 ├── contexts/               # React contexts and providers
 ├── docs/                   # Documentation
 ├── config/                 # Build and tooling configuration

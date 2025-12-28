@@ -253,10 +253,6 @@ export const docs = [
     "title": "Eslint Plugin Corso"
   },
   {
-    "path": "hooks/readme.md",
-    "title": "Hooks"
-  },
-  {
     "path": "lib/actions/readme.md",
     "title": "lib/actions"
   },

@@ -186,7 +186,8 @@ describe('TablePro', () => {
 
 ```typescript
 import { renderHook, waitFor } from '@testing-library/react';
-import { useTableData } from '@/hooks';
+// Hooks are imported from domain locations, e.g.:
+// import { useTableData } from '@/components/dashboard/hooks/use-table-data';
 
 describe('useTableData', () => {
   it('handles prefetching correctly', async () => {
