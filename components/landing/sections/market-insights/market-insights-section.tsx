@@ -256,14 +256,17 @@ export const MarketInsightsSection: React.FC<Props> = ({
               </div>
 
               {/* RIGHT: Controls panel */}
-              <aside className="xl:border-l xl:border-border/60 xl:pl-6">
-                <div className="flex flex-wrap gap-2" aria-label="Active filters">
+              <aside className="xl:border-l xl:border-border/60 xl:pl-6" aria-label="Filters">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-medium text-foreground">Filters</h3>
+                </div>
+                <div className="flex flex-wrap gap-2 mb-4" aria-label="Active filters">
                   <Badge color="secondary">{territory}</Badge>
                   <Badge color="secondary">{propType === "All" ? "All Types" : propType}</Badge>
                   <Badge color="secondary">{range[0]}–{range[1]}</Badge>
                 </div>
 
-                <div className="mt-4 space-y-4">
+                <div className="space-y-4">
                   <YearRangeSlider
                     value={range}
                     onChange={setRange}

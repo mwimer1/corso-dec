@@ -66,7 +66,7 @@ export const Chart: React.FC<Props> = ({ data, loading, variant = "card", height
     <div className={`${variant === "bare" ? "bg-transparent border-0 shadow-none rounded-none p-0" : "bg-surface rounded-xl shadow-md border border-border p-6"} transition-opacity ${loading ? "opacity-50" : "opacity-100"}`}>
       <div className={cn("w-full h-64 md:h-80", heightClassName)}>
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={sorted} margin={{ top: 50, right: 4, left: 0, bottom: 10 }}>
+          <ComposedChart data={sorted} margin={{ top: 40, right: 4, left: 0, bottom: 10 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={"hsl(var(--border))"} />
             <XAxis dataKey="year" tick={{ fontSize: 12, fill: "currentColor", fontWeight: 500 }} axisLine={{ stroke: "hsl(var(--border))" }} tickLine={false} />
             <YAxis

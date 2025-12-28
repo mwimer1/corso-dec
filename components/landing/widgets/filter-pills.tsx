@@ -28,7 +28,7 @@ export const FilterPills: React.FC<Props> = ({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="font-medium text-base text-foreground">{title}</h3>
+        <h3 className="text-sm font-medium text-foreground">{title}</h3>
         {selected && showSelectedIndicator && (
           <span className="text-xs text-muted-foreground bg-surface px-2 py-1 rounded border">
             {title.includes("Property") && selected === "All" ? "All Types" : selected}

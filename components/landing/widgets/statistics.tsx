@@ -26,7 +26,7 @@ const StatBlock: React.FC<{ label: string; value: number; mode?: "currency" | "n
 );
 
 export const Statistics: React.FC<Props> = ({ totalProjects, totalJobValue, averageJobValue, valueClassName, compact, className }) => (
-  <div className={`grid grid-cols-1 md:grid-cols-3 ${compact ? "gap-6 my-4 py-4" : "gap-8 my-10 py-8"} border-b border-border ${className ?? ""}`.trim()}>
+  <div className={`grid grid-cols-1 md:grid-cols-3 ${compact ? "gap-6 my-2 py-2" : "gap-8 my-10 py-8"} border-b border-border ${className ?? ""}`.trim()}>
     <StatBlock label="Job Value" value={totalJobValue} mode="currency" rightBorder valueClassName={valueClassName} />
     <StatBlock label="Project Count" value={totalProjects} rightBorder valueClassName={valueClassName} />
     <StatBlock label="Avg. Job Value" value={averageJobValue} mode="currency" valueClassName={valueClassName} />

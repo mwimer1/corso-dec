@@ -35,7 +35,7 @@ export function FilterSelect({
   return (
     <div className={cn("space-y-2", className)}>
       <div className="flex items-center justify-between">
-        <h3 className="text-base font-medium text-foreground">{title}</h3>
+        <h3 className="text-sm font-medium text-foreground">{title}</h3>
         {selected && showSelectedIndicator && (
           <span className="rounded border border-border bg-surface px-2 py-1 text-xs text-muted-foreground">
             {norm(selected)}
