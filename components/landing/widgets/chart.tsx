@@ -2,23 +2,24 @@
 
 // Market insights chart (Recharts)
 import { formatCurrencyCompact, formatNumberCompact } from "@/lib/shared";
+import { cn } from "@/styles";
 import type { ChartDataPoint } from "@/types/marketing";
 import React, { useMemo } from "react";
 import type { TooltipProps } from "recharts";
 import {
-    Bar,
-    CartesianGrid,
-    ComposedChart,
-    Label,
-    Legend,
-    Line,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis
+  Bar,
+  CartesianGrid,
+  ComposedChart,
+  Label,
+  Legend,
+  Line,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis
 } from "recharts";
 
-type Props = { data: ChartDataPoint[]; loading?: boolean; variant?: "card" | "bare" };
+type Props = { data: ChartDataPoint[]; loading?: boolean; variant?: "card" | "bare"; heightClassName?: string };
 
 const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
   if (!active || !payload || !payload.length) return null;
@@ -44,7 +45,7 @@ const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>)
   );
 };
 
-export const Chart: React.FC<Props> = ({ data, loading, variant = "card" }) => {
+export const Chart: React.FC<Props> = ({ data, loading, variant = "card", heightClassName }) => {
   const sorted = useMemo(() => [...data].sort((a, b) => a.year - b.year), [data]);
   const maxJob = useMemo(() => Math.max(...sorted.map(d => d.jobValue), 0) * 1.1 || 1, [sorted]);
   const maxProjects = useMemo(() => Math.max(...sorted.map(d => d.projectCount), 0) * 1.1 || 1, [sorted]);
@@ -52,7 +53,7 @@ export const Chart: React.FC<Props> = ({ data, loading, variant = "card" }) => {
   if (!sorted.length) {
     return (
       <div className={`${variant === "bare" ? "bg-transparent border-0 shadow-none rounded-none p-0 mb-8" : "bg-surface rounded-xl shadow-md border border-border p-6 mb-8"}`}>
-        <div className="w-full h-64 md:h-80 flex items-center justify-center">
+        <div className={cn("w-full h-64 md:h-80 flex items-center justify-center", heightClassName)}>
           <p className="text-sm text-muted-foreground" role="status" aria-live="polite">
             No data available for the selected range.
           </p>
@@ -63,7 +64,7 @@ export const Chart: React.FC<Props> = ({ data, loading, variant = "card" }) => {
 
   return (
     <div className={`${variant === "bare" ? "bg-transparent border-0 shadow-none rounded-none p-0" : "bg-surface rounded-xl shadow-md border border-border p-6"} transition-opacity ${loading ? "opacity-50" : "opacity-100"}`}>
-      <div className="w-full h-64 md:h-80">
+      <div className={cn("w-full h-64 md:h-80", heightClassName)}>
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={sorted} margin={{ top: 50, right: 4, left: 0, bottom: 10 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={"hsl(var(--border))"} />

@@ -2,7 +2,7 @@
 
 // src/components/landing/market-insights/market-insights-section.tsx
 
-import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/atoms";
+import { Button, Card, CardContent } from "@/components/ui/atoms";
 import { Badge } from "@/components/ui/atoms/badge";
 import { trackEvent, trackNavClick } from "@/lib/shared/analytics/track";
 import { cn } from "@/styles";
@@ -221,109 +221,113 @@ export const MarketInsightsSection: React.FC<Props> = ({
             <li>Compare job value vs. project count</li>
             <li>Export-ready insights for GTM teams</li>
           </ul>
-          <div className="flex gap-3 mt-6">
-            <Button asChild>
-              <Link href="/start" onClick={() => trackNavClick("Start for free", "/start")}>Start for free</Link>
-            </Button>
-            <Button variant="secondary" asChild>
-              <Link href="/contact" onClick={() => trackNavClick("Talk to sales", "/contact")}>Talk to sales</Link>
-            </Button>
-          </div>
         </div>
         <Card variant="highlight">
-          <CardHeader>
-            <div className="flex items-center justify-between">
+          <CardContent className="pt-6">
+            {/* Compact header row inside content (not CardHeader) */}
+            <div className="flex items-start justify-between gap-4">
               <div>
-                <CardTitle>Permit activity (sample)</CardTitle>
-                <CardDescription>Bars = Job Value • Line = Project Count</CardDescription>
+                <div className="text-base font-semibold leading-none tracking-tight">
+                  Permit activity (sample)
+                </div>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Bars = Project Count • Line = Job Value
+                </p>
               </div>
-              <Button variant="ghost" size="sm" onClick={() => {
+              <Button asChild variant="ghost" size="sm" onClick={() => {
                 try { trackEvent("insights_full_dataset_clicked", {}); } catch {}
-                window.location.href = "/pricing";
               }}>
-                See full dataset
+                <Link href="/pricing">See full dataset</Link>
               </Button>
             </div>
-            <div className="flex flex-wrap gap-2 mt-4">
-              <Badge color="secondary">{territory}</Badge>
-              <Badge color="secondary">{propType === "All" ? "All Types" : propType}</Badge>
-              <Badge color="secondary">{range[0]}–{range[1]}</Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <Statistics totalProjects={totalProjects} totalJobValue={totalJobValue} averageJobValue={avgJobValue} valueClassName="text-primary" compact className="border-b-0 mt-0 mb-4" />
-            <Chart data={filtered} loading={loading} variant="bare" />
-          </CardContent>
-          <CardFooter className="block mt-4 border-t border-border/60 pt-4">
-            <div className="flex flex-col gap-4 lg:flex-row lg:flex-wrap lg:items-end">
-              <div className="w-full lg:flex-1 lg:min-w-[280px]">
-                <YearRangeSlider
-                  value={range}
-                  onChange={setRange}
-                  onCommit={onRangeCommit}
-                  minYear={minYear}
-                  maxYear={maxYear}
+
+            <div className="mt-6 grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_320px] gap-6">
+              {/* LEFT: KPIs + chart */}
+              <div>
+                <Statistics
+                  totalProjects={totalProjects}
+                  totalJobValue={totalJobValue}
+                  averageJobValue={avgJobValue}
+                  valueClassName="text-primary"
                   compact
-                  className="mb-0"
-                  showSelectedIndicator={false}
-                  {...(!dense ? {} : { showBubbles: false })}
+                  className="border-b-0 py-0 mt-0 mb-3"
                 />
+                <Chart data={filtered} loading={loading} variant="bare" heightClassName="h-56 md:h-64" />
               </div>
 
-              {controlsVariant === "dropdown" ? (
-                <>
-                  <FilterSelect
-                    title="Select Territory"
-                    items={territories}
-                    {...(territory !== undefined && { selected: territory })}
-                    onSelect={onTerritorySelect}
-                    id="territory-select"
-                    className="w-full lg:w-[12rem]"
-                    showSelectedIndicator={false}
-                  />
-                  <FilterSelect
-                    title="Select Property Type"
-                    items={propertyTypes}
-                    {...(propType !== undefined && { selected: propType })}
-                    onSelect={onPropertySelect}
-                    id="property-select"
-                    className="w-full lg:w-[12rem]"
-                    showSelectedIndicator={false}
-                  />
-                </>
-              ) : (
-                <>
-                  <FilterPills
-                    title="Select Territory"
-                    items={territories}
-                    {...(territory !== undefined && { selected: territory })}
-                    onSelect={onTerritorySelect}
-                    id="territory-pills"
-                    showSelectedIndicator={false}
-                  />
-                  <FilterPills
-                    title="Select Property Type"
-                    items={propertyTypes}
-                    {...(propType !== undefined && { selected: propType })}
-                    onSelect={onPropertySelect}
-                    id="property-pills"
-                    showSelectedIndicator={false}
-                  />
-                </>
-              )}
+              {/* RIGHT: Controls panel */}
+              <aside className="xl:border-l xl:border-border/60 xl:pl-6">
+                <div className="flex flex-wrap gap-2" aria-label="Active filters">
+                  <Badge color="secondary">{territory}</Badge>
+                  <Badge color="secondary">{propType === "All" ? "All Types" : propType}</Badge>
+                  <Badge color="secondary">{range[0]}–{range[1]}</Badge>
+                </div>
 
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={handleReset}
-                className="w-full lg:w-auto lg:self-end"
-              >
-                Reset
-              </Button>
+                <div className="mt-4 space-y-4">
+                  <YearRangeSlider
+                    value={range}
+                    onChange={setRange}
+                    onCommit={onRangeCommit}
+                    minYear={minYear}
+                    maxYear={maxYear}
+                    compact
+                    showSelectedIndicator={false}
+                    {...(!dense ? {} : { showBubbles: false })}
+                  />
+
+                  {controlsVariant === "dropdown" ? (
+                    <>
+                      <FilterSelect
+                        title="Select Territory"
+                        items={territories}
+                        selected={territory}
+                        onSelect={onTerritorySelect}
+                        id="territory-select"
+                        showSelectedIndicator={false}
+                      />
+                      <FilterSelect
+                        title="Select Property Type"
+                        items={propertyTypes}
+                        selected={propType}
+                        onSelect={onPropertySelect}
+                        id="property-select"
+                        showSelectedIndicator={false}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <FilterPills
+                        title="Select Territory"
+                        items={territories}
+                        selected={territory}
+                        onSelect={onTerritorySelect}
+                        id="territory-pills"
+                        showSelectedIndicator={false}
+                      />
+                      <FilterPills
+                        title="Select Property Type"
+                        items={propertyTypes}
+                        selected={propType}
+                        onSelect={onPropertySelect}
+                        id="property-pills"
+                        showSelectedIndicator={false}
+                      />
+                    </>
+                  )}
+
+                  <div className="flex items-center justify-between gap-3">
+                    <Button variant="secondary" size="sm" onClick={handleReset}>
+                      Reset
+                    </Button>
+
+                    <p className="text-xs text-muted-foreground whitespace-nowrap">
+                      Sample view • Updated regularly
+                    </p>
+                  </div>
+                </div>
+              </aside>
             </div>
-
-            <p className="mt-4 text-xs text-muted-foreground">Sample view • Updated regularly</p>
-          </CardFooter>
+          </CardContent>
         </Card>
       </div>
 
