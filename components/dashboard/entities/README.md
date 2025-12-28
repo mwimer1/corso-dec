@@ -22,7 +22,7 @@ const config = getEntityConfig('projects');
 
 ## Architecture
 
-- **Framework-agnostic columns**: Column definitions use `TableColumnConfig` schema in `lib/services/entities/<entity>/columns.config.ts`
+- **Framework-agnostic columns**: Column definitions use `TableColumnConfig` schema in `lib/entities/<entity>/columns.config.ts`
 - **Server-side pagination**: All data fetched via `/api/v1/entity/{entity}` with query params
 - **Type-safe registry**: Entity types validated via Zod in route handlers
 

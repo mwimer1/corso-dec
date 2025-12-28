@@ -4,11 +4,13 @@ React hooks for the Corso application.
 
 ## Current State
 
-All hooks have been moved to their domain homes:
+Most hooks have been moved to their domain homes. Shared cross-cutting hooks remain in `hooks/shared/`:
+
+- **Shared Hooks**: `hooks/shared/`
+  - `ui/use-arrow-key-navigation.ts` - Keyboard navigation utilities (exported via `hooks/shared`)
 
 - **UI Hooks**: `components/ui/hooks/`
   - `use-subscription-status.ts` - Subscription status hook
-  - `use-arrow-key-navigation.ts` - Keyboard navigation utilities
 
 - **Chat Hooks**: `components/chat/hooks/`
   - `use-chat.ts` - Chat functionality hook
@@ -20,23 +22,25 @@ All hooks have been moved to their domain homes:
 ## Usage
 
 ```typescript
+// Shared hooks
+import { useArrowKeyNavigation } from '@/hooks/shared';
+
 // UI hooks
 import { useSubscriptionStatus } from '@/components/ui/hooks/use-subscription-status';
-import { useArrowKeyNavigation } from '@/components/ui/hooks/use-arrow-key-navigation';
 
 // Chat hooks
 import { useChat } from '@/components/chat/hooks/use-chat';
 
-// Via barrel exports
-import { useSubscriptionStatus, useArrowKeyNavigation } from '@/components/ui/shared';
+// Via barrel exports (where available)
 import { useChat } from '@/components/chat';
 ```
 
 ## Organization Principles
 
-- **Domain-colocated**: Hooks live with the components that use them
-- **Shared UI hooks**: Common UI hooks in `components/ui/hooks/`
-- **No top-level hooks/**: All hooks have been moved to their domain homes
+- **Domain-colocated**: Most hooks live with the components that use them
+- **Shared hooks**: Cross-cutting hooks (like navigation utilities) remain in `hooks/shared/`
+- **UI hooks**: Component-specific UI hooks in `components/ui/hooks/`
+- **Minimal top-level hooks/**: Only shared, cross-cutting hooks remain in `hooks/shared/`
 
 ## Related Documentation
 

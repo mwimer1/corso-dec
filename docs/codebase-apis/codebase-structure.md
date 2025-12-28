@@ -21,13 +21,14 @@ corso-app/
 ├── types/                  # TypeScript type definitions
 ├── hooks/                  # React hooks
 ├── contexts/               # React contexts and providers
-├── actions/                # Server actions (thin wrappers)
 ├── docs/                   # Documentation
 ├── config/                 # Build and tooling configuration
 ├── scripts/                # Development and build scripts
 ├── tests/                  # Test files and test utilities
 └── styles/                 # Styling and design tokens
 ```
+
+**Note**: Server Actions are feature-colocated (e.g., `app/(marketing)/contact/actions.ts`). There is no top-level `actions/` directory. Shared server action utilities live in `lib/actions/`.
 
 ### App Directory (`app/`)
 

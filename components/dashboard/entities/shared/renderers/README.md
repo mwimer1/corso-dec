@@ -11,7 +11,7 @@ Cell renderers and value formatters for entity grid columns (currency, dates, st
 
 ## Usage
 
-Used by column definitions in `lib/services/entities/<entity>/columns.config.ts` to format cell values.
+Used by column definitions in `lib/entities/<entity>/columns.config.ts` to format cell values.
 
 ## Features
 

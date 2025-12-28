@@ -18,7 +18,7 @@ const config = getEntityConfig('addresses');
 
 ## Configuration
 
-- Column definitions: `lib/services/entities/addresses/columns.config.ts`
+- Column definitions: `lib/entities/addresses/columns.config.ts`
 - API endpoint: `/api/v1/entity/addresses`
 - Server-side pagination and filtering
 
