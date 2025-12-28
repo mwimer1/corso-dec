@@ -350,8 +350,6 @@ export default [
           'contexts/**/*.ts',
           // Entity services - used internally via registry
           'lib/entities/**/*.ts',
-          // Dashboard utilities - used in dashboard routes
-          'lib/dashboard/**/*.ts',
           // Marketing content services - server-side functions used in pages
           'lib/marketing/**/*.ts',
           // Mock utilities - used conditionally via dynamic imports

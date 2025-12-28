@@ -74,14 +74,6 @@ export const LIB_POLICIES: BarrelDomainPolicy[] = [
     ],
   },
   {
-    root: 'lib/dashboard',
-    internal: [
-      '**/*.server.ts',
-      '**/server/**',
-      '**/index-server.ts',
-    ],
-  },
-  {
     root: 'lib/integrations',
     internal: [
       '**/*.server.ts',

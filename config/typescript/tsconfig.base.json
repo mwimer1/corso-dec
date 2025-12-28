@@ -85,7 +85,6 @@
       "@/integrations": ["lib/integrations/index.ts"],
       "@/integrations/*": ["lib/integrations/*"],
       "@/types/integrations/*": ["types/integrations/*"],
-      "@/lib/dashboard": ["lib/dashboard/index.ts"],
 
       // Hooks
       "@/hooks/*": ["hooks/*"],

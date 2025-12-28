@@ -277,10 +277,6 @@ export const docs = [
     "title": "lib/core"
   },
   {
-    "path": "lib/dashboard/readme.md",
-    "title": "Dashboard Logic"
-  },
-  {
     "path": "lib/integrations/readme.md",
     "title": "lib/integrations"
   },
