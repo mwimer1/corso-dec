@@ -7,7 +7,7 @@ import { APP_LINKS } from '@/lib/shared';
 import { trackEvent, trackNavClick } from '@/lib/shared/analytics/track';
 import { cn } from '@/styles';
 import { Check } from 'lucide-react';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { IndustryPreview } from './industry-preview';
 
 interface Industry {
