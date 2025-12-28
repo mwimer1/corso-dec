@@ -4,12 +4,13 @@
 
 import { Button, Card, CardContent } from "@/components/ui/atoms";
 import { Badge } from "@/components/ui/atoms/badge";
+import { LinkTrack } from "@/components/ui/molecules";
+import { APP_LINKS } from "@/lib/shared";
 import { trackEvent } from "@/lib/shared/analytics/track";
 import { cn } from "@/styles";
 import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
 import type { ChartDataPoint } from "@/types/marketing";
 import dynamic from "next/dynamic";
-import Link from "next/link";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { averageJobValue, filterSeries, getRangeSlice, sumJobValue, sumProjectCount } from "../../utils/data";
 import { FilterPills } from "../../widgets/filter-pills";
@@ -234,10 +235,10 @@ export const MarketInsightsSection: React.FC<Props> = ({
                   Bars = Project Count • Line = Job Value
                 </p>
               </div>
-              <Button asChild variant="ghost" size="sm" onClick={() => {
-                try { trackEvent("insights_full_dataset_clicked", {}); } catch {}
-              }}>
-                <Link href="/pricing">See full dataset</Link>
+              <Button asChild variant="ghost" size="sm">
+                <LinkTrack href={APP_LINKS.NAV.PRICING} label="insights:see-full-dataset">
+                  See full dataset
+                </LinkTrack>
               </Button>
             </div>
 
