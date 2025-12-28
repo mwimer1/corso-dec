@@ -35,7 +35,7 @@ globs: ["components/dashboard/**/*.tsx"]
 
 ### Table Components
 - `components/dashboard/entities/**/*.tsx` - Entity grid components
-- `lib/services/entities/**/*.ts` - Entity service layer
+- `lib/entities/**/*.ts` - Entity service layer
 
 ## 🛡️ Guardrails & Boundaries
 
@@ -47,7 +47,7 @@ import { useDashboardData } from '@/lib/dashboard';
 
 // ✅ CORRECT: Server components use service layer
 import { EntityListPage } from '@/components/dashboard/entities';
-import { getEntityPage } from '@/lib/services/entities/pages';
+import { getEntityPage } from '@/lib/entities/pages';
 
 // ❌ INCORRECT: Server-only imports in client components
 // import { getClickhouse } from '@/lib/integrations/clickhouse/server';
@@ -55,7 +55,7 @@ import { getEntityPage } from '@/lib/services/entities/pages';
 
 ### Import Boundaries
 - **Client**: `@/components/dashboard`, `@/lib/dashboard`
-- **Server**: `@/components/dashboard/entities`, `@/lib/services/entities`
+- **Server**: `@/components/dashboard/entities`, `@/lib/entities`
 - **No self-barrels**: Within `components/dashboard/**`, prefer relative/leaf imports rather than importing back through the dashboard barrel
 
 ### Styling Requirements
@@ -145,7 +145,7 @@ const columns = [
 ### Entity Data Helpers
 ```typescript
 // ✅ CORRECT: Server-side entity helpers
-import { getEntityPage } from '@/lib/services/entities/pages';
+import { getEntityPage } from '@/lib/entities/pages';
 
 export async function EntityPage({ entity }: { entity: string }) {
   const data = await getEntityPage(entity, { page: { index: 0, size: 50 } });

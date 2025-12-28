@@ -21,7 +21,7 @@ Define the standardized, flattened AG Grid architecture for dashboard entities (
 
 ## TL;DR
 - **Phase 3B Complete**: Legacy `col-defs.ts` files removed, full TableColumnConfig adoption
-- Framework-agnostic columns: `lib/services/entities/<entity>/columns.config.ts` with TableColumnConfig schema
+- Framework-agnostic columns: `lib/entities/<entity>/columns.config.ts` with TableColumnConfig schema
 - Shared grid: `components/dashboard/entities/shared/grid/{EntityGrid.tsx, types.ts, ag-grid-modules.ts, fetchers.ts}`
 - Per-entity config: `components/dashboard/entities/<entity>/config.ts` wires async `colDefs` provider + fetcher
 - Typed registry and barrel: `components/dashboard/entities/index.ts` exports `getEntityConfig`, `EntityGrid`, types
@@ -44,18 +44,18 @@ components/dashboard/entities/
       constants.ts
       helpers.tsx  # FaviconRenderer
   projects/
-    config.ts      # Uses PROJECTS_COLUMNS from lib/services/entities
+    config.ts      # Uses PROJECTS_COLUMNS from lib/entities
     index.ts
   addresses/
-    config.ts      # Uses ADDRESSES_COLUMNS from lib/services/entities
+    config.ts      # Uses ADDRESSES_COLUMNS from lib/entities
     index.ts
   companies/
-    config.ts      # Uses COMPANIES_COLUMNS from lib/services/entities
+    config.ts      # Uses COMPANIES_COLUMNS from lib/entities
     index.ts
   index.ts         # EntityGrid exports + registry + getEntityConfig
 
 # Column definitions now live in:
-lib/services/entities/
+lib/entities/
   projects/columns.config.ts    # TableColumnConfig definitions
   companies/columns.config.ts   # TableColumnConfig definitions
   addresses/columns.config.ts   # TableColumnConfig definitions
@@ -137,7 +137,7 @@ Column definitions use framework-agnostic `TableColumnConfig` schema that adapts
 - `accessor` → `field` (data field path)
 - `label` → `headerName` (display label)
 - `format` → formatter functions (currency, date, etc.)
-- Adapter: `lib/services/entities/adapters/aggrid.ts` (`toColDef()`)
+- Adapter: `lib/entities/adapters/aggrid.ts` (`toColDef()`)
 
 ### RBAC Enforcement
 API routes enforce organization-scoped RBAC:
@@ -171,7 +171,7 @@ API routes enforce organization-scoped RBAC:
 ## Rules
 - Do not deep-import renderers; import directly from `shared/renderers/` (no barrel after cleanup).
 - Keep server-only code out of `@/components/**` (client bundles).
-- Column definitions must use `TableColumnConfig` schema in `lib/services/entities/<entity>/columns.config.ts`.
+- Column definitions must use `TableColumnConfig` schema in `lib/entities/<entity>/columns.config.ts`.
 - Route options: export top-level literals (`runtime`, `dynamic`, `revalidate`). No `as const`.
 - **AG Grid registration**: Never call `ModuleRegistry.registerModules()` directly in components. Use `ensureAgGridRegistered()` from `@/lib/vendors/ag-grid.client`.
 

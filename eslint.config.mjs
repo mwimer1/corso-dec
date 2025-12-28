@@ -130,7 +130,9 @@ export default [
             { name: '@/components/dashboard/table/table-body-virtual', message: 'Deprecated: AG Grid virtualization replaces this.' },
             { name: '@/components/dashboard/table/use-data-table', message: 'Deprecated: use AgGridContainer datasource approach.' },
             { name: '@/components/dashboard/table/table-chrome', message: 'Deprecated: use AgGridContainer.' },
-            { name: '@/lib/dashboard/**', message: 'lib/dashboard/** is deprecated. Use @/lib/services/entities/** instead.' },
+            { name: '@/lib/dashboard/**', message: 'lib/dashboard/** is deprecated. Use @/lib/entities/** instead.' },
+            { name: '@/lib/services', message: 'lib/services/ is removed. Use @/lib/entities/** instead.' },
+            { name: '@/lib/services/**', message: 'lib/services/** is removed. Use @/lib/entities/** instead.' },
             // Prevent re-introduction of legacy realtime stub
             { name: '@/lib/realtime/live', message: 'Removed legacy realtime stub. Use the event bus or queue service instead.' },
             // Block imports from shared variants barrel to encourage domain imports
@@ -1109,7 +1111,11 @@ export default [
             },
             {
               group: ['@/lib/dashboard/**'],
-              message: 'lib/dashboard/** is deprecated. Use @/lib/services/entities/** instead.'
+              message: 'lib/dashboard/** is deprecated. Use @/lib/entities/** instead.'
+            },
+            {
+              group: ['@/lib/services', '@/lib/services/**'],
+              message: 'lib/services/** is removed. Use @/lib/entities/** instead.'
             }
           ]
         }
