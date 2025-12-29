@@ -117,19 +117,19 @@
 .numberField :global([data-stepper]) {
   position: absolute;
   right: 0.5rem;
-  top: 0.5rem;
-  bottom: 0.5rem;
+  top: 0.375rem;
+  bottom: 0.375rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 0.125rem; /* tighter so it fits comfortably */
+  gap: 0.25rem; /* increased for better visual separation */
   z-index: 1;
 }
 
 /* Stepper buttons: translucent overlay that reads as a "tinted" version of the primary panel */
 .numberField :global([data-stepper] button[aria-label^="Increase"]),
 .numberField :global([data-stepper] button[aria-label^="Decrease"]) {
-  width: 2rem;
+  width: 1.5rem;
   height: 1.125rem;
   border-radius: 0.5rem;
   display: grid;
