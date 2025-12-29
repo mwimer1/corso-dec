@@ -332,9 +332,9 @@ pnpm validate:ts-unused  # Re-analyze
 
 ## 📚 Related Documentation
 
-- [Code Quality Standards](../../docs/code-quality-standards.md)
-- [Development Workflow](../../docs/dev-environment.md)
-- [Maintenance Scripts](../maintenance/README.md)
+- [Code Quality Standards](../../.cursor/rules/code-quality-standards.mdc)
+- [Development Workflow](../development/setup-guide.md)
+- [Maintenance Scripts](../../scripts/maintenance/README.md)
 - [CI/CD Pipeline](../../docs/cicd-workflow/)
 
 ## 🤖 AI Agent Integration

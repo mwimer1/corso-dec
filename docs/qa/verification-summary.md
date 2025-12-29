@@ -168,7 +168,7 @@ The implementation is **production-ready** from a code quality perspective. Manu
 
 - `components/landing/sections/use-cases/industry-selector-panel.tsx` - Main implementation
 - `components/landing/sections/use-cases/use-case-explorer.tsx` - Server wrapper
-- [`refactor-implementation-plan.md`](../maintenance/refactor-implementation-plan.md) - Detailed implementation plan
+- [Maintenance Documentation](../../scripts/maintenance/README.md) - Maintenance and refactoring documentation
 - `components/landing/widgets/pill-group.tsx` - Mobile selector component
 
 ---

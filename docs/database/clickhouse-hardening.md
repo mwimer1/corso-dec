@@ -390,7 +390,7 @@ LIMIT 50;
 - [ClickHouse Performance Recommendations](../analytics/clickhouse-recommendations.md) - Performance optimization
 - [Backup & Recovery Strategy](./backup-and-recovery.md) - Backup procedures
 - [Performance Monitoring](./performance-monitoring.md) - Query performance monitoring
-- [Security Standards](../security/security-standards.md) - General security practices
+- [Security Standards](../../.cursor/rules/security-standards.mdc) - General security practices
 
 ## 🚀 Quick Reference
 

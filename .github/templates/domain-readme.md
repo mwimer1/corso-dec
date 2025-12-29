@@ -335,9 +335,9 @@ describe('functionToTest', () => {
 ## Related Documentation
 
 - [Parent Domain Documentation](../README.md)
-- [Shared Utilities](../../shared/README.md)
-- [Testing Standards](../../../docs/codebase/tests.md)
-- [Security Standards](../../../docs/codebase/security.md)
+- [Shared Utilities](../../lib/shared/README.md)
+- [Testing Standards](../../docs/testing-quality/testing-strategy.md)
+- [Security Standards](../../docs/security/security-policy.md)
 
 ---
 

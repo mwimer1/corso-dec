@@ -323,7 +323,7 @@ export async function getProjectsByOrg(orgId: string) {
 
 ## 🔗 Related Documentation
 
-- [Supabase Database Configuration](../supabase/README.md) - Database setup and migrations
+- [Supabase Database Configuration](../../supabase/README.md) - Database setup and migrations
 - [Backup & Recovery Strategy](./backup-and-recovery.md) - Backup procedures
 - [Materialized View Refresh Strategy](./materialized-view-refresh-strategy.md) - MV refresh procedures
 - [Performance Optimization Guide](../performance/performance-optimization-guide.md) - General performance optimization

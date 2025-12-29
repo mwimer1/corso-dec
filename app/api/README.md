@@ -42,7 +42,7 @@ app/api/
 
 ## API Reference
 
-> **📘 Source of Truth**: The complete, authoritative API specification is in [OpenAPI format](api/openapi.yml). All endpoint details, request/response schemas, authentication requirements, and rate limits are documented there.
+> **📘 Source of Truth**: The complete, authoritative API specification is in [OpenAPI format](../../api/openapi.yml). All endpoint details, request/response schemas, authentication requirements, and rate limits are documented there.
 
 ### Quick Reference
 

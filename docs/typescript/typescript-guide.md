@@ -494,7 +494,7 @@ pnpm typecheck:prod
 
 ## 📖 Related Documentation
 
-- [Coding Standards](./coding-standards.md) - General coding standards
+- [Coding Standards](../development/coding-standards.md) - General coding standards
 - [Testing Strategy](../testing-quality/testing-strategy.md) - Testing with TypeScript
 - [API Patterns](../api-data/api-patterns.md) - API type safety
 

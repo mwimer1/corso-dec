@@ -336,10 +336,10 @@ rg -n "ExportName" --type ts --type tsx
 
 ## Related Documentation
 
-- [Component Architecture](../../codebase-apis/codebase-structure.md) - Domain boundaries and import patterns
-- [Development Setup Guide](../../development/setup-guide.md) - Development environment and workflow including dependency management
-- [Testing Strategy](../../testing-quality/testing-strategy.md) - Testing patterns for dependency changes
-- [Performance Optimization Guide](../../performance/performance-optimization-guide.md) - Performance and bundle size optimization
+- [Component Architecture](../codebase-apis/codebase-structure.md) - Domain boundaries and import patterns
+- [Development Setup Guide](../development/setup-guide.md) - Development environment and workflow including dependency management
+- [Testing Strategy](../testing-quality/testing-strategy.md) - Testing patterns for dependency changes
+- [Performance Optimization Guide](../performance/performance-optimization-guide.md) - Performance and bundle size optimization
 
 ## 🏷️ Tags
 

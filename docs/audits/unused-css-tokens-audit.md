@@ -200,9 +200,9 @@ find components -name "*.css" -o -name "*.module.css"
 
 ## Related Documentation
 
-- [Design System Documentation](../ui/design-system.md)
-- [Token System Guide](../styles/tokens/README.md)
-- [Maintenance Standards](../maintenance/MAINTENANCE_STANDARDS.md)
+- [Pattern Library](../pattern-library.md) - Design system patterns
+- [Token System Guide](../../styles/tokens/README.md)
+- [Maintenance Documentation](../../scripts/maintenance/README.md)
 ```
 
 ## Quick Reference: Unused Token Categories

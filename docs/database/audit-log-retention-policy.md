@@ -375,7 +375,7 @@ SELECT * FROM public.cleanup_audit_log(30);
 
 ## 🔗 Related Documentation
 
-- [Supabase Database Configuration](../supabase/README.md) - Database setup and migrations
+- [Supabase Database Configuration](../../supabase/README.md) - Database setup and migrations
 - [Backup & Recovery Strategy](./backup-and-recovery.md) - Backup procedures
 - [Performance Monitoring](./performance-monitoring.md) - Query performance monitoring
 - [Security Implementation](../security/security-implementation.md) - Security procedures

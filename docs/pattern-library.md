@@ -447,7 +447,7 @@ const newButtonVariants = tv({
 ## 🔗 Related Documentation
 
 - [Shared Variants](../styles/ui/shared/README.md) - Shared variant reference
-- [Animation Patterns](../styles/ui/shared/animation-patterns.ts) - Motion design
+- [Shared Styles](../styles/ui/shared/README.md) - Shared styles and patterns
 - [Atoms Reference](../styles/ui/atoms/README.md) - Atomic components
 - [Molecules Reference](../styles/ui/molecules/README.md) - Molecule components
 

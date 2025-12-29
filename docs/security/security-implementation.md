@@ -295,8 +295,8 @@ Track security events for:
 - [API Documentation](../../app/api/README.md) - API security patterns and rate limiting
 - [Security Policy](security-policy.md) - Vulnerability reporting
 - [Authentication Patterns](auth-patterns.md) - Auth implementation details
-- [API Security Standards](../.cursor/rules/security-standards.mdc) - API security rules
-- [OpenAPI RBAC](../.cursor/rules/openapi-vendor-extensions.mdc) - RBAC configuration
+- [API Security Standards](../../.cursor/rules/security-standards.mdc) - API security rules
+- [OpenAPI RBAC](../../.cursor/rules/openapi-vendor-extensions.mdc) - RBAC configuration
 
 ## 🔄 Security Updates
 

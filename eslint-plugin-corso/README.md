@@ -167,9 +167,9 @@ The plugin is organized into logical phases that build upon each other:
 
 ## 📚 Related Documentation
 
-- [Security Standards](../../docs/security/security-standards.md) - Security and authentication patterns
-- [Warehouse Query Hooks](../../docs/codebase-apis/warehouse-query-hooks.md) - Data access patterns
-- [ESLint Configuration](../../../eslint.config.mjs) - Main ESLint setup
+- [Security Standards](../.cursor/rules/security-standards.mdc) - Security and authentication patterns
+- [Warehouse Query Hooks](../docs/analytics/warehouse-query-hooks.md) - Data access patterns
+- [ESLint Configuration](../eslint.config.mjs) - Main ESLint setup
 
 ## 🏷️ Tags
 

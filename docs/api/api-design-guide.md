@@ -526,7 +526,7 @@ pnpm test
 
 - [API README](../../api/README.md) - OpenAPI specification details
 - [API v1 README](../../app/api/v1/README.md) - Route documentation
-- [Security Standards](../security/security-standards.md) - Security patterns
+- [Security Standards](../../.cursor/rules/security-standards.mdc) - Security patterns
 - [Error Handling](../error-handling/error-handling-guide.md) - Error patterns
 
 ---

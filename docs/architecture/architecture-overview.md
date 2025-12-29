@@ -34,8 +34,8 @@ This document provides a comprehensive overview of the Corso codebase architectu
 ## 📁 Project Structure
 
 For detailed directory structure and route organization, see:
-- [App Directory Structure](app/README.md) - Complete Next.js App Router organization
-- [Codebase Structure](docs/codebase-apis/codebase-structure.md) - Full directory reference
+- [App Directory Structure](../codebase/app-directory-structure.md) - Complete Next.js App Router organization
+- [Codebase Structure](../codebase-apis/codebase-structure.md) - Full directory reference
 
 **High-level organization:**
 - `app/` - Next.js App Router (route groups, pages, API routes)
@@ -236,11 +236,11 @@ All code must pass:
 
 ## 📚 Related Documentation
 
-- [Domain-Driven Architecture](docs/architecture-design/domain-driven-architecture.md)
-- [Runtime Boundaries](docs/architecture/runtime-boundaries.md)
-- [Import Patterns](docs/codebase-apis/import-patterns.md)
-- [Security Standards](docs/security/security-policy.md)
-- [Component Design System](.cursor/rules/component-design-system.mdc)
+- [Domain-Driven Architecture](../architecture-design/domain-driven-architecture.md)
+- [Runtime Boundaries](runtime-boundaries.md)
+- [Import Patterns](../codebase-apis/import-patterns.md)
+- [Security Standards](../security/security-policy.md)
+- [Component Design System](../../.cursor/rules/component-design-system.mdc)
 
 ## 🎯 Architectural Decisions
 
