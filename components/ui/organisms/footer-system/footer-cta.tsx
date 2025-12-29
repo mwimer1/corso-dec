@@ -7,6 +7,7 @@ import { cn } from "@/styles";
 import { footerCTA } from "@/styles/ui/organisms";
 import { navbarStyleVariants } from "@/styles/ui/organisms/navbar-variants";
 import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
+import { containerWithPaddingVariants } from "@/styles/ui/shared/container-helpers";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
 type Tone = 'dark' | 'blue';
@@ -51,10 +52,10 @@ export const FooterCTA: React.FC<FooterCTAProps> = (props) => {
   );
 
   const inner = cn(
-    containerMaxWidthVariants({ maxWidth: '7xl', centered: true, responsive: true }),
+    containerWithPaddingVariants({ maxWidth: '7xl', padding: 'lg', centered: true }),
     // Formatting-only change: reduce top/bottom padding and keep content vertically centered
     isBlue
-      ? "py-[2.625rem] sm:py-[3.625rem] lg:py-[3.5rem] text-center"
+      ? "py-[2.625rem] sm:py-[3.625rem] lg:py-[2.5rem] xl:py-[2rem] text-center"
       : ""
   );
 
@@ -71,13 +72,13 @@ export const FooterCTA: React.FC<FooterCTAProps> = (props) => {
         <div className={cn(variants.glow())} aria-hidden />
       )}
 
-      <div className={cn("relative z-10 mx-auto max-w-6xl", inner)}>
+      <div className={cn("relative z-10", inner)}>
         <h2
           id="footer-cta-title"
           className={cn(
             "text-balance font-bold tracking-tight",
             // Slightly larger on wide screens
-            isBlue ? "text-white text-4xl sm:text-5xl lg:text-6xl leading-tight" : "text-background text-3xl sm:text-4xl"
+            isBlue ? "text-white text-4xl sm:text-5xl lg:text-5xl xl:text-6xl leading-tight" : "text-background text-3xl sm:text-4xl"
           )}
         >
           {title}
