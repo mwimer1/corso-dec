@@ -10,9 +10,10 @@
  *   tsx scripts/ci/check-temp-directories.ts
  */
 
-import { execSync } from 'node:child_process';
 import { access, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { isGitIgnored, listTrackedFiles } from '../utils/git';
+import { printCheckResults } from '../utils/report-helpers';
 import type { CheckResult } from './check-common.js';
 
 /**
@@ -24,40 +25,10 @@ const TEMP_DIRECTORIES = [
 ];
 
 /**
- * Check if a path is gitignored
- */
-function isGitignored(path: string): boolean {
-  try {
-    // Use git check-ignore to see if the path is ignored
-    execSync(`git check-ignore "${path}"`, {
-      encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'ignore'],
-    });
-    return true;
-  } catch {
-    // git check-ignore returns non-zero if path is not ignored
-    return false;
-  }
-}
-
-/**
  * Check if a directory has tracked files in git
  */
 function hasTrackedFiles(path: string): string[] {
-  try {
-    const output = execSync(
-      `git ls-files "${path}"`,
-      {
-        encoding: 'utf8',
-        stdio: ['ignore', 'pipe', 'ignore'],
-        maxBuffer: 10 * 1024 * 1024,
-      }
-    );
-    return output.trim().split('\n').filter(Boolean);
-  } catch {
-    // Command failed (might not be in git repo or no matches)
-    return [];
-  }
+  return listTrackedFiles(path);
 }
 
 /**
@@ -116,7 +87,7 @@ async function checkTempDirectory(dirPath: string): Promise<CheckResult> {
   }
   
   const trackedFiles = hasTrackedFiles(dirPath);
-  const isIgnored = isGitignored(dirPath);
+  const isIgnored = isGitIgnored(dirPath);
   const hasReadmeFile = await hasReadme(dirPath);
   
   // If directory is gitignored, that's the preferred state
@@ -212,29 +183,12 @@ async function main() {
   const failures = results.filter(r => !r.success);
   
   if (failures.length > 0) {
-    console.error('\n❌ Temp directory check failed:\n');
-    for (const result of failures) {
-      console.error(result.message);
-      if (result.details) {
-        result.details.forEach(detail => console.error(`  ${detail}`));
-      }
-      if (result.recommendations) {
-        console.error('\n💡 Recommendations:');
-        result.recommendations.forEach(rec => console.error(`  - ${rec}`));
-      }
-    }
-    console.error('');
+    printCheckResults(results, 'Temp directory check');
     process.exit(1);
   }
   
-  // Show warnings if any
-  const warnings = results.flatMap(r => r.warnings || []);
-  if (warnings.length > 0) {
-    console.log('\n⚠️  Warnings:');
-    warnings.forEach(warning => console.log(`  - ${warning}`));
-  }
-  
-  console.log('\n✅ Temp directory check passed');
+  // Show summary for successful checks
+  printCheckResults(results, 'Temp directory check');
   process.exit(0);
 }
 

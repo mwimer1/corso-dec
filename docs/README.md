@@ -1,9 +1,8 @@
 ---
-title: "docs"
-last_updated: "2025-12-25"
-category: "automation"
+category: "documentation"
+last_updated: "2025-12-29"
+status: "draft"
 ---
-
 # Repository Scripts & Docs
 
 This README is generated from a single template (`README.scripts.hbs`).

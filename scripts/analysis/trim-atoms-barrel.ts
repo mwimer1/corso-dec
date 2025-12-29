@@ -15,22 +15,63 @@ import { execSync } from "node:child_process";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
-import type {
-    ClassDeclaration,
-    EnumDeclaration,
-    FunctionDeclaration,
-    InterfaceDeclaration,
-    TypeAliasDeclaration,
-    VariableStatement,
-} from "ts-morph";
 import { Node, Project, SyntaxKind } from "ts-morph";
+import yargs from "yargs";
+import { hideBin } from "yargs/helpers";
+import { createProject, removeExportModifier } from "../utils/barrel-trim";
 
 const __dirname = resolve(fileURLToPath(import.meta.url), '..');
 const ROOT = resolve(__dirname, "..", "..");
-const TARGET = (process.argv.find(a => a.startsWith("--target="))?.split("=")[1] ?? "styles") as "styles" | "components" | "organisms";
-const MODE = (process.argv.find(a => a.startsWith("--mode="))?.split("=")[1] ?? "barrel") as "barrel" | "declaration";
-const DELETE_NODE = process.argv.includes("--delete");
-const DRY_RUN = process.argv.includes("--dry-run");
+
+const argv = yargs(hideBin(process.argv))
+  .scriptName('trim-atoms-barrel')
+  .usage('Trim named exports from atoms barrels.\n\nSources of truth (in priority order):\n  1) --names=a,b,c (comma-separated explicit list)\n  2) --preset=batch01 (predefined list)\n  3) Fallback to usage report `unused` (first N via --limit=15)')
+  .option('target', {
+    type: 'string',
+    choices: ['styles', 'components', 'organisms'],
+    default: 'styles',
+    description: 'Target barrel type',
+  })
+  .option('mode', {
+    type: 'string',
+    choices: ['barrel', 'declaration'],
+    default: 'barrel',
+    description: 'Trim mode',
+  })
+  .option('delete', {
+    type: 'boolean',
+    default: false,
+    description: 'Delete nodes (not just remove export modifier)',
+  })
+  .option('dry-run', {
+    type: 'boolean',
+    default: false,
+    description: 'Dry-run mode (show what would change)',
+  })
+  .option('limit', {
+    type: 'number',
+    default: 15,
+    description: 'Limit number of items to trim from unused list',
+  })
+  .option('names', {
+    type: 'string',
+    description: 'Comma-separated list of explicit names to trim',
+  })
+  .option('preset', {
+    type: 'string',
+    description: 'Preset name (e.g., batch01)',
+  })
+  .help()
+  .alias('help', 'h')
+  .example('$0 --target=styles --preset=batch01', 'Use preset list')
+  .example('$0 --target=components --limit=20', 'Trim first 20 unused')
+  .example('$0 --target=components --names=Button,Card', 'Trim specific names')
+  .parseSync();
+
+const TARGET = (argv.target ?? 'styles') as "styles" | "components" | "organisms";
+const MODE = (argv.mode ?? 'barrel') as "barrel" | "declaration";
+const DELETE_NODE = argv.delete ?? false;
+const DRY_RUN = argv['dry-run'] ?? false;
 const CFG = {
   styles: {
     spec: "@/styles/ui/atoms",
@@ -87,24 +128,18 @@ const PRESETS: Record<string, string[]> = {
 };
 
 function getLimit(): number {
-  const arg = process.argv.find((a) => a.startsWith("--limit="));
-  if (!arg) return 15;
-  const n = Number(arg.split("=")[1] ?? "15");
-  return Number.isFinite(n) && n > 0 ? Math.floor(n) : 15;
+  const limit = argv.limit;
+  return Number.isFinite(limit) && limit > 0 ? Math.floor(limit) : 15;
 }
 
 function getExplicitNames(): string[] | null {
-  const arg = process.argv.find((a) => a.startsWith("--names="));
-  if (!arg) return null;
-  return arg.split("=")[1]?.split(",").map(s => s.trim()).filter(Boolean) ?? [];
+  if (!argv.names) return null;
+  return argv.names.split(",").map(s => s.trim()).filter(Boolean);
 }
 
 function getPresetNames(): string[] | null {
-  const arg = process.argv.find((a) => a.startsWith("--preset="));
-  if (!arg) return null;
-  const preset = arg.split("=")[1];
-  if (!preset) return null;
-  return PRESETS[preset] ?? null;
+  if (!argv.preset) return null;
+  return PRESETS[argv.preset] ?? null;
 }
 
 function ensureReport() {
@@ -116,33 +151,7 @@ function ensureReport() {
   }
 }
 
-function removeExportModifier(node: Node): boolean {
-  if (Node.isVariableStatement(node)) {
-    (node as VariableStatement).setIsExported(false);
-    return true;
-  }
-  if (Node.isFunctionDeclaration(node)) {
-    (node as FunctionDeclaration).setIsExported(false);
-    return true;
-  }
-  if (Node.isClassDeclaration(node)) {
-    (node as ClassDeclaration).setIsExported(false);
-    return true;
-  }
-  if (Node.isInterfaceDeclaration(node)) {
-    (node as InterfaceDeclaration).setIsExported(false);
-    return true;
-  }
-  if (Node.isTypeAliasDeclaration(node)) {
-    (node as TypeAliasDeclaration).setIsExported(false);
-    return true;
-  }
-  if (Node.isEnumDeclaration(node)) {
-    (node as EnumDeclaration).setIsExported(false);
-    return true;
-  }
-  return false;
-}
+// removeExportModifier is now imported from barrel-trim.ts
 
 function deleteDeclaration(node: Node): boolean {
   if (Node.isVariableStatement(node)) { if (!DRY_RUN) node.remove(); return true; }
@@ -179,10 +188,7 @@ function isImportedAnywhere(project: Project, name: string): boolean {
 
 function handleOrganismsExportStar(toRemove: Set<string>) {
   const barrel = CFG.barrel;
-  const project = new Project({
-    tsConfigFilePath: resolve(ROOT, "tsconfig.json"),
-    skipAddingFilesFromTsConfig: false,
-  });
+  const project = createProject(resolve(ROOT, "tsconfig.json"));
 
   const barrelFile = project.getSourceFile(barrel);
   if (!barrelFile) {

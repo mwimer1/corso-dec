@@ -1,11 +1,8 @@
 ---
-title: "Server Actions vs API Routes"
-description: "Decision guide for choosing between Next.js Server Actions and API Routes in the Corso codebase."
-last_updated: "2025-12-15"
-category: "documentation"
 status: "active"
+last_updated: "2025-12-29"
+category: "documentation"
 ---
-
 ## Overview
 
 This codebase uses two patterns for server-side operations:

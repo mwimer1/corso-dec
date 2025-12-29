@@ -1,10 +1,8 @@
 ---
-title: "Repository Root Policy"
-description: "Guidelines for what belongs in the repository root vs. organized subdirectories."
-last_updated: "2025-12-25"
 category: "documentation"
+last_updated: "2025-12-29"
+status: "draft"
 ---
-
 # Repository Root Policy
 
 This document defines what files and directories belong in the repository root versus organized subdirectories.

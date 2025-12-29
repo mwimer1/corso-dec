@@ -18,16 +18,7 @@ import { execSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
-// NOTE: `Node.is*` guards are value-level; import `Node` as a value.
-import type {
-    ClassDeclaration,
-    EnumDeclaration,
-    FunctionDeclaration,
-    InterfaceDeclaration,
-    TypeAliasDeclaration,
-    VariableStatement,
-} from "ts-morph";
-import { Node, Project } from "ts-morph";
+import { createProject, isImportedAnywhere, removeExportModifier } from "../utils/barrel-trim";
 
 const __dirname = resolve(fileURLToPath(import.meta.url), "..");
 const ROOT = resolve(__dirname, "..", "..");
@@ -69,51 +60,7 @@ function ensureReport() {
   }
 }
 
-function isImportedAnywhere(project: Project, name: string): boolean {
-  for (const sf of project.getSourceFiles()) {
-    const fp = sf.getFilePath();
-    if (fp.includes(`${sep}node_modules${sep}`) || fp.includes(`${sep}.next${sep}`) || fp.includes(`${sep}.turbo${sep}`)) continue;
-    for (const imp of sf.getImportDeclarations()) {
-      for (const ni of imp.getNamedImports()) {
-        if (ni.getName() === name) return true; // import { name } from '…'
-      }
-    }
-    for (const ed of sf.getExportDeclarations()) {
-      for (const ne of ed.getNamedExports()) {
-        if (ne.getName() === name) return true; // re-export elsewhere
-      }
-    }
-  }
-  return false;
-}
-
-function removeExportModifier(node: Node): boolean {
-  if (Node.isVariableStatement(node)) {
-    (node as VariableStatement).setIsExported(false);
-    return true;
-  }
-  if (Node.isFunctionDeclaration(node)) {
-    (node as FunctionDeclaration).setIsExported(false);
-    return true;
-  }
-  if (Node.isClassDeclaration(node)) {
-    (node as ClassDeclaration).setIsExported(false);
-    return true;
-  }
-  if (Node.isInterfaceDeclaration(node)) {
-    (node as InterfaceDeclaration).setIsExported(false);
-    return true;
-  }
-  if (Node.isTypeAliasDeclaration(node)) {
-    (node as TypeAliasDeclaration).setIsExported(false);
-    return true;
-  }
-  if (Node.isEnumDeclaration(node)) {
-    (node as EnumDeclaration).setIsExported(false);
-    return true;
-  }
-  return false;
-}
+// Using shared utilities from barrel-trim.ts
 
 function main() {
   // Resolve target names
@@ -136,10 +83,7 @@ function main() {
   }
   const toRemove = new Set(targets);
 
-  const project = new Project({
-    tsConfigFilePath: resolve(ROOT, "tsconfig.json"),
-    skipAddingFilesFromTsConfig: false,
-  });
+  const project = createProject(resolve(ROOT, "tsconfig.json"));
   const barrel = project.getSourceFile(CFG.barrel);
   if (!barrel) {
      
@@ -158,7 +102,7 @@ function main() {
       missing.push(name);
       continue;
     }
-    if (isImportedAnywhere(project, name)) {
+    if (isImportedAnywhere(project, name, [`${sep}node_modules${sep}`, `${sep}.next${sep}`, `${sep}.turbo${sep}`])) {
       skipped.push(name);
       continue;
     }

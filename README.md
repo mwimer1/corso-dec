@@ -1,3 +1,8 @@
+---
+last_updated: "2025-12-29"
+category: "documentation"
+status: "draft"
+---
 # Corso
 
 Modern data platform for construction project management and insights.

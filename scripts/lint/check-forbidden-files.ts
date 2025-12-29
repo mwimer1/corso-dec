@@ -10,8 +10,9 @@
  *   tsx scripts/lint/check-forbidden-files.ts
  */
 
-import { execSync } from 'node:child_process';
 import { globSync } from 'glob';
+import { COMMON_IGNORE_GLOBS } from '../utils/constants';
+import { listTrackedFiles } from '../utils/git';
 
 interface ForbiddenPattern {
   name: string;
@@ -32,30 +33,17 @@ const FORBIDDEN_PATTERNS: ForbiddenPattern[] = [
   },
 ];
 
-const IGNORE_PATTERNS = [
-  'node_modules/**',
-  '.git/**',
-  '.next/**',
-  'dist/**',
-  'build/**',
-  'coverage/**',
-];
+const IGNORE_PATTERNS = [...COMMON_IGNORE_GLOBS];
 
 function checkTrackedFiles(pattern: ForbiddenPattern): string[] {
-  try {
-    const output = execSync(
-      `git ls-files ${pattern.gitPattern}`,
-      {
-        encoding: 'utf8',
-        stdio: ['ignore', 'pipe', 'ignore'],
-        maxBuffer: 10 * 1024 * 1024,
-      }
-    );
-    return output.trim().split('\n').filter(Boolean);
-  } catch (error) {
-    // Git command failed (might not be in a git repo or no matches)
-    return [];
+  // Use git utility for consistent behavior
+  const files: string[] = [];
+  for (const gitPattern of pattern.gitPattern.split(' ').filter(Boolean)) {
+    // Remove quotes from pattern
+    const cleanPattern = gitPattern.replace(/^"|"$/g, '');
+    files.push(...listTrackedFiles(cleanPattern));
   }
+  return files;
 }
 
 function checkUntrackedFiles(pattern: ForbiddenPattern): string[] {

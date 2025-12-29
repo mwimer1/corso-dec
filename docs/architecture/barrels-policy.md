@@ -1,9 +1,7 @@
 ---
-title: "Architecture"
-description: "Documentation and resources for documentation functionality. Located in architecture/."
-last_updated: "2025-12-15"
-category: "documentation"
 status: "draft"
+last_updated: "2025-12-29"
+category: "documentation"
 ---
 # Barrels Policy (Manual, Selective, Runtime-Aware)
 

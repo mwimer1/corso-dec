@@ -1,9 +1,7 @@
 ---
-title: "Api Data"
-description: "Documentation and resources for documentation functionality. Located in api-data/."
-last_updated: "2025-12-15"
-category: "documentation"
 status: "draft"
+last_updated: "2025-12-29"
+category: "documentation"
 ---
 # API Patterns & Data Fetching
 

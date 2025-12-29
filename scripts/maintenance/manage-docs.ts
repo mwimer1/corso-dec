@@ -5,6 +5,7 @@
 import { glob } from 'glob';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
+import { COMMON_IGNORE_GLOBS } from '../utils/constants';
 import { replaceBetweenMarkers, writeIfChangedAtomic } from './maintenance-common';
 
 // --- Logic from gen-docs-index.ts ---
@@ -17,127 +18,88 @@ async function generateDocsIndex() {
   // Fix for Windows glob issues: collect README files from specific directories
   const docFiles: string[] = [];
 
+  // Common ignore patterns for all glob calls
+  const commonIgnore = [...COMMON_IGNORE_GLOBS, 'test-reports/**'];
+
   // Get root-level README files
   const rootReadmes = await glob('*/README.md', {
-    ignore: ['node_modules/**', '.git/**', 'test-reports/**', 'dist/**', 'coverage/**'],
+    ignore: commonIgnore,
   });
   docFiles.push(...rootReadmes);
 
   // Get lib directory README files (Windows-compatible)
-  const libReadmes = await glob('lib/**/README.md', {
-    ignore: ['node_modules/**', '.git/**', 'test-reports/**', 'dist/**', 'coverage/**'],
-  });
+  const libReadmes = await glob('lib/**/README.md', { ignore: commonIgnore });
   docFiles.push(...libReadmes);
 
   // Get tests directory README files (Windows-compatible)
-  const testReadmes = await glob('tests/**/README.md', {
-    ignore: ['node_modules/**', '.git/**', 'test-reports/**', 'dist/**', 'coverage/**'],
-  });
+  const testReadmes = await glob('tests/**/README.md', { ignore: commonIgnore });
   docFiles.push(...testReadmes);
 
   // Get types directory README files (Windows-compatible)
-  const typesReadmes = await glob('types/**/README.md', {
-    ignore: ['node_modules/**', '.git/**', 'test-reports/**', 'dist/**', 'coverage/**'],
-  });
+  const typesReadmes = await glob('types/**/README.md', { ignore: commonIgnore });
   docFiles.push(...typesReadmes);
 
   // Get components directory README files (Windows-compatible)
-  const componentsReadmes = await glob('components/**/README.md', {
-    ignore: ['node_modules/**', '.git/**', 'test-reports/**', 'dist/**', 'coverage/**'],
-  });
+  const componentsReadmes = await glob('components/**/README.md', { ignore: commonIgnore });
   docFiles.push(...componentsReadmes);
 
   // Get actions directory README files (Windows-compatible)
-  const actionsReadmes = await glob('actions/**/README.md', {
-    ignore: ['node_modules/**', '.git/**', 'test-reports/**', 'dist/**', 'coverage/**'],
-  });
+  const actionsReadmes = await glob('actions/**/README.md', { ignore: commonIgnore });
   docFiles.push(...actionsReadmes);
 
   // Get contexts directory README files (Windows-compatible)
-  const contextsReadmes = await glob('contexts/**/README.md', {
-    ignore: ['node_modules/**', '.git/**', 'test-reports/**', 'dist/**', 'coverage/**'],
-  });
+  const contextsReadmes = await glob('contexts/**/README.md', { ignore: commonIgnore });
   docFiles.push(...contextsReadmes);
 
   // Get hooks directory README files (Windows-compatible)
-  const hooksReadmes = await glob('hooks/**/README.md', {
-    ignore: ['node_modules/**', '.git/**', 'test-reports/**', 'dist/**', 'coverage/**'],
-  });
+  const hooksReadmes = await glob('hooks/**/README.md', { ignore: commonIgnore });
   // Exclude hooks/shared sub-READMEs; we only keep the root consolidated README
   docFiles.push(...hooksReadmes.filter(p => !p.replace(/\\/g, '/').includes('hooks/shared/') || p.endsWith('hooks/shared/README.md')));
 
   // Get styles directory README files (Windows-compatible)
-  const stylesReadmes = await glob('styles/**/README.md', {
-    ignore: ['node_modules/**', '.git/**', 'test-reports/**', 'dist/**', 'coverage/**'],
-  });
+  const stylesReadmes = await glob('styles/**/README.md', { ignore: commonIgnore });
   docFiles.push(...stylesReadmes);
 
   // Get app directory README files (Windows-compatible)
-  const appReadmes = await glob('app/**/README.md', {
-    ignore: ['node_modules/**', '.git/**', 'test-reports/**', 'dist/**', 'coverage/**'],
-  });
+  const appReadmes = await glob('app/**/README.md', { ignore: commonIgnore });
   docFiles.push(...appReadmes);
 
   // Get scripts directory README files (Windows-compatible)
-  const scriptsReadmes = await glob('scripts/**/README.md', {
-    ignore: ['node_modules/**', '.git/**', 'test-reports/**', 'dist/**', 'coverage/**'],
-  });
+  const scriptsReadmes = await glob('scripts/**/README.md', { ignore: commonIgnore });
   docFiles.push(...scriptsReadmes);
 
   // Get docs directory README files (Windows-compatible)
-  const docsReadmes = await glob('docs/**/README.md', {
-    ignore: ['node_modules/**', '.git/**', 'test-reports/**', 'dist/**', 'coverage/**'],
-  });
+  const docsReadmes = await glob('docs/**/README.md', { ignore: commonIgnore });
   docFiles.push(...docsReadmes);
 
   // Get dot-directories README files explicitly (Windows-compatible)
-  const cursorReadmes = await glob('.cursor/**/README.md', {
-    ignore: ['node_modules/**', '.git/**', 'test-reports/**', 'dist/**', 'coverage/**'],
-  });
+  const cursorReadmes = await glob('.cursor/**/README.md', { ignore: commonIgnore });
   docFiles.push(...cursorReadmes);
 
-  const githubReadmes = await glob('.github/**/README.md', {
-    ignore: ['node_modules/**', '.git/**', 'test-reports/**', 'dist/**', 'coverage/**'],
-  });
+  const githubReadmes = await glob('.github/**/README.md', { ignore: commonIgnore });
   docFiles.push(...githubReadmes);
 
-
-  const vscodeReadmes = await glob('.vscode/**/README.md', {
-    ignore: ['node_modules/**', '.git/**', 'test-reports/**', 'dist/**', 'coverage/**'],
-  });
+  const vscodeReadmes = await glob('.vscode/**/README.md', { ignore: commonIgnore });
   docFiles.push(...vscodeReadmes);
 
   // Additional top-level workspaces/dirs
-  const eslintPluginReadmes = await glob('eslint-plugin-corso/**/README.md', {
-    ignore: ['node_modules/**', '.git/**', 'test-reports/**', 'dist/**', 'coverage/**'],
-  });
+  const eslintPluginReadmes = await glob('eslint-plugin-corso/**/README.md', { ignore: commonIgnore });
   docFiles.push(...eslintPluginReadmes);
 
-
-  const toolsReadmes = await glob('tools/**/README.md', {
-    ignore: ['node_modules/**', '.git/**', 'test-reports/**', 'dist/**', 'coverage/**'],
-  });
+  const toolsReadmes = await glob('tools/**/README.md', { ignore: commonIgnore });
   docFiles.push(...toolsReadmes);
 
-  const supabaseReadmes = await glob('supabase/**/README.md', {
-    ignore: ['node_modules/**', '.git/**', 'test-reports/**', 'dist/**', 'coverage/**'],
-  });
+  const supabaseReadmes = await glob('supabase/**/README.md', { ignore: commonIgnore });
   docFiles.push(...supabaseReadmes);
 
   // Get .husky directory README files (explicit dotdir include)
-  const huskyReadmes = await glob('.husky/**/README.md', {
-    ignore: ['node_modules/**', '.git/**', 'test-reports/**', 'dist/**', 'coverage/**'],
-  });
+  const huskyReadmes = await glob('.husky/**/README.md', { ignore: commonIgnore });
   docFiles.push(...huskyReadmes);
 
   // Get other root-level README files that might be missed
   const otherReadmes = await glob('**/README.md', {
     ignore: [
-      'node_modules/**',
-      '.git/**',
-      'test-reports/**',
-      'dist/**',
-      'coverage/**',
+      ...commonIgnore,
       // Exclude directories already explicitly counted above
       'lib/**',
       'tests/**',

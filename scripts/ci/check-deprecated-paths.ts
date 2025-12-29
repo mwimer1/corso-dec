@@ -8,8 +8,10 @@
  * - tools/eslint-plugin-corso/ (should be eslint-plugin-corso/)
  */
 
-import { readFileSync, readdirSync, statSync } from 'node:fs';
-import { join, relative } from 'node:path';
+import { readFileSync } from 'node:fs';
+import { relative } from 'node:path';
+import { COMMON_IGNORE_PATTERNS } from '../utils/constants';
+import { walkDirectorySync } from '../utils/fs/walker';
 
 const DEPRECATED_PATTERNS = [
   { pattern: /tools\/ast-grep/, message: 'tools/ast-grep/ should be scripts/rules/ast-grep/' },
@@ -17,16 +19,8 @@ const DEPRECATED_PATTERNS = [
   { pattern: /tools\/eslint-plugin-corso/, message: 'tools/eslint-plugin-corso/ should be eslint-plugin-corso/' },
 ];
 
-const IGNORE_PATTERNS = [
-  'node_modules',
-  '.next',
-  'dist',
-  'coverage',
-  '.git',
-  'build',
-  '*.d.ts',
-  'pnpm-lock.yaml',
-];
+// Use common ignore patterns, plus script-specific exclusions
+const ADDITIONAL_IGNORES = ['*.d.ts', 'pnpm-lock.yaml'];
 
 const EXTENSIONS = ['.md', '.mdc', '.yml', '.yaml', '.json', '.ts', '.tsx', '.js', '.jsx', '.mjs'];
 
@@ -39,7 +33,13 @@ function shouldIgnore(path: string): boolean {
   if (path.includes('check-deprecated-paths.ts')) {
     return true;
   }
-  return IGNORE_PATTERNS.some(ignore => path.includes(ignore));
+  // Check common ignore patterns
+  const pathParts = path.split(/[/\\]/);
+  if (pathParts.some(part => COMMON_IGNORE_PATTERNS.includes(part as any))) {
+    return true;
+  }
+  // Check additional ignores
+  return ADDITIONAL_IGNORES.some(ignore => path.includes(ignore));
 }
 
 function hasRelevantExtension(path: string): boolean {
@@ -72,35 +72,34 @@ function checkFile(filePath: string): Array<{ file: string; line: number; patter
   return issues;
 }
 
-function walkDirectory(dir: string, issues: Array<{ file: string; line: number; pattern: string; message: string }>): void {
-  try {
-    const entries = readdirSync(dir);
-    
-    for (const entry of entries) {
-      const fullPath = join(dir, entry);
-      
-      if (shouldIgnore(fullPath)) {
-        continue;
-      }
-      
-      const stat = statSync(fullPath);
-      
-      if (stat.isDirectory()) {
-        walkDirectory(fullPath, issues);
-      } else if (stat.isFile() && hasRelevantExtension(fullPath)) {
-        const fileIssues = checkFile(fullPath);
-        issues.push(...fileIssues);
-      }
+function collectIssues(dir: string): Array<{ file: string; line: number; pattern: string; message: string }> {
+  const issues: Array<{ file: string; line: number; pattern: string; message: string }> = [];
+  
+  // Use unified walker to get all files
+  const result = walkDirectorySync(dir, {
+    maxDepth: 20, // Reasonable depth
+    includeFiles: true,
+    includeDirs: false,
+    exclude: [...COMMON_IGNORE_PATTERNS, ...ADDITIONAL_IGNORES],
+  });
+  
+  // Filter to relevant extensions and check each file
+  for (const filePath of result.files) {
+    if (shouldIgnore(filePath)) {
+      continue;
     }
-  } catch (error) {
-    // Skip directories that can't be read
+    
+    if (hasRelevantExtension(filePath)) {
+      const fileIssues = checkFile(filePath);
+      issues.push(...fileIssues);
+    }
   }
+  
+  return issues;
 }
 
 function main() {
-  const issues: Array<{ file: string; line: number; pattern: string; message: string }> = [];
-  
-  walkDirectory(process.cwd(), issues);
+  const issues = collectIssues(process.cwd());
   
   if (issues.length > 0) {
     console.error('❌ Found deprecated path references:\n');

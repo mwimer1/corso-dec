@@ -16,6 +16,10 @@
 
 import fs from 'fs';
 import path from 'path';
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
+import { COMMON_IGNORE_PATTERNS } from './constants';
+import { walkDirectoryTreeSync, type TreeNode } from './fs/walker';
 
 interface ScanOptions {
   maxDepth?: number;
@@ -25,87 +29,30 @@ interface ScanOptions {
   sort?: boolean;
 }
 
-interface TreeNode {
-  name: string;
-  path: string;
-  isDirectory: boolean;
-  children?: TreeNode[];
-  depth: number;
-}
-
 class DirectoryScanner {
   private options: Required<ScanOptions>;
-  private currentDepth = 0;
 
   constructor(options: ScanOptions = {}) {
     this.options = {
       maxDepth: options.maxDepth ?? 10,
-      exclude: options.exclude ?? ['node_modules', 'dist', '.next', '.git', 'coverage'],
+      exclude: options.exclude ?? [...COMMON_IGNORE_PATTERNS],
       includeFiles: options.includeFiles ?? true,
       includeDirs: options.includeDirs ?? true,
       sort: options.sort ?? true,
     };
   }
 
-  private shouldExclude(name: string): boolean {
-    return this.options.exclude.some(pattern => 
-      name.includes(pattern) || 
-      (pattern.startsWith('.') && name.startsWith(pattern))
-    );
-  }
+  private scanDirectory(dirPath: string): TreeNode[] {
+    // Use unified walker utility
+    const nodes = walkDirectoryTreeSync(dirPath, {
+      maxDepth: this.options.maxDepth,
+      exclude: this.options.exclude,
+      includeFiles: this.options.includeFiles,
+      includeDirs: this.options.includeDirs,
+    });
 
-  private scanDirectory(dirPath: string, depth: number): TreeNode[] {
-    if (depth > this.options.maxDepth) {
-      return [];
-    }
-
-    try {
-      const items = fs.readdirSync(dirPath);
-      const nodes: TreeNode[] = [];
-
-      for (const item of items) {
-        if (this.shouldExclude(item)) {
-          continue;
-        }
-
-        const fullPath = path.join(dirPath, item);
-        const stats = fs.statSync(fullPath);
-        const isDirectory = stats.isDirectory();
-
-        if (isDirectory && this.options.includeDirs) {
-          const children = this.scanDirectory(fullPath, depth + 1);
-          nodes.push({
-            name: item,
-            path: fullPath,
-            isDirectory: true,
-            children,
-            depth,
-          });
-        } else if (!isDirectory && this.options.includeFiles) {
-          nodes.push({
-            name: item,
-            path: fullPath,
-            isDirectory: false,
-            depth,
-          });
-        }
-      }
-
-      if (this.options.sort) {
-        // Sort directories first, then files, both alphabetically
-        return nodes.sort((a, b) => {
-          if (a.isDirectory !== b.isDirectory) {
-            return a.isDirectory ? -1 : 1;
-          }
-          return a.name.localeCompare(b.name);
-        });
-      }
-
-      return nodes;
-    } catch (error) {
-      console.warn(`Warning: Could not read directory ${dirPath}: ${error}`);
-      return [];
-    }
+    // Nodes are already sorted by walkDirectoryTreeSync
+    return this.options.sort ? nodes : nodes;
   }
 
   private formatTree(nodes: TreeNode[], prefix = '', isLast = true): string[] {
@@ -161,7 +108,7 @@ class DirectoryScanner {
       name: path.basename(absolutePath),
       path: absolutePath,
       isDirectory: true,
-      children: this.scanDirectory(absolutePath, 0),
+      children: this.scanDirectory(absolutePath),
       depth: 0,
     };
 
@@ -179,37 +126,35 @@ class DirectoryScanner {
     maxDepth: number;
   } {
     const absolutePath = path.resolve(targetPath);
+    const excludeSet = new Set(this.options.exclude);
+    
+    // Use walker to get all files and dirs, then count
+    const result = walkDirectoryTreeSync(absolutePath, {
+      maxDepth: this.options.maxDepth,
+      exclude: this.options.exclude,
+      includeFiles: this.options.includeFiles,
+      includeDirs: this.options.includeDirs,
+    });
+
     let totalFiles = 0;
     let totalDirs = 0;
     let maxDepth = 0;
 
-    const countItems = (dirPath: string, depth: number) => {
+    const countNodes = (nodes: TreeNode[], depth: number) => {
       maxDepth = Math.max(maxDepth, depth);
-      
-      try {
-        const items = fs.readdirSync(dirPath);
-        
-        for (const item of items) {
-          if (this.shouldExclude(item)) {
-            continue;
+      for (const node of nodes) {
+        if (node.isDirectory) {
+          totalDirs++;
+          if (node.children) {
+            countNodes(node.children, depth + 1);
           }
-
-          const fullPath = path.join(dirPath, item);
-          const stats = fs.statSync(fullPath);
-          
-          if (stats.isDirectory()) {
-            totalDirs++;
-            countItems(fullPath, depth + 1);
-          } else {
-            totalFiles++;
-          }
+        } else {
+          totalFiles++;
         }
-      } catch {
-        // Skip directories we can't read
       }
     };
 
-    countItems(absolutePath, 0);
+    countNodes(result, 0);
 
     return {
       totalFiles,
@@ -220,37 +165,7 @@ class DirectoryScanner {
   }
 }
 
-function printUsage() {
-  console.log(`
-Directory Structure Scanner
-
-Usage:
-  tsx tools/scripts/scan-directory.ts [directory] [options]
-
-Arguments:
-  directory              Directory to scan (default: current directory)
-
-Options:
-  --max-depth <number>   Maximum depth to scan (default: 10)
-  --exclude <patterns>   Comma-separated patterns to exclude
-  --no-files            Exclude files from output
-  --no-dirs             Exclude directories from output
-  --compact             Use compact format instead of tree
-  --stats               Show statistics only
-  --json                Emit machine-readable JSON
-  --no-emoji            Disable emojis in output labels
-  --help                Show this help message
-
-Examples:
-  tsx tools/scripts/scan-directory.ts scripts
-  tsx tools/scripts/scan-directory.ts components --max-depth 3
-  tsx tools/scripts/scan-directory.ts . --exclude node_modules,dist,.next
-  tsx tools/scripts/scan-directory.ts . --compact
-  tsx tools/scripts/scan-directory.ts . --stats
-`);
-}
-
-function parseArgs(args: string[]): {
+function parseArgs(): {
   targetPath: string;
   options: ScanOptions;
   format: 'tree' | 'compact';
@@ -258,49 +173,84 @@ function parseArgs(args: string[]): {
   json: boolean;
   noEmoji: boolean;
 } {
-  let targetPath = '.';
-  const options: ScanOptions = {};
-  let format: 'tree' | 'compact' = 'tree';
-  let showStats = false;
-  let json = false;
-  let noEmoji = false;
+  const argv = yargs(hideBin(process.argv))
+    .scriptName('scan-directory')
+    .usage('Directory Structure Scanner\n\nUsage: $0 [directory] [options]')
+    .positional('directory', {
+      type: 'string',
+      default: '.',
+      description: 'Directory to scan (default: current directory)',
+    })
+    .option('max-depth', {
+      type: 'number',
+      description: 'Maximum depth to scan (default: 10)',
+    })
+    .option('exclude', {
+      type: 'string',
+      description: 'Comma-separated patterns to exclude',
+    })
+    .option('no-files', {
+      type: 'boolean',
+      description: 'Exclude files from output',
+    })
+    .option('no-dirs', {
+      type: 'boolean',
+      description: 'Exclude directories from output',
+    })
+    .option('compact', {
+      type: 'boolean',
+      description: 'Use compact format instead of tree',
+    })
+    .option('stats', {
+      type: 'boolean',
+      description: 'Show statistics only',
+    })
+    .option('json', {
+      type: 'boolean',
+      description: 'Emit machine-readable JSON',
+    })
+    .option('no-emoji', {
+      type: 'boolean',
+      description: 'Disable emojis in output labels',
+    })
+    .help()
+    .alias('help', 'h')
+    .example('$0 scripts', 'Scan scripts directory')
+    .example('$0 components --max-depth 3', 'Scan with depth limit')
+    .example('$0 . --exclude node_modules,dist,.next', 'Scan with exclusions')
+    .example('$0 . --compact', 'Use compact format')
+    .example('$0 . --stats', 'Show statistics only')
+    .parseSync();
 
-  for (let i = 0; i < args.length; i++) {
-    const arg = args[i];
-    
-    if (arg === '--help' || arg === '-h') {
-      printUsage();
-      process.exit(0);
-    } else if (arg === '--max-depth') {
-      const next = args[++i];
-      options.maxDepth = next ? parseInt(next) : (options.maxDepth ?? 10);
-    } else if (arg === '--exclude') {
-      const next = args[++i];
-      options.exclude = next ? next.split(',').map(s => s.trim()) : (options.exclude ?? []);
-    } else if (arg === '--no-files') {
-      options.includeFiles = false;
-    } else if (arg === '--no-dirs') {
-      options.includeDirs = false;
-    } else if (arg === '--compact') {
-      format = 'compact';
-    } else if (arg === '--stats') {
-      showStats = true;
-    } else if (arg === '--json') {
-      json = true;
-    } else if (arg === '--no-emoji') {
-      noEmoji = true;
-    } else if (arg && !arg.startsWith('--')) {
-      targetPath = arg ?? targetPath;
-    }
+  const targetPath = (argv.directory as string) ?? '.';
+  const options: ScanOptions = {};
+  
+  if (argv['max-depth']) {
+    options.maxDepth = argv['max-depth'];
+  }
+  if (argv.exclude) {
+    options.exclude = argv.exclude.split(',').map(s => s.trim());
+  }
+  if (argv['no-files']) {
+    options.includeFiles = false;
+  }
+  if (argv['no-dirs']) {
+    options.includeDirs = false;
   }
 
-  return { targetPath, options, format, showStats, json, noEmoji };
+  return {
+    targetPath,
+    options,
+    format: argv.compact ? 'compact' : 'tree',
+    showStats: argv.stats ?? false,
+    json: argv.json ?? false,
+    noEmoji: argv['no-emoji'] ?? false,
+  };
 }
 
 function main() {
   try {
-    const args = process.argv.slice(2);
-    const { targetPath, options, format, showStats, json, noEmoji } = parseArgs(args);
+    const { targetPath, options, format, showStats, json, noEmoji } = parseArgs();
 
     const scanner = new DirectoryScanner(options);
 

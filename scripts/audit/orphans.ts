@@ -33,6 +33,8 @@ import {
   toAbsPosix,
   toProjectRelativePosix,
 } from '../audit-lib/orphan-utils';
+import { COMMON_IGNORE_PATTERNS } from '../utils/constants';
+import { walkDirectorySync } from '../utils/fs/walker';
 
 /**
  * Find text references to a file path in reference directories (docs, tests, scripts, etc.)
@@ -54,33 +56,32 @@ function findTextReferences(filePath: string, searchDirs: string[]): boolean {
       `\`${relPath}\``,
     ];
 
-    // Use a simple recursive directory search instead of globby.sync
+    // Use unified walker to get all files, then search them
     function searchDirectory(dir: string): boolean {
       try {
-        const entries = nodeFs.readdirSync(dir, { withFileTypes: true });
-        for (const entry of entries) {
-          const fullPath = nodePath.join(dir, entry.name);
-          
-          // Skip common exclusions
-          if (entry.name.startsWith('.') || 
-              entry.name === 'node_modules' || 
-              entry.name === '.next' || 
-              entry.name === 'dist') {
-            continue;
-          }
-          
-          if (entry.isDirectory()) {
-            if (searchDirectory(fullPath)) return true;
-          } else if (entry.isFile() && /\.(md|txt|ts|tsx|js|jsx|json)$/.test(entry.name)) {
-            try {
-              const content = nodeFs.readFileSync(fullPath, 'utf8');
-              if (searchPatterns.some(pattern => content.includes(pattern))) {
-                return true;
-              }
-            } catch {
-              // Skip files that can't be read
-              continue;
+        // Use unified walker to get all files matching our extensions
+        const result = walkDirectorySync(dir, {
+          maxDepth: 20, // Reasonable depth for docs/tests/scripts
+          includeFiles: true,
+          includeDirs: false,
+          exclude: [...COMMON_IGNORE_PATTERNS],
+        });
+
+        // Filter to files with relevant extensions
+        const relevantFiles = result.files.filter(f => 
+          /\.(md|txt|ts|tsx|js|jsx|json)$/.test(f)
+        );
+
+        // Search each file for patterns
+        for (const fullPath of relevantFiles) {
+          try {
+            const content = nodeFs.readFileSync(fullPath, 'utf8');
+            if (searchPatterns.some(pattern => content.includes(pattern))) {
+              return true;
             }
+          } catch {
+            // Skip files that can't be read
+            continue;
           }
         }
       } catch {
