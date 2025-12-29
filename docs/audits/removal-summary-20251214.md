@@ -1,11 +1,13 @@
 ---
-status: "draft"
-last_updated: "2025-12-15"
+status: "archived"
+last_updated: "2025-12-14"
 category: "documentation"
 title: "Audits"
 description: "Documentation and resources for documentation functionality. Located in audits/."
 ---
 # Production Files Removal Summary
+
+> **ARCHIVED:** Completed on 2025-12-14. Kept for historical context.
 
 **Date**: 2025-12-14  
 **Scope**: Removal of unused barrel files from production codebase

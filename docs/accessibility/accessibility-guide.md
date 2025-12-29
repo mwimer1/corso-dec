@@ -520,9 +520,10 @@ button:focus-visible {
 
 ## 🔗 Related Documentation
 
-- [Component Design System](../ui/component-design-system.md) - Component accessibility patterns
+- [UI Design Guide](../architecture-design/ui-design-guide.md) - Component accessibility patterns and design system
+- [Pattern Library](../pattern-library.md) - Style patterns and component composition
 - [Testing Strategy](../testing-quality/testing-strategy.md) - Accessibility testing
-- [Form Components](../forms/form-field-base.md) - Accessible form patterns
+- [Codebase Structure](../codebase-apis/codebase-structure.md) - Form component patterns (see molecules/FormField)
 
 ---
 

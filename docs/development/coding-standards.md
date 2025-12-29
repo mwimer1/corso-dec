@@ -449,7 +449,7 @@ useEffect(() => {
 ## 📚 Related Documentation
 
 - [ESLint Runtime Boundaries](eslint-runtime-boundaries.md) - Custom lint rules
-- [TypeScript Configuration](../architecture/typescript-config.md) - TS setup
+- [TypeScript Guide](../typescript/typescript-guide.md) - TypeScript setup and configuration
 - [Security Standards](../security/security-implementation.md) - Security patterns
 - [Testing Strategy](../testing-quality/testing-strategy.md) - Testing guidelines
 

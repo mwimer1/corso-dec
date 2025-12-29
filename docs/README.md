@@ -13,3 +13,13 @@ This README is generated from a single template (`README.scripts.hbs`).
 
 > Edit the template or the generator context to change all READMEs consistently.
 
+## Key Sections
+
+- **[Development](./development/)** - Setup guides, coding standards, and development workflows
+- **[Architecture](./architecture/)** - Architecture overview, design decisions, and patterns
+- **[API](./api/)** - API design guides and patterns
+- **[Security](./security/)** - Security policies, patterns, and implementation guides
+- **[References](./references/)** - API specifications, dependencies, and environment variables
+- **[Decisions](./decisions/)** - Architecture decision records
+- **[QA](./qa/)** - Quality assurance guides and verification procedures
+

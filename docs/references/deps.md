@@ -337,9 +337,9 @@ rg -n "ExportName" --type ts --type tsx
 ## Related Documentation
 
 - [Component Architecture](../../codebase-apis/codebase-structure.md) - Domain boundaries and import patterns
-- [Development Workflow](../../development/workflow.md) - Contribution guidelines including dependency management
+- [Development Setup Guide](../../development/setup-guide.md) - Development environment and workflow including dependency management
 - [Testing Strategy](../../testing-quality/testing-strategy.md) - Testing patterns for dependency changes
-- [Bundle Analysis](../../development/bundle-analysis.md) - Bundle size impact of dependency cleanup
+- [Performance Optimization Guide](../../performance/performance-optimization-guide.md) - Performance and bundle size optimization
 
 ## 🏷️ Tags
 

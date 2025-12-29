@@ -614,7 +614,7 @@ Only async functions are allowed to be exported in a "use server" file
 - [Architecture Overview](../README.md) - Platform architecture
 - [Pattern Library](../../pattern-library.md) - General coding guidelines
 - [UI Design Guide](../architecture-design/ui-design-guide.md) - Component patterns
-- [API Routes Guide](./api.md) - Server-side patterns
+- [API Design Guide](../api/api-design-guide.md) - Server-side patterns and API design
 - Security imports: see `lib/security/README.md` and `types/security/README.md`
 
 ## 🧭 Analytics Barrels: Client vs Server
