@@ -14,28 +14,26 @@ export const runtime = "nodejs";
 export default function MarketingHomePage() {
   return (
     <PublicLayout navMode="landing" navItems={landingNavItems}>
-      {/* Hero section: Attio-style fold composition - reduced padding for tighter spacing */}
+      {/* Hero section: responsive fluid spacing with consistent section system */}
       <FullWidthSection
-        padding="sm"
+        padding="hero"
         containerMaxWidth="7xl"
         containerPadding="lg"
         showVerticalGuidelines={true}
         opacity="none"
         guidelineColor="bg-border"
-        className="!pb-0"
       >
         <Hero />
       </FullWidthSection>
 
-      {/* ProductShowcase: Negative margin pulls preview up for fold composition */}
+      {/* ProductShowcase: consistent section spacing */}
       <FullWidthSection
-        padding="sm"
+        padding="section-md"
         containerMaxWidth="7xl"
         containerPadding="lg"
         showVerticalGuidelines={true}
         opacity="none"
         guidelineColor="bg-border"
-        className="-mt-8 md:-mt-12"
       >
         <ProductShowcase />
       </FullWidthSection>

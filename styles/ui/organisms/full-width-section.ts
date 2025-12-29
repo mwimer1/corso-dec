@@ -23,6 +23,12 @@ const fullWidthSectionVariants = tv({
       lg: 'py-16',
       xl: 'py-20',
       '2xl': 'py-24',
+      // Responsive section spacing
+      'section-sm': 'pt-8 pb-8 sm:pt-12 sm:pb-12',
+      'section-md': 'pt-12 pb-12 sm:pt-16 sm:pb-16',
+      'section-lg': 'pt-16 pb-16 sm:pt-20 sm:pb-20 lg:pt-24 lg:pb-24',
+      // Hero-specific: tighter on mobile, spacious on desktop
+      'hero': 'pt-[clamp(2rem,4vh,3rem)] pb-[clamp(1.5rem,3vh,2.5rem)] sm:pt-[clamp(3rem,6vh,4rem)] sm:pb-[clamp(2rem,4vh,3rem)]',
     },
     overflow: {
       visible: 'overflow-visible',
@@ -96,7 +102,7 @@ export type FullWidthSectionGuidelinesVariantProps = VariantProps<
   typeof fullWidthSectionGuidelinesVariants
 >;
 export {
-    fullWidthSectionContainerVariants, fullWidthSectionGuidelinesVariants, fullWidthSectionVariants
+  fullWidthSectionContainerVariants, fullWidthSectionGuidelinesVariants, fullWidthSectionVariants
 };
 
 
