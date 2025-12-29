@@ -2,6 +2,8 @@
 status: "draft"
 last_updated: "2025-12-29"
 category: "documentation"
+title: "Supabase"
+description: "Documentation and resources for documentation functionality."
 ---
 # 🗄️ Supabase Database Configuration
 

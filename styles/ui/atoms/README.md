@@ -1,8 +1,9 @@
 ---
-title: "styles/ui/atoms"
+title: "Atoms"
 last_updated: "2025-12-29"
 category: "styling"
 status: "draft"
+description: "Styling system for styles, using Tailwind CSS and design tokens. Located in ui/atoms/."
 ---
 # Repository Scripts & Docs
 

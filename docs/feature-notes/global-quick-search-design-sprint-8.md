@@ -2,6 +2,8 @@
 last_updated: "2025-12-29"
 category: "documentation"
 status: "draft"
+title: "Feature Notes"
+description: "Documentation and resources for documentation functionality. Located in feature-notes/."
 ---
 # Sprint 8 — Global Quick Search: Design Document
 

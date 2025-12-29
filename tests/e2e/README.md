@@ -2,6 +2,8 @@
 status: "active"
 last_updated: "2025-12-29"
 category: "documentation"
+title: "E2e"
+description: "Documentation and resources for documentation functionality. Located in e2e/."
 ---
 # E2E Tests
 

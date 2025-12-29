@@ -1,8 +1,9 @@
 ---
-title: "scripts/rules"
+title: "Rules"
 last_updated: "2025-12-29"
 category: "documentation"
 status: "draft"
+description: "Documentation and resources for documentation functionality. Located in rules/."
 ---
 # Repository Scripts & Docs
 

@@ -2,6 +2,8 @@
 status: "active"
 last_updated: "2025-12-29"
 category: "documentation"
+title: "Development"
+description: "Documentation and resources for documentation functionality. Located in development/."
 ---
 # Dashboard Auth Mode Verification Guide
 

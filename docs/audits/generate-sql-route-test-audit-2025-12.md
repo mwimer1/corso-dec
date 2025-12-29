@@ -1,6 +1,6 @@
 ---
-title: "Generate SQL Route Test Audit"
-description: "Audit of generate-sql route tests to identify potential failure modes and test setup issues."
+title: "Audits"
+description: "Documentation and resources for documentation functionality. Located in audits/."
 last_updated: "2025-12-29"
 category: "documentation"
 status: "resolved"

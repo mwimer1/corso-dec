@@ -1,9 +1,9 @@
 ---
-title: "Components Clone Refactor Plan — Pass B Clones (P0)"
-description: "Documentation and resources."
+status: "draft"
 last_updated: "2025-12-29"
 category: "documentation"
-status: "draft"
+title: "Audits"
+description: "Documentation and resources for documentation functionality. Located in audits/."
 ---
 # Components Clone Refactor Plan — Pass B Clones (P0)
 

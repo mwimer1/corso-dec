@@ -1,8 +1,9 @@
 ---
-title: "scripts/codemods"
+title: "Codemods"
 last_updated: "2025-12-29"
 category: "documentation"
 status: "draft"
+description: "Documentation and resources for documentation functionality. Located in codemods/."
 ---
 # Repository Scripts & Docs
 

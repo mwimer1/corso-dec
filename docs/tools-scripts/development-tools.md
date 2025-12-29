@@ -1,7 +1,9 @@
 ---
-status: "draft"
-last_updated: "2025-12-29"
 category: "documentation"
+last_updated: "2025-12-29"
+status: "draft"
+title: "Tools Scripts"
+description: "Documentation and resources for documentation functionality. Located in tools-scripts/."
 ---
 # Development Tools & Scripts
 

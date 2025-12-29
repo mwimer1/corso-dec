@@ -2,6 +2,8 @@
 status: "active"
 last_updated: "2025-12-29"
 category: "documentation"
+title: "Architecture"
+description: "Documentation and resources for documentation functionality. Located in architecture/."
 ---
 # Request Storm Check - Explained
 

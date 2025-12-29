@@ -1,8 +1,9 @@
 ---
-title: "docs/feature-notes"
+title: "Feature Notes"
 last_updated: "2025-12-29"
 category: "documentation"
 status: "draft"
+description: "Documentation and resources for documentation functionality. Located in feature-notes/."
 ---
 # Repository Scripts & Docs
 

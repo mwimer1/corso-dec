@@ -1,8 +1,9 @@
 ---
-title: "components/ui/molecules/shared"
+title: "Shared"
 last_updated: "2025-12-29"
 category: "components"
 status: "draft"
+description: "UI components for the components system, following atomic design principles. Located in ui/molecules/shared/."
 ---
 # Repository Scripts & Docs
 

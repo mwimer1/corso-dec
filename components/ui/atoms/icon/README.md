@@ -1,8 +1,9 @@
 ---
-title: "components/ui/atoms/icon"
+title: "Icon"
 last_updated: "2025-12-29"
 category: "components"
 status: "draft"
+description: "UI components for the components system, following atomic design principles. Located in ui/atoms/icon/."
 ---
 # Repository Scripts & Docs
 

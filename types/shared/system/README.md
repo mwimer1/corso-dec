@@ -1,8 +1,9 @@
 ---
-title: "types/shared/system"
+title: "System"
 last_updated: "2025-12-29"
 category: "types"
 status: "draft"
+description: "TypeScript type definitions for types, ensuring type safety across the platform. Located in shared/system/."
 ---
 # Repository Scripts & Docs
 

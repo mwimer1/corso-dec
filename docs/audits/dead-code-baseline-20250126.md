@@ -2,6 +2,8 @@
 status: "active"
 last_updated: "2025-12-29"
 category: "documentation"
+title: "Audits"
+description: "Documentation and resources for documentation functionality. Located in audits/."
 ---
 # Dead Code Audit Baseline — 2025-01-26
 

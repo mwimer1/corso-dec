@@ -3,6 +3,7 @@ description: "Documentation and resources for documentation functionality. Locat
 last_updated: "2025-12-29"
 category: "documentation"
 status: "draft"
+title: "Typescript"
 ---
 # TypeScript Guide
 

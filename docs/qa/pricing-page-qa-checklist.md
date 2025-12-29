@@ -2,6 +2,8 @@
 status: "active"
 last_updated: "2025-12-29"
 category: "documentation"
+title: "Qa"
+description: "Documentation and resources for documentation functionality. Located in qa/."
 ---
 # Pricing Page QA Checklist
 

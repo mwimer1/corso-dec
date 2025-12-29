@@ -2,6 +2,8 @@
 status: "draft"
 last_updated: "2025-12-29"
 category: "documentation"
+title: "Production"
+description: "Documentation and resources for documentation functionality. Located in production/."
 ---
 # Production Readiness Checklist
 

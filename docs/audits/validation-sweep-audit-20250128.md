@@ -1,6 +1,6 @@
 ---
-title: "Cursor Agent — Validation Sweep Audit Report"
-description: "Documentation and resources."
+title: "Audits"
+description: "Documentation and resources for documentation functionality. Located in audits/."
 last_updated: "2025-12-29"
 category: "documentation"
 status: "draft"
