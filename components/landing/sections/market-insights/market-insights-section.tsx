@@ -2,10 +2,8 @@
 
 // src/components/landing/market-insights/market-insights-section.tsx
 
-import { Button, Card, CardContent } from "@/components/ui/atoms";
+import { Button, Card, CardContent, CardHeader, CardTitle } from "@/components/ui/atoms";
 import { Badge } from "@/components/ui/atoms/badge";
-import { LinkTrack } from "@/components/ui/molecules";
-import { APP_LINKS } from "@/lib/shared";
 import { trackEvent } from "@/lib/shared/analytics/track";
 import { cn } from "@/styles";
 import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
@@ -209,130 +207,122 @@ export const MarketInsightsSection: React.FC<Props> = ({
       )}
       aria-labelledby="market-insights-title"
     >
-      <div className="grid grid-cols-1 lg:grid-cols-2 items-start gap-12">
-        <div className="mb-8 lg:mb-0 max-w-prose">
-          <h2 id="market-insights-title" className="text-4xl font-bold tracking-tight text-foreground">
-            Explore Real Data in Action
-          </h2>
-          <p className="text-lg text-muted-foreground mt-4">
-            See how Corso transforms building-permit data into actionable business intelligence across different views.
-          </p>
-          <ul className="list-disc list-outside pl-5 mt-6 space-y-2 text-muted-foreground">
-            <li>Filter by territory, property type, and year range</li>
-            <li>Compare job value vs. project count</li>
-            <li>Export-ready insights for GTM teams</li>
-          </ul>
-        </div>
-        <Card variant="highlight">
-          <CardContent className="pt-6">
-            {/* Compact header row inside content (not CardHeader) */}
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <div className="text-base font-semibold leading-none tracking-tight">
-                  Permit activity (sample)
-                </div>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Bars = Project Count • Line = Job Value
-                </p>
-              </div>
-              <Button asChild variant="ghost" size="sm">
-                <LinkTrack href={APP_LINKS.NAV.PRICING} label="insights:see-full-dataset">
-                  See full dataset
-                </LinkTrack>
-              </Button>
-            </div>
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-8 lg:gap-12">
+        {/* LEFT COLUMN: Text + Filters */}
+        <div className="space-y-6">
+          {/* Text header section */}
+          <div className="max-w-prose">
+            <h2 id="market-insights-title" className="text-4xl font-bold tracking-tight text-foreground">
+              Explore Real Data in Action
+            </h2>
+            <p className="text-lg text-muted-foreground mt-4">
+              See how Corso transforms building-permit data into actionable business intelligence across different views.
+            </p>
+            <ul className="list-disc list-outside pl-5 mt-6 space-y-2 text-muted-foreground">
+              <li>Filter by territory, property type, and year range</li>
+              <li>Compare job value vs. project count</li>
+              <li>Export-ready insights for GTM teams</li>
+            </ul>
+          </div>
 
-            <div className="mt-6 grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_320px] gap-6">
-              {/* LEFT: KPIs + chart */}
-              <div>
-                <Statistics
-                  totalProjects={totalProjects}
-                  totalJobValue={totalJobValue}
-                  averageJobValue={avgJobValue}
-                  valueClassName="text-primary"
+          {/* Filters Card - positioned below bullet points */}
+          <Card variant="default" className="mt-6">
+            <CardHeader>
+              <CardTitle className="text-base">Filters</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Active filters badges */}
+              <div className="flex flex-wrap gap-2" aria-label="Active filters">
+                <Badge color="secondary">{territory}</Badge>
+                <Badge color="secondary">{propType === "All" ? "All Types" : propType}</Badge>
+                <Badge color="secondary">{range[0]}–{range[1]}</Badge>
+              </div>
+
+              {/* Filter controls */}
+              <div className="space-y-4">
+                <YearRangeSlider
+                  value={range}
+                  onChange={setRange}
+                  onCommit={onRangeCommit}
+                  minYear={minYear}
+                  maxYear={maxYear}
                   compact
-                  className="border-b-0 py-0 mt-0 mb-3"
+                  showSelectedIndicator={false}
+                  {...(!dense ? {} : { showBubbles: false })}
                 />
-                <Chart data={filtered} loading={loading} variant="bare" heightClassName="h-56 md:h-64" />
+
+                {controlsVariant === "dropdown" ? (
+                  <>
+                    <FilterSelect
+                      title="Select Territory"
+                      items={territories}
+                      selected={territory}
+                      onSelect={onTerritorySelect}
+                      id="territory-select"
+                      showSelectedIndicator={false}
+                    />
+                    <FilterSelect
+                      title="Select Property Type"
+                      items={propertyTypes}
+                      selected={propType}
+                      onSelect={onPropertySelect}
+                      id="property-select"
+                      showSelectedIndicator={false}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <FilterPills
+                      title="Select Territory"
+                      items={territories}
+                      selected={territory}
+                      onSelect={onTerritorySelect}
+                      id="territory-pills"
+                      showSelectedIndicator={false}
+                    />
+                    <FilterPills
+                      title="Select Property Type"
+                      items={propertyTypes}
+                      selected={propType}
+                      onSelect={onPropertySelect}
+                      id="property-pills"
+                      showSelectedIndicator={false}
+                    />
+                  </>
+                )}
+
+                <div className="flex items-center justify-between gap-3">
+                  <Button variant="secondary" size="sm" onClick={handleReset}>
+                    Reset
+                  </Button>
+
+                  <p className="text-xs text-muted-foreground whitespace-nowrap">
+                    Sample view • Updated regularly
+                  </p>
+                </div>
               </div>
+            </CardContent>
+          </Card>
+        </div>
 
-              {/* RIGHT: Controls panel */}
-              <aside className="xl:border-l xl:border-border/60 xl:pl-6" aria-label="Filters">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-sm font-medium text-foreground">Filters</h3>
-                </div>
-                <div className="flex flex-wrap gap-2 mb-4" aria-label="Active filters">
-                  <Badge color="secondary">{territory}</Badge>
-                  <Badge color="secondary">{propType === "All" ? "All Types" : propType}</Badge>
-                  <Badge color="secondary">{range[0]}–{range[1]}</Badge>
-                </div>
-
-                <div className="space-y-4">
-                  <YearRangeSlider
-                    value={range}
-                    onChange={setRange}
-                    onCommit={onRangeCommit}
-                    minYear={minYear}
-                    maxYear={maxYear}
-                    compact
-                    showSelectedIndicator={false}
-                    {...(!dense ? {} : { showBubbles: false })}
-                  />
-
-                  {controlsVariant === "dropdown" ? (
-                    <>
-                      <FilterSelect
-                        title="Select Territory"
-                        items={territories}
-                        selected={territory}
-                        onSelect={onTerritorySelect}
-                        id="territory-select"
-                        showSelectedIndicator={false}
-                      />
-                      <FilterSelect
-                        title="Select Property Type"
-                        items={propertyTypes}
-                        selected={propType}
-                        onSelect={onPropertySelect}
-                        id="property-select"
-                        showSelectedIndicator={false}
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <FilterPills
-                        title="Select Territory"
-                        items={territories}
-                        selected={territory}
-                        onSelect={onTerritorySelect}
-                        id="territory-pills"
-                        showSelectedIndicator={false}
-                      />
-                      <FilterPills
-                        title="Select Property Type"
-                        items={propertyTypes}
-                        selected={propType}
-                        onSelect={onPropertySelect}
-                        id="property-pills"
-                        showSelectedIndicator={false}
-                      />
-                    </>
-                  )}
-
-                  <div className="flex items-center justify-between gap-3">
-                    <Button variant="secondary" size="sm" onClick={handleReset}>
-                      Reset
-                    </Button>
-
-                    <p className="text-xs text-muted-foreground whitespace-nowrap">
-                      Sample view • Updated regularly
-                    </p>
-                  </div>
-                </div>
-              </aside>
-            </div>
-          </CardContent>
-        </Card>
+        {/* RIGHT COLUMN: Chart output with stats */}
+        <div className="lg:sticky lg:top-24 lg:self-start">
+          <Card variant="highlight">
+            <CardContent className="pt-6">
+              {/* Statistics at top */}
+              <Statistics
+                totalProjects={totalProjects}
+                totalJobValue={totalJobValue}
+                averageJobValue={avgJobValue}
+                valueClassName="text-primary"
+                compact
+                className="border-b-0 py-0 mt-0 mb-3"
+              />
+              {/* Chart */}
+              <Chart data={filtered} loading={loading} variant="bare" heightClassName="h-48 md:h-56" />
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
       <div className={"mt-8 pt-8 " + cls['roiWrap']}>
