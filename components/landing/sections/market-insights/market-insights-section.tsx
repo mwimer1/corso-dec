@@ -2,7 +2,7 @@
 
 // src/components/landing/market-insights/market-insights-section.tsx
 
-import { Button, Card, CardContent, CardHeader, CardTitle } from "@/components/ui/atoms";
+import { Button, Card, CardContent } from "@/components/ui/atoms";
 import { Badge } from "@/components/ui/atoms/badge";
 import { trackEvent } from "@/lib/shared/analytics/track";
 import { cn } from "@/styles";
@@ -207,9 +207,9 @@ export const MarketInsightsSection: React.FC<Props> = ({
       )}
       aria-labelledby="market-insights-title"
     >
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-8 lg:gap-12">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 lg:items-start">
         {/* LEFT COLUMN: Text + Filters */}
-        <div className="space-y-6">
+        <div className="space-y-6 flex flex-col h-full">
           {/* Text header section */}
           <div className="max-w-prose">
             <h2 id="market-insights-title" className="text-4xl font-bold tracking-tight text-foreground">
@@ -226,18 +226,8 @@ export const MarketInsightsSection: React.FC<Props> = ({
           </div>
 
           {/* Filters Card - positioned below bullet points */}
-          <Card variant="default" className="mt-6">
-            <CardHeader>
-              <CardTitle className="text-base">Filters</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Active filters badges */}
-              <div className="flex flex-wrap gap-2" aria-label="Active filters">
-                <Badge color="secondary">{territory}</Badge>
-                <Badge color="secondary">{propType === "All" ? "All Types" : propType}</Badge>
-                <Badge color="secondary">{range[0]}–{range[1]}</Badge>
-              </div>
-
+          <Card variant="default" className="mt-6 flex-1">
+            <CardContent className="space-y-4 pt-6">
               {/* Filter controls */}
               <div className="space-y-4">
                 <YearRangeSlider
@@ -252,7 +242,7 @@ export const MarketInsightsSection: React.FC<Props> = ({
                 />
 
                 {controlsVariant === "dropdown" ? (
-                  <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FilterSelect
                       title="Select Territory"
                       items={territories}
@@ -269,9 +259,9 @@ export const MarketInsightsSection: React.FC<Props> = ({
                       id="property-select"
                       showSelectedIndicator={false}
                     />
-                  </>
+                  </div>
                 ) : (
-                  <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FilterPills
                       title="Select Territory"
                       items={territories}
@@ -288,7 +278,7 @@ export const MarketInsightsSection: React.FC<Props> = ({
                       id="property-pills"
                       showSelectedIndicator={false}
                     />
-                  </>
+                  </div>
                 )}
 
                 <div className="flex items-center justify-between gap-3">
@@ -307,8 +297,8 @@ export const MarketInsightsSection: React.FC<Props> = ({
 
         {/* RIGHT COLUMN: Chart output with stats */}
         <div className="lg:sticky lg:top-24 lg:self-start">
-          <Card variant="highlight">
-            <CardContent className="pt-6">
+          <Card variant="highlight" className="h-full flex flex-col">
+            <CardContent className="pt-6 flex-1 flex flex-col">
               {/* Statistics at top */}
               <Statistics
                 totalProjects={totalProjects}
@@ -319,7 +309,13 @@ export const MarketInsightsSection: React.FC<Props> = ({
                 className="border-b-0 py-0 mt-0 mb-3"
               />
               {/* Chart */}
-              <Chart data={filtered} loading={loading} variant="bare" heightClassName="h-48 md:h-56" />
+              <Chart data={filtered} loading={loading} variant="bare" heightClassName="h-64 md:h-80 lg:h-96" />
+              {/* Active filters at bottom */}
+              <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-border" aria-label="Active filters">
+                <Badge color="secondary">{territory}</Badge>
+                <Badge color="secondary">{propType === "All" ? "All Types" : propType}</Badge>
+                <Badge color="secondary">{range[0]}–{range[1]}</Badge>
+              </div>
             </CardContent>
           </Card>
         </div>
