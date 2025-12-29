@@ -4,7 +4,7 @@
   --ag-header-background-color: hsl(var(--surface, 0 0% 100%));
   --ag-header-foreground-color: hsl(var(--foreground));
   --ag-row-hover-color: color-mix(in srgb, var(--ag-background-color), black 6%);
-  --ag-selected-row-background-color: hsl(var(--primary, 221 86% 54%) / 0.08);
+  --ag-selected-row-background-color: hsl(var(--primary, 221 86% 54%) / 8%);
   --ag-border-color: hsl(var(--border));
 }
 
@@ -50,6 +50,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
   /* give breathing room from the grid edge; scales with your density modes via --ag-grid-size */
   padding: 0 calc(var(--ag-grid-size) * 1.5);
   box-sizing: border-box;
@@ -101,11 +102,6 @@
   justify-content: center !important;
   align-items: center;
   padding: 0;
-}
-
-/* Center the header "select all" container reliably */
-.corso-ag-grid .corso-selection-column-header .ag-header-select-all {
-  margin-inline: auto;
 }
 
 /* 1px nudge: header select-all is slightly left vs body checkboxes */

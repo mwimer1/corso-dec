@@ -1,6 +1,8 @@
 :root {
   /* borders & shadows */
+
   /* Removed duplicate --border-subtle (defined in border.css) */
+
   /* DEPRECATED: --shadow-card moved to shadows.css (2025-01-XX) */
 
   /* text */

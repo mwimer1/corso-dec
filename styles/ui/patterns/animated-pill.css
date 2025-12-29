@@ -8,6 +8,7 @@
     /* Prevent jitter: width grows only up to the measured first-line width
        plus a tiny overscan to counteract sub-pixel kerning differences. */
     --pill-overscan: var(--pill-overscan, 2px);
+
     max-width: calc(var(--pill-target-width, 48ch) + var(--pill-overscan));
     width: max-content;
 

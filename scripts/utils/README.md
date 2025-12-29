@@ -1,10 +1,10 @@
 ---
-title: "Utils"
-description: "Documentation and resources for documentation functionality. Located in utils/."
-last_updated: "2025-12-29"
-category: "documentation"
-status: "draft"
+title: "Utils Scripts"
+description: "Shared utility scripts and common patterns for automation, validation, and file processing across the Corso platform."
+last_updated: 2025-12-29
+category: automation
 ---
+
 # Utils Scripts
 
 > Shared utility scripts and common patterns for automation, validation, and file processing across the Corso platform.

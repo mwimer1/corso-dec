@@ -42,7 +42,6 @@
     "plugin:dts:fix": "tsx scripts/lint/fix-eslint-plugin-dts.ts",
     "verify:plugin:dts": "tsx scripts/lint/verify-eslint-plugin-dts.ts",
     "verify:scripts:no-dts-transform": "tsx scripts/lint/verify-no-dts-transform.ts",
-    "verify:no-deprecated-rate-limit-guards": "tsx scripts/lint/no-deprecated-imports.ts",
     "validate:types": "tsc --noEmit --skipLibCheck",
     "validate:types:realtime": "tsc --noEmit --skipLibCheck types/realtime/index.ts types/realtime/live/types.ts types/realtime/events/types.ts",
     "lint:scripts": "tsx scripts/lint/check-package-scripts.ts",

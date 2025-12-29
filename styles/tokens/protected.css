@@ -17,6 +17,7 @@
   /* Use default tokens for protected areas - more neutral than marketing/auth */
   --background: 0 0% 100%;
   --foreground: 222.2 47.4% 11.2%;
+
   /* Protected theme uses a dark neutral primary (225 6% 13%) instead of brand blue
      for a more subdued, professional appearance in dashboard/settings contexts */
   --primary: 225 6% 13%;
