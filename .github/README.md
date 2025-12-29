@@ -101,9 +101,7 @@ Visual testing can be restored post-MVP launch by:
 │   └── setup-node-pnpm/     # Node.js + pnpm environment setup
 │       └── action.yml       # Action definition
 ├── codeql/                  # CodeQL security scanning configuration
-│   ├── custom/              # Custom security queries
-│   │   └── OrgIdRequired.ql # Tenant isolation enforcement
-│   └── codeql-config.yml    # CodeQL configuration
+│   └── codeql-config.yml    # CodeQL configuration (uses default security queries)
 ├── scripts/                 # GitHub-specific automation scripts
 │   └── update-action-shas.sh # SHA pinning automation script
 ├── workflows/               # 8 active GitHub Actions workflows
@@ -266,7 +264,8 @@ The CI/CD pipeline implements comprehensive security measures with zero-trust pr
 - Security scanning integrated into `security-audit.yml` and `ci.yml`
 
 **Custom Security Rules:**
-- **OrgIdRequired.ql** - Enforces tenant isolation in SQL queries
+- CodeQL uses default security and quality queries for JavaScript/TypeScript
+- Custom queries can be added in `.github/codeql/custom/` when needed
 - **Fork Detection** - Automatic classification of PR execution context
 - **Secret Availability** - Context-aware secret access based on actor type
 
