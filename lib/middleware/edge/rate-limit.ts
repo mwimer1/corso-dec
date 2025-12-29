@@ -7,6 +7,8 @@
 
 // Edge-safe logger (no server dependencies)
 import { runWithRequestContext as runWithEdgeRequestContext } from '@/lib/monitoring/core/logger-edge';
+// Edge-safe env access
+import { getEnvEdge } from '@/lib/api/edge';
 // Use consolidated rate limiting domain
 import { exposeHeader } from '@/lib/middleware/http/headers';
 import { addRequestIdHeader, getRequestId } from '@/lib/middleware/http/request-id';
@@ -40,11 +42,11 @@ export function withRateLimitEdge<R extends NextResponse | Response = NextRespon
 ) {
   return async function rateLimited(req: NextRequest): Promise<R> {
     // Disable rate limiting in development (not test) or when explicitly disabled
-    const nodeEnv = typeof process !== 'undefined' && process.env ? process.env['NODE_ENV'] : undefined;
-    const disableRateLimit = typeof process !== 'undefined' && process.env ? process.env['DISABLE_RATE_LIMIT'] === 'true' : false;
+    const { NODE_ENV, DISABLE_RATE_LIMIT } = getEnvEdge();
+    const disableRateLimit = DISABLE_RATE_LIMIT === 'true';
     
     // Only bypass in development mode (not test or production)
-    if ((nodeEnv === 'development') || disableRateLimit) {
+    if (NODE_ENV === 'development' || disableRateLimit) {
       // Bypass rate limiting and call handler directly
       const response = await _handler(req);
       return response as R;

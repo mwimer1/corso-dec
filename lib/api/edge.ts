@@ -19,6 +19,8 @@ type EdgeEnv = Pick<
 > & {
   /** Alias for CORS_ORIGINS for compatibility */
   CORS_ALLOWED_ORIGINS?: string | string[];
+  /** Dev/test flag to disable rate limiting (not in ValidatedEnv schema) */
+  DISABLE_RATE_LIMIT?: string;
 };
 export function getEnvEdge(): EdgeEnv {
   // Edge-safe: don't import server-only helpers. Read from process.env (inlined at build)
@@ -33,6 +35,7 @@ export function getEnvEdge(): EdgeEnv {
   if (typeof e['CORSO_USE_MOCK_CMS'] !== 'undefined') (out as any).CORSO_USE_MOCK_CMS = (String(e['CORSO_USE_MOCK_CMS']) === 'true' ? 'true' : 'false');
   if (typeof e['CORS_ORIGINS'] !== 'undefined') out.CORS_ORIGINS = String(e['CORS_ORIGINS']);
   if (typeof e['CORS_ALLOWED_ORIGINS'] !== 'undefined') (out as any).CORS_ALLOWED_ORIGINS = e['CORS_ALLOWED_ORIGINS'];
+  if (typeof e['DISABLE_RATE_LIMIT'] !== 'undefined') out.DISABLE_RATE_LIMIT = String(e['DISABLE_RATE_LIMIT']);
   return out as EdgeEnv;
 }
 
