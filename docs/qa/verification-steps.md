@@ -1,8 +1,8 @@
 ---
-status: "archived"
-last_updated: "2025-12-25"
+last_updated: "2025-12-29"
+category: "documentation"
+status: "draft"
 ---
-
 # P0 Hardening Verification Steps
 
 > **DEPRECATED:** This checklist is retained for historical context. Use [Manual Verification Guide](./manual-verification-guide.md) instead for current verification procedures.

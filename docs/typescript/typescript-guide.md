@@ -1,9 +1,8 @@
 ---
-status: "draft"
-last_updated: "2025-12-15"
-category: "documentation"
-title: "Typescript"
 description: "Documentation and resources for documentation functionality. Located in typescript/."
+last_updated: "2025-12-29"
+category: "documentation"
+status: "draft"
 ---
 # TypeScript Guide
 

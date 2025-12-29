@@ -1,8 +1,8 @@
 ---
-status: stable
-last_updated: 2025-01-28
+status: "stable"
+last_updated: "2025-12-29"
+category: "documentation"
 ---
-
 # Pricing Page Implementation Summary
 
 ## ✅ Completed Changes

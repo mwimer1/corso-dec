@@ -1,8 +1,8 @@
 ---
-status: active
-last_updated: 2025-12-25
+last_updated: "2025-12-29"
+category: "documentation"
+status: "draft"
 ---
-
 # Manual Verification Guide - P0 Hardening
 
 ## ✅ Step 1: Environment Verification

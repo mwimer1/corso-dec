@@ -1,3 +1,10 @@
+---
+title: "Decision: Route Theme Duplication (KEEP)"
+description: "Documentation and resources."
+last_updated: "2025-12-29"
+category: "documentation"
+status: "draft"
+---
 # Decision: Route Theme Duplication (KEEP)
 
 **Date**: 2025-12-25  

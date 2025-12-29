@@ -1,28 +1,15 @@
-# Progress Components
+---
+title: "components/ui/atoms/progress"
+last_updated: "2025-12-29"
+category: "components"
+status: "draft"
+---
+# Repository Scripts & Docs
 
-## Purpose
+This README is generated from a single template (`README.scripts.hbs`).
 
-Progress indicators (bars, spinners) for loading states and task completion visualization.
+- Directory: `components/ui/atoms/progress`
+- Last updated: `2025-12-29`
 
-## Key Files
+> Edit the template or the generator context to change all READMEs consistently.
 
-- Progress bar component
-- Spinner component (if present)
-
-## Usage
-
-```tsx
-import { Progress } from '@/components/ui/atoms/progress';
-
-<Progress value={75} max={100} />
-```
-
-## Styling
-
-- Uses Tailwind CSS with UI design tokens
-- Animated transitions for value changes
-- Theme-aware (light/dark mode)
-
-## Client/Server Notes
-
-- Progress components are client components (animated states)

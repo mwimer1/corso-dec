@@ -1,9 +1,7 @@
 ---
-title: "Monitoring"
-description: "Complete guide to monitoring, health checks, metrics collection, and observability for the Corso platform."
-last_updated: "2025-12-15"
-category: "documentation"
 status: "stable"
+last_updated: "2025-12-29"
+category: "documentation"
 ---
 # Monitoring & Observability Guide
 

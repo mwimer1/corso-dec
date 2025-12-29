@@ -1,18 +1,15 @@
-# Marketing Page Widgets
+---
+title: "components/marketing/widgets"
+last_updated: "2025-12-29"
+category: "components"
+status: "draft"
+---
+# Repository Scripts & Docs
 
-## Purpose
+This README is generated from a single template (`README.scripts.hbs`).
 
-Reusable widget components for marketing pages: CTAs, testimonials, feature cards, etc.
+- Directory: `components/marketing/widgets`
+- Last updated: `2025-12-29`
 
-## Usage
+> Edit the template or the generator context to change all READMEs consistently.
 
-Used in marketing page sections to build modular content blocks.
-
-## Styling
-
-- Uses Tailwind CSS with marketing design tokens
-- Responsive widget layouts
-
-## Client/Server Notes
-
-- Widgets are client components (interactive elements)

@@ -1,11 +1,8 @@
 ---
-title: "Repository Directory Structure"
-description: "Complete directory tree structure of the entire repository"
-last_updated: "2025-01-29"
-category: "codebase"
 status: "generated"
+last_updated: "2025-12-29"
+category: "documentation"
 ---
-
 # Repository Directory Structure
 
 > **Note**: This file is auto-generated. To regenerate, run:

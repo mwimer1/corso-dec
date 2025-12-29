@@ -1,26 +1,15 @@
-# Dashboard Components
+---
+title: "components/dashboard"
+last_updated: "2025-12-29"
+category: "components"
+status: "draft"
+---
+# Repository Scripts & Docs
 
-## Purpose
+This README is generated from a single template (`README.scripts.hbs`).
 
-Dashboard domain components for protected user interface: entity grids, layouts, sidebar navigation, and data visualization.
+- Directory: `components/dashboard`
+- Last updated: `2025-12-29`
 
-## Key Files
+> Edit the template or the generator context to change all READMEs consistently.
 
-- `entity/` - Entity grid system (projects, addresses, companies)
-- `layout/` - Dashboard layout structure
-- `sidebar/` - Sidebar navigation components
-
-## Usage
-
-Dashboard components are used in `app/(protected)/dashboard/**` routes to build the authenticated user interface.
-
-## Architecture
-
-- Entity grids use AG Grid with server-side row model
-- Layout components provide consistent dashboard structure
-- Sidebar integrates with Clerk for authentication state
-
-## Client/Server Notes
-
-- Most dashboard components are client components (interactivity required)
-- Data fetching is server-side via API routes

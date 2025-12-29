@@ -1,9 +1,7 @@
 ---
-title: "Error Handling"
-description: "Complete guide to error handling, structured logging, error boundaries, and resilience patterns."
-last_updated: "2025-12-15"
-category: "documentation"
 status: "stable"
+last_updated: "2025-12-29"
+category: "documentation"
 ---
 # Error Handling & Resilience Guide
 

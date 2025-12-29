@@ -1,11 +1,10 @@
 ---
 title: "App Directory Structure"
 description: "Complete directory tree structure of the app directory (Next.js App Router)"
-last_updated: "2025-01-28"
-category: "codebase"
+last_updated: "2025-12-29"
+category: "documentation"
 status: "generated"
 ---
-
 # App Directory Structure
 
 > **Note**: This file is auto-generated. To regenerate, run:

@@ -1,11 +1,8 @@
 ---
-title: "Insights Content Authoring Guide"
-description: "Guidelines and best practices for creating and authoring insights articles on Corso"
-last_updated: "2025-12-20"
-category: "content"
 status: "active"
+last_updated: "2025-12-29"
+category: "documentation"
 ---
-
 # Insights Content Authoring Guide
 
 **Comprehensive guide for content creators writing insights articles for the Corso platform.**

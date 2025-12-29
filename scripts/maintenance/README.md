@@ -1,15 +1,15 @@
 ---
 title: "scripts/maintenance"
-last_updated: "2025-12-25"
-category: "automation"
+last_updated: "2025-12-29"
+category: "documentation"
+status: "draft"
 ---
-
 # Repository Scripts & Docs
 
 This README is generated from a single template (`README.scripts.hbs`).
 
 - Directory: `scripts/maintenance`
-- Last updated: `2025-12-25`
+- Last updated: `2025-12-29`
 
 > Edit the template or the generator context to change all READMEs consistently.
 
@@ -18,7 +18,7 @@ This README is generated from a single template (`README.scripts.hbs`).
 - **audit-barrels.ts** – Unified Barrel Audit
 - **audit-unused-tokens.ts** – Skip build directories
 - **barrel.config.ts** – &#x27;,
-- **check-barrels.ts** – Ensures all exports from domain index.ts files resolve to files within the same domain
+- **check-barrels.ts** – Also checks for intradomain root barrel circular dependencies.
 - **check-readme-freshness.ts** – Check README freshness - validates that README files with frontmatter
 - **clean-next-build.ts** – Cross-platform script to clean .next directory before build
 - **clean-typescript-cache.ts** – scripts/maintenance/clean-typescript-cache.ts
@@ -38,18 +38,16 @@ This README is generated from a single template (`README.scripts.hbs`).
 - **link-fixes.config.ts** – scripts/maintenance/link-fixes.config.ts
 - **list-missing-frontmatter.ts** – /*.md&#x27;,
 - **maintenance-common.ts** – Tolerant marker replacement. Accepts variants like:
-- **manage-docs.ts** – &#x27;, &#x27;.git/**&#x27;, &#x27;test-reports/**&#x27;, &#x27;dist/**&#x27;, &#x27;coverage/**&#x27;],
+- **manage-docs.ts** – &#x27;];
 - **normalize-doc-status.ts** – No description available
 - **normalize-frontmatter.ts** – /*.md&#x27;,
+- **port-static-insights-to-mockcms.ts** – scripts/maintenance/port-static-insights-to-mockcms.ts
 - **refresh-readmes.ts** – /*.md&quot;,
 - **replace-package-script-references.ts** – Keep our maintenance scripts intact (they contain canonical mapping)
 - **stale-docs.ts** – pnpm docs:stale        # Run stale documentation check (reports if any outdated docs)
 - **styles-comprehensive-audit.ts** – scripts/maintenance/styles-comprehensive-audit.ts
 - **types-exports-audit.ts** – pnpm audit:types-exports           # Run all checks and report issues
 - **validate-dead-code-optimized.ts** – Optimized Dead Code Validation
-- **validate-docs.ts** – Comprehensive documentation validation (includes link checking, freshness, metrics, linting, and index validation)
-
-Note: `validate-doc-links.ts` was consolidated into `validate-docs.ts` in Sprint 3.
 - **validate-docs-on-commit.ts** – scripts/validate-docs-on-commit.ts
 - **validate-docs.ts** – Checks if markdown-link-check tool is available
 - **validate-mock-schema.ts** – Known optional/computed fields that may not exist in mock data

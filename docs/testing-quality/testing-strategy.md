@@ -1,9 +1,7 @@
 ---
-title: "Testing Quality"
-description: "Comprehensive testing strategy covering test organization, patterns, best practices, and coverage requirements."
-last_updated: "2025-12-15"
-category: "documentation"
 status: "stable"
+last_updated: "2025-12-29"
+category: "documentation"
 ---
 # Testing Strategy & Best Practices
 

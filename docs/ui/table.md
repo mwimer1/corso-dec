@@ -1,9 +1,7 @@
 ---
-title: "UI"
-description: "Documentation and resources for documentation functionality. Located in ui/."
-last_updated: "2025-12-19"
-category: "documentation"
 status: "draft"
+last_updated: "2025-12-29"
+category: "documentation"
 ---
 # Dashboard Table UI Updates
 

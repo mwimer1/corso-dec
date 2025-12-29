@@ -1,8 +1,8 @@
 ---
-status: active
-last_updated: 2025-12-25
+status: "active"
+last_updated: "2025-12-29"
+category: "documentation"
 ---
-
 # Pricing Page QA Checklist
 
 **Date:** 2025-01-XX  

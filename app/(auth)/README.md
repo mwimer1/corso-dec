@@ -1,9 +1,7 @@
 ---
-title: "(auth)"
-description: "Documentation and resources for documentation functionality. Located in (auth)/."
-last_updated: "2025-12-15"
-category: "documentation"
 status: "draft"
+last_updated: "2025-12-29"
+category: "documentation"
 ---
 [Back to App README](../README.md)
 

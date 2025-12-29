@@ -1,8 +1,8 @@
 ---
-status: stable
-last_updated: 2025-01-28
+last_updated: "2025-12-29"
+category: "documentation"
+status: "draft"
 ---
-
 # Sprint 8 — Global Quick Search: Design Document
 
 ## Overview

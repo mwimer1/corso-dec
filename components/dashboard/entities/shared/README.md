@@ -1,28 +1,15 @@
-# Entity Grid Shared Components
+---
+title: "components/dashboard/entities/shared"
+last_updated: "2025-12-29"
+category: "components"
+status: "draft"
+---
+# Repository Scripts & Docs
 
-## Purpose
+This README is generated from a single template (`README.scripts.hbs`).
 
-Shared infrastructure for entity grid system: AG Grid configuration, fetchers, and renderers.
+- Directory: `components/dashboard/entities/shared`
+- Last updated: `2025-12-29`
 
-## Key Files
+> Edit the template or the generator context to change all READMEs consistently.
 
-- `grid/entity-grid.tsx` - Core grid component
-- `grid/entity-grid-host.tsx` - Client wrapper
-- `grid/fetchers.ts` - Data fetching utilities
-- `ag-grid-config.ts` - AG Grid module registration
-- `renderers/` - Cell renderers and formatters
-
-## Usage
-
-Internal module - used by entity-specific configs (`projects/config.ts`, etc.) to build grid instances.
-
-## Architecture
-
-- Server-side row model (SSRM) for pagination
-- Framework-agnostic column definitions
-- Client-safe fetchers with credentials
-
-## Client/Server Notes
-
-- Grid components are client-only (AG Grid requires browser APIs)
-- Fetchers are edge-safe (use fetch with credentials)

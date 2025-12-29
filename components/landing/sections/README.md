@@ -1,23 +1,15 @@
-# Landing Page Sections
+---
+title: "components/landing/sections"
+last_updated: "2025-12-29"
+category: "components"
+status: "draft"
+---
+# Repository Scripts & Docs
 
-## Purpose
+This README is generated from a single template (`README.scripts.hbs`).
 
-Reusable section components for landing pages: hero, features, pricing, testimonials, etc.
+- Directory: `components/landing/sections`
+- Last updated: `2025-12-29`
 
-## Key Files
+> Edit the template or the generator context to change all READMEs consistently.
 
-- Individual section components in subdirectories
-
-## Usage
-
-Used in `app/(marketing)/` routes to build landing page content.
-
-## Styling
-
-- Uses Tailwind CSS with marketing design tokens
-- Full-width sections with background variants
-- Responsive layouts
-
-## Client/Server Notes
-
-- Sections are client components (interactive elements)

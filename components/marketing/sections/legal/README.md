@@ -1,18 +1,15 @@
-# Legal Section Component
+---
+title: "components/marketing/sections/legal"
+last_updated: "2025-12-29"
+category: "components"
+status: "draft"
+---
+# Repository Scripts & Docs
 
-## Purpose
+This README is generated from a single template (`README.scripts.hbs`).
 
-Legal content sections (terms, privacy policy, etc.) for marketing pages.
+- Directory: `components/marketing/sections/legal`
+- Last updated: `2025-12-29`
 
-## Usage
+> Edit the template or the generator context to change all READMEs consistently.
 
-Used in marketing pages to display legal documentation and compliance content.
-
-## Styling
-
-- Uses Tailwind CSS with marketing design tokens
-- Typography-focused layout for readability
-
-## Client/Server Notes
-
-- Legal section is a client component (interactive navigation if present)

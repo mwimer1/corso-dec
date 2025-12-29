@@ -1,9 +1,7 @@
 ---
-title: "Security"
-description: "Comprehensive guide to security implementation including authentication, authorization, security headers, and best practices."
-last_updated: "2025-12-15"
-category: "documentation"
 status: "stable"
+last_updated: "2025-12-29"
+category: "documentation"
 ---
 # Security Implementation Guide
 

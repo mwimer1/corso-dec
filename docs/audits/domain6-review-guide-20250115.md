@@ -1,11 +1,8 @@
 ---
-title: "Domain 6 Review Guide (Archived)"
-description: "Historical review checklist for Domain 6 documentation improvements (January 2025). Archived as completed audit artifact."
-last_updated: "2025-12-15"
-category: "audit"
 status: "archived"
+last_updated: "2025-12-29"
+category: "documentation"
 ---
-
 # Domain 6: Documentation Quality - Review Guide (ARCHIVED)
 
 > **⚠️ ARCHIVED DOCUMENT**  

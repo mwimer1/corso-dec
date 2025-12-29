@@ -1,30 +1,15 @@
-# Billing Components
+---
+title: "components/billing"
+last_updated: "2025-12-29"
+category: "components"
+status: "draft"
+---
+# Repository Scripts & Docs
 
-Subscription and payment management components.
+This README is generated from a single template (`README.scripts.hbs`).
 
-## Purpose
+- Directory: `components/billing`
+- Last updated: `2025-12-29`
 
-Provides UI components for managing user subscriptions, billing, and payment information.
+> Edit the template or the generator context to change all READMEs consistently.
 
-## Public Exports
-
-From `components/billing/index.ts`:
-
-- **Subscription**: `SubscriptionClient` - Client component for subscription management UI
-
-## Usage in App Routes
-
-Billing components are used in:
-
-- **Subscription page**: `SubscriptionClient` in `/subscription` route
-- **Account settings**: Subscription management in user account pages
-
-## Styling
-
-- **Tailwind CSS**: Primary styling approach
-- **CVA Variants**: Component variants in `styles/ui/**`
-- **Design Tokens**: Uses CSS custom properties from design system
-
-## Server/Client Notes
-
-- **Client components**: `SubscriptionClient` requires client-side interactivity for subscription management

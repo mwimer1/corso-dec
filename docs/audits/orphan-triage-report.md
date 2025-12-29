@@ -1,8 +1,8 @@
 ---
-status: stable
-last_updated: 2025-12-20
+status: "stable"
+last_updated: "2025-12-29"
+category: "documentation"
 ---
-
 # Orphan File Triage Report
 
 **Generated:** 2025-12-20  

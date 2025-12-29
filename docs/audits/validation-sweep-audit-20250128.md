@@ -1,3 +1,10 @@
+---
+title: "Cursor Agent — Validation Sweep Audit Report"
+description: "Documentation and resources."
+last_updated: "2025-12-29"
+category: "documentation"
+status: "draft"
+---
 # Cursor Agent — Validation Sweep Audit Report
 
 **Generated:** 2025-01-28  

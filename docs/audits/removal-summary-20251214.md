@@ -1,9 +1,8 @@
 ---
-status: "archived"
-last_updated: "2025-12-14"
-category: "documentation"
-title: "Audits"
 description: "Documentation and resources for documentation functionality. Located in audits/."
+last_updated: "2025-12-29"
+category: "documentation"
+status: "draft"
 ---
 # Production Files Removal Summary
 

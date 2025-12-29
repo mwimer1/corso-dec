@@ -1,18 +1,15 @@
-# Pricing Section Component
+---
+title: "components/marketing/sections/pricing"
+last_updated: "2025-12-29"
+category: "components"
+status: "draft"
+---
+# Repository Scripts & Docs
 
-## Purpose
+This README is generated from a single template (`README.scripts.hbs`).
 
-Pricing table and plan comparison section for marketing pages.
+- Directory: `components/marketing/sections/pricing`
+- Last updated: `2025-12-29`
 
-## Usage
+> Edit the template or the generator context to change all READMEs consistently.
 
-Used in marketing pages to display pricing tiers and plan features.
-
-## Styling
-
-- Uses Tailwind CSS with marketing design tokens
-- Responsive pricing table layout
-
-## Client/Server Notes
-
-- Pricing section is a client component (interactive plan selection if present)

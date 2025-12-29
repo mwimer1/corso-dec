@@ -1,9 +1,7 @@
 ---
-title: "Performance"
-description: "Complete guide to performance optimization, bundle size management, database query optimization, and performance monitoring."
-last_updated: "2025-12-15"
-category: "documentation"
 status: "draft"
+last_updated: "2025-12-29"
+category: "documentation"
 ---
 # Performance Optimization Guide
 

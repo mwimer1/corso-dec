@@ -1,18 +1,15 @@
-# Contact Section Component
+---
+title: "components/marketing/sections/contact"
+last_updated: "2025-12-29"
+category: "components"
+status: "draft"
+---
+# Repository Scripts & Docs
 
-## Purpose
+This README is generated from a single template (`README.scripts.hbs`).
 
-Contact form section for marketing pages with validation and submission handling.
+- Directory: `components/marketing/sections/contact`
+- Last updated: `2025-12-29`
 
-## Usage
+> Edit the template or the generator context to change all READMEs consistently.
 
-Used in marketing pages to collect user contact information.
-
-## Styling
-
-- Uses Tailwind CSS with marketing design tokens
-- Responsive form layout
-
-## Client/Server Notes
-
-- Contact section is a client component (form interactivity)

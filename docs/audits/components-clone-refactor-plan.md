@@ -1,3 +1,10 @@
+---
+title: "Components Clone Refactor Plan — Pass B Clones (P0)"
+description: "Documentation and resources."
+last_updated: "2025-12-29"
+category: "documentation"
+status: "draft"
+---
 # Components Clone Refactor Plan — Pass B Clones (P0)
 
 **Date**: 2025-01-28  

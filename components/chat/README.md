@@ -1,45 +1,15 @@
-# Chat Components
+---
+title: "components/chat"
+last_updated: "2025-12-29"
+category: "components"
+status: "draft"
+---
+# Repository Scripts & Docs
 
-AI chat interface components for conversational interactions.
+This README is generated from a single template (`README.scripts.hbs`).
 
-## Purpose
+- Directory: `components/chat`
+- Last updated: `2025-12-29`
 
-Provides the chat UI for AI-powered conversations, including message display, composer, and chat management.
-
-## Public Exports
-
-From `components/chat/index.ts`:
-
-- **Main Components**: `ChatPage`, `ChatWindow`
-- **Widgets**: `ChatTable`, `ChatWelcome`, `FollowUpChips`
-- **Hooks**: `useChat` - Chat state management hook
-
-## Usage in App Routes
-
-Chat components are used in:
-
-- **Dashboard chat**: `ChatPage`, `ChatWindow` in `/dashboard/chat` route
-- **Message display**: `ChatTable` for displaying conversation history
-- **Welcome state**: `ChatWelcome` for empty chat states
-- **Follow-up suggestions**: `FollowUpChips` for suggested queries
-
-## Styling
-
-- **Tailwind CSS**: Primary styling approach
-- **CVA Variants**: Component variants in `styles/ui/**`
-- **Design Tokens**: Uses CSS custom properties from design system
-
-## Hooks
-
-- **`useChat`**: Located in `components/chat/hooks/use-chat.ts`
-  - Manages chat state (messages, processing status, errors)
-  - Handles message sending with streaming support
-  - Provides chat history persistence
-  - Used by `ChatWindow` and other chat components
-
-## Server/Client Notes
-
-- **Client components**: All chat components require client-side interactivity (`"use client"` directive)
-- **Real-time updates**: Components handle real-time message updates and user interactions
-- **Hooks**: Chat hooks are client-only and use React state management
+> Edit the template or the generator context to change all READMEs consistently.
 

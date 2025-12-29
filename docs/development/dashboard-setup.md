@@ -1,11 +1,8 @@
 ---
-title: "Dashboard Setup & Quickstart"
-description: "Quickstart guide for running the dashboard locally with mock data, relaxed auth, and all development features."
-last_updated: "2025-12-25"
-category: "documentation"
 status: "active"
+last_updated: "2025-12-29"
+category: "documentation"
 ---
-
 # Dashboard Setup & Quickstart
 
 Complete guide to running the dashboard locally with mock data in 2-3 minutes.

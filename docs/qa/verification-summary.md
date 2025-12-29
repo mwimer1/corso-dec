@@ -1,8 +1,8 @@
 ---
-status: stable
-last_updated: 2025-01-28
+status: "stable"
+last_updated: "2025-12-29"
+category: "documentation"
 ---
-
 # Landing Page Use Cases Refactor - Verification Summary
 
 ## ✅ Completed Verification Tasks

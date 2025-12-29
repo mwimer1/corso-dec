@@ -1,11 +1,8 @@
 ---
-title: "Dead Code Audit Baseline"
-description: "Baseline audit results and CI workflow setup for dead code, orphaned files, and unused exports"
-last_updated: "2025-01-26"
-category: "audit"
 status: "active"
+last_updated: "2025-12-29"
+category: "documentation"
 ---
-
 # Dead Code Audit Baseline — 2025-01-26
 
 ## 🎯 Objective

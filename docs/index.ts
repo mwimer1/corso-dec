@@ -233,16 +233,24 @@ export const docs = [
     "title": "contexts"
   },
   {
-    "path": "docs/maintenance/_reports/readme.md",
-    "title": "Maintenance Reports"
+    "path": "docs/decisions/readme.md",
+    "title": "Architecture Decisions"
+  },
+  {
+    "path": "docs/feature-notes/readme.md",
+    "title": "Feature Notes"
   },
   {
     "path": "docs/qa/readme.md",
-    "title": "docs/qa"
+    "title": "QA Documentation"
   },
   {
     "path": "docs/readme.md",
-    "title": "docs"
+    "title": "Repository Scripts & Docs"
+  },
+  {
+    "path": "docs/references/readme.md",
+    "title": "Reference Documentation"
   },
   {
     "path": "docs/security/readme.md",
@@ -271,6 +279,10 @@ export const docs = [
   {
     "path": "lib/core/readme.md",
     "title": "lib/core"
+  },
+  {
+    "path": "lib/entities/readme.md",
+    "title": "lib/entities"
   },
   {
     "path": "lib/integrations/readme.md",
@@ -303,10 +315,6 @@ export const docs = [
   {
     "path": "lib/server/readme.md",
     "title": "lib/server"
-  },
-  {
-    "path": "lib/entities/readme.md",
-    "title": "lib/entities"
   },
   {
     "path": "lib/shared/readme.md",
@@ -351,6 +359,10 @@ export const docs = [
   {
     "path": "scripts/lint/readme.md",
     "title": "scripts/lint"
+  },
+  {
+    "path": "scripts/maintenance/docs/readme.md",
+    "title": "scripts/maintenance/docs"
   },
   {
     "path": "scripts/maintenance/readme.md",

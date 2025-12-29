@@ -1,25 +1,15 @@
-# Landing Page Layout Components
+---
+title: "components/landing/layout"
+last_updated: "2025-12-29"
+category: "components"
+status: "draft"
+---
+# Repository Scripts & Docs
 
-## Purpose
+This README is generated from a single template (`README.scripts.hbs`).
 
-Layout structure and navigation configuration for public landing pages.
+- Directory: `components/landing/layout`
+- Last updated: `2025-12-29`
 
-## Key Files
+> Edit the template or the generator context to change all READMEs consistently.
 
-- `landing-section.tsx` - Reusable section wrapper for landing page content
-- `nav.config.ts` - Navigation configuration for landing page header
-
-## Usage
-
-Used in `app/(marketing)/layout.tsx` and landing page routes to provide consistent public-facing layout structure.
-
-## Styling
-
-- Uses Tailwind CSS with marketing/landing-specific design tokens
-- Full-width sections with background variants
-- Responsive navigation
-
-## Client/Server Notes
-
-- Components are client components (navigation interactivity)
-- Navigation config is server-safe (static data)

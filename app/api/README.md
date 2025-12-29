@@ -1,11 +1,8 @@
 ---
-title: "API Routes"
-description: "HTTP API endpoints for external clients, streaming, and integrations."
-last_updated: "2025-12-15"
-category: "api"
 status: "active"
+last_updated: "2025-12-29"
+category: "documentation"
 ---
-
 ## Overview
 
 This directory contains HTTP API routes for the Corso application. All public endpoints are versioned under `/api/v1/*` and documented in the OpenAPI specification.
