@@ -50,7 +50,6 @@ async function main(): Promise<void> {
     '.husky/**/README.md',
     '.github/**/README.md',
     '.vscode/**/README.md',
-    '.storybook/**/README.md',
     '.husky/**/README.md',
     '.cursor/**/README.md',
   ], { gitignore: true });

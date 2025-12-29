@@ -24,7 +24,6 @@
     "../../scripts/**/*",
     "../../tools/scripts/**/*",
     "../../tools/**/*.ts",
-    "../../.storybook/**/*",
     "../../instrumentation*.ts",
     "../../middleware*.ts",
     "../../proxy*.ts",

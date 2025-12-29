@@ -70,38 +70,6 @@ function checkDesignTokenUsage() {
     }
 }
 
-function checkStorybookCoverage() {
-    log('\n🔍 4. Checking Storybook coverage...');
-    try {
-      const storybookDir = '.storybook/stories';
-      if (existsSync(storybookDir)) {
-        const storyFiles = execSync(`find ${storybookDir} -name "*.stories.tsx" | wc -l`, {
-          encoding: 'utf8',
-        }).trim();
-        log(`✅ Found ${storyFiles} Storybook stories`);
-        atomicDirs.forEach((dir) => {
-          const dirPath = join(componentPath, dir);
-          if (existsSync(dirPath)) {
-            readdirSync(dirPath)
-              .filter((file) => file.endsWith('.tsx') && !file.includes('.stories.'))
-              .forEach((component) => {
-                const storyPath = join(storybookDir, dir, component.replace('.tsx', '.stories.tsx'));
-                if (!existsSync(storyPath)) {
-                  log(`⚠️  Missing story for ${dir}/${component}`);
-                }
-              });
-          }
-        });
-      } else {
-        log('⚠️  No Storybook stories directory found');
-        atomicIssues.push('Missing Storybook stories directory');
-      }
-    } catch (error) {
-        if (error instanceof Error) {
-            log('❌ Error checking Storybook coverage:', error.message);
-        }
-    }
-}
 
 function checkComponentNaming() {
     log('\n🔍 5. Checking component naming conventions...');
@@ -202,7 +170,6 @@ function printSummary() {
     log('   • Fix component naming to use kebab-case');
     log('   • Add missing barrel exports for all atomic levels');
     log('   • Replace hardcoded styles with design tokens');
-    log('   • Add Storybook stories for all components');
     log('   • Fix import hierarchy violations');
     log('   • Consider using tailwind-variants for consistency');
   }
@@ -226,7 +193,6 @@ function main() {
   validateStructure();
   checkBarrelExports();
   checkDesignTokenUsage();
-  checkStorybookCoverage();
   checkComponentNaming();
   checkCrossAtomicImports();
   checkTailwindVariants();

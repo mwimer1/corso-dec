@@ -52,7 +52,7 @@ The audit script found these tokens are defined but never referenced via var(--t
 For each unused token, categorize into:
 1. **Legacy/Deprecated** - Old tokens from previous design system
 2. **Future/Planned** - Tokens for upcoming features
-3. **Storybook/Marketing Only** - Used only in docs/demos
+3. **Marketing Only** - Used only in docs/demos
 4. **False Positive** - Actually used but not detected (inline styles, JS, etc.)
 5. **Truly Unused** - Can be safely removed
 
@@ -128,19 +128,19 @@ For each category, investigate:
    rg "\.(btn|button|sidebar|hero)" --type css
    ```
 
-4. **Check Storybook/Marketing usage:**
+4. **Check Marketing usage:**
    ```bash
    # Check if tokens used in docs/marketing
-   rg "var\(--(hero|sb|marketing)" --type md
+   rg "var\(--(hero|marketing)" --type md
    ```
 
 ### Phase 4: Action Plan
 
 Based on findings, create action plan:
 
-1. **Add to allowlist** (if Storybook/Marketing only):
+1. **Add to allowlist** (if Marketing only):
    - Update `styles/tokens/UNUSED.allowlist.json`
-   - Add pattern: `"hero-*"`, `"sb-*"`, `"marketing-*"`
+   - Add pattern: `"hero-*"`, `"marketing-*"`
 
 2. **Remove truly unused tokens:**
    - Delete from token files
@@ -244,6 +244,6 @@ find components -name "*.css" -o -name "*.module.css"
 ## Next Steps
 
 1. **Immediate**: Run the audit prompt above to categorize all 113 tokens
-2. **Short-term**: Update allowlist for intentional exceptions (Storybook, Marketing)
+2. **Short-term**: Update allowlist for intentional exceptions (Marketing)
 3. **Medium-term**: Remove truly unused tokens (target: < 30 unused)
 4. **Long-term**: Migrate hardcoded values to use tokens where appropriate

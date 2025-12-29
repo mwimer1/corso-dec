@@ -496,16 +496,6 @@ pnpm vitest run tests/chat/ --watch     # Watch mode for specific domain
 
 # Coverage
 pnpm test:coverage                      # Full coverage report across all domains
-
-# Storybook Test Runner (component interactions in headless browser)
-pnpm prestorybook:test           # One-time: install Playwright browsers (idempotent)
-pnpm storybook                   # Dev server
-pnpm storybook:test              # Builds Storybook and runs test runner (pre-hook installs browsers)
-
-# Windows local static run (alternative):
-pnpm build-storybook
-pnpm dlx http-server storybook-static -p 6106 -s   # terminal A
-pnpm exec test-storybook --url http://127.0.0.1:6106  # terminal B
 ```bash
 
 #### Notes
@@ -523,10 +513,6 @@ pnpm exec test-storybook --url http://127.0.0.1:6106  # terminal B
 ### CI/CD Integration
 
 All tests are run in CI/CD. PRs must pass all quality gates: lint, typecheck, tests, security, and performance.
-
-Storybook in CI:
-- Workflow: `.github/workflows/visual.yml` (storybook job) runs `pnpm ci:storybook` (build + test runner)
-\- Chromatic visual testing removed for MVP; restore workflow and secret if re-enabling later
 
 ## 🛠️ Common Testing Patterns
 

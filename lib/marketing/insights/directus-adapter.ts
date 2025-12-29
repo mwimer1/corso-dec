@@ -40,7 +40,7 @@ export async function getDirectusInsightsIndex(): Promise<InsightPreview[]> {
   throw new Error('Directus adapter not yet implemented');
 }
 
-export async function getDirectusInsightBySlug(slug: string): Promise<InsightItem | undefined> {
+export async function getDirectusInsightBySlug(_slug: string): Promise<InsightItem | undefined> {
   const env = getEnv();
   const directusUrl = env.DIRECTUS_URL;
   const directusToken = env.DIRECTUS_TOKEN;

@@ -189,8 +189,6 @@ function generateGrowth(seed: string): number {
  * Generates a company URL from company name
  */
 function generateCompanyUrl(companyName: string, seed: string): string {
-  const rng = seededRandom(seed);
-  
   // Convert company name to URL-friendly format
   const urlName = companyName
     .toLowerCase()
@@ -207,7 +205,7 @@ function generateCompanyUrl(companyName: string, seed: string): string {
 /**
  * Generates a LinkedIn URL from company name
  */
-function generateLinkedInUrl(companyName: string, seed: string): string {
+function generateLinkedInUrl(companyName: string, _seed: string): string {
   const urlName = companyName
     .toLowerCase()
     .replace(/[^a-z0-9\s]/g, '')

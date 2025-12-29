@@ -44,8 +44,7 @@ After pulling the repository, complete this checklist to ensure full compliance 
 - [ ] Check `docs/development/setup-guide.md` - complete setup guide for hidden dependencies
 
 ✅ **Development Workflow**
-- [ ] Use `pnpm dev` for development server (no Storybook)
-- [ ] Use `pnpm dev:with-storybook` for both Next.js and Storybook
+- [ ] Use `pnpm dev` for development server
 - [ ] Run commands sequentially, avoid `&&` chaining
 - [ ] Never use `pnpm -s/--silent` on Windows
 
@@ -69,13 +68,11 @@ After pulling the repository, complete this checklist to ensure full compliance 
 - [ ] **Mock CMS**: Set `CORSO_USE_MOCK_CMS=true` in `.env.local` for marketing content (uses checked-in JSON fixtures from `public/__mockcms__/`, enabled by default in dev/test)
 
 ### Development Server Commands
-- **`pnpm dev`** - Starts Next.js development server only (no Storybook)
+- **`pnpm dev`** - Starts Next.js development server
   - **Automatic Cleanup**: Before starting, automatically:
     - Clears processes on ports 3000 and 9323 (dev server and Playwright)
     - Kills orphaned Node.js dev processes older than 30 minutes
     - Ensures clean startup without port conflicts or accumulated processes
-- **`pnpm dev:stories`** - Starts Storybook development server separately
-- **`pnpm dev:with-storybook`** - Runs both Next.js and Storybook concurrently (if needed)
 
 ## 🎮 Workflow Accessibility
 

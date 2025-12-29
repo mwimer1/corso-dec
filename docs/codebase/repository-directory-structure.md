@@ -27,8 +27,8 @@ category: "documentation"
     │   ├── rules
     │   │   ├── templates
     │   │   │   ├── rule-templates.mdc
-    │   │   ├── _index.json
-    │   │   ├── _snippets.mdc
+    │   │   ├── `_index.json`
+    │   │   ├── `_snippets.mdc`
     │   │   ├── actions-rate-limit-check.mdc
     │   │   ├── ai-agent-development-environment.mdc
     │   │   ├── analytics-tracking.mdc
@@ -49,7 +49,7 @@ category: "documentation"
     │   ├── bash-init.sh
     │   ├── bash-wrapper.sh
     ├── .husky
-    │   ├── _
+    │   ├── `_`
     │   │   ├── husky.sh
     │   ├── commit-msg
     │   ├── husky.sh
@@ -80,7 +80,7 @@ category: "documentation"
     │   │   ├── sign-up
     │   │   │   ├── [[...sign-up]]
     │   │   │   │   ├── page.tsx
-    │   │   ├── _theme.tsx
+    │   │   ├── `_theme.tsx`
     │   │   ├── error.tsx
     │   │   ├── layout.tsx
     │   │   ├── loading.tsx
@@ -110,7 +110,7 @@ category: "documentation"
     │   │   │   ├── page.tsx
     │   │   ├── terms
     │   │   │   ├── page.tsx
-    │   │   ├── _theme.tsx
+    │   │   ├── `_theme.tsx`
     │   │   ├── error.tsx
     │   │   ├── layout.tsx
     │   │   ├── loading.tsx
@@ -485,7 +485,6 @@ category: "documentation"
     │   │   ├── tsconfig.json
     │   │   ├── tsconfig.lib.json
     │   │   ├── tsconfig.prod.json
-    │   │   ├── tsconfig.stories.json
     │   │   ├── tsconfig.styles.json
     │   │   ├── tsconfig.testing.json
     │   │   ├── tsconfig.tooling.json
@@ -554,7 +553,7 @@ category: "documentation"
     │   │   ├── cicd-enhancement-guide.md
     │   │   ├── quality-gates.md
     │   ├── codebase
-    │   │   ├── _generated
+    │   │   ├── `_generated`
     │   │   │   ├── app-routes.md
     │   │   ├── app-directory-structure.md
     │   │   ├── repository-directory-structure-temp.md
@@ -899,7 +898,7 @@ category: "documentation"
     │   ├── log.ts
     │   ├── README.md
     ├── public
-    │   ├── __mockcms__
+    │   ├── `__mockcms__`
     │   │   ├── categories
     │   │   │   ├── index.json
     │   │   ├── insights
@@ -922,8 +921,8 @@ category: "documentation"
     │   │   │   ├── streamlining-procurement-digital-tools.json
     │   │   │   ├── sustainable-construction-2030.json
     │   │   │   ├── sustainable-materials-cost-balance.json
-    │   │   ├── _meta.json
-    │   ├── __mockdb__
+    │   │   ├── `_meta.json`
+    │   ├── `__mockdb__`
     │   │   ├── addresses.json
     │   │   ├── companies.json
     │   │   ├── projects.json
@@ -1040,8 +1039,8 @@ category: "documentation"
     │   │   ├── verify-eslint-plugin-dts.ts
     │   │   ├── verify-no-dts-transform.ts
     │   ├── maintenance
-    │   │   ├── _utils
-    │   │   │   ├── __tests__
+    │   │   ├── `_utils`
+    │   │   │   ├── `__tests__`
     │   │   │   │   ├── guards.test.ts
     │   │   │   ├── concurrency.ts
     │   │   │   ├── frontmatter.ts
@@ -1056,7 +1055,7 @@ category: "documentation"
     │   │   ├── codemods
     │   │   │   ├── replace-server-to-integrations.ts
     │   │   ├── docs
-    │   │   │   ├── __tests__
+    │   │   │   ├── `__tests__`
     │   │   │   │   ├── basic.test.ts
     │   │   │   │   ├── cli.test.ts
     │   │   │   │   ├── frontmatter.test.ts
@@ -1165,10 +1164,10 @@ category: "documentation"
     │   ├── test
     │   │   ├── README.md
     │   ├── utils
-    │   │   ├── __tests__
+    │   │   ├── `__tests__`
     │   │   │   ├── env-validation.test.ts
     │   │   │   ├── surfaces.test.ts
-    │   │   ├── _tools
+    │   │   ├── `_tools`
     │   │   ├── env
     │   │   │   ├── patterns.ts
     │   │   │   ├── validation.ts
@@ -1238,7 +1237,6 @@ category: "documentation"
     │   │   ├── shadows.css
     │   │   ├── sidebar.css
     │   │   ├── spacing.css
-    │   │   ├── storybook.css
     │   │   ├── typography.css
     │   │   ├── UNUSED.allowlist.json
     │   ├── ui
@@ -1469,7 +1467,7 @@ category: "documentation"
     │   │   ├── runtime-boundaries-server-only.test.ts
     │   │   ├── runtime-boundaries.test.ts
     │   ├── scripts
-    │   │   ├── __fixtures__
+    │   │   ├── `__fixtures__`
     │   │   │   ├── malformed-allowlist.json
     │   │   │   ├── valid-allowlist.json
     │   │   ├── scan-styles-usage.test.ts

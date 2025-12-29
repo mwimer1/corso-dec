@@ -195,7 +195,7 @@ const handleDensityChange = props.onDensityChange ?? setLocalDensity;
 
 ### Part B: Extract Reset Grid Helper (Internal Clone)
 
-#### Problem
+#### Problem: Duplicate Reset Grid Code
 Identical "Reset grid" action code appears twice in `grid-menubar.tsx`:
 - Line 511-522: Inside DropdownMenu.Item
 - Line 692-703: As a standalone button
@@ -214,7 +214,7 @@ onClick={() => {
 }}
 ```
 
-#### Solution
+#### Solution: Extract Helper Function
 
 **1. Extract helper function inside `grid-menubar.tsx`:**
 
@@ -306,13 +306,13 @@ function resetGridState(props: GridMenubarProps) {
 
 ## PR 2: Landing Use-Cases — Extract Industry Type
 
-### Clone Details
+### Clone Details: Industry Interface Duplication
 - **Type**: Cross-file TypeScript interface duplication
 - **Files**:
   1. `components/landing/sections/use-cases/industry-selector-panel.tsx` (lines 13-24)
   2. `components/landing/sections/use-cases/use-case-explorer.tsx` (lines 6-17)
 
-### Problem
+### Problem: Duplicate Industry Interface
 The `Industry` interface is defined identically in both files:
 ```typescript
 interface Industry {
@@ -329,7 +329,7 @@ interface Industry {
 }
 ```
 
-### Solution
+### Solution: Create Shared Types File
 
 **1. Create shared types file:**
 
@@ -397,7 +397,7 @@ import type { Industry } from './types';
 // Remove the interface declaration (lines 6-17)
 ```
 
-### Success Criteria
+### Success Criteria: Industry Interface Refactor
 - ✅ Pass B clone count drops from 4 to 3 (removes use-cases clone)
 - ✅ Single source of truth for `Industry` type
 - ✅ Type changes propagate automatically to both files
@@ -407,18 +407,18 @@ import type { Industry } from './types';
 
 ## PR 3: UI Atom — Fix Slider Type Duplication
 
-### Clone Details
+### Clone Details: Slider Type Duplication
 - **Type**: Internal TypeScript type duplication
 - **File**: `components/ui/atoms/slider.tsx` (lines 18-31 vs 33-46)
 
-### Problem
+### Problem: Duplicate Props Type
 The props type definition is duplicated in the function signature:
 - Lines 18-31: Type in `React.forwardRef<..., PropsType>`
 - Lines 33-46: Same type repeated in function parameter
 
 This is a TypeScript pattern issue, not runtime duplication.
 
-### Solution
+### Solution: Extract Type Declaration
 
 **Extract type to a single declaration:**
 
@@ -485,7 +485,7 @@ export const Slider = React.forwardRef<
 >(function Slider(props: SliderProps, ref) {
 ```
 
-### Success Criteria
+### Success Criteria: Slider Type Refactor
 - ✅ Pass B clone count drops from 4 to 3 (or 2 after PR1)
 - ✅ Type definition declared once, referenced twice
 - ✅ Better TypeScript maintainability (single source of truth)
@@ -500,7 +500,7 @@ export const Slider = React.forwardRef<
 - **File**: `components/landing/sections/product-showcase/product-showcase.tsx`
 - **Pattern**: Repeated `<Image>` blocks with identical props (lines 76-84, 91-99, 106-114, 121-129)
 
-### Problem
+### Problem: Duplicate Image Components
 Four identical `<Image>` component blocks with only `src` and `alt` differing:
 ```typescript
 <Image
@@ -514,7 +514,7 @@ Four identical `<Image>` component blocks with only `src` and `alt` differing:
 />
 ```
 
-### Solution
+### Solution: Extract Image Component
 
 **Extract inline helper component:**
 
@@ -562,7 +562,7 @@ const tabsData: TabItem[] = [
 ];
 ```
 
-### Success Criteria
+### Success Criteria: Product Showcase Refactor
 - ✅ Pass A internal clones drop (removes multiple clone groups)
 - ✅ Image styling changes in one place
 - ✅ `tabsData` becomes more readable (data-focused)

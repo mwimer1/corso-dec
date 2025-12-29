@@ -25,7 +25,6 @@ const DOCS_DIRS = [
   path.resolve(PROJECT_ROOT, 'stories'),  // Include Stories directory READMEs
   path.resolve(PROJECT_ROOT, 'styles'),  // Include Styles directory READMEs
   path.resolve(PROJECT_ROOT, '.vscode'),  // Include VSCode directory READMEs
-  path.resolve(PROJECT_ROOT, '.storybook'),  // Include Storybook directory READMEs
   path.resolve(PROJECT_ROOT, 'public'),  // Include Public assets directory READMEs
   path.resolve(PROJECT_ROOT, '.husky'),  // Include Husky hooks directory READMEs
   path.resolve(PROJECT_ROOT, '.cursor'),  // Include Cursor AI rules directory READMEs

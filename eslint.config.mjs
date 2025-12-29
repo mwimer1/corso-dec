@@ -820,13 +820,6 @@ export default [
     },
   },
   //---------------------------------------------------------------------------
-  // 1c) Storybook files with relaxed parsing (no project reference)
-  //---------------------------------------------------------------------------
-  {
-    files: ['**/*.stories.tsx'],
-    languageOptions: {},
-  },
-  //---------------------------------------------------------------------------
   // 1c ) Types and Scripts with relaxed dependency rules (consistent with main codebase)
   //---------------------------------------------------------------------------
   {

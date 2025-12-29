@@ -12,8 +12,7 @@
     { "path": "./tsconfig.components.json" },
     { "path": "./tsconfig.lib.json" },
     { "path": "./tsconfig.styles.json" },
-    { "path": "./tsconfig.tooling.json" },
-    { "path": "./tsconfig.stories.json" }
+    { "path": "./tsconfig.tooling.json" }
   ],
   "include": [],
   "files": []

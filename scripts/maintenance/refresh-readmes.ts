@@ -32,7 +32,6 @@ async function main() {
     // Repo meta
     ".github/**/README.md",
     ".vscode/**/README.md",
-    ".storybook/**/README.md",
     ".husky/**/README.md",
     ".cursor/**/README.md",
   ], { gitignore: true });

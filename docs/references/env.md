@@ -125,13 +125,13 @@ import { getEnv } from '@/lib/server/env';  // Will fail - Edge runtime cannot a
 
 #### Environment Access Layering
 
-**Server Environment (`getEnv()`)**: 
+**Server Environment (`getEnv()`)**:
 - Contains all server-side environment variables including `CORSO_USE_MOCK_DB`, `CORSO_USE_MOCK_CMS`, `CORSO_CMS_PROVIDER`, `DIRECTUS_URL`, `DIRECTUS_TOKEN`
 - Available only in Node.js runtime (server components, API routes, server actions)
 - Includes sensitive configuration like database URLs, API keys, secrets
 - **Not available in Edge runtime or client-side code**
 
-**Edge Environment (`getEnvEdge()`)**: 
+**Edge Environment (`getEnvEdge()`)**:
 - Subset of environment variables safe for Edge runtime
 - Excludes server-only variables like `CORSO_USE_MOCK_DB`, `CORSO_USE_MOCK_CMS`, `DIRECTUS_URL`, `DIRECTUS_TOKEN`
 - Includes `CORSO_USE_MOCK_CMS` for Edge-compatible content source selection

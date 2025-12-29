@@ -2,7 +2,7 @@
 /**
  * Cross-platform script to kill orphaned Node.js processes
  * 
- * Kills processes matching development patterns (next dev, storybook, vitest, etc.)
+ * Kills processes matching development patterns (next dev, vitest, etc.)
  * that are older than a specified age and don't have active parent processes.
  * 
  * Usage:
@@ -77,7 +77,7 @@ function getProcessesWindows(): ProcessInfo[] {
     );
 
     const lines = output.split('\n').filter(line => line.trim() && !line.startsWith('Node'));
-    const pattern = /(next\s+dev|storybook|vitest|tsc\s+-w|tsx\s+watch|nodemon)/i;
+    const pattern = /(next\s+dev|vitest|tsc\s+-w|tsx\s+watch|nodemon)/i;
 
     for (const line of lines) {
       const parts = line.split(',');
@@ -145,7 +145,7 @@ function getProcessesUnix(): ProcessInfo[] {
     );
 
     const lines = output.split('\n');
-    const pattern = /(next\s+dev|storybook|vitest|tsc\s+-w|tsx\s+watch|nodemon)/i;
+    const pattern = /(next\s+dev|vitest|tsc\s+-w|tsx\s+watch|nodemon)/i;
     const nodePattern = /node|deno/;
 
     for (const line of lines) {
@@ -256,7 +256,7 @@ async function main() {
     console.log('  --help             Show this help message');
     console.log('');
     console.log('This script kills orphaned Node.js/Deno processes matching development');
-    console.log('patterns (next dev, storybook, vitest, etc.) that are older than the');
+    console.log('patterns (next dev, vitest, etc.) that are older than the');
     console.log('specified age and don\'t have active parent processes.');
     process.exit(0);
   }

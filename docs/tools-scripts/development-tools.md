@@ -80,7 +80,6 @@ pnpm dev                       # Start development server (auto-cleans ports & o
 
 # Build commands
 pnpm build                     # Production build
-pnpm build:storybook          # Storybook build
 
 # Documentation
 pnpm docs:links                # Validate internal links

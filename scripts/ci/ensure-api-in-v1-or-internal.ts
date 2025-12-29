@@ -20,7 +20,8 @@ async function main(): Promise<void> {
 
   for (const file of routes) {
     // Allow explicit public endpoints under /api/public/**
-    if (!file.includes('/api/v1/') && !file.includes('/api/internal/') && !file.includes('/api/public/')) {
+    // Allow health alias routes under /api/health/** (delegates to /api/public/health)
+    if (!file.includes('/api/v1/') && !file.includes('/api/internal/') && !file.includes('/api/public/') && !file.includes('/api/health/')) {
       errors.push(`${file}: API routes must live under /api/v1/** or /api/internal/**`);
     }
     const src = readFileSync(file, 'utf8');

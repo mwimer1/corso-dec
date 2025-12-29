@@ -44,7 +44,6 @@ config/
 │   ├── tsconfig.tooling.json # Build tools and scripts
 │   ├── tsconfig.types.json   # Type definitions
 │   ├── tsconfig.eslint.json  # ESLint comprehensive coverage
-│   ├── tsconfig.stories.json # Storybook stories
 │   ├── *.tsbuildinfo         # Incremental compilation caches
 │   └── tsconfig.lib.tsbuildinfo
 ├── .prettierrc.js           # Code formatting rules
@@ -86,7 +85,6 @@ config/
 | `typescript/tsconfig.tooling.json` | Build scripts | Scripts, config files, tooling utilities |
 | `typescript/tsconfig.types.json` | Type definitions | Isolated type compilation and generation |
 | `typescript/tsconfig.eslint.json` | Linting coverage | Comprehensive file inclusion for ESLint |
-| `typescript/tsconfig.stories.json` | Storybook integration | Story files with proper type resolution |
 
 ### 🎨 Code Quality & Formatting
 

@@ -1,5 +1,5 @@
 {
-  "_comment": "Tokens allowed to be unused (storybook-only, marketing-only, etc.). Names are raw CSS variable names without the leading --. Note: Many tokens appear unused because they're consumed via Tailwind classes, not direct var() calls. The audit script only detects var(--token-name) usage, not Tailwind integration.",
+  "_comment": "Tokens allowed to be unused (marketing-only, etc.). Names are raw CSS variable names without the leading --. Note: Many tokens appear unused because they're consumed via Tailwind classes, not direct var() calls. The audit script only detects var(--token-name) usage, not Tailwind integration.",
   "allowed": [
     "color-elevated-*",
     "text-*",

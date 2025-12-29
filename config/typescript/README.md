@@ -186,7 +186,6 @@ tsconfig.json (root)
 
 **Includes**:
 - `tests/**/*.ts` - Test files
-- `**/*.stories.tsx` - Storybook stories
 - `vitest*.ts` - Vitest configuration
 - `vitest.base.ts` - Base Vitest config (moved to root)
 - All source files for testing
@@ -204,7 +203,6 @@ tsconfig.json (root)
 - `scripts/**/*.ts` - Build and utility scripts
 - `config/**/*.ts` - Configuration files
 - `eslint-plugin-corso/**/*.ts` - Custom ESLint plugin
-- `.storybook/**/*` - Storybook configuration
 - `styles/**/*.ts` - Style utilities
 
 **Key Settings**:

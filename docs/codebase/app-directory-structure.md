@@ -24,7 +24,7 @@ status: "generated"
     │   ├── sign-up
     │   │   ├── [[...sign-up]]
     │   │   │   ├── page.tsx
-    │   ├── _theme.tsx
+    │   ├── `_theme.tsx`
     │   ├── error.tsx
     │   ├── layout.tsx
     │   ├── loading.tsx
@@ -53,7 +53,7 @@ status: "generated"
     │   │   ├── page.tsx
     │   ├── terms
     │   │   ├── page.tsx
-    │   ├── _theme.tsx
+    │   ├── `_theme.tsx`
     │   ├── error.tsx
     │   ├── layout.tsx
     │   ├── loading.tsx

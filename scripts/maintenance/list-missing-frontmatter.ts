@@ -30,7 +30,6 @@ async function main(): Promise<void> {
     // Repo meta
     '.github/**/README.md',
     '.vscode/**/README.md',
-    '.storybook/**/README.md',
     '.husky/**/README.md',
     '.cursor/**/README.md',
   ];

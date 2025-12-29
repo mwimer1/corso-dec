@@ -271,10 +271,8 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
     }
   }
   
-  // Determine tenant ID: use orgId if available, otherwise userId in relaxed mode
-  // Note: This is for potential tenant scoping in downstream code, but currently
-  // getEntityPage doesn't use tenant ID directly - it's handled at the data layer
-  const _tenantId = orgId || (isRelaxed ? userId : null);
+  // Note: Tenant scoping is handled at the data layer via getEntityPage()
+  // orgId is used directly in the query, no need for separate tenantId variable
 
   // Entity param validation
   const entityParsed = EntityParamSchema.safeParse((ctx.params?.entity ?? '').toLowerCase());

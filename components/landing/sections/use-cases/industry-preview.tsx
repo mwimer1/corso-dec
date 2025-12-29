@@ -1,9 +1,9 @@
 'use client';
 
+import type { UseCaseKey } from '@/lib/marketing/client';
 import { cn } from '@/styles';
 import Image from 'next/image';
-import React, { useState } from 'react';
-import type { UseCaseKey } from '@/lib/marketing/client';
+import { useState } from 'react';
 import { IndustryPreviewPlaceholder } from './industry-preview-placeholder';
 
 interface PreviewImage {

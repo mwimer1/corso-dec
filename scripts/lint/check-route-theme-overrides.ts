@@ -131,7 +131,6 @@ function validateRouteThemes(): { errors: string[]; warnings: string[] } {
     'auth.css',
     'marketing.css',
     'protected.css',
-    'storybook.css',
   ];
   
   for (const file of routeThemeFiles) {

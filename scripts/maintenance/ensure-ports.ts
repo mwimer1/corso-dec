@@ -21,7 +21,6 @@ interface Options {
 
 const DEFAULT_PORTS = {
   dev: 3000,
-  storybook: 6006,
   playwright: 9323,
 };
 
@@ -72,16 +71,6 @@ function parseArgs(): Options {
           }
         }
       }
-    } else if (arg === '--StorybookPort' || arg === '--storybook-port') {
-      if (i + 1 < args.length) {
-        const nextArg = args[++i];
-        if (nextArg) {
-          const port = parseInt(nextArg, 10);
-          if (!isNaN(port) && port > 0) {
-            opts.ports.push(port);
-          }
-        }
-      }
     } else if (arg === '--PlaywrightPort' || arg === '--playwright-port') {
       if (i + 1 < args.length) {
         const nextArg = args[++i];
@@ -105,7 +94,7 @@ function parseArgs(): Options {
 
   // If no ports specified, use defaults
   if (opts.ports.length === 0) {
-    opts.ports = [DEFAULT_PORTS.dev, DEFAULT_PORTS.storybook, DEFAULT_PORTS.playwright];
+    opts.ports = [DEFAULT_PORTS.dev, DEFAULT_PORTS.playwright];
   }
 
   // Remove duplicates and sort
@@ -258,10 +247,9 @@ async function main() {
     console.log('Usage: tsx scripts/maintenance/ensure-ports.ts [OPTIONS]');
     console.log('');
     console.log('Options:');
-    console.log('  [PORT...]              Port numbers to check (default: 3000, 6006, 9323)');
+    console.log('  [PORT...]              Port numbers to check (default: 3000, 9323)');
     console.log('  --ports PORT...        Specify ports explicitly');
     console.log('  --DevPort PORT         Set dev port (3000)');
-    console.log('  --StorybookPort PORT   Set storybook port (6006)');
     console.log('  --PlaywrightPort PORT  Set playwright port (9323)');
     console.log('  --kill-only            Kill processes and exit (don\'t wait)');
     console.log('  --help                 Show this help message');

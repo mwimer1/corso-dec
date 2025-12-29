@@ -71,7 +71,6 @@ async function main(): Promise<void> {
     '.github/**/README.md',
     '.github/**/*.md',
     '.vscode/**/README.md',
-    '.storybook/**/README.md',
     '.husky/**/README.md',
     '.cursor/**/README.md',
   ];

@@ -204,17 +204,11 @@ const categorizeDirectory = (dirPath: string): string => {
   if (dir.includes('eslint') || dir.includes('plugin')) {
     return 'linting';
   }
-  if (dir.includes('stories') || dir.includes('storybook')) {
-    return 'ui-development';
-  }
   if (dir.includes('styles') || dir.includes('css') || dir.includes('tokens')) {
     return 'styling';
   }
   if (dir.includes('vscode') || dir.includes('editor')) {
     return 'editor-config';
-  }
-  if (dir.includes('storybook') || dir.includes('stories')) {
-    return 'ui-development';
   }
   if (dir.includes('public') || dir.includes('assets')) {
     return 'static-assets';
@@ -259,10 +253,8 @@ const generateTitle = (filePath: string): string => {
     'middleware': 'Middleware Functions',
     'public': 'Static Assets',
     'supabase': 'Database Schema',
-    'stories': 'Storybook Stories',
     '.github': 'GitHub Configuration',
     '.devcontainer': 'Development Environment',
-    '.storybook': 'Storybook Configuration',
     '.vscode': 'VS Code Configuration',
     '.husky': 'Git Hooks',
     '.cursor': 'Cursor AI Rules',

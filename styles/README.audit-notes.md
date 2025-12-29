@@ -62,7 +62,6 @@
   - Tailwind config: `darkMode: ['class']` (class-based dark mode)
 - **Files with dark mode tokens**:
   - `styles/tokens/auth.css`
-  - `styles/tokens/storybook.css`
   - `styles/tokens/protected.css`
   - `styles/tokens/marketing.css`
   - `styles/tokens/colors.css`

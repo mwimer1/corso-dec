@@ -5,7 +5,6 @@ import 'server-only';
 import { getSchemaJSON } from '@/lib/integrations/database/sql-guard';
 import { logToolLoopTermination } from '@/lib/integrations/openai/chat-logging';
 import { createOpenAIClient } from '@/lib/integrations/openai/server';
-import { getEnv } from '@/lib/server/env';
 import type { NextRequest } from 'next/server';
 import type OpenAI from 'openai';
 
@@ -110,7 +109,6 @@ export async function streamResponseEvents(
     req,
   } = options;
 
-  const env = getEnv();
   const client = createOpenAIClient();
   
   // Current input items (grows with function call outputs)
@@ -363,7 +361,6 @@ export async function streamResponseEvents(
     } catch (error) {
       // Handle errors
       const durationMs = performance.now() - loopStartTime;
-      const errorMessage = error instanceof Error ? error.message : 'Failed to process response';
       
       // Log error termination
       const errorType = error instanceof Error 
