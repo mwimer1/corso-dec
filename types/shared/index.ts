@@ -14,12 +14,8 @@ export type {
     NavItemData
 } from './core/ui/types';
 
-// Custom Clerk types
-export type * from './custom-clerk.d';
-
-
 // Config types
-export type { ValidatedEnv } from './config/base/types';
+export type { ValidatedEnv } from './config/types';
 
 // Feature flags types
 export type {

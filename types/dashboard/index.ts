@@ -11,13 +11,9 @@ export type {
 
 // Entity grid types
 export type {
-    EntityFetchResult,
-    EntityFetcher,
-    GridId,
-    ColDefsProvider,
-    EntityGridConfig,
-    EntityGridProps
-} from '../entity-grid';
+    ColDefsProvider, EntityFetcher, EntityFetchResult, EntityGridConfig,
+    EntityGridProps, GridId
+} from './entity-grid';
 
 // Additional analytics types can be added here when needed
 

@@ -3,7 +3,7 @@
  * Only export helpers that do not import Node-only modules.
  */
 
-import type { ValidatedEnv } from '@/types/shared/config/base/types';
+import type { ValidatedEnv } from '@/types/shared/config/types';
 
 /** Minimal env surface allowed in Edge handlers (keys omitted if undefined). */
 type EdgeEnv = Pick<

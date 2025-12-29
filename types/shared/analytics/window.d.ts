@@ -1,11 +1,4 @@
 declare global {
-  interface CustomJwtSessionClaims {
-    metadata?: {
-      onboardingComplete?: boolean;
-      onboardingData?: Record<string, unknown> | null;
-    };
-  }
-
   interface Window {
     analytics?: {
       track: (event: string, payload?: Record<string, unknown>) => void;
@@ -20,6 +13,6 @@ declare global {
   }
 }
 
-export { };
+export {};
 
 

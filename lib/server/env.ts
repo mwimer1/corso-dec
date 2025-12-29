@@ -1,6 +1,6 @@
 // lib/server/env.ts
 // Canonical server-only environment utilities.
-import type { ValidatedEnv } from '@/types/shared/config/base/types';
+import type { ValidatedEnv } from '@/types/shared/config/types';
 import 'server-only';
 
 const toNum = (v?: string) =>

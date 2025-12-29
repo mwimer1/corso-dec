@@ -1,12 +1,12 @@
 import type {
-  ColDef,
-  ColGroupDef,
-  ColumnState,
-  IServerSideGetRowsParams,
-  RowSelectionOptions,
-  SelectionColumnDef,
-  SideBarDef,
-  StateUpdatedEvent,
+    ColDef,
+    ColGroupDef,
+    ColumnState,
+    IServerSideGetRowsParams,
+    RowSelectionOptions,
+    SelectionColumnDef,
+    SideBarDef,
+    StateUpdatedEvent,
 } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
 
@@ -51,3 +51,5 @@ export type EntityGridProps = {
   density?: 'comfortable' | 'compact';
   search?: string;
 };
+
+

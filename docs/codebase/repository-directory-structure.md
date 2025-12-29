@@ -1641,7 +1641,10 @@ status: "generated"
     │   │   │   │   ├── types.ts
     │   │   │   ├── index.d.ts.map
     │   │   │   ├── README.md
-    │   │   ├── custom-clerk.d.ts
+    │   │   ├── auth/
+    │   │   │   └── clerk.d.ts
+    │   │   ├── analytics/
+    │   │   │   └── window.d.ts
     │   │   ├── index.d.ts.map
     │   │   ├── index.ts
     │   │   ├── README.md

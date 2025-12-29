@@ -8,7 +8,7 @@
     "lib/server/index.ts -> @/api/response/api-error",
     "lib/shared/errors/api-error-conversion.ts -> @/api/response/api-error",
     "lib/api/data.ts -> @/mocks/shared",
-    "lib/api/edge.ts -> @/types/shared/config/base/types",
+    "lib/api/edge.ts -> @/types/shared/config/types",
     "lib/api/edge.ts -> @/middleware/edge/error-handler",
     "lib/api/edge.ts -> @/middleware/edge/rate-limit",
     "lib/chat/client/process.ts -> @/shared/config/client",
@@ -82,7 +82,7 @@
     "lib/server/clickhouse/client.ts -> @/integrations/database/scope",
     "lib/server/db/supabase-tenant-client.ts -> @/types/integrations",
     "lib/server/db/supabase-tenant-client.ts -> @/integrations/supabase/server",
-    "lib/server/env.ts -> @/types/shared/config/base/types",
+    "lib/server/env.ts -> @/types/shared/config/types",
     "lib/server/errors/error-utils.ts -> @/shared/errors/error-utils",
     "lib/server/errors/error-utils.ts -> @/shared/errors/application-error",
     "lib/server/feature-flags/builder.ts -> @/types/shared",
@@ -111,7 +111,7 @@
     "lib/entities/projects/columns.config.ts -> @/validators/tableColumnConfig",
     "lib/shared/errors/error-utils.ts -> @/server/errors",
     "lib/shared/feature-flags/core.ts -> @/types/shared",
-    "lib/shared/index.ts -> @/types/shared/config/base/types",
+    "lib/shared/index.ts -> @/types/shared/config/types",
     "lib/vendors/ag-grid.client.ts -> @/shared/config/client"
   ]
 }
