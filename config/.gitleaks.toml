@@ -36,7 +36,8 @@ paths = [
     "**/*.md",
     "**/*.test.ts",
     "**/*.test.tsx",
-    "**/*.stories.tsx"
+    "**/*.stories.tsx",
+    "lib/security/utils/masking.ts"  # Contains example API keys in code comments
 ]
 
 regexes = [
@@ -52,5 +53,9 @@ regexes = [
     # Allow common test patterns
     '''test-.*''',
     '''mock-.*''',
-    '''fake-.*'''
-] 
+    '''fake-.*''',
+    # Allow example API keys in code comments and documentation (e.g., 'sk-1234567890abcdef')
+    # Matches 'sk-' followed by 10-32 hex characters (typical example key lengths)
+    '''['"]sk-[0-9a-f]{10,32}['"]''',
+    '''apiKey:\s*['"]sk-[0-9a-f]{10,32}['"]'''
+]
