@@ -110,7 +110,7 @@ pnpm audit --audit-level=high
 ### Production Dependencies
 
 **Core Framework:**
-- `next@^15.5.9` - Next.js framework
+- `next@^16.0.10` - Next.js framework
 - `react@18.3.1` - React library
 - `react-dom@18.3.1` - React DOM
 

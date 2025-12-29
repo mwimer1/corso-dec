@@ -29,7 +29,7 @@ pnpm audit:ci
 ## ✅ Domain 1: Architecture & Design Patterns
 
 ### Architecture Verification
-- [x] Next.js 15 App Router architecture confirmed
+- [x] Next.js 16 App Router architecture confirmed
 - [x] Route groups properly organized (`(protected)`, `(marketing)`, `(auth)`)
 - [x] Server/client boundaries clearly defined
 - [x] Runtime boundaries enforced (Edge vs Node.js)

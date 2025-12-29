@@ -27,7 +27,8 @@ This guide covers best practices for implementing secure, validated APIs, server
 'use server';
 
 import { z } from 'zod';
-import { validateAuth, checkRateLimit } from '@/lib/actions';
+import { auth } from '@clerk/nextjs/server';
+import { withRateLimitNode } from '@/lib/middleware';
 import { updateUserProfile } from '@/lib/user/service';
 
 const UpdateProfileSchema = z.object({
@@ -35,22 +36,25 @@ const UpdateProfileSchema = z.object({
   email: z.string().email(),
 });
 
-export async function updateProfile(input: unknown) {
-  // 1. Authenticate
-  const { userId } = await validateAuth();
+// For API routes, use wrapper pattern:
+export const POST = withRateLimitNode(
+  async (req: NextRequest) => {
+    // 1. Authenticate
+    const { userId } = await auth();
+    if (!userId) {
+      return http.error(401, 'Unauthorized', { code: 'HTTP_401' });
+    }
 
-  // 2. Validate input
-  const data = UpdateProfileSchema.parse(input);
+    // 2. Validate input
+    const body = await req.json();
+    const data = UpdateProfileSchema.parse(body);
 
-  // 3. Rate limit
-  await checkRateLimit(`profile:${userId}`, {
-    maxRequests: 10,
-    windowMs: 60 * 1000, // 1 minute
-  });
-
-  // 4. Delegate to business logic
-  return updateUserProfile(userId, data);
-}
+    // 3. Delegate to business logic
+    const result = await updateUserProfile(userId, data);
+    return http.ok(result);
+  },
+  { maxRequests: 10, windowMs: 60_000 } // 1 minute
+);
 ```
 
 ### Authentication & Authorization
@@ -70,10 +74,16 @@ export async function validateAuth() {
 
 #### Role-Based Access
 ```typescript
-export async function adminAction(input: unknown) {
-  const { userId } = await validateAuth();
+import { auth } from '@clerk/nextjs/server';
 
-  if (!hasRole(userId, 'admin')) {
+export async function adminAction(input: unknown) {
+  const { userId, has } = await auth();
+  
+  if (!userId) {
+    throw new AuthError('Authentication required', 'AUTH_REQUIRED');
+  }
+  
+  if (!has({ role: 'admin' })) {
     throw new ForbiddenError('Admin access required', 'INSUFFICIENT_PERMISSIONS');
   }
 
@@ -104,15 +114,27 @@ const ProcessDataSchema = z.object({
 
 ### Rate Limiting
 
-#### Rate Limit Implementation
+#### Rate Limit Implementation (API Routes)
 ```typescript
-import { checkRateLimit } from '@/lib/actions';
+import { withRateLimitEdge } from '@/lib/api'; // For Edge runtime
+// OR
+import { withRateLimitNode } from '@/lib/middleware'; // For Node.js runtime
 
-// User actions (frequent)
-await checkRateLimit(`user:${userId}`, { maxRequests: 30, windowMs: 60000 });
+// Edge route example
+export const POST = withRateLimitEdge(
+  async (req: NextRequest) => {
+    // Handler implementation
+  },
+  { maxRequests: 30, windowMs: 60_000 }
+);
 
-// Sensitive operations (restricted)
-await checkRateLimit(`sensitive:${userId}`, { maxRequests: 5, windowMs: 300000 });
+// Node.js route example
+export const POST = withRateLimitNode(
+  async (req: NextRequest) => {
+    // Handler implementation
+  },
+  { maxRequests: 30, windowMs: 60_000 }
+);
 ```
 
 ### Error Handling

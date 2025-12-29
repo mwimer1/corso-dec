@@ -90,12 +90,16 @@ export async function getUserData(userId: string) {
 
 #### Role-Based Access Control
 ```typescript
-import { hasRole } from '@/lib/auth/roles';
+import { auth } from '@clerk/nextjs/server';
 
 export async function adminOnlyAction() {
-  const { userId } = await auth();
-
-  if (!hasRole(userId, 'admin')) {
+  const { userId, has } = await auth();
+  
+  if (!userId) {
+    throw new Error('Authentication required');
+  }
+  
+  if (!has({ role: 'admin' })) {
     throw new Error('Admin access required');
   }
 
@@ -225,21 +229,27 @@ export async function POST(req: Request) {
 
 #### Rate Limiting
 ```typescript
-import { checkRateLimit } from '@/lib/security/rate-limit';
+import { withRateLimitEdge } from '@/lib/api'; // For Edge runtime
+// OR
+import { withRateLimitNode } from '@/lib/middleware'; // For Node.js runtime
 
-export async function POST(req: Request) {
-  const ip = req.headers.get('x-forwarded-for');
-  const limited = await checkRateLimit(`auth:${ip}`, {
-    maxRequests: 5,
-    windowMs: 15 * 60 * 1000, // 15 minutes
-  });
+// Edge route example
+export const POST = withRateLimitEdge(
+  async (req: NextRequest) => {
+    // Process authentication
+    return http.ok({ success: true });
+  },
+  { maxRequests: 5, windowMs: 15 * 60 * 1000 } // 15 minutes
+);
 
-  if (limited) {
-    throw new Error('Too many requests');
-  }
-
-  // Process authentication
-}
+// Node.js route example
+export const POST = withRateLimitNode(
+  async (req: NextRequest) => {
+    // Process authentication
+    return http.ok({ success: true });
+  },
+  { maxRequests: 5, windowMs: 15 * 60 * 1000 } // 15 minutes
+);
 ```
 
 ### Error Handling

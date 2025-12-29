@@ -100,7 +100,8 @@ The `server` domain has specific allowed facades for importing from other domain
 ```tsx
 // ✅ Server domain importing from allowed facades
 import { requireUserId } from '@/lib/auth/server';  // Via server→features facade
-import { checkRateLimit } from '@/lib/security';    // Via server→features facade
+import { withRateLimitNode } from '@/lib/middleware'; // Rate limiting for Node.js routes
+import { withRateLimitEdge } from '@/lib/api'; // Rate limiting for Edge routes
 import { logger } from '@/lib/monitoring';          // Via server→features facade
 import type { ClickParams } from '@/lib/integrations'; // Via server→integrations facade
 import { getQueryCache } from '@/lib/integrations'; // Via server→integrations facade
@@ -112,7 +113,7 @@ import {
   ErrorCategory,
   ErrorSeverity
 } from '@/lib/server'; // Direct same-domain import allowed
-```bash
+```
 
 ### Components Domain Facade (APP_LINKS Example)
 
@@ -150,12 +151,12 @@ This pattern ensures:
 // ❌ Direct deep imports (violates domain boundaries)
 import type { ClickParams } from '@/lib/integrations/clickhouse/utils';
 import { getQueryCache } from '@/lib/integrations/redis/cache-client';
-import { checkRateLimit } from '@/lib/ratelimiting';
+import { checkRateLimit } from '@/lib/ratelimiting'; // Use withRateLimitNode/Edge instead
 
 // ❌ Cross-domain without facade (violates boundary rules)
 import { getCurrentUser } from '@/lib/auth/session/user';
 import { logger } from '@/lib/monitoring';
-```bash
+```
 
 ### Facade Pattern Benefits
 

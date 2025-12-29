@@ -221,11 +221,31 @@ const errorId = reportError(error, {
 
 ### API Route Error Handling
 
-**Wrapper Pattern:**
+**Edge Runtime Pattern:**
 ```typescript
-import { withErrorHandlingEdge } from '@/lib/api';
+// Edge runtime routes (fast, no Node.js dependencies)
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+import { withErrorHandlingEdge } from '@/lib/api/edge';
 
 export const POST = withErrorHandlingEdge(async (req: NextRequest) => {
+  // Handler implementation
+  // Errors are automatically caught and logged
+});
+```
+
+**Node.js Runtime Pattern:**
+```typescript
+// Node.js runtime routes (database operations, Clerk auth)
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+import { withErrorHandlingNode } from '@/lib/middleware';
+
+export const POST = withErrorHandlingNode(async (req: NextRequest) => {
   // Handler implementation
   // Errors are automatically caught and logged
 });
@@ -236,6 +256,7 @@ export const POST = withErrorHandlingEdge(async (req: NextRequest) => {
 - Structured error logging
 - Standardized error responses
 - Request context preservation
+- **Runtime Selection**: Use Edge wrappers for Edge routes, Node wrappers for Node.js routes
 
 ### Retry Logic
 

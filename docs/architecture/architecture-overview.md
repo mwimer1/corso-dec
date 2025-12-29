@@ -13,7 +13,7 @@ This document provides a comprehensive overview of the Corso codebase architectu
 
 ### Technology Stack
 
-- **Framework**: Next.js 15.5.9 (App Router)
+- **Framework**: Next.js 16.0.10 (App Router)
 - **React**: 18.3.1
 - **Authentication**: Clerk v6.36.2
 - **Database**:
@@ -115,7 +115,7 @@ Component organization follows atomic design principles:
 - **Organisms**: Complex sections (`@/organisms`)
 - **Domain Modules**: Feature-complete sections (dashboard/, marketing/, etc.)
 
-### 5. Next.js 15 App Router Patterns
+### 5. Next.js 16 App Router Patterns
 
 - **Route Groups**: `(auth)`, `(marketing)`, `(protected)` for organization
 - **Server Components by Default**: Components are server components unless marked `'use client'`

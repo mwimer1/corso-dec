@@ -142,13 +142,17 @@ if (!parsed.success) {
 AI-generated SQL is validated before execution:
 
 ```typescript
-function isUnsafe(sql: string) {
-  const s = sql.toLowerCase();
-  return /\bdrop\b|\btruncate\b|\bdelete\b(?!\s+from\s+\w+\s+where)/.test(s);
-}
+import { validateSQLScope } from '@/lib/integrations/database/scope';
 
-if (isUnsafe(candidate)) {
-  return http.badRequest('Unsafe SQL detected', { code: 'INVALID_SQL' });
+try {
+  validateSQLScope(generatedSQL, orgId);
+  // SQL is valid and tenant-scoped - proceed with execution
+} catch (validationError) {
+  // SecurityError thrown if validation fails
+  const errorMessage = validationError instanceof Error 
+    ? validationError.message 
+    : 'Invalid SQL generated';
+  return http.badRequest(errorMessage, { code: 'INVALID_SQL' });
 }
 ```
 

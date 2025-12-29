@@ -119,10 +119,10 @@ export function sanitizeClickParams(params: Record<string, unknown>): ClickParam
 **Validation Function:**
 ```typescript
 // lib/integrations/database/scope.ts
-export function validateSQLSecurity(
-  sql: string,
-  expectedOrgId?: string
-): { isValid: boolean; reason?: string; sanitizedSQL?: string }
+import { validateSQLScope } from '@/lib/integrations/database/scope';
+
+// Throws SecurityError if validation fails
+validateSQLScope(sql: string, expectedOrgId?: string): void
 ```
 
 ### Tenant Isolation
@@ -412,11 +412,17 @@ const { data } = await clickhouseQuery(
 ### Security Validation
 
 ```typescript
-import { validateSQLSecurity } from '@/lib/integrations/database/scope';
+import { validateSQLScope } from '@/lib/integrations/database/scope';
 
-const validation = validateSQLSecurity(sql, orgId);
-if (!validation.isValid) {
-  throw new Error(`Security validation failed: ${validation.reason}`);
+try {
+  validateSQLScope(sql, orgId);
+  // SQL is valid and tenant-scoped
+} catch (error) {
+  // SecurityError thrown if validation fails
+  return http.badRequest(
+    error instanceof Error ? error.message : 'SQL validation failed',
+    { code: 'INVALID_SQL' }
+  );
 }
 ```
 
