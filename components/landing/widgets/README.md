@@ -1,10 +1,9 @@
 ---
-title: "Widgets"
+title: "components/landing/widgets"
 last_updated: "2025-12-29"
-category: "components"
-status: "draft"
-description: "UI components for the components system, following atomic design principles. Located in landing/widgets/."
+category: "automation"
 ---
+
 # Repository Scripts & Docs
 
 This README is generated from a single template (`README.scripts.hbs`).

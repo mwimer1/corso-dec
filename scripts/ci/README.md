@@ -1,10 +1,9 @@
 ---
-title: "Ci"
+title: "scripts/ci"
 last_updated: "2025-12-29"
-category: "documentation"
-status: "draft"
-description: "Documentation and resources for documentation functionality. Located in ci/."
+category: "automation"
 ---
+
 # Repository Scripts & Docs
 
 This README is generated from a single template (`README.scripts.hbs`).
