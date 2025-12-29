@@ -3,8 +3,8 @@
 
 import { useArrowKeyNavigation } from "@/components/ui/hooks/use-arrow-key-navigation";
 import {
-    tabSwitcherVariants,
-    type TabSwitcherVariantProps,
+  tabSwitcherVariants,
+  type TabSwitcherVariantProps,
 } from "@/styles/ui/molecules";
 import { tabButtonVariants } from "@/styles/ui/molecules/tab-switcher";
 import { cn } from "@/styles/utils";
@@ -41,6 +41,8 @@ type TabSwitcherBaseProps = React.HTMLAttributes<HTMLDivElement> &
     gridSeparators?: boolean;
     /** Color of the active underline for row layout (bottom border that spans only the active tab). */
     activeUnderlineColor?: "foreground" | "primary";
+    /** Hide baseline divider and active tab underline (for cleaner pill-style tabs). */
+    hideUnderlines?: boolean;
   };
 
 type TabSwitcherPropsItems = TabSwitcherBaseProps & {
@@ -87,6 +89,7 @@ const TabSwitcherOverloads = React.forwardRef<HTMLDivElement, Props>(function Ta
     layout = "row",
     gridSeparators = true,
     activeUnderlineColor = "foreground",
+    hideUnderlines = false,
     className,
     ...rest
   } = props as Props;
@@ -129,8 +132,8 @@ const TabSwitcherOverloads = React.forwardRef<HTMLDivElement, Props>(function Ta
           layout === 'grid'
             ? cn('grid w-full grid-cols-2 lg:grid-cols-4', gridSeparators ? 'divide-x divide-border' : 'divide-x-0')
             : 'flex w-full justify-center gap-xs sm:gap-sm',
-          // Hide baseline divider for minimal showcase pills and for grid layout
-          !(variant === 'minimal' && buttonVariant === 'showcaseWhite') && layout !== 'grid' && 'border-b border-border',
+          // Hide baseline divider for minimal showcase pills, grid layout, or when hideUnderlines is true
+          !(variant === 'minimal' && buttonVariant === 'showcaseWhite') && layout !== 'grid' && !hideUnderlines && 'border-b border-border',
         )}
       >
         {normalizedTabs.map((item, idx) => {
@@ -147,8 +150,8 @@ const TabSwitcherOverloads = React.forwardRef<HTMLDivElement, Props>(function Ta
               className={cn(
                 tabButtonVariants({ isActive, preset: layout === 'grid' ? 'grid' : buttonVariant }),
                 getTabButtonClass(isActive),
-                // Active underline that aligns to the baseline divider; only for row layout
-                layout !== 'grid' && isActive &&
+                // Active underline that aligns to the baseline divider; only for row layout when not hidden
+                layout !== 'grid' && isActive && !hideUnderlines &&
                   cn(
                     'relative after:content-[""] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full after:z-[1]',
                     underlineClass,

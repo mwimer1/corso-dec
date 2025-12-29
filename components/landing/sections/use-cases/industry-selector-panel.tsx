@@ -1,9 +1,8 @@
 'use client';
 
-import { Badge, Button, Card, CardContent } from '@/components/ui/atoms';
+import { Badge, Card, CardContent } from '@/components/ui/atoms';
 import { TabSwitcher, type TabItem } from '@/components/ui/molecules';
-import { APP_LINKS } from '@/lib/shared';
-import { trackEvent, trackNavClick } from '@/lib/shared/analytics/track';
+import { trackEvent } from '@/lib/shared/analytics/track';
 import { cn } from '@/styles';
 import { Check } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
@@ -114,6 +113,7 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
               variant="default"
               layout="row"
               buttonVariant="default"
+              hideUnderlines={true}
               aria-label="Choose an industry"
             />
           </div>
@@ -162,47 +162,24 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
                   ))}
                 </ul>
 
-                {/* Outcomes + CTAs */}
-                <div className="space-y-4 pt-2">
-                  {/* Outcomes block */}
-                  {metrics.length > 0 && (
-                    <div className="space-y-2">
-                      <p className="text-sm font-semibold text-foreground">
-                        Typical outcomes
-                      </p>
-                      <div
-                        className="flex flex-wrap gap-2"
-                        aria-label="Impact metrics"
-                      >
-                        {metrics.map((metric) => (
-                          <Badge key={metric} color="secondary" className="text-xs">
-                            {metric}
-                          </Badge>
-                        ))}
-                      </div>
+                {/* Outcomes */}
+                {metrics.length > 0 && (
+                  <div className="space-y-2 pt-2">
+                    <p className="text-sm font-semibold text-foreground">
+                      Typical outcomes
+                    </p>
+                    <div
+                      className="flex flex-wrap gap-2"
+                      aria-label="Impact metrics"
+                    >
+                      {metrics.map((metric) => (
+                        <Badge key={metric} color="secondary" className="text-xs">
+                          {metric}
+                        </Badge>
+                      ))}
                     </div>
-                  )}
-
-                  {/* CTAs */}
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-2">
-                    <Button
-                      asLink={APP_LINKS.FOOTER.CONTACT}
-                      variant="secondary"
-                      onClick={() => trackNavClick('Talk to sales', APP_LINKS.FOOTER.CONTACT)}
-                      className="w-full sm:w-auto"
-                    >
-                      Talk to sales
-                    </Button>
-                    <Button
-                      asLink={APP_LINKS.NAV.SIGNUP}
-                      variant="default"
-                      onClick={() => trackNavClick('Start for free', APP_LINKS.NAV.SIGNUP)}
-                      className="w-full sm:w-auto"
-                    >
-                      Start for free
-                    </Button>
                   </div>
-                </div>
+                )}
               </div>
 
               {/* Right: Preview - visible on mobile (stacked) and desktop */}

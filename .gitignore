@@ -152,6 +152,7 @@ styles/tailwind.css
 
 # Type declarations emitted by types project
 .typegen/
+*.d.ts.map
 
 # Optional REPL history
 .node_repl_history
