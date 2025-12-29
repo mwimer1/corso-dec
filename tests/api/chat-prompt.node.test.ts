@@ -1,8 +1,8 @@
 // tests/api/chat-prompt.node.test.ts
 // Sprint 4: Tests for chat prompt generation and schema helpers
 
-import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { getSchemaSummary, getSchemaJSON } from '@/lib/integrations/database/sql-guard';
+import { getSchemaJSON, getSchemaSummary } from '@/lib/integrations/database/sql-guard';
+import { describe, expect, it } from 'vitest';
 
 describe('Chat Prompt & Schema Helpers', () => {
   describe('getSchemaSummary', () => {
