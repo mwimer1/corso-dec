@@ -20,14 +20,14 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 import { http } from '@/lib/api';
-import { withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit } from '@/lib/middleware';
 import { clickhouseQuery } from '@/lib/integrations/clickhouse/server';
-import { validateSQLScope } from '@/lib/integrations/database/scope';
+import { guardSQL, SQLGuardError } from '@/lib/integrations/database/sql-guard';
 import { queryMockDb } from '@/lib/integrations/mockdb';
 import { createOpenAIClient } from '@/lib/integrations/openai/server';
-import { handleCors } from '@/lib/middleware';
+import { handleCors, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit } from '@/lib/middleware';
 import { getTenantContext } from '@/lib/server/db/tenant-context';
 import { getEnv } from '@/lib/server/env';
+import { withTimeout } from '@/lib/server/utils/timeout';
 import { auth } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
 import type OpenAI from 'openai';
@@ -122,16 +122,20 @@ async function executeSqlAndFormat(sql: string, orgId: string): Promise<string> 
     // In mock mode, use mockOrgId from env for validation
     const expectedOrgId = useMock ? (env.CORSO_MOCK_ORG_ID ?? 'demo-org') : orgId;
     
-    // Validate SQL before execution with tenant isolation
-    validateSQLScope(sql, expectedOrgId);
+    // Use SQL Guard for AST-based validation, org filter injection, and LIMIT enforcement
+    const guarded = guardSQL(sql, {
+      expectedOrgId,
+      maxRows: 100, // Limit results to 100 rows for chat display
+    });
     
-    // Execute query (limit results to 100 rows for chat display)
-    const limitedSql = sql.includes('LIMIT') ? sql : `${sql} LIMIT 100`;
-    
+    // Execute normalized SQL query with timeout
     // Route to mock DB or ClickHouse based on flag
-    const results = useMock 
-      ? await queryMockDb(limitedSql)
-      : await clickhouseQuery(limitedSql);
+    const queryTimeout = env.AI_QUERY_TIMEOUT_MS ?? 5000;
+    const queryPromise = useMock 
+      ? queryMockDb(guarded.sql)
+      : clickhouseQuery(guarded.sql);
+    
+    const results = await withTimeout(queryPromise, queryTimeout);
     
     if (!results || results.length === 0) {
       return 'The query returned no results.';
@@ -159,6 +163,10 @@ async function executeSqlAndFormat(sql: string, orgId: string): Promise<string> 
       return `Found ${rowCount} results (showing first 3):\n${JSON.stringify(preview, null, 2)}\n\n(Query was limited to 100 rows for display)`;
     }
   } catch (error) {
+    // Handle SQLGuardError with user-friendly messages
+    if (error instanceof SQLGuardError) {
+      return `Query validation failed: ${error.message}`;
+    }
     const errorMessage = error instanceof Error ? error.message : 'Query execution failed';
     return `Error executing query: ${errorMessage}`;
   }
@@ -458,11 +466,19 @@ const handler = async (req: NextRequest): Promise<Response> => {
       max_tokens: 2000,
     });
 
-    // Create abort signal from request
+    // Create abort signal from request with overall timeout
     const abortController = new AbortController();
     req.signal?.addEventListener('abort', () => {
       abortController.abort();
     });
+    
+    // Apply overall request timeout (AI_TOTAL_TIMEOUT_MS)
+    // Note: This timeout will abort the stream, which will cause createStreamResponse
+    // to handle the abort and close the stream gracefully
+    const totalTimeout = env.AI_TOTAL_TIMEOUT_MS ?? 60000;
+    setTimeout(() => {
+      abortController.abort();
+    }, totalTimeout);
 
     return createStreamResponse(stream, client, model, messages, orgId, abortController.signal);
   } catch (error) {

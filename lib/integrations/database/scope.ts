@@ -94,6 +94,9 @@ const parseSQL = (sql: string): ParsedSQL => {
 /**
  * Validates SQL queries for tenant isolation and security compliance.
  * This is the primary SQL security guard for the entire application.
+ * 
+ * NOTE: For new code, prefer using guardSQL() from sql-guard.ts which provides
+ * AST-based validation and SQL normalization with org filter injection.
  *
  * @param sql The SQL query to validate.
  * @param expectedOrgId Optional organization ID to validate against literal values.
