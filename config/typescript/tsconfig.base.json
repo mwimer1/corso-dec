@@ -123,14 +123,6 @@
       "@/tests/helpers/*": ["tests/__setup__/helpers/*"],
       "@tests/support/*": ["tests/support/*"],
 
-      // Auth types path mappings
-      // "@/types/auth/authorization": ["types/auth/authorization/types.ts"], // REMOVED: File deleted (unused)
-      "@/types/auth/credential": ["types/auth/credential/types.ts"],
-      "@/types/auth/member": ["types/auth/member/types.ts"],
-      "@/types/auth/organization": ["types/auth/organization/types.ts"],
-      "@/types/auth/session": ["types/auth/session/types.ts"],
-      "@/types/auth/user": ["types/auth/user/types.ts"],
-
       // Chat types path mappings
       "@/types/chat/message": ["types/chat/message/types.ts"],
       "@/types/chat/query": ["types/chat/query/types.ts"],
@@ -138,9 +130,6 @@
       "@/types/chat/visualization": ["types/chat/visualization/types.ts"],
 
       // Dashboard analytics types path mappings
-      // Security types path mappings
-      // "@/types/security/policy": ["types/security/policy/types.ts"], // REMOVED: File deleted (unused)
-      "@/types/security/prompt-guard": ["types/security/prompt-guard/types.ts"],
 
       // Config types path mappings
       "@/types/config/security": ["types/config/security/types.ts"],

@@ -461,10 +461,6 @@ export const docs = [
     "title": "types/api"
   },
   {
-    "path": "types/auth/readme.md",
-    "title": "types/auth"
-  },
-  {
     "path": "types/chat/readme.md",
     "title": "types/chat"
   },
@@ -495,10 +491,6 @@ export const docs = [
   {
     "path": "types/readme.md",
     "title": "types"
-  },
-  {
-    "path": "types/security/readme.md",
-    "title": "types/security"
   },
   {
     "path": "types/shared/config/readme.md",

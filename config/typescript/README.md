@@ -293,10 +293,8 @@ The path alias system provides consistent import resolution across all configura
 **Type Aliases**:
 ```json
 {
-  "@/types/auth": ["./types/auth/index.ts"],  // NOTE: Barrel removed - use direct imports
   "@/types/chat": ["./types/chat/index.ts"],
   "@/types/dashboard": ["./types/dashboard/index.ts"],
-  // "@/types/security": ["./types/security/index.ts"]  // REMOVED: Barrel deleted - use @/types/security/policy/types
 }
 ```
 
