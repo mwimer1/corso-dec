@@ -311,10 +311,13 @@ export const MarketInsightsSection: React.FC<Props> = ({
               {/* Chart */}
               <Chart data={filtered} loading={loading} variant="bare" heightClassName="h-64 md:h-80 lg:h-96" />
               {/* Active filters at bottom */}
-              <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-border" aria-label="Active filters">
-                <Badge color="secondary">{territory}</Badge>
-                <Badge color="secondary">{propType === "All" ? "All Types" : propType}</Badge>
-                <Badge color="secondary">{range[0]}–{range[1]}</Badge>
+              <div className="mt-4 pt-4 border-t border-border space-y-2">
+                <p className="text-sm font-semibold text-foreground">Selected filters</p>
+                <div className="flex flex-wrap gap-2" aria-label="Active filters">
+                  <Badge color="secondary">{territory}</Badge>
+                  <Badge color="secondary">{propType === "All" ? "All Types" : propType}</Badge>
+                  <Badge color="secondary">{range[0]}–{range[1]}</Badge>
+                </div>
               </div>
             </CardContent>
           </Card>
