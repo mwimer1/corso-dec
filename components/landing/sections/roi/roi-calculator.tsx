@@ -124,10 +124,10 @@ export const ROICalculator: React.FC = () => {
 
       <div className="mx-auto w-full max-w-[1200px] px-4 md:px-6">
         <div
-          className="grid gap-y-8 gap-x-8 md:grid-cols-1 xl:grid-cols-[minmax(320px,560px)_minmax(320px,560px)] justify-center items-start"
+          className="grid gap-y-8 gap-x-8 lg:grid-cols-[minmax(240px,380px)_minmax(300px,480px)] xl:grid-cols-[minmax(280px,480px)_minmax(320px,560px)] justify-center items-start"
         >
           {/* Left: Input Card */}
-          <div className="max-w-[560px] w-full">
+          <div className="max-w-[560px] lg:max-w-[480px] xl:max-w-[480px] w-full mx-auto">
             <div className={cls['roiInputCard']} suppressHydrationWarning>
               <h2 className="sr-only">ROI Calculator</h2>
 
@@ -220,7 +220,7 @@ export const ROICalculator: React.FC = () => {
           </div>
 
           {/* Right: Results */}
-          <div className="max-w-[560px] w-full flex flex-col">
+          <div className="max-w-[560px] lg:max-w-[480px] xl:max-w-[560px] w-full mx-auto flex flex-col">
             <RoiOutputPanel
               revenueGrowth={totalRevenue}
               newDeals={newDeals}
