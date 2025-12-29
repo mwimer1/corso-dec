@@ -11,12 +11,12 @@ export const PRICING_UI: Record<PlanKey, {
   popular?: boolean;
 }> = {
   starter: {
-    label: 'CorsoAI',
+    label: 'AI Chat',
     monthlyUsd: 20,
     annualUsd: 16, // illustrative 20% savings -> $16/mo billed annually
     tagline: 'AI Chat',
     features: [
-      '50 CorsoAI chat queries per month',
+      '50 AI Chat queries per month',
       'Query billions of datapoints in seconds',
       'Exportable data tables right from the chat interface',
     ],
@@ -27,7 +27,7 @@ export const PRICING_UI: Record<PlanKey, {
     annualUsd: 40,
     tagline: 'AI Chat + Projects',
     features: [
-      '100 CorsoAI chat queries per month',
+      '100 AI Chat queries per month',
       '1,000 project exports per month',
       'Projects portal with 15+ years of permit history',
     ],
@@ -39,7 +39,7 @@ export const PRICING_UI: Record<PlanKey, {
     annualUsd: 80,
     tagline: 'AI Chat + Projects + Companies',
     features: [
-      '250 CorsoAI chat queries per month',
+      '250 AI Chat queries per month',
       '2,500 project or company exports per month',
       'Projects portal with 15+ years of permit history',
       'Companies portal with granular activity metrics',

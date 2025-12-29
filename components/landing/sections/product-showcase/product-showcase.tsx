@@ -70,6 +70,21 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
 
   const tabsData: TabData[] = [
     {
+      id: "corso-ai",
+      label: "AI Chat",
+      content: (
+        <Image
+          src="/demos/corso-ai-interface.png"
+          alt="AI Chat interface demo"
+          width={1920}
+          height={1080}
+          className="mx-auto max-w-5xl w-full rounded-lg border border-border shadow-sm h-auto"
+          priority={false}
+          sizes="(max-width: 1024px) 100vw, 1024px"
+        />
+      ),
+    },
+    {
       id: "projects",
       label: "Projects",
       content: (
@@ -106,21 +121,6 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
         <Image
           src="/demos/addresses-interface.png"
           alt="Addresses dashboard demo"
-          width={1920}
-          height={1080}
-          className="mx-auto max-w-5xl w-full rounded-lg border border-border shadow-sm h-auto"
-          priority={false}
-          sizes="(max-width: 1024px) 100vw, 1024px"
-        />
-      ),
-    },
-    {
-      id: "corso-ai",
-      label: "CorsoAI",
-      content: (
-        <Image
-          src="/demos/corso-ai-interface.png"
-          alt="CorsoAI interface demo"
           width={1920}
           height={1080}
           className="mx-auto max-w-5xl w-full rounded-lg border border-border shadow-sm h-auto"
