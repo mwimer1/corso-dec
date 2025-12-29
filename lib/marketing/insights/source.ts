@@ -5,7 +5,8 @@ import 'server-only';
 import { getEnv } from '@/lib/server/env';
 import type { InsightItem, InsightPreview } from '@/types/marketing';
 import { getDirectusCategories, getDirectusInsightBySlug, getDirectusInsightsIndex } from './directus-adapter';
-import { getLegacyCategories, getLegacyInsightBySlug, getLegacyInsightsIndex } from './legacy-adapter';
+// Dynamic import to break circular dependency: legacy-adapter → content-service → source
+// import { getLegacyCategories, getLegacyInsightBySlug, getLegacyInsightsIndex } from './legacy-adapter';
 import { getMockInsightBySlug, getMockInsightCategories, getMockInsightsIndex } from './mockcms-adapter';
 
 /**
@@ -26,7 +27,7 @@ export interface InsightContentSource {
  * 2. Else if CORSO_CMS_PROVIDER === "directus" => use Directus adapter
  * 3. Else => use legacy adapter (existing markdown/static logic)
  */
-function selectContentSource(): InsightContentSource {
+async function selectContentSource(): Promise<InsightContentSource> {
   const env = getEnv();
   
   // Priority 1: Mock CMS (highest priority when enabled)
@@ -52,7 +53,8 @@ function selectContentSource(): InsightContentSource {
     };
   }
   
-  // Priority 3: Legacy (markdown/static fallback)
+  // Priority 3: Legacy (markdown/static fallback) - dynamic import to break circular dependency
+  const { getLegacyCategories, getLegacyInsightBySlug, getLegacyInsightsIndex } = await import('./legacy-adapter');
   return {
     getAllInsights: getLegacyInsightsIndex,
     getInsightBySlug: getLegacyInsightBySlug,
@@ -62,10 +64,17 @@ function selectContentSource(): InsightContentSource {
 
 // Export singleton source instance (cached per request via React cache in adapters)
 let _source: InsightContentSource | undefined;
+let _sourcePromise: Promise<InsightContentSource> | undefined;
 
-export function getContentSource(): InsightContentSource {
-  if (!_source) {
-    _source = selectContentSource();
+export async function getContentSource(): Promise<InsightContentSource> {
+  if (_source) {
+    return _source;
+  }
+  if (!_sourcePromise) {
+    _sourcePromise = selectContentSource();
+    _source = await _sourcePromise;
+  } else {
+    _source = await _sourcePromise;
   }
   return _source;
 }

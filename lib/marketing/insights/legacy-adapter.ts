@@ -4,7 +4,7 @@ import 'server-only';
 
 import { getEnv } from '@/lib/server/env';
 import type { InsightItem, InsightPreview } from '@/types/marketing';
-import { loadFromContentDir } from './content-service';
+import { loadFromContentDir } from './content-loader';
 import { CATEGORIES, staticInsights } from './static-data';
 
 /**
