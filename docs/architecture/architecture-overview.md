@@ -1,9 +1,8 @@
 ---
-status: "stable"
+description: "Documentation and resources for documentation functionality. Located in architecture/."
 last_updated: "2025-12-29"
 category: "documentation"
-title: "Architecture"
-description: "Documentation and resources for documentation functionality. Located in architecture/."
+status: "draft"
 ---
 # Architecture Overview
 

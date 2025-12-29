@@ -1,9 +1,8 @@
 ---
-status: "stable"
+description: "Documentation and resources for documentation functionality. Located in security/."
 last_updated: "2025-12-29"
 category: "documentation"
-title: "Security"
-description: "Documentation and resources for documentation functionality. Located in security/."
+status: "draft"
 ---
 # Security Implementation Guide
 

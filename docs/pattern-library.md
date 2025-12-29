@@ -1,9 +1,7 @@
 ---
-title: "Docs"
-description: "Documentation and resources for documentation functionality."
+status: "draft"
 last_updated: "2025-12-29"
 category: "documentation"
-status: "draft"
 ---
 # 🎨 Style Pattern Library
 
