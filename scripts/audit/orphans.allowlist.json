@@ -26,7 +26,8 @@
     "lib/integrations/env/index.ts",
     "lib/security/index.ts",
     "lib/server/db/index.ts",
-    "lib/services/index.ts"
+    "lib/services/index.ts",
+    "lib/entities/columns/registry.ts"
   ],
   "notes": {
     "types/api/generated/openapi.d.ts": "AUTO-GENERATED - Do not delete. Regenerated via pnpm openapi:gen",
@@ -42,7 +43,8 @@
     "lib/integrations/env/index.ts": "getEnv functions used extensively throughout codebase",
     "lib/security/index.ts": "maskSensitiveData exported and used in multiple files",
     "lib/server/db/index.ts": "getTenantScopedSupabaseClient used in API routes and tests",
-    "lib/services/index.ts": "Entity column configs (ADDRESSES_COLUMNS, etc.) used in tests and components"
+    "lib/services/index.ts": "Entity column configs (ADDRESSES_COLUMNS, etc.) used in tests and components",
+    "lib/entities/columns/registry.ts": "Legacy barrel for entity column configs - kept for backward compatibility, exports re-exported from individual config files"
   }
 }
 
