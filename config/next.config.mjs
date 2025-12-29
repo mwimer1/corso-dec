@@ -17,6 +17,14 @@ const nextConfig = {
   serverExternalPackages: [
     'import-in-the-middle',
     'require-in-the-middle',
+    // DuckDB native bindings must be externalized (not bundled)
+    '@duckdb/node-api',
+    '@duckdb/node-bindings',
+    '@duckdb/node-bindings-win32-x64',
+    '@duckdb/node-bindings-linux-x64',
+    '@duckdb/node-bindings-linux-arm64',
+    '@duckdb/node-bindings-darwin-x64',
+    '@duckdb/node-bindings-darwin-arm64',
   ],
   async rewrites() {
     return [

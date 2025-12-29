@@ -145,6 +145,48 @@ const ALLOWED_COLUMNS: Record<string, Set<string>> = {
 };
 
 /**
+ * Get schema summary for use in prompts
+ * Returns a formatted string describing allowed tables and their columns
+ */
+export function getSchemaSummary(): string {
+  const tables = ['projects', 'companies', 'addresses'] as const;
+  const summaries: string[] = [];
+  
+  for (const table of tables) {
+    const columns = ALLOWED_COLUMNS[table];
+    if (columns) {
+      const columnList = Array.from(columns)
+        .filter(col => col !== 'org_id') // Exclude org_id as it's injected automatically
+        .sort()
+        .join(', ');
+      summaries.push(`- ${table}(${columnList})`);
+    }
+  }
+  
+  return summaries.join('\n');
+}
+
+/**
+ * Get schema as JSON object for describe_schema tool
+ * Returns { table: [column1, column2, ...] } format
+ */
+export function getSchemaJSON(): Record<string, string[]> {
+  const result: Record<string, string[]> = {};
+  const tables = ['projects', 'companies', 'addresses'] as const;
+  
+  for (const table of tables) {
+    const columns = ALLOWED_COLUMNS[table];
+    if (columns) {
+      result[table] = Array.from(columns)
+        .filter(col => col !== 'org_id') // Exclude org_id as it's injected automatically
+        .sort();
+    }
+  }
+  
+  return result;
+}
+
+/**
  * SQL Guard result metadata
  */
 export interface SQLGuardResult {
