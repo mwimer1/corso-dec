@@ -122,12 +122,12 @@ export const ROICalculator: React.FC = () => {
         </p>
       </div>
 
-      <div className="mx-auto w-full max-w-[1200px] px-4 md:px-6">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div
           className="grid gap-y-8 gap-x-8 lg:grid-cols-[minmax(240px,380px)_minmax(300px,480px)] xl:grid-cols-[minmax(280px,480px)_minmax(320px,560px)] justify-center items-start"
         >
           {/* Left: Input Card */}
-          <div className="max-w-[560px] lg:max-w-[480px] xl:max-w-[480px] w-full mx-auto">
+          <div className="max-w-[560px] lg:max-w-[480px] xl:max-w-[560px] w-full mx-auto">
             <div className={cls['roiInputCard']} suppressHydrationWarning>
               <h2 className="sr-only">ROI Calculator</h2>
 

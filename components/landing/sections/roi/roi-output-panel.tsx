@@ -31,14 +31,14 @@ export function RoiOutputPanel({ revenueGrowth, newDeals, workdaysSaved }: Props
       {/* Row 2: side-by-side, compact */}
       <MetricCard
         title="New Deals"
-        value={`${newDeals.toLocaleString()} deals/year`}
+        value={`${newDeals.toLocaleString()} deals/yr`}
         helper="Projected additional wins at current close rate."
         density="compact"
         valueSize="sm"
       />
       <MetricCard
         title="Workdays Saved"
-        value={`${workdaysSaved.toLocaleString()} days/year`}
+        value={`${workdaysSaved.toLocaleString()} days/yr`}
         helper="Annual automation time savings across your team (est.)."
         tone="success"
         density="compact"
