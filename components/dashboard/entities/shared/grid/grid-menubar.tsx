@@ -363,7 +363,7 @@ export function GridMenubar(props: GridMenubarProps) {
 
   return (
     <>
-      <div className="flex items-center justify-between w-full px-2 py-2 bg-background/95 backdrop-blur-sm">
+      <div className="flex items-center justify-between w-full h-14 px-2 border-b border-border bg-background/95 backdrop-blur-sm">
         {/* Left side: Saved Searches and Tools */}
         <div className="flex items-center gap-2">
           {/* Saved Searches menu */}
