@@ -76,10 +76,6 @@ export const YearRangeSlider: React.FC<Props> = ({
           <span className="font-medium">{minYear}</span>
           <span className="font-medium">{maxYear}</span>
         </div>
-        <div className="relative h-2 mt-1">
-          <div className="absolute left-0 top-0 h-2 w-px bg-border" />
-          <div className="absolute right-0 top-0 h-2 w-px bg-border" />
-        </div>
       </div>
     </div>
   );
