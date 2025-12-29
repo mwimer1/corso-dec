@@ -127,11 +127,6 @@ html, body {
   to { height: 0 }
 }
 
-/* Missing keyframes used by animated-pill sheen */
-@keyframes sheen-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
 
 /* Fade in animation for industry tab transitions */
 @keyframes fadeIn {
