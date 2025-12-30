@@ -392,6 +392,7 @@
   },
   "devDependencies": {
     "@ast-grep/cli": "^0.39.9",
+    "@axe-core/react": "^4.11.0",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@corso/eslint-plugin": "workspace:*",
@@ -487,6 +488,7 @@
     "typescript": "~5.9.3",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.4",
+    "vitest-axe": "^0.1.0",
     "yaml": "^2.8.2",
     "yargs": "^17.7.2"
   },
