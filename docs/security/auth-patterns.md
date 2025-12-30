@@ -154,12 +154,14 @@ export default authMiddleware({
 ```typescript
 import { Webhook } from 'svix';
 import { headers } from 'next/headers';
+// ✅ CORRECT: Use getEnv() for server-side environment access
+import { getEnv } from '@/lib/server/env';
 
 export async function POST(req: Request) {
   const body = await req.text();
   const headersList = await headers();
 
-  const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET!);
+  const wh = new Webhook(getEnv().CLERK_WEBHOOK_SECRET!);
   const payload = wh.verify(body, {
     'svix-id': headersList.get('svix-id')!,
     'svix-timestamp': headersList.get('svix-timestamp')!,

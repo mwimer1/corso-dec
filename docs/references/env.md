@@ -7,7 +7,23 @@ last_updated: '2025-12-30'
 category: documentation
 status: draft
 ---
-# Environment Variables Reference
+
+## Table of Contents
+
+### Public Variables (NEXT_PUBLIC_*)
+
+- [NEXT_PUBLIC_APP_URL](#next_public_app_url)
+
+### Integration Variables
+
+- [DIRECTUS_TOKEN](#directus_token)
+- [DIRECTUS_URL](#directus_url)
+
+### Feature Flags & Configuration
+
+- [CORSO_CMS_PROVIDER](#corso_cms_provider)
+- [CORSO_USE_MOCK_CMS](#corso_use_mock_cms)
+- [CORSO_USE_MOCK_DB](#corso_use_mock_db)
 
 ## CORSO_USE_MOCK_DB
 

@@ -10,6 +10,7 @@ import { limit } from './_utils/concurrency';
 import { normalizeDate, parseMd } from './_utils/frontmatter';
 import { runLocalBin } from './_utils/run-local-bin';
 import { isStable, normalizeDocStatus } from './normalize-doc-status';
+import { validateDocsContent } from './validate-docs-content';
 
 // Simple console-based logger to avoid circular dependencies
 const logger = {
@@ -488,6 +489,10 @@ async function main(): Promise<void> {
         runMarkdownLinting(),
         checkDocsIndex(),
       ]);
+
+      // Content validation (banned patterns, code blocks, env var docs)
+      logger.info('Validating documentation content...');
+      await validateDocsContent();
 
       logger.info('✅ Documentation validation passed successfully!');
     }
