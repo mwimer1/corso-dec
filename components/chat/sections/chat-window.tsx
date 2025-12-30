@@ -21,15 +21,26 @@ export default function ChatWindow() {
       const saved = typeof window !== 'undefined' ? window.localStorage.getItem('chat:mode') : null;
       if (saved && isChatMode(saved)) return saved;
     } catch {}
-    return 'projects';
+    return 'auto';
   });
   const [hydrated, setHydrated] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const firstName = user?.firstName;
   const hasHistory = messages.length > 0;
   const PREFIX_MODE = true;
-  const applyModePrefix = useCallback((t: string) => (PREFIX_MODE ? `[mode:${mode}] ${t}` : t), [mode, PREFIX_MODE]);
-  const placeholder = useMemo(() => `Ask anything about ${mode}…`, [mode]);
+  // Only prefix with mode if it's not 'auto' - auto mode lets the AI determine the table
+  const applyModePrefix = useCallback((t: string) => {
+    if (!PREFIX_MODE) return t;
+    // Don't prefix 'auto' mode - let the AI determine which table to use
+    if (mode === 'auto') return t;
+    return `[mode:${mode}] ${t}`;
+  }, [mode, PREFIX_MODE]);
+  const placeholder = useMemo(() => {
+    if (mode === 'auto') {
+      return 'Ask anything…';
+    }
+    return `Ask anything about ${mode}…`;
+  }, [mode]);
 
   // Track hydration state to conditionally render placeholder
   useEffect(() => {

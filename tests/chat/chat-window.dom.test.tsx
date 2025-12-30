@@ -68,7 +68,8 @@ describe('ChatWindow', () => {
     render(<ChatWindow />);
     const presetButton = screen.getByText('Show permits issued in the last 30 days');
     fireEvent.click(presetButton);
-    expect(sendMessage).toHaveBeenCalledWith('[mode:projects] Show permits issued in the last 30 days');
+    // With 'auto' as default mode, no prefix is added
+    expect(sendMessage).toHaveBeenCalledWith('Show permits issued in the last 30 days');
   });
 
   it('renders chat input after hydration', async () => {
@@ -92,7 +93,8 @@ describe('ChatWindow', () => {
       expect(screen.getByLabelText('Chat message input')).toBeInTheDocument();
     }, { timeout: 5000 });
     await waitFor(() => {
-      expect(screen.getByPlaceholderText(/Ask anything about projects/)).toBeInTheDocument();
+      // With 'auto' as default mode, placeholder is "Ask anything…"
+      expect(screen.getByPlaceholderText(/Ask anything/)).toBeInTheDocument();
     }, { timeout: 2000 });
   });
 
@@ -209,7 +211,8 @@ describe('ChatWindow', () => {
     fireEvent.click(presetButton);
 
     // Verify sendMessage was called
-    expect(sendMessage).toHaveBeenCalledWith('[mode:projects] Show permits issued in the last 30 days');
+    // With 'auto' as default mode, no prefix is added
+    expect(sendMessage).toHaveBeenCalledWith('Show permits issued in the last 30 days');
 
     // Simulate messages being added (hasHistory becomes true)
     vi.spyOn(useChatModule, 'useChat').mockReturnValue({

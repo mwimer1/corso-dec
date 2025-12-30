@@ -31,7 +31,7 @@ function ChatComposer(props: ChatComposerProps) {
     placeholder,
     onInputAutoGrow,
     isProcessing = false,
-    mode = 'projects',
+    mode = 'auto',
     setMode = () => {},
     stop,
     canSend = false,
@@ -78,10 +78,10 @@ function ChatComposer(props: ChatComposerProps) {
             <DropdownMenu.Trigger asChild>
               <button
                 type="button"
-                aria-label={`Change data scope (currently: ${CHAT_MODE_LABEL[mode]})`}
+                aria-label={mode === 'auto' ? 'Change data scope (currently: Auto - AI determines table)' : `Change data scope (currently: ${CHAT_MODE_LABEL[mode]})`}
                 className="h-9 w-9 rounded-md border border-border bg-surface inline-flex items-center justify-center hover:bg-surface-hover disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isProcessing}
-                title={`Change data scope (currently: ${CHAT_MODE_LABEL[mode]})`}
+                title={mode === 'auto' ? 'Change data scope (currently: Auto - AI determines table)' : `Change data scope (currently: ${CHAT_MODE_LABEL[mode]})`}
               >
                 <span aria-hidden className="text-[18px] leading-none">+</span>
               </button>
@@ -114,9 +114,11 @@ function ChatComposer(props: ChatComposerProps) {
               </DropdownMenu.Content>
             </DropdownMenu.Portal>
           </DropdownMenu.Root>
-          <Badge color="secondary" aria-hidden="true">
-            {CHAT_MODE_LABEL[mode]}
-          </Badge>
+          {mode !== 'auto' && (
+            <Badge color="secondary" aria-hidden="true">
+              {CHAT_MODE_LABEL[mode]}
+            </Badge>
+          )}
         </div>
         <div className="flex items-center gap-2">
           <button
