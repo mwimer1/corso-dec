@@ -4,6 +4,6 @@ export type { InsightItem, InsightPreview } from './insights/types';
 export type { ChartDataPoint } from './landing/types';
 
 // Re-export common types
-export type { ISODateString } from '../shared/utils/dates/types';
+export type { ISODateString } from '../shared/dates/types';
 
 

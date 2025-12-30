@@ -45,7 +45,7 @@
       "@shared/data": ["types/shared/data/index.ts"],
       "@/shared/audit/types": ["types/shared/audit/types.ts"],
       "@/shared/system/error/types": ["types/shared/system/error/types.ts"],
-      "@shared/utils/dates": ["types/shared/utils/dates/types.ts"],
+      "@shared/dates": ["types/shared/dates/types.ts"],
       "@/shared/performance/cache-config/types": ["types/shared/performance/cache-config/types.ts"],
       "@shared/feature-flags": ["types/shared/feature-flags/types.ts"],
       "@shared/data/status": ["types/shared/data/status/types.ts"],
@@ -141,11 +141,10 @@
       "@/types/dashboard/user-data": ["types/dashboard/user-data/index.ts"],
       "@/types/dashboard/entity": ["types/dashboard/entity/index.ts"],
 
-      // Integrations types path mappings
-      "@/types/integrations/supabase": ["types/integrations/supabase/index.ts"],
-      "@/types/integrations/supabase/core": ["types/integrations/supabase/core/types.ts"],
-      "@/types/integrations/supabase/api": ["types/integrations/supabase/api/types.ts"],
-      // OpenAI types live under types/integrations/openai now; no server/* alias
+      // Supabase types path mappings
+      "@/types/supabase": ["types/supabase/index.ts"],
+      "@/types/supabase/core": ["types/supabase/core/types.ts"],
+      "@/types/supabase/api": ["types/supabase/api/types.ts"],
 
       // Shared system types path mappings
       "@/types/shared/system": ["types/shared/system/index.ts"],

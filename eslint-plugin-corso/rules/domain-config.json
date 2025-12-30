@@ -32,9 +32,9 @@
         "config",
         "dashboard",
         "forms",
-        "integrations",
         "marketing",
         "realtime",
+        "supabase",
         "validators"
       ]
     }

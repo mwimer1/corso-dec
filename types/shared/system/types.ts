@@ -1,4 +1,3 @@
- 
 /* cspell:ignore Corso BESTPRACTICES */
 
 /** Generic domain event structure */

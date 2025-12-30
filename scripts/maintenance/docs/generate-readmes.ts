@@ -81,8 +81,19 @@ async function main() {
   const patterns = findReadmes();
   const files = await globby(patterns, { gitignore: true });
 
+  // Files to skip (manually maintained, not auto-generated)
+  const skipFiles = new Set([
+    'types/shared/README.md',
+  ]);
+
   let changed = 0;
   for (const file of files) {
+    // Skip manually maintained READMEs
+    const normalizedPath = file.replace(/\\/g, '/');
+    if (skipFiles.has(normalizedPath)) {
+      continue;
+    }
+
     const dir = path.dirname(file);
     const ctx: Record<string, unknown> = { ...baseCtx, directory: dir.replace(/\\/g, '/') };
 

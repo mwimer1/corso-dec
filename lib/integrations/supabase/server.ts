@@ -1,9 +1,9 @@
 // lib/integrations/supabase/server.ts
 import { getEnv } from '@/lib/server/env';
 import { ApplicationError, ErrorCategory, ErrorSeverity } from '@/lib/shared';
-import type { Database } from '@/types/integrations';
-import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@/types/supabase';
 import type * as SupabaseJs from '@supabase/supabase-js';
+import type { SupabaseClient } from '@supabase/supabase-js';
 // Delay Supabase SDK import until first use (avoids side effects on import)
 import 'server-only';
 

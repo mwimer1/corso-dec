@@ -1,5 +1,5 @@
  
-/* cspell:ignore Supabase */  // spell‑checker – let “Supabase” pass
+/* cspell:ignore Supabase */  // spell‑checker – let "Supabase" pass
 
 /**
  * Response shape returned by
@@ -23,21 +23,22 @@ export interface SupabaseApiJwtExchangeResponse {
 export interface SQLExecutionOptions<T = unknown> {
   /**
    * Milliseconds before the request is aborted  
-   * (defaults to 30 000 ms if omitted).
+   * (defaults to 30 000 ms if omitted).
    */
   timeout?: number;
 
-  /** Throw if the query returns **zero** rows (default: false). */
+  /** Throw if the query returns **zero** rows (default: false). */
   throwOnEmpty?: boolean;
 
   /**
    * Optional transformer applied to every row.
    *
-   * The parameter’s name is deliberately prefixed with “_”;  
+   * The parameter's name is deliberately prefixed with "_";  
    * it is never *used* inside this type signature, but ESLint
    * would otherwise treat it as an unused identifier.
    */
    
   transform?: (_row: unknown) => T;
 }
+
 

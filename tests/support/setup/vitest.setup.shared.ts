@@ -45,7 +45,7 @@ vi.mock('next/navigation', () => {
 
 // next/headers mock - imported from centralized mock utility
 // This ensures the mock is registered early and consistently
-import '@tests/support/mocks/next-headers';
+import '@/tests/support/mocks/next-headers';
 
 // Sentry minimal stub
 vi.mock('@sentry/nextjs', () => ({ init: vi.fn(), captureException: vi.fn(), captureMessage: vi.fn() }));

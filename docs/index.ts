@@ -481,24 +481,8 @@ export const docs = [
     "title": "Chat"
   },
   {
-    "path": "types/config/readme.md",
-    "title": "Config"
-  },
-  {
     "path": "types/dashboard/readme.md",
     "title": "Dashboard"
-  },
-  {
-    "path": "types/forms/readme.md",
-    "title": "Forms"
-  },
-  {
-    "path": "types/integrations/readme.md",
-    "title": "Integrations"
-  },
-  {
-    "path": "types/integrations/supabase/readme.md",
-    "title": "Supabase"
   },
   {
     "path": "types/marketing/readme.md",
@@ -509,24 +493,8 @@ export const docs = [
     "title": "Types"
   },
   {
-    "path": "types/shared/config/readme.md",
-    "title": "Config"
-  },
-  {
-    "path": "types/shared/core/readme.md",
-    "title": "Core"
-  },
-  {
     "path": "types/shared/readme.md",
     "title": "Shared"
-  },
-  {
-    "path": "types/shared/system/readme.md",
-    "title": "System"
-  },
-  {
-    "path": "types/shared/utils/readme.md",
-    "title": "Utils"
   },
   {
     "path": "docs/security/dependency-policy.md",

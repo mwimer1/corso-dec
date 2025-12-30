@@ -29,12 +29,12 @@ export type {
 export type {
     ChatAIErrorPayload, ChatMessageProcessedPayload, DomainEvent,
     EventHandler
-} from './system/events/types';
+} from './system/types';
 
-// Utils types
+// Date types
 export type {
     ISODateString
-} from './utils/dates/types';
+} from './dates/types';
 
 // Validation types
 export type {

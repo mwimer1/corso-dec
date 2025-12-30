@@ -2,13 +2,13 @@
 // Tenant-scoped Supabase client wrapper that enforces RLS context
 import 'server-only';
 
-import type { NextRequest } from 'next/server';
-import type { SupabaseClient } from '@supabase/supabase-js';
-import type { Database } from '@/types/integrations';
 import { getSupabaseAdmin } from '@/lib/integrations/supabase/server';
-import { getTenantContext, type TenantContext } from './tenant-context';
 import { logger } from '@/lib/monitoring';
 import { ApplicationError, ErrorCategory, ErrorSeverity } from '@/lib/shared';
+import type { Database } from '@/types/supabase';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { NextRequest } from 'next/server';
+import { getTenantContext, type TenantContext } from './tenant-context';
 
 /**
  * Ensure RLS context is set for the current database session.

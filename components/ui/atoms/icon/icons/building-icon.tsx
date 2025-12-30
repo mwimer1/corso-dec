@@ -1,9 +1,10 @@
 // components/ui/atoms/icon/icons/building-icon.tsx
 "use client";
+import * as React from "react";
 import { COMMON_ICON_STROKE_ATTRS, createIcon } from "../icon-base";
 
 export const BuildingIcon = createIcon("BuildingIcon", (
-  <>
+  <React.Fragment>
     <path
       d="M3 21H21"
       {...COMMON_ICON_STROKE_ATTRS}
@@ -28,5 +29,5 @@ export const BuildingIcon = createIcon("BuildingIcon", (
       d="M9 17H9.01"
       {...COMMON_ICON_STROKE_ATTRS}
     />
-  </>
+  </React.Fragment>
 ));
