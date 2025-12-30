@@ -35,21 +35,37 @@ vi.mock('@/lib/integrations/clickhouse/server', () => ({
 }));
 
 describe("API v1: ai/chat route", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    mockClerkAuth.setup({ userId: 'test-user-123' });
-    // Default: mock tenant context with org ID from header
-    // For tests that don't explicitly set a header, we'll provide a default orgId from "session"
-    // This simulates the fallback behavior where session metadata provides orgId
+  // Single source of truth for authentication state
+  let currentUserId: string | null = "test-user-123";
+
+  // Helper to set auth state consistently across Clerk and tenant context mocks
+  function setAuth(userId: string | null) {
+    currentUserId = userId;
+
+    // Reset and update Clerk mock
+    mockClerkAuth.getMock().mockReset();
+    mockClerkAuth.setup({ userId });
+
+    // Update tenant context to reflect current auth state
     mockGetTenantContext.mockImplementation(async (req?: any) => {
       const orgId = req?.headers?.get?.('x-corso-org-id') || req?.headers?.get?.('X-Corso-Org-Id');
       // If no header, simulate session fallback by returning a default orgId
       // Tests that want to test MISSING_ORG_CONTEXT should explicitly mock rejection
       return { 
         orgId: orgId || 'default-session-org-id', 
-        userId: 'test-user-123' 
+        userId: currentUserId 
       };
     });
+  }
+
+  beforeEach(() => {
+    // Reset module cache to ensure fresh imports see latest mocks
+    vi.resetModules();
+    // Reset all mocks (not just clear call history)
+    vi.resetAllMocks();
+    
+    // Set default authenticated state
+    setAuth("test-user-123");
     // Default: mock validateSQLScope to pass
     mockValidateSQLScope.mockImplementation((sql: string, expectedOrgId?: string) => {
       if (expectedOrgId) {
@@ -104,7 +120,10 @@ describe("API v1: ai/chat route", () => {
   }, 20_000);
 
   it("returns 401 when unauthenticated", async () => {
-    mockClerkAuth.setup({ userId: null });
+    setAuth(null);
+    // Reset modules to ensure route sees the latest auth state
+    vi.resetModules();
+
     const url = resolveRouteModule("ai/chat");
     if (!url) return expect(true).toBe(true);
 
@@ -402,9 +421,8 @@ describe("API v1: ai/chat route", () => {
       // Note: The handler only checks for userId, not specific roles.
       // OpenAPI spec indicates [member, viewer] are allowed, but handler doesn't enforce roles.
       // This test verifies the actual behavior: any authenticated user can access.
-      mockClerkAuth.setup({
-        userId: 'test-user-any-role',
-      });
+      setAuth('test-user-any-role');
+      vi.resetModules();
 
       const url = resolveRouteModule("ai/chat");
       if (!url) return expect(true).toBe(true);
@@ -426,7 +444,9 @@ describe("API v1: ai/chat route", () => {
     });
 
     it("denies unauthenticated users (401)", async () => {
-      mockClerkAuth.setup({ userId: null });
+      setAuth(null);
+      // Reset modules to ensure route sees the latest auth state
+      vi.resetModules();
 
       const url = resolveRouteModule("ai/chat");
       if (!url) return expect(true).toBe(true);
