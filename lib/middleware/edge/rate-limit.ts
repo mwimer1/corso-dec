@@ -7,8 +7,8 @@
 
 // Edge-safe logger (no server dependencies)
 import { runWithRequestContext as runWithEdgeRequestContext } from '@/lib/monitoring/core/logger-edge';
-// Edge-safe env access
-import { getEnvEdge } from '@/lib/api/edge';
+// Edge-safe env access (import from edge-env to avoid circular dependency with edge.ts)
+import { getEnvEdge } from '@/lib/api/edge-env';
 // Use consolidated rate limiting domain
 import { exposeHeader } from '@/lib/middleware/http/headers';
 import { addRequestIdHeader, getRequestId } from '@/lib/middleware/http/request-id';

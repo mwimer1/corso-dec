@@ -390,7 +390,7 @@ export const docs = [
   },
   {
     "path": "scripts/utils/readme.md",
-    "title": "Utils"
+    "title": "Utils Scripts"
   },
   {
     "path": "scripts/validation/readme.md",
