@@ -1409,10 +1409,9 @@ status: draft
     │   │   │   │   ├── dynamic-import-consumer.ts
     │   │   │   │   ├── unused-leaf.ts
     │   │   ├── api-error-conversion.test.ts
-    │   │   ├── barrels.spec.ts
     │   │   ├── constants-barrel.node.test.ts
     │   │   ├── constants-barrel.test.ts
-    │   │   ├── import-discipline.spec.ts
+    │   │   ├── import-discipline.test.ts
     │   │   ├── is-development.test.ts
     │   │   ├── lib-api-edge-safety.test.ts
     │   │   ├── lib-boundary-guards.test.ts
@@ -1449,7 +1448,7 @@ status: draft
     │   ├── integrations
     │   ├── lib
     │   │   ├── marketing
-    │   │   │   ├── barrels.spec.ts
+    │   │   │   ├── barrels.test.ts
     │   │   ├── services
     │   │   │   ├── entity
     │   │   │   │   ├── adapters
@@ -1490,9 +1489,9 @@ status: draft
     │   │   ├── README.md
     │   │   ├── vitest.setup.ts
     │   ├── styles
-    │   │   ├── breakpoints-triangulation.spec.ts
-    │   │   ├── breakpoints.spec.ts
-    │   │   ├── typography-presence.spec.ts
+    │   │   ├── breakpoints-triangulation.test.ts
+    │   │   ├── breakpoints.test.ts
+    │   │   ├── typography-presence.test.ts
     │   ├── support
     │   │   ├── harness
     │   │   │   ├── api-route-harness.ts

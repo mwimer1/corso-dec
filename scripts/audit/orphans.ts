@@ -24,14 +24,14 @@ import type { SourceFile } from 'ts-morph';
 import { Project } from 'ts-morph';
 import { z } from 'zod';
 import {
-  findDynamicImports,
-  isBarrelFile,
-  isNextJsRoute,
-  isStyleFile,
-  normalizePosix,
-  resolvePathAlias,
-  toAbsPosix,
-  toProjectRelativePosix,
+    findDynamicImports,
+    isBarrelFile,
+    isNextJsRoute,
+    isStyleFile,
+    normalizePosix,
+    resolvePathAlias,
+    toAbsPosix,
+    toProjectRelativePosix,
 } from '../audit-lib/orphan-utils';
 import { COMMON_IGNORE_PATTERNS } from '../utils/constants';
 import { walkDirectorySync } from '../utils/fs/walker';
@@ -107,8 +107,8 @@ function findTextReferences(filePath: string, searchDirs: string[]): boolean {
 
 // Re-export for testing
 export {
-  findDynamicImports, findTextReferences, isBarrelFile, isNextJsRoute,
-  isStyleFile, normalizePosix, resolvePathAlias, toAbsPosix, toProjectRelativePosix
+    findDynamicImports, findTextReferences, isBarrelFile, isNextJsRoute,
+    isStyleFile, normalizePosix, resolvePathAlias, toAbsPosix, toProjectRelativePosix
 };
 
 // Robust resolver for module specifiers (with tiny cache)
@@ -427,6 +427,9 @@ const filteredCandidates = candidates.filter((rel: string) => {
   if (!argv.includeIndex && isIndexBarrel(rel)) return false;
   // Exclude convention files (tooling/CLI consumed, not TS imported)
   if (CONVENTION_FILE_PATTERNS.some(pattern => pattern.test(rel))) return false;
+  // Exclude test files (discovered by Vitest glob patterns, not via imports)
+  // Test files are entrypoints for the test runner, not production code modules
+  if (rel.startsWith('tests/')) return false;
   return true;
 });
 

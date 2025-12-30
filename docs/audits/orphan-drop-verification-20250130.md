@@ -18,14 +18,16 @@ status: draft
 
 After comprehensive verification of all 12 DROP candidates, we identified:
 
-- **✅ Safe to Delete:** 10 files (duplicates, obsolete tests, or unused)
-- **🟨 Keep (False Positive):** 2 files (valid tests that should be retained)
+- **✅ Definitive KEEP:** 4 files (correct location duplicates + valid tests)
+- **✅ Safe to Delete (Stage 1):** 2 files (duplicates in wrong location)
+- **⚠️ Intentional Removal (Stage 3):** 6 files (require team approval for coverage removal)
 
 **Key Findings:**
-- 3 duplicate test files (same content in different locations)
-- 2 valid test files incorrectly marked as DROP (should be kept)
-- 5 obsolete/unused test files safe to delete
-- 2 style test files with outdated documentation references
+- 2 duplicate test files in wrong locations (safe to delete immediately)
+- 2 valid test files incorrectly marked as DROP (false positives - keep)
+- 6 test files that may be intentionally removed (requires coverage/enforcement review)
+
+**Note:** Current orphan audit (2025-12-30) shows 0 DROP files, likely due to improved detection logic. However, the duplicate files and unused tests identified in this report are still valid cleanup targets.
 
 ## Phase 0: DROP-Only Summary Table
 
@@ -261,6 +263,7 @@ After comprehensive verification of all 12 DROP candidates, we identified:
 
 ---
 
+<<<<<<< HEAD
 ## Phase 2: Final Action Table
 
 | Path | Decision | Required Follow-ups | Risk Level | Verification Notes |
@@ -278,9 +281,103 @@ After comprehensive verification of all 12 DROP candidates, we identified:
 | `tests/lib/marketing/barrels.test.ts` | ✅ KEEP | None | Low | **KEEP** - Correct location, delete duplicate in `tests/core/` |
 | `tests/ui/providers/route-theme-provider.dom.test.tsx` | ✅ DELETE | Verify RouteThemeProvider tested elsewhere | Medium | Unused test, verify component coverage |
 
-## Phase 3: Cleanup Implementation Plan
+## Phase 2: Authoritative Decision Table
 
-### Step 1: Delete Confirmed-Safe Files (8 files)
+### Definitive KEEP (4 files)
+
+| Path | Reason | Stage |
+|------|--------|-------|
+| `tests/integrations/mockdb/duckdb.test.ts` | ✅ Correct location (keep this, delete duplicate) | - |
+| `tests/lib/marketing/barrels.test.ts` | ✅ Correct location (keep this, delete duplicate) | - |
+| `tests/api/sql-guard.node.test.ts` | 🟨 Valid test (false positive from orphan audit) | - |
+| `tests/ui/error-fallback.dom.test.tsx` | 🟨 Valid test (false positive from orphan audit) | - |
+
+### Stage 1: Safe Deletions (2 files - duplicates in wrong location)
+
+| Path | Decision | Required Follow-ups | Risk Level |
+|------|----------|---------------------|------------|
+| `tests/api/mockdb-duckdb.node.test.ts` | ✅ DELETE | None | Low |
+| `tests/core/barrels.test.ts` | ✅ DELETE | None | Low |
+
+### Stage 3: Intentional Removals (6 files - requires team approval)
+
+| Path | Decision | Required Follow-ups | Risk Level |
+|------|----------|---------------------|------------|
+| `tests/core/import-discipline.test.ts` | ⚠️ DELETE | Verify import discipline still enforced | Medium |
+| `tests/styles/breakpoints-triangulation.test.ts` | ⚠️ DELETE | Update docs to remove `.spec.ts` reference | Low |
+| `tests/styles/breakpoints.test.ts` | ⚠️ DELETE | None | Low |
+| `tests/styles/typography-presence.test.ts` | ⚠️ DELETE | Update docs to remove `.spec.ts` reference | Low |
+| `tests/ui/react-keys.dom.test.tsx` | ⚠️ DELETE | None | Low |
+| `tests/ui/providers/route-theme-provider.dom.test.tsx` | ⚠️ DELETE | Verify RouteThemeProvider tested elsewhere | Medium |
+
+## Phase 3: Staged Cleanup Implementation Plan
+
+### Stage 1 PR: "De-dupe + doc fixes" (safe, low risk)
+
+**Goal:** Remove duplicate files in wrong locations and fix outdated documentation references.
+
+**Changes:**
+1. Delete duplicates (wrong location):
+   - `tests/api/mockdb-duckdb.node.test.ts` (duplicate of `tests/integrations/mockdb/duckdb.test.ts`)
+   - `tests/core/barrels.test.ts` (duplicate of `tests/lib/marketing/barrels.test.ts`)
+
+2. Keep correct location versions:
+   - ✅ `tests/integrations/mockdb/duckdb.test.ts` (keep)
+   - ✅ `tests/lib/marketing/barrels.test.ts` (keep)
+
+3. Update documentation:
+   - `docs/codebase/repository-directory-structure.md` - Remove/adjust `.spec.ts` references
+   - `docs/audits/validation-sweep-audit-20250128.md` - Update/remove reference to `breakpoints-triangulation.test.ts`
+
+**Validation (must pass):**
+```bash
+pnpm typecheck
+pnpm lint
+pnpm test
+pnpm build
+pnpm audit:orphans --only=DROP
+```
+
+**Expected Outcome:**
+- Test suite still passes
+- DROP count may not hit 0 yet (Stage 2 addresses test classification)
+
+### Stage 2 PR: "Fix orphan audit classification for tests" (prevents future false positives)
+
+**Goal:** Prevent test files from being incorrectly marked as DROP.
+
+**Options:**
+- **Option 2A (Recommended):** Exclude `tests/**` from orphan candidate scanning
+- **Option 2B:** Mark files matching Vitest include globs as KEEP with reason "test entrypoint"
+
+**Implementation:** Update `scripts/audit/orphans.ts` to exclude test files or mark them as KEEP.
+
+### Stage 3 PR: "Intentional test removals" (only if team agrees coverage isn't needed)
+
+**Goal:** Remove tests that are no longer needed (requires explicit team approval).
+
+**Split into two PRs:**
+
+**Stage 3A: Policy/enforcement tests**
+- `tests/core/import-discipline.test.ts`
+- `tests/styles/breakpoints-triangulation.test.ts`
+- `tests/styles/breakpoints.test.ts`
+- `tests/styles/typography-presence.test.ts`
+
+**Before deleting:** Confirm what replaces them (ESLint rules, dependency-cruiser, CI checks, etc.)
+
+**Stage 3B: UI behavior/warnings tests**
+- `tests/ui/react-keys.dom.test.tsx`
+- `tests/ui/providers/route-theme-provider.dom.test.tsx`
+
+**Before deleting:** Verify these tests are currently executed by Vitest and confirm removing them doesn't drop important coverage.
+
+---
+
+### Legacy Plan (for reference - replaced by staged approach above)
+
+#### Step 1: Delete Confirmed-Safe Files (8 files)
+>>>>>>> bbad31c (chore(tests): complete orphan cleanup stages 1 & 2)
 
 ```bash
 # Duplicates (delete wrong location, keep correct location)

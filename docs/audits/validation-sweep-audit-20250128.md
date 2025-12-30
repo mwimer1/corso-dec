@@ -186,8 +186,8 @@ import { UserProfileClient } from "./user-profile-client";  // ✅ Used locally
 #### ⚠️ **Test Failures (P2 - Separate Issue)**
 
 **Finding:** 2 test failures in breakpoint tests:
-- `tests/styles/breakpoints-triangulation.spec.ts:36`
-- `tests/styles/breakpoints.spec.ts:28`
+- `tests/styles/breakpoints-triangulation.test.ts:36`
+- `tests/styles/breakpoints.test.ts:28`
 
 **Analysis:**
 - Tests expect `styles/tailwind.config.ts` to import `BREAKPOINT` from `./breakpoints`
