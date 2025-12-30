@@ -226,6 +226,7 @@ const errorId = reportError(error, {
 **Edge Runtime Pattern:**
 ```typescript
 // Edge runtime routes (fast, no Node.js dependencies)
+// Use for: public endpoints, health checks, CSP reports
 export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -241,6 +242,7 @@ export const POST = withErrorHandlingEdge(async (req: NextRequest) => {
 **Node.js Runtime Pattern:**
 ```typescript
 // Node.js runtime routes (database operations, Clerk auth)
+// Use for: database queries, authentication, webhooks
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -258,7 +260,12 @@ export const POST = withErrorHandlingNode(async (req: NextRequest) => {
 - Structured error logging
 - Standardized error responses
 - Request context preservation
-- **Runtime Selection**: Use Edge wrappers for Edge routes, Node wrappers for Node.js routes
+
+**Runtime Selection Guidelines:**
+- **Edge Runtime**: Use `withErrorHandlingEdge` and `withRateLimitEdge` from `@/lib/api` for fast, stateless endpoints (health checks, CSP reports, public APIs)
+- **Node.js Runtime**: Use `withErrorHandlingNode` and `withRateLimitNode` from `@/lib/middleware` for routes requiring database access, Clerk authentication, or other Node.js-only features
+- **Always declare runtime**: Include `export const runtime = 'edge'` or `export const runtime = 'nodejs'` at the top of route files
+- **Mismatch prevention**: Using Edge wrappers with Node runtime (or vice versa) can cause runtime errors. Always match the wrapper to the declared runtime.
 
 ### Retry Logic
 

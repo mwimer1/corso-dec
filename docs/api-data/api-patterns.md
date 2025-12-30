@@ -39,23 +39,33 @@ const UpdateProfileSchema = z.object({
 });
 
 // For API routes, use wrapper pattern:
-export const POST = withRateLimitNode(
-  async (req: NextRequest) => {
-    // 1. Authenticate
-    const { userId } = await auth();
-    if (!userId) {
-      return http.error(401, 'Unauthorized', { code: 'HTTP_401' });
-    }
+// Note: This example uses Node.js runtime for Clerk authentication
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
-    // 2. Validate input
-    const body = await req.json();
-    const data = UpdateProfileSchema.parse(body);
+import { withRateLimitNode } from '@/lib/middleware';
+import { withErrorHandlingNode } from '@/lib/middleware';
 
-    // 3. Delegate to business logic
-    const result = await updateUserProfile(userId, data);
-    return http.ok(result);
-  },
-  { maxRequests: 10, windowMs: 60_000 } // 1 minute
+export const POST = withErrorHandlingNode(
+  withRateLimitNode(
+    async (req: NextRequest) => {
+      // 1. Authenticate
+      const { userId } = await auth();
+      if (!userId) {
+        return http.error(401, 'Unauthorized', { code: 'HTTP_401' });
+      }
+
+      // 2. Validate input
+      const body = await req.json();
+      const data = UpdateProfileSchema.parse(body);
+
+      // 3. Delegate to business logic
+      const result = await updateUserProfile(userId, data);
+      return http.ok(result);
+    },
+    { maxRequests: 10, windowMs: 60_000 } // 1 minute
+  )
 );
 ```
 
@@ -74,7 +84,10 @@ export async function validateAuth() {
 }
 ```
 
-#### Role-Based Access
+#### Role-Based Access Control (RBAC)
+
+**Important**: Use Clerk's `has({ role })` method for role checks. Never use deprecated `hasRole()` utilities.
+
 ```typescript
 import { auth } from '@clerk/nextjs/server';
 
@@ -85,6 +98,7 @@ export async function adminAction(input: unknown) {
     throw new AuthError('Authentication required', 'AUTH_REQUIRED');
   }
   
+  // ✅ CORRECT: Use Clerk's has({ role }) method
   if (!has({ role: 'admin' })) {
     throw new ForbiddenError('Admin access required', 'INSUFFICIENT_PERMISSIONS');
   }
@@ -93,6 +107,8 @@ export async function adminAction(input: unknown) {
   return performAdminAction(input);
 }
 ```
+
+**Available Roles**: `'member'`, `'admin'`, `'owner'`, `'viewer'`, `'service'` (see OpenAPI RBAC configuration)
 
 ### Input Validation
 
@@ -117,20 +133,33 @@ const ProcessDataSchema = z.object({
 ### Rate Limiting
 
 #### Rate Limit Implementation (API Routes)
-```typescript
-import { withRateLimitEdge } from '@/lib/api'; // For Edge runtime
-// OR
-import { withRateLimitNode } from '@/lib/middleware'; // For Node.js runtime
 
-// Edge route example
+**Important**: Always declare the runtime in route handlers and use the matching wrapper from either `@/lib/api` (Edge) or `@/lib/middleware` (Node).
+
+```typescript
+// Edge runtime route example
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+import { withRateLimitEdge } from '@/lib/api';
+
 export const POST = withRateLimitEdge(
   async (req: NextRequest) => {
     // Handler implementation
   },
   { maxRequests: 30, windowMs: 60_000 }
 );
+```
 
-// Node.js route example
+```typescript
+// Node.js runtime route example (for database operations, Clerk auth)
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+import { withRateLimitNode } from '@/lib/middleware';
+
 export const POST = withRateLimitNode(
   async (req: NextRequest) => {
     // Handler implementation

@@ -37,7 +37,7 @@ if (!userId) {
   return http.error(401, 'Unauthorized', { code: 'HTTP_401' });
 }
 
-// Check role-based authorization
+// Check role-based authorization using Clerk's has({ role }) method
 const { has } = await auth();
 if (!has({ role: 'member' })) {
   return http.error(403, 'Insufficient permissions', { code: 'FORBIDDEN' });
@@ -96,9 +96,14 @@ For full CSP implementation, consider adding a CSP header in middleware or via N
 
 ### Implementation
 
-Rate limiting is applied to all API endpoints using `withRateLimitEdge`:
+Rate limiting is applied to all API endpoints. **Always declare the runtime** and use the matching wrapper:
 
+**Edge Runtime** (for fast, stateless endpoints):
 ```typescript
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 import { withRateLimitEdge } from '@/lib/api';
 
 export const POST = withRateLimitEdge(
@@ -106,6 +111,22 @@ export const POST = withRateLimitEdge(
   { windowMs: 60_000, maxRequests: 30 }
 );
 ```
+
+**Node.js Runtime** (for database operations, Clerk auth):
+```typescript
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+import { withRateLimitNode } from '@/lib/middleware';
+
+export const POST = withRateLimitNode(
+  handler,
+  { windowMs: 60_000, maxRequests: 30 }
+);
+```
+
+**Important**: Use Edge wrappers (`withRateLimitEdge`, `withErrorHandlingEdge`) for Edge routes, and Node wrappers (`withRateLimitNode`, `withErrorHandlingNode`) for Node.js routes. Mismatching runtime and wrapper can cause runtime errors.
 
 ### Rate Limit Configuration
 

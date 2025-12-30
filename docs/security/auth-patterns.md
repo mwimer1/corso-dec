@@ -90,7 +90,10 @@ export async function getUserData(userId: string) {
 }
 ```
 
-#### Role-Based Access Control
+#### Role-Based Access Control (RBAC)
+
+**Important**: Use Clerk's `has({ role })` method for role checks. This is the canonical pattern for all RBAC enforcement.
+
 ```typescript
 import { auth } from '@clerk/nextjs/server';
 
@@ -101,6 +104,7 @@ export async function adminOnlyAction() {
     throw new Error('Authentication required');
   }
   
+  // ✅ CORRECT: Use Clerk's has({ role }) method
   if (!has({ role: 'admin' })) {
     throw new Error('Admin access required');
   }
@@ -108,6 +112,8 @@ export async function adminOnlyAction() {
   return performAdminAction();
 }
 ```
+
+**Available Roles**: `'member'`, `'admin'`, `'owner'`, `'viewer'`, `'service'` (see OpenAPI RBAC configuration for complete list)
 
 ### Route Protection
 
@@ -230,12 +236,17 @@ export async function POST(req: Request) {
 ```
 
 #### Rate Limiting
-```typescript
-import { withRateLimitEdge } from '@/lib/api'; // For Edge runtime
-// OR
-import { withRateLimitNode } from '@/lib/middleware'; // For Node.js runtime
 
-// Edge route example
+**Important**: Always declare the runtime and use the matching wrapper.
+
+**Edge Runtime Example:**
+```typescript
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+import { withRateLimitEdge } from '@/lib/api';
+
 export const POST = withRateLimitEdge(
   async (req: NextRequest) => {
     // Process authentication
@@ -243,8 +254,16 @@ export const POST = withRateLimitEdge(
   },
   { maxRequests: 5, windowMs: 15 * 60 * 1000 } // 15 minutes
 );
+```
 
-// Node.js route example
+**Node.js Runtime Example** (for Clerk auth routes):
+```typescript
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+import { withRateLimitNode } from '@/lib/middleware';
+
 export const POST = withRateLimitNode(
   async (req: NextRequest) => {
     // Process authentication
