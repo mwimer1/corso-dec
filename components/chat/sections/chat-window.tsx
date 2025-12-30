@@ -126,7 +126,7 @@ export default function ChatWindow() {
       </div>
 
       {/* Composer — server placeholder + client-only composer */}
-      <div className="bg-background px-6 py-5 flex-shrink-0 border-t-[var(--chat-composer-border)] border-border">
+      <div className="bg-background px-6 pt-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] flex-shrink-0 border-t-[var(--chat-composer-border)] border-border">
         {/* Server-only placeholder to preserve layout pre-hydration; mark as region for a11y */}
         {!hydrated && (
           <div className="mx-auto w-full max-w-3xl lg:max-w-4xl 2xl:max-w-5xl rounded-2xl bg-surface p-3 shadow-sm" role="region" aria-hidden="true">
