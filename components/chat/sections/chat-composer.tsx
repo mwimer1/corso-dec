@@ -78,10 +78,10 @@ function ChatComposer(props: ChatComposerProps) {
             <DropdownMenu.Trigger asChild>
               <button
                 type="button"
-                aria-label="Change data scope"
+                aria-label={`Change data scope (currently: ${CHAT_MODE_LABEL[mode]})`}
                 className="h-9 w-9 rounded-md border border-border bg-surface inline-flex items-center justify-center hover:bg-surface-hover disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isProcessing}
-                title="Change data scope"
+                title={`Change data scope (currently: ${CHAT_MODE_LABEL[mode]})`}
               >
                 <span aria-hidden className="text-[18px] leading-none">+</span>
               </button>
@@ -96,6 +96,7 @@ function ChatComposer(props: ChatComposerProps) {
                 <DropdownMenu.Label className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
                   Data scope
                 </DropdownMenu.Label>
+                <DropdownMenu.Separator className="my-1 h-px bg-border" />
                 <DropdownMenu.RadioGroup value={mode} onValueChange={(v) => setMode(v as ChatMode)}>
                   {CHAT_MODE_OPTIONS.map((option) => (
                     <DropdownMenu.RadioItem
