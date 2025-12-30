@@ -1,7 +1,28 @@
-// styles/shared-variants.ts
-// Centralized, reusable variant maps for Tailwind Variants factories
+/**
+ * Shared variant value maps for reuse across multiple component variants.
+ * 
+ * These maps provide standard Tailwind class sets for common variant patterns
+ * (e.g., border radius, text alignment, sizing) to ensure consistency across
+ * the design system. They are intended to be used in tailwind-variants (`tv()`)
+ * definitions to avoid duplication and maintain a single source of truth.
+ * 
+ * @example
+ * ```ts
+ * import { roundedVariants, textTri } from '@/styles/shared-variants';
+ * 
+ * const myComponentVariants = tv({
+ *   variants: {
+ *     rounded: roundedVariants,
+ *     size: textTri,
+ *   },
+ * });
+ * ```
+ * 
+ * @note Components should not import these directly. Use them via component
+ * variants that consume these maps in their variant definitions.
+ */
 
-/** Rounded scale map used across multiple components */
+/** Border radius utility classes for none/sm/md/lg rounded corners. */
 export const roundedVariants = {
   none: 'rounded-none',
   sm: 'rounded-sm',
@@ -9,22 +30,24 @@ export const roundedVariants = {
   lg: 'rounded-lg',
 } as const;
 
-/** Text alignment map used for headers, sections, etc. */
+/** Text alignment utility classes (left, center, right) for headers, sections, and content blocks. */
 export const textAlignVariants = {
   left: 'text-left',
   center: 'text-center',
   right: 'text-right',
 } as const;
 
-/** Flex justify alignment map used for legends/axis alignments */
+/** Flex justify-content utility classes (start, center, end) for flex container alignment, commonly used in legends and axis alignments. */
 export const flexJustifyVariants = {
   start: 'justify-start',
   center: 'justify-center',
   end: 'justify-end',
 } as const;
 
-/** Shared text size scale (sm/md/lg)
- * Matches existing usage across atoms/molecules: sm→text-xs, md→text-sm, lg→text-base
+/** 
+ * Shared text size scale (sm/md/lg) mapping to Tailwind text size classes.
+ * Matches existing usage across atoms/molecules: sm→text-xs, md→text-sm, lg→text-base.
+ * Used for consistent typography sizing across label, empty state, and other text components.
  */
 export const textTri = {
   sm: 'text-xs',
@@ -32,7 +55,11 @@ export const textTri = {
   lg: 'text-base',
 } as const;
 
-// Size variants used by interactive components (source of truth in utils)
+/** 
+ * Height and width size variants used by interactive components (e.g., spinners, icons).
+ * Maps sm/md/lg to custom height/width token classes (h-ms w-ms, h-md w-md, h-ml w-ml).
+ * Source of truth for consistent sizing across interactive elements.
+ */
 export const sizeHW = {
   sm: 'h-ms w-ms',
   md: 'h-md w-md',
