@@ -104,7 +104,8 @@
     {
       "label": "🧹 Lint Current File",
       "type": "shell",
-      "command": "pnpm eslint ${file}",
+      "command": "pnpm",
+      "args": ["eslint", "${file}"],
       "presentation": {
         "reveal": "always",
         "panel": "new"
@@ -124,7 +125,8 @@
     {
       "label": "🧪 Test Current File",
       "type": "shell",
-      "command": "pnpm vitest run ${file}",
+      "command": "pnpm",
+      "args": ["vitest", "run", "${file}"],
       "presentation": {
         "reveal": "always",
         "panel": "new"
