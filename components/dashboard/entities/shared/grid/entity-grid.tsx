@@ -400,6 +400,7 @@ export default function EntityGrid({
     >
       <AgGridReact
         theme={corsoAgGridTheme}
+        loadThemeGoogleFonts={false}
         rowModelType="serverSide"
         onGridReady={onGridReady}
         columnDefs={colDefs}

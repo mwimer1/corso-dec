@@ -34,7 +34,7 @@ This doc summarizes the recent updates to the dashboard table UI:
 
 - Use `EntityGridHost` (`@/components/dashboard/entities`) for new entity pages. Avoid deep imports.
 - Sticky header, virtualization, pinning, and sorting are handled natively by AG Grid.
-- Styling source of truth: `styles/ui/ag-grid.theme.css` (Quartz theme vars + Corso overrides). Keep pixel-tweaks scoped + RTL-safe.
+- Styling source of truth: `lib/vendors/ag-grid.theme.ts` (themeQuartz.withParams) for theme configuration, `styles/ui/ag-grid.theme.css` for custom overrides (selection column, density modes). Uses AG Grid Theming API with design system tokens.
 - To add link rendering to a column, add `format: 'link'` to the column config in `lib/entities/[entity]/columns.config.ts`.
 - Error state is automatically tracked and displayed above the toolbar when data loading fails.
 - Toolbar styling uses design system tokens: `border-b border-border` for separation, `px-4 py-2` for padding, `gap-3`/`gap-4` for spacing.

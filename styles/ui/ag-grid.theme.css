@@ -1,46 +1,32 @@
-:root {
-  --ag-foreground-color: hsl(var(--foreground));
-  --ag-background-color: hsl(var(--surface, 0 0% 100%));
-  --ag-header-background-color: hsl(var(--surface, 0 0% 100%));
-  --ag-header-foreground-color: hsl(var(--foreground));
-  --ag-row-hover-color: color-mix(in srgb, var(--ag-background-color), black 6%);
-  --ag-selected-row-background-color: hsl(var(--primary, 221 86% 54%) / 8%);
-  --ag-border-color: hsl(var(--border));
-}
-
-.corso-ag-grid {
-  --ag-font-size: 13px;
-  --ag-grid-size: 6px;
-}
+/* 
+ * AG Grid Theme Overrides for Corso
+ * 
+ * This file contains only custom overrides that cannot be controlled via
+ * the theme system (themeQuartz.withParams). Most styling is now handled
+ * in lib/vendors/ag-grid.theme.ts.
+ * 
+ * Keep this file minimal - only add overrides for:
+ * - Selection column custom styling (centering, padding)
+ * - Density mode adjustments (font size and spacing)
+ * - Component-specific tweaks
+ * 
+ * Note: Theme params are implemented as --ag-* CSS custom properties,
+ * so they can be overridden here when needed (e.g., for density modes).
+ */
 
 /* Density modes: Comfortable (default) and Compact */
+/* 
+ * Override theme params for density modes.
+ * Uses --ag-spacing (replaces legacy --ag-grid-size) per AG Grid Theming API.
+ */
 .corso-ag-grid.ag-density-comfortable {
   --ag-font-size: 13px;
-  --ag-grid-size: 6px;
+  --ag-spacing: 6px; /* Replaces legacy --ag-grid-size */
 }
 
 .corso-ag-grid.ag-density-compact {
   --ag-font-size: 12px;
-  --ag-grid-size: 4px;
-}
-
-.corso-ag-grid .ag-root-wrapper {
-  border: 1px solid var(--ag-border-color);
-  border-radius: 0;
-  background: var(--ag-background-color);
-}
-
-.corso-ag-grid .ag-header-container,
-.corso-ag-grid .ag-header {
-  border-bottom: 1px solid var(--ag-border-color);
-}
-
-.corso-ag-grid .ag-row-hover {
-  background: var(--ag-row-hover-color);
-}
-
-.corso-ag-grid .ag-row-selected {
-  background: var(--ag-selected-row-background-color) !important;
+  --ag-spacing: 4px; /* Replaces legacy --ag-grid-size */
 }
 
 /* --- Selection Column Styling --- */
@@ -51,8 +37,8 @@
   justify-content: center;
   align-items: center;
 
-  /* give breathing room from the grid edge; scales with your density modes via --ag-grid-size */
-  padding: 0 calc(var(--ag-grid-size) * 1.5);
+  /* give breathing room from the grid edge; scales with your density modes via --ag-spacing */
+  padding: 0 calc(var(--ag-spacing) * 1.5);
   box-sizing: border-box;
 }
 
@@ -84,7 +70,7 @@
 
 /* Center header checkbox - target the header cell wrappers */
 .corso-ag-grid .corso-selection-column-header.ag-header-cell {
-  padding: 0 calc(var(--ag-grid-size) * 1.5);
+  padding: 0 calc(var(--ag-spacing) * 1.5);
   box-sizing: border-box;
 }
 
@@ -114,10 +100,9 @@
   transform: translateX(-1px);
 }
 
-/* Remove the *extra* pinned boundary divider (the one that causes "double line") */
-.corso-ag-grid .ag-pinned-left-header,
-.corso-ag-grid .ag-pinned-left-cols-viewport,
-.corso-ag-grid .ag-pinned-left-cols-container {
-  border-right: none;
-}
+/* 
+ * Pinned column border is now controlled via theme param (pinnedColumnBorder: false).
+ * This CSS rule is kept as a fallback but should not be needed.
+ * Removed to avoid brittle DOM selector dependencies.
+ */
 
