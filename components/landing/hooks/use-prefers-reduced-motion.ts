@@ -32,10 +32,10 @@ export default function usePrefersReducedMotion(): boolean {
       };
     } else {
       // Fallback for older browsers (Safari < 14, etc.)
-      // @ts-expect-error - addListener is deprecated but needed for older browsers
+      // addListener is deprecated but needed for older browsers
       mediaQuery.addListener(handler);
       return () => {
-        // @ts-expect-error - removeListener is deprecated but needed for older browsers
+        // removeListener is deprecated but needed for older browsers
         mediaQuery.removeListener(handler);
       };
     }

@@ -1,9 +1,9 @@
 ---
-title: "Decisions"
+description: "Documentation and resources for documentation functionality. Located in decisions/."
 last_updated: "2025-12-30"
 category: "documentation"
 status: "draft"
-description: "Documentation and resources for documentation functionality. Located in decisions/."
+title: "Decisions"
 ---
 # Repository Scripts & Docs
 

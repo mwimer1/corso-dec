@@ -207,7 +207,9 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
 
     // IntersectionObserver to detect when section is in viewport
     const observer = new IntersectionObserver(
-      ([entry]) => {
+      (entries) => {
+        const entry = entries[0];
+        if (!entry) return;
         isIntersectingRef.current = entry.isIntersecting;
         if (entry.isIntersecting && !intervalRef.current) {
           // Start auto-advance when section is visible
