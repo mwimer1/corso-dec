@@ -1,11 +1,9 @@
 ---
-title: Addresses
-description: >-
-  UI components for the components system, following atomic design principles.
-  Located in dashboard/entities/addresses/.
-last_updated: '2025-12-30'
-category: components
-status: draft
+title: "Addresses"
+description: "UI components for the components system, following atomic design principles. Located in dashboard/entities/addresses/."
+last_updated: "2025-12-30"
+category: "components"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

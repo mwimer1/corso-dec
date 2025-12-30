@@ -1,11 +1,9 @@
 ---
-title: Validation
-description: >-
-  Core lib utilities and functionality for the Corso platform. Located in
-  shared/validation/.
-last_updated: '2025-12-30'
-category: library
-status: draft
+title: "Validation"
+description: "Core lib utilities and functionality for the Corso platform. Located in shared/validation/."
+last_updated: "2025-12-30"
+category: "library"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

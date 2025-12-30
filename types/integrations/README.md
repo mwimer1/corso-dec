@@ -1,11 +1,9 @@
 ---
-title: Integrations
-description: >-
-  TypeScript type definitions for types, ensuring type safety across the
-  platform. Located in integrations/.
-last_updated: '2025-12-30'
-category: types
-status: draft
+title: "Integrations"
+description: "TypeScript type definitions for types, ensuring type safety across the platform. Located in integrations/."
+last_updated: "2025-12-30"
+category: "types"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

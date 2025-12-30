@@ -1,9 +1,9 @@
 ---
-title: E2e
-description: Documentation and resources for documentation functionality. Located in e2e/.
-last_updated: '2025-12-30'
-category: documentation
-status: active
+title: "E2e"
+description: "Documentation and resources for documentation functionality. Located in e2e/."
+last_updated: "2025-12-30"
+category: "documentation"
+status: "active"
 ---
 # E2E Tests
 

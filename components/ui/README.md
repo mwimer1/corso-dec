@@ -1,9 +1,9 @@
 ---
-title: UI Library
-description: Documentation and resources.
-last_updated: '2025-12-30'
-category: documentation
-status: draft
+title: "Ui"
+description: "UI components for the components system, following atomic design principles. Located in ui/."
+last_updated: "2025-12-30"
+category: "components"
+status: "draft"
 ---
 # UI Library
 

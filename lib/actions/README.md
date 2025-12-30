@@ -1,11 +1,9 @@
 ---
-title: Actions
-description: >-
-  Core lib utilities and functionality for the Corso platform. Located in
-  actions/.
-last_updated: '2025-12-30'
-category: library
-status: draft
+title: "Actions"
+description: "Core lib utilities and functionality for the Corso platform. Located in actions/."
+last_updated: "2025-12-30"
+category: "library"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

@@ -1,11 +1,10 @@
 ---
-title: Documentation Automation
-description: Automated documentation maintenance and validation tools
-last_updated: '2025-01-15'
-category: tooling
-status: stable
+title: "Tools Scripts"
+description: "Documentation and resources for documentation functionality. Located in tools-scripts/."
+last_updated: "2025-12-30"
+category: "documentation"
+status: "stable"
 ---
-
 # Documentation Automation
 
 Automated tools for maintaining documentation consistency, validating content, and ensuring documentation stays in sync with code.

@@ -1,11 +1,9 @@
 ---
-title: Molecules
-description: >-
-  Styling system for styles, using Tailwind CSS and design tokens. Located in
-  ui/molecules/.
-last_updated: '2025-12-30'
-category: styling
-status: draft
+title: "Molecules"
+description: "Styling system for styles, using Tailwind CSS and design tokens. Located in ui/molecules/."
+last_updated: "2025-12-30"
+category: "styling"
+status: "draft"
 ---
 # Molecules
 

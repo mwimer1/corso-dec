@@ -1,11 +1,9 @@
 ---
-title: Contact
-description: >-
-  UI components for the components system, following atomic design principles.
-  Located in marketing/sections/contact/.
-last_updated: '2025-12-30'
-category: components
-status: draft
+title: "Contact"
+description: "UI components for the components system, following atomic design principles. Located in marketing/sections/contact/."
+last_updated: "2025-12-30"
+category: "components"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

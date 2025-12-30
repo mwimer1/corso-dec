@@ -1,9 +1,9 @@
 ---
-title: Lint
-description: Documentation and resources for documentation functionality. Located in lint/.
-last_updated: '2025-12-30'
-category: documentation
-status: draft
+title: "Lint"
+description: "Documentation and resources for documentation functionality. Located in lint/."
+last_updated: "2025-12-30"
+category: "documentation"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

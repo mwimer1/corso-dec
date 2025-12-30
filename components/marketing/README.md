@@ -1,11 +1,9 @@
 ---
-title: Marketing
-description: >-
-  UI components for the components system, following atomic design principles.
-  Located in marketing/.
-last_updated: '2025-12-30'
-category: components
-status: draft
+title: "Marketing"
+description: "UI components for the components system, following atomic design principles. Located in marketing/."
+last_updated: "2025-12-30"
+category: "components"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

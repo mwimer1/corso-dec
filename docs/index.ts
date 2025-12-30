@@ -214,7 +214,7 @@ export const docs = [
   },
   {
     "path": "components/ui/readme.md",
-    "title": "UI Library"
+    "title": "Ui"
   },
   {
     "path": "components/ui/shared/readme.md",
@@ -390,7 +390,7 @@ export const docs = [
   },
   {
     "path": "scripts/utils/readme.md",
-    "title": "Utils Scripts"
+    "title": "Utils"
   },
   {
     "path": "scripts/validation/readme.md",
@@ -418,7 +418,7 @@ export const docs = [
   },
   {
     "path": "styles/ui/patterns/readme.md",
-    "title": "CSS Pattern Utilities"
+    "title": "Patterns"
   },
   {
     "path": "styles/ui/readme.md",
@@ -450,7 +450,7 @@ export const docs = [
   },
   {
     "path": "tests/runtime-boundary/readme.md",
-    "title": "Runtime Boundary Tests (Specific Routes)"
+    "title": "Runtime Boundary"
   },
   {
     "path": "tests/security/readme.md",

@@ -1,11 +1,9 @@
 ---
-title: Analysis
-description: >-
-  Documentation and resources for documentation functionality. Located in
-  analysis/.
-last_updated: '2025-12-30'
-category: documentation
-status: draft
+title: "Analysis"
+description: "Documentation and resources for documentation functionality. Located in analysis/."
+last_updated: "2025-12-30"
+category: "documentation"
+status: "draft"
 ---
 # Repository Scripts & Docs
 
