@@ -90,3 +90,46 @@ describe('validateSQLSecurity', () => {
   });
 });
 
+describe('SQL Guards: Edge Cases and Bypass Attempts', () => {
+  it('rejects SQL comment injection attempts', () => {
+    const maliciousQueries = [
+      'SELECT * FROM events WHERE org_id = \'test\' -- DROP TABLE users',
+      'SELECT * FROM events /* DROP TABLE users */ WHERE org_id = \'test\'',
+      'SELECT * FROM events WHERE org_id = \'test\' --',
+    ];
+
+    for (const query of maliciousQueries) {
+      expect(() => validateSQLScope(query, ORG_ID)).toThrow(/SQL comment|suspicious/i);
+    }
+  });
+
+  it('rejects attempts to bypass org_id filter with subqueries', () => {
+    const bypassAttempts = [
+      `SELECT * FROM events WHERE id IN (SELECT id FROM events WHERE org_id != '${ORG_ID}')`,
+      `SELECT * FROM events WHERE org_id = '${ORG_ID}' OR 1=1`,
+    ];
+
+    for (const query of bypassAttempts) {
+      // These should be caught by suspicious pattern detection or org_id validation
+      expect(() => validateSQLScope(query, ORG_ID)).toThrow();
+    }
+  });
+
+  it('rejects complex SQL with nested dangerous operations', () => {
+    const complexMalicious = [
+      'SELECT * FROM (SELECT * FROM events) AS sub WHERE 1=1; DROP TABLE users',
+      'WITH cte AS (SELECT * FROM events) SELECT * FROM cte; DELETE FROM events',
+    ];
+
+    for (const query of complexMalicious) {
+      expect(() => validateSQLScope(query, ORG_ID)).toThrow();
+    }
+  });
+
+  it('handles empty or whitespace-only SQL', () => {
+    expect(() => validateSQLScope('', ORG_ID)).toThrow(/invalid sql input/i);
+    expect(() => validateSQLScope('   ', ORG_ID)).toThrow(/invalid sql input/i);
+    expect(() => validateSQLScope('\n\t', ORG_ID)).toThrow(/invalid sql input/i);
+  });
+});
+

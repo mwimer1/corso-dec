@@ -29,6 +29,7 @@ import { createOpenAIClient } from '@/lib/integrations/openai/server';
 import { handleCors, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit } from '@/lib/middleware';
 import { getTenantContext } from '@/lib/server/db/tenant-context';
 import { getEnv } from '@/lib/server/env';
+import { logger } from '@/lib/monitoring';
 import { withTimeout } from '@/lib/server/utils/timeout';
 import { auth } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
@@ -36,10 +37,53 @@ import type OpenAI from 'openai';
 import { z } from 'zod';
 
 /**
+ * Sanitize user input to prevent prompt injection attacks
+ * Filters out known attack patterns while preserving legitimate queries
+ */
+function sanitizeUserInput(content: string): string {
+  let sanitized = content.trim();
+  
+  // Filter out prompt injection attempts (case-insensitive)
+  const injectionPatterns = [
+    /ignore\s+(all\s+)?previous\s+instructions?/gi,
+    /forget\s+(all\s+)?previous\s+instructions?/gi,
+    /disregard\s+(all\s+)?previous\s+instructions?/gi,
+    /you\s+are\s+now\s+a\s+different\s+(assistant|ai|model)/gi,
+    /system\s*:\s*ignore\s+previous/gi,
+    /<\|im_end\|>/g, // OpenAI token that could break conversation
+    /<\|im_start\|>/g, // OpenAI token that could break conversation
+  ];
+  
+  for (const pattern of injectionPatterns) {
+    if (pattern.test(sanitized)) {
+      // Log potential injection attempt (in dev only)
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('[AI Security] Potential prompt injection detected and filtered:', pattern.toString());
+      }
+      // Remove the pattern but keep the rest of the content
+      sanitized = sanitized.replace(pattern, '').trim();
+    }
+  }
+  
+  return sanitized;
+}
+
+/**
  * Request body schema for chat endpoint.
+ * Includes input sanitization to prevent prompt injection attacks.
  */
 const BodySchema = z.object({
-  content: z.string().min(1).max(2000),
+  content: z.string()
+    .min(1)
+    .max(2000)
+    .refine(
+      (val) => {
+        // Reject content that looks like system role impersonation
+        const lower = val.toLowerCase();
+        return !lower.includes('system:') && !lower.includes('role: system');
+      },
+      { message: 'Invalid input format' }
+    ),
   preferredTable: z.enum(['projects', 'companies', 'addresses']).optional(),
   history: z.array(z.object({
     role: z.enum(['user', 'assistant']),
@@ -176,7 +220,9 @@ async function executeSqlAndFormat(sql: string, orgId: string, req?: NextRequest
     // In mock mode, use mockOrgId from env for validation
     const expectedOrgId = useMock ? (env.CORSO_MOCK_ORG_ID ?? 'demo-org') : orgId;
     
-    // Use SQL Guard for AST-based validation, org filter injection, and LIMIT enforcement
+    // Security: Use SQL Guard for AST-based validation, org filter injection, and LIMIT enforcement
+    // This is a critical security check - all AI-generated SQL must pass guardSQL validation
+    // before execution. guardSQL performs AST parsing and blocks dangerous operations.
     let guarded;
     try {
       guarded = guardSQL(sql, {
@@ -790,8 +836,16 @@ const handler = async (req: NextRequest): Promise<Response> => {
     return http.badRequest('Invalid JSON', { code: 'INVALID_JSON' });
   }
 
+  // Security: Sanitize user input to prevent prompt injection
+  const sanitizedContent = sanitizeUserInput(body.content);
+  if (!sanitizedContent) {
+    return http.badRequest('Invalid input: content cannot be empty after sanitization', {
+      code: 'VALIDATION_ERROR',
+    });
+  }
+
   // Parse mode prefix if present
-  const { mode, cleanedContent } = parseModePrefix(body.content);
+  const { mode, cleanedContent } = parseModePrefix(sanitizedContent);
   const preferredTable = body.preferredTable || mode || null;
 
   // Build messages array
@@ -828,6 +882,18 @@ const handler = async (req: NextRequest): Promise<Response> => {
   const client = createOpenAIClient();
   // Use SQL model for chat (or fallback to gpt-4o-mini)
   const model = env.OPENAI_SQL_MODEL || 'gpt-4o-mini';
+  
+  // Security: Warn if using unpinned model (model drift risk)
+  // Pinned models (e.g., gpt-4-0613) ensure consistent behavior
+  // Generic names (e.g., gpt-4) may change with OpenAI updates
+  const pinnedModels = ['gpt-4-0613', 'gpt-4-0125', 'gpt-4-turbo-2024-04-09', 'gpt-4o-mini'];
+  const isPinned = pinnedModels.some(pinned => model.includes(pinned) || model === pinned);
+  if (!isPinned && env.NODE_ENV !== 'production') {
+    logger.warn('[AI Security] Using unpinned model - results may vary with OpenAI updates', {
+      model,
+      recommended: 'Consider pinning to a specific model version for consistency',
+    });
+  }
 
   // Create abort signal from request with overall timeout
   const abortController = new AbortController();

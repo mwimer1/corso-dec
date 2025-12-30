@@ -209,6 +209,22 @@ interface SQLGuardOptions {
 const parser = new Parser();
 
 /**
+ * SECURITY-CRITICAL: AST-based SQL guardrails with org filter injection and LIMIT enforcement
+ * 
+ * This function is the primary defense against SQL injection in AI-generated queries.
+ * It performs the following security checks:
+ * - AST parsing to validate SQL structure (prevents string-based injection)
+ * - Blocks non-SELECT operations (DROP, INSERT, UPDATE, DELETE, etc.)
+ * - Enforces table allowlist (only projects, companies, addresses)
+ * - Blocks system schema access (system.*, information_schema.*)
+ * - Automatically injects org_id filter for tenant isolation
+ * - Enforces row limits to prevent data exfiltration
+ * 
+ * DO NOT REMOVE OR BYPASS THIS FUNCTION - it is essential for security.
+ * All AI-generated SQL must pass through guardSQL before execution.
+ */
+
+/**
  * Extract table references from AST
  * Note: JOINs are in the from array with a 'join' property, not a separate join property
  */
@@ -347,7 +363,24 @@ function injectOrgFilter(where: any, alias: string, orgId: string): any {
 }
 
 /**
- * Validate and normalize SQL query using AST
+ * SECURITY-CRITICAL: AST-based SQL guardrails with org filter injection and LIMIT enforcement
+ * 
+ * This function is the primary defense against SQL injection in AI-generated queries.
+ * It performs the following security checks:
+ * - AST parsing to validate SQL structure (prevents string-based injection)
+ * - Blocks non-SELECT operations (DROP, INSERT, UPDATE, DELETE, etc.)
+ * - Enforces table allowlist (only projects, companies, addresses)
+ * - Blocks system schema access (system.*, information_schema.*)
+ * - Automatically injects org_id filter for tenant isolation
+ * - Enforces row limits to prevent data exfiltration
+ * 
+ * DO NOT REMOVE OR BYPASS THIS FUNCTION - it is essential for security.
+ * All AI-generated SQL must pass through guardSQL before execution.
+ * 
+ * @param sql The SQL query to validate and guard
+ * @param options Configuration options (expectedOrgId for tenant isolation, maxRows for limit)
+ * @returns Normalized SQL with org filter injected and LIMIT enforced
+ * @throws {SQLGuardError} If SQL is unsafe or violates security rules
  */
 export function guardSQL(sql: string, options: SQLGuardOptions = {}): SQLGuardResult {
   const { expectedOrgId, maxRows = 100 } = options;

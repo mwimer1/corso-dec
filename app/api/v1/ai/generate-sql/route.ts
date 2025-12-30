@@ -95,10 +95,46 @@ const handler = async (req: NextRequest): Promise<Response> => {
     return http.badRequest('Missing required field', { code: 'VALIDATION_ERROR' });
   }
 
+  // Security: Sanitize user input to prevent prompt injection
+  // Filter out known attack patterns while preserving legitimate queries
+  let sanitizedCandidate = candidate.trim();
+  const injectionPatterns = [
+    /ignore\s+(all\s+)?previous\s+instructions?/gi,
+    /forget\s+(all\s+)?previous\s+instructions?/gi,
+    /disregard\s+(all\s+)?previous\s+instructions?/gi,
+    /you\s+are\s+now\s+a\s+different\s+(assistant|ai|model)/gi,
+    /system\s*:\s*ignore\s+previous/gi,
+  ];
+  
+  for (const pattern of injectionPatterns) {
+    if (pattern.test(sanitizedCandidate)) {
+      sanitizedCandidate = sanitizedCandidate.replace(pattern, '').trim();
+    }
+  }
+  
+  if (!sanitizedCandidate) {
+    return http.badRequest('Invalid input: content cannot be empty after sanitization', {
+      code: 'VALIDATION_ERROR',
+    });
+  }
+
   // Get OpenAI client and model
   const env = getEnv();
   const client = createOpenAIClient();
   const model = env.OPENAI_SQL_MODEL || 'gpt-4o-mini';
+  
+  // Security: Warn if using unpinned model (model drift risk)
+  // Pinned models (e.g., gpt-4-0613) ensure consistent behavior
+  // Generic names (e.g., gpt-4) may change with OpenAI updates
+  const pinnedModels = ['gpt-4-0613', 'gpt-4-0125', 'gpt-4-turbo-2024-04-09', 'gpt-4o-mini'];
+  const isPinned = pinnedModels.some(pinned => model.includes(pinned) || model === pinned);
+  if (!isPinned && env.NODE_ENV !== 'production') {
+    const { logger } = await import('@/lib/monitoring');
+    logger.warn('[AI Security] Using unpinned model - results may vary with OpenAI updates', {
+      model,
+      recommended: 'Consider pinning to a specific model version for consistency',
+    });
+  }
 
   // Build SQL generation prompt
   const systemPrompt = `You are a SQL query generator. Convert natural language questions into valid SQL SELECT queries.
@@ -124,7 +160,7 @@ SQL: SELECT COUNT(*) FROM companies WHERE headcount > 100`;
       model,
       messages: [
         { role: 'system', content: systemPrompt },
-        { role: 'user', content: candidate },
+        { role: 'user', content: sanitizedCandidate },
       ],
       temperature: 0.3, // Lower temperature for more deterministic SQL
       max_tokens: 500,
@@ -136,7 +172,9 @@ SQL: SELECT COUNT(*) FROM companies WHERE headcount > 100`;
       return http.badRequest('Failed to generate SQL', { code: 'GENERATION_FAILED' });
     }
 
-    // Validate generated SQL with tenant isolation enforcement
+    // Security: Validate AI-generated SQL to prevent injection
+    // This is a critical security check - all AI-generated SQL must pass validation
+    // before execution. validateSQLScope checks for dangerous patterns and tenant isolation.
     try {
       validateSQLScope(generatedSQL, orgId);
     } catch (validationError) {
