@@ -12,12 +12,6 @@ status: "draft"
 | `sign-in.runtime` | Unit test |  |
 | `sign-up.runtime` | Unit test |  |
 
-## Public Exports
-| Test File | Type | Description |
-|-----------|------|-------------|
-| `sign-in.runtime` | Unit test |  |
-| `sign-up.runtime` | Unit test |  |
-
 
 # Runtime Boundary Tests (Specific Routes)
 
@@ -43,7 +37,7 @@ status: "draft"
 
 ## Overview
 
-The `tests/unit/runtime-boundary/` directory contains tests that validate runtime configurations for specific critical routes, particularly authentication routes. These tests ensure that:
+The `tests/runtime-boundary/` directory contains tests that validate runtime configurations for specific critical routes, particularly authentication routes. These tests ensure that:
 
 - Authentication routes use appropriate runtime configurations
 - Dynamic rendering is properly configured for auth flows
