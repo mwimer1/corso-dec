@@ -418,6 +418,7 @@ export async function createPost(input: CreatePostInput) {
 
 ## 📚 Related Documentation
 
+- [API Design Guide](../api/api-design-guide.md) - Complete OpenAPI documentation workflow, endpoint creation, and type generation
 - [Warehouse Query Hooks](../codebase-apis/warehouse-queries.md) - Detailed hook usage
 - [API Security Patterns](../security/README.md) - Security implementation
 - [Data Fetching Patterns](../api-data/api-patterns.md) - Current patterns (this document)

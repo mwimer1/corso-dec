@@ -52,13 +52,26 @@ pnpm openapi:docs
 
 ## 📝 OpenAPI Specification
 
-### Specification Management
+### File Structure & Locations
 
-**Source of Truth:** `api/openapi.yml` (OpenAPI 3.1.0)
+**Source Files:**
+- `api/openapi.yml` - **Source of truth** (OpenAPI 3.1.0 YAML specification)
+- `api/openapi.base.json` - Base configuration (if used)
 
 **Generated Artifacts:**
-- `api/openapi.json` - Bundled JSON (via `pnpm openapi:bundle`)
-- `types/api/generated/openapi.d.ts` - TypeScript types (via `pnpm openapi:types`)
+- `api/openapi.json` - Bundled JSON specification (generated from YAML)
+- `types/api/generated/openapi.d.ts` - TypeScript type definitions (AUTO-GENERATED)
+
+**File Relationships:**
+```
+api/openapi.yml (source)
+    ↓ [pnpm openapi:bundle]
+api/openapi.json (bundled)
+    ↓ [pnpm openapi:types]
+types/api/generated/openapi.d.ts (TypeScript types)
+```
+
+**Important:** Never edit `api/openapi.json` or `types/api/generated/openapi.d.ts` directly. These are generated files and will be overwritten. Always edit `api/openapi.yml`.
 
 ### Specification Structure
 
@@ -103,15 +116,459 @@ paths:
                 $ref: '#/components/schemas/{ResponseSchema}'
 ```
 
-### Adding New Endpoints
+## 🔧 OpenAPI Documentation Workflow
 
-**Process:**
-1. **Design**: Plan endpoint structure and behavior
-2. **Document**: Add to `api/openapi.yml` with full schema
-3. **Security**: Add `x-corso-rbac` and `OrgIdHeader` if protected
-4. **Validate**: Run `pnpm openapi:gen && pnpm openapi:rbac:check`
-5. **Implement**: Create route handler with Zod validation
-6. **Test**: Add integration tests
+### Complete Workflow: Adding a New Endpoint
+
+This section provides a step-by-step guide for documenting a new API endpoint in the OpenAPI specification.
+
+#### Step 1: Design the Endpoint
+
+Before documenting, plan:
+- **Path**: `/api/v1/{resource}/{action}`
+- **Method**: GET, POST, PUT, PATCH, DELETE
+- **Authentication**: Public (`x-public: true`) or protected (`bearerAuth`)
+- **RBAC**: Required role(s) if protected
+- **Request/Response**: Schema structure
+- **Rate Limit**: Requests per minute
+
+#### Step 2: Add to OpenAPI Specification
+
+Edit `api/openapi.yml` and add your endpoint under the `paths:` section:
+
+**Location in File:**
+- Find the appropriate section (usually grouped by domain)
+- Add your path after existing endpoints
+- Follow existing formatting and indentation
+
+**Naming Conventions:**
+
+**operationId Pattern:** `{domain}_{action}` or `{tag}_{action}`
+
+Examples from the codebase:
+- `health_check` - Health check endpoint
+- `entity_operations` - Entity base operations
+- `entity_query` - Entity query endpoint
+- `ai_chat_processStream` - AI chat streaming
+- `ai_generateSql` - SQL generation
+- `query_execute` - Generic query execution
+- `users_validate` - User validation
+- `insights_search` - Insights search
+- `security_cspReport` - CSP reporting
+
+**Tag Selection:**
+- `Status` - Health and monitoring endpoints
+- `Security` - Security-related endpoints
+- `Content` - Public content and insights
+- `Users` - User/profile operations
+- `Dashboard` - Analytics & SQL generation
+- `Chat` - AI chat & streaming
+- `Internal` - Internal system endpoints (not in public spec)
+
+#### Step 3: Complete Endpoint Example
+
+Here's a complete example for a new endpoint:
+
+```yaml
+/api/v1/notifications:
+  post:
+    operationId: notifications_create
+    tags:
+      - Users
+    summary: Create notification
+    description: Creates a new notification for the authenticated user
+    security:
+      - bearerAuth: []
+    x-corso-rbac: [member]
+    parameters:
+      - $ref: '#/components/parameters/OrgIdHeader'
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotificationRequest'
+          example:
+            title: "New message"
+            message: "You have a new message"
+            type: "info"
+    responses:
+      '201':
+        description: Notification created successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationResponse'
+      '400':
+        $ref: '#/components/responses/BadRequest'
+      '401':
+        $ref: '#/components/responses/Unauthorized'
+      '403':
+        $ref: '#/components/responses/Forbidden'
+      '429':
+        $ref: '#/components/responses/RateLimited'
+      '500':
+        $ref: '#/components/responses/InternalError'
+```
+
+#### Step 4: Define Request/Response Schemas
+
+Add schema definitions to `components/schemas:` section:
+
+```yaml
+components:
+  schemas:
+    NotificationRequest:
+      type: object
+      required: [title, message]
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Notification title
+        message:
+          type: string
+          minLength: 1
+          maxLength: 1000
+          description: Notification message content
+        type:
+          type: string
+          enum: [info, warning, error, success]
+          default: info
+          description: Notification type
+      additionalProperties: false
+    
+    NotificationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Notification ID
+        title:
+          type: string
+        message:
+          type: string
+        type:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, title, message, type, createdAt]
+```
+
+#### Step 5: Generate and Validate
+
+Run the complete generation and validation pipeline:
+
+```bash
+# Step 1: Generate all artifacts (bundle → lint → types)
+pnpm openapi:gen
+
+# Step 2: Validate RBAC compliance
+pnpm openapi:rbac:check
+
+# Step 3: Type check to ensure generated types are valid
+pnpm typecheck
+```
+
+**What Each Command Does:**
+
+**`pnpm openapi:gen`** (Complete Pipeline):
+1. **`openapi:bundle`**: Bundles `api/openapi.yml` → `api/openapi.json`
+   - Resolves `$ref` references
+   - Validates YAML structure
+   - Outputs JSON format
+2. **`openapi:lint`**: Validates OpenAPI spec with Spectral
+   - Checks OpenAPI 3.1.0 compliance
+   - Validates schema definitions
+   - Reports errors and warnings
+3. **`openapi:types`**: Generates TypeScript types
+   - Reads `api/openapi.json`
+   - Generates `types/api/generated/openapi.d.ts`
+   - Creates type-safe interfaces for all operations
+
+**`pnpm openapi:rbac:check`**:
+- Validates RBAC annotations
+- Ensures all `bearerAuth` routes have `x-corso-rbac`
+- Ensures all `bearerAuth` routes include `OrgIdHeader`
+- Checks role values against allowed roles
+
+**Individual Commands (if needed):**
+```bash
+pnpm openapi:bundle    # Bundle YAML → JSON only
+pnpm openapi:lint      # Lint spec only
+pnpm openapi:types     # Generate types only
+pnpm openapi:diff      # Compare spec changes
+pnpm openapi:docs      # Preview documentation (requires Redocly)
+pnpm openapi:mock      # Start mock server (requires Prism)
+```
+
+#### Step 6: Use Generated TypeScript Types
+
+After generation, import types in your code:
+
+```typescript
+import type { operations, paths } from '@/types/api/generated/openapi';
+
+// Get operation types
+type CreateNotificationOp = operations['notifications_create'];
+
+// Request body type
+type NotificationRequest = CreateNotificationOp['requestBody']['content']['application/json'];
+
+// Response type
+type NotificationResponse = CreateNotificationOp['responses']['201']['content']['application/json'];
+
+// Path parameters (if any)
+type NotificationPathParams = paths['/api/v1/notifications']['post']['parameters']['path'];
+```
+
+**Type Usage in Route Handlers:**
+
+```typescript
+import type { operations } from '@/types/api/generated/openapi';
+import { validateJson, http } from '@/lib/api';
+import { z } from 'zod';
+
+// Define Zod schema matching OpenAPI spec
+const NotificationRequestSchema = z.object({
+  title: z.string().min(1).max(200),
+  message: z.string().min(1).max(1000),
+  type: z.enum(['info', 'warning', 'error', 'success']).default('info'),
+}).strict();
+
+// Type inference from OpenAPI
+type NotificationRequest = operations['notifications_create']['requestBody']['content']['application/json'];
+type NotificationResponse = operations['notifications_create']['responses']['201']['content']['application/json'];
+
+export async function POST(req: NextRequest): Promise<Response> {
+  // Validate with Zod (runtime validation)
+  const parsed = await validateJson(req, NotificationRequestSchema);
+  if (!parsed.success) {
+    return http.badRequest('Invalid input', {
+      code: 'VALIDATION_ERROR',
+      details: parsed.error,
+    });
+  }
+
+  // TypeScript knows the shape from OpenAPI types
+  const request: NotificationRequest = parsed.data;
+  
+  // Create notification...
+  const notification: NotificationResponse = {
+    id: crypto.randomUUID(),
+    title: request.title,
+    message: request.message,
+    type: request.type,
+    createdAt: new Date().toISOString(),
+  };
+
+  return http.ok(notification, { status: 201 });
+}
+```
+
+#### Step 7: Implement Route Handler
+
+Create the route handler in `app/api/v1/notifications/route.ts`:
+
+```typescript
+/**
+ * API Route: POST /api/v1/notifications
+ * 
+ * Creates a new notification for the authenticated user.
+ * 
+ * @requires Node.js runtime for database operations
+ * @requires Authentication via Clerk (userId required)
+ * @requires RBAC: 'member' role minimum
+ * @requires Rate limiting: 30 requests per minute
+ * 
+ * @example
+ * ```typescript
+ * POST /api/v1/notifications
+ * Body: { title: "New message", message: "You have a new message", type: "info" }
+ * Response: { success: true, data: { id: "...", title: "...", ... } }
+ * ```
+ */
+
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+import { http, validateJson } from '@/lib/api';
+import { withErrorHandlingNode, withRateLimitNode } from '@/lib/middleware';
+import { auth } from '@clerk/nextjs/server';
+import type { NextRequest } from 'next/server';
+import { z } from 'zod';
+
+const NotificationRequestSchema = z.object({
+  title: z.string().min(1).max(200),
+  message: z.string().min(1).max(1000),
+  type: z.enum(['info', 'warning', 'error', 'success']).default('info'),
+}).strict();
+
+const handler = async (req: NextRequest): Promise<Response> => {
+  // 1. Authenticate
+  const { userId, has } = await auth();
+  if (!userId) {
+    return http.error(401, 'Unauthorized', { code: 'HTTP_401' });
+  }
+
+  // 2. RBAC check
+  if (!has({ role: 'member' })) {
+    return http.error(403, 'Insufficient permissions', { code: 'FORBIDDEN' });
+  }
+
+  // 3. Validate input
+  const parsed = await validateJson(req, NotificationRequestSchema);
+  if (!parsed.success) {
+    return http.badRequest('Invalid input', {
+      code: 'VALIDATION_ERROR',
+      details: parsed.error,
+    });
+  }
+
+  // 4. Create notification (delegate to service)
+  const notification = await createNotification(userId, parsed.data);
+
+  // 5. Return response
+  return http.ok(notification, { status: 201 });
+};
+
+export const POST = withErrorHandlingNode(
+  withRateLimitNode(
+    handler,
+    { maxRequests: 30, windowMs: 60_000 }
+  )
+);
+```
+
+#### Step 8: Add Tests
+
+Create integration tests in `tests/api/v1/notifications.test.ts`:
+
+```typescript
+import { describe, expect, it, vi, beforeEach } from 'vitest';
+
+// Mock auth
+const mockAuth = vi.fn();
+vi.mock('@clerk/nextjs/server', () => ({
+  auth: () => mockAuth(),
+}));
+
+describe('POST /api/v1/notifications', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockAuth.mockResolvedValue({
+      userId: 'test-user-123',
+      has: vi.fn().mockReturnValue(true),
+    });
+  });
+
+  it('should return 201 for valid request', async () => {
+    const { POST } = await import('@/app/api/v1/notifications/route');
+    const req = new Request('http://localhost/api/v1/notifications', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        title: 'Test notification',
+        message: 'Test message',
+        type: 'info',
+      }),
+    });
+
+    const res = await POST(req as any);
+    expect(res.status).toBe(201);
+    const data = await res.json();
+    expect(data.success).toBe(true);
+    expect(data.data).toHaveProperty('id');
+    expect(data.data.title).toBe('Test notification');
+  });
+
+  it('should return 400 for invalid input', async () => {
+    const { POST } = await import('@/app/api/v1/notifications/route');
+    const req = new Request('http://localhost/api/v1/notifications', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ title: '' }), // Invalid: empty title
+    });
+
+    const res = await POST(req as any);
+    expect(res.status).toBe(400);
+    const data = await res.json();
+    expect(data.success).toBe(false);
+    expect(data.error.code).toBe('VALIDATION_ERROR');
+  });
+});
+```
+
+### Quick Reference: Common Patterns
+
+**Public Endpoint:**
+```yaml
+/api/v1/public/status:
+  get:
+    operationId: public_status
+    tags: [Status]
+    x-public: true  # No authentication required
+    responses:
+      '200':
+        description: Public status
+```
+
+**Protected Endpoint with RBAC:**
+```yaml
+/api/v1/admin/users:
+  get:
+    operationId: admin_users_list
+    tags: [Users]
+    security:
+      - bearerAuth: []
+    x-corso-rbac: [admin]  # Admin role required
+    parameters:
+      - $ref: '#/components/parameters/OrgIdHeader'
+    responses:
+      '200':
+        description: User list
+```
+
+**Streaming Endpoint (NDJSON):**
+```yaml
+/api/v1/ai/chat:
+  post:
+    operationId: ai_chat_processStream
+    tags: [Chat]
+    security:
+      - bearerAuth: []
+    x-corso-rbac: [member]
+    responses:
+      '200':
+        description: Streaming response
+        content:
+          application/x-ndjson:
+            schema:
+              type: string
+              description: NDJSON stream of chat chunks
+```
+
+### Validation Checklist
+
+Before committing your OpenAPI changes:
+
+- [ ] Endpoint added to `api/openapi.yml` under correct path
+- [ ] `operationId` follows naming convention (`{domain}_{action}`)
+- [ ] Appropriate tag selected (Status, Security, Content, Users, Dashboard, Chat)
+- [ ] Security configured (`x-public: true` or `bearerAuth` + `x-corso-rbac`)
+- [ ] `OrgIdHeader` parameter included for protected routes
+- [ ] Request/response schemas defined in `components/schemas`
+- [ ] All error responses documented (400, 401, 403, 429, 500)
+- [ ] Rate limit documented (`x-rate-limit` extension)
+- [ ] `pnpm openapi:gen` runs successfully
+- [ ] `pnpm openapi:rbac:check` passes
+- [ ] `pnpm typecheck` passes (generated types are valid)
+- [ ] Route handler implemented with matching Zod schema
+- [ ] Integration tests added
 
 **Example:**
 ```yaml
@@ -406,18 +863,87 @@ responses:
 
 ### Version Strategy
 
-**Current:** `/api/v1/`
+**Current Version:** `/api/v1/`
 
-**Versioning Rules:**
-- Breaking changes require new version
-- Non-breaking changes can be added to current version
-- Deprecated endpoints marked with `deprecated: true`
-- Migration path documented in OpenAPI spec
+**Versioning Policy:**
 
-**Future Versions:**
-- `/api/v2/` - When breaking changes needed
-- Maintain backward compatibility where possible
-- Provide migration guides
+1. **URL-Based Versioning**: All public endpoints are versioned in the URL path
+   - Current: `/api/v1/*`
+   - Future: `/api/v2/*`, `/api/v3/*`, etc.
+
+2. **Breaking Changes**: Require a new version
+   - Removing endpoints
+   - Changing request/response schemas in incompatible ways
+   - Removing required fields
+   - Changing authentication requirements
+   - Changing error response formats
+
+3. **Non-Breaking Changes**: Can be added to current version
+   - Adding new endpoints
+   - Adding optional fields to requests/responses
+   - Adding new error codes
+   - Adding new query parameters (optional)
+   - Extending enum values
+
+4. **Deprecation Process**:
+   ```yaml
+   /api/v1/old-endpoint:
+     get:
+       deprecated: true
+       description: |
+         This endpoint is deprecated and will be removed in v2.
+         Use /api/v1/new-endpoint instead.
+       x-sunset: "2025-12-31"  # Optional: sunset date
+   ```
+
+5. **Migration Documentation**:
+   - Document breaking changes in OpenAPI spec
+   - Provide migration guides for major version changes
+   - Include examples of old vs. new API usage
+
+**Version Lifecycle:**
+
+```
+/api/v1/ (current)
+    ↓
+    [Breaking changes needed]
+    ↓
+/api/v2/ (new version)
+    ↓
+    [Deprecate v1 endpoints]
+    ↓
+    [Sunset period: 90 days]
+    ↓
+    [Remove v1 endpoints]
+```
+
+**Example: Version Migration**
+
+When creating `/api/v2/`, update the OpenAPI spec:
+
+```yaml
+servers:
+  - url: https://api.corso.app/v1
+    description: API v1 (deprecated, use v2)
+  - url: https://api.corso.app/v2
+    description: API v2 (current)
+
+paths:
+  /api/v1/users:
+    get:
+      deprecated: true
+      description: Use /api/v2/users instead
+      x-sunset: "2025-12-31"
+  
+  /api/v2/users:
+    get:
+      operationId: users_list_v2
+      # New version with improved schema
+```
+
+**Decision Records:**
+- See `docs/decisions/` for API versioning decisions
+- Major version changes should include ADR (Architecture Decision Record)
 
 ## 🧪 Testing
 
@@ -450,21 +976,120 @@ describe('API v1: example endpoint', () => {
 - Rate limiting
 - Error handling
 
-## 📚 Documentation
+## 📚 Documentation & Tooling
 
-### OpenAPI Documentation
+### OpenAPI Documentation Generation
 
-**Generate Documentation:**
+**Preview Interactive Documentation:**
 ```bash
 pnpm openapi:docs
 ```
 
+This command:
+1. Runs `pnpm openapi:gen` to ensure spec is up-to-date
+2. Starts a local Redocly preview server
+3. Opens interactive API documentation in your browser
+
 **Documentation Features:**
-- Interactive API explorer
+- Interactive API explorer with "Try it out" functionality
 - Request/response examples
-- Schema definitions
-- Authentication details
+- Complete schema definitions with validation rules
+- Authentication details and security requirements
 - Rate limiting information
+- Error response documentation
+
+**Note:** Requires Redocly CLI installed. If not available, the command will show installation instructions.
+
+### Generated Artifacts Reference
+
+**What Gets Generated:**
+
+1. **`api/openapi.json`** (from `api/openapi.yml`)
+   - Bundled JSON format (all `$ref` resolved)
+   - Used by type generators and documentation tools
+   - **Location**: `api/openapi.json`
+   - **Size**: ~1,088 lines (as of 2025-01-03)
+   - **Format**: OpenAPI 3.1.0 JSON
+
+2. **`types/api/generated/openapi.d.ts`** (from `api/openapi.json`)
+   - TypeScript type definitions for all operations
+   - Type-safe request/response interfaces
+   - Path parameter types
+   - Query parameter types
+   - **Location**: `types/api/generated/openapi.d.ts`
+   - **Usage**: `import type { operations, paths } from '@/types/api/generated/openapi'`
+
+**Type Structure:**
+
+```typescript
+// Operations map: operationId → operation definition
+type Operations = {
+  'notifications_create': {
+    requestBody: { content: { 'application/json': NotificationRequest } };
+    responses: {
+      '201': { content: { 'application/json': NotificationResponse } };
+      '400': { content: { 'application/json': ErrorResponse } };
+      // ... other responses
+    };
+    parameters: { path?: {}; query?: {}; header?: {} };
+  };
+  // ... other operations
+};
+
+// Paths map: path → method → definition
+type Paths = {
+  '/api/v1/notifications': {
+    post: Operations['notifications_create'];
+  };
+  // ... other paths
+};
+```
+
+**Using Generated Types:**
+
+```typescript
+// Import types
+import type { operations, paths } from '@/types/api/generated/openapi';
+
+// Get specific operation
+type CreateNotification = operations['notifications_create'];
+
+// Extract request body type
+type NotificationRequest = CreateNotification['requestBody']['content']['application/json'];
+
+// Extract response type
+type NotificationResponse = CreateNotification['responses']['201']['content']['application/json'];
+
+// Extract path parameters
+type NotificationParams = paths['/api/v1/notifications']['post']['parameters']['path'];
+
+// Extract query parameters
+type NotificationQuery = paths['/api/v1/notifications']['post']['parameters']['query'];
+```
+
+### CI/CD Integration
+
+**Pre-commit Validation:**
+The `pretypecheck` hook automatically runs `pnpm openapi:gen` before type checking, ensuring:
+- OpenAPI spec is always bundled
+- Types are always up-to-date
+- Spec validation happens before commits
+
+**CI Pipeline:**
+```yaml
+# .github/workflows/ci.yml (example)
+- name: Validate OpenAPI
+  run: |
+    pnpm openapi:gen
+    pnpm openapi:rbac:check
+    pnpm openapi:lint
+    git diff --exit-code -- api/openapi.json types/api/generated/openapi.d.ts
+```
+
+This ensures:
+- Generated files match source spec
+- RBAC compliance validated
+- No uncommitted generated files
 
 ### In-Code Documentation
 
@@ -522,12 +1147,121 @@ pnpm typecheck
 pnpm test
 ```
 
+## 🎓 Learning Resources
+
+### Example Endpoints to Study
+
+**Simple GET Endpoint:**
+- `GET /api/health` - Public health check (see `api/openapi.yml` lines 43-67)
+- No authentication, minimal schema
+
+**Protected POST Endpoint:**
+- `POST /api/v1/user` - User profile operations (see `api/openapi.yml` around line 663)
+- Bearer auth, RBAC, request body validation
+
+**Complex Query Endpoint:**
+- `POST /api/v1/entity/{entity}/query` - Entity queries (see `api/openapi.yml` around line 358)
+- Path parameters, complex request body, pagination
+
+**Streaming Endpoint:**
+- `POST /api/v1/ai/chat` - AI chat streaming (see `api/openapi.yml` around line 318)
+- NDJSON response format, streaming documentation
+
+### Common Pitfalls & Solutions
+
+**Pitfall 1: Forgetting RBAC Annotation**
+```yaml
+# ❌ WRONG: Missing x-corso-rbac
+security:
+  - bearerAuth: []
+# Missing: x-corso-rbac: [member]
+
+# ✅ CORRECT: RBAC specified
+security:
+  - bearerAuth: []
+x-corso-rbac: [member]
+```
+
+**Pitfall 2: Missing OrgIdHeader for Protected Routes**
+```yaml
+# ❌ WRONG: Protected route without OrgIdHeader
+security:
+  - bearerAuth: []
+x-corso-rbac: [member]
+# Missing: parameters with OrgIdHeader
+
+# ✅ CORRECT: OrgIdHeader included
+security:
+  - bearerAuth: []
+x-corso-rbac: [member]
+parameters:
+  - $ref: '#/components/parameters/OrgIdHeader'
+```
+
+**Pitfall 3: Editing Generated Files**
+```bash
+# ❌ WRONG: Editing generated files
+vim api/openapi.json  # Will be overwritten!
+vim types/api/generated/openapi.d.ts  # Will be overwritten!
+
+# ✅ CORRECT: Edit source file
+vim api/openapi.yml  # Source of truth
+pnpm openapi:gen  # Regenerate
+```
+
+**Pitfall 4: Inconsistent Schema Definitions**
+```yaml
+# ❌ WRONG: Schema doesn't match Zod validation
+components:
+  schemas:
+    UserRequest:
+      properties:
+        email:
+          type: string
+          # Missing format: email, maxLength, etc.
+
+# ✅ CORRECT: Schema matches Zod validation
+components:
+  schemas:
+    UserRequest:
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 255
+```
+
+**Pitfall 5: Missing Error Responses**
+```yaml
+# ❌ WRONG: Only success response documented
+responses:
+  '200':
+    description: Success
+
+# ✅ CORRECT: All error responses documented
+responses:
+  '200':
+    description: Success
+  '400':
+    $ref: '#/components/responses/BadRequest'
+  '401':
+    $ref: '#/components/responses/Unauthorized'
+  '403':
+    $ref: '#/components/responses/Forbidden'
+  '429':
+    $ref: '#/components/responses/RateLimited'
+  '500':
+    $ref: '#/components/responses/InternalError'
+```
+
 ## 🔗 Related Documentation
 
-- [API README](../../api/README.md) - OpenAPI specification details
-- [API v1 README](../../app/api/v1/README.md) - Route documentation
-- [Security Standards](../../.cursor/rules/security-standards.mdc) - Security patterns
-- [Error Handling](../error-handling/error-handling-guide.md) - Error patterns
+- [API README](../../api/README.md) - Complete OpenAPI specification details and tooling
+- [API v1 README](../../app/api/v1/README.md) - Route implementation documentation
+- [API Patterns](../api-data/api-patterns.md) - Code patterns and implementation guide
+- [Security Standards](../../.cursor/rules/security-standards.mdc) - Security patterns and RBAC
+- [Error Handling](../error-handling/error-handling-guide.md) - Error handling patterns
+- [Testing Guide](../testing-quality/testing-guide.md) - API testing patterns
 
 ---
 
