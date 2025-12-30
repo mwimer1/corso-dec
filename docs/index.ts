@@ -50,7 +50,7 @@ export const docs = [
   },
   {
     "path": "app/api/readme.md",
-    "title": "Api"
+    "title": "Generate and view OpenAPI spec"
   },
   {
     "path": "app/api/v1/readme.md",
@@ -214,7 +214,7 @@ export const docs = [
   },
   {
     "path": "components/ui/readme.md",
-    "title": "components/ui"
+    "title": "UI Library"
   },
   {
     "path": "components/ui/shared/readme.md",
@@ -258,7 +258,7 @@ export const docs = [
   },
   {
     "path": "eslint-plugin-corso/readme.md",
-    "title": "Eslint Plugin Corso"
+    "title": "Corso ESLint Plugin"
   },
   {
     "path": "lib/actions/readme.md",
@@ -390,7 +390,7 @@ export const docs = [
   },
   {
     "path": "scripts/utils/readme.md",
-    "title": "scripts/utils"
+    "title": "Utils Scripts"
   },
   {
     "path": "scripts/validation/readme.md",
