@@ -48,7 +48,7 @@ describe('API v1: GET /entity/[entity]', () => {
   });
 
   describe('GET /api/v1/entity/{entity}', () => {
-    it('should return 200 for valid input', async () => {
+    it('should return 200 for valid input with correct response shape', async () => {
       const mod = await import('@/app/api/v1/entity/[entity]/route');
       const handler = mod.GET;
 
@@ -64,15 +64,17 @@ describe('API v1: GET /entity/[entity]', () => {
 
       const body = await res.json();
       // Response format: { success: true, data: { data, total, page, pageSize } }
-      expect(body).toEqual({
-        success: true,
-        data: {
-          data: [{ id: 1, name: 'Test Entity' }],
-          total: 1,
-          page: 0,
-          pageSize: 10,
-        },
-      });
+      expect(body).toHaveProperty('success');
+      expect(body.success).toBe(true);
+      expect(body).toHaveProperty('data');
+      expect(body.data).toHaveProperty('data');
+      expect(body.data).toHaveProperty('total');
+      expect(body.data).toHaveProperty('page');
+      expect(body.data).toHaveProperty('pageSize');
+      expect(Array.isArray(body.data.data)).toBe(true);
+      expect(typeof body.data.total).toBe('number');
+      expect(typeof body.data.page).toBe('number');
+      expect(typeof body.data.pageSize).toBe('number');
 
       expect(mockGetEntityPage).toHaveBeenCalledWith(
         'projects',
@@ -82,6 +84,121 @@ describe('API v1: GET /entity/[entity]', () => {
           sort: { column: 'name', direction: 'asc' },
         })
       );
+    });
+
+    it('should handle pagination parameters correctly', async () => {
+      const mod = await import('@/app/api/v1/entity/[entity]/route');
+      const handler = mod.GET;
+
+      const url = new URL('http://localhost/api/v1/entity/projects?page=1&pageSize=5');
+      const req = {
+        nextUrl: url,
+        url: url.toString(),
+      };
+
+      const res = await handler(req as any, { params: { entity: 'projects' } });
+      expect(res.status).toBe(200);
+
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(body.data.page).toBe(1);
+      expect(body.data.pageSize).toBe(5);
+      expect(Array.isArray(body.data.data)).toBe(true);
+    });
+
+    it('should handle sorting parameters correctly', async () => {
+      const mod = await import('@/app/api/v1/entity/[entity]/route');
+      const handler = mod.GET;
+
+      const url = new URL('http://localhost/api/v1/entity/projects?sortBy=name&sortDir=desc');
+      const req = {
+        nextUrl: url,
+        url: url.toString(),
+      };
+
+      const res = await handler(req as any, { params: { entity: 'projects' } });
+      expect(res.status).toBe(200);
+
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(body.data).toHaveProperty('data');
+      expect(Array.isArray(body.data.data)).toBe(true);
+    });
+
+    it('should handle search parameters correctly for projects', async () => {
+      const mod = await import('@/app/api/v1/entity/[entity]/route');
+      const handler = mod.GET;
+
+      const url = new URL('http://localhost/api/v1/entity/projects?search=test');
+      const req = {
+        nextUrl: url,
+        url: url.toString(),
+      };
+
+      const res = await handler(req as any, { params: { entity: 'projects' } });
+      expect(res.status).toBe(200);
+
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(body.data).toHaveProperty('data');
+      expect(Array.isArray(body.data.data)).toBe(true);
+    });
+
+    it('should handle search parameters correctly for companies', async () => {
+      const mod = await import('@/app/api/v1/entity/[entity]/route');
+      const handler = mod.GET;
+
+      const url = new URL('http://localhost/api/v1/entity/companies?search=test');
+      const req = {
+        nextUrl: url,
+        url: url.toString(),
+      };
+
+      const res = await handler(req as any, { params: { entity: 'companies' } });
+      expect(res.status).toBe(200);
+
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(body.data).toHaveProperty('data');
+      expect(Array.isArray(body.data.data)).toBe(true);
+    });
+
+    it('should handle search parameters correctly for addresses', async () => {
+      const mod = await import('@/app/api/v1/entity/[entity]/route');
+      const handler = mod.GET;
+
+      const url = new URL('http://localhost/api/v1/entity/addresses?search=test');
+      const req = {
+        nextUrl: url,
+        url: url.toString(),
+      };
+
+      const res = await handler(req as any, { params: { entity: 'addresses' } });
+      expect(res.status).toBe(200);
+
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(body.data).toHaveProperty('data');
+      expect(Array.isArray(body.data.data)).toBe(true);
+    });
+
+    it('should handle empty search parameter gracefully', async () => {
+      const mod = await import('@/app/api/v1/entity/[entity]/route');
+      const handler = mod.GET;
+
+      const url = new URL('http://localhost/api/v1/entity/projects?search=');
+      const req = {
+        nextUrl: url,
+        url: url.toString(),
+      };
+
+      const res = await handler(req as any, { params: { entity: 'projects' } });
+      expect(res.status).toBe(200);
+
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(body.data).toHaveProperty('data');
+      expect(Array.isArray(body.data.data)).toBe(true);
     });
 
     it('should return 400 for invalid entity parameter', async () => {

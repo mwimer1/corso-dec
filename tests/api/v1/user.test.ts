@@ -1,5 +1,6 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { resolveRouteModule } from '../../support/resolve-route';
+import { createUser } from '../../support/factories';
 
 // Mock the auth function
 const mockAuth = vi.fn();
@@ -8,10 +9,12 @@ vi.mock('@clerk/nextjs/server', () => ({
 }));
 
 describe('User Route', () => {
+  const testUser = createUser({ userId: 'test-user-123' });
+
   beforeEach(() => {
     vi.clearAllMocks();
     mockAuth.mockResolvedValue({
-      userId: 'test-user-123',
+      userId: testUser.userId,
       has: vi.fn().mockReturnValue(true),
     });
   });
@@ -42,7 +45,7 @@ describe('User Route', () => {
 
     it('should return 403 when user lacks member role', async () => {
       mockAuth.mockResolvedValue({
-        userId: 'test-user-123',
+        userId: testUser.userId,
         has: vi.fn().mockReturnValue(false), // No member role
       });
       const url = resolveRouteModule('v1/user');

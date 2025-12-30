@@ -36,10 +36,11 @@ The `tests/support/` directory contains essential utilities that support the ent
 
 | Directory | Purpose | Key Files |
 |-----------|---------|-----------|
-| `harness/` | Test execution harnesses | `api-route-harness.ts`, `node-mocks.ts`, `request.ts`, `render.ts` |
-| `mocks/` | Centralized mock implementations | `atoms.ts`, `lib-api.ts`, `molecules.ts`, `next-*.ts` |
+| `harness/` | Test execution harnesses | `api-route-harness.ts`, `node-mocks.ts`, `request.ts`, `render.tsx` |
+| `mocks/` | Centralized mock implementations | `clerk.ts`, `next-headers.ts`, `next-cache.ts`, `next-navigation.ts` |
+| `factories/` | Test data factories | `index.ts` (createUser, createOrg, createQueryRequest) |
 | `setup/` | Test environment configuration | `vitest.*.ts`, `README.md` |
-| Root level | Core utilities and helpers | `resolve-route.ts`, `analytics-mock.ts`, `env-mocks.ts`, `testkit.ts` |
+| Root level | Core utilities and helpers | `resolve-route.ts`, `env-mocks.ts`, `testkit.ts` |
 
 ## Core Utilities
 
@@ -75,19 +76,29 @@ const request = createTestRequest({
 });
 ```
 
-### Analytics Mocking (`analytics-mock.ts`)
-Consistent analytics event mocking:
+### Test Data Factories (`factories/index.ts`)
+Centralized factories for creating test data with sensible defaults:
 
 ```typescript
-import { mockTrackNavClick } from "../support/analytics-mock";
+import { createUser, createOrg, createQueryRequest } from '@/tests/support/factories';
 
-// Setup in beforeEach
-const trackNavClick = mockTrackNavClick;
-trackNavClick.mockClear();
+// Create test user with defaults
+const user = createUser(); // userId, email, name, orgId auto-generated
 
-// Test analytics events
-fireEvent.click(button);
-expect(trackNavClick).toHaveBeenCalledWith('button:click', '/expected-path');
+// Override specific fields
+const adminUser = createUser({ 
+  userId: 'admin-123',
+  orgRole: 'org:admin' 
+});
+
+// Create organization
+const org = createOrg({ name: 'Acme Corp' });
+
+// Create query request
+const query = createQueryRequest({ 
+  sql: 'SELECT * FROM projects',
+  orgId: org.orgId 
+});
 ```
 
 ## Mocking Framework

@@ -119,6 +119,9 @@
     "validate:boundaries:deep": "tsx scripts/maintenance/boundaries/check-deep-imports.ts",
     "codemods:server-to-integrations": "tsx scripts/maintenance/codemods/replace-server-to-integrations.ts",
     "test": "node scripts/assert-no-colocated-tests.cjs && vitest --run",
+    "test:fast": "pnpm test:patterns && vitest --run --reporter=dot --bail=5",
+    "test:patterns": "tsx tests/scripts/enforce-test-patterns.ts",
+    "test:flake": "tsx tests/scripts/detect-flakes.ts",
     "test:coverage": "vitest --run --coverage",
     "test:ci": "vitest --run --coverage --reporter=junit --outputFile=reports/vitest-junit.xml",
     "test:security": "vitest --run tests/security",
@@ -392,6 +395,7 @@
   },
   "devDependencies": {
     "@ast-grep/cli": "^0.39.9",
+    "@axe-core/react": "^4.11.0",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@corso/eslint-plugin": "workspace:*",
@@ -487,6 +491,7 @@
     "typescript": "~5.9.3",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.4",
+    "vitest-axe": "^0.1.0",
     "yaml": "^2.8.2",
     "yargs": "^17.7.2"
   },

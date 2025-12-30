@@ -5,14 +5,9 @@
  * and model version security controls.
  */
 
+import { mockClerkAuth } from '@/tests/support/mocks';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { resolveRouteModule } from '../support/resolve-route';
-
-// Mock auth
-const mockAuth = vi.fn();
-vi.mock('@clerk/nextjs/server', () => ({
-  auth: () => mockAuth(),
-}));
 
 // Mock OpenAI client
 const mockCreateCompletion = vi.fn();
@@ -75,7 +70,7 @@ vi.mock('@/lib/monitoring', () => ({
 describe('AI Security: Prompt Injection Prevention', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockAuth.mockResolvedValue({ userId: 'test-user-123' });
+    mockClerkAuth.setup({ userId: 'test-user-123' });
     mockGetTenantContext.mockResolvedValue({ orgId: 'test-org-123', userId: 'test-user-123' });
     mockValidateSQLScope.mockImplementation(() => {}); // Default: pass validation
     mockGuardSQL.mockImplementation((sql: string) => ({ sql, orgFilterInjected: false }));
@@ -195,7 +190,7 @@ describe('AI Security: Prompt Injection Prevention', () => {
 describe('AI Security: SQL Injection Prevention', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockAuth.mockResolvedValue({ userId: 'test-user-123' });
+    mockClerkAuth.setup({ userId: 'test-user-123' });
     mockGetTenantContext.mockResolvedValue({ orgId: 'test-org-123', userId: 'test-user-123' });
   });
 
@@ -303,7 +298,7 @@ describe('AI Security: SQL Injection Prevention', () => {
 describe('AI Security: Model Version Pinning', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockAuth.mockResolvedValue({ userId: 'test-user-123' });
+    mockClerkAuth.setup({ userId: 'test-user-123' });
     mockGetTenantContext.mockResolvedValue({ orgId: 'test-org-123', userId: 'test-user-123' });
     mockValidateSQLScope.mockImplementation(() => {});
     mockGuardSQL.mockImplementation((sql: string) => ({ sql, orgFilterInjected: false }));
@@ -346,7 +341,7 @@ describe('AI Security: Model Version Pinning', () => {
 describe('AI Security: History Handling', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockAuth.mockResolvedValue({ userId: 'test-user-123' });
+    mockClerkAuth.setup({ userId: 'test-user-123' });
     mockGetTenantContext.mockResolvedValue({ orgId: 'test-org-123', userId: 'test-user-123' });
     mockValidateSQLScope.mockImplementation(() => {});
     mockGuardSQL.mockImplementation((sql: string) => ({ sql, orgFilterInjected: false }));
@@ -410,7 +405,7 @@ describe('AI Security: Authentication and Rate Limiting', () => {
     const mod: any = await import(url);
     const handler = mod.POST;
 
-    mockAuth.mockResolvedValue({ userId: null });
+    mockClerkAuth.setup({ userId: null });
 
     const req = new Request('http://localhost/api/v1/ai/chat', {
       method: 'POST',
@@ -433,7 +428,7 @@ describe('AI Security: Authentication and Rate Limiting', () => {
     const mod: any = await import(url);
     const handler = mod.POST;
 
-    mockAuth.mockResolvedValue({ userId: null });
+    mockClerkAuth.setup({ userId: null });
 
     const req = new Request('http://localhost/api/v1/ai/generate-sql', {
       method: 'POST',

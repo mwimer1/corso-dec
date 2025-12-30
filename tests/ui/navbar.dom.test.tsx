@@ -2,6 +2,7 @@ import { Navbar } from '@/components/ui/organisms/navbar/navbar';
 import * as clerkModule from '@clerk/nextjs';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { axe } from 'vitest-axe';
 
 // Mock APP_LINKS - mock both @/components and @/lib/shared since Navbar imports from @/components
 vi.mock('@/components', () => ({
@@ -297,6 +298,28 @@ describe('Navbar', () => {
       const logoLink = screen.getByLabelText('Corso home');
       expect(logoLink).toBeInTheDocument();
       expect(logoLink).toHaveAttribute('href', '/');
+    });
+  });
+
+  describe('Accessibility', () => {
+    it('has no accessibility violations in landing mode', async () => {
+      vi.spyOn(clerkModule, 'useAuth').mockReturnValue({
+        isSignedIn: false,
+      } as any);
+
+      const { container } = render(<Navbar mode="landing" />);
+      const results = await axe(container);
+      expect(results).toHaveNoViolations();
+    });
+
+    it('has no accessibility violations in app mode', async () => {
+      vi.spyOn(clerkModule, 'useAuth').mockReturnValue({
+        isSignedIn: true,
+      } as any);
+
+      const { container } = render(<Navbar mode="app" />);
+      const results = await axe(container);
+      expect(results).toHaveNoViolations();
     });
   });
 });

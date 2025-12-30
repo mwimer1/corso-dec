@@ -143,6 +143,87 @@ Tests automatically run in the appropriate environment based on file naming conv
 - Mock external APIs and services
 - Avoid over-mocking internal business logic
 
+## Pattern Enforcement
+
+The test suite includes automated pattern enforcement to maintain consistency. These rules are checked automatically via `pnpm test:patterns` and in the pre-push hook.
+
+### Enforced Rules
+
+#### 1. DOM Test Naming (`*.dom.test.tsx`)
+**Rule**: React component tests that use DOM APIs or `@testing-library/react` must be named `*.dom.test.tsx`.
+
+**Why**: Ensures proper environment selection (jsdom) and clear test categorization.
+
+**Example**:
+```typescript
+// ✅ CORRECT
+// File: tests/ui/button.dom.test.tsx
+import { render, screen } from '@testing-library/react';
+import { Button } from '@/components/ui/button';
+
+// ❌ INCORRECT
+// File: tests/ui/button.test.tsx (should be button.dom.test.tsx)
+```
+
+#### 2. API Route Request Pattern
+**Rule**: API route tests must use `new Request(...)` with `JSON.stringify(body)` for request bodies.
+
+**Why**: Ensures consistent request construction and proper serialization.
+
+**Example**:
+```typescript
+// ✅ CORRECT
+const req = new Request('http://localhost/api/v1/endpoint', {
+  method: 'POST',
+  headers: { 'content-type': 'application/json' },
+  body: JSON.stringify({ key: 'value' }),
+});
+
+// ❌ INCORRECT
+const req = { json: async () => ({ key: 'value' }) };
+```
+
+#### 3. Centralized Clerk Mock Usage
+**Rule**: Use the centralized `mockClerkAuth` helper instead of direct `vi.mock('@clerk/nextjs/server')`.
+
+**Why**: Reduces boilerplate and ensures consistent auth mocking across tests.
+
+**Example**:
+```typescript
+// ✅ CORRECT
+import { mockClerkAuth } from '@/tests/support/mocks';
+
+beforeEach(() => {
+  mockClerkAuth.setup({ userId: 'test-user-123' });
+});
+
+// ❌ INCORRECT
+const mockAuth = vi.fn();
+vi.mock('@clerk/nextjs/server', () => ({
+  auth: () => mockAuth(),
+}));
+```
+
+### Running Pattern Checks
+
+```bash
+# Check patterns manually
+pnpm test:patterns
+
+# Pattern checks run automatically in:
+# - Pre-push hook (via pnpm test:fast)
+# - CI pipeline (via pnpm test:ci)
+```
+
+### Bypassing Checks
+
+Pattern checks can be bypassed in the pre-push hook using:
+```bash
+git push --no-verify
+```
+
+**Note**: Only bypass when absolutely necessary (e.g., emergency hotfixes). Pattern violations should be fixed, not bypassed.
+
 ---
 
 ## 🎯 Key Takeaways

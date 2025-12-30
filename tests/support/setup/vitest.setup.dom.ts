@@ -1,8 +1,12 @@
 // DOM-specific test setup - browser and React component mocks
 
 import "@testing-library/jest-dom/vitest";
+import { expect } from 'vitest';
+import * as matchers from 'vitest-axe/matchers';
 import React from 'react';
 import { vi } from 'vitest';
+
+expect.extend(matchers);
 
 // Solid Clerk mocks (prevent undefined elements in SidebarUserProfile)
 vi.mock('@clerk/nextjs', async () => {
