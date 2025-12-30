@@ -47,6 +47,10 @@ vi.mock('next/navigation', () => {
 // This ensures the mock is registered early and consistently
 import '@/tests/support/mocks/next-headers';
 
+// Clerk auth mock - imported from centralized mock utility
+// This ensures the mock is registered early and consistently
+import '@/tests/support/mocks/clerk';
+
 // Sentry minimal stub
 vi.mock('@sentry/nextjs', () => ({ init: vi.fn(), captureException: vi.fn(), captureMessage: vi.fn() }));
 

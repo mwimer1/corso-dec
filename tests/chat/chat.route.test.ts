@@ -58,13 +58,31 @@ describe("API v1: ai/chat route", () => {
     });
   }
 
-  beforeEach(() => {
-    // Reset module cache to ensure fresh imports see latest mocks
+  // Helper to import route module after resetModules, ensuring Clerk mock is re-registered
+  async function importChatRouteModule(authUserId: string | null = null) {
     vi.resetModules();
+
+    // Critical: re-register clerk mock after resetModules
+    // This ensures the mock is available when the route handler imports auth()
+    const { mockClerkAuth: reimportedMockClerkAuth } = await import('@/tests/support/mocks/clerk');
+    
+    // Re-apply auth state after mock is re-imported
+    if (authUserId !== null) {
+      reimportedMockClerkAuth.getMock().mockReset();
+      reimportedMockClerkAuth.setup({ userId: authUserId });
+    }
+
+    const url = resolveRouteModule("ai/chat");
+    if (!url) return null;
+
+    return await import(url);
+  }
+
+  beforeEach(() => {
     // Reset all mocks (not just clear call history)
     vi.resetAllMocks();
     
-    // Set default authenticated state
+    // Set default authenticated state (must be after resetAllMocks)
     setAuth("test-user-123");
     // Default: mock validateSQLScope to pass
     mockValidateSQLScope.mockImplementation((sql: string, expectedOrgId?: string) => {
@@ -120,14 +138,9 @@ describe("API v1: ai/chat route", () => {
   }, 20_000);
 
   it("returns 401 when unauthenticated", async () => {
-    setAuth(null);
-    // Reset modules to ensure route sees the latest auth state
-    vi.resetModules();
+    const mod: any = await importChatRouteModule(null);
+    if (!mod) return expect(true).toBe(true);
 
-    const url = resolveRouteModule("ai/chat");
-    if (!url) return expect(true).toBe(true);
-
-    const mod: any = await import(url);
     const handler = mod.POST;
     const req = new Request("http://localhost/api/v1/ai/chat", {
       method: "POST",
@@ -421,13 +434,8 @@ describe("API v1: ai/chat route", () => {
       // Note: The handler only checks for userId, not specific roles.
       // OpenAPI spec indicates [member, viewer] are allowed, but handler doesn't enforce roles.
       // This test verifies the actual behavior: any authenticated user can access.
-      setAuth('test-user-any-role');
-      vi.resetModules();
-
-      const url = resolveRouteModule("ai/chat");
-      if (!url) return expect(true).toBe(true);
-
-      const mod: any = await import(url);
+      const mod: any = await importChatRouteModule('test-user-any-role');
+      if (!mod) return expect(true).toBe(true);
       const handler = mod.POST;
       const req = new Request("http://localhost/api/v1/ai/chat", {
         method: "POST",
@@ -444,14 +452,9 @@ describe("API v1: ai/chat route", () => {
     });
 
     it("denies unauthenticated users (401)", async () => {
-      setAuth(null);
-      // Reset modules to ensure route sees the latest auth state
-      vi.resetModules();
+      const mod: any = await importChatRouteModule(null);
+      if (!mod) return expect(true).toBe(true);
 
-      const url = resolveRouteModule("ai/chat");
-      if (!url) return expect(true).toBe(true);
-
-      const mod: any = await import(url);
       const handler = mod.POST;
       const req = new Request("http://localhost/api/v1/ai/chat", {
         method: "POST",

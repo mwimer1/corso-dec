@@ -2,9 +2,11 @@ import { submitContactForm } from '@/app/(marketing)/contact/actions';
 import { ApplicationError } from '@/lib/actions';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-// Import mockHeaders directly from the source to ensure proper initialization
-import { mockHeaders } from '@/tests/support/mocks';
-import '@/tests/support/mocks/next-headers';
+// Import mockHeaders directly from source file using relative path to bypass Vitest alias
+// The vitest config aliases 'next/headers' to this file, causing import resolution issues
+// Using relative path ensures we get the actual export, not the mocked module
+import { mockHeaders } from '../support/mocks/next-headers';
+
 // Mock dependencies
 const mockVerifyTurnstileToken = vi.fn();
 const mockWithRateLimit = vi.fn();
