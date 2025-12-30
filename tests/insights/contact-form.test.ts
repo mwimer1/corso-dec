@@ -1,8 +1,10 @@
 import { submitContactForm } from '@/app/(marketing)/contact/actions';
 import { ApplicationError } from '@/lib/actions';
-import { mockHeaders } from '@/tests/support/mocks';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+// Import mockHeaders directly from the source to ensure proper initialization
+import { mockHeaders } from '@/tests/support/mocks';
+import '@/tests/support/mocks/next-headers';
 // Mock dependencies
 const mockVerifyTurnstileToken = vi.fn();
 const mockWithRateLimit = vi.fn();
@@ -101,3 +103,4 @@ describe('submitContactForm action', () => {
     ).rejects.toThrow();
   });
 });
+
