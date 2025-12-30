@@ -41,8 +41,11 @@ export const corsoAgGridTheme = themeQuartz.withParams({
   // Spacing and layout
   spacing: 6, // Maps to --ag-spacing (replaces legacy --ag-grid-size)
   borderRadius: 2,
-  cellHorizontalPaddingScale: 0.7,
-  rowVerticalPaddingScale: 0.8,
+  // Use integer-safe padding calculation to avoid fractional pixels that cause blur
+  // With spacing=6 => 9px (comfortable), spacing=4 => 6px (compact) - both whole pixels
+  cellHorizontalPadding: { calc: '1.5 * spacing' },
+  // Removed rowVerticalPaddingScale: rowHeight is explicitly set in grid options,
+  // so this scale has no effect and was misleading
   
   // Borders
   columnBorder: false, // No vertical borders in body cells

@@ -29,6 +29,23 @@
   --ag-spacing: 4px; /* Replaces legacy --ag-grid-size */
 }
 
+/* --- Vertical Centering Fix --- */
+/* 
+ * Fix vertical centering when rowHeight/headerHeight are set via grid options.
+ * This preserves ellipsis behavior and avoids rewriting AG Grid layout.
+ */
+.corso-ag-grid .ag-cell-wrapper {
+  height: 100%;
+}
+
+/* Center typical cell value content WITHOUT breaking editors */
+.corso-ag-grid .ag-cell:not(.ag-cell-inline-editing):not(.ag-cell-popup-editing) .ag-cell-value {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  min-width: 0; /* keep ellipsis working in flex contexts */
+}
+
 /* --- Selection Column Styling --- */
 
 /* Center body checkbox - target the cell itself */

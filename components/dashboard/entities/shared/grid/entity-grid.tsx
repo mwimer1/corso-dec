@@ -410,7 +410,8 @@ export default function EntityGrid({
         rowHeight={rowHeight}
         headerHeight={headerHeight}
         groupHeaderHeight={groupHeaderHeight}
-        animateRows
+        suppressRowTransform={true}
+        animateRows={false}
         pagination
         paginationPageSizeSelector={[10, 50, 100] as any}
         paginationPageSize={config.ui?.paginationPageSize ?? 50}
