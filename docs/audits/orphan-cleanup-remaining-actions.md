@@ -28,8 +28,8 @@ status: "draft"
 **Priority:** Medium  
 **Risk:** Low
 
-**Action Required:**
-Update `scripts/audit/orphans.ts` to exclude test files from DROP status.
+**Completed:**
+Updated `scripts/audit/orphans.ts` to exclude test files from DROP status.
 
 **Options:**
 
@@ -71,11 +71,15 @@ if (VITEST_INCLUDE_PATTERNS.some(pattern => pattern.test(rel))) {
 
 **Goal:** Remove test files that are no longer needed (requires explicit team approval).
 
-**Status:** ⏳ Pending  
+**Status:** ✅ Completed  
 **Priority:** Low  
 **Risk:** Medium (coverage removal)
 
-**Action Required:** Team review and approval before deletion.
+**Completed:** All decisions made and implemented:
+- React keys test: ✅ Deleted (replaced by ESLint)
+- Design system tests: ✅ Consolidated (preserved guardrails)
+- Import discipline: ✅ Kept (baseline adds unique value)
+- RouteThemeProvider: ✅ Kept (executed test, provides isolation)
 
 #### Stage 3A: Policy/Enforcement Tests (4 files)
 
@@ -128,8 +132,8 @@ if (VITEST_INCLUDE_PATTERNS.some(pattern => pattern.test(rel))) {
 
 **Current State:**
 - ✅ Stage 1: Complete (2 duplicates deleted, docs updated)
-- ⏳ Stage 2: Pending (fix orphan audit)
-- ⏳ Stage 3: Pending (team approval required)
+- ✅ Stage 2: Complete (orphan audit fixed, test files excluded)
+- ✅ Stage 3: Complete (tests removed/consolidated, decisions recorded)
 
 **Files Still Present (from original 12 DROP candidates):**
 - 4 files: Definitive KEEP (correct location + valid tests)
