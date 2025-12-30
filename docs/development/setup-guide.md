@@ -7,7 +7,7 @@ status: "draft"
 ---
 # 🚀 Development Environment & Workflows
 
-> **Windows shell requirement**: Use Git Bash for all repo commands. Avoid PowerShell/CMD; run commands sequentially (no long `&&` chains).
+> **Windows shell requirement**: PowerShell is the default terminal (configured in `.vscode/settings.json`). Git Bash is available as an alternative profile. Run commands sequentially (no long `&&` chains).
 
 This comprehensive guide covers environment setup, workflow accessibility, and development best practices for the Corso platform.
 
@@ -54,7 +54,7 @@ After pulling the repository, complete this checklist to ensure full compliance 
 - [ ] Use Git Bash (not PowerShell/CMD) for all repository commands
 - [ ] Run `source dev-env/bootstrap.sh` to enable bracketed-paste support
 - [ ] Use Volta for Node/pnpm version management: `volta install node@20.19.4` and `volta install pnpm@10.15.0`
-- [ ] If commands fail on Windows, ensure Git Bash is your default terminal in VS Code
+- [ ] If commands fail on Windows, ensure PowerShell is your default terminal in VS Code (configured automatically via `.vscode/settings.json`)
 - [ ] For case-sensitive filesystem issues, consider using WSL2 or Git Bash on Windows
 
 ✅ **Required Tools & Dependencies**
@@ -478,15 +478,28 @@ set keymap emacs
 
 ### VS Code Integration
 
-`.vscode/settings.json`
+`.vscode/settings.json` is pre-configured with:
+
+- **PowerShell as default terminal** (prevents Cursor Agent Mode bash integration issues)
+- **Automation profile** set to PowerShell for tasks and automation
+- **Shell integration disabled** to avoid terminal noise
+- **Bracketed paste mode** enabled for better terminal ergonomics
 
 ```json
 {
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.automationProfile.windows": {
+    "path": "powershell.exe",
+    "args": ["-NoLogo"]
+  },
+  "terminal.integrated.shellIntegration.enabled": false,
   "terminal.integrated.bracketedPasteMode": true,
   "terminal.integrated.enableMultiLinePasteWarning": "auto",
   "terminal.integrated.rightClickBehavior": "paste"
 }
 ```
+
+**Note**: Git Bash profiles are still available for manual use if needed, but PowerShell is recommended for Cursor Agent Mode to avoid `dump_bash_state` errors.
 
 Disable per‑user if needed:
 
@@ -498,12 +511,13 @@ Disable per‑user if needed:
 
 ## 🖥️ Platform Support
 
-### Windows (Git Bash/MSYS2)
+### Windows (PowerShell/Git Bash)
 
-- ✅ Git Bash 2.14+ supported — Required shell on Windows for repo commands
-- ✅ MSYS2 ok with `.inputrc`
-- ✅ WSL recommended for native Linux behavior
-- ⚠️ Do not use Cmd/PowerShell for project scripts; use Git Bash or VS Code's integrated terminal set to Git Bash
+- ✅ **PowerShell is the default** — Configured in `.vscode/settings.json` to prevent Cursor Agent Mode terminal issues
+- ✅ Git Bash available as alternative profile — Use if you prefer bash syntax
+- ✅ MSYS2 ok with `.inputrc` — For advanced users
+- ✅ WSL recommended for native Linux behavior — Best for Linux-like development experience
+- ✅ PowerShell is the default terminal (configured in `.vscode/settings.json`). Git Bash is available as an alternative profile if needed.
 
 #### Shell requirements and usage (Windows)
 
