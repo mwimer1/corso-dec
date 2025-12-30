@@ -5,7 +5,6 @@ import { APP_LINKS } from '@/lib/shared';
 import { cn } from '@/styles';
 import { navbarStyleVariants } from '@/styles/ui/organisms/navbar-variants';
 import { underlineAccent } from "@/styles/ui/shared/underline-accent";
-import { ChevronDown } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import AnimatedPill from '../../widgets/animated-pill';
@@ -64,13 +63,6 @@ export default function Hero({ children }: HeroProps) {
             Start free
           </LinkTrack>
         </Button>
-      </div>
-      {/* Teaser element to guide users to scroll */}
-      <div className="mt-sm flex flex-col items-center" aria-label="Scroll to see more">
-        <ChevronDown 
-          className="h-6 w-6 text-muted-foreground animate-bounce" 
-          aria-hidden="true"
-        />
       </div>
     </div>
   );

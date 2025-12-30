@@ -1,5 +1,5 @@
-import { containerMaxWidthVariants } from '@/styles/ui/shared/container-base';
 import { tv, type VariantProps } from '@/styles';
+import { containerMaxWidthVariants } from '@/styles/ui/shared/container-base';
 import { focusRing } from "../shared/focus-ring";
 
 const tabSwitcherVariants = tv({
@@ -57,7 +57,7 @@ const tabButtonVariants = tv({
        * Grid preset: used when TabSwitcher layout="grid". Buttons behave like grid cards
        * rather than inline pills. They stretch to full width and use a rectangular geometry.
        */
-      grid: 'w-full text-left rounded-none px-4 py-0 h-16 flex items-center justify-center transition-colors shadow-none text-lg',
+      grid: 'relative w-full text-left rounded-none px-4 py-0 h-16 flex items-center justify-center transition-colors shadow-none text-lg',
     },
   },
   compoundVariants: [
@@ -67,13 +67,34 @@ const tabButtonVariants = tv({
       isActive: true,
       // Active: use baseline border color so it visually matches the tablist divider
       // and lift it above the divider to avoid visual darkening from stacking.
-      class: 'border-0 border-b border-border bg-transparent text-foreground font-semibold relative z-10',
+      // Includes animated underline rail (3px) that scales from left to right.
+      class: [
+        'border-0 border-b border-border',
+        'bg-muted/30 text-foreground font-semibold',
+        'relative z-10',
+        // Underline rail: 3px animated bar at bottom
+        'after:content-[""] after:absolute after:inset-x-0 after:bottom-0 after:h-[3px]',
+        'after:bg-foreground after:origin-left after:scale-x-100',
+        'after:transition-transform after:duration-200',
+        'motion-reduce:after:transition-none',
+      ],
     },
     {
       preset: 'grid',
       isActive: false,
       // Inactive: visible text and border; hover darkens text only (no bg change)
-      class: 'border-0 border-b border-foreground/30 bg-transparent text-foreground hover:text-foreground font-normal hover:font-medium',
+      // Underline rail exists but scaled to 0 (hidden) until active
+      class: [
+        'border-0 border-b border-foreground/30',
+        'bg-transparent text-foreground',
+        'hover:text-foreground hover:bg-muted/20',
+        'font-normal hover:font-medium',
+        // Underline rail: hidden (scale-x-0) until active
+        'after:content-[""] after:absolute after:inset-x-0 after:bottom-0 after:h-[3px]',
+        'after:bg-foreground after:origin-left after:scale-x-0',
+        'after:transition-transform after:duration-200',
+        'motion-reduce:after:transition-none',
+      ],
     },
   ],
   defaultVariants: {

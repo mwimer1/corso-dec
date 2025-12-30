@@ -73,60 +73,76 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
       id: "corso-ai",
       label: "AI Chat",
       content: (
-        <Image
-          src="/demos/corso-ai-interface.png"
-          alt="AI Chat interface demo"
-          width={1920}
-          height={1080}
-          className="mx-auto max-w-5xl w-full rounded-lg border border-border shadow-sm h-auto"
-          priority={false}
-          sizes="(max-width: 1024px) 100vw, 1024px"
-        />
+        <div className="rounded-lg border border-border shadow-sm overflow-hidden">
+          <div className="u-mask-fade-bottom">
+            <Image
+              src="/demos/corso-ai-interface.png"
+              alt="AI Chat interface demo"
+              width={1920}
+              height={1080}
+              className="block w-full h-auto"
+              priority={false}
+              sizes="(max-width: 1024px) 100vw, 1024px"
+            />
+          </div>
+        </div>
       ),
     },
     {
       id: "projects",
       label: "Projects",
       content: (
-        <Image
-          src="/demos/projects-interface.png"
-          alt="Projects dashboard demo"
-          width={1920}
-          height={1080}
-          className="mx-auto max-w-5xl w-full rounded-lg border border-border shadow-sm h-auto"
-          priority={false}
-          sizes="(max-width: 1024px) 100vw, 1024px"
-        />
+        <div className="rounded-lg border border-border shadow-sm overflow-hidden">
+          <div className="u-mask-fade-bottom">
+            <Image
+              src="/demos/projects-interface.png"
+              alt="Projects dashboard demo"
+              width={1920}
+              height={1080}
+              className="block w-full h-auto"
+              priority={false}
+              sizes="(max-width: 1024px) 100vw, 1024px"
+            />
+          </div>
+        </div>
       ),
     },
     {
       id: "companies",
       label: "Companies",
       content: (
-        <Image
-          src="/demos/companies-interface.png"
-          alt="Companies dashboard demo"
-          width={1920}
-          height={1080}
-          className="mx-auto max-w-5xl w-full rounded-lg border border-border shadow-sm h-auto"
-          priority={false}
-          sizes="(max-width: 1024px) 100vw, 1024px"
-        />
+        <div className="rounded-lg border border-border shadow-sm overflow-hidden">
+          <div className="u-mask-fade-bottom">
+            <Image
+              src="/demos/companies-interface.png"
+              alt="Companies dashboard demo"
+              width={1920}
+              height={1080}
+              className="block w-full h-auto"
+              priority={false}
+              sizes="(max-width: 1024px) 100vw, 1024px"
+            />
+          </div>
+        </div>
       ),
     },
     {
       id: "addresses",
       label: "Addresses",
       content: (
-        <Image
-          src="/demos/addresses-interface.png"
-          alt="Addresses dashboard demo"
-          width={1920}
-          height={1080}
-          className="mx-auto max-w-5xl w-full rounded-lg border border-border shadow-sm h-auto"
-          priority={false}
-          sizes="(max-width: 1024px) 100vw, 1024px"
-        />
+        <div className="rounded-lg border border-border shadow-sm overflow-hidden">
+          <div className="u-mask-fade-bottom">
+            <Image
+              src="/demos/addresses-interface.png"
+              alt="Addresses dashboard demo"
+              width={1920}
+              height={1080}
+              className="block w-full h-auto"
+              priority={false}
+              sizes="(max-width: 1024px) 100vw, 1024px"
+            />
+          </div>
+        </div>
       ),
     },
   ];
@@ -168,11 +184,30 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
   return (
     <section 
       className={cn(
-        "relative",
+        "relative border-t border-border/60 bg-gradient-to-b from-background to-muted/20",
         className
       )} 
       {...props}
     >
+      {/* Dashed horizontal line decoration */}
+      <svg 
+        aria-hidden="true"
+        className="absolute inset-x-0 top-12 lg:top-10 text-border/40 pointer-events-none"
+        height="1"
+        preserveAspectRatio="none"
+      >
+        <line 
+          x1="0" 
+          y1="0" 
+          x2="100%" 
+          y2="0" 
+          stroke="currentColor" 
+          strokeWidth="1" 
+          strokeDasharray="4 6"
+          strokeLinecap="round"
+        />
+      </svg>
+
       {/* Sticky tabs container - positioned at bottom of viewport */}
       {/* Accounts for navbar height, mobile CTA ribbon, and horizontal scrollbar height */}
       {/* On mobile, tabs sit above the mobile CTA ribbon (which is ~60-70px tall) */}
@@ -180,7 +215,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
       {/* Uses containerWithPaddingVariants to align with FullWidthSection guidelines */}
       <div 
         className={cn(
-          "sticky z-[45] bg-background",
+          "sticky z-[45] bg-background/95 backdrop-blur-sm",
           // On mobile, add bottom padding to account for mobile CTA ribbon (~70px tall)
           // On desktop, account for horizontal scrollbar using CSS variable (falls back to 17px)
           "bottom-[70px] md:bottom-[var(--scrollbar-h,17px)]",
@@ -208,8 +243,44 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
       {/* Uses containerWithPaddingVariants to align with FullWidthSection guidelines */}
       <div className={cn(
         containerWithPaddingVariants({ maxWidth: '7xl', padding: 'lg', centered: true }),
-        "mt-sm md:mt-md mb-4xl"
+        "mt-sm md:mt-md mb-4xl relative"
       )}>
+        {/* Dashed vertical guides bracketing the tab+mock area on desktop */}
+        <svg 
+          aria-hidden="true"
+          className="hidden lg:block absolute -left-px inset-y-0 text-border/40 pointer-events-none"
+          width="1"
+          preserveAspectRatio="none"
+        >
+          <line 
+            x1="0" 
+            y1="0" 
+            x2="0" 
+            y2="100%" 
+            stroke="currentColor" 
+            strokeWidth="1" 
+            strokeDasharray="4 6"
+            strokeLinecap="round"
+          />
+        </svg>
+        <svg 
+          aria-hidden="true"
+          className="hidden lg:block absolute -right-px inset-y-0 text-border/40 pointer-events-none"
+          width="1"
+          preserveAspectRatio="none"
+        >
+          <line 
+            x1="0" 
+            y1="0" 
+            x2="0" 
+            y2="100%" 
+            stroke="currentColor" 
+            strokeWidth="1" 
+            strokeDasharray="4 6"
+            strokeLinecap="round"
+          />
+        </svg>
+
         {/* Render the content for the active tab with ARIA-compliant tabpanel */}
         <div
           id={`panel-${current?.id ?? 'active'}`}
@@ -223,8 +294,10 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
               ref={contentRef}
               key={current.id}
               className={cn(
-                // Transition animation - fade + slight slide (respects prefers-reduced-motion via CSS)
-                'animate-fadeIn'
+                // Transition animation - fade up (respects prefers-reduced-motion via CSS)
+                'animate-fadeInUp',
+                // Mobile: full-bleed, Desktop: constrained + padded
+                "mx-[calc(50%-50vw)] max-w-screen px-4 sm:px-6 lg:mx-0 lg:px-20"
               )}
             >
               {current.content}
