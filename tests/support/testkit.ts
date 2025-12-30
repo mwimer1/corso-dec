@@ -45,8 +45,8 @@ export async function testApiSecurity(opts: {
   method?: string;
   body?: any;
 }) {
-  const { vi, expect } = await import('vitest');
-  const { buildClerkAuthState, mockClerkAuth } = await import('./mocks');
+  const { expect } = await import('vitest');
+  const { mockClerkAuth } = await import('./mocks');
 
   // Configure Clerk auth mock (uses global mock)
   mockClerkAuth.setup({

@@ -1,27 +1,11 @@
 import { submitContactForm } from '@/app/(marketing)/contact/actions';
 import { ApplicationError } from '@/lib/actions';
-import '@/tests/support/mocks/next-headers';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-// Import mockHeaders using a workaround to access the actual export
-// The vitest alias 'next/headers' maps to this file, causing barrel re-export issues
-// Access the export through the module namespace after ensuring it's loaded
-// The module is already loaded in vitest.setup.shared.ts, so the export exists
-const getMockHeaders = () => {
-  // Use dynamic import with a path that bypasses the alias
-  // The setup file already loaded the module, so we can access it via require
-  try {
-    // Try to access via the actual module path (bypassing alias)
-    const path = require.resolve('../support/mocks/next-headers.ts', { paths: [__dirname] });
-    delete require.cache[path];
-    return require(path).mockHeaders;
-  } catch {
-    // Fallback: access from barrel if direct path fails
-    const mocks = require('@/tests/support/mocks');
-    return mocks.mockHeaders;
-  }
-};
-const mockHeaders = getMockHeaders();
+// Import mockHeaders - using relative path to avoid alias resolution issues
+// The vitest alias for 'next/headers' maps to the mock file, which can interfere
+// with imports. Using a relative path ensures we get the actual utility object.
+import { mockHeaders } from '../support/mocks/index';
 
 // Mock dependencies
 const mockVerifyTurnstileToken = vi.fn();
@@ -37,18 +21,23 @@ vi.mock('@/lib/middleware/http/rate-limit', () => ({
 
 describe('submitContactForm action', () => {
   beforeEach(() => {
-    // Setup headers mock first
-    mockHeaders.setup({
-      headers: { 'cf-connecting-ip': '192.168.1.1' },
-    });
-    // Clear call history for other mocks (but preserve headers mock return value)
-    // Use mockHeaders.clear() to preserve return value, then clear other mocks
-    mockHeaders.clear();
+    // Guard: fail fast if mockHeaders is undefined
+    expect(mockHeaders).toBeDefined();
+    expect(mockHeaders.setup).toBeDefined();
+    
+    // Reset headers mock first to ensure clean state
+    mockHeaders.reset();
+    
+    // Clear all mocks (clears call history for other mocks)
     vi.clearAllMocks();
-    // Re-setup headers mock after clearAllMocks (it may have cleared the return value)
+    
+    // Setup headers mock with the expected IP
+    // Must be done after clearAllMocks to ensure the mock return value is set
     mockHeaders.setup({
       headers: { 'cf-connecting-ip': '192.168.1.1' },
     });
+    
+    // Setup other mocks
     mockVerifyTurnstileToken.mockResolvedValue(true);
     mockWithRateLimit.mockResolvedValue(undefined);
   });

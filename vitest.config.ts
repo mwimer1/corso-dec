@@ -66,6 +66,11 @@ const alias = {
   '@/components/dashboard/header/saved-view-select': r('./components/dashboard/header/saved-view-select.tsx'),
   '@/components/ui/atoms/index': r('./components/ui/atoms/index.ts'),
 
+  // Test support aliases (for stable test imports)
+  '@/tests': r('./tests'),
+  '@/tests/support': r('./tests/support'),
+  '@/tests/support/mocks': r('./tests/support/mocks'),
+
   // Next mocks (kept in tests/support/mocks)
   'server-only': r('./tests/support/mocks/server-only.ts'),
   'next/headers': r('./tests/support/mocks/next-headers.ts'),
