@@ -5,7 +5,7 @@ import { ContactItem } from '@/components/marketing/sections/contact/contact-ite
 import { MailIcon } from '@/components/ui/atoms';
 import { Skeleton } from '@/components/ui/atoms/skeleton';
 import { Slider } from '@/components/ui/atoms/slider';
-import { SkeletonSuite } from '@/components/ui/molecules/skeleton-suite';
+import { SkeletonTable } from '@/components/ui/molecules/skeleton-suite';
 import { render } from '@testing-library/react';
 import * as React from 'react';
 
@@ -68,9 +68,9 @@ describe('React Key Warnings', () => {
     });
   });
 
-  describe('SkeletonSuite', () => {
+  describe('SkeletonTable', () => {
     it('renders skeleton grid without key warnings', () => {
-      render(<SkeletonSuite count={4} rows={2} columns={3} />);
+      render(<SkeletonTable rows={2} columns={3} />);
 
       expect(consoleSpy).not.toHaveBeenCalledWith(
         expect.stringContaining('Each child in a list should have a unique "key" prop')

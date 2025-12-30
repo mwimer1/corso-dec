@@ -302,7 +302,6 @@ export default [
         ignoreExports: [
           '**/index.ts',
           '**/*.test.{ts,tsx}',
-          '**/*.spec.{ts,tsx}',
           '**/__tests__/**/*',
           '**/__fixtures__/**/*',
           '**/tests/**/*',

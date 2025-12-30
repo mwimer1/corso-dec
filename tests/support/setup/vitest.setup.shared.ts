@@ -81,6 +81,7 @@ vi.mock('@/lib/shared/constants/links', () => ({
 vi.mock('@/styles', () => ({
   cn: (...args: any[]) => args.filter(Boolean).join(' '),
   iconVariants: (_opts: any) => '',
+  tv: (_opts?: any) => () => '', // Mock tv (tailwind-variants factory) - returns a function that returns empty string
 }));
 
 vi.mock('@/styles/ui', async (importOriginal) => {

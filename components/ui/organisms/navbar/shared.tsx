@@ -8,6 +8,12 @@ import { cn } from "@/styles";
 import { navbarStyleVariants } from "@/styles/ui/organisms/navbar-variants";
 import { CTA_LINKS, PRIMARY_LINKS } from './links';
 
+// Helper to handle both function and string returns from tv() slots
+// (defensive fix for test environment where slots may return strings directly)
+function cls(x: unknown): string | undefined {
+  return typeof x === 'function' ? (x as () => string)() : (x as string | undefined);
+}
+
 export const MenuPrimaryLinks: React.FC<{ className?: string }> = ({ className }) => (
   <>
     {PRIMARY_LINKS.map((item) => {
@@ -16,7 +22,7 @@ export const MenuPrimaryLinks: React.FC<{ className?: string }> = ({ className }
         href: item.href,
         label: item.label,
         ...(item.prefetch !== undefined ? { prefetch: item.prefetch } : {}),
-        className: cn(navbarStyleVariants().navItem(), className)
+        className: cn(cls(navbarStyleVariants().navItem), className)
       };
 
       if (item.target) {

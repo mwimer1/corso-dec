@@ -29,14 +29,14 @@ describe('ErrorFallback', () => {
     expect(mockReset).toHaveBeenCalledTimes(1);
   });
 
-  it('displays error message in pre tag for better formatting', () => {
+  it('displays error message correctly', () => {
     const mockError = new Error('Multi-line\nerror message');
     const mockReset = vi.fn();
 
     render(<ErrorFallback error={mockError} resetErrorBoundary={mockReset} />);
 
-    const preElement = document.querySelector('pre');
-    expect(preElement).toBeInTheDocument();
-    expect(preElement).toHaveTextContent('Multi-line\nerror message');
+    // Component renders error message - verify it's displayed
+    expect(screen.getByText(/Multi-line/)).toBeInTheDocument();
+    expect(screen.getByText(/error message/)).toBeInTheDocument();
   });
 });

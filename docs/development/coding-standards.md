@@ -342,7 +342,7 @@ export function cn(...classes: string[]): string {
 - **Components**: PascalCase (`Button.tsx`, `UserProfile.tsx`)
 - **Utilities**: camelCase (`formatDate.ts`, `validateInput.ts`)
 - **Types**: camelCase with `.types.ts` suffix (`user.types.ts`)
-- **Tests**: Same name with `.test.ts` or `.spec.ts` suffix
+- **Tests**: Same name with `.test.ts` suffix (e.g., `navbar.test.tsx`, `api.route.test.ts`)
 
 ### Variables and Functions
 

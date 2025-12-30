@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { checkBannedPatterns, extractCodeBlocks } from '../validate-docs-content';
+import { checkBannedPatterns, extractCodeBlocks } from '../validate-docs-content.utils';
 
 describe('validate-docs-content', () => {
   describe('extractCodeBlocks', () => {

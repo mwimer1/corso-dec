@@ -3,7 +3,6 @@
 # Dependencies and package manager caches
 node_modules/
 .pnpm-store/
-orphan-report.json
 pnpm-lock.yaml
 pnpm-workspace.yaml
 
@@ -11,7 +10,6 @@ pnpm-workspace.yaml
 .next/
 out/
 build/
-storybook-static/
 .turbo/
 .vite/
 
@@ -26,6 +24,9 @@ coverage/
 # Reports and test outputs
 playwright-report/
 reports/
+!reports/
+!reports/orphan/
+!reports/orphan/orphan-report.json
 test-results/
 test-reports/
 

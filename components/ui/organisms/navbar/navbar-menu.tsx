@@ -13,6 +13,12 @@ import type { NavItemData } from "@/types/shared";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Ctas, MenuPrimaryLinks } from './shared';
 
+// Helper to handle both function and string returns from tv() slots
+// (defensive fix for test environment where slots may return strings directly)
+function cls(x: unknown): string | undefined {
+  return typeof x === 'function' ? (x as () => string)() : (x as string | undefined);
+}
+
 interface NavbarMenuProps {
   items: NavItemData[];
   isMobileMenuOpen: boolean;
@@ -90,16 +96,37 @@ export function NavbarMenu({
   const renderItem = React.useCallback(
     (item: NavItemData, onClick?: () => void, size?: 'navLink' | 'mobileItem') => {
       const active = isItemActive(item);
+      const className = size === 'mobileItem' 
+        ? cls(navbarStyles.mobileNavItem)
+        : item.label === 'FAQ' 
+        ? 'hide-faq-901' 
+        : undefined;
+      
+      if (item.external === true) {
+        return (
+          <NavItem
+            key={String(item.href)}
+            href={item.href}
+            external={true}
+            isActive={active}
+            {...(onClick && { onClick })}
+            {...(size && { size })}
+            {...(className && { className })}
+            variant="text"
+          >
+            {item.label}
+          </NavItem>
+        );
+      }
+      
       return (
         <NavItem
           key={String(item.href)}
           href={item.href}
-          external={item.external === true}
           isActive={active}
           {...(onClick && { onClick })}
           {...(size && { size })}
-          {...(size === 'mobileItem' ? { className: navbarStyles.mobileNavItem() } : undefined)}
-          {...(item.label === 'FAQ' ? { className: 'hide-faq-901' } : undefined)}
+          {...(className && { className })}
           variant="text"
         >
           {item.label}
@@ -155,8 +182,8 @@ export function NavbarMenu({
             aria-labelledby="mobile-menu-title"
             aria-describedby="mobile-menu-description"
             className={cn(
-              navbarStyles.mobileMenu(),
-              isMobileMenuOpen && navbarStyles.mobileMenuOpen()
+              cls(navbarStyles.mobileMenu),
+              isMobileMenuOpen && cls(navbarStyles.mobileMenuOpen)
             )}
           >
             <DialogPrimitive.Title id="mobile-menu-title" className="sr-only">
@@ -165,7 +192,7 @@ export function NavbarMenu({
             <DialogPrimitive.Description id="mobile-menu-description" className="sr-only">
               Mobile navigation menu
             </DialogPrimitive.Description>
-            <nav aria-label="Mobile navigation" className={navbarStyles.mobileNav()}>
+            <nav aria-label="Mobile navigation" className={cls(navbarStyles.mobileNav)}>
               {items.map((i) => renderItem(i, () => setIsMobileMenuOpen(false), 'mobileItem'))}
               {renderAuthSection({ onItemClick: () => setIsMobileMenuOpen(false), layout: "mobile" })}
             </nav>

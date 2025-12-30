@@ -108,7 +108,7 @@ Tests automatically run in the appropriate environment based on file naming conv
 - Validate accessibility attributes in component tests
 
 ### ❌ **Don't**
-- Create co-located test files (e.g., `Button.spec.tsx`)
+- Create co-located test files (e.g., `Button.test.tsx`)
 - Import server code in client-side tests
 - Leave unused mocks or test utilities
 - Skip edge cases or error handling tests
@@ -119,7 +119,7 @@ Tests automatically run in the appropriate environment based on file naming conv
 |---------|-------------|---------|
 | Component Mock | Mock child components for isolation | `vi.mock('@/components/ui/molecules')` |
 | API Route Test | Test route handlers directly | `import { GET } from '@/app/api/health/route'` |
-| Runtime Boundary | Validate server/client separation | `tests/runtime-boundary/**/*.spec.ts` |
+| Runtime Boundary | Validate server/client separation | `tests/runtime-boundary/**/*.test.ts` |
 | Render Harness | Consistent component rendering with providers | `renderWithProviders(<Component />)` |
 | API Harness | Simplified API route testing | `testApiRoute({ handler, method: 'POST', body: {...} })` |
 

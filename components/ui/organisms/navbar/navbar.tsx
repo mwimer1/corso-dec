@@ -17,6 +17,12 @@ import { PRIMARY_LINKS } from './links';
 import { NavbarMenu } from './navbar-menu';
 import { Ctas } from './shared';
 
+// Helper to handle both function and string returns from tv() slots
+// (defensive fix for test environment where slots may return strings directly)
+function cls(x: unknown): string | undefined {
+  return typeof x === 'function' ? (x as () => string)() : (x as string | undefined);
+}
+
 interface NavbarProps extends React.HTMLAttributes<HTMLElement> {
   mode?: "app" | "landing" | "minimal" | "insights";
   /** Optional override for primary nav items (domain-provided) */
@@ -98,19 +104,19 @@ export function Navbar({
     <>
       <header
         className={cn(
-          navbarStyles.navbar(),
-          scrolled && navbarStyles.navbarScrolled(),
+          cls(navbarStyles.navbar),
+          scrolled && cls(navbarStyles.navbarScrolled),
           'px-0',
           className
         )}
       >
-        <div className={layout.container()}>
+        <div className={cls(layout.container)}>
           {/* Left cluster: Logo + primary navigation */}
-          <div className={layout.left()}>
+          <div className={cls(layout.left)}>
             <Link
               href={APP_LINKS.NAV.HOME}
               aria-label="Corso home"
-              className={cn(layout.logoLink(), navbarLogoVariants(), "mr-md")}
+              className={cn(cls(layout.logoLink), cls(navbarLogoVariants), "mr-md")}
             >
               <Logo />
             </Link>
@@ -134,7 +140,7 @@ export function Navbar({
 
             {/* Desktop nav items */}
             {mode !== "minimal" && (
-              <nav className={layout.desktopNav()} aria-label="Primary navigation">
+              <nav className={cls(layout.desktopNav)} aria-label="Primary navigation">
                 <NavbarMenu
                   items={navItems}
                   isMobileMenuOpen={isMobileMenuOpen}
@@ -149,24 +155,24 @@ export function Navbar({
 
           {/* Right cluster: auth actions */}
           {mode === "minimal" ? (
-            <div className={layout.right()}>
-              <Ctas className={navbarStyles.button()} />
+            <div className={cls(layout.right)}>
+              <Ctas className={cls(navbarStyles.button)} />
             </div>
           ) : (
-            <div className={layout.right()}>
+            <div className={cls(layout.right)}>
               {/* Never show UserButton on public marketing pages (landing/insights) - authenticated users should be redirected */}
               {(forceShowCTAs || mode === "landing" || mode === "insights") ? (
-                <Ctas className={navbarStyles.button()} />
+                <Ctas className={cls(navbarStyles.button)} />
               ) : isSignedIn ? (
                 <UserButton afterSignOutUrl="/" />
               ) : (
-                <Ctas className={navbarStyles.button()} />
+                <Ctas className={cls(navbarStyles.button)} />
               )}
             </div>
           )}
 
           {/* Mobile menu trigger and content */}
-          <div className={layout.mobileTriggerContainer()}>
+          <div className={cls(layout.mobileTriggerContainer)}>
             <NavbarMenu
               items={navItems}
               isMobileMenuOpen={isMobileMenuOpen}
@@ -180,7 +186,7 @@ export function Navbar({
       </header>
 
       {/* Sentinel for scroll shadow (toggle after ~150px) */}
-      <div ref={sentinelRef} className={layout.sentinel()} aria-hidden="true" />
+      <div ref={sentinelRef} className={cls(layout.sentinel)} aria-hidden="true" />
     </>
   );
 }
