@@ -102,11 +102,13 @@ scripts/dev-workflows.bat
 - Check locally: `node -v` should match `.node-version`; `pnpm -v` should match `volta` configuration.
 - Do not enable Corepack locally (CI may use Corepack shims; local uses Volta for pnpm).
 
-Below is a **full drop‑in replacement** that keeps your original focus
-(bracketed‑paste & terminal ergonomics) **and** adds a precise, future‑proof section
-for **environment files**—including the Supabase‑specific `.env` at the repo root,
-plus `.env.local` and `.env.test`. It also bakes in the "unexpected character `#`"
-fix, CI guardrails, and clear onboarding.
+This guide provides a complete setup solution that includes:
+
+- **Bracketed-paste support** for terminal ergonomics
+- **Environment file management** with separate files for different purposes
+- **Supabase CLI configuration** with the `.env` file at repo root
+- **CI guardrails** and clear onboarding instructions
+- **Common pitfalls** and troubleshooting guidance
 
 ---
 

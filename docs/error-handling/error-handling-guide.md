@@ -267,13 +267,13 @@ export const POST = withErrorHandlingNode(async (req: NextRequest) => {
 
 ⚠️ **CRITICAL**: Always declare the runtime and use the matching wrapper. Mismatching runtime and wrapper will cause runtime errors.
 
-- **Edge Runtime**: 
+- **Edge Runtime**:
   - Use `withErrorHandlingEdge` and `withRateLimitEdge` from `@/lib/api` (or `@/lib/middleware`)
   - For fast, stateless endpoints (health checks, CSP reports, public APIs)
   - Cannot use Node.js-only features (database, Clerk `auth()`, etc.)
   - Example: `export const runtime = 'edge';`
 
-- **Node.js Runtime**: 
+- **Node.js Runtime**:
   - Use `withErrorHandlingNode` and `withRateLimitNode` from `@/lib/middleware`
   - For routes requiring database access, Clerk authentication, or other Node.js-only features
   - Example: `export const runtime = 'nodejs';`

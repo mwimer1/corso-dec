@@ -139,8 +139,15 @@ export const POST = withErrorHandlingNode(
 ```
 
 **Runtime Selection:**
-- **Edge Runtime**: Use `withRateLimitEdge` and `withErrorHandlingEdge` from `@/lib/api` for fast, stateless endpoints (health checks, CSP reports, public APIs). Cannot use Node.js-only features.
-- **Node.js Runtime**: Use `withRateLimitNode` and `withErrorHandlingNode` from `@/lib/middleware` for routes requiring database access, Clerk authentication, or other Node.js-only features.
+
+- **Edge Runtime**:
+  - Use `withRateLimitEdge` and `withErrorHandlingEdge` from `@/lib/api`
+  - For fast, stateless endpoints (health checks, CSP reports, public APIs)
+  - Cannot use Node.js-only features
+
+- **Node.js Runtime**:
+  - Use `withRateLimitNode` and `withErrorHandlingNode` from `@/lib/middleware`
+  - For routes requiring database access, Clerk authentication, or other Node.js-only features
 
 **Import Locations:**
 - Edge wrappers: `@/lib/api` or `@/lib/middleware`

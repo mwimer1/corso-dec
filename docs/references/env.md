@@ -209,7 +209,7 @@ description: "Documentation and resources for documentation functionality. Locat
 
 - Type: URL string
 - Purpose: Supabase project URL for client-side database access.
-- Example: `https://your-project.supabase.co`
+- Example: `https://YOUR-PROJECT.supabase.co`
 - Security: Public variable, exposed to client-side code. Use with `NEXT_PUBLIC_SUPABASE_ANON_KEY` for client-side database access.
 
 ## NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -413,7 +413,7 @@ description: "Documentation and resources for documentation functionality. Locat
 
 - Type: URL string
 - Purpose: Supabase project URL for server-side database operations.
-- Example: `https://your-project.supabase.co`
+- Example: `https://YOUR-PROJECT.supabase.co`
 - Security: Server-only variable.
 
 ## SUPABASE_SERVICE_ROLE_KEY
@@ -640,7 +640,7 @@ import { publicEnv } from '@/lib/shared/config/client';
 import { getEnvEdge } from '@/lib/api';
 const apiKey = getEnvEdge().OPENAI_API_KEY;  // Only includes client-safe environment variables
 
-// ❌ INCORRECT: Server environment access in Edge functions
+// ❌ INCORRECT: Server environment access in Edge runtime routes
 import { getEnv } from '@/lib/server/env';  // Will fail - Edge runtime cannot access server-only vars
 ```
 
@@ -656,10 +656,10 @@ import { getEnv } from '@/lib/server/env';  // Will fail - Edge runtime cannot a
 - Subset of environment variables safe for Edge runtime
 - Excludes server-only variables like `CORSO_USE_MOCK_DB`, `CORSO_USE_MOCK_CMS`, `DIRECTUS_URL`, `DIRECTUS_TOKEN`
 - Includes `CORSO_USE_MOCK_CMS` for Edge-compatible content source selection
-- Available in Edge functions, client components, and shared utilities
+- Available in Edge runtime routes, client components, and shared utilities
 - Only includes `NEXT_PUBLIC_*` prefixed variables and build-time constants
 
-**Important**: `getEnv()` will **fail at runtime** in Edge functions due to missing server-only environment variables. Always use `getEnvEdge()` for Edge-compatible code.
+**Important**: `getEnv()` will **fail at runtime** in Edge runtime routes due to missing server-only environment variables. Always use `getEnvEdge()` for Edge-compatible code.
 
 ### Build-Time vs Runtime Environment Variables
 

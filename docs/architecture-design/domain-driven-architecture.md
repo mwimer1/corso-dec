@@ -454,7 +454,7 @@ describe('workflow integration', () => {
 #### Server-Only Code in Shared Barrels
 ```typescript
 // ❌ WRONG: Server-only utilities in shared barrel (breaks Edge runtime)
-export { getEnv } from '@/lib/server/env'; // FAILS in Edge functions
+export { getEnv } from '@/lib/server/env'; // FAILS in Edge runtime routes
 
 // ✅ CORRECT: Keep server-only utilities in server-specific exports
 // lib/shared/server.ts (server-only)
@@ -512,7 +512,7 @@ import { someUtil } from '@/lib/shared';        // Shared utility
 - **Impact**: Prevents Edge runtime failures and provides consistent configuration
 
 #### Runtime Boundary Enforcement
-- **Problem**: Server-only code leaking into Edge functions and client bundles
+- **Problem**: Server-only code leaking into Edge runtime routes and client bundles
 - **Solution**: Strict runtime boundaries with automated validation
 - **Impact**: Eliminates runtime errors and improves performance
 
