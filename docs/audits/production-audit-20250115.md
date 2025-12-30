@@ -1,11 +1,9 @@
 ---
-title: Audits
-description: >-
-  Documentation and resources for documentation functionality. Located in
-  audits/.
-last_updated: '2025-12-30'
-category: documentation
-status: archived
+title: "Audits"
+description: ">-"
+last_updated: "2025-12-30"
+category: "documentation"
+status: "archived"
 ---
 # Production Audit Report (ARCHIVED)
 

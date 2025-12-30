@@ -1,11 +1,8 @@
 ---
-title: "Orphan Cleanup - Stage 3 Action Items (Requires Approval)"
-description: "Detailed breakdown of 6 test files requiring team approval before deletion"
-last_updated: "2025-12-30"
-category: "audits"
 status: "draft"
+last_updated: "2025-12-30"
+category: "documentation"
 ---
-
 # Orphan Cleanup - Stage 3 Action Items
 
 **Status:** ⏳ Pending Team Approval  

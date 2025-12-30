@@ -1,11 +1,8 @@
 ---
-title: "Orphan Cleanup - Stage 1 Summary"
-description: "Stage 1 cleanup: duplicate file removal and documentation fixes"
-last_updated: "2025-12-30"
-category: "audits"
 status: "completed"
+last_updated: "2025-12-30"
+category: "documentation"
 ---
-
 # Orphan Cleanup - Stage 1 Summary
 
 **Date:** 2025-12-30  

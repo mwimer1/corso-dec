@@ -1,7 +1,7 @@
 ---
-title: scripts/analysis
-last_updated: '2025-12-30'
-category: automation
+title: "scripts/analysis"
+last_updated: "2025-12-30"
+category: "automation"
 ---
 
 # Repository Scripts & Docs

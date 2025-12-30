@@ -1,11 +1,8 @@
 ---
-title: "Orphan Cleanup - Stage 3 Decision Log"
-description: "Recorded team decisions for Stage 3 test file removals"
-last_updated: "2025-12-30"
-category: "audits"
 status: "approved"
+last_updated: "2025-12-30"
+category: "documentation"
 ---
-
 # Stage 3 Decision Log
 
 **Date:** 2025-12-30  

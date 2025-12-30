@@ -1,11 +1,8 @@
 ---
-title: "Orphan Cleanup - Stage 3 Summary"
-description: "Stage 3 cleanup: intentional test removals with replacement enforcement"
-last_updated: "2025-12-30"
-category: "audits"
 status: "completed"
+last_updated: "2025-12-30"
+category: "documentation"
 ---
-
 # Orphan Cleanup - Stage 3 Summary
 
 **Date:** 2025-12-30  

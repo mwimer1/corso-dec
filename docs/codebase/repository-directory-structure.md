@@ -1,11 +1,7 @@
 ---
-title: Codebase
-description: >-
-  Documentation and resources for documentation functionality. Located in
-  codebase/.
-last_updated: '2025-12-30'
-category: documentation
-status: draft
+status: "draft"
+last_updated: "2025-12-30"
+category: "documentation"
 ---
 # Repository Directory Structure
 

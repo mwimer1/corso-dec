@@ -1,11 +1,9 @@
 ---
-title: Health
-description: >-
-  Documentation and resources for documentation functionality. Located in
-  api/health/.
-last_updated: '2025-12-30'
-category: documentation
-status: draft
+title: "Health"
+description: ">-"
+last_updated: "2025-12-30"
+category: "documentation"
+status: "draft"
 ---
 ## Overview
 

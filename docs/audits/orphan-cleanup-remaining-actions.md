@@ -1,11 +1,8 @@
 ---
-title: "Orphan Cleanup - Remaining Action Items"
-description: "Summary of remaining action items after Stage 1 completion"
-last_updated: "2025-12-30"
-category: "audits"
 status: "draft"
+last_updated: "2025-12-30"
+category: "documentation"
 ---
-
 # Orphan Cleanup - Remaining Action Items
 
 **Last Updated:** 2025-12-30  

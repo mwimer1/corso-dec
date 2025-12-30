@@ -1,11 +1,9 @@
 ---
-title: Development
-description: >-
-  Documentation and resources for documentation functionality. Located in
-  development/.
-last_updated: '2025-12-30'
-category: documentation
-status: active
+title: "Development"
+description: ">-"
+last_updated: "2025-12-30"
+category: "documentation"
+status: "active"
 ---
 # Dashboard Setup & Quickstart
 

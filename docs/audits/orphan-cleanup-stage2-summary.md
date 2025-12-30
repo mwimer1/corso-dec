@@ -1,11 +1,8 @@
 ---
-title: "Orphan Cleanup - Stage 2 Summary"
-description: "Stage 2 cleanup: fix orphan audit to exclude test files from DROP status"
-last_updated: "2025-12-30"
-category: "audits"
 status: "completed"
+last_updated: "2025-12-30"
+category: "documentation"
 ---
-
 # Orphan Cleanup - Stage 2 Summary
 
 **Date:** 2025-12-30  
