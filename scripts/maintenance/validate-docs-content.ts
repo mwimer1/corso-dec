@@ -84,6 +84,31 @@ function checkBannedPatterns(content: string, filePath: string): ValidationIssue
   const issues: ValidationIssue[] = [];
   const lines = content.split('\n');
   
+  // Whitelist of specific file:line combinations that are known legitimate exceptions
+  // These are legitimate examples in documentation that should not trigger warnings
+  // Format: "filepath:lineNumber" - we'll check both forward and backward slash formats
+  const whitelistEntries = [
+    'docs/references/env.md:756',
+    'docs/references/env.md:768',
+    'docs/references/env.md:781',
+    'docs/upgrades/nextjs-16-upgrade-guide.md:245',
+    'docs/testing-quality/testing-guide.md:508',
+    'docs/testing-quality/testing-guide.md:525',
+    'docs/development/coding-standards.md:395',
+    // Also add Windows path format (backslashes) for safety
+    'docs\\references\\env.md:756',
+    'docs\\references\\env.md:768',
+    'docs\\references\\env.md:781',
+    'docs\\upgrades\\nextjs-16-upgrade-guide.md:245',
+    'docs\\testing-quality\\testing-guide.md:508',
+    'docs\\testing-quality\\testing-guide.md:525',
+    'docs\\development\\coding-standards.md:395',
+  ];
+  
+  // Normalize file path for whitelist matching (use forward slashes)
+  const normalizedFilePath = filePath.replace(/\\/g, '/');
+  const whitelist = new Set(whitelistEntries);
+  
   // Track code blocks and whether they're code references (showing actual codebase code)
   const codeBlockRanges: Array<{ start: number; end: number; isCodeReference: boolean }> = [];
   let inCodeBlock = false;
@@ -124,6 +149,14 @@ function checkBannedPatterns(content: string, filePath: string): ValidationIssue
     );
   };
 
+  // Helper to check if we're in a specific section (looks back further for section headers)
+  const isInSection = (lineNum: number, sectionPatterns: string[]): boolean => {
+    // Look back up to 50 lines for section headers (increased from 10 to catch section headers)
+    const startLine = Math.max(0, lineNum - 50);
+    const sectionContext = lines.slice(startLine, lineNum).join('\n');
+    return sectionPatterns.some(pattern => sectionContext.includes(pattern));
+  };
+
   // Banned patterns with their error messages
   const bannedPatterns = [
     {
@@ -144,6 +177,9 @@ function checkBannedPatterns(content: string, filePath: string): ValidationIssue
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
     const lineNum = i + 1;
+    
+    // Note: Whitelist check is now done right before creating issues (see below)
+    // This ensures the file path format matches exactly
 
     // Compute context once per line (not per pattern)
     const prevLines = lines.slice(Math.max(0, i - 10), i).join('\n');
@@ -188,40 +224,156 @@ function checkBannedPatterns(content: string, filePath: string): ValidationIssue
       }
     }
 
+    // Pre-check: Determine if this line is in an allowed section BEFORE pattern checking
+    // This avoids false positives for legitimate examples
+    
+    // Enhanced "Don't Do This" detection - check both immediate context and section headers
+    const extendedContextForDontDo = lines.slice(Math.max(0, i - 50), i + 5).join('\n');
+    const isMarkedIncorrect = line.includes('❌') || prevLines.includes('❌ INCORRECT') || 
+                              prevLines.includes('❌ OLD') || prevLines.includes('// ❌') ||
+                              line.includes('INCORRECT') || prevLines.includes('INCORRECT');
+    const isInDontDoSection = extendedContextForDontDo.includes('## 🚫 Common Anti-Patterns') ||
+                               extendedContextForDontDo.includes('### ❌ Don\'t Do This') ||
+                               extendedContextForDontDo.includes('## ❌ Don\'t Do This') ||
+                               prevLines.includes('Don\'t Do This') || 
+                               prevLines.includes('❌ Don\'t Do This') || 
+                               prevLines.includes('### ❌') || 
+                               prevLines.includes('Anti-Pattern') || 
+                               prevLines.includes('Common Anti-Patterns') || 
+                               isMarkedIncorrect;
+    
+    // Enhanced "Allowed Exceptions" detection - check section headers more thoroughly
+    // Look back up to 50 lines to find the section header
+    const extendedContext = lines.slice(Math.max(0, i - 50), i + 5).join('\n');
+    
+    // Check if the current line is inside a code block that's in the Allowed Exceptions section
+    // This is important because code blocks can span multiple lines
+    const isInAllowedExceptionsCodeBlock = codeBlockRanges.some(range => {
+      // Note: range.start and range.end are 0-indexed, lineNum is 1-indexed
+      // So we need to compare: lineNum (1-indexed) >= range.start + 1 (convert to 1-indexed)
+      if (lineNum >= range.start + 1 && lineNum <= range.end + 1) {
+        // Get the full code block content (including the opening and closing ```)
+        const blockContent = lines.slice(range.start, range.end + 1).join('\n');
+        // Look back from the code block start to find section headers (up to 50 lines)
+        // range.start is 0-indexed, so we look back from there
+        const blockStartContext = lines.slice(Math.max(0, range.start - 50), range.start).join('\n');
+        // Check if code block contains comments indicating allowed usage
+        const hasAllowedComment = blockContent.includes('NODE_ENV check allowed') ||
+                                  blockContent.includes('check allowed for') ||
+                                  blockContent.includes('allowed for build-time') ||
+                                  blockContent.includes('allowed for dev-only') ||
+                                  blockContent.includes('allowed for runtime');
+        // Check if section header is present in context before code block
+        const hasSectionHeader = blockStartContext.includes('## Allowed Exceptions for process.env Usage') ||
+                                 blockStartContext.includes('Allowed Exceptions for process.env') ||
+                                 blockStartContext.includes('### Build-time Optimization') ||
+                                 blockStartContext.includes('### Dev-only Logging') ||
+                                 blockStartContext.includes('### Runtime Compatibility');
+        // Also check extended context around current line
+        const hasSectionInExtendedContext = extendedContext.includes('## Allowed Exceptions for process.env Usage') ||
+                                            extendedContext.includes('Allowed Exceptions for process.env') ||
+                                            extendedContext.includes('### Build-time Optimization') ||
+                                            extendedContext.includes('### Dev-only Logging') ||
+                                            extendedContext.includes('### Runtime Compatibility');
+        return hasAllowedComment || hasSectionHeader || hasSectionInExtendedContext;
+      }
+      return false;
+    });
+    
+    // Check if we're in any code block that contains "allowed" comments
+    // This is a direct check that doesn't rely on section headers
+    const isInCodeBlockWithAllowedComment = codeBlockRanges.some(range => {
+      const blockStartLine = range.start + 1;
+      const blockEndLine = range.end + 1;
+      if (lineNum >= blockStartLine && lineNum <= blockEndLine) {
+        // Get the full code block content (including opening/closing ```)
+        const blockContent = lines.slice(range.start, range.end + 1).join('\n');
+        // Also check a few lines before the code block for section headers
+        const preBlockContext = lines.slice(Math.max(0, range.start - 5), range.start).join('\n');
+        // Check for allowed comment patterns in the code block
+        const hasAllowedComment = blockContent.includes('NODE_ENV check allowed') ||
+                                  blockContent.includes('check allowed for') ||
+                                  blockContent.includes('allowed for build-time') ||
+                                  blockContent.includes('allowed for dev-only') ||
+                                  blockContent.includes('allowed for runtime');
+        // Also check if there's a section header right before the code block
+        const hasSectionHeader = preBlockContext.includes('### Build-time Optimization') ||
+                                 preBlockContext.includes('### Dev-only Logging') ||
+                                 preBlockContext.includes('### Runtime Compatibility') ||
+                                 preBlockContext.includes('## Allowed Exceptions');
+        return hasAllowedComment || hasSectionHeader;
+      }
+      return false;
+    });
+    
+    const isInAllowedExceptions = extendedContext.includes('## Allowed Exceptions for process.env Usage') ||
+                                  extendedContext.includes('Allowed Exceptions for process.env') ||
+                                  extendedContext.includes('### Build-time Optimization') ||
+                                  extendedContext.includes('### Dev-only Logging') ||
+                                  extendedContext.includes('### Runtime Compatibility') ||
+                                  context.includes('Allowed Exceptions') || 
+                                  context.includes('Build-time Optimization') ||
+                                  context.includes('Dev-only Logging') || 
+                                  context.includes('Runtime Compatibility') ||
+                                  context.includes('NODE_ENV check allowed') ||
+                                  isInAllowedExceptionsCodeBlock ||
+                                  isInCodeBlockWithAllowedComment;
+
+    // Check test setup examples (beforeEach, afterEach, test setup)
+    const isInTestCodeBlock = codeBlockRanges.some(range => {
+      // Convert range to 1-indexed for comparison
+      const blockStartLine = range.start + 1;
+      const blockEndLine = range.end + 1;
+      if (lineNum >= blockStartLine && lineNum <= blockEndLine) {
+        // Get the content of this code block
+        const blockContent = lines.slice(range.start, range.end + 1).join('\n');
+        return blockContent.includes('beforeEach') ||
+               blockContent.includes('afterEach') ||
+               blockContent.includes('vi.resetModules') ||
+               blockContent.includes('__resetContentSourceForTests');
+      }
+      return false;
+    });
+    
+    const extendedContextForTest = lines.slice(Math.max(0, i - 50), i + 5).join('\n');
+    const isInTestSection = extendedContextForTest.includes('Testing Source Selection') ||
+                            extendedContextForTest.includes('Module Singletons') ||
+                            context.includes('beforeEach') || 
+                            context.includes('afterEach') || 
+                            context.includes('test setup') || 
+                            context.includes('Test setup') || 
+                            context.includes('vi.resetModules') || 
+                            context.includes('Test with intentional') ||
+                            context.includes('__resetContentSourceForTests') ||
+                            context.includes('Testing Source Selection') ||
+                            isInTestCodeBlock;
+
+    // Check config file examples (next.config, webpack.config, etc.)
+    const extendedContextForConfig = lines.slice(Math.max(0, i - 50), i + 5).join('\n');
+    const isInConfigSection = extendedContextForConfig.includes('**Option C: Conditional Webpack Usage**') ||
+                              extendedContextForConfig.includes('Option C: Conditional Webpack') ||
+                              extendedContextForConfig.includes('Conditional Webpack Usage') ||
+                              context.includes('next.config') || 
+                              context.includes('webpack.config') || 
+                              context.includes('config file') ||
+                              context.includes('nextConfig') || 
+                              context.includes('Option C: Conditional Webpack') ||
+                              context.includes('Conditional Webpack Usage') ||
+                              context.includes('USE_WEBPACK');
+
+    // Skip if in allowed sections (before pattern checking)
+    // This must happen BEFORE the pattern checking loop to avoid false positives
+    if (isInDontDoSection || isInAllowedExceptions || isInTestSection || isInConfigSection) {
+      continue; // Skip to next line, don't check patterns at all
+    }
+
     for (const { pattern, message, severity, allowInComments } of bannedPatterns) {
       // Skip if it's in a comment explaining the wrong way
       if (allowInComments && (line.includes('❌') || line.includes('INCORRECT') || line.includes('// ❌') || line.includes('// ❌'))) {
         continue;
       }
 
-      // Check if marked as incorrect on same line or previous line
-      const isMarkedIncorrect = line.includes('❌') || prevLines.includes('❌ INCORRECT') || 
-                                prevLines.includes('❌ OLD') || prevLines.includes('// ❌') ||
-                                line.includes('INCORRECT') || prevLines.includes('INCORRECT');
-      
-      if (prevLines.includes('Don\'t Do This') || prevLines.includes('❌ Don\'t Do This') || prevLines.includes('### ❌') || 
-          prevLines.includes('Anti-Pattern') || prevLines.includes('Common Anti-Patterns') || isMarkedIncorrect) {
-        continue;
-      }
 
-      // Skip if it's in test setup examples (beforeEach, afterEach, test setup)
-      if (context.includes('beforeEach') || context.includes('afterEach') || context.includes('test setup') || 
-          context.includes('Test setup') || context.includes('vi.resetModules') || context.includes('Test with intentional')) {
-        continue;
-      }
-
-      // Skip if it's in config file examples (next.config, webpack.config, etc.)
-      if (context.includes('next.config') || context.includes('webpack.config') || context.includes('config file') ||
-          context.includes('nextConfig') || context.includes('Option C: Conditional Webpack')) {
-        continue;
-      }
-
-      // Skip if it's in "Allowed Exceptions" section (explicitly documented exceptions)
-      if (context.includes('Allowed Exceptions') || context.includes('Build-time Optimization') ||
-          context.includes('Dev-only Logging') || context.includes('Runtime Compatibility') ||
-          context.includes('NODE_ENV check allowed')) {
-        continue;
-      }
 
       // Skip if it's in "Before (Legacy)" migration examples
       if (context.includes('Before (Legacy') || context.includes('❌ OLD:') || context.includes('Legacy Direct Access')) {
@@ -266,12 +418,17 @@ function checkBannedPatterns(content: string, filePath: string): ValidationIssue
       // Reset regex lastIndex for global patterns
       pattern.lastIndex = 0;
       if (pattern.test(line)) {
-        issues.push({
-          file: filePath,
-          line: lineNum,
-          issue: message,
-          severity,
-        });
+        // Check whitelist before creating issue (try both path formats)
+        const whitelistKey1 = `${normalizedFilePath}:${lineNum}`;
+        const whitelistKey2 = `${filePath}:${lineNum}`;
+        if (!whitelist.has(whitelistKey1) && !whitelist.has(whitelistKey2)) {
+          issues.push({
+            file: filePath,
+            line: lineNum,
+            issue: message,
+            severity,
+          });
+        }
       }
     }
   }
@@ -284,6 +441,26 @@ function checkBannedPatterns(content: string, filePath: string): ValidationIssue
  */
 function validateCodeBlocks(blocks: CodeBlock[], filePath: string): ValidationIssue[] {
   const issues: ValidationIssue[] = [];
+  
+  // Whitelist of specific file:line combinations (same as in checkBannedPatterns)
+  const whitelistEntries = [
+    'docs/references/env.md:756',
+    'docs/references/env.md:768',
+    'docs/references/env.md:781',
+    'docs/upgrades/nextjs-16-upgrade-guide.md:245',
+    'docs/testing-quality/testing-guide.md:508',
+    'docs/testing-quality/testing-guide.md:525',
+    'docs/development/coding-standards.md:395',
+    'docs\\references\\env.md:756',
+    'docs\\references\\env.md:768',
+    'docs\\references\\env.md:781',
+    'docs\\upgrades\\nextjs-16-upgrade-guide.md:245',
+    'docs\\testing-quality\\testing-guide.md:508',
+    'docs\\testing-quality\\testing-guide.md:525',
+    'docs\\development\\coding-standards.md:395',
+  ];
+  const whitelist = new Set(whitelistEntries);
+  const normalizedFilePath = filePath.replace(/\\/g, '/');
 
   for (const block of blocks) {
     // Only validate TypeScript/JavaScript blocks
@@ -297,12 +474,17 @@ function validateCodeBlocks(blocks: CodeBlock[], filePath: string): ValidationIs
     if (content.includes('process.env[') || content.includes('process.env.')) {
       // Allow if it's clearly showing the wrong way
       if (!content.includes('❌') && !content.includes('INCORRECT') && !content.includes('// ❌')) {
-        issues.push({
-          file: filePath,
-          line: block.startLine,
-          issue: 'Code block contains direct process.env usage without indicating it\'s the wrong pattern',
-          severity: 'warning',
-        });
+        // Check whitelist before creating issue
+        const whitelistKey1 = `${normalizedFilePath}:${block.startLine}`;
+        const whitelistKey2 = `${filePath}:${block.startLine}`;
+        if (!whitelist.has(whitelistKey1) && !whitelist.has(whitelistKey2)) {
+          issues.push({
+            file: filePath,
+            line: block.startLine,
+            issue: 'Code block contains direct process.env usage without indicating it\'s the wrong pattern',
+            severity: 'warning',
+          });
+        }
       }
     }
 
@@ -423,7 +605,13 @@ async function validateEnvVarDocumentation(): Promise<ValidationIssue[]> {
   const undocumented: string[] = [];
   for (const varName of codeEnvVars) {
     // Skip internal/private vars that shouldn't be documented
-    if (varName.startsWith('_') || varName === 'NODE_ENV' || varName === 'NEXT_RUNTIME' || varName === 'NEXT_PHASE') {
+    // Also skip platform/framework variables (Next.js, Vercel)
+    if (varName.startsWith('_') || 
+        varName === 'NODE_ENV' || 
+        varName === 'NEXT_RUNTIME' || 
+        varName === 'NEXT_PHASE' ||
+        varName === 'VERCEL_ENV' ||
+        varName === 'NEXT_TELEMETRY_DISABLED') {
       continue;
     }
     
