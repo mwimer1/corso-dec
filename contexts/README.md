@@ -1,15 +1,14 @@
 ---
-title: "Contexts"
-description: "React context providers for contexts state and configuration."
-last_updated: "2025-12-30"
-category: "contexts"
-status: "draft"
+title: contexts
+last_updated: '2025-12-30'
+category: automation
 ---
+
 # Repository Scripts & Docs
 
 This README is generated from a single template (`README.scripts.hbs`).
 
 - Directory: `contexts`
-- Last updated: `2025-12-29`
+- Last updated: `2025-12-30`
 
 > Edit the template or the generator context to change all READMEs consistently.

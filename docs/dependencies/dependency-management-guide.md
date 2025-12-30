@@ -1,9 +1,11 @@
 ---
-title: "Dependencies"
-description: "Documentation and resources for documentation functionality. Located in dependencies/."
-last_updated: "2025-12-30"
-category: "documentation"
-status: "draft"
+title: Dependencies
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  dependencies/.
+last_updated: '2025-12-30'
+category: documentation
+status: draft
 ---
 # Dependency Management Guide
 

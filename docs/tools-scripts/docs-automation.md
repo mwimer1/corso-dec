@@ -1,9 +1,11 @@
 ---
-title: "Tools Scripts"
-description: "Documentation and resources for documentation functionality. Located in tools-scripts/."
-last_updated: "2025-12-30"
-category: "documentation"
-status: "stable"
+title: Tools Scripts
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  tools-scripts/.
+last_updated: '2025-12-30'
+category: documentation
+status: stable
 ---
 # Documentation Automation
 
@@ -175,4 +177,3 @@ If validation reports undocumented variables:
 - [Environment Variables Reference](../references/env.md) - Complete env var documentation
 - [Development Tools](./development-tools.md) - Other development scripts
 - [Documentation Standards](../development/coding-standards.md) - Documentation conventions
-

@@ -1,9 +1,11 @@
 ---
-last_updated: "2025-12-30"
-category: "documentation"
-status: "draft"
-title: "Runtime Boundary"
-description: "Documentation and resources for documentation functionality. Located in runtime-boundary/."
+title: Runtime Boundary
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  runtime-boundary/.
+last_updated: '2025-12-30'
+category: documentation
+status: draft
 ---
 ## Public Exports
 | Test File | Type | Description |

@@ -1,16 +1,15 @@
 ---
-title: "Maintenance"
-description: "Documentation and resources for documentation functionality. Located in maintenance/."
-last_updated: "2025-12-30"
-category: "documentation"
-status: "draft"
+title: scripts/maintenance
+last_updated: '2025-12-30'
+category: automation
 ---
+
 # Repository Scripts & Docs
 
 This README is generated from a single template (`README.scripts.hbs`).
 
 - Directory: `scripts/maintenance`
-- Last updated: `2025-12-29`
+- Last updated: `2025-12-30`
 
 > Edit the template or the generator context to change all READMEs consistently.
 
@@ -33,6 +32,7 @@ This README is generated from a single template (`README.scripts.hbs`).
 - **fix-links.ts** – Use the refactored link fixes for all sets
 - **gen-variants-index.ts** – ⛔ Explicit skip-list to prevent reintroducing removed aggregators
 - **generate-alias-doc.ts** – Load and fully parse tsconfig (handles &#x60;extends&#x60;, JSONC, etc.).
+- **generate-env-docs-toc.ts** – Generate Table of Contents for environment variables documentation
 - **generate-readme.ts** – scripts/maintenance/generate-readme.ts
 - **inject-frontmatter.ts** – /*.md&#x27;,
 - **kill-orphans.ts** – Cross-platform script to kill orphaned Node.js processes
@@ -49,6 +49,8 @@ This README is generated from a single template (`README.scripts.hbs`).
 - **styles-comprehensive-audit.ts** – scripts/maintenance/styles-comprehensive-audit.ts
 - **types-exports-audit.ts** – pnpm audit:types-exports           # Run all checks and report issues
 - **validate-dead-code-optimized.ts** – Optimized Dead Code Validation
+- **validate-docs-content.ts** – Content validation for documentation files
+- **validate-docs-content.utils.ts** – Utility functions for documentation content validation
 - **validate-docs-on-commit.ts** – scripts/validate-docs-on-commit.ts
 - **validate-docs.ts** – Checks if markdown-link-check tool is available
 - **validate-mock-schema.ts** – Known optional/computed fields that may not exist in mock data

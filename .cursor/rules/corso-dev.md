@@ -1,7 +1,7 @@
 <!--
   AUTO-GENERATED FILE — DO NOT EDIT BY HAND.
   Source: .cursor/rules/corso-assistant.mdc
-  Generated: 2025-12-30T15:05:09.037Z
+  Generated: 2025-12-30T16:43:40.742Z
 -->
 
 ---

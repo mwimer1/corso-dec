@@ -1,9 +1,11 @@
 ---
-title: "Dashboard"
-description: "Documentation and resources for documentation functionality. Located in dashboard/."
-last_updated: "2025-12-30"
-category: "documentation"
-status: "draft"
+title: Dashboard
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  dashboard/.
+last_updated: '2025-12-30'
+category: documentation
+status: draft
 ---
 ## Public Exports
 | Test File | Type | Description |

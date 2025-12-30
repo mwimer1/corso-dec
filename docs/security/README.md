@@ -1,15 +1,14 @@
 ---
-title: "Security"
-description: "Documentation and resources for documentation functionality. Located in security/."
-last_updated: "2025-12-30"
-category: "documentation"
-status: "draft"
+title: docs/security
+last_updated: '2025-12-30'
+category: automation
 ---
+
 # Repository Scripts & Docs
 
 This README is generated from a single template (`README.scripts.hbs`).
 
 - Directory: `docs/security`
-- Last updated: `2025-12-29`
+- Last updated: `2025-12-30`
 
 > Edit the template or the generator context to change all READMEs consistently.
