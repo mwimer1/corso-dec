@@ -1,10 +1,10 @@
 ---
 title: "Utils Scripts"
 description: "Shared utility scripts and common patterns for automation, validation, and file processing across the Corso platform."
-last_updated: 2025-12-30
-category: automation
+last_updated: "2025-12-30"
+category: "automation"
+status: "draft"
 ---
-
 # Utils Scripts
 
 > Shared utility scripts and common patterns for automation, validation, and file processing across the Corso platform.
