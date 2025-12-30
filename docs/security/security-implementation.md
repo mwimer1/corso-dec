@@ -94,37 +94,57 @@ For full CSP implementation, consider adding a CSP header in middleware or via N
 
 ### Implementation
 
-Rate limiting is applied to all API endpoints. **Always declare the runtime** and use the matching wrapper:
+Rate limiting is applied to all API endpoints. **Always declare the runtime** and use the matching wrapper.
+
+⚠️ **CRITICAL**: Mismatching runtime and wrapper will cause runtime errors. Next.js defaults to Edge if `runtime` is not declared, which can fail if Node.js code is used.
 
 **Edge Runtime** (for fast, stateless endpoints):
 ```typescript
+// ⚠️ Always declare runtime for Edge routes
 export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-import { withRateLimitEdge } from '@/lib/api';
+// Note: Use Edge wrappers from @/lib/api for Edge routes
+import { withRateLimitEdge, withErrorHandlingEdge } from '@/lib/api';
 
-export const POST = withRateLimitEdge(
-  handler,
-  { windowMs: 60_000, maxRequests: 30 }
+export const POST = withErrorHandlingEdge(
+  withRateLimitEdge(
+    async (req: NextRequest) => {
+      // Handler implementation
+    },
+    { windowMs: 60_000, maxRequests: 30 }
+  )
 );
 ```
 
 **Node.js Runtime** (for database operations, Clerk auth):
 ```typescript
+// ⚠️ Always declare runtime for Node.js routes
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-import { withRateLimitNode } from '@/lib/middleware';
+// Note: Use Node wrappers from @/lib/middleware for Node.js routes
+import { withRateLimitNode, withErrorHandlingNode } from '@/lib/middleware';
 
-export const POST = withRateLimitNode(
-  handler,
-  { windowMs: 60_000, maxRequests: 30 }
+export const POST = withErrorHandlingNode(
+  withRateLimitNode(
+    async (req: NextRequest) => {
+      // Handler implementation
+    },
+    { windowMs: 60_000, maxRequests: 30 }
+  )
 );
 ```
 
-**Important**: Use Edge wrappers (`withRateLimitEdge`, `withErrorHandlingEdge`) for Edge routes, and Node wrappers (`withRateLimitNode`, `withErrorHandlingNode`) for Node.js routes. Mismatching runtime and wrapper can cause runtime errors.
+**Runtime Selection:**
+- **Edge Runtime**: Use `withRateLimitEdge` and `withErrorHandlingEdge` from `@/lib/api` for fast, stateless endpoints (health checks, CSP reports, public APIs). Cannot use Node.js-only features.
+- **Node.js Runtime**: Use `withRateLimitNode` and `withErrorHandlingNode` from `@/lib/middleware` for routes requiring database access, Clerk authentication, or other Node.js-only features.
+
+**Import Locations:**
+- Edge wrappers: `@/lib/api` or `@/lib/middleware`
+- Node wrappers: `@/lib/middleware` only
 
 ### Rate Limit Configuration
 

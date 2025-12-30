@@ -9,6 +9,26 @@ description: "Documentation and resources for documentation functionality. Locat
 
 This guide covers best practices for implementing secure, validated APIs, server actions, and data fetching patterns in Corso applications.
 
+## 🏗️ API Route Runtime Selection
+
+### ⚠️ CRITICAL: Runtime Declaration & Wrapper Matching
+
+**Always declare the runtime** in API route handlers and use the matching wrapper. Next.js defaults to Edge if not specified, which can cause failures if Node.js code is used.
+
+**Quick Reference:**
+- **Edge Runtime**: `export const runtime = 'edge';` → Use `withErrorHandlingEdge`, `withRateLimitEdge` from `@/lib/api`
+- **Node.js Runtime**: `export const runtime = 'nodejs';` → Use `withErrorHandlingNode`, `withRateLimitNode` from `@/lib/middleware`
+
+**When to use Edge:**
+- Fast, stateless endpoints (health checks, CSP reports, public APIs)
+- No database access, no Clerk `auth()`, no Node.js-only features
+
+**When to use Node.js:**
+- Database operations, Clerk authentication, webhooks
+- Any route requiring Node.js-only features
+
+See [Error Handling Guide](../error-handling/error-handling-guide.md) and [Security Implementation](../security/security-implementation.md) for detailed examples.
+
 ## 🏗️ Server Actions Patterns
 
 ### Core Principles
@@ -37,13 +57,14 @@ const UpdateProfileSchema = z.object({
 });
 
 // For API routes, use wrapper pattern:
+// ⚠️ CRITICAL: Always declare runtime and use matching wrapper
 // Note: This example uses Node.js runtime for Clerk authentication
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-import { withRateLimitNode } from '@/lib/middleware';
-import { withErrorHandlingNode } from '@/lib/middleware';
+// Note: Use Node wrappers from @/lib/middleware for Node.js routes
+import { withRateLimitNode, withErrorHandlingNode } from '@/lib/middleware';
 
 export const POST = withErrorHandlingNode(
   withRateLimitNode(
@@ -132,39 +153,51 @@ const ProcessDataSchema = z.object({
 
 #### Rate Limit Implementation (API Routes)
 
-**Important**: Always declare the runtime in route handlers and use the matching wrapper from either `@/lib/api` (Edge) or `@/lib/middleware` (Node).
+⚠️ **CRITICAL**: Always declare the runtime in route handlers and use the matching wrapper from either `@/lib/api` (Edge) or `@/lib/middleware` (Node). Mismatching runtime and wrapper will cause runtime errors.
 
+**Edge Runtime Example:**
 ```typescript
-// Edge runtime route example
+// ⚠️ Always declare runtime for Edge routes
 export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-import { withRateLimitEdge } from '@/lib/api';
+// Note: Use Edge wrappers from @/lib/api for Edge routes
+import { withRateLimitEdge, withErrorHandlingEdge } from '@/lib/api';
 
-export const POST = withRateLimitEdge(
-  async (req: NextRequest) => {
-    // Handler implementation
-  },
-  { maxRequests: 30, windowMs: 60_000 }
+export const POST = withErrorHandlingEdge(
+  withRateLimitEdge(
+    async (req: NextRequest) => {
+      // Handler implementation
+    },
+    { maxRequests: 30, windowMs: 60_000 }
+  )
 );
 ```
 
+**Node.js Runtime Example:**
 ```typescript
-// Node.js runtime route example (for database operations, Clerk auth)
+// ⚠️ Always declare runtime for Node.js routes
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-import { withRateLimitNode } from '@/lib/middleware';
+// Note: Use Node wrappers from @/lib/middleware for Node.js routes
+import { withRateLimitNode, withErrorHandlingNode } from '@/lib/middleware';
 
-export const POST = withRateLimitNode(
-  async (req: NextRequest) => {
-    // Handler implementation
-  },
-  { maxRequests: 30, windowMs: 60_000 }
+export const POST = withErrorHandlingNode(
+  withRateLimitNode(
+    async (req: NextRequest) => {
+      // Handler implementation
+    },
+    { maxRequests: 30, windowMs: 60_000 }
+  )
 );
 ```
+
+**Import Locations:**
+- Edge wrappers: `@/lib/api` or `@/lib/middleware`
+- Node wrappers: `@/lib/middleware` only
 
 ### Error Handling
 

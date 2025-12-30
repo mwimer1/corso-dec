@@ -392,11 +392,14 @@ Create the route handler in `app/api/v1/notifications/route.ts`:
  * ```
  */
 
+// ⚠️ CRITICAL: Always declare runtime and use matching wrapper
+// Note: This route uses Node.js runtime for database operations
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 import { http, validateJson } from '@/lib/api';
+// Note: Use Node wrappers from @/lib/middleware for Node.js routes
 import { withErrorHandlingNode, withRateLimitNode } from '@/lib/middleware';
 import { auth } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
@@ -797,12 +800,42 @@ components:
 - Internal webhooks: 100 requests/minute
 
 **Implementation:**
-```typescript
-import { withRateLimitEdge } from '@/lib/api';
 
-export const POST = withRateLimitEdge(
-  handler,
-  { maxRequests: 30, windowMs: 60_000 }
+⚠️ **CRITICAL**: Always declare the runtime and use the matching wrapper.
+
+**Edge Runtime Example:**
+```typescript
+// ⚠️ Always declare runtime for Edge routes
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+// Note: Use Edge wrappers from @/lib/api for Edge routes
+import { withRateLimitEdge, withErrorHandlingEdge } from '@/lib/api';
+
+export const POST = withErrorHandlingEdge(
+  withRateLimitEdge(
+    handler,
+    { maxRequests: 30, windowMs: 60_000 }
+  )
+);
+```
+
+**Node.js Runtime Example:**
+```typescript
+// ⚠️ Always declare runtime for Node.js routes
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+// Note: Use Node wrappers from @/lib/middleware for Node.js routes
+import { withRateLimitNode, withErrorHandlingNode } from '@/lib/middleware';
+
+export const POST = withErrorHandlingNode(
+  withRateLimitNode(
+    handler,
+    { maxRequests: 30, windowMs: 60_000 }
+  )
 );
 ```
 

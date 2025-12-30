@@ -225,11 +225,13 @@ const errorId = reportError(error, {
 ```typescript
 // Edge runtime routes (fast, no Node.js dependencies)
 // Use for: public endpoints, health checks, CSP reports
+// ⚠️ CRITICAL: Always declare runtime and use matching wrapper
 export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-import { withErrorHandlingEdge } from '@/lib/api/edge';
+// Note: Use Edge wrappers from @/lib/api for Edge routes
+import { withErrorHandlingEdge } from '@/lib/api';
 
 export const POST = withErrorHandlingEdge(async (req: NextRequest) => {
   // Handler implementation
@@ -241,10 +243,12 @@ export const POST = withErrorHandlingEdge(async (req: NextRequest) => {
 ```typescript
 // Node.js runtime routes (database operations, Clerk auth)
 // Use for: database queries, authentication, webhooks
+// ⚠️ CRITICAL: Always declare runtime and use matching wrapper
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
+// Note: Use Node wrappers from @/lib/middleware for Node.js routes
 import { withErrorHandlingNode } from '@/lib/middleware';
 
 export const POST = withErrorHandlingNode(async (req: NextRequest) => {
@@ -260,10 +264,25 @@ export const POST = withErrorHandlingNode(async (req: NextRequest) => {
 - Request context preservation
 
 **Runtime Selection Guidelines:**
-- **Edge Runtime**: Use `withErrorHandlingEdge` and `withRateLimitEdge` from `@/lib/api` for fast, stateless endpoints (health checks, CSP reports, public APIs)
-- **Node.js Runtime**: Use `withErrorHandlingNode` and `withRateLimitNode` from `@/lib/middleware` for routes requiring database access, Clerk authentication, or other Node.js-only features
-- **Always declare runtime**: Include `export const runtime = 'edge'` or `export const runtime = 'nodejs'` at the top of route files
-- **Mismatch prevention**: Using Edge wrappers with Node runtime (or vice versa) can cause runtime errors. Always match the wrapper to the declared runtime.
+
+⚠️ **CRITICAL**: Always declare the runtime and use the matching wrapper. Mismatching runtime and wrapper will cause runtime errors.
+
+- **Edge Runtime**: 
+  - Use `withErrorHandlingEdge` and `withRateLimitEdge` from `@/lib/api` (or `@/lib/middleware`)
+  - For fast, stateless endpoints (health checks, CSP reports, public APIs)
+  - Cannot use Node.js-only features (database, Clerk `auth()`, etc.)
+  - Example: `export const runtime = 'edge';`
+
+- **Node.js Runtime**: 
+  - Use `withErrorHandlingNode` and `withRateLimitNode` from `@/lib/middleware`
+  - For routes requiring database access, Clerk authentication, or other Node.js-only features
+  - Example: `export const runtime = 'nodejs';`
+
+- **Always declare runtime**: Include `export const runtime = 'edge'` or `export const runtime = 'nodejs'` at the top of route files. Next.js defaults to Edge if not specified, which can cause failures if Node.js code is used.
+
+- **Import locations**:
+  - Edge wrappers: `@/lib/api` or `@/lib/middleware`
+  - Node wrappers: `@/lib/middleware` only
 
 ### Retry Logic
 
