@@ -7,6 +7,7 @@ import { cn } from "@/styles";
 import { containerWithPaddingVariants } from "@/styles/ui/shared/container-helpers";
 import Image from "next/image";
 import React, { useEffect, useRef } from "react";
+import usePrefersReducedMotion from "../../hooks/use-prefers-reduced-motion";
 
 interface ProductShowcaseProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -16,6 +17,10 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
   const [isUserInteraction, setIsUserInteraction] = React.useState(false);
   const previousTabRef = useRef<number>(0);
   const contentRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const intervalRef = useRef<number | undefined>(undefined);
+  const isIntersectingRef = useRef<boolean>(false);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   // Detect horizontal scrollbar height and expose as CSS variable
   // This ensures sticky tabs at bottom of viewport are fully visible above the scrollbar
@@ -177,12 +182,93 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
   const current = tabsData[activeTab];
 
   const handleTabChange = (index: number) => {
+    // Stop auto-advance immediately when user interacts
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = undefined;
+    }
     setIsUserInteraction(true);
     setActiveTab(index);
   };
 
+  // Auto-advance tabs when section is in viewport
+  useEffect(() => {
+    // Don't auto-advance if user prefers reduced motion or has interacted
+    if (prefersReducedMotion || isUserInteraction) {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = undefined;
+      }
+      return;
+    }
+
+    const sectionEl = sectionRef.current;
+    if (!sectionEl) return;
+
+    // IntersectionObserver to detect when section is in viewport
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isIntersectingRef.current = entry.isIntersecting;
+        if (entry.isIntersecting && !intervalRef.current) {
+          // Start auto-advance when section is visible
+          intervalRef.current = window.setInterval(() => {
+            setActiveTab((prev) => (prev + 1) % tabsData.length);
+          }, 5000);
+        } else if (!entry.isIntersecting && intervalRef.current) {
+          // Stop auto-advance when section is out of view
+          clearInterval(intervalRef.current);
+          intervalRef.current = undefined;
+        }
+      },
+      { threshold: 0.5 } // Section must be at least 50% visible
+    );
+
+    observer.observe(sectionEl);
+
+    // Pause on hover
+    const handleHoverStart = () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = undefined;
+      }
+    };
+
+    const handleHoverEnd = () => {
+      // Only resume if section is still in viewport and user hasn't interacted
+      if (!intervalRef.current && !isUserInteraction && isIntersectingRef.current) {
+        intervalRef.current = window.setInterval(() => {
+          setActiveTab((prev) => (prev + 1) % tabsData.length);
+        }, 5000);
+      }
+    };
+
+    // Pause on focus (keyboard navigation)
+    const handleFocusIn = () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = undefined;
+      }
+    };
+
+    sectionEl.addEventListener("mouseenter", handleHoverStart);
+    sectionEl.addEventListener("mouseleave", handleHoverEnd);
+    sectionEl.addEventListener("focusin", handleFocusIn);
+
+    return () => {
+      observer.disconnect();
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = undefined;
+      }
+      sectionEl.removeEventListener("mouseenter", handleHoverStart);
+      sectionEl.removeEventListener("mouseleave", handleHoverEnd);
+      sectionEl.removeEventListener("focusin", handleFocusIn);
+    };
+  }, [prefersReducedMotion, isUserInteraction, tabsData.length]);
+
   return (
     <section 
+      ref={sectionRef}
       className={cn(
         "relative border-t border-border/60 bg-gradient-to-b from-background to-muted/20",
         className
@@ -245,41 +331,6 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
         containerWithPaddingVariants({ maxWidth: '7xl', padding: 'lg', centered: true }),
         "mt-sm md:mt-md mb-4xl relative"
       )}>
-        {/* Dashed vertical guides bracketing the tab+mock area on desktop */}
-        <svg 
-          aria-hidden="true"
-          className="hidden lg:block absolute -left-px inset-y-0 text-border/40 pointer-events-none"
-          width="1"
-          preserveAspectRatio="none"
-        >
-          <line 
-            x1="0" 
-            y1="0" 
-            x2="0" 
-            y2="100%" 
-            stroke="currentColor" 
-            strokeWidth="1" 
-            strokeDasharray="4 6"
-            strokeLinecap="round"
-          />
-        </svg>
-        <svg 
-          aria-hidden="true"
-          className="hidden lg:block absolute -right-px inset-y-0 text-border/40 pointer-events-none"
-          width="1"
-          preserveAspectRatio="none"
-        >
-          <line 
-            x1="0" 
-            y1="0" 
-            x2="0" 
-            y2="100%" 
-            stroke="currentColor" 
-            strokeWidth="1" 
-            strokeDasharray="4 6"
-            strokeLinecap="round"
-          />
-        </svg>
 
         {/* Render the content for the active tab with ARIA-compliant tabpanel */}
         <div

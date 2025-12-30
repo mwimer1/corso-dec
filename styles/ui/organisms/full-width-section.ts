@@ -28,7 +28,7 @@ const fullWidthSectionVariants = tv({
       'section-md': 'pt-12 pb-12 sm:pt-16 sm:pb-16',
       'section-lg': 'pt-16 pb-16 sm:pt-20 sm:pb-20 lg:pt-24 lg:pb-24',
       // Hero-specific: tighter on mobile, spacious on desktop
-      'hero': 'pt-[clamp(2rem,4vh,3rem)] pb-[clamp(1.5rem,3vh,2.5rem)] sm:pt-[clamp(3rem,6vh,4rem)] sm:pb-[clamp(2rem,4vh,3rem)]',
+      'hero': 'pt-[clamp(2rem,4vh,3rem)] pb-[clamp(1.5rem,3vh,2rem)] sm:pt-[clamp(3rem,6vh,4rem)] sm:pb-[clamp(2rem,4vh,2.5rem)]',
     },
     overflow: {
       visible: 'overflow-visible',

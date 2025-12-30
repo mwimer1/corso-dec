@@ -19,21 +19,15 @@ export default function MarketingHomePage() {
         padding="hero"
         containerMaxWidth="7xl"
         containerPadding="lg"
-        showVerticalGuidelines={true}
-        opacity="none"
-        guidelineColor="bg-border"
       >
         <Hero />
       </FullWidthSection>
 
       {/* ProductShowcase: consistent section spacing */}
       <FullWidthSection
-        padding="section-md"
+        padding="section-sm"
         containerMaxWidth="7xl"
         containerPadding="lg"
-        showVerticalGuidelines={true}
-        opacity="none"
-        guidelineColor="bg-border"
       >
         <ProductShowcase />
       </FullWidthSection>
