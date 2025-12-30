@@ -38,7 +38,9 @@ export async function submitContactForm(
   );
 
   try {
-    validateInput(contactFormSchema, data, "contact form");
+    // Exclude turnstileToken from validation (it's not part of the schema)
+    const { turnstileToken, ...formData } = data;
+    validateInput(contactFormSchema, formData, "contact form");
 
     // Note: Contact form submissions are not logged to maintain privacy
 

@@ -66,11 +66,19 @@ describe("API v1: ai/chat route", () => {
     // This ensures the mock is available when the route handler imports auth()
     const { mockClerkAuth: reimportedMockClerkAuth } = await import('@/tests/support/mocks/clerk');
     
-    // Re-apply auth state after mock is re-imported
-    if (authUserId !== null) {
-      reimportedMockClerkAuth.getMock().mockReset();
-      reimportedMockClerkAuth.setup({ userId: authUserId });
-    }
+    // Re-apply auth state after mock is re-imported (explicitly set null for unauthenticated)
+    reimportedMockClerkAuth.getMock().mockReset();
+    // Explicitly pass userId (even if null) to override defaults
+    reimportedMockClerkAuth.setup(authUserId === null ? { userId: null } : { userId: authUserId });
+    
+    // Also re-setup tenant context mock to match auth state
+    mockGetTenantContext.mockImplementation(async (req?: any) => {
+      const orgId = req?.headers?.get?.('x-corso-org-id') || req?.headers?.get?.('X-Corso-Org-Id');
+      return { 
+        orgId: orgId || 'default-session-org-id', 
+        userId: authUserId 
+      };
+    });
 
     const url = resolveRouteModule("ai/chat");
     if (!url) return null;

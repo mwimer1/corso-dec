@@ -1,11 +1,27 @@
 import { submitContactForm } from '@/app/(marketing)/contact/actions';
 import { ApplicationError } from '@/lib/actions';
+import '@/tests/support/mocks/next-headers';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-// Import mockHeaders directly from source file using relative path to bypass Vitest alias
-// The vitest config aliases 'next/headers' to this file, causing import resolution issues
-// Using relative path ensures we get the actual export, not the mocked module
-import { mockHeaders } from '../support/mocks/next-headers';
+// Import mockHeaders using a workaround to access the actual export
+// The vitest alias 'next/headers' maps to this file, causing barrel re-export issues
+// Access the export through the module namespace after ensuring it's loaded
+// The module is already loaded in vitest.setup.shared.ts, so the export exists
+const getMockHeaders = () => {
+  // Use dynamic import with a path that bypasses the alias
+  // The setup file already loaded the module, so we can access it via require
+  try {
+    // Try to access via the actual module path (bypassing alias)
+    const path = require.resolve('../support/mocks/next-headers.ts', { paths: [__dirname] });
+    delete require.cache[path];
+    return require(path).mockHeaders;
+  } catch {
+    // Fallback: access from barrel if direct path fails
+    const mocks = require('@/tests/support/mocks');
+    return mocks.mockHeaders;
+  }
+};
+const mockHeaders = getMockHeaders();
 
 // Mock dependencies
 const mockVerifyTurnstileToken = vi.fn();
@@ -21,7 +37,15 @@ vi.mock('@/lib/middleware/http/rate-limit', () => ({
 
 describe('submitContactForm action', () => {
   beforeEach(() => {
+    // Setup headers mock first
+    mockHeaders.setup({
+      headers: { 'cf-connecting-ip': '192.168.1.1' },
+    });
+    // Clear call history for other mocks (but preserve headers mock return value)
+    // Use mockHeaders.clear() to preserve return value, then clear other mocks
+    mockHeaders.clear();
     vi.clearAllMocks();
+    // Re-setup headers mock after clearAllMocks (it may have cleared the return value)
     mockHeaders.setup({
       headers: { 'cf-connecting-ip': '192.168.1.1' },
     });
