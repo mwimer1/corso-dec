@@ -1,8 +1,9 @@
 ---
-title: "lib/auth"
-last_updated: "2025-12-29"
-category: "automation"
+title: "Auth"
+last_updated: "2025-12-30"
+category: "library"
 status: "draft"
+description: "Core lib utilities and functionality for the Corso platform. Located in auth/."
 ---
 # Repository Scripts & Docs
 

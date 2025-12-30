@@ -1,8 +1,9 @@
 ---
-title: "scripts/analysis"
-last_updated: "2025-12-29"
-category: "automation"
+title: "Analysis"
+last_updated: "2025-12-30"
+category: "documentation"
 status: "draft"
+description: "Documentation and resources for documentation functionality. Located in analysis/."
 ---
 # Repository Scripts & Docs
 

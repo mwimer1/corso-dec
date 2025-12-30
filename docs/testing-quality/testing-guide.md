@@ -1,7 +1,7 @@
 ---
 title: "Testing Quality"
 description: "Documentation and resources for documentation functionality. Located in testing-quality/."
-last_updated: "2025-12-29"
+last_updated: "2025-12-30"
 category: "documentation"
 status: "draft"
 ---

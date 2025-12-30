@@ -1,6 +1,6 @@
 ---
 category: "documentation"
-last_updated: "2025-12-29"
+last_updated: "2025-12-30"
 status: "draft"
 title: "Codebase"
 description: "Documentation and resources for documentation functionality. Located in codebase/."

@@ -1,8 +1,9 @@
 ---
-title: "styles/ui/organisms"
-last_updated: "2025-12-29"
-category: "automation"
+title: "Organisms"
+last_updated: "2025-12-30"
+category: "styling"
 status: "draft"
+description: "Styling system for styles, using Tailwind CSS and design tokens. Located in ui/organisms/."
 ---
 # Repository Scripts & Docs
 

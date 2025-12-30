@@ -1,8 +1,9 @@
 ---
-title: "contexts"
-last_updated: "2025-12-29"
-category: "automation"
+title: "Contexts"
+last_updated: "2025-12-30"
+category: "contexts"
 status: "draft"
+description: "React context providers for contexts state and configuration."
 ---
 # Repository Scripts & Docs
 

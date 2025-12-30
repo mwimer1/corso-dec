@@ -1,8 +1,9 @@
 ---
-description: "Documentation and resources for documentation functionality. Located in database/."
-last_updated: "2025-12-29"
-category: "documentation"
 status: "draft"
+last_updated: "2025-12-30"
+category: "documentation"
+title: "Database"
+description: "Documentation and resources for documentation functionality. Located in database/."
 ---
 # Database Performance Monitoring
 
