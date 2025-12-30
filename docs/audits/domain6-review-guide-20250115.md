@@ -1,9 +1,11 @@
 ---
-status: "archived"
-last_updated: "2025-12-30"
-category: "documentation"
-title: "Audits"
-description: "Documentation and resources for documentation functionality. Located in audits/."
+title: Audits
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  audits/.
+last_updated: '2025-12-30'
+category: documentation
+status: archived
 ---
 # Domain 6: Documentation Quality - Review Guide (ARCHIVED)
 
@@ -96,4 +98,3 @@ For current documentation, see:
 3. Keeping it in active docs would cause confusion about current status
 
 For current documentation standards and practices, refer to the main documentation index and domain-specific guides.
-

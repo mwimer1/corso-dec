@@ -1,9 +1,9 @@
 ---
-status: "active"
-last_updated: "2025-12-30"
-category: "documentation"
-title: "Qa"
-description: "Documentation and resources for documentation functionality. Located in qa/."
+title: Qa
+description: Documentation and resources for documentation functionality. Located in qa/.
+last_updated: '2025-12-30'
+category: documentation
+status: active
 ---
 # Pricing Page QA Checklist
 
@@ -246,4 +246,3 @@ If issues are found:
 1. Revert `navMode` to `"minimal"` in `app/(marketing)/pricing/page.tsx`
 2. Revert padding changes in `components/marketing/sections/pricing/pricing-page.tsx`
 3. All changes are isolated to pricing page - no global impact
-

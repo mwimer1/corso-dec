@@ -1,9 +1,9 @@
 ---
-last_updated: "2025-12-30"
-category: "documentation"
-status: "draft"
-title: "Qa"
-description: "Documentation and resources for documentation functionality. Located in qa/."
+title: Qa
+description: Documentation and resources for documentation functionality. Located in qa/.
+last_updated: '2025-12-30'
+category: documentation
+status: draft
 ---
 # P0 Hardening Verification Steps
 
@@ -146,4 +146,3 @@ git checkout -b fix/entity-schema-whitelist
 2. **Duplicate config loads:** ✅ Optimized with conditional loading and `Promise.all` when both sortBy and filters present
 3. **Logging noise:** ✅ Only logs in dev mode (`NODE_ENV !== 'production'`)
 4. **Validator false positives:** ✅ Only validates ColDef with `field` property (skips ColGroupDef)
-

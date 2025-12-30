@@ -1,9 +1,11 @@
 ---
-status: "active"
-last_updated: "2025-12-30"
-category: "documentation"
-title: "Development"
-description: "Documentation and resources for documentation functionality. Located in development/."
+title: Development
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  development/.
+last_updated: '2025-12-30'
+category: documentation
+status: active
 ---
 # Dashboard Auth Mode Verification Guide
 
@@ -207,4 +209,3 @@ description: "Documentation and resources for documentation functionality. Locat
 - Explicit approval
 - Understanding security implications
 - Proper tenant scoping (if using real DB)
-

@@ -1,9 +1,9 @@
 ---
-title: "Styles"
-last_updated: "2025-12-30"
-category: "styling"
-status: "draft"
-description: "Styling system for styles, using Tailwind CSS and design tokens."
+title: Styles
+description: 'Styling system for styles, using Tailwind CSS and design tokens.'
+last_updated: '2025-12-30'
+category: styling
+status: draft
 ---
 # Styles
 

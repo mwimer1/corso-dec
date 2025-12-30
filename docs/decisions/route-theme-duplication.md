@@ -1,9 +1,11 @@
 ---
-title: "Decisions"
-description: "Documentation and resources for documentation functionality. Located in decisions/."
-last_updated: "2025-12-30"
-category: "documentation"
-status: "draft"
+title: Decisions
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  decisions/.
+last_updated: '2025-12-30'
+category: documentation
+status: draft
 ---
 # Decision: Route Theme Duplication (KEEP)
 
@@ -154,4 +156,3 @@ If flicker is observed, consider these options (in order of risk):
 - `app/(marketing)/layout.tsx`
 - `app/providers/route-theme-provider.tsx`
 - `styles/tokens/{auth,marketing,protected}.css`
-

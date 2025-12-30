@@ -1,9 +1,11 @@
 ---
-status: "stable"
-last_updated: "2025-12-30"
-category: "documentation"
-title: "Error Handling"
-description: "Documentation and resources for documentation functionality. Located in error-handling/."
+title: Error Handling
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  error-handling/.
+last_updated: '2025-12-30'
+category: documentation
+status: stable
 ---
 # Error Handling & Resilience Guide
 

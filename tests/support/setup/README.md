@@ -1,9 +1,11 @@
 ---
-title: "Setup"
-description: "Documentation and resources for documentation functionality. Located in support/setup/."
-last_updated: "2025-12-30"
-category: "documentation"
-status: "draft"
+title: Setup
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  support/setup/.
+last_updated: '2025-12-30'
+category: documentation
+status: draft
 ---
 ## Public Exports
 | Support File | Type | Description |

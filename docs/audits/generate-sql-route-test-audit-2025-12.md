@@ -1,9 +1,11 @@
 ---
-title: "Audits"
-description: "Documentation and resources for documentation functionality. Located in audits/."
-last_updated: "2025-12-30"
-category: "documentation"
-status: "resolved"
+title: Audits
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  audits/.
+last_updated: '2025-12-30'
+category: documentation
+status: resolved
 ---
 # Generate SQL Route Test Audit - December 2025
 
@@ -180,4 +182,3 @@ From code analysis, the historical failure pattern with Response→NextResponse 
 - Changes made are defensive improvements to prevent future failures
 - All findings are documented for future reference
 - Body stream conversion risk is monitored but not causing issues currently
-

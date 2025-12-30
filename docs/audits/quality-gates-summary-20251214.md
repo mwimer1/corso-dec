@@ -1,9 +1,11 @@
 ---
-status: "draft"
-last_updated: "2025-12-30"
-category: "documentation"
-title: "Audits"
-description: "Documentation and resources for documentation functionality. Located in audits/."
+title: Audits
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  audits/.
+last_updated: '2025-12-30'
+category: documentation
+status: draft
 ---
 # Quality Gates Summary - Barrel Removal
 
@@ -73,4 +75,3 @@ description: "Documentation and resources for documentation functionality. Locat
 ---
 
 **Last Updated**: 2025-12-14
-

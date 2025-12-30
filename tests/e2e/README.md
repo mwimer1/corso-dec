@@ -1,9 +1,9 @@
 ---
-status: "active"
-last_updated: "2025-12-30"
-category: "documentation"
-title: "E2e"
-description: "Documentation and resources for documentation functionality. Located in e2e/."
+title: E2e
+description: Documentation and resources for documentation functionality. Located in e2e/.
+last_updated: '2025-12-30'
+category: documentation
+status: active
 ---
 # E2E Tests
 
@@ -91,4 +91,3 @@ For CI/CD pipelines, ensure:
 ### Playwright browsers not found
 - Run `pnpm test:e2e:install` to install browsers
 - Check that Playwright was installed correctly: `pnpm list @playwright/test`
-

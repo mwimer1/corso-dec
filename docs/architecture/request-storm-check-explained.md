@@ -1,9 +1,11 @@
 ---
-status: "active"
-last_updated: "2025-12-30"
-category: "documentation"
-title: "Architecture"
-description: "Documentation and resources for documentation functionality. Located in architecture/."
+title: Architecture
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  architecture/.
+last_updated: '2025-12-30'
+category: documentation
+status: active
 ---
 # Request Storm Check - Explained
 
@@ -68,4 +70,3 @@ The column ordering functionality is **separate** from the request storm check. 
 - A different feature that needs to be implemented
 
 The request storm check is **only** about verifying API requests don't loop infinitely.
-

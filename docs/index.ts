@@ -417,6 +417,10 @@ export const docs = [
     "title": "Organisms"
   },
   {
+    "path": "styles/ui/patterns/readme.md",
+    "title": "CSS Pattern Utilities"
+  },
+  {
     "path": "styles/ui/readme.md",
     "title": "Ui"
   },
@@ -446,7 +450,7 @@ export const docs = [
   },
   {
     "path": "tests/runtime-boundary/readme.md",
-    "title": "Runtime Boundary"
+    "title": "Runtime Boundary Tests (Specific Routes)"
   },
   {
     "path": "tests/security/readme.md",

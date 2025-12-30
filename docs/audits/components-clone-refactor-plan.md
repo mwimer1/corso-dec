@@ -1,9 +1,11 @@
 ---
-status: "draft"
-last_updated: "2025-12-30"
-category: "documentation"
-title: "Audits"
-description: "Documentation and resources for documentation functionality. Located in audits/."
+title: Audits
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  audits/.
+last_updated: '2025-12-30'
+category: documentation
+status: draft
 ---
 # Components Clone Refactor Plan — Pass B Clones (P0)
 
@@ -589,4 +591,3 @@ Record the clone count in each PR description to track progress.
 ---
 
 **Target**: Reduce Pass B from 4 clones to 0-1 clones (acceptable threshold for intentional domain specialization).
-

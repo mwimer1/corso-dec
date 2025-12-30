@@ -1,9 +1,11 @@
 ---
-status: "draft"
-last_updated: "2025-12-30"
-category: "documentation"
-title: "Performance"
-description: "Documentation and resources for documentation functionality. Located in performance/."
+title: Performance
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  performance/.
+last_updated: '2025-12-30'
+category: documentation
+status: draft
 ---
 # Performance Optimization Guide
 

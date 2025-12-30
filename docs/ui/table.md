@@ -1,9 +1,9 @@
 ---
-status: "draft"
-last_updated: "2025-12-30"
-category: "documentation"
-title: "Ui"
-description: "Documentation and resources for documentation functionality. Located in ui/."
+title: Ui
+description: Documentation and resources for documentation functionality. Located in ui/.
+last_updated: '2025-12-30'
+category: documentation
+status: draft
 ---
 # Dashboard Table UI Updates
 

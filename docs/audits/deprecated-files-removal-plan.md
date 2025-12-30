@@ -1,9 +1,11 @@
 ---
-description: "Documentation and resources for documentation functionality. Located in audits/."
-last_updated: "2025-12-30"
-category: "documentation"
-status: "draft"
-title: "Audits"
+title: Audits
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  audits/.
+last_updated: '2025-12-30'
+category: documentation
+status: draft
 ---
 # Deprecated Files Removal Plan
 
@@ -307,4 +309,3 @@ If issues are discovered after removal:
 
 **Last Updated**: 2025-12-14  
 **Next Review**: After implementation completion
-

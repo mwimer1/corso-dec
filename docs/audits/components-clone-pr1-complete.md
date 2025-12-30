@@ -1,9 +1,11 @@
 ---
-last_updated: "2025-12-30"
-category: "documentation"
-status: "draft"
-title: "Audits"
-description: "Documentation and resources for documentation functionality. Located in audits/."
+title: Audits
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  audits/.
+last_updated: '2025-12-30'
+category: documentation
+status: draft
 ---
 # PR 1 Complete: Dashboard Grid Refactor
 
@@ -80,4 +82,3 @@ Proceed with:
 ```bash
 pnpm dlx jscpd components --format typescript --format tsx --min-lines 10 --min-tokens 50 --reporters console,json --output reports/jscpd/components/validation
 ```
-

@@ -1,9 +1,11 @@
 ---
-title: "Audits"
-description: "Documentation and resources for documentation functionality. Located in audits/."
-last_updated: "2025-12-30"
-category: "documentation"
-status: "draft"
+title: Audits
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  audits/.
+last_updated: '2025-12-30'
+category: documentation
+status: draft
 ---
 # Cursor Agent — Validation Sweep Audit Report
 
@@ -380,4 +382,3 @@ rm -rf scripts/temp scripts/utils/_tools
 1. Review Sprint 1 changes (already applied)
 2. Apply Sprint 2 patches if approved
 3. Consider Sprint 3 improvements for future work
-

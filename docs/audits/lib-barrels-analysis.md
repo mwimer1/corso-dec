@@ -1,9 +1,11 @@
 ---
-status: "draft"
-last_updated: "2025-12-30"
-category: "documentation"
-title: "Audits"
-description: "Documentation and resources for documentation functionality. Located in audits/."
+title: Audits
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  audits/.
+last_updated: '2025-12-30'
+category: documentation
+status: draft
 ---
 # Lib Barrels Production Usage Analysis
 
@@ -147,4 +149,3 @@ These files do not exist (already cleaned up):
 ---
 
 **Last Updated**: 2025-12-14
-

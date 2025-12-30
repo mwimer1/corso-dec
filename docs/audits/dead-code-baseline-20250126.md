@@ -1,9 +1,11 @@
 ---
-status: "active"
-last_updated: "2025-12-30"
-category: "documentation"
-title: "Audits"
-description: "Documentation and resources for documentation functionality. Located in audits/."
+title: Audits
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  audits/.
+last_updated: '2025-12-30'
+category: documentation
+status: active
 ---
 # Dead Code Audit Baseline — 2025-01-26
 
@@ -209,4 +211,3 @@ These are used by Next.js filesystem routing, not imports.
 
 **Last updated:** 2025-01-26
 **Next review:** After PR 2-5 completion
-

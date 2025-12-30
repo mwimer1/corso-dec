@@ -1,9 +1,11 @@
 ---
-status: "archived"
-last_updated: "2025-12-30"
-category: "documentation"
-title: "Audits"
-description: "Documentation and resources for documentation functionality. Located in audits/."
+title: Audits
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  audits/.
+last_updated: '2025-12-30'
+category: documentation
+status: archived
 ---
 # Production Audit Report (ARCHIVED)
 
@@ -312,4 +314,3 @@ For current production information, refer to:
 - [Operational Guide](../operations/operational-guide.md)
 - [Monitoring Guide](../monitoring/monitoring-guide.md)
 - [Security Implementation](../security/security-implementation.md)
-

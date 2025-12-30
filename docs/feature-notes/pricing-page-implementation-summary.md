@@ -1,9 +1,11 @@
 ---
-status: "stable"
-last_updated: "2025-12-30"
-category: "documentation"
-title: "Feature Notes"
-description: "Documentation and resources for documentation functionality. Located in feature-notes/."
+title: Feature Notes
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  feature-notes/.
+last_updated: '2025-12-30'
+category: documentation
+status: stable
 ---
 # Pricing Page Implementation Summary
 
@@ -86,4 +88,3 @@ All changes are isolated to pricing page - no global impact.
 ---
 
 **Status:** ✅ Implementation complete, awaiting manual QA verification
-

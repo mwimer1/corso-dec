@@ -1,9 +1,9 @@
 ---
-last_updated: "2025-12-30"
-category: "documentation"
-status: "draft"
-title: "Qa"
-description: "Documentation and resources for documentation functionality. Located in qa/."
+title: Qa
+description: Documentation and resources for documentation functionality. Located in qa/.
+last_updated: '2025-12-30'
+category: documentation
+status: draft
 ---
 # Manual Verification Guide - P0 Hardening
 
@@ -214,4 +214,3 @@ http://localhost:3000/api/v1/entity/projects?page=0&pageSize=50&filters=%7B%22ba
 ```
 http://localhost:3000/dashboard/projects
 ```
-

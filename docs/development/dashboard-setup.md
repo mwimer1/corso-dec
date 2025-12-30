@@ -1,9 +1,11 @@
 ---
-status: "active"
-last_updated: "2025-12-30"
-category: "documentation"
-title: "Development"
-description: "Documentation and resources for documentation functionality. Located in development/."
+title: Development
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  development/.
+last_updated: '2025-12-30'
+category: documentation
+status: active
 ---
 # Dashboard Setup & Quickstart
 
@@ -536,4 +538,3 @@ See `tests/e2e/README.md` for detailed E2E test documentation.
 - **Column Configuration**: See `lib/entities/<entity>/columns.config.ts`
 - **API Routes**: See `app/api/v1/entity/[entity]/route.ts`
 - **Development Setup**: See `docs/development/setup-guide.md`
-

@@ -1,9 +1,11 @@
 ---
-title: "Audit"
-last_updated: "2025-12-30"
-category: "documentation"
-status: "draft"
-description: "Documentation and resources for documentation functionality. Located in audit/."
+title: Audit
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  audit/.
+last_updated: '2025-12-30'
+category: documentation
+status: draft
 ---
 # Repository Scripts & Docs
 

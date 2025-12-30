@@ -1,9 +1,8 @@
 ---
-title: "CSS Patterns"
-last_updated: "2025-12-30"
-category: "styling"
-status: "draft"
-description: "CSS pattern utilities for design effects and layouts. Located in ui/patterns/."
+description: CSS pattern utilities for design effects and layouts. Located in ui/patterns/.
+last_updated: '2025-12-30'
+category: documentation
+status: draft
 ---
 # CSS Pattern Utilities
 
@@ -89,4 +88,3 @@ If a design pattern or utility doesn't fit into a component variant or Tailwind 
 ## Note on Terminology
 
 This directory contains **CSS Pattern Utilities** (low-level CSS classes), which is distinct from the **Patterns** component category in `components/ui/patterns/` (React components like SectionHeader). To avoid confusion, this README specifically documents CSS-level patterns.
-

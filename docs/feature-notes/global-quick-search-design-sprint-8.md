@@ -1,9 +1,11 @@
 ---
-last_updated: "2025-12-30"
-category: "documentation"
-status: "draft"
-title: "Feature Notes"
-description: "Documentation and resources for documentation functionality. Located in feature-notes/."
+title: Feature Notes
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  feature-notes/.
+last_updated: '2025-12-30'
+category: documentation
+status: draft
 ---
 # Sprint 8 — Global Quick Search: Design Document
 
@@ -246,4 +248,3 @@ const fetcher = useMemo(
 - Search should work alongside existing filters (AND logic)
 - Search should be cleared when filters are reset
 - Consider performance: search across many fields may be slow for large datasets
-

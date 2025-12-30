@@ -1,9 +1,11 @@
 ---
-last_updated: "2025-12-30"
-category: "documentation"
-status: "draft"
-title: "Audits"
-description: "Documentation and resources for documentation functionality. Located in audits/."
+title: Audits
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  audits/.
+last_updated: '2025-12-30'
+category: documentation
+status: draft
 ---
 # AG Grid Implementation Audit Report
 
@@ -583,4 +585,3 @@ export const createDefaultColDef = (): ColDef => ({
 **Report Generated:** 2025-01-28  
 **Auditor:** AI Assistant  
 **Repository:** mwimer1/corso-dec
-

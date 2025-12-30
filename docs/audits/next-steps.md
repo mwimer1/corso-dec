@@ -1,9 +1,11 @@
 ---
-status: "draft"
-last_updated: "2025-12-30"
-category: "documentation"
-title: "Audits"
-description: "Documentation and resources for documentation functionality. Located in audits/."
+title: Audits
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  audits/.
+last_updated: '2025-12-30'
+category: documentation
+status: draft
 ---
 # Deprecated Files Removal - Next Steps
 
@@ -199,4 +201,3 @@ Removes unused barrel files identified in App Directory Audit.
 ---
 
 **Last Updated**: 2025-12-14
-

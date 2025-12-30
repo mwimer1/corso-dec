@@ -1,9 +1,11 @@
 ---
-status: "stable"
-last_updated: "2025-12-30"
-category: "documentation"
-title: "Audits"
-description: "Documentation and resources for documentation functionality. Located in audits/."
+title: Audits
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  audits/.
+last_updated: '2025-12-30'
+category: documentation
+status: stable
 ---
 # Orphan File Triage Report
 
@@ -222,4 +224,3 @@ pnpm lint
 3. Review Phase 2 candidates
 4. Update orphan audit configuration to reduce false positives
 5. Re-run orphan audit to verify cleaner results
-

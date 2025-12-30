@@ -1,9 +1,11 @@
 ---
-status: "draft"
-last_updated: "2025-12-30"
-category: "documentation"
-title: "Support"
-description: "Documentation and resources for documentation functionality. Located in support/."
+title: Support
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  support/.
+last_updated: '2025-12-30'
+category: documentation
+status: draft
 ---
 # Test Support Utilities
 
