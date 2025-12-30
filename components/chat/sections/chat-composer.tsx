@@ -1,7 +1,9 @@
 "use client";
 
-import { ArrowUpIcon, SegmentedControl } from '@/components';
+import { ArrowUpIcon } from '@/components';
 import { CHAT_MODE_OPTIONS, type ChatMode } from '../lib/chat-mode';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { Check } from 'lucide-react';
 import * as React from 'react';
 
 type ChatComposerProps = {
@@ -72,23 +74,47 @@ function ChatComposer(props: ChatComposerProps) {
 
       <div className="mt-2 flex items-center justify-between" role="toolbar" aria-label="Composer actions">
         <div>
-          <SegmentedControl
-            value={mode}
-            onChange={(v) => setMode(v)}
-            options={CHAT_MODE_OPTIONS}
-          />
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger asChild>
+              <button
+                type="button"
+                aria-label="Change data scope"
+                className="h-9 w-9 rounded-md border border-border bg-surface inline-flex items-center justify-center hover:bg-surface-hover disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isProcessing}
+                title="Change data scope"
+              >
+                <span aria-hidden className="text-[18px] leading-none">+</span>
+              </button>
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content
+                side="top"
+                sideOffset={6}
+                align="start"
+                className="z-[2000] min-w-[180px] border border-border shadow-lg p-1 rounded-md bg-background"
+              >
+                <DropdownMenu.Label className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
+                  Data scope
+                </DropdownMenu.Label>
+                <DropdownMenu.RadioGroup value={mode} onValueChange={(v) => setMode(v as ChatMode)}>
+                  {CHAT_MODE_OPTIONS.map((option) => (
+                    <DropdownMenu.RadioItem
+                      key={option.id}
+                      value={option.id}
+                      className="flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm cursor-pointer hover:bg-black/5 focus:bg-black/5 focus:outline-none"
+                    >
+                      <DropdownMenu.ItemIndicator className="inline-flex items-center justify-center">
+                        <Check className="h-4 w-4" />
+                      </DropdownMenu.ItemIndicator>
+                      {option.label}
+                    </DropdownMenu.RadioItem>
+                  ))}
+                </DropdownMenu.RadioGroup>
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Root>
         </div>
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            aria-label="More actions"
-            className="h-9 w-9 rounded-md border border-border bg-surface inline-flex items-center justify-center hover:bg-surface-hover"
-            onClick={() => inputRef.current?.focus()}
-            disabled={isProcessing}
-            title="More"
-          >
-            <span aria-hidden className="text-[18px] leading-none">+</span>
-          </button>
           <button
             type="button"
             aria-label="Send"
