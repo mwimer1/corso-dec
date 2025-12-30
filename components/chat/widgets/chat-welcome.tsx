@@ -19,7 +19,7 @@ function ChatWelcome({ firstName, onPreset, className }: ChatWelcomeProps) {
   const greeting = greetingWithName(firstName?.trim());
   return (
     <div className={["w-full", className].filter(Boolean).join(' ')}>
-        <div className="py-12 text-center">
+        <div className="py-6 md:py-8 text-center mb-6">
         <h1 className="text-4xl md:text-5xl font-semibold tracking-tight">{greeting}</h1>
         <p className="mt-4 text-base text-muted-foreground max-w-3xl lg:max-w-4xl 2xl:max-w-5xl mx-auto">
           Ask a question about permits, company activity, or address history. Try a preset prompt below or type your

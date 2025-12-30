@@ -1,10 +1,10 @@
 "use client";
 
 import { ArrowUpIcon, Badge } from '@/components';
-import { CHAT_MODE_LABEL, CHAT_MODE_OPTIONS, type ChatMode } from '../lib/chat-mode';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { Check } from 'lucide-react';
 import * as React from 'react';
+import { CHAT_MODE_LABEL, CHAT_MODE_OPTIONS, type ChatMode } from '../lib/chat-mode';
 
 type ChatComposerProps = {
   value: string;
@@ -56,7 +56,7 @@ function ChatComposer(props: ChatComposerProps) {
   }, [value, onInputAutoGrow]);
 
   return (
-    <div className="mx-auto w-full max-w-3xl lg:max-w-4xl 2xl:max-w-5xl rounded-2xl bg-surface p-3 shadow-sm" role="region" aria-label="Message composer">
+    <div className="mx-auto w-full max-w-3xl lg:max-w-4xl 2xl:max-w-5xl rounded-2xl bg-surface p-3 shadow-sm focus-within:ring-1 focus-within:ring-border focus-within:ring-offset-2 focus-within:ring-offset-background transition-shadow" role="region" aria-label="Message composer">
       <textarea
         ref={inputRef}
         value={value}
@@ -68,7 +68,7 @@ function ChatComposer(props: ChatComposerProps) {
         aria-label="Chat message input"
         rows={1}
         onInput={(e) => onInputAutoGrow?.(e.currentTarget)}
-        className="min-h-[44px] max-h-40 w-full resize-none rounded-md bg-transparent px-3 py-2 text-sm outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+        className="min-h-[44px] max-h-40 w-full resize-none rounded-md bg-transparent px-3 py-2 text-sm outline-none focus:outline-none focus-visible:outline-none"
         disabled={disabled}
       />
 
@@ -83,7 +83,7 @@ function ChatComposer(props: ChatComposerProps) {
                 disabled={isProcessing}
                 title={mode === 'auto' ? 'Change data scope (currently: Auto - AI determines table)' : `Change data scope (currently: ${CHAT_MODE_LABEL[mode]})`}
               >
-                <span aria-hidden className="text-[18px] leading-none">+</span>
+                <span aria-hidden className="text-[20px] leading-none">+</span>
               </button>
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
@@ -129,7 +129,7 @@ function ChatComposer(props: ChatComposerProps) {
             className="h-9 w-9 rounded-md bg-primary text-primary-foreground inline-flex items-center justify-center disabled:opacity-50 hover:shadow-sm active:opacity-90"
             aria-describedby="chat-send-hint"
           >
-            <ArrowUpIcon pixelSize={18} />
+            <ArrowUpIcon pixelSize={14} />
           </button>
           <span id="chat-send-hint" className="sr-only">Enter to send · Shift+Enter for newline</span>
           {isProcessing && (

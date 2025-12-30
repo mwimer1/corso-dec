@@ -1,10 +1,10 @@
 "use client";
 
-import { useChat } from '../hooks/use-chat';
-import { isChatMode, type ChatMode } from '../lib/chat-mode';
 import { useUser } from '@clerk/nextjs';
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useChat } from '../hooks/use-chat';
+import { isChatMode, type ChatMode } from '../lib/chat-mode';
 import ChatWelcome from '../widgets/chat-welcome';
 import { MessageItem } from '../widgets/message-item';
 
@@ -130,7 +130,7 @@ export default function ChatWindow() {
             </ul>
           </div>
         ) : (
-          <div className="mx-auto w-full max-w-3xl lg:max-w-4xl 2xl:max-w-5xl px-6 pt-6 pb-3">
+          <div className="mx-auto w-full max-w-3xl lg:max-w-4xl 2xl:max-w-5xl px-6 pt-4 md:pt-6 pb-3">
             <ChatWelcome onPreset={handleSelectFollowUp} {...(firstName ? { firstName } : {})} />
           </div>
         )}
@@ -172,3 +172,4 @@ export default function ChatWindow() {
 
 // Keep named export for backward compatibility
 export { ChatWindow };
+
