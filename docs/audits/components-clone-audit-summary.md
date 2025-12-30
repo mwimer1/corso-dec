@@ -1,9 +1,9 @@
 ---
-description: "Documentation and resources for documentation functionality. Located in audits/."
+title: "Audits"
 last_updated: "2025-12-30"
 category: "documentation"
 status: "draft"
-title: "Audits"
+description: "Documentation and resources for documentation functionality. Located in audits/."
 ---
 # Components Clone Audit Summary
 
@@ -132,6 +132,9 @@ pnpm dlx jscpd components --format typescript --format tsx --min-lines 10 --min-
 ---
 
 **Last Updated**: 2025-01-28
+
+
+
 
 
 
