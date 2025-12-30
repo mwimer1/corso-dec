@@ -237,7 +237,7 @@ export async function GET(req: Request) {
 
 ## 📚 Related Documentation
 
-- [Next.js Static Files](https://nextjs.org/docs/basic-features/static-file-serving)
+- [Next.js Static Files](https://nextjs.org/docs/app/building-your-application/routing/route-handlers)
 - [MSW Documentation](https://mswjs.io/docs/)
 
 ## 🏷️ Tags

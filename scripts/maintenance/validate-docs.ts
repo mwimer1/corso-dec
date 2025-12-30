@@ -181,12 +181,34 @@ async function validateAppLinks(): Promise<void> {
           walk(full, path.join(base, entry.name));
         } else if (entry.isFile() && entry.name === 'page.tsx') {
           // Convert /(group) and segment folders to public URL
-          const url = '/' + base
+          let url = '/' + base
             .replace(/\\/g, '/')
             .replace(/\(([^)]+)\)\/?/g, '') // remove route groups
             .replace(/index$/i, '')
             .replace(/\/page\.tsx$/, '')
             .replace(/\/$/, '');
+          
+          // Handle catch-all routes: [[...param]] -> matches the base path
+          // e.g., app/(auth)/sign-in/[[...sign-in]]/page.tsx -> /sign-in
+          if (url.includes('[[...')) {
+            url = url.replace(/\/\[\[\.\.\.[^\]]+\]\]/g, '');
+          }
+          
+          // Handle dynamic routes: [param] -> matches any value
+          // e.g., app/(protected)/dashboard/(entities)/[entity]/page.tsx
+          // We need to check if this is a known entity route and add specific paths
+          if (url.includes('/[entity]')) {
+            // Known entity routes from APP_LINKS
+            routes.add('/dashboard/projects');
+            routes.add('/dashboard/companies');
+            routes.add('/dashboard/addresses');
+            // Keep the dynamic route pattern for validation
+            url = url.replace(/\[entity\]/, '[entity]');
+          } else {
+            // Remove other dynamic segments for now (they're valid but we can't enumerate all values)
+            url = url.replace(/\[[^\]]+\]/g, '[param]');
+          }
+          
           routes.add(url || '/');
         }
       }

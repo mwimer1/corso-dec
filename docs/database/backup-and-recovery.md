@@ -481,7 +481,7 @@ tar -czf config_backup_$(date +%Y%m%d_%H%M%S).tar.gz \
 
 ## 🔗 Related Documentation
 
-- [Supabase Database Configuration](../../supabase/README.md) - Database setup and migrations
+- [Supabase Database Configuration](https://github.com/mwimer1/corso-dec/blob/main/supabase/README.md) - Database setup and migrations
 - [Materialized View Refresh Strategy](./materialized-view-refresh-strategy.md) - MV refresh procedures
 - [Operational Guide](../operations/operational-guide.md) - Day-to-day operations
 - [Security Implementation](../security/security-implementation.md) - Security procedures

@@ -12,7 +12,7 @@ status: "draft"
 **Do NOT file public issues for security vulnerabilities.** Instead, please follow our responsible disclosure policy:
 
 ### 📋 How to Report
-1. Go to our [Security Advisories](https://github.com/Corso222/corso-app/security/advisories/new) page
+1. Go to our [Security Advisories](https://github.com/mwimer1/corso-dec/security/advisories/new) page
 2. Click "Report a vulnerability"
 3. Fill out the security advisory form with details about the issue
 4. Our security team will respond within 48 hours
@@ -58,9 +58,9 @@ status: "draft"
 ## 📞 Contact Information
 
 For security-related questions or concerns:
-- **Security Issues**: Use the [Security Advisories](https://github.com/Corso222/corso-app/security/advisories/new) form
-- **General Support**: Visit our [Discussions](https://github.com/Corso222/corso-app/discussions) page
-- **Customer Support**: Contact our support team at [support@corso.dev](mailto:support@corso.dev)
+- **Security Issues**: Use the [Security Advisories](https://github.com/mwimer1/corso-dec/security/advisories/new) form
+- **General Support**: Contact our support team
+- **Customer Support**: Contact our support team at [support@getcorso.com](mailto:support@getcorso.com)
 
 ## 📜 Responsible Disclosure Policy
 

@@ -266,7 +266,7 @@ DROP MATERIALIZED VIEW IF EXISTS public.mv_old_view;
 
 ## 🔗 Related Documentation
 
-- [Supabase Database Configuration](../../supabase/README.md) - Database setup and migrations
+- [Supabase Database Configuration](https://github.com/mwimer1/corso-dec/blob/main/supabase/README.md) - Database setup and migrations
 - [Performance Optimization Guide](../performance/performance-optimization-guide.md) - Query optimization
 - [Analytics Best Practices](../analytics/clickhouse-recommendations.md) - Analytics patterns
 
