@@ -1,7 +1,7 @@
 "use client";
 
-import { ArrowUpIcon } from '@/components';
-import { CHAT_MODE_OPTIONS, type ChatMode } from '../lib/chat-mode';
+import { ArrowUpIcon, Badge } from '@/components';
+import { CHAT_MODE_LABEL, CHAT_MODE_OPTIONS, type ChatMode } from '../lib/chat-mode';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { Check } from 'lucide-react';
 import * as React from 'react';
@@ -73,7 +73,7 @@ function ChatComposer(props: ChatComposerProps) {
       />
 
       <div className="mt-2 flex items-center justify-between" role="toolbar" aria-label="Composer actions">
-        <div>
+        <div className="flex items-center gap-2">
           <DropdownMenu.Root>
             <DropdownMenu.Trigger asChild>
               <button
@@ -113,6 +113,9 @@ function ChatComposer(props: ChatComposerProps) {
               </DropdownMenu.Content>
             </DropdownMenu.Portal>
           </DropdownMenu.Root>
+          <Badge color="secondary" aria-hidden="true">
+            {CHAT_MODE_LABEL[mode]}
+          </Badge>
         </div>
         <div className="flex items-center gap-2">
           <button
