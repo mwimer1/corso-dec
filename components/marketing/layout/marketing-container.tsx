@@ -1,6 +1,6 @@
 import { cn } from "@/styles";
 import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
-import type { VariantProps } from "@/styles/utils";
+import type { VariantProps } from "@/styles";
 import * as React from "react";
 
 interface MarketingContainerProps {

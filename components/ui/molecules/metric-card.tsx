@@ -1,6 +1,6 @@
 "use client";
 
-import { tv, type VariantProps } from "@/styles/utils";
+import { tv, type VariantProps } from "@/styles";
 import * as React from "react";
 
 const metricCard = tv({
