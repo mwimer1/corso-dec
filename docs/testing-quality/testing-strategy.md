@@ -163,7 +163,7 @@ describe('ComponentName', () => {
 ```typescript
 import { TablePro } from '@/components/dashboard';
 import { render, screen } from '@testing-library/react';
-import type { ValidationResult } from '@/types/validators/runtime/types';
+import type { DomainValidationResult } from '@/types/shared';
 
 describe('TablePro', () => {
   it('renders table with proper types', () => {

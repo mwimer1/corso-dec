@@ -38,11 +38,9 @@ export type {
 
 // Validation types
 export type {
-    ApiKeyValidation, ConfigValidationHookResult, DomainValidationResult, EmailVerificationValidation, MfaValidation, OauthValidation, PasswordResetValidation, PasswordStrengthValidation, SessionValidation, UserLoginValidation, UserRegistrationValidation, ValidationConfig, ValidationResult, ValidationState
-} from '../validators/runtime/types';
-
-export type {
-    AllowedColumn, AllowedTableName, WhereCondition
-} from '../validators/sql-safety/types';
+    ConfigValidationHookResult,
+    DomainValidationResult,
+    ValidationState
+} from './validation/types';
 
 

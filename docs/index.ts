@@ -529,10 +529,6 @@ export const docs = [
     "title": "Utils"
   },
   {
-    "path": "types/validators/readme.md",
-    "title": "Validators"
-  },
-  {
     "path": "docs/security/dependency-policy.md",
     "title": "Dependency Policy"
   }

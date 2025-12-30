@@ -48,7 +48,6 @@
       "@shared/utils/dates": ["types/shared/utils/dates/types.ts"],
       "@/shared/performance/cache-config/types": ["types/shared/performance/cache-config/types.ts"],
       "@shared/feature-flags": ["types/shared/feature-flags/types.ts"],
-      "@shared/validation/sql-safety": ["types/validators/sql-safety/types.ts"],
       "@shared/data/status": ["types/shared/data/status/types.ts"],
       "@/shared/config/types": ["types/shared/config/types.ts"],
       "@/types/api": ["types/api/index.ts"],

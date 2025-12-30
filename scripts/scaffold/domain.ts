@@ -400,7 +400,7 @@ function createTypesIndex(typesPath: string, name: string, force: boolean): void
 
   const content = `/**
  * @fileoverview ${name} Domain Type Definitions
- * @module types/validators/${name}
+ * @module types/shared/validation/types (for validation types) or domain-specific type files
  */
 
 // TODO: Import and re-export inferred types from validators

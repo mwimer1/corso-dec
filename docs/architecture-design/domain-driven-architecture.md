@@ -288,7 +288,7 @@ import { serverExport } from '@/lib/{domain}/server';
 #### Zod Schema Requirements
 - **MUST** validate all external inputs with Zod schemas
 - **MUST** place schemas in `@/lib/validators/{domain}/`
-- **MUST** export inferred types to `@/types/validators/{domain}/`
+- **MUST** export inferred types to `@/types/shared/validation/types.ts` or domain-specific type files
 - **MUST** use descriptive error messages
 
 #### Validation Pattern
@@ -303,7 +303,8 @@ export const validateInput = (input: unknown) => {
   return assertZodSchema(inputSchema, input);
 };
 
-// types/validators/{domain}/index.ts
+// types/shared/validation/types.ts (for cross-cutting validation types)
+// or domain-specific type files for domain-specific types
 export type InputType = z.infer<typeof inputSchema>;
 ```
 

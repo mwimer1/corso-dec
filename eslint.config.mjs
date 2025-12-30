@@ -468,10 +468,6 @@ export default [
               'message': 'Barrel removed. Import directly from canonical locations (e.g., @/types/auth/authorization/types).'
             },
             {
-              'group': ['@/types/validators', '@/types/validators/index'],
-              'message': 'Barrel removed. Import directly from canonical locations (e.g., @/types/validators/runtime/types).'
-            },
-            {
               'group': ['@/types/chat', '@/types/chat/index'],
               'message': 'Barrel discouraged. Prefer direct imports (e.g., @/types/chat/message/types).'
             },
