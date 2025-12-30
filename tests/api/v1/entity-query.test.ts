@@ -18,7 +18,7 @@ vi.mock('@/lib/entities/config', () => ({
   getEntityConfig: (...args: any[]) => mockGetEntityConfig(...args),
 }));
 
-describe('POST /api/v1/entity/[entity]/query', () => {
+describe('API v1: POST /entity/[entity]/query', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockAuth.mockResolvedValue({

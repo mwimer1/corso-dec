@@ -28,7 +28,7 @@ vi.mock('@/lib/entities/config', () => ({
   ]),
 }));
 
-describe('Entity Query Route', () => {
+describe('API v1: GET /entity/[entity]', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockAuth.mockResolvedValue({

@@ -1360,7 +1360,7 @@ status: draft
     │   │   ├── chat-streaming.test.ts
     │   │   ├── csp-report.cors.test.ts
     │   │   ├── entity-api.test.ts
-    │   │   ├── entity.query.test.ts
+    │   │   ├── entity.get.test.ts
     │   │   ├── export.cors.test.ts
     │   │   ├── health-clickhouse.test.ts
     │   │   ├── health.test.ts
@@ -1426,7 +1426,6 @@ status: draft
     │   │   ├── ag-grid-modules.test.ts
     │   │   ├── ag-grid-registration.test.ts
     │   │   ├── cancellation.test.ts
-    │   │   ├── dashboard-ag-grid-registration.test.ts
     │   │   ├── dashboard-barrel-server-leak.test.ts
     │   │   ├── dashboard-use-client.test.ts
     │   │   ├── entity-columns-registry.test.ts
