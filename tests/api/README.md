@@ -45,14 +45,20 @@ API route tests validate Next.js API handlers for correct behavior, error handli
 | Route | File | Status | Notes |
 |-------|------|--------|-------|
 | `/api/health` | `health.test.ts` | ✅ | Runtime boundary, response format |
-| `/api/v1/chat/generate-chart` | `v1/chat-generate-chart.test.ts` | ✅ | Response validation, timeout handling |
-| `/api/v1/chat/generate-sql` | `v1/chat-generate-sql.test.ts` | ✅ | Route module loading, response type |
-| `/api/v1/entity/{entity}/query` | `v1/entity-query-*.test.ts` | ✅ | Entity queries, pagination, filtering |
-| `/api/v1/entity/{entity}` | `v1/entity-*.test.ts` | ✅ | Entity base operations |
+| `/api/health/clickhouse` | `health-clickhouse.test.ts` | ✅ | ClickHouse health check |
+| `/api/public/health` | `health.test.ts` | ✅ | Public health endpoint (shared with `/api/health`) |
+| `/api/public/health/clickhouse` | `health-clickhouse.test.ts` | ✅ | Public ClickHouse health (shared) |
+| `/api/v1/ai/chat` | `chat-streaming.test.ts` | ✅ | AI chat streaming, auth, RBAC |
+| `/api/v1/ai/generate-sql` | `../chat/generate-sql.route.*.test.ts` | ✅ | SQL generation (split into 6 test files) |
+| `/api/v1/entity/{entity}` | `entity.get.test.ts` | ✅ | Entity base operations, pagination, filtering |
+| `/api/v1/entity/{entity}/query` | `v1/entity-query.test.ts` | ✅ | Entity queries, pagination, filtering |
+| `/api/v1/entity/{entity}/export` | `export.cors.test.ts` | ✅ | Entity exports, CORS handling |
 | `/api/v1/query` | `v1/query.test.ts` | ✅ | Generic SQL query endpoint, auth, RBAC, tenant isolation |
+| `/api/v1/user` | `v1/user.test.ts` | ✅ | User profile operations, validation |
+| `/api/v1/csp-report` | `csp-report.cors.test.ts` | ✅ | Content Security Policy validation, CORS |
+| `/api/v1/insights/search` | `v1/insights-search.test.ts` | ✅ | Search functionality, response format |
 | `/api/v1/subscription/status` | `v1/subscription-status.test.ts` | ✅ | Route module loading, response type |
-| `/api/v1/insights/search` | `insights-search.test.ts` | ✅ | Search functionality, response format |
-| `/api/public/csp-report` | `public/csp-report.test.ts` | ✅ | Content Security Policy validation |
+| `/api/internal/auth` | `internal/auth.webhook.test.ts` | ✅ | Clerk webhook handling, signature validation |
 
 ## Testing Patterns
 
