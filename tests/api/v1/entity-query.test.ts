@@ -1,10 +1,5 @@
+import { mockClerkAuth } from '@/tests/support/mocks';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-
-// Mock the auth function
-const mockAuth = vi.fn();
-vi.mock('@clerk/nextjs/server', () => ({
-  auth: () => mockAuth(),
-}));
 
 // Mock the entity service pages
 const mockGetEntityPage = vi.fn();
@@ -21,9 +16,9 @@ vi.mock('@/lib/entities/config', () => ({
 describe('API v1: POST /entity/[entity]/query', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockAuth.mockResolvedValue({
+    mockClerkAuth.setup({
       userId: 'test-user-123',
-      has: vi.fn().mockReturnValue(true), // Has member role
+      has: () => true, // Has member role
     });
     mockGetEntityPage.mockResolvedValue({
       data: [
@@ -74,7 +69,7 @@ describe('API v1: POST /entity/[entity]/query', () => {
   });
 
   it('should return 401 when unauthenticated', async () => {
-    mockAuth.mockResolvedValue({ userId: null });
+    mockClerkAuth.setup({ userId: null });
 
     const mod = await import('@/app/api/v1/entity/[entity]/query/route');
     const handler = mod.POST;
@@ -96,9 +91,9 @@ describe('API v1: POST /entity/[entity]/query', () => {
   });
 
   it('should return 403 when user lacks member role', async () => {
-    mockAuth.mockResolvedValue({
+    mockClerkAuth.setup({
       userId: 'test-user-123',
-      has: vi.fn().mockReturnValue(false), // No member role
+      has: () => false, // No member role
     });
 
     const mod = await import('@/app/api/v1/entity/[entity]/query/route');

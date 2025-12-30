@@ -6,9 +6,19 @@ import { vi } from 'vitest';
  */
 const mockAuthFn = vi.fn();
 
+/**
+ * Mock clerkClient for organization membership lookups
+ */
+const mockClerkClient = {
+  users: {
+    getOrganizationMembershipList: vi.fn(),
+  },
+};
+
 // Top-level module mock registration (Vitest best practice)
 vi.mock('@clerk/nextjs/server', () => ({
   auth: () => mockAuthFn(),
+  clerkClient: mockClerkClient,
 }));
 
 /**
@@ -69,6 +79,13 @@ export const mockClerkAuth = {
   },
 
   /**
+   * Get the clerkClient mock for organization membership operations
+   */
+  getClerkClient() {
+    return mockClerkClient;
+  },
+
+  /**
    * Configure the auth mock return value
    * @param options Configuration options (partial, merges with defaults)
    */
@@ -103,6 +120,8 @@ export const mockClerkAuth = {
    */
   reset(): void {
     mockAuthFn.mockClear();
+    mockClerkClient.users.getOrganizationMembershipList.mockClear();
+    mockClerkClient.users.getOrganizationMembershipList.mockResolvedValue({ data: [] });
     this.setup();
   },
 
@@ -111,6 +130,7 @@ export const mockClerkAuth = {
    */
   clear(): void {
     mockAuthFn.mockClear();
+    mockClerkClient.users.getOrganizationMembershipList.mockClear();
   },
 };
 
