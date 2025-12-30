@@ -1,6 +1,6 @@
 import { containerMaxWidthVariants } from '@/styles/ui/shared/container-base';
-import type { VariantProps } from '@/styles/utils';
-import { tv } from '@/styles/utils';
+import type { VariantProps } from '@/styles';
+import { tv } from '@/styles';
 import { containerWithPaddingVariants } from "../shared/container-helpers";
 /**
  * PricingGrid variant factory – for responsive pricing plan layouts.

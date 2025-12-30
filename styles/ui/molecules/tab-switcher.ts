@@ -1,5 +1,5 @@
 import { containerMaxWidthVariants } from '@/styles/ui/shared/container-base';
-import { tv, type VariantProps } from '@/styles/utils';
+import { tv, type VariantProps } from '@/styles';
 import { focusRing } from "../shared/focus-ring";
 
 const tabSwitcherVariants = tv({

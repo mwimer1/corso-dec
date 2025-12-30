@@ -1,6 +1,6 @@
 // styles/ui/atoms/text-area.ts
-import type { VariantProps } from '@/styles/utils';
-import { tv } from '@/styles/utils';
+import type { VariantProps } from '@/styles';
+import { tv } from '@/styles';
 
 /**
  * TextArea variant factory

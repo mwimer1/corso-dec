@@ -1,5 +1,5 @@
 // styles/ui/shared/container-helpers.ts
-import { tv } from '@/styles/utils';
+import { tv } from '@/styles';
 import { containerMaxWidthVariants } from './container-base';
 
 // Inlined from container-padding.ts

@@ -1,4 +1,4 @@
-import { tv, type VariantProps } from '@/styles/utils';
+import { tv, type VariantProps } from '@/styles';
 import { navDesktopClasses, navMobileCtaClasses, navMobileItemClasses } from "../shared/navbar-sizes";
 
 // Consistent solid-light button on surface backgrounds (token-first; no hardcoded white)

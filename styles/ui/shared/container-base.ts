@@ -1,5 +1,5 @@
 // styles/ui/shared/container-base.ts
-import { tv } from '@/styles/utils';
+import { tv } from '@/styles';
 
 /**
  * Container Max Width Variant Factory

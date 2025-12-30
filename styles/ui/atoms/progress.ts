@@ -1,6 +1,6 @@
 // FILE: styles/primitives/progress.ts
-import type { VariantProps } from '@/styles/utils';
-import { tv } from '@/styles/utils';
+import type { VariantProps } from '@/styles';
+import { tv } from '@/styles';
 
 const progressVariants = tv({
   base: 'relative w-full overflow-hidden rounded-full bg-secondary',

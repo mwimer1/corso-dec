@@ -1,6 +1,6 @@
 // styles/ui/atoms/input.ts
-import type { VariantProps } from '@/styles/utils';
-import { tv } from '@/styles/utils';
+import type { VariantProps } from '@/styles';
+import { tv } from '@/styles';
 
 // Input variant with focus-visible ring and optional ghost style.
 const inputVariants = tv({

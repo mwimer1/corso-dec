@@ -1,7 +1,7 @@
 // styles/ui/atoms/card.ts
 
-import type { VariantProps } from '@/styles/utils';
-import { tv } from '@/styles/utils';
+import type { VariantProps } from '@/styles';
+import { tv } from '@/styles';
 
 /**
  * Card variant factory

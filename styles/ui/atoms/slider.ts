@@ -1,6 +1,6 @@
 // styles/components/ui/atoms/slider.ts
-import type { VariantProps } from '@/styles/utils';
-import { tv } from '@/styles/utils';
+import type { VariantProps } from '@/styles';
+import { tv } from '@/styles';
 
 const sliderVariants = tv({
   base: ['relative flex w-full touch-none select-none items-center'],

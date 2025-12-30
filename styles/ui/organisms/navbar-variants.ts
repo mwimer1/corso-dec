@@ -1,4 +1,4 @@
-import { tv } from '@/styles/utils';
+import { tv } from '@/styles';
 
 const navbarStyleVariants = tv({
   slots: {

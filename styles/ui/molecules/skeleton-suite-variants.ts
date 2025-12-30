@@ -1,4 +1,4 @@
-import { tv, type VariantProps } from '@/styles/utils';
+import { tv, type VariantProps } from '@/styles';
 
 export const skeletonSuite = tv({
 	base: 'rounded-md border border-border bg-surface p-md space-y-3',

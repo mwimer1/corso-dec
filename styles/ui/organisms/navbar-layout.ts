@@ -1,4 +1,4 @@
-import { tv } from '@/styles/utils';
+import { tv } from '@/styles';
 import { navDesktopClasses } from "../shared/navbar-sizes";
 
 /**

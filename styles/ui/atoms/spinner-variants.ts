@@ -1,5 +1,5 @@
 import { sizeHW } from '@/styles/shared-variants';
-import { tv, type VariantProps } from '@/styles/utils';
+import { tv, type VariantProps } from '@/styles';
 
 const spinnerVariants = tv({
   base: 'animate-spin motion-reduce:animate-none motion-reduce:transition-none',

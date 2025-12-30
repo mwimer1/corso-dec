@@ -1,5 +1,5 @@
 // removed unused VariantProps import
-import { tv } from '@/styles/utils';
+import { tv } from '@/styles';
 
 const footerCTA = tv({
   slots: {

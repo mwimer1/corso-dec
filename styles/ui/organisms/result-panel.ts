@@ -1,5 +1,5 @@
 // styles/organisms/result-panel.ts
-import { tv, type VariantProps } from '@/styles/utils';
+import { tv, type VariantProps } from '@/styles';
 
 const resultPanelVariants = tv({
   base: [

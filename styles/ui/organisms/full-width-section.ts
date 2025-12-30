@@ -1,6 +1,6 @@
 import { containerWithPaddingVariants } from "@/styles/ui/shared/container-helpers";
-import type { VariantProps } from '@/styles/utils';
-import { tv } from '@/styles/utils';
+import type { VariantProps } from '@/styles';
+import { tv } from '@/styles';
 /**
  * FullWidthSection variant factory – for full-width layout sections.
  * Supports different backgrounds, padding, and container options.

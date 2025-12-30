@@ -1,5 +1,5 @@
 // styles/ui/shared/typography-variants.ts
-import { tv } from '@/styles/utils';
+import { tv } from '@/styles';
 
 /**
  * Responsive heading variants using canonical clamp() sizes.
