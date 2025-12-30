@@ -1,6 +1,7 @@
 "use client";
 
 import { useChat } from '../hooks/use-chat';
+import { isChatMode, type ChatMode } from '../lib/chat-mode';
 import { useUser } from '@clerk/nextjs';
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -15,10 +16,10 @@ export default function ChatWindow() {
   const { user } = useUser();
 
   const [draft, setDraft] = useState<string>("");
-  const [mode, setMode] = useState<'projects' | 'companies' | 'addresses'>(() => {
+  const [mode, setMode] = useState<ChatMode>(() => {
     try {
       const saved = typeof window !== 'undefined' ? window.localStorage.getItem('chat:mode') : null;
-      if (saved === 'projects' || saved === 'companies' || saved === 'addresses') return saved;
+      if (saved && isChatMode(saved)) return saved;
     } catch {}
     return 'projects';
   });

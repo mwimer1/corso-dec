@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowUpIcon, SegmentedControl } from '@/components';
+import { CHAT_MODE_OPTIONS, type ChatMode } from '../lib/chat-mode';
 import * as React from 'react';
 
 type ChatComposerProps = {
@@ -12,8 +13,8 @@ type ChatComposerProps = {
   onFocus?: () => void;
   onInputAutoGrow?: (el: HTMLTextAreaElement | null) => void;
   isProcessing?: boolean;
-  mode: 'projects' | 'companies' | 'addresses';
-  setMode: (m: 'projects' | 'companies' | 'addresses') => void;
+  mode: ChatMode;
+  setMode: (m: ChatMode) => void;
   stop?: () => void;
   canSend?: boolean;
 };
@@ -74,11 +75,7 @@ function ChatComposer(props: ChatComposerProps) {
           <SegmentedControl
             value={mode}
             onChange={(v) => setMode(v)}
-            options={[
-              { id: 'projects', label: 'Projects' },
-              { id: 'companies', label: 'Companies' },
-              { id: 'addresses', label: 'Addresses' },
-            ]}
+            options={CHAT_MODE_OPTIONS}
           />
         </div>
         <div className="flex items-center gap-2">
