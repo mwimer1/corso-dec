@@ -1,6 +1,7 @@
 "use client";
 
 import { useChat } from '../hooks/use-chat';
+import { isChatMode, type ChatMode } from '../lib/chat-mode';
 import { useUser } from '@clerk/nextjs';
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -15,20 +16,31 @@ export default function ChatWindow() {
   const { user } = useUser();
 
   const [draft, setDraft] = useState<string>("");
-  const [mode, setMode] = useState<'projects' | 'companies' | 'addresses'>(() => {
+  const [mode, setMode] = useState<ChatMode>(() => {
     try {
       const saved = typeof window !== 'undefined' ? window.localStorage.getItem('chat:mode') : null;
-      if (saved === 'projects' || saved === 'companies' || saved === 'addresses') return saved;
+      if (saved && isChatMode(saved)) return saved;
     } catch {}
-    return 'projects';
+    return 'auto';
   });
   const [hydrated, setHydrated] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const firstName = user?.firstName;
   const hasHistory = messages.length > 0;
   const PREFIX_MODE = true;
-  const applyModePrefix = useCallback((t: string) => (PREFIX_MODE ? `[mode:${mode}] ${t}` : t), [mode, PREFIX_MODE]);
-  const placeholder = useMemo(() => `Ask anything about ${mode}…`, [mode]);
+  // Only prefix with mode if it's not 'auto' - auto mode lets the AI determine the table
+  const applyModePrefix = useCallback((t: string) => {
+    if (!PREFIX_MODE) return t;
+    // Don't prefix 'auto' mode - let the AI determine which table to use
+    if (mode === 'auto') return t;
+    return `[mode:${mode}] ${t}`;
+  }, [mode, PREFIX_MODE]);
+  const placeholder = useMemo(() => {
+    if (mode === 'auto') {
+      return 'Ask anything…';
+    }
+    return `Ask anything about ${mode}…`;
+  }, [mode]);
 
   // Track hydration state to conditionally render placeholder
   useEffect(() => {
@@ -125,7 +137,7 @@ export default function ChatWindow() {
       </div>
 
       {/* Composer — server placeholder + client-only composer */}
-      <div className="bg-background px-6 py-5 flex-shrink-0 border-t-[var(--chat-composer-border)] border-border">
+      <div className="bg-background px-6 pt-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] flex-shrink-0 border-t-[var(--chat-composer-border)] border-border">
         {/* Server-only placeholder to preserve layout pre-hydration; mark as region for a11y */}
         {!hydrated && (
           <div className="mx-auto w-full max-w-3xl lg:max-w-4xl 2xl:max-w-5xl rounded-2xl bg-surface p-3 shadow-sm" role="region" aria-hidden="true">

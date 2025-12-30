@@ -846,7 +846,9 @@ const handler = async (req: NextRequest): Promise<Response> => {
 
   // Parse mode prefix if present
   const { mode, cleanedContent } = parseModePrefix(sanitizedContent);
-  const preferredTable = body.preferredTable || mode || null;
+  // Treat 'auto' mode as null - let the AI determine which table to use
+  const parsedMode = mode === 'auto' ? null : mode;
+  const preferredTable = body.preferredTable || parsedMode || null;
 
   // Build messages array
   const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [];
