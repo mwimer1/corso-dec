@@ -1,6 +1,6 @@
 ---
 title: "Tools Scripts"
-description: ">-"
+description: "Documentation and resources for documentation functionality. Located in tools-scripts/."
 last_updated: "2025-12-30"
 category: "documentation"
 status: "stable"

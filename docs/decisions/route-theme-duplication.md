@@ -1,6 +1,6 @@
 ---
 title: "Decisions"
-description: ">-"
+description: "Documentation and resources for documentation functionality. Located in decisions/."
 last_updated: "2025-12-30"
 category: "documentation"
 status: "draft"

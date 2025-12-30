@@ -1,6 +1,6 @@
 ---
 title: "References"
-description: ">-"
+description: "Documentation and resources for documentation functionality. Located in references/."
 last_updated: "2025-12-30"
 category: "documentation"
 status: "draft"

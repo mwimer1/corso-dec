@@ -1,6 +1,6 @@
 ---
 title: "Performance"
-description: ">-"
+description: "Documentation and resources for documentation functionality. Located in performance/."
 last_updated: "2025-12-30"
 category: "documentation"
 status: "draft"

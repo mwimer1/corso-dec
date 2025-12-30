@@ -1,7 +1,9 @@
 ---
-status: "completed"
-last_updated: "2025-12-30"
 category: "documentation"
+last_updated: "2025-12-30"
+status: "draft"
+title: "Audits"
+description: "Documentation and resources for documentation functionality. Located in audits/."
 ---
 # Orphan Cleanup - Stage 1 Summary
 
