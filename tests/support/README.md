@@ -93,48 +93,82 @@ expect(trackNavClick).toHaveBeenCalledWith('button:click', '/expected-path');
 ## Mocking Framework
 
 ### Centralized Mocks (`mocks/`)
-Pre-configured mocks for common external dependencies:
+Pre-configured mocks for common external dependencies. Import from the index for convenience:
 
 ```typescript
-// Database mocking
-import { mockDatabase } from "../support/mocks/database";
-mockDatabase.setup({ /* mock data */ });
-
-// Clerk authentication mocking
-import { mockClerkAuth } from "../support/mocks/clerk";
-mockClerkAuth.setup({ userId: 'test-user', orgId: 'test-org' });
-
-// Environment variables
-import { mockEnv } from "../support/mocks/env";
-mockEnv.setup({ NODE_ENV: 'test', DATABASE_URL: 'mock://localhost' });
+import { mockClerkAuth, mockHeaders } from '@/tests/support/mocks';
 ```
 
-### Service Mocking Pattern
+#### Clerk Authentication Mocking
 ```typescript
-// Generic service mocking utility
-import { createServiceMock } from "../support/mocks/service";
+import { mockClerkAuth } from '@/tests/support/mocks';
 
-const mockService = createServiceMock('external-api');
-mockService.mockResolvedValue({ data: 'mock response' });
+// Default authenticated user (member role)
+beforeEach(() => {
+  mockClerkAuth.setup();
+});
 
-// In test
-expect(mockService).toHaveBeenCalledWith(expectedParams);
+// Unauthenticated user
+mockClerkAuth.setup({ userId: null });
+
+// Custom user with specific role
+mockClerkAuth.setup({ 
+  userId: 'test-user-123',
+  orgId: 'test-org-456',
+  orgRole: 'org:admin'
+});
+
+// Reset to defaults
+mockClerkAuth.reset();
 ```
+
+#### Next.js Headers Mocking
+```typescript
+import { mockHeaders } from '@/tests/support/mocks';
+
+// Default empty headers
+beforeEach(() => {
+  mockHeaders.setup();
+});
+
+// Custom headers
+mockHeaders.setup({
+  headers: { 'cf-connecting-ip': '192.168.1.1' }
+});
+
+// Headers with cookies
+mockHeaders.setup({
+  headers: { 'x-header': 'value' },
+  cookies: { 'session': 'abc123' }
+});
+
+// Reset to defaults
+mockHeaders.reset();
+```
+
+**Note:** The `next/headers` mock is automatically registered globally via `vitest.setup.shared.ts`. Tests can override behavior per-test using `mockHeaders.setup()`.
 
 ## Usage Examples
 
 ### Basic Test Setup
 ```typescript
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createTestRequest } from '../support/harness/request';
-import { mockClerkAuth } from '../support/mocks/clerk';
+import { mockClerkAuth, mockHeaders } from '@/tests/support/mocks';
 
-describe('MyComponent', () => {
+describe('MyAPI', () => {
   beforeEach(() => {
-    mockClerkAuth.setup({ userId: 'test-user' });
+    // Default authenticated user
+    mockClerkAuth.setup();
+    // Custom headers if needed
+    mockHeaders.setup({ headers: { 'x-custom': 'value' } });
   });
 
-  it('renders correctly', () => {
+  it('handles authenticated requests', async () => {
+    // Test implementation
+  });
+
+  it('handles unauthenticated requests', async () => {
+    mockClerkAuth.setup({ userId: null });
     // Test implementation
   });
 });
@@ -160,22 +194,33 @@ describe('POST /api/v1/data', () => {
 });
 ```
 
-### Component Testing with Mocks
+### API Route Testing with Authentication
 ```typescript
-import { render, screen } from '@testing-library/react';
-import { mockAnalytics } from '../support/analytics-mock';
-import { MyComponent } from '@/components/MyComponent';
+import { describe, it, expect, beforeEach } from 'vitest';
+import { mockClerkAuth } from '@/tests/support/mocks';
+import { resolveRouteModule } from '@/tests/support/resolve-route';
 
-describe('MyComponent', () => {
+describe('POST /api/v1/data', () => {
   beforeEach(() => {
-    mockAnalytics.setup();
+    mockClerkAuth.setup(); // Default authenticated user
   });
 
-  it('tracks user interactions', () => {
-    render(<MyComponent />);
-    fireEvent.click(screen.getByRole('button'));
+  it('processes authenticated requests', async () => {
+    const url = resolveRouteModule('data/create');
+    const mod: any = await import(url);
+    const request = new Request('http://localhost/api/v1/data/create', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ name: 'test' })
+    });
 
-    expect(mockAnalytics.trackEvent).toHaveBeenCalledWith('button_click');
+    const response = await mod.POST(request);
+    expect(response.status).toBe(201);
+  });
+
+  it('rejects unauthenticated requests', async () => {
+    mockClerkAuth.setup({ userId: null });
+    // Test 401 response
   });
 });
 ```
@@ -183,17 +228,17 @@ describe('MyComponent', () => {
 ## Best Practices
 
 ### ✅ **Do**
-- Use centralized mocks from `support/mocks/`
-- Leverage harness utilities for consistent test setup
-- Follow naming conventions for test utilities
-- Document complex mock setups with comments
-- Clean up mocks in `afterEach` hooks
+- Use centralized mocks from `@/tests/support/mocks` (import from index)
+- Use `mockClerkAuth.setup()` instead of manually mocking `@clerk/nextjs/server`
+- Use `mockHeaders.setup()` instead of manually mocking `next/headers`
+- Call `setup()` in `beforeEach` to ensure clean state between tests
+- Use `reset()` or `clear()` if needed for cleanup
 
 ### ❌ **Don't**
-- Create ad-hoc mocks in individual test files
+- Call `vi.mock('@clerk/nextjs/server')` or `vi.mock('next/headers')` in test files (already mocked globally)
+- Create ad-hoc mocks in individual test files for Clerk or Next.js APIs
 - Mock internal implementation details unnecessarily
-- Leave mock side effects between tests
-- Skip cleanup of global state changes
+- Leave mock side effects between tests (use `beforeEach` with `setup()`)
 
 ### Organization Guidelines
 - Group related utilities in subdirectories

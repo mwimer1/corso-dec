@@ -1,11 +1,11 @@
 import { submitContactForm } from '@/app/(marketing)/contact/actions';
 import { ApplicationError } from '@/lib/actions';
+import { mockHeaders } from '@/tests/support/mocks';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock dependencies
 const mockVerifyTurnstileToken = vi.fn();
 const mockWithRateLimit = vi.fn();
-const mockHeaders = vi.fn();
 
 vi.mock('@/lib/security/server', () => ({
   verifyTurnstileToken: (token: string, ip: string) => mockVerifyTurnstileToken(token, ip),
@@ -15,15 +15,11 @@ vi.mock('@/lib/middleware/http/rate-limit', () => ({
   withRateLimit: (key: string, limits: any) => mockWithRateLimit(key, limits),
 }));
 
-vi.mock('next/headers', () => ({
-  headers: () => mockHeaders(),
-}));
-
 describe('submitContactForm action', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockHeaders.mockReturnValue({
-      get: (key: string) => (key === 'cf-connecting-ip' ? '192.168.1.1' : null),
+    mockHeaders.setup({
+      headers: { 'cf-connecting-ip': '192.168.1.1' },
     });
     mockVerifyTurnstileToken.mockResolvedValue(true);
     mockWithRateLimit.mockResolvedValue(undefined);

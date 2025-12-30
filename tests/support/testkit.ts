@@ -5,10 +5,18 @@ export * from '@tests/support/harness/node-mocks';
 export * from '@tests/support/harness/request';
 export * from './harness/render.tsx';
 
+// Re-export centralized mocks (primary import surface)
+export { buildClerkAuthState, mockClerkAuth, mockHeaders } from './mocks';
+
 /**
- * Mock Clerk authentication for testing RBAC
+ * @deprecated Use buildClerkAuthState from '@/tests/support/mocks' instead
+ * Legacy helper for building Clerk auth state objects
+ * 
+ * This function is kept for backward compatibility but new code should use:
+ * - mockClerkAuth.setup() for mocking in tests
+ * - buildClerkAuthState() for constructing auth objects directly
  */
-export function mockClerkAuth(
+export function mockClerkAuthState(
   userId: string | null = 'test-user-123',
   role: string | null = 'member'
 ) {
@@ -23,6 +31,9 @@ export function mockClerkAuth(
 }
 
 /**
+ * @deprecated This function uses legacy mocking patterns. 
+ * Prefer using mockClerkAuth.setup() directly in tests.
+ * 
  * Test helper for API route security testing
  */
 export async function testApiSecurity(opts: {
@@ -34,13 +45,14 @@ export async function testApiSecurity(opts: {
   method?: string;
   body?: any;
 }) {
-  const { vi } = await import('vitest');
+  const { vi, expect } = await import('vitest');
+  const { buildClerkAuthState, mockClerkAuth } = await import('./mocks');
 
-  // Mock Clerk auth
-  const authMock = vi.fn().mockResolvedValue(mockClerkAuth(opts.userId, opts.role));
-  vi.doMock('@clerk/nextjs/server', () => ({
-    auth: authMock
-  }));
+  // Configure Clerk auth mock (uses global mock)
+  mockClerkAuth.setup({
+    userId: opts.userId ?? undefined,
+    orgRole: opts.role ?? undefined,
+  });
 
   // Create test request (use health endpoint for basic connectivity testing)
   const req = new Request('http://localhost/api/health', {

@@ -1,13 +1,8 @@
 import { ApplicationError, ErrorCategory, ErrorSeverity } from '@/lib/shared';
 import { SecurityError } from '@/lib/shared/errors/types';
+import { mockClerkAuth } from '@/tests/support/mocks';
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { resolveRouteModule } from "../support/resolve-route";
-
-// Mock the auth function
-const mockAuth = vi.fn();
-vi.mock('@clerk/nextjs/server', () => ({
-  auth: () => mockAuth(),
-}));
 
 // Mock getTenantContext
 const mockGetTenantContext = vi.fn();
@@ -42,9 +37,7 @@ vi.mock('@/lib/integrations/clickhouse/server', () => ({
 describe("API v1: ai/chat route", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockAuth.mockResolvedValue({
-      userId: 'test-user-123',
-    });
+    mockClerkAuth.setup({ userId: 'test-user-123' });
     // Default: mock tenant context with org ID from header
     // For tests that don't explicitly set a header, we'll provide a default orgId from "session"
     // This simulates the fallback behavior where session metadata provides orgId
@@ -111,7 +104,7 @@ describe("API v1: ai/chat route", () => {
   }, 20_000);
 
   it("returns 401 when unauthenticated", async () => {
-    mockAuth.mockResolvedValue({ userId: null });
+    mockClerkAuth.setup({ userId: null });
     const url = resolveRouteModule("ai/chat");
     if (!url) return expect(true).toBe(true);
 
@@ -409,7 +402,7 @@ describe("API v1: ai/chat route", () => {
       // Note: The handler only checks for userId, not specific roles.
       // OpenAPI spec indicates [member, viewer] are allowed, but handler doesn't enforce roles.
       // This test verifies the actual behavior: any authenticated user can access.
-      mockAuth.mockResolvedValue({
+      mockClerkAuth.setup({
         userId: 'test-user-any-role',
       });
 
@@ -433,7 +426,7 @@ describe("API v1: ai/chat route", () => {
     });
 
     it("denies unauthenticated users (401)", async () => {
-      mockAuth.mockResolvedValue({ userId: null });
+      mockClerkAuth.setup({ userId: null });
 
       const url = resolveRouteModule("ai/chat");
       if (!url) return expect(true).toBe(true);
