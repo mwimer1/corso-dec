@@ -61,6 +61,8 @@ module.exports = {
     }],
     // Disable property ordering for now - vendor prefixes are handled manually
     'order/properties-order': null,
+    // Enforce modern color function notation (rgb(r g b / a) instead of rgba(r, g, b, a))
+    'color-function-notation': 'modern',
   },
   ignoreFiles: ['**/.next/**', '**/build/**', '**/node_modules/**'],
   overrides: [
