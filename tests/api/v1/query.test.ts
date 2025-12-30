@@ -2,6 +2,7 @@ import { ApplicationError, ErrorCategory, ErrorSeverity } from '@/lib/shared';
 import { SecurityError } from '@/lib/shared/errors/types';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { resolveRouteModule } from '../../support/resolve-route';
+import { createUser, createOrg, createQueryRequest } from '../../support/factories';
 
 // Mock the auth function
 const mockAuth = vi.fn();
@@ -28,19 +29,22 @@ vi.mock('@/lib/integrations/clickhouse/server', () => ({
 }));
 
 describe('POST /api/v1/query', () => {
+  const testUser = createUser({ userId: 'test-user-123' });
+  const testOrg = createOrg({ orgId: 'test-org-123' });
+
   beforeEach(() => {
     vi.clearAllMocks();
     // Default: authenticated user with member role
     mockAuth.mockResolvedValue({
-      userId: 'test-user-123',
+      userId: testUser.userId,
       has: vi.fn().mockReturnValue(true), // Has member role
     });
     // Default: mock tenant context with org ID from header
     mockGetTenantContext.mockImplementation(async (req?: any) => {
       const orgId = req?.headers?.get?.('x-corso-org-id') || req?.headers?.get?.('X-Corso-Org-Id');
       return { 
-        orgId: orgId || 'default-session-org-id', 
-        userId: 'test-user-123' 
+        orgId: orgId || testOrg.orgId, 
+        userId: testUser.userId 
       };
     });
     // Default: mock validateSQLScope to pass (only check for unsafe patterns)
@@ -64,15 +68,19 @@ describe('POST /api/v1/query', () => {
 
     const mod: any = await import(url);
     const handler = mod.POST;
+    const queryRequest = createQueryRequest({
+      sql: 'SELECT * FROM projects WHERE org_id = ? LIMIT 10',
+      orgId: testOrg.orgId,
+    });
     const req = new Request('http://localhost/api/v1/query', {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
-        'X-Corso-Org-Id': 'test-org-123',
+        'X-Corso-Org-Id': testOrg.orgId,
       },
       body: JSON.stringify({
-        sql: 'SELECT * FROM projects WHERE org_id = ? LIMIT 10',
-        params: { org_id: 'test-org-123' },
+        sql: queryRequest.sql,
+        params: { org_id: testOrg.orgId },
       }),
     });
 
@@ -90,7 +98,7 @@ describe('POST /api/v1/query', () => {
     // Verify clickhouseQuery was called with correct parameters
     expect(mockClickhouseQuery).toHaveBeenCalledWith(
       'SELECT * FROM projects WHERE org_id = ? LIMIT 10',
-      { org_id: 'test-org-123' }
+      { org_id: testOrg.orgId }
     );
 
     // Verify validateSQLScope was called with orgId
