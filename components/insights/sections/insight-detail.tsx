@@ -4,8 +4,7 @@
 "use client";
 
 import { useArticleAnalytics } from "@/components/insights/hooks/use-article-analytics";
-import { ArticleHeader } from "@/components/insights/widgets/article-header";
-import { ArticleImage } from "@/components/insights/widgets/article-image";
+import { InsightHeaderBlock } from "@/components/insights/widgets/insight-header-block";
 import { RelatedArticles } from "@/components/insights/widgets/related-articles";
 import { TableOfContents } from "@/components/insights/widgets/table-of-contents";
 import { resolveInsightImageUrl } from "@/lib/marketing/insights/image-resolver";
@@ -15,7 +14,6 @@ import { containerWithPaddingVariants } from "@/styles/ui/shared/container-helpe
 import type { InsightItem } from "@/types/marketing";
 import DOMPurify from "dompurify";
 import type { Metadata } from "next";
-import Link from "next/link";
 import * as React from "react";
 
 interface InsightDetailProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -159,38 +157,18 @@ export const InsightDetail = React.forwardRef<
         {/* Breadcrumbs UI intentionally removed for a cleaner editorial detail page.
             SEO breadcrumbs (JSON-LD) are handled in the route and should remain unchanged. */}
 
-        {/* Article Header + Hero (editorial stacked layout) - wrapped in not-prose to prevent Typography margins */}
-        <div className="not-prose space-y-4 sm:space-y-5">
-          <div>
-            <Link
-              href="/insights"
-              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <span aria-hidden>←</span>
-              Back to Insights
-            </Link>
-          </div>
-
-          <ArticleHeader
-            title={title}
-            {...(publishDate && { publishDate })}
-            {...(updatedDate && { updatedDate })}
-            {...(readingTime && { readingTime })}
-            {...(author && { author })}
-            {...(categories && { categories })}
-          />
-
-          {resolvedImageUrl ? (
-            <ArticleImage
-              src={resolvedImageUrl}
-              alt={title}
-              variant="hero"
-              {...(initialData.heroCaption && { caption: initialData.heroCaption })}
-              loading="lazy"
-              priority={false}
-            />
-          ) : null}
-        </div>
+        {/* Consolidated header block: back navigation, categories, title, metadata, and hero image */}
+        <InsightHeaderBlock
+          title={title}
+          {...(publishDate && { publishDate })}
+          {...(updatedDate && { updatedDate })}
+          {...(readingTime && { readingTime })}
+          {...(author && { author })}
+          {...(categories && { categories })}
+          {...(resolvedImageUrl && { heroImageUrl: resolvedImageUrl })}
+          {...(initialData.heroCaption && { heroCaption: initialData.heroCaption })}
+          backHref="/insights"
+        />
 
         {/* Table of Contents - Mobile: above content, Desktop: sticky aside */}
         <TableOfContents content={sanitizedContent} />

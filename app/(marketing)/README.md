@@ -481,7 +481,7 @@ Dynamic article pages with SEO metadata generation, reading progress indicator, 
 - **Unified Metadata Bar**: Date, reading time, and author displayed in a responsive horizontal layout with icons
 - **Enhanced Typography**: Comprehensive prose styling for headings, paragraphs, lists, blockquotes, code blocks, and images
 - **Image Optimization**: Hero images with blur placeholders, lazy loading, and hover effects via `ArticleImage` component
-- **Component Architecture**: Modular structure with `ArticleHeader`, `ArticleMetadata`, and `ArticleImage` sub-components
+- **Component Architecture**: Consolidated `InsightHeaderBlock` component with `ArticleMetadata` and `ArticleImage` sub-components
 - **Accessibility**: Full ARIA labels, semantic HTML (`<section>`, `<aside>`, `<figure>`), and microdata support
 - **Responsive Design**: Mobile-first spacing and layout adjustments throughout
 
