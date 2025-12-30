@@ -27,6 +27,7 @@ Essential coding guardrails and development standards for the Corso platform.
 - Follow consistent naming conventions
 - Maintain high test coverage
 - See [Coding Standards](development/coding-standards.md) for detailed guidelines
+- See [Testing Guide](testing-quality/testing-guide.md) for testing patterns and examples
 
 ### Security
 - Validate all inputs with Zod schemas
@@ -45,7 +46,7 @@ Essential coding guardrails and development standards for the Corso platform.
 
 - **ESLint**: Custom rules for code quality
 - **TypeScript**: Strict mode with comprehensive checking
-- **Testing**: Vitest with high coverage targets
+- **Testing**: Vitest with high coverage targets (see [Testing Guide](testing-quality/testing-guide.md))
 - **Security**: Automated vulnerability scanning
 
 ---
