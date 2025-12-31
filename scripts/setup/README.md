@@ -1,9 +1,9 @@
 ---
 title: "scripts/setup"
 last_updated: "2025-12-31"
-category: "automation"
+category: "documentation"
+status: "draft"
 ---
-
 # Repository Scripts & Docs
 
 This README is generated from a single template (`README.scripts.hbs`).
@@ -21,4 +21,4 @@ This README is generated from a single template (`README.scripts.hbs`).
 - **setup-docs-environment.ts** – scripts/setup/setup-docs-environment.ts
 - **validate-ai-agent-environment.ts** – scripts/setup/validate-ai-agent-environment.ts
 - **validate-atomic-design.ts** – scripts/setup/validate-atomic-design.ts
-- **validate-env.ts** – scripts/setup/validate-env.ts
+- **validate-env.ts** – scripts/setup/v

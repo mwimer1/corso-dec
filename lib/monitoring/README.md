@@ -1,9 +1,9 @@
 ---
 title: "lib/monitoring"
 last_updated: "2025-12-31"
-category: "automation"
+category: "library"
+status: "draft"
 ---
-
 # Repository Scripts & Docs
 
 This README is generated from a single template (`README.scripts.hbs`).
