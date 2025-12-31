@@ -18,10 +18,15 @@ const Footer: React.FC<FooterProps> = ({
   ctaProps,
   variant = 'fillViewport',
 }) => {
+  const resolvedCtaProps: React.ComponentProps<typeof FooterCTA> = {
+    ...ctaProps,
+    size: ctaProps?.size ?? (variant === 'hero' ? 'tall' : 'default'),
+  };
+
   return (
     <>
       <SiteFooterShell variant={variant}>
-        {showCTA && <FooterCTA {...ctaProps} />}
+        {showCTA && <FooterCTA {...resolvedCtaProps} />}
         <FooterMain />
       </SiteFooterShell>
       <FooterLegal />

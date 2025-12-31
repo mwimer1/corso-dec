@@ -90,33 +90,33 @@ export const FooterMain: React.FC = () => {
         Footer
       </h2>
 
-      <div className={cn(containerWithPaddingVariants({ maxWidth: "7xl", padding: "lg" }), "py-8 lg:py-10")}>
+      <div className={cn(containerWithPaddingVariants({ maxWidth: "7xl", padding: "lg" }), "py-6 sm:py-8 lg:py-10")}>
         {/* Top-align. Desktop: four equal tracks so each section gets the same width. */}
-        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-4 lg:gap-14">
+        <div className="grid grid-cols-2 items-start gap-6 sm:gap-8 lg:grid-cols-4 lg:gap-14">
           {/* Brand / Social */}
-          <div className="flex flex-col gap-2 self-start min-w-0">
-            <a
-              href="https://www.getcorso.com/"
-              className="inline-flex items-center hover:opacity-90 transition-opacity focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring rounded-sm"
-              aria-label="Go to getcorso.com"
-            >
-              <Image
-                src={BrandAssets.logo}
-                alt="CORSO"
-                width={160}
-                height={45}
-                className="h-[var(--navbar-logo-h,2rem)] w-[var(--navbar-logo-w,8rem)] object-contain filter brightness-0 invert"
-                priority
-              />
-            </a>
+          <div className="col-span-2 flex flex-col gap-3 self-start min-w-0 lg:col-span-1">
+            <div className="flex items-center justify-between gap-3">
+              <a
+                href="https://www.getcorso.com/"
+                className="inline-flex items-center hover:opacity-90 transition-opacity focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring rounded-sm"
+                aria-label="Go to getcorso.com"
+              >
+                <Image
+                  src={BrandAssets.logo}
+                  alt="CORSO"
+                  width={160}
+                  height={45}
+                  className="h-[var(--navbar-logo-h,2rem)] w-[var(--navbar-logo-w,8rem)] object-contain filter brightness-0 invert"
+                  priority
+                />
+              </a>
 
-            <p className="mt-1 text-sm text-background/75 max-w-sm">
-              Intelligence for the built world.
-            </p>
-
-            <div className="mt-0">
               <SocialLinkedIn className="text-background/70" />
             </div>
+
+            <p className="text-sm text-background/75 max-w-sm">
+              Intelligence for the built world.
+            </p>
           </div>
 
           {/* Link columns - 4 column layout on wide screens */}
@@ -125,8 +125,10 @@ export const FooterMain: React.FC = () => {
               key={group.heading}
               aria-label={group.heading}
               className={cn(
-                "flex flex-col gap-4 self-start min-w-0",
-                // Middle two: centered; last: right; all equal column widths via grid
+                "flex flex-col gap-2 sm:gap-3 self-start min-w-0",
+                // Mobile layout: Contact spans full width for long email
+                index === groups.length - 1 ? "col-span-2 lg:col-span-1" : "col-span-1",
+                // Desktop alignment behavior stays the same
                 index === 0 || index === 1
                   ? "lg:items-center lg:text-center"
                   : index === groups.length - 1
@@ -134,10 +136,10 @@ export const FooterMain: React.FC = () => {
                   : "lg:items-start"
               )}
             >
-              <span className="text-sm font-semibold text-background/80 mb-2">
+              <span className="text-sm font-semibold text-background/80">
                 {group.heading}
               </span>
-              <ul className="space-y-3">
+              <ul className="space-y-2 sm:space-y-3">
                 {group.links.map((item) => (
                   <li key={item.label}>
                     <SmartLink item={item} />

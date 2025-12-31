@@ -12,10 +12,12 @@ import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
 type Tone = 'dark' | 'blue';
 type Layout = 'center' | 'split';
+type Size = 'default' | 'tall';
 
 type FooterCTAProps = ComponentPropsWithoutRef<"section"> & {
   tone?: Tone;
   layout?: Layout;
+  size?: Size;
   fullBleed?: boolean;
   illustrationSlot?: ReactNode;
   /** Optional slot to fully override the default CTA buttons */
@@ -31,6 +33,7 @@ export const FooterCTA: React.FC<FooterCTAProps> = (props) => {
     ctaSlot,
     tone = 'blue',
     layout = 'center',
+    size = 'default',
     fullBleed = true,
     title = 'Ready to start unlocking hidden insights?',
     description = 'Discover why leading builders, suppliers, and investors rely on Corso for permit-driven intelligence.',
@@ -39,6 +42,7 @@ export const FooterCTA: React.FC<FooterCTAProps> = (props) => {
 
   const isBlue = tone === 'blue';
   const isCenter = layout === 'center';
+  const isTall = size === 'tall';
 
   const variants = footerCTA({
     tone,
@@ -51,18 +55,28 @@ export const FooterCTA: React.FC<FooterCTAProps> = (props) => {
     className
   );
 
+  const blueInner = isTall
+    ? // Tall mode: scales smoothly on large screens (no weird "xl gets smaller" effect)
+      "py-[2.625rem] sm:py-[3.625rem] lg:py-[clamp(3.25rem,6.5vh,4.75rem)] text-center"
+    : // Default mode: keep current behavior for non-home pages
+      "py-[2.625rem] sm:py-[3.625rem] lg:py-[2.5rem] xl:py-[2rem] text-center";
+
   const inner = cn(
     containerWithPaddingVariants({ maxWidth: '7xl', padding: 'lg', centered: true }),
-    // Formatting-only change: reduce top/bottom padding and keep content vertically centered
-    isBlue
-      ? "py-[2.625rem] sm:py-[3.625rem] lg:py-[2.5rem] xl:py-[2rem] text-center"
-      : ""
+    isBlue ? blueInner : ""
   );
+
+  const blueHeight = isBlue && isTall
+    ? "lg:min-h-[clamp(320px,34vh,420px)]"
+    : "";
 
   return (
     <section
       {...rest}
-      className={cn(sectionBase, isBlue ? 'flex-1 flex flex-col justify-center' : '')}
+      className={cn(
+        sectionBase,
+        isBlue ? cn('flex-1 flex flex-col justify-center', blueHeight) : ''
+      )}
       role="region"
       aria-labelledby="footer-cta-title"
     >
