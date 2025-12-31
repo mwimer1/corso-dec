@@ -123,9 +123,6 @@ const TabSwitcherOverloads = React.forwardRef<HTMLDivElement, Props>(function Ta
       )}
       {...rest}
     >
-      {layout === 'grid' ? (
-        <div aria-hidden="true" className="absolute inset-x-0 border-t border-border" />
-      ) : null}
       <div
         role="tablist"
         className={cn(

@@ -28,6 +28,7 @@ export default function MarketingHomePage() {
         padding="section-sm"
         containerMaxWidth="7xl"
         containerPadding="lg"
+        className="border-t border-border"
       >
         <ProductShowcase />
       </FullWidthSection>
