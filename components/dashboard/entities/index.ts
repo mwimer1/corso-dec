@@ -2,8 +2,8 @@ import { addressesConfig } from './addresses/config';
 import { companiesConfig } from './companies/config';
 import { projectsConfig } from './projects/config';
 
-export { default as EntityGrid } from './shared/grid/entity-grid';
-export { default as EntityGridHost } from './shared/grid/entity-grid-host';
+export { default as EntityGrid } from './shared/entity-grid';
+export { default as EntityGridHost } from './shared/entity-grid-host';
 
 export const registry = {
   projects: projectsConfig,

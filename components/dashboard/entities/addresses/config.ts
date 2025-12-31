@@ -6,7 +6,7 @@ import { ADDRESSES_COLUMNS } from '@/lib/entities/addresses/columns.config';
 import type { EntityGridConfig } from '@/types/dashboard';
 import type { ColDef } from 'ag-grid-community';
 import { createDefaultColDef } from '../shared/ag-grid-config';
-import { createEntityFetcher } from '../shared/grid/fetchers';
+import { createEntityFetcher } from '../shared/fetchers';
 
 async function resolveColDefs(): Promise<ColDef[]> {
   // Map framework-agnostic columns → AG Grid ColDef (lazy formatters)

@@ -13,7 +13,7 @@ import type { ColDef, ColGroupDef, GridApi, GridReadyEvent, IServerSideGetRowsPa
 import { AgGridReact } from 'ag-grid-react';
 import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { createDefaultSideBar } from '../ag-grid-config';
+import { createDefaultSideBar } from './ag-grid-config';
 // PostHog removed — no-op helper kept inline (no external dependency)
 type _PosthogLite = {
   get_distinct_id?: () => string;
