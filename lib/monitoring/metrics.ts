@@ -1,4 +1,4 @@
-// lib/monitoring/core/metrics.ts
+// lib/monitoring/metrics.ts
 // Basic metrics interface for application monitoring
 // This provides a simple abstraction layer for metrics collection
 
@@ -12,4 +12,3 @@ export const metrics = {
     observe: (_value: number, _labels?: Labels) => {},
   }),
 };
-

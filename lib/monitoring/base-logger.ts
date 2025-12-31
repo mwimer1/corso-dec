@@ -1,4 +1,4 @@
-// lib/monitoring/core/base-logger.ts
+// lib/monitoring/base-logger.ts
 /**
  * Base logger implementation with shared formatter and logger factory
  * Provides common logging functionality for both Node and Edge runtimes
@@ -69,5 +69,3 @@ export function createBaseLogger(config: LogConfig, contextStorage: ContextStora
     error: (...m: unknown[]) => formatLogEntry(config.namespace, 'error', m, contextStorage),
   };
 }
-
-

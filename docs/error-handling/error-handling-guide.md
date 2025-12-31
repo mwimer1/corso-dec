@@ -127,7 +127,7 @@ export function MyComponent() {
 
 **Server-Side:**
 ```typescript
-import { logger } from '@/lib/monitoring/core/logger';
+import { logger } from '@/lib/monitoring';
 
 logger.info('Operation started', { userId, operation: 'data-query' });
 logger.warn('Rate limit approaching', { key, remaining: 5 });

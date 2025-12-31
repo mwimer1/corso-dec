@@ -10,7 +10,7 @@ export { getEnv, requireServerEnv } from '@/lib/server/env';
 export type { ValidatedEnv } from '@/lib/server/env';
 
 // Server-only validation utilities (moved from shared)
-export * from '@/lib/server/shared/validation/domain-configs';
+export * from '@/lib/server/shared/domain-configs';
 
 // Server-only configuration utilities
 // export { metricsCfg } from '../config'; // metricsCfg not found

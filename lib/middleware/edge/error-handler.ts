@@ -5,7 +5,7 @@
  */
 
 import { fail } from '@/lib/api/response/api-error';
-import { logger, runWithRequestContext as runWithEdgeRequestContext } from '@/lib/monitoring/core/logger-edge';
+import { logger, runWithRequestContext as runWithEdgeRequestContext } from '@/lib/monitoring/logger-edge';
 import { toApiErrorBase } from '@/lib/shared/errors/api-error-conversion';
 import type { NextRequest, NextResponse } from 'next/server';
 import { exposeHeader } from '../http/headers';

@@ -1,4 +1,4 @@
-// lib/monitoring/core/logger-edge.ts
+// lib/monitoring/logger-edge.ts
 // Edge-safe logger and request context utilities (no async_hooks, no require)
 
 import { createBaseLogger } from './base-logger';
@@ -30,4 +30,3 @@ export function runWithRequestContext<T>(context: RequestContext, fn: () => T): 
 
 // In Edge/browser default to debug off (info)
 export const logger = createBaseLogger({ level: 'info' }, contextStorage);
-
