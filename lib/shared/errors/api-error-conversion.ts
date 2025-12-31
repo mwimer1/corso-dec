@@ -4,7 +4,7 @@
  *              This module must remain free of Node-only dependencies and server-only imports.
  */
 
-import type { ApiError, ApiErrorCode } from '@/lib/api/response/api-error';
+import type { ApiError, ApiErrorCode } from '@/lib/api/api-error';
 import { ZodError } from 'zod';
 import { ApplicationError } from './application-error';
 

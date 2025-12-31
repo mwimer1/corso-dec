@@ -3,7 +3,7 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-import { http, noContent, ok } from '@/lib/api/response/http';
+import { http, noContent, ok } from '@/lib/api/http';
 import { getClickHouseClient } from '@/lib/integrations/clickhouse/client';
 import { logger } from '@/lib/monitoring';
 import { getEnv } from '@/lib/server/env';

@@ -11,7 +11,7 @@ export { withErrorHandlingEdge } from '@/lib/middleware/edge/error-handler';
 export { withRateLimitEdge } from '@/lib/middleware/edge/rate-limit';
 
 // Edge-safe HTTP helpers
-export { http } from './response/http';
+export { http } from './http';
 
 // Edge-safe request parsing
 export async function readJsonOnce(req: Request) {

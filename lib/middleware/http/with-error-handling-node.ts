@@ -6,7 +6,7 @@
 
 import 'server-only';
 
-import { fail } from '@/lib/api/response/api-error';
+import { fail } from '@/lib/api/api-error';
 import { logger, runWithRequestContext } from '@/lib/monitoring';
 import { toApiErrorBase } from '@/lib/shared/errors/api-error-conversion';
 import type { NextRequest, NextResponse } from 'next/server';

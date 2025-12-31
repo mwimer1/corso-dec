@@ -1,7 +1,7 @@
 // lib/server/errors/error-utils.ts
 import 'server-only';
 
-import type { ApiError } from '@/lib/api/response/api-error';
+import type { ApiError } from '@/lib/api/api-error';
 import { toApiErrorBase } from '@/lib/shared/errors/api-error-conversion';
 import { formatErrorMessage, normalizeUnknownError } from '@/lib/shared/errors/error-utils';
 

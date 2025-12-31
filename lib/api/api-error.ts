@@ -32,4 +32,3 @@ export const fail = (error: ApiError, init?: ResponseInit) =>
     { success: false, error },
     { status: init?.status ?? 500, ...init },
   );
-

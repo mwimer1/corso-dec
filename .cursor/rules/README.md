@@ -169,7 +169,7 @@ globs: ["**/*"]
 ### **API Route with Security Standards**
 ```typescript
 // ✅ CORRECT: makeEdgeRoute with Zod validation + rate limiting
-import { makeEdgeRoute } from '@/lib/api/shared/edge-route';
+import { makeEdgeRoute } from '@/lib/api/edge-route';
 import { http } from '@/lib/api';
 import { z } from 'zod';
 

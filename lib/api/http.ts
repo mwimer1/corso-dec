@@ -138,6 +138,3 @@ export const http = {
   noContent,
   error,
 };
-
-
-

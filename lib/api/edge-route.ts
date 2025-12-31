@@ -1,7 +1,7 @@
 import { withErrorHandlingEdge, withRateLimitEdge } from '@/lib/middleware';
 import type { NextRequest } from 'next/server';
 import type { z } from 'zod';
-import { http } from '@/lib/api/response/http';
+import { http } from '@/lib/api/http';
 
 type EdgeHandler<T> = (req: NextRequest, input: T) => Promise<Response> | Response;
 
@@ -38,6 +38,3 @@ export function makeEdgeRoute<T>({ schema, handler, rateLimit }: MakeEdgeRouteOp
 
   return guarded;
 }
-
-
-

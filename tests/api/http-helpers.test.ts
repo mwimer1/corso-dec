@@ -1,5 +1,5 @@
 // tests/lib/api/http-helpers.test.ts
-import { http } from '@/lib/api/response/http';
+import { http } from '@/lib/api/http';
 import { describe, expect, it } from 'vitest';
 
 describe('http helpers', () => {

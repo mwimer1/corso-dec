@@ -25,8 +25,8 @@ export { getTenantContext, type TenantContext } from './db/tenant-context';
 // Error types (server facade)
 export { ApplicationError, ErrorCategory, ErrorSeverity } from '@/lib/shared';
 // Re-export api-error types from edge-safe location (for backward compatibility)
-export { fail } from '@/lib/api/response/api-error';
-export type { ApiError, ApiErrorCode } from '@/lib/api/response/api-error';
+export { fail } from '@/lib/api/api-error';
+export type { ApiError, ApiErrorCode } from '@/lib/api/api-error';
 export * from './errors/error-utils';
 
 // OpenAI (server) exports
