@@ -67,6 +67,7 @@ This guide consolidates design principles, component patterns, and styling guide
 - **Grid systems**: Flexible layouts that adapt to content and screen size
 - **Navigation**: Clear information hierarchy with consistent patterns
 - **Data density**: Balance whitespace with information density
+- **See**: [Dashboard UI Standards](./dashboard-ui-standards.md) for detailed dashboard-specific guidelines
 
 ## 🛠️ Development Guidelines
 
