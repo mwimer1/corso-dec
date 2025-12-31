@@ -1,4 +1,4 @@
-import { assertRole } from '@/lib/auth/authorization/roles';
+import { assertRole } from '@/lib/auth/roles';
 import { describe, expect, it } from 'vitest';
 
 describe('RBAC Security Tests', () => {

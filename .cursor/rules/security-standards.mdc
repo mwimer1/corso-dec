@@ -87,11 +87,19 @@ const sanitizedQuery = validateSQLScope(query);
 ### Role-Based Access Control
 ```typescript
 import { auth } from "@clerk/nextjs/server";
-import { hasRole } from "@/lib/auth/authorization/roles";
+import { assertRole } from "@/lib/auth/roles";
 import { http } from "@/lib/api";
 
 const { userId } = await auth();
-if (!hasRole(userId, "admin")) {
+if (!userId) {
+  return http.error(401, "Unauthorized", { code: "HTTP_401" });
+}
+
+// Get user role from session/clerk
+const userRole = "admin"; // Replace with actual role retrieval
+try {
+  assertRole(userRole, "admin");
+} catch {
   return http.error(403, "Insufficient permissions", { code: "FORBIDDEN" });
 }
 ```

@@ -276,7 +276,7 @@ export const runtime = 'nodejs'; // ✅ Required for Node.js dependencies
 
 // Authentication & Session Management (@/lib/auth)
 import { auth } from '@/lib/auth/server';
-import { assertRole } from '@/lib/auth/authorization/roles';
+import { assertRole } from '@/lib/auth/roles';
 
 // Security & Validation (@/lib/security, @/lib/ratelimiting)
 import { verifyTurnstileToken } from '@/lib/security/server';
