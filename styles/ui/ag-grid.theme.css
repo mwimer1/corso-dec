@@ -9,10 +9,16 @@
  * - Selection column custom styling (centering, padding)
  * - Density mode adjustments (font size and spacing)
  * - Component-specific tweaks
+ * - Visual hierarchy enhancements
  * 
  * Note: Theme params are implemented as --ag-* CSS custom properties,
  * so they can be overridden here when needed (e.g., for density modes).
  */
+
+/* Ensure AG Grid uses the app font family */
+.corso-ag-grid {
+  font-family: var(--font-sans, inter, system-ui, sans-serif);
+}
 
 /* Density modes: Comfortable (default) and Compact */
 /* 
@@ -27,6 +33,13 @@
 .corso-ag-grid.ag-density-compact {
   --ag-font-size: 12px;
   --ag-spacing: 4px; /* Replaces legacy --ag-grid-size */
+}
+
+/* --- Header Visual Hierarchy --- */
+/* Subtle header background for better visual separation */
+.corso-ag-grid .ag-header {
+  background-color: hsl(var(--surface, 0 0% 100%));
+  border-bottom: 1px solid hsl(var(--border, 214.3 31.8% 89%));
 }
 
 /* --- Vertical Centering Fix --- */
@@ -44,6 +57,20 @@
   display: flex;
   align-items: center;
   min-width: 0; /* keep ellipsis working in flex contexts */
+}
+
+/* --- Focus States --- */
+/* Use design system ring token for focus outlines */
+.corso-ag-grid .ag-cell:focus,
+.corso-ag-grid .ag-header-cell:focus {
+  outline: 2px solid hsl(var(--ring, 221.2 83.2% 53.3%));
+  outline-offset: -2px;
+}
+
+/* --- Row Separators --- */
+/* Ensure row borders use subtle border color */
+.corso-ag-grid .ag-row {
+  border-bottom-color: hsl(var(--border, 214.3 31.8% 89%));
 }
 
 /* --- Selection Column Styling --- */

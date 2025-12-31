@@ -16,27 +16,27 @@ import { themeQuartz } from 'ag-grid-community';
  * Corso's AG Grid theme, based on Quartz with custom parameters.
  * 
  * Colors use design system tokens (hsl(var(--token))) for consistency:
- * - Accent: #2563EB (footer CTA blue) - used for icons, active states, selections
- * - Foreground: #1A1F2E (standard text color)
- * - Background: #FFFFFF (white)
- * - Border: #D7E2E6 (matches design system border color)
+ * - Accent: Primary brand blue - used for icons, active states, selections
+ * - Foreground: Standard text color from design tokens
+ * - Background: Surface token for consistent backgrounds
+ * - Border: Design system border color token
  * 
  * Theme params are implemented as --ag-* CSS custom properties and can be
  * overridden in CSS for density modes or other customizations.
  */
 export const corsoAgGridTheme = themeQuartz.withParams({
   // Colors - use design system tokens for consistency and dark mode support
-  accentColor: "#2563EB", // Footer CTA blue
-  backgroundColor: "hsl(var(--surface, 0 0% 100%))", // White, falls back to design token
-  borderColor: "#D7E2E6", // Design system border color
-  foregroundColor: "hsl(var(--foreground))", // #1A1F2E via design token
+  accentColor: "hsl(var(--primary, 221 86% 54%))", // Brand blue from design tokens
+  backgroundColor: "hsl(var(--surface, 0 0% 100%))", // Surface token for backgrounds
+  borderColor: "hsl(var(--border, 214.3 31.8% 89%))", // Border color from design tokens
+  foregroundColor: "hsl(var(--foreground))", // Foreground text color from design tokens
   
-  // Typography - use app font (Lato via --font-sans)
-  fontFamily: "var(--font-sans, lato, system-ui, sans-serif)",
+  // Typography - use app font (Inter via --font-sans)
+  fontFamily: "var(--font-sans, inter, system-ui, sans-serif)",
   fontSize: 13,
   headerFontSize: 13,
   headerFontWeight: 400,
-  headerTextColor: "#84868B", // Medium gray for headers
+  headerTextColor: "hsl(var(--text-medium, 240 5% 25%))", // Medium gray for headers from text hierarchy tokens
   
   // Spacing and layout
   spacing: 6, // Maps to --ag-spacing (replaces legacy --ag-grid-size)
@@ -66,8 +66,8 @@ export const corsoAgGridTheme = themeQuartz.withParams({
   // Browser color scheme
   browserColorScheme: "light",
   
-  // Selection and hover colors - explicitly set for consistency
-  selectedRowBackgroundColor: "rgba(37, 99, 235, 0.08)", // Accent color at 8% opacity
-  rowHoverColor: "rgba(26, 31, 46, 0.03)", // Dark foreground at 3% opacity
+  // Selection and hover colors - use tokens with opacity for consistency
+  selectedRowBackgroundColor: "hsl(var(--primary, 221 86% 54%) / 0.08)", // Accent color at 8% opacity
+  rowHoverColor: "hsl(var(--foreground, 222.2 47.4% 11.2%) / 0.03)", // Foreground at 3% opacity for subtle hover
 });
 

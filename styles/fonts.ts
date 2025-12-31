@@ -1,22 +1,24 @@
-// styles/fonts.ts - Google Fonts (Lato) configuration with performance optimizations
-import { Lato } from 'next/font/google';
+// styles/fonts.ts - Google Fonts (Inter) configuration with performance optimizations
+import { Inter } from 'next/font/google';
 
 /**
- * Lato Variable Font - From Google Fonts with performance optimizations
+ * Inter Variable Font - From Google Fonts with performance optimizations
  *
  * Benefits:
+ * - Modern SaaS-standard font with excellent readability
+ * - Supports real font weights (400, 500, 600, 700) - no synthetic weights
+ * - Crisp rendering on Windows and macOS
  * - Reliable font delivery from Google's CDN
  * - Next.js automatic optimization and subsetting
  * - Better Core Web Vitals scores
  * - Reduced FOUT (Flash of Unstyled Text)
- * - No Git LFS or local file issues
  */
-const lato = Lato({
+const inter = Inter({
   subsets: ['latin'],
   variable: '--font-sans',
   display: 'swap',
   preload: true,
-  weight: ['400', '700'],
+  weight: ['400', '500', '600', '700'],
   fallback: [
     'system-ui',
     '-apple-system',
@@ -30,9 +32,9 @@ const lato = Lato({
 });
 
 /**
- * CSS variable for Lato font
+ * CSS variable for Inter font
  * Use this in CSS/Tailwind configuration
  */
-export const latoVariable = lato.variable;
+export const interVariable = inter.variable;
 
 

@@ -65,6 +65,11 @@ html, body {
 
   /* Text size adjustment for mobile */
   text-size-adjust: 100%;
+
+  /* Font rendering optimization */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 /* Global focus styles for accessibility */

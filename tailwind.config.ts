@@ -123,7 +123,7 @@ const config: Config = {
         DEFAULT: 'var(--radius-md, 0.375rem)',
       },
       fontFamily: {
-        sans: ['var(--font-sans, lato, system-ui, -apple-system, blinkmacsystemfont, "Segoe UI", roboto, sans-serif)'],
+        sans: ['var(--font-sans, inter, system-ui, -apple-system, blinkmacsystemfont, "Segoe UI", roboto, sans-serif)'],
         mono: ['var(--font-mono, ui-monospace, sfmono-regular, "SF Mono", consolas, "Liberation Mono", menlo, monospace)'],
       },
       fontSize: {

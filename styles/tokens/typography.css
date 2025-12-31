@@ -4,7 +4,7 @@
 
 :root {
   /* Font families */
-  --font-sans: lato, system-ui, -apple-system, blinkmacsystemfont, 'Segoe UI', roboto, sans-serif;
+  --font-sans: inter, system-ui, -apple-system, blinkmacsystemfont, 'Segoe UI', roboto, sans-serif;
   --font-mono:
     ui-monospace, sfmono-regular, 'SF Mono', consolas, 'Liberation Mono', menlo, monospace;
 

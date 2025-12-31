@@ -48,7 +48,20 @@ export default async function EntityPage({ params }: { params: Promise<{ entity:
   if (isGridEntity(entity)) {
     // Use registry as single source of truth
     const gridConfig = getEntityConfig(entity as 'projects' | 'addresses' | 'companies');
-    return <EntityGridHost config={gridConfig} /> as unknown as React.JSX.Element;
+    const title = getEntityTitle(entity);
+    
+    return (
+      <div className="flex flex-col h-full">
+        {/* Page header with title */}
+        <div className="px-6 py-4 border-b border-border bg-background">
+          <h1 className="text-2xl font-semibold text-foreground">{title}</h1>
+        </div>
+        {/* Grid content */}
+        <div className="flex-1 min-h-0">
+          <EntityGridHost config={gridConfig} />
+        </div>
+      </div>
+    ) as unknown as React.JSX.Element;
   }
 
   return notFound();

@@ -363,7 +363,7 @@ export function GridMenubar(props: GridMenubarProps) {
 
   return (
     <>
-      <div className="flex items-center justify-between w-full h-14 px-2 border-b border-border bg-background/95 backdrop-blur-sm">
+      <div className="flex items-center justify-between w-full h-14 px-4 border-b border-border bg-background">
         {/* Left side: Saved Searches and Tools */}
         <div className="flex items-center gap-2">
           {/* Saved Searches menu */}
@@ -622,7 +622,7 @@ export function GridMenubar(props: GridMenubarProps) {
         </div>
 
         {/* Right side: results count -> action buttons (grouped) */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           {/* Results count */}
           <div className="flex items-center gap-1.5 text-sm font-medium" data-testid="entity-results-count">
             <Badge color="secondary" className="tabular-nums">
