@@ -323,7 +323,7 @@ export default [
           'components/dashboard/entities/addresses/config.ts',
           // Formatters - used via named imports in aggrid adapter
           'lib/entities/adapters/aggrid-formatters.tsx',
-          'components/dashboard/header/dashboard-header.tsx',
+          'components/dashboard/layout/dashboard-header.tsx',
           // UI components - exported via barrel and used via @/components
           'components/ui/segmented-control.tsx',
           // Entity configs - used internally via registry

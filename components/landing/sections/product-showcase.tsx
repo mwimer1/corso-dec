@@ -1,4 +1,4 @@
-// components/marketing/landing/product-showcase/product-showcase.tsx
+// components/landing/sections/product-showcase.tsx
 "use client";
 
 import { TabSwitcher, type TabItem } from "@/components/ui/molecules";
@@ -7,7 +7,7 @@ import { cn } from "@/styles";
 import { containerWithPaddingVariants } from "@/styles/ui/shared/container-helpers";
 import Image from "next/image";
 import React, { useEffect, useRef } from "react";
-import usePrefersReducedMotion from "../../hooks/use-prefers-reduced-motion";
+import usePrefersReducedMotion from "../hooks/use-prefers-reduced-motion";
 
 interface ProductShowcaseProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -81,7 +81,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
       id: "corso-ai",
       label: "AI Chat",
       content: (
-        <div className="rounded-lg border border-border shadow-md overflow-hidden">
+        <div className="rounded-lg border border-border shadow-md ring-1 ring-border/20 overflow-hidden">
           <div className="u-mask-fade-bottom">
             <Image
               src="/demos/corso-ai-interface.png"
@@ -100,7 +100,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
       id: "projects",
       label: "Projects",
       content: (
-        <div className="rounded-lg border border-border shadow-md overflow-hidden">
+        <div className="rounded-lg border border-border shadow-md ring-1 ring-border/20 overflow-hidden">
           <div className="u-mask-fade-bottom">
             <Image
               src="/demos/projects-interface.png"
@@ -119,7 +119,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
       id: "companies",
       label: "Companies",
       content: (
-        <div className="rounded-lg border border-border shadow-md overflow-hidden">
+        <div className="rounded-lg border border-border shadow-md ring-1 ring-border/20 overflow-hidden">
           <div className="u-mask-fade-bottom">
             <Image
               src="/demos/companies-interface.png"
@@ -138,7 +138,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
       id: "addresses",
       label: "Addresses",
       content: (
-        <div className="rounded-lg border border-border shadow-md overflow-hidden">
+        <div className="rounded-lg border border-border shadow-md ring-1 ring-border/20 overflow-hidden">
           <div className="u-mask-fade-bottom">
             <Image
               src="/demos/addresses-interface.png"
@@ -283,7 +283,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
       {/* Dashed horizontal line decoration */}
       <svg 
         aria-hidden="true"
-        className="absolute inset-x-0 top-12 lg:top-10 text-border/30 pointer-events-none"
+        className="absolute inset-x-0 top-12 lg:top-10 text-border/25 pointer-events-none"
         height="1"
         preserveAspectRatio="none"
       >
@@ -354,13 +354,24 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
               className={cn(
                 "w-full",
                 showcaseWideInner,
-                // xl+ typography tighten (scoped to ProductShowcase only)
-                // Higher specificity than utility classes on the button via [role=tab] selector
+                // ─────────────────────────────────────────────────────────────
+                // XL+ TYPOGRAPHY TIGHTEN (scoped)
                 "xl:[&_[role=tab]]:text-[14px]",
                 "xl:[&_[role=tab]]:leading-5",
                 "xl:[&_[role=tab]]:tracking-[-0.01em]",
-                // Reduce horizontal padding for tighter feel on wide layouts
-                "xl:[&_[role=tab]]:px-3"
+                "xl:[&_[role=tab]]:px-3",
+                // ─────────────────────────────────────────────────────────────
+                // XL+ ATTIO-LIKE WEIGHTS (inactive normal, active medium)
+                // default all tabs to normal
+                "xl:[&_[role=tab]]:font-normal",
+                // active only (most specific + reliable)
+                "xl:[&_[role=tab][data-state='active']]:font-medium",
+                // ─────────────────────────────────────────────────────────────
+                // OPTIONAL (Recommended): prevent weight jumping on hover in xl+
+                // If current TabSwitcher styles include hover:font-medium, neutralize it on xl+
+                "xl:[&_[role=tab]]:hover:font-normal",
+                // Keep active tab medium even on hover
+                "xl:[&_[role=tab][data-state='active']]:hover:font-medium"
               )}
             >
               <TabSwitcher

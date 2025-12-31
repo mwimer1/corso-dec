@@ -61,9 +61,7 @@ const alias = {
   '@/components/dashboard/sidebar/sidebar-top': r('./components/dashboard/sidebar/sidebar-top.tsx'),
   '@/components/dashboard/sidebar/sidebar-user-profile': r('./components/dashboard/sidebar/sidebar-user-profile.tsx'),
   '@/components/dashboard/sidebar/sidebar-tooltip-layer': r('./components/dashboard/sidebar/sidebar-tooltip-layer.tsx'),
-  '@/components/dashboard/header/corso-ai-mode': r('./components/dashboard/header/corso-ai-mode.tsx'),
-  '@/components/dashboard/header/dashboard-header': r('./components/dashboard/header/dashboard-header.tsx'),
-  '@/components/dashboard/header/saved-view-select': r('./components/dashboard/header/saved-view-select.tsx'),
+  '@/components/dashboard/layout/dashboard-header': r('./components/dashboard/layout/dashboard-header.tsx'),
   '@/components/ui/atoms/index': r('./components/ui/atoms/index.ts'),
 
   // Test support aliases (for stable test imports)

@@ -24,7 +24,7 @@ export function DashboardHeader({ title, subtitle, left, right, sticky = true, c
       className={cn(
         'w-full border-b bg-white/90 backdrop-blur',
         sticky && 'sticky top-0 z-10',
-        stackedUnderTopbar && '-mt-px', // overlap the topbar’s bottom border by 1px
+        stackedUnderTopbar && '-mt-px', // overlap the topbar's bottom border by 1px
         className,
       )}
     >
@@ -45,5 +45,4 @@ export function DashboardHeader({ title, subtitle, left, right, sticky = true, c
 }
 
 export default DashboardHeader;
-
 

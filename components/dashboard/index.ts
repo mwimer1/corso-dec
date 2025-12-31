@@ -16,7 +16,7 @@ export { SidebarTop } from './sidebar/sidebar-top';
 export { SidebarUserProfile } from './sidebar/sidebar-user-profile';
 
 // ===== HEADER =====
-export * from './header/dashboard-header';
+export * from './layout/dashboard-header';
 
 
 // ===== DATA VISUALIZATION =====
