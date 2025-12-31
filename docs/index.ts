@@ -89,14 +89,6 @@ export const docs = [
     "title": "Entities"
   },
   {
-    "path": "components/dashboard/entities/shared/readme.md",
-    "title": "Shared"
-  },
-  {
-    "path": "components/dashboard/entities/shared/renderers/readme.md",
-    "title": "Renderers"
-  },
-  {
     "path": "components/dashboard/layout/readme.md",
     "title": "Layout"
   },
@@ -177,24 +169,12 @@ export const docs = [
     "title": "Icon"
   },
   {
-    "path": "components/ui/atoms/progress/readme.md",
-    "title": "Progress"
-  },
-  {
     "path": "components/ui/atoms/readme.md",
     "title": "Atoms"
   },
   {
     "path": "components/ui/molecules/readme.md",
     "title": "Molecules"
-  },
-  {
-    "path": "components/ui/molecules/shared/readme.md",
-    "title": "Shared"
-  },
-  {
-    "path": "components/ui/molecules/tab-switcher/readme.md",
-    "title": "Tab Switcher"
   },
   {
     "path": "components/ui/organisms/footer-system/readme.md",
@@ -383,10 +363,6 @@ export const docs = [
   {
     "path": "scripts/setup/readme.md",
     "title": "Setup"
-  },
-  {
-    "path": "scripts/test/readme.md",
-    "title": "Test"
   },
   {
     "path": "scripts/utils/readme.md",
