@@ -32,8 +32,6 @@
     "lint:repo": "tsx scripts/lint/check-forbidden-files.ts",
     "codemods:fix-intradomain-barrels": "tsx scripts/codemods/fix-intradomain-barrels.ts",
     "docs:lint": "pnpm lint:md",
-    "codemods:client-logger": "node scripts/codemods/align-client-logger.mjs --write",
-    "codemods:client-logger:check": "node scripts/codemods/align-client-logger.mjs",
     "madge:ci": "madge --circular --ts-config tsconfig.json --extensions ts,tsx app components lib",
     "jscpd:ci": "pnpm validate:duplication",
     "quality:ci": "pnpm lint && pnpm typecheck && pnpm typecheck:prod && pnpm test:coverage && pnpm madge:ci && pnpm jscpd:ci && pnpm docs:validate && pnpm audit:barrels --only intradomain",

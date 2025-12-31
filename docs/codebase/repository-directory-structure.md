@@ -981,15 +981,10 @@ status: "draft"
     │   │   ├── validate-cursor-rules.ts
     │   │   ├── workflows-consistency-report.mjs
     │   ├── codemods
-    │   │   ├── align-client-logger.mjs
-    │   │   ├── codemod-common.ts
-    │   │   ├── env-transformation-common.ts
-    │   │   ├── file-discovery.ts
     │   │   ├── fix-intradomain-barrels.ts
     │   │   ├── README.md
     │   │   ├── refactor-constants-barrel.ts
     │   │   ├── resolve-shared-symbol-imports.ts
-    │   │   ├── ts-project.ts
     │   ├── docs
     │   │   ├── templates
     │   │   │   ├── README.scripts.hbs

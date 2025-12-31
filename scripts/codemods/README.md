@@ -15,10 +15,6 @@ This README is generated from a single template (`README.scripts.hbs`).
 
 ## Scripts in `scripts/codemods`
 
-- **codemod-common.ts** – Common utilities for codemod scripts
-- **env-transformation-common.ts** – Common utilities for environment import transformations
-- **file-discovery.ts** – Centralized file discovery utility for codemod scripts
 - **fix-intradomain-barrels.ts** – Rewrites imports inside components/** that come from &quot;@/components&quot; or &quot;@/components/ui&quot;
-- **refactor-constants-barrel.ts** – Replaces imports from
-- **resolve-shared-symbol-imports.ts** – for real export sites.
-- **ts-project.ts** – Shared ts-morph Project initialization utility
+- **refactor-constants-barrel.ts** – Replaces deep imports from @/lib/shared/constants/* with barrel imports
+- **resolve-shared-symbol-imports.ts** – Resolves imports from @/styles/ui/shared to real export sites

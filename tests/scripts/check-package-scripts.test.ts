@@ -22,10 +22,10 @@ describe('check-package-scripts entrypoint-only validation', () => {
     });
 
     it('should extract node script entrypoints', () => {
-      const command = 'node scripts/codemods/align-client-logger.mjs';
+      const command = 'node scripts/ci/workflows-consistency-report.mjs';
       const nodePattern = /(?:^|\s)node\s+(?!-)([^\s&;|><"']+|"[^"]+"|'[^']+')/;
       const match = command.match(nodePattern);
-      expect(match?.[1]).toBe('scripts/codemods/align-client-logger.mjs');
+      expect(match?.[1]).toBe('scripts/ci/workflows-consistency-report.mjs');
     });
 
     it('should extract jscodeshift transform entrypoints', () => {
