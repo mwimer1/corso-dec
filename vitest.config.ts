@@ -126,6 +126,7 @@ export default defineConfig({
             'tests/insights/**/*.test.{ts,tsx}',
             'tests/security/**/*.test.{ts,tsx}',
             'tests/core/**/*.test.{ts,tsx}',
+            'tests/lib/**/*.test.{ts,tsx}',
             'tests/runtime-boundary/**/*.test.{ts,tsx}',
             'tests/routes/**/*.test.{ts,tsx}',
             'tests/styles/**/*.test.{ts,tsx}',

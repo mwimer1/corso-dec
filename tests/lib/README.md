@@ -35,7 +35,7 @@ Library module tests validate core library functionality, including validators, 
 | Directory | Purpose | Coverage |
 |-----------|---------|----------|
 | `validators/` | Validator tests | Schema validation, type checking |
-| `services/entity/adapters/` | Entity adapter tests | AG Grid adapter, data transformation |
+| `adapters/` | Entity adapter tests | AG Grid adapter, data transformation |
 | `marketing/` | Marketing module tests | Barrel exports, module structure |
 
 ## Test Files
@@ -43,7 +43,7 @@ Library module tests validate core library functionality, including validators, 
 | File | Purpose | Coverage |
 |------|---------|----------|
 | `validators/tableColumnConfig.test.ts` | Table column config | Schema validation, format enums |
-| `services/entity/adapters/aggrid.test.ts` | AG Grid adapter | Column definition transformation |
+| `adapters/aggrid.test.ts` | AG Grid adapter | Column definition transformation |
 | `marketing/barrels.test.ts` | Marketing barrels | Barrel export validation |
 
 ## Testing Patterns
