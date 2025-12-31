@@ -114,7 +114,7 @@ export const docs = [
   },
   {
     "path": "components/landing/layout/readme.md",
-    "title": "components/landing/layout"
+    "title": "README"
   },
   {
     "path": "components/landing/readme.md",
@@ -142,11 +142,11 @@ export const docs = [
   },
   {
     "path": "components/marketing/sections/contact/readme.md",
-    "title": "components/marketing/sections/contact"
+    "title": "README"
   },
   {
     "path": "components/marketing/sections/legal/readme.md",
-    "title": "components/marketing/sections/legal"
+    "title": "README"
   },
   {
     "path": "components/marketing/sections/pricing/readme.md",
@@ -206,7 +206,7 @@ export const docs = [
   },
   {
     "path": "config/typescript/readme.md",
-    "title": "TypeScript Configuration"
+    "title": "Typescript"
   },
   {
     "path": "contexts/readme.md",
@@ -322,7 +322,7 @@ export const docs = [
   },
   {
     "path": "scripts/ci/readme.md",
-    "title": "scripts/ci"
+    "title": "README"
   },
   {
     "path": "scripts/codemods/readme.md",
@@ -354,7 +354,7 @@ export const docs = [
   },
   {
     "path": "scripts/rules/readme.md",
-    "title": "scripts/rules"
+    "title": "README"
   },
   {
     "path": "scripts/setup/readme.md",
@@ -470,7 +470,7 @@ export const docs = [
   },
   {
     "path": "tests/styles/readme.md",
-    "title": "Styles"
+    "title": "README"
   },
   {
     "path": "tests/support/harness/readme.md",
@@ -478,7 +478,7 @@ export const docs = [
   },
   {
     "path": "tests/support/readme.md",
-    "title": "Support"
+    "title": "README"
   },
   {
     "path": "tests/support/setup/readme.md",
@@ -498,7 +498,7 @@ export const docs = [
   },
   {
     "path": "types/api/readme.md",
-    "title": "types/api"
+    "title": "README"
   },
   {
     "path": "types/chat/readme.md",

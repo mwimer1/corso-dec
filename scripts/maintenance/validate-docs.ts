@@ -135,8 +135,8 @@ async function validateFilesystemLinks(): Promise<void> {
       const match = /\[([^\]]+)\]\(([^)]+)\)/.exec(link);
       if (match?.[2]) {
         const original = match[2];
-        // Skip external links and anchors/mailto
-        if (/^(https?:)?\/\//.test(original) || original.startsWith('#') || original.startsWith('mailto:')) {
+        // Skip external links, anchors, mailto, and mdc: protocol links
+        if (/^(https?:)?\/\//.test(original) || original.startsWith('#') || original.startsWith('mailto:') || original.startsWith('mdc:')) {
           continue;
         }
         // Strip URL fragments and query strings for filesystem resolution
