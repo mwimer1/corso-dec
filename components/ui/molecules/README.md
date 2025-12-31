@@ -15,3 +15,7 @@ This README is generated from a single template (`README.scripts.hbs`).
 - Last updated: `2025-12-30`
 
 > Edit the template or the generator context to change all READMEs consistently.
+
+## Component Structure
+
+- **Tab Switcher component**: Located at `components/ui/molecules/tab-switcher.tsx` (flattened from subdirectory structure). Combines the main `TabSwitcher` component and internal `getTabButtonClass` utility function in a single file for easier maintainability.

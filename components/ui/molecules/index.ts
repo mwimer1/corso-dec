@@ -41,7 +41,7 @@ export * from './pricing-card';
 
 // ===== TABS =====
 // Tab switcher components (individual exports)
-export { TabSwitcher, type TabItem } from './tab-switcher/tab-switcher';
+export { TabSwitcher, type TabItem } from './tab-switcher';
 // ===== TABS SYSTEM COMPONENTS =====
 // Advanced tab system with context management and accessibility
 

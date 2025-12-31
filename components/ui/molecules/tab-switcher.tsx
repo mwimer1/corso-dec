@@ -1,4 +1,8 @@
-// components/ui/molecules/tab-switcher/tab-switcher.tsx
+// components/ui/molecules/tab-switcher.tsx
+/**
+ * Tab switcher component with internal utility functions
+ * Combines TabSwitcher component and internal getTabButtonClass utility
+ */
 "use client";
 
 import { useArrowKeyNavigation } from "@/components/ui/hooks/use-arrow-key-navigation";
@@ -9,23 +13,44 @@ import {
 import { tabButtonVariants } from "@/styles/ui/molecules/tab-switcher";
 import { cn } from "@/styles";
 import * as React from "react";
-import { getTabButtonClass } from "./tab-button-base";
+
+/* -------------------------------------------------------------------------- */
+/*                          Internal Utility Functions                        */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * getTabButtonClass
+ * Shared utility for tab-switcher button styling
+ * Aligns typography with NavItem text variant: medium size, visible color, and strong weight when active
+ */
+const getTabButtonClass = (active: boolean) =>
+  [
+    // Align typography with NavItem text variant: medium size, visible color, and strong weight when active
+    // NavItem `text` variant uses `text-sm` with visible `text-foreground` and `font-medium`/`font-semibold` when active.
+    'inline-flex items-center gap-2 px-3 py-2 text-sm text-foreground',
+    // Match nav behavior: active tabs use stronger weight; inactive should still be fully readable (no low opacity)
+    active ? 'font-semibold' : 'font-medium',
+  ].join(' ');
+
+/* -------------------------------------------------------------------------- */
+/*                                  Constants                                 */
+/* -------------------------------------------------------------------------- */
 
 const UNDERLINE_CLASS_BY_COLOR = {
-  foreground: 'after:bg-foreground', // default—matches grid’s border-foreground
+  foreground: 'after:bg-foreground', // default—matches grid's border-foreground
   primary:    'after:bg-primary',
   muted:      'after:bg-muted',
 } as const;
+
+/* -------------------------------------------------------------------------- */
+/*                                    Types                                   */
+/* -------------------------------------------------------------------------- */
 
 /** Tab metadata for object-based API. */
 export interface TabItem {
   id: string;
   label: string;
 }
-
-/* -------------------------------------------------------------------------- */
-/*                                    Types                                   */
-/* -------------------------------------------------------------------------- */
 
 type TabSwitcherBaseProps = React.HTMLAttributes<HTMLDivElement> &
   TabSwitcherVariantProps & {
@@ -179,5 +204,3 @@ export function TabSwitcher(props: TabSwitcherPropsItems): React.ReactElement;
 export function TabSwitcher(props: Props): React.ReactElement {
   return <TabSwitcherOverloads {...props} />;
 }
-
-
