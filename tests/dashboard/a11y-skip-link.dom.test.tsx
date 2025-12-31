@@ -22,6 +22,7 @@ const TestableDashboardLayout = ({ children }: { children: React.ReactNode }) =>
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { describe, expect, it } from 'vitest';
+import { axe } from 'vitest-axe';
 
 describe('DashboardLayout skip link', () => {
   it('renders a "Skip to main content" link and a focusable main region', () => {
@@ -34,5 +35,16 @@ describe('DashboardLayout skip link', () => {
     expect(skip).toBeInTheDocument();
     const main = document.getElementById('main-content');
     expect(main).toBeTruthy();
+  });
+
+  it('has no accessibility violations', async () => {
+    const { container } = render(
+      <TestableDashboardLayout>
+        <div>Child</div>
+      </TestableDashboardLayout>
+    );
+
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 });
