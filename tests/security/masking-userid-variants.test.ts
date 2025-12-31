@@ -1,4 +1,4 @@
-import { maskSensitiveData } from '@/lib/security/utils/masking';
+import { maskSensitiveData } from '@/lib/security/masking';
 import { describe, expect, it } from 'vitest';
 
 describe('maskSensitiveData – userId vs userid variants', () => {

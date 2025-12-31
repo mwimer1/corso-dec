@@ -5,7 +5,7 @@ import 'server-only';
 
 import { getRequestId } from '@/lib/middleware/http/request-id';
 import { logger } from '@/lib/monitoring';
-import { maskSensitiveData } from '@/lib/security/utils/masking';
+import { maskSensitiveData } from '@/lib/security/masking';
 import type { NextRequest } from 'next/server';
 
 /**

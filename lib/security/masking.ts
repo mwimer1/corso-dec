@@ -1,5 +1,5 @@
 /**
- * @file lib/security/utils/masking.ts
+ * @file lib/security/masking.ts
  * 
  * Privacy-aware, selective data masking for logging. This module
  * provides utilities to redact sensitive information from log
@@ -119,4 +119,3 @@ export function maskSensitiveData<T = unknown>(input: T): T {
   }
   return out as T;
 } 
-

@@ -36,7 +36,7 @@
     "lib/integrations/openai/server.ts -> @/server/env",
     "lib/integrations/openai/server.ts -> @/server/env/knobs",
     "lib/integrations/openai/chat-logging.ts -> @/middleware/http/request-id",
-    "lib/integrations/openai/chat-logging.ts -> @/security/utils/masking",
+    "lib/integrations/openai/chat-logging.ts -> @/security/masking",
     "lib/integrations/openai/responses.ts -> @/server/env",
     "lib/integrations/mockdb/duckdb.ts -> @/server/env",
     "lib/integrations/redis/cache-client.ts -> @/server/env",

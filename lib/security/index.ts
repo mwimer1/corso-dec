@@ -10,6 +10,6 @@
 // No wildcard re-exports; no server-only modules; no speculative surface.
 // Add targeted exports here only if they're truly used via '@/lib/security'.
 
-export { maskSensitiveData } from './utils/masking';
+export { maskSensitiveData } from './masking';
 
 
