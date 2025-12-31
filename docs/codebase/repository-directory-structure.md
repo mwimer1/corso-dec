@@ -1310,7 +1310,6 @@ status: draft
     │   ├── fonts.ts
     │   ├── globals.css
     │   ├── index.ts
-    │   ├── README.audit-notes.md
     │   ├── README.md
     │   ├── shared-variants.ts
     │   ├── tailwind.config.ts
