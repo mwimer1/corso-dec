@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 import { http } from '@/lib/api';
-import { handleCors } from '@/lib/middleware';
+import { handleCors, withErrorHandlingNode, withRateLimitNode } from '@/lib/middleware';
 import { getEnv } from '@/lib/server/env';
 import { ClerkEventEnvelope } from '@/lib/validators/clerk-webhook';
 import type { NextRequest } from 'next/server';
@@ -20,7 +20,7 @@ const SvixHeaderSchema = z
   })
   .strict();
 
-export async function POST(req: NextRequest) {
+const handler = async (req: NextRequest): Promise<Response> => {
   const payload = await req.text();
   const headersMap = Object.fromEntries(req.headers) as Record<string, string | undefined>;
   const clerkSig = headersMap['clerk-signature'];
@@ -44,11 +44,14 @@ export async function POST(req: NextRequest) {
   } catch {
     return http.badRequest('Invalid webhook signature', { code: 'INVALID_WEBHOOK_SIGNATURE' });
   }
-}
+};
+
+export const POST = withErrorHandlingNode(
+  withRateLimitNode(async (req: NextRequest) => handler(req) as any, { windowMs: 60_000, maxRequests: 100 })
+);
 
 export async function OPTIONS(req: Request) {
   const response = handleCors(req);
   if (response) return response;
   return http.noContent();
 }
-

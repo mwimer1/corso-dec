@@ -10,29 +10,34 @@ status: "draft"
 This README reflects the _current_ implementation. If code changes, update this file in the same PR.
 
 ## Runtime & Caching
-All v1 routes run on **Node.js** for uniform server-side capabilities and DB access:
+Most v1 routes run on **Node.js** for uniform server-side capabilities and DB access:
 ```ts
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 ```
 
+**Exceptions:**
+- `/api/v1/csp-report` uses Edge runtime for low-latency CSP violation reporting
+
 ## Auth & RBAC
-- **security**: bearerAuth (see OpenAPI)
-- **Member-level RBAC** is enforced
+- **Protected routes**: bearerAuth (see OpenAPI)
+- **Member-level RBAC** is enforced for protected routes
+- **Public routes**: `/api/v1/csp-report` and `/api/v1/insights/search` are public (no auth required)
 - **Error shape**: `{ success: false, error: { code, message, details? } }`
 
 ## Routes (8)
 
-| Domain | Method | Path | Purpose | Runtime | Rate limit |
-|--------|--------|------|---------|---------|------------|
-| Entity | POST | `/api/v1/entity/[entity]/query` | Entity queries (pagination/filtering/sorting) | Node.js | 60/min |
-| Entity | GET | `/api/v1/entity/[entity]/export` | Entity exports (CSV/XLSX) | Node.js | 30/min |
-| Entity | GET | `/api/v1/entity/[entity]` | Entity base operations | Node.js | 60/min |
-| AI | POST | `/api/v1/ai/chat` | AI chat processing (streaming NDJSON) | Node.js | 30/min |
-| AI | POST | `/api/v1/ai/generate-sql` | AI SQL generation | Node.js | 30/min |
-| User | POST | `/api/v1/user` | User profile operations | Node.js | 30/min |
-| Security | POST | `/api/v1/csp-report` | CSP violation reports | Edge | 100/min |
+| Domain | Method | Path | Purpose | Runtime | Auth | Rate limit |
+|--------|--------|------|---------|---------|------|------------|
+| Entity | POST | `/api/v1/entity/[entity]/query` | Entity queries (pagination/filtering/sorting) | Node.js | Bearer | 60/min |
+| Entity | GET | `/api/v1/entity/[entity]/export` | Entity exports (deprecated - 410 Gone) | Node.js | Bearer | 30/min |
+| Entity | GET | `/api/v1/entity/[entity]` | Entity base operations | Node.js | Bearer | 60/min |
+| AI | POST | `/api/v1/ai/chat` | AI chat processing (streaming NDJSON) | Node.js | Bearer | 30/min |
+| AI | POST | `/api/v1/ai/generate-sql` | AI SQL generation | Node.js | Bearer | 30/min |
+| User | POST | `/api/v1/user` | User profile operations | Node.js | Bearer | 30/min |
+| Security | POST | `/api/v1/csp-report` | CSP violation reports | Edge | Public | 30/min |
+| Content | GET | `/api/v1/insights/search` | Public insights search | Node.js | Public | 60/min |
 
 ## AI Chat Endpoint (`/api/v1/ai/chat`)
 
@@ -89,5 +94,6 @@ AI_MAX_TOOL_CALLS=3
 
 ## Notes
 - **Resource vs AI Split**: Entity routes handle data operations; AI routes handle intelligence features.
-- **Runtime Strategy**: All routes use Node.js runtime for consistency and ClickHouse integration capabilities.
-- **Removed non-existent billing/ and subscription/ mentions**.
+- **Runtime Strategy**: Most routes use Node.js runtime for consistency and ClickHouse integration capabilities. CSP report uses Edge for low-latency responses.
+- **Public Endpoints**: CSP report and insights search are public (no authentication required).
+- **Deprecated Endpoints**: `/api/v1/entity/[entity]/export` returns 410 Gone (removed 2025-01-15, sunset 2025-04-15).
