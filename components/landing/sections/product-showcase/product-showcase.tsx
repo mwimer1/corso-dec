@@ -303,7 +303,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
       {/* Uses containerWithPaddingVariants to align with FullWidthSection guidelines */}
       <div 
         className={cn(
-          "sticky z-[45] bg-background border-t border-border/50",
+          "sticky z-[45] bg-background",
           // On mobile, add bottom padding to account for mobile CTA ribbon (~70px tall)
           // On desktop, account for horizontal scrollbar using CSS variable (falls back to 17px)
           "bottom-[70px] md:bottom-[var(--scrollbar-h,17px)]",
