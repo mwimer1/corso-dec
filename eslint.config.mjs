@@ -136,7 +136,11 @@ export default [
             // Prevent re-introduction of legacy realtime stub
             { name: '@/lib/realtime/live', message: 'Removed legacy realtime stub. Use the event bus or queue service instead.' },
             // Block imports from shared variants barrel to encourage domain imports
-            { name: '@/styles/ui/shared', message: 'Import from domain barrels instead (atoms/molecules/organisms).' },
+            // Policy: Use domain barrels (atoms/molecules/organisms) when possible.
+            // Deep imports from @/styles/ui/shared/* are allowed for utilities that don't fit domain barrels
+            // (e.g., container-base, container-helpers, focus-ring, typography-variants).
+            // Exception: Tests can mock @/styles/ui barrel (see tests/** override).
+            { name: '@/styles/ui/shared', message: 'Import from domain barrels (atoms/molecules/organisms) when possible, or use deep imports @/styles/ui/shared/* for shared utilities.' },
             { name: '@/styles/ui/shared/component-variants', message: 'Import from domain barrels instead.' },
             // Prevent deep imports to deleted shared variant files
             { name: '@/styles/ui/shared/article-content', message: 'Deleted file. Use typography-variants for headers and prose classes for content.' },
@@ -721,6 +725,34 @@ export default [
       vitest,
       corso,
     },
+    rules: {
+      // Allow @/styles/ui barrel in test mocks (vitest.setup.shared.ts, etc.)
+      // Tests need to mock the barrel for proper test isolation
+      // Override: Tests are allowed to import/mock @/styles/ui for test setup
+      // Production code should use domain barrels (atoms/molecules/organisms) or deep imports per policy
+      // Note: This rule is merged with the deep relative import restrictions below
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            // Override: allow @/styles/ui in tests for mocking purposes
+            // Production code should use domain barrels or deep imports per policy
+          ],
+          patterns: [
+            // @/styles/ui is explicitly allowed in tests (not restricted here)
+            // Forbid deep relative imports to app code from tests (prefer aliases like @/lib, @/components, @tests/support)
+            {
+              group: ['../../*', '../../../*', '../../../../*'],
+              message: 'Use path aliases (e.g., @/lib, @/components, @tests/support) instead of deep relative imports.',
+            },
+            {
+              group: ['../lib/*', '../../lib/*', '../components/*', '../../components/*', '../types/*', '../../types/*', '../hooks/*', '../../hooks/*'],
+              message: 'Use project aliases instead of deep relative imports to app code.',
+            },
+          ],
+        },
+      ],
+    },
     settings: {
       'import/resolver': {
         node: { extensions: ['.ts', '.tsx'] },
@@ -761,22 +793,8 @@ export default [
       'vitest/no-focused-tests': 'error',
       // 'corso/no-alias-imports-in-tests': 'error', // DISABLED: We now prefer alias imports for better maintainability
 
-      // Forbid deep relative imports to app code from tests (prefer aliases like @/lib, @/components, @tests/support)
-      'no-restricted-imports': [
-        'error',
-        {
-          patterns: [
-            {
-              group: ['../../*', '../../../*', '../../../../*'],
-              message: 'Use path aliases (e.g., @/lib, @/components, @tests/support) instead of deep relative imports.',
-            },
-            {
-              group: ['../lib/*', '../../lib/*', '../components/*', '../../components/*', '../types/*', '../../types/*', '../hooks/*', '../../hooks/*'],
-              message: 'Use project aliases instead of deep relative imports to app code.',
-            },
-          ],
-        },
-      ],
+      // Note: no-restricted-imports is defined above to allow @/styles/ui for test mocks
+      // and restrict deep relative imports
 
       // Prevent reintroduction of legacy tests/component path
       'no-restricted-imports': [

@@ -165,13 +165,13 @@ unused-exports-analysis.md
 eslint-allowlist-suggestions.txt
 
 # ---------------------------------
-# styles/build – track generated CSS
+# styles/build – generated CSS artifacts (do not track)
 # ---------------------------------
-# Ignore everything under styles/build…
+# Generated build artifacts - do not commit
 styles/build/*
-# …but keep the directory itself and any CSS files within it
+# Keep directory structure (but not files)
 !styles/build/
-!styles/build/*.css
+!styles/build/.gitkeep
 
 # scripts/build – allow if it exists (currently doesn't, but kept for future use)
 !scripts/build/

@@ -16,7 +16,7 @@
 
     /* Encourage consistent glyph spacing; safe no-op where unsupported */
     font-kerning: normal;
-    text-rendering: optimizelegibility;
+    /* Avoid text-rendering: optimizelegibility - can reduce crispness on some browsers/OS */
 
     /* Ensure proper border-radius inheritance */
     border-radius: var(--radius-md, 0.375rem);

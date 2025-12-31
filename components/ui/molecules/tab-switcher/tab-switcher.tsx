@@ -7,7 +7,7 @@ import {
   type TabSwitcherVariantProps,
 } from "@/styles/ui/molecules";
 import { tabButtonVariants } from "@/styles/ui/molecules/tab-switcher";
-import { cn } from "@/styles/utils";
+import { cn } from "@/styles";
 import * as React from "react";
 import { getTabButtonClass } from "./tab-button-base";
 

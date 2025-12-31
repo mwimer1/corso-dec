@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from '@/styles/utils';
+import { cn } from '@/styles';
 import type { ChatMessage } from '@/types/chat';
 import { memo } from 'react';
 import { ChatTable } from './chat-table';

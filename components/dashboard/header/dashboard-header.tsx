@@ -2,7 +2,7 @@
 
 "use client";
 
-import { cn } from '@/styles/utils';
+import { cn } from '@/styles';
 import * as React from 'react';
 
 type DashboardHeaderProps = {
