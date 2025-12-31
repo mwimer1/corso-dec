@@ -1,7 +1,7 @@
 # Maintenance Scripts Cleanup Report
 
 **Date**: 2025-01-XX  
-**Status**: ✅ PR #1 Complete - Files Deleted
+**Status**: ✅ PR #1 & PR #2 Complete - Cleanup Finished
 
 ## Summary of Findings
 
@@ -16,17 +16,19 @@ After comprehensive reference sweeps, the following files are safe to delete (ze
 5. **list-missing-frontmatter.ts** - No references found, unused
 6. **docs-patterns-common.ts** - Not imported anywhere (was meant to be shared but never used)
 
-### 📋 Review Required (PR #2)
+### ✅ PR #2: Archived Files
 
-1. **autofix-doc-links.js** - Old CommonJS script, functionality differs from `fix-links.ts`
-   - `autofix-doc-links.js`: Heuristic basename-based link fixing
-   - `fix-links.ts`: Pattern-based fixes using config
-   - Decision: Archive or port unique logic
+1. **autofix-doc-links.js** - ✅ Archived to `_archived/`
+   - Reason: Legacy CommonJS heuristic script, replaced by config-driven `fix-links.ts`
+   - Different approaches:
+     - `autofix-doc-links.js`: Heuristic basename-based auto-discovery (less predictable)
+     - `fix-links.ts`: Pattern-based fixes using config (safer, maintainable)
 
-2. **replace-package-script-references.ts** - One-time migration script
-   - Decision: Archive in `_archived/` or delete if migration complete
+2. **replace-package-script-references.ts** - ✅ Archived to `_archived/`
+   - Reason: One-time migration codemod (migration complete)
+   - Can be safely deleted after a few releases if no longer needed
 
-3. **generate-readme.ts** - Script domain README generator (NOT deprecated)
+3. **generate-readme.ts** - ✅ Kept (Active Use)
    - Purpose: Generates READMEs for script domains (scripts/analysis, scripts/ci, etc.)
    - Different from: `docs/tasks/generate.ts` (general markdown generation)
    - Decision: Keep - serves unique purpose for script domain documentation
@@ -60,10 +62,19 @@ After comprehensive reference sweeps, the following files are safe to delete (ze
 
 **Total Lines Removed**: ~600+ lines of deprecated code
 
-### PR #2: Archive/Review Remaining Files
-- Archive `replace-package-script-references.ts` if migration complete
-- Review `autofix-doc-links.js` vs `fix-links.ts` behavior
-- Keep `generate-readme.ts` (serves unique purpose)
+### ✅ PR #2: Archive/Review Remaining Files (COMPLETED)
+
+**Files Archived:**
+- ✅ `autofix-doc-links.js` → `_archived/autofix-doc-links.js`
+  - Reason: Legacy CommonJS heuristic script, replaced by config-driven `fix-links.ts`
+  - Status: Archived with deprecation notice
+  
+- ✅ `replace-package-script-references.ts` → `_archived/replace-package-script-references.ts`
+  - Reason: One-time migration codemod (migration complete)
+  - Status: Archived with deprecation notice, can be deleted after a few releases
+
+**Files Kept (Active Use):**
+- ✅ `generate-readme.ts` - Script domain README generator (serves unique purpose)
 
 ## Validation Checklist
 

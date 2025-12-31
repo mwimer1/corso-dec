@@ -1,4 +1,17 @@
 #!/usr/bin/env node
+/**
+ * @deprecated Archived - Replaced by fix-links.ts
+ * 
+ * This script uses heuristic basename-based link fixing (auto-discovery).
+ * The modern replacement is scripts/maintenance/fix-links.ts which uses
+ * configuration-driven pattern-based fixes (safer and more maintainable).
+ * 
+ * Date archived: 2025-01-XX
+ * 
+ * This file is preserved for historical reference and can be safely deleted
+ * if the heuristic approach is no longer needed.
+ */
+
 const fs = require('fs');
 const path = require('path');
 

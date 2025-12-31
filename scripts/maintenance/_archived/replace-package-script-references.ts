@@ -1,3 +1,18 @@
+/**
+ * @deprecated One-time migration codemod (completed 2025-01-XX)
+ * 
+ * This script was used to rename package.json script references across the codebase.
+ * Migration is complete - all references have been updated.
+ * 
+ * This file is archived for historical reference and can be safely deleted after a few releases.
+ * 
+ * Original mappings:
+ * - ui:scan → scan:ui
+ * - styles:scan → scan:styles
+ * - rules:phase1 → guards:rules:phase1
+ * - etc. (see mapping object below)
+ */
+
 import fs from 'node:fs';
 import path from 'node:path';
 
