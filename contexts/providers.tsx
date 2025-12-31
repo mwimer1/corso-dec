@@ -2,7 +2,7 @@
 // Description: App-wide context providers (React Query, Clerk, theme, etc.) for the root layout.
 'use client';
 
-import { ClerkScriptLoader } from '@/components/auth/internal';
+import { ClerkScriptLoader } from '@/components/auth';
 import { clerkAppearanceLight, type ClerkAppearance } from '@/lib/auth/client';
 import { publicEnv } from '@/lib/shared';
 import { ClerkProvider } from '@clerk/nextjs';
