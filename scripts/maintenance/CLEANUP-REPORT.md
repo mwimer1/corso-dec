@@ -28,7 +28,11 @@ After comprehensive reference sweeps, the following files are safe to delete (ze
    - Reason: One-time migration codemod (migration complete, no longer needed)
    - All package.json script references have been migrated
 
-3. **generate-readme.ts** - ✅ Kept (Active Use)
+3. **_archived/ directory** - ✅ Deleted
+   - Removed archived directory and all contents
+   - Files were archived in PR #2 but later permanently removed
+
+4. **generate-readme.ts** - ✅ Kept (Active Use)
    - Purpose: Generates READMEs for script domains (scripts/analysis, scripts/ci, etc.)
    - Different from: `docs/tasks/generate.ts` (general markdown generation)
    - Decision: Keep - serves unique purpose for script domain documentation
@@ -71,6 +75,10 @@ After comprehensive reference sweeps, the following files are safe to delete (ze
   
 - ✅ `replace-package-script-references.ts` - Deleted
   - Reason: One-time migration codemod (migration complete, no longer needed)
+  - Status: Removed completely
+
+- ✅ `_archived/` directory - Deleted
+  - Removed archived directory and all contents (README.md, archived scripts)
   - Status: Removed completely
 
 **Files Kept (Active Use):**
