@@ -238,4 +238,3 @@ const AnimatedPill: React.FC<AnimatedPillProps> = ({
 };
 
 export default AnimatedPill;
-
