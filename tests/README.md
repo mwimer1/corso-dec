@@ -220,8 +220,10 @@ pnpm test:patterns
 
 # Pattern checks run automatically in:
 # - Pre-push hook (via pnpm test:fast)
-# - CI pipeline (via pnpm test:ci)
+# - CI pipeline (explicit step before test:ci)
 ```
+
+**CI Enforcement**: Pattern enforcement runs as an explicit step in CI workflows (`.github/workflows/ci.yml` and `.github/workflows/deploy.yml`) before the test suite, ensuring patterns cannot be bypassed even if pre-push hooks are skipped.
 
 ### Bypassing Checks
 
