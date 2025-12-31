@@ -1,11 +1,9 @@
 ---
-title: Monitoring
-description: >-
-  Documentation and resources for documentation functionality. Located in
-  monitoring/.
-last_updated: '2025-12-31'
-category: documentation
-status: stable
+title: "Monitoring"
+description: "Documentation and resources for documentation functionality. Located in monitoring/."
+last_updated: "2025-12-31"
+category: "documentation"
+status: "stable"
 ---
 # Monitoring & Observability Guide
 

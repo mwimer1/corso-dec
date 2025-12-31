@@ -1,11 +1,9 @@
 ---
-title: Footer System
-description: >-
-  UI components for the components system, following atomic design principles.
-  Located in ui/organisms/footer-system/.
-last_updated: '2025-12-31'
-category: components
-status: draft
+title: "Footer System"
+description: "UI components for the components system, following atomic design principles. Located in ui/organisms/footer-system/."
+last_updated: "2025-12-31"
+category: "components"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

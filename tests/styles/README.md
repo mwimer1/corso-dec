@@ -1,9 +1,9 @@
 ---
-title: Styles
-description: Documentation and resources for design system and styling tests. Located in styles/.
-last_updated: '2025-12-31'
-category: documentation
-status: draft
+status: "draft"
+last_updated: "2025-12-31"
+category: "styling"
+title: "Styles"
+description: "Styling system for styles, using Tailwind CSS and design tokens. Located in styles/."
 ---
 # Design System & Styling Tests
 

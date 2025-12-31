@@ -1,9 +1,9 @@
 ---
-title: Vendors
-description: Documentation and resources for third-party vendor library tests. Located in vendors/.
-last_updated: '2025-12-31'
-category: documentation
-status: draft
+status: "draft"
+last_updated: "2025-12-31"
+category: "documentation"
+title: "Vendors"
+description: "Documentation and resources for documentation functionality. Located in vendors/."
 ---
 # Vendor Library Tests
 

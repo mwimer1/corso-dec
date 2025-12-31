@@ -1,11 +1,9 @@
 ---
-title: Entities
-description: >-
-  UI components for the components system, following atomic design principles.
-  Located in dashboard/entities/.
-last_updated: '2025-12-31'
-category: components
-status: draft
+title: "Entities"
+description: "UI components for the components system, following atomic design principles. Located in dashboard/entities/."
+last_updated: "2025-12-31"
+category: "components"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

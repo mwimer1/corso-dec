@@ -1,11 +1,9 @@
 ---
-title: Marketing
-description: >-
-  TypeScript type definitions for types, ensuring type safety across the
-  platform. Located in marketing/.
-last_updated: '2025-12-31'
-category: types
-status: draft
+title: "Marketing"
+description: "TypeScript type definitions for types, ensuring type safety across the platform. Located in marketing/."
+last_updated: "2025-12-31"
+category: "types"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

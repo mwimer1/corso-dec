@@ -1,11 +1,9 @@
 ---
-title: Ast Grep
-description: >-
-  Documentation and resources for documentation functionality. Located in
-  rules/ast-grep/.
-last_updated: '2025-12-31'
-category: documentation
-status: draft
+title: "Ast Grep"
+description: "Documentation and resources for documentation functionality. Located in rules/ast-grep/."
+last_updated: "2025-12-31"
+category: "documentation"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

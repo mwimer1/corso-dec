@@ -1,9 +1,9 @@
 ---
-title: Api
-description: Core lib utilities and functionality for the Corso platform. Located in api/.
-last_updated: '2025-12-31'
-category: library
-status: draft
+title: "Api"
+description: "Core lib utilities and functionality for the Corso platform. Located in api/."
+last_updated: "2025-12-31"
+category: "library"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

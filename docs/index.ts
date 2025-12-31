@@ -301,10 +301,6 @@ export const docs = [
     "title": "Shared"
   },
   {
-    "path": "lib/shared/validation/readme.md",
-    "title": "Validation"
-  },
-  {
     "path": "lib/validators/readme.md",
     "title": "Validators"
   },
@@ -413,6 +409,18 @@ export const docs = [
     "title": "Api"
   },
   {
+    "path": "tests/auth/readme.md",
+    "title": "Auth"
+  },
+  {
+    "path": "tests/chat/readme.md",
+    "title": "Chat"
+  },
+  {
+    "path": "tests/core/readme.md",
+    "title": "Core"
+  },
+  {
     "path": "tests/dashboard/readme.md",
     "title": "Dashboard"
   },
@@ -421,12 +429,32 @@ export const docs = [
     "title": "E2e"
   },
   {
+    "path": "tests/insights/readme.md",
+    "title": "Insights"
+  },
+  {
+    "path": "tests/integrations/readme.md",
+    "title": "Integrations"
+  },
+  {
+    "path": "tests/lib/readme.md",
+    "title": "Lib"
+  },
+  {
     "path": "tests/readme.md",
     "title": "Tests"
   },
   {
+    "path": "tests/routes/readme.md",
+    "title": "Routes"
+  },
+  {
     "path": "tests/runtime-boundary/readme.md",
     "title": "Runtime Boundary"
+  },
+  {
+    "path": "tests/scripts/readme.md",
+    "title": "Scripts"
   },
   {
     "path": "tests/security/readme.md",
@@ -435,6 +463,10 @@ export const docs = [
   {
     "path": "tests/setup/readme.md",
     "title": "Setup"
+  },
+  {
+    "path": "tests/styles/readme.md",
+    "title": "Styles"
   },
   {
     "path": "tests/support/harness/readme.md",
@@ -447,6 +479,18 @@ export const docs = [
   {
     "path": "tests/support/setup/readme.md",
     "title": "Setup"
+  },
+  {
+    "path": "tests/types/readme.md",
+    "title": "Types"
+  },
+  {
+    "path": "tests/ui/readme.md",
+    "title": "Ui"
+  },
+  {
+    "path": "tests/vendors/readme.md",
+    "title": "Vendors"
   },
   {
     "path": "types/api/readme.md",

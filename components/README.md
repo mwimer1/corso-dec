@@ -1,9 +1,9 @@
 ---
-title: Components
-description: 'UI components for the components system, following atomic design principles.'
-last_updated: '2025-12-31'
-category: components
-status: draft
+title: "Components"
+description: "UI components for the components system, following atomic design principles."
+last_updated: "2025-12-31"
+category: "components"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

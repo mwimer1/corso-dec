@@ -1,11 +1,9 @@
 ---
-title: Navbar
-description: >-
-  UI components for the components system, following atomic design principles.
-  Located in ui/organisms/navbar/.
-last_updated: '2025-12-31'
-category: components
-status: draft
+title: "Navbar"
+description: "UI components for the components system, following atomic design principles. Located in ui/organisms/navbar/."
+last_updated: "2025-12-31"
+category: "components"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

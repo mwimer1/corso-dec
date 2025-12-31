@@ -1,9 +1,9 @@
 ---
-title: Chat
-description: Documentation and resources for chat and AI generation tests. Located in chat/.
-last_updated: '2025-12-31'
-category: documentation
-status: draft
+status: "draft"
+last_updated: "2025-12-31"
+category: "documentation"
+title: "Chat"
+description: "Documentation and resources for documentation functionality. Located in chat/."
 ---
 # Chat & AI Generation Tests
 

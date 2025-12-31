@@ -1,11 +1,9 @@
 ---
-title: Entities
-description: >-
-  Core lib utilities and functionality for the Corso platform. Located in
-  entities/.
-last_updated: '2025-12-31'
-category: library
-status: draft
+title: "Entities"
+description: "Core lib utilities and functionality for the Corso platform. Located in entities/."
+last_updated: "2025-12-31"
+category: "library"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

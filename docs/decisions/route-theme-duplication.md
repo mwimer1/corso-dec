@@ -1,11 +1,9 @@
 ---
-title: Decisions
-description: >-
-  Documentation and resources for documentation functionality. Located in
-  decisions/.
-last_updated: '2025-12-31'
-category: documentation
-status: draft
+title: "Decisions"
+description: "Documentation and resources for documentation functionality. Located in decisions/."
+last_updated: "2025-12-31"
+category: "documentation"
+status: "draft"
 ---
 # Decision: Route Theme Duplication (KEEP)
 

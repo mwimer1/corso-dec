@@ -1,11 +1,9 @@
 ---
-title: Harness
-description: >-
-  Documentation and resources for documentation functionality. Located in
-  support/harness/.
-last_updated: '2025-12-31'
-category: documentation
-status: draft
+title: "Harness"
+description: "Documentation and resources for documentation functionality. Located in support/harness/."
+last_updated: "2025-12-31"
+category: "documentation"
+status: "draft"
 ---
 ## Public Exports
 | Support File | Type | Description |

@@ -1,11 +1,9 @@
 ---
-title: Docs
-description: >-
-  Documentation and resources for documentation functionality. Located in
-  maintenance/docs/.
-last_updated: '2025-12-31'
-category: documentation
-status: draft
+title: "Docs"
+description: "Documentation and resources for documentation functionality. Located in maintenance/docs/."
+last_updated: "2025-12-31"
+category: "documentation"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

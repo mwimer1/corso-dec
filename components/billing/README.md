@@ -1,11 +1,9 @@
 ---
-title: Billing
-description: >-
-  UI components for the components system, following atomic design principles.
-  Located in billing/.
-last_updated: '2025-12-31'
-category: components
-status: draft
+title: "Billing"
+description: "UI components for the components system, following atomic design principles. Located in billing/."
+last_updated: "2025-12-31"
+category: "components"
+status: "draft"
 ---
 # Repository Scripts & Docs
 

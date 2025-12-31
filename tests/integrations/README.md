@@ -1,9 +1,9 @@
 ---
-title: Integrations
-description: Documentation and resources for third-party integration tests. Located in integrations/.
-last_updated: '2025-12-31'
-category: documentation
-status: draft
+status: "draft"
+last_updated: "2025-12-31"
+category: "documentation"
+title: "Integrations"
+description: "Documentation and resources for documentation functionality. Located in integrations/."
 ---
 # Third-Party Integration Tests
 

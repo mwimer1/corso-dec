@@ -1,9 +1,9 @@
 ---
-title: Types
-description: Documentation and resources for type system tests. Located in types/.
-last_updated: '2025-12-31'
-category: documentation
-status: draft
+status: "draft"
+last_updated: "2025-12-31"
+category: "types"
+title: "Types"
+description: "TypeScript type definitions for types, ensuring type safety across the platform. Located in types/."
 ---
 # Type System Tests
 

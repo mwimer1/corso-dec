@@ -1,9 +1,9 @@
 ---
-title: Qa
-description: Documentation and resources for documentation functionality. Located in qa/.
-last_updated: '2025-12-31'
-category: documentation
-status: stable
+title: "Qa"
+description: "Documentation and resources for documentation functionality. Located in qa/."
+last_updated: "2025-12-31"
+category: "documentation"
+status: "stable"
 ---
 # Landing Page Use Cases Refactor - Verification Summary
 

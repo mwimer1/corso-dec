@@ -1,11 +1,9 @@
 ---
-title: Rules
-description: >-
-  Documentation and resources for documentation functionality. Located in
-  rules/.
-last_updated: '2025-12-31'
-category: documentation
-status: draft
+status: "draft"
+last_updated: "2025-12-31"
+category: "documentation"
+title: "Rules"
+description: "Documentation and resources for documentation functionality. Located in rules/."
 ---
 # Cursor AI Rules
 

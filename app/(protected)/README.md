@@ -1,11 +1,9 @@
 ---
-title: (protected)
-description: >-
-  Documentation and resources for documentation functionality. Located in
-  (protected)/.
-last_updated: '2025-12-31'
-category: documentation
-status: draft
+title: "(protected)"
+description: "Documentation and resources for documentation functionality. Located in (protected)/."
+last_updated: "2025-12-31"
+category: "documentation"
+status: "draft"
 ---
 ## Overview
 

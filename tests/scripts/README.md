@@ -1,9 +1,9 @@
 ---
-title: Scripts
-description: Documentation and resources for test scripts and validation tools. Located in scripts/.
-last_updated: '2025-12-31'
-category: documentation
-status: draft
+status: "draft"
+last_updated: "2025-12-31"
+category: "documentation"
+title: "Scripts"
+description: "Documentation and resources for documentation functionality. Located in scripts/."
 ---
 # Test Scripts & Validation Tools
 
