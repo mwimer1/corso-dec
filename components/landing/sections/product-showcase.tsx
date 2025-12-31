@@ -81,7 +81,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
       id: "corso-ai",
       label: "AI Chat",
       content: (
-        <div className="rounded-lg border border-border shadow-md ring-1 ring-border/20 overflow-hidden">
+        <div className="rounded-lg border-2 border-border shadow-md overflow-hidden">
           <div className="u-mask-fade-bottom">
             <Image
               src="/demos/corso-ai-interface.png"
@@ -100,7 +100,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
       id: "projects",
       label: "Projects",
       content: (
-        <div className="rounded-lg border border-border shadow-md ring-1 ring-border/20 overflow-hidden">
+        <div className="rounded-lg border-2 border-border shadow-md overflow-hidden">
           <div className="u-mask-fade-bottom">
             <Image
               src="/demos/projects-interface.png"
@@ -119,7 +119,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
       id: "companies",
       label: "Companies",
       content: (
-        <div className="rounded-lg border border-border shadow-md ring-1 ring-border/20 overflow-hidden">
+        <div className="rounded-lg border-2 border-border shadow-md overflow-hidden">
           <div className="u-mask-fade-bottom">
             <Image
               src="/demos/companies-interface.png"
@@ -138,7 +138,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
       id: "addresses",
       label: "Addresses",
       content: (
-        <div className="rounded-lg border border-border shadow-md ring-1 ring-border/20 overflow-hidden">
+        <div className="rounded-lg border-2 border-border shadow-md overflow-hidden">
           <div className="u-mask-fade-bottom">
             <Image
               src="/demos/addresses-interface.png"
@@ -354,6 +354,20 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
               className={cn(
                 "w-full",
                 showcaseWideInner,
+                // ─────────────────────────────────────────────────────────────
+                // ATTIO BASELINE RAIL (single rail across entire tab row)
+                "[&_[role=tablist]]:relative",
+                "[&_[role=tablist]]:after:content-['']",
+                "[&_[role=tablist]]:after:absolute",
+                "[&_[role=tablist]]:after:inset-x-0",
+                "[&_[role=tablist]]:after:bottom-0",
+                "[&_[role=tablist]]:after:h-px",
+                "[&_[role=tablist]]:after:bg-border/40",
+                "[&_[role=tablist]]:after:pointer-events-none",
+                // Remove per-tab border so we don't "stack" borders with the 3px underline
+                "[&_[role=tab]]:border-b-0",
+                // Slightly soften underline fill (applies to active; inactive is scale-x-0 anyway)
+                "[&_[role=tab]]:after:bg-foreground/90",
                 // ─────────────────────────────────────────────────────────────
                 // XL+ TYPOGRAPHY TIGHTEN (scoped)
                 "xl:[&_[role=tab]]:text-[14px]",
