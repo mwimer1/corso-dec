@@ -1,6 +1,7 @@
 /**
  * @fileoverview Server-side rate limiting middleware
- * @module lib/rate-limiting/middleware/server
+ * @module lib/middleware/shared/rate-limit
+ * @description Node-only rate limiting for server actions (not route handlers)
  */
 
 import { rateLimit } from '@/lib/ratelimiting/core';
@@ -17,4 +18,3 @@ export async function withRateLimit(
   const store = getDefaultStore();
   await rateLimit(store, key, opts.maxRequests, opts.windowMs);
 }
-

@@ -1,4 +1,4 @@
-// lib/middleware/http/cors.ts
+// lib/middleware/shared/cors.ts
 // Edge-safe; no Node-only deps.
 
 import { getEnvEdge } from '@/lib/api/edge';
@@ -66,4 +66,3 @@ export function handleCors(req: Request): Response | null {
     headers: corsHeaders(origin, requestedMethod),
   });
 }
-

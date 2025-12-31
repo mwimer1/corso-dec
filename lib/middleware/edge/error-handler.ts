@@ -8,8 +8,8 @@ import { fail } from '@/lib/api/api-error';
 import { logger, runWithRequestContext as runWithEdgeRequestContext } from '@/lib/monitoring/logger-edge';
 import { toApiErrorBase } from '@/lib/shared/errors/api-error-conversion';
 import type { NextRequest, NextResponse } from 'next/server';
-import { exposeHeader } from '../http/headers';
-import { addRequestIdHeader, getRequestId } from '../http/request-id';
+import { exposeHeader } from '../shared/headers';
+import { addRequestIdHeader, getRequestId } from '../shared/request-id';
 
 /**
  * Edge-safe error handling wrapper

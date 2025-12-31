@@ -6,8 +6,8 @@
 
 import 'server-only';
 
-import { exposeHeader } from '@/lib/middleware/http/headers';
-import { addRequestIdHeader, getRequestId } from '@/lib/middleware/http/request-id';
+import { exposeHeader } from '@/lib/middleware/shared/headers';
+import { addRequestIdHeader, getRequestId } from '@/lib/middleware/shared/request-id';
 import { logger, runWithRequestContext } from '@/lib/monitoring';
 import type { RateLimitOptions } from '@/lib/ratelimiting';
 import { checkRateLimit } from '@/lib/ratelimiting';
@@ -97,4 +97,3 @@ export function withRateLimitNode<R extends NextResponse | Response = Response>(
     });
   };
 }
-

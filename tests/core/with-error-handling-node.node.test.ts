@@ -3,7 +3,7 @@
  * @description Verifies request ID propagation and error handling consistency
  */
 
-import { withErrorHandlingNode } from '@/lib/middleware/http/with-error-handling-node';
+import { withErrorHandlingNode } from '@/lib/middleware/node/with-error-handling-node';
 import { describe, expect, it } from 'vitest';
 import { NextRequest, NextResponse } from 'next/server';
 

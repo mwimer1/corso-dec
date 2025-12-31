@@ -1,4 +1,4 @@
-// lib/middleware/http/headers.ts
+// lib/middleware/shared/headers.ts
 import { NextResponse } from 'next/server';
 
 export function exposeHeader(res: Response | NextResponse, name: string): NextResponse {
@@ -12,6 +12,3 @@ export function exposeHeader(res: Response | NextResponse, name: string): NextRe
   response.headers.set('Access-Control-Expose-Headers', Array.from(set).join(', '));
   return response;
 }
-
-
-

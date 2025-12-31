@@ -70,6 +70,3 @@ export function adaptProjectsFile(rawFile: unknown): z.infer<typeof CanonicalPro
   }
   return final.data;
 }
-
-
-

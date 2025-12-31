@@ -241,7 +241,7 @@ const validated = validateInput(Schema, input, 'context');
 
 **Server Actions:**
 ```typescript
-import { withRateLimit } from '@/lib/middleware/http/rate-limit';
+import { withRateLimit } from '@/lib/middleware/shared/rate-limit';
 import { buildCompositeKey, ACTION_RATE_LIMITS } from '@/lib/ratelimiting';
 
 await withRateLimit(

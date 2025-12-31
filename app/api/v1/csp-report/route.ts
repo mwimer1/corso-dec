@@ -5,7 +5,7 @@ export const revalidate = 0;
 
 import { getEnvEdge, http, readJsonOnce, withErrorHandlingEdge as withErrorHandling, withRateLimitEdge as withRateLimit } from "@/lib/api/edge";
 import { RATE_LIMIT_30_PER_MIN } from "@/lib/middleware";
-import { handleCors } from '@/lib/middleware/http/cors';
+import { handleCors } from '@/lib/middleware/shared/cors';
 import {
     cspViolationBodySchema,
     legacyCspReportSchema,

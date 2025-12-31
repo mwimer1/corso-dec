@@ -10,8 +10,8 @@ import { runWithRequestContext as runWithEdgeRequestContext } from '@/lib/monito
 // Edge-safe env access (import from edge-env to avoid circular dependency with edge.ts)
 import { getEnvEdge } from '@/lib/api/edge-env';
 // Use consolidated rate limiting domain
-import { exposeHeader } from '@/lib/middleware/http/headers';
-import { addRequestIdHeader, getRequestId } from '@/lib/middleware/http/request-id';
+import { exposeHeader } from '@/lib/middleware/shared/headers';
+import { addRequestIdHeader, getRequestId } from '@/lib/middleware/shared/request-id';
 import type { RateLimitOptions as RateLimitEdgeOptions } from '@/lib/ratelimiting';
 import { checkRateLimit } from '@/lib/ratelimiting';
 import { createMemoryStore } from '@/lib/ratelimiting/memory';

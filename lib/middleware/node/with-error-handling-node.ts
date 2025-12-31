@@ -10,8 +10,8 @@ import { fail } from '@/lib/api/api-error';
 import { logger, runWithRequestContext } from '@/lib/monitoring';
 import { toApiErrorBase } from '@/lib/shared/errors/api-error-conversion';
 import type { NextRequest, NextResponse } from 'next/server';
-import { exposeHeader } from './headers';
-import { addRequestIdHeader, getRequestId } from './request-id';
+import { exposeHeader } from '../shared/headers';
+import { addRequestIdHeader, getRequestId } from '../shared/request-id';
 
 /**
  * Node.js error handling wrapper
@@ -42,4 +42,3 @@ export function withErrorHandlingNode<R extends NextResponse | Response = Respon
     });
   };
 }
-

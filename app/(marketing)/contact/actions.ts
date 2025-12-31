@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { z } from "zod";
 
 import { ApplicationError, ErrorCategory, ErrorSeverity, handleInternalError, handleValidationError, validateInput } from '@/lib/actions';
-import { withRateLimit } from '@/lib/middleware/http/rate-limit';
+import { withRateLimit } from '@/lib/middleware/shared/rate-limit';
 import { buildCompositeKey, ACTION_RATE_LIMITS as RATE_LIMITS } from '@/lib/ratelimiting';
 import { verifyTurnstileToken } from '@/lib/security/server';
 import { ContactSchema as contactFormSchema } from '@/lib/validators';

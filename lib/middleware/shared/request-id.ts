@@ -1,4 +1,4 @@
-// lib/middleware/http/request-id.ts
+// lib/middleware/shared/request-id.ts
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { v4 as uuid } from 'uuid';
@@ -53,4 +53,3 @@ export function addRequestIdHeader(res: Response | NextResponse, requestId: stri
   next.headers.set('X-Request-ID', requestId);
   return exposeHeader(next, 'X-Request-ID');
 }
-
