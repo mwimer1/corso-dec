@@ -17,8 +17,7 @@ export * from './logo';
 // Popover components (individual exports)
 
 // Progress components (individual exports)
-export * from './progress/progress';
-export * from './progress/progress-indicator';
+export * from './progress';
 export * from './route-loading';
 export * from './skeleton';
 export * from './skip-nav-link';

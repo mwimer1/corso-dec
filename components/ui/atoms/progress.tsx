@@ -1,14 +1,38 @@
-// components/ui/atoms/progress/progress.tsx
+// components/ui/atoms/progress.tsx
 /**
- * primitives/Progress/Progress.tsx
  * Atomic progress bar with inner sliding indicator
+ * Combines Progress component and internal ProgressBar sub-component
  */
 "use client";
 
 import { cn } from "@/styles";
 import { progressVariants, type ProgressVariantProps } from "@/styles/ui/atoms";
 import * as React from "react";
-import { ProgressBar } from "./progress-indicator";
+
+/** Internal indicator bar */
+interface ProgressBarProps {
+  /** 0–100 translated to transform-X */
+  percentage: number;
+  /** Extra Tailwind classes for the bar */
+  className?: string;
+}
+
+const ProgressBar: React.FC<ProgressBarProps> = ({
+  percentage,
+  className,
+}) => (
+  <div
+    data-bar
+    className={cn(
+      "h-full w-full transition-transform duration-300 ease-in-out motion-reduce:transition-none",
+      className,
+    )}
+    /* slide the bar */
+    style={{ transform: `translateX(-${100 - percentage}%)` }}
+  />
+);
+
+ProgressBar.displayName = "ProgressBar";
 
 interface ProgressProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "children">,

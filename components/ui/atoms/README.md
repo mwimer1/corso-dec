@@ -15,3 +15,7 @@ This README is generated from a single template (`README.scripts.hbs`).
 - Last updated: `2025-12-30`
 
 > Edit the template or the generator context to change all READMEs consistently.
+
+## Component Structure
+
+- **Progress component**: Located at `components/ui/atoms/progress.tsx` (flattened from subdirectory structure). Combines the main `Progress` component and internal `ProgressBar` sub-component in a single file for easier maintainability.
