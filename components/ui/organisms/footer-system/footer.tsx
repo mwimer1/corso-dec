@@ -9,12 +9,18 @@ type FooterProps = {
   showCTA?: boolean;
   /** Pass-through props for CTA customization */
   ctaProps?: React.ComponentProps<typeof FooterCTA>;
+  /** Footer shell variant - controls height behavior */
+  variant?: 'fillViewport' | 'hero' | 'content';
 };
 
-const Footer: React.FC<FooterProps> = ({ showCTA = true, ctaProps }) => {
+const Footer: React.FC<FooterProps> = ({
+  showCTA = true,
+  ctaProps,
+  variant = 'fillViewport',
+}) => {
   return (
     <>
-      <SiteFooterShell>
+      <SiteFooterShell variant={variant}>
         {showCTA && <FooterCTA {...ctaProps} />}
         <FooterMain />
       </SiteFooterShell>
