@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 // Create schema locally for testing instead of importing unused export
 const entityParamSchema = z.object({
-  entity: z.enum(ALL_ENTITIES as any).catch(z.never()),
+  entity: z.enum(ALL_ENTITIES as any),
 }).strict();
 
 describe('entity param validation', () => {

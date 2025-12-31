@@ -18,6 +18,9 @@ import { auth, clerkClient } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
+const SHOULD_LOG =
+  process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test';
+
 type EntityFilterOp = 'eq' | 'contains' | 'gt' | 'lt' | 'gte' | 'lte' | 'in' | 'between' | 'bool';
 type EntityFilter = { field: string; op: EntityFilterOp; value: unknown };
 
@@ -90,7 +93,7 @@ async function getAllowedSortFields(entity: EntityParam): Promise<Set<string>> {
         .map((col) => col.accessor)
     );
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
+    if (SHOULD_LOG) {
       console.warn(`[entity route] Failed to load sort fields for ${entity}:`, error);
     }
     return new Set();
@@ -107,7 +110,7 @@ async function getAllowedFilterFields(entity: EntityParam): Promise<Set<string>>
     // If/when TableColumnConfig adds `filterable`, update this to respect it.
     return new Set(columns.map((col) => col.accessor));
   } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
+    if (SHOULD_LOG) {
       console.warn(`[entity route] Failed to load filter fields for ${entity}:`, error);
     }
     return new Set();
@@ -131,10 +134,8 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
   const isRelaxed = isRelaxedAuthMode();
   
   // Log auth mode for debugging (dev only)
-  if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test') {
-    if (isRelaxed) {
-      console.debug('[entity route] Relaxed auth mode enabled - org/RBAC checks bypassed');
-    }
+  if (isRelaxed && SHOULD_LOG) {
+    console.debug('[entity route] Relaxed auth mode enabled - org/RBAC checks bypassed');
   }
   
   // Define allowed roles (for strict mode only)
@@ -160,7 +161,7 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
     }
     
     if (!orgId) {
-      if (process.env.NODE_ENV !== 'production') {
+      if (SHOULD_LOG) {
         console.debug('[entity route] No active organization found for userId:', userId, '- attempting to fetch user organizations');
       }
       
@@ -176,12 +177,12 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
         if (orgMemberships.data && orgMemberships.data.length > 0 && orgMemberships.data[0]) {
           orgId = orgMemberships.data[0].organization.id;
           effectiveOrgIdSource = 'fallback';
-          if (process.env.NODE_ENV !== 'production') {
+          if (SHOULD_LOG) {
             console.debug('[entity route] Using first organization from memberships:', orgId);
           }
         }
       } catch (error) {
-        if (process.env.NODE_ENV !== 'production') {
+        if (SHOULD_LOG) {
           console.debug('[entity route] Failed to fetch user organizations:', error);
         }
         // Continue to error handling below
@@ -222,7 +223,7 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
         const hasAllowedRole = allowedRoles.some((role) => has({ role }));
         
         if (!hasAllowedRole) {
-          if (process.env.NODE_ENV !== 'production') {
+          if (SHOULD_LOG) {
             console.debug('[entity route] RBAC check failed for userId:', userId, 'orgId:', effectiveOrgId, 'allowedRoles:', allowedRoles);
           }
           return await toNextResponse(http.error(403, 'Insufficient permissions', { 
@@ -247,7 +248,7 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
         );
         
         if (!hasMembership) {
-          if (process.env.NODE_ENV !== 'production') {
+          if (SHOULD_LOG) {
             console.debug('[entity route] User does not have allowed role in organization:', effectiveOrgId, 'allowedRoles:', allowedRoles);
           }
           return await toNextResponse(http.error(403, 'Insufficient permissions', { 
@@ -259,7 +260,7 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
         }
       }
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
+      if (SHOULD_LOG) {
         console.debug('[entity route] Failed to verify organization membership:', error);
       }
       return await toNextResponse(http.error(403, 'Insufficient permissions', { 
@@ -358,7 +359,7 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
   if (validatedSortBy && allowedSortFields) {
     if (!allowedSortFields.has(validatedSortBy)) {
       // Invalid sortBy: log warning in dev, ignore sortBy (fall back to no sort)
-      if (process.env.NODE_ENV !== 'production') {
+      if (SHOULD_LOG) {
         console.warn(
           `[entity route] Invalid sortBy field "${validatedSortBy}" for entity "${entity}". ` +
           `Allowed fields: ${Array.from(allowedSortFields).join(', ')}. ` +
@@ -387,7 +388,7 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
     }
     
     if (invalidFields.length > 0) {
-      if (process.env.NODE_ENV !== 'production') {
+      if (SHOULD_LOG) {
         console.warn(
           `[entity route] Invalid filter fields for entity "${entity}": ${invalidFields.join(', ')}. ` +
           `These filters will be ignored.`

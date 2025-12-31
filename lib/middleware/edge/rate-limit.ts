@@ -68,7 +68,9 @@ export function withRateLimitEdge<R extends NextResponse | Response = Response>(
       /* Check quota - use Edge-safe in-memory store */
       const limited = await checkRateLimit(edgeMemoryStore, key, opts);
       if (limited) {
-        console.warn('RateLimitExceeded', { key, ip, userId: uid, path, requestId });
+        if (process.env.NODE_ENV !== 'test') {
+          console.warn('RateLimitExceeded', { key, ip, userId: uid, path, requestId });
+        }
         if (opts.onKey) {
           opts.onKey(key);
         }
