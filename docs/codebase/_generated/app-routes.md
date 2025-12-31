@@ -1,10 +1,3 @@
----
-title: "_generated"
-description: "Documentation and resources for documentation functionality. Located in codebase/_generated/."
-last_updated: "2025-12-31"
-category: "documentation"
-status: "draft"
----
 <!-- AUTO-GENERATED: do not edit directly. Run `pnpm docs:routes`. -->
 ```txt
 /
@@ -13,9 +6,6 @@ status: "draft"
     └─ clickhouse
   └─ internal
     └─ auth
-  └─ public
-    └─ health
-      └─ clickhouse
   └─ v1
     └─ ai
       └─ chat
@@ -42,11 +32,15 @@ status: "draft"
     └─ [category]
   └─ rss
 └─ legal
+  └─ privacy
+  └─ terms
 └─ pricing
 └─ privacy
+└─ security
 └─ sign-in
   └─ [[...sign-in]]
 └─ sign-up
   └─ [[...sign-up]]
+└─ status
 └─ terms
 ```
