@@ -4,7 +4,6 @@
 import { cn } from "@/styles";
 import Image from "next/image";
 import { memo } from "react";
-import styles from './sidebar.module.css';
 
 type Props = {
   isOpen: boolean;
@@ -20,8 +19,9 @@ export const SidebarTop = memo(function SidebarTop({
   return (
     <div
       className={cn(
-        styles['top'],
-        "flex h-14 items-center px-4",
+        "flex h-14 items-center",
+        "border-b border-[var(--sb-border)]",
+        "px-3", // 0.75rem padding
         isOpen ? "gap-18 justify-between" : "justify-center"
       )}
       data-state={isOpen ? "open" : "closed"}
