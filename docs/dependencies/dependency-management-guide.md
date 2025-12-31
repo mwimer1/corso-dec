@@ -287,7 +287,11 @@ pnpm validate:cycles
 **Audit:**
 - `pnpm audit:ci` - CI-ready audit (fails on high)
 - `pnpm audit:ai` - AI dependency security audit
-- `pnpm audit:full` - Comprehensive audit
+- `pnpm audit:atomic` - Atomic design validation
+- `pnpm audit:breakpoints` - Breakpoint audit
+- `pnpm audit:secrets` - Workflow secrets audit
+- `pnpm audit:tokens` - Token syntax audit
+- `pnpm audit:styles` - Styles comprehensive audit
 
 **Dependency Analysis:**
 - `pnpm deps:outdated` - Check outdated packages

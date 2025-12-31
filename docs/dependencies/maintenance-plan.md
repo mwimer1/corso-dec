@@ -43,8 +43,10 @@ pnpm deps:outdated
 # Check for unused dependencies
 pnpm deps:unused
 
-# Full security audit
-pnpm audit:full
+# Security audits
+pnpm audit:ai              # AI dependency security audit
+pnpm audit:secrets         # Workflow secrets audit
+pnpm audit:atomic          # Atomic design validation
 
 # Review dependency health
 pnpm validate:dependencies

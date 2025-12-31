@@ -1024,8 +1024,7 @@ status: "draft"
     │   │   ├── check-route-theme-overrides.ts
     │   │   ├── check-runtime-versions.ts
     │   │   ├── check-token-tailwind-contract.ts
-    │   │   ├── check-workflows-pnpm.mjs
-    │   │   ├── checkFilenameCase.ts
+    │   │   ├── check-filename-case.ts
     │   │   ├── contrast-check.ts
     │   │   ├── css-size-analyzer.ts
     │   │   ├── deprecations-util-extend.allowlist.json
