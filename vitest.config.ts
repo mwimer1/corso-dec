@@ -127,6 +127,7 @@ export default defineConfig({
             'tests/security/**/*.test.{ts,tsx}',
             'tests/core/**/*.test.{ts,tsx}',
             'tests/runtime-boundary/**/*.test.{ts,tsx}',
+            'tests/routes/**/*.test.{ts,tsx}',
             'tests/styles/**/*.test.{ts,tsx}',
             'tests/**/*.node.test.{ts,tsx}',
             'tests/scripts/**/*.test.{ts,tsx}',

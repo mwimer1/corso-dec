@@ -32,16 +32,14 @@ Route-level tests validate Next.js route handlers, page components, and route-sp
 
 ## Directory Structure
 
-| Directory | Purpose | Coverage |
-|-----------|---------|----------|
-| `entities/` | Entity route tests | Entity resolution, runtime boundaries |
+All route tests are at the root level of `tests/routes/` for easier discoverability.
 
 ## Test Files
 
 | File | Purpose | Coverage |
 |------|---------|----------|
-| `entities/resolve-entity.test.ts` | Entity resolution | Entity parameter validation, registry |
-| `entities/runtime-boundary.chat.test.ts` | Chat route boundaries | Runtime configuration for chat routes |
+| `resolve-entity.test.ts` | Entity resolution | Entity parameter validation, registry |
+| `runtime-boundary.chat.test.ts` | Chat route boundaries | Runtime configuration for chat entity routes |
 
 ## Testing Patterns
 
