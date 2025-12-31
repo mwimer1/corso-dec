@@ -716,7 +716,7 @@ export default function NotFound() {
 | Component | Location | Purpose |
 |-----------|----------|---------|
 | `Hero` | `components/landing/sections/hero/hero.tsx` | Main hero section |
-| `ProductShowcase` | `components/landing/sections/product-showcase.tsx` | Features showcase |
+| `ProductShowcase` | `components/landing/sections/product-showcase/product-showcase.tsx` | Features showcase |
 | `PricingPage` | `components/marketing/sections/pricing/pricing-page.tsx` | Pricing with plans/FAQ |
 | `ContactFormWrapper` | `components/marketing/contact/contact-form-wrapper.tsx` | Secure contact form |
 | `InsightsList` | `components/insights/sections/insights-list.tsx` | Blog articles list (3×2 grid) |

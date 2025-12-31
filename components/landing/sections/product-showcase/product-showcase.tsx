@@ -1,4 +1,4 @@
-// components/landing/sections/product-showcase.tsx
+// components/landing/sections/product-showcase/product-showcase.tsx
 "use client";
 
 import { TabSwitcher, type TabItem } from "@/components/ui/molecules";
@@ -7,7 +7,7 @@ import { cn } from "@/styles";
 import { containerWithPaddingVariants } from "@/styles/ui/shared/container-helpers";
 import Image from "next/image";
 import React, { useEffect, useRef } from "react";
-import usePrefersReducedMotion from "../hooks/use-prefers-reduced-motion";
+import usePrefersReducedMotion from "../../hooks/use-prefers-reduced-motion";
 
 interface ProductShowcaseProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -21,9 +21,12 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
   const intervalRef = useRef<number | undefined>(undefined);
   const isIntersectingRef = useRef<boolean>(false);
   const prefersReducedMotion = usePrefersReducedMotion();
+  const railsWrapperRef = useRef<HTMLDivElement>(null);
+  const contentContainerRef = useRef<HTMLDivElement>(null);
+  const tabContainerRef = useRef<HTMLDivElement>(null);
 
-  // Shared wide-screen inner width for tabs and image alignment (xl+)
-  const showcaseWideInner = "mx-auto w-full xl:max-w-6xl";
+  // Tab strip width (narrower than image) - used for aligning dashed rails
+  const showcaseTabInner = "mx-auto w-full xl:max-w-5xl";
 
   // Detect horizontal scrollbar height and expose as CSS variable
   // This ensures sticky tabs at bottom of viewport are fully visible above the scrollbar
@@ -194,6 +197,43 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
     setActiveTab(index);
   };
 
+  // Update dashed rails height to span from tabs to product image top edge
+  useEffect(() => {
+    const updateRailsHeight = () => {
+      if (!railsWrapperRef.current || !tabContainerRef.current || !contentContainerRef.current) return;
+
+      const railsWrapper = railsWrapperRef.current;
+      const tabContainer = tabContainerRef.current;
+      const contentContainer = contentContainerRef.current;
+      
+      // Get the ShowcaseFrame parent container
+      const parent = railsWrapper.parentElement as HTMLElement;
+      if (!parent) return;
+
+      // Get positions relative to the viewport
+      const parentRect = parent.getBoundingClientRect();
+      const tabRect = tabContainer.getBoundingClientRect();
+      const contentRect = contentContainer.getBoundingClientRect();
+
+      // Calculate: start from top of tabs, end at top of content
+      const topOffset = tabRect.top - parentRect.top;
+      const height = contentRect.top - parentRect.top - topOffset;
+      
+      railsWrapper.style.top = `${topOffset}px`;
+      railsWrapper.style.height = `${Math.max(0, height)}px`;
+    };
+
+    updateRailsHeight();
+    window.addEventListener('resize', updateRailsHeight);
+    // Also update after a brief delay to account for layout shifts
+    const timeoutId = setTimeout(updateRailsHeight, 100);
+
+    return () => {
+      window.removeEventListener('resize', updateRailsHeight);
+      clearTimeout(timeoutId);
+    };
+  }, [activeTab]); // Recalculate when tab changes (image height may vary)
+
   // Auto-advance tabs when section is in viewport
   useEffect(() => {
     // Don't auto-advance if user prefers reduced motion or has interacted
@@ -280,39 +320,21 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
       )} 
       {...props}
     >
-      {/* Dashed horizontal line decoration */}
-      <svg 
-        aria-hidden="true"
-        className="absolute inset-x-0 top-12 lg:top-10 text-border/25 pointer-events-none"
-        height="1"
-        preserveAspectRatio="none"
-      >
-        <line 
-          x1="0" 
-          y1="0" 
-          x2="100%" 
-          y2="0" 
-          stroke="currentColor" 
-          strokeWidth="1" 
-          strokeDasharray="4 6"
-          strokeLinecap="round"
-        />
-      </svg>
-
       {/* ShowcaseFrame: Wrapper for tabs + gap + spacer to mock top edge with vertical dashed guides */}
       <div className="relative">
-        {/* Vertical dashed guides (decorative) - bracket outer edges of tab grid and extend to mock top */}
+        {/* Dashed vertical rails - span from tabs to product image */}
         <div
+          ref={railsWrapperRef}
           aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 left-0 right-0 z-0"
+          className="pointer-events-none absolute left-0 right-0 z-[46]"
         >
-          {/* Inner wrapper that matches tab/image width constraints for proper guide alignment */}
+          {/* Inner wrapper that matches tab width constraints for proper guide alignment */}
           <div className={cn(
             containerWithPaddingVariants({ maxWidth: '7xl', padding: 'lg', centered: true }),
             "relative h-full"
           )}>
-            <div className={cn("relative h-full w-full", showcaseWideInner)}>
-              {/* Left guide - aligns with outer left edge of tab grid */}
+            <div className={cn("relative h-full w-full", showcaseTabInner)}>
+              {/* Left dashed rail */}
               <div
                 className="absolute inset-y-0 left-0 w-px"
                 style={{
@@ -320,7 +342,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
                     'repeating-linear-gradient(to bottom, transparent, transparent 4px, hsl(var(--border) / 0.4) 4px, hsl(var(--border) / 0.4) 10px)',
                 }}
               />
-              {/* Right guide - aligns with outer right edge of tab grid */}
+              {/* Right dashed rail */}
               <div
                 className="absolute inset-y-0 right-0 w-px"
                 style={{
@@ -349,45 +371,8 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
           <div className={cn(
             containerWithPaddingVariants({ maxWidth: '7xl', padding: 'lg', centered: true })
           )}>
-            {/* Narrow tab row on wide screens (xl+) to align with image */}
-            <div
-              className={cn(
-                "w-full",
-                showcaseWideInner,
-                // ─────────────────────────────────────────────────────────────
-                // ATTIO BASELINE RAIL (single rail across entire tab row)
-                "[&_[role=tablist]]:relative",
-                "[&_[role=tablist]]:after:content-['']",
-                "[&_[role=tablist]]:after:absolute",
-                "[&_[role=tablist]]:after:inset-x-0",
-                "[&_[role=tablist]]:after:bottom-0",
-                "[&_[role=tablist]]:after:h-px",
-                "[&_[role=tablist]]:after:bg-border/40",
-                "[&_[role=tablist]]:after:pointer-events-none",
-                // Remove per-tab border so we don't "stack" borders with the 3px underline
-                "[&_[role=tab]]:border-b-0",
-                // Slightly soften underline fill (applies to active; inactive is scale-x-0 anyway)
-                "[&_[role=tab]]:after:bg-foreground/90",
-                // ─────────────────────────────────────────────────────────────
-                // XL+ TYPOGRAPHY TIGHTEN (scoped)
-                "xl:[&_[role=tab]]:text-[14px]",
-                "xl:[&_[role=tab]]:leading-5",
-                "xl:[&_[role=tab]]:tracking-[-0.01em]",
-                "xl:[&_[role=tab]]:px-3",
-                // ─────────────────────────────────────────────────────────────
-                // XL+ ATTIO-LIKE WEIGHTS (inactive normal, active medium)
-                // default all tabs to normal
-                "xl:[&_[role=tab]]:font-normal",
-                // active only (most specific + reliable)
-                "xl:[&_[role=tab][data-state='active']]:font-medium",
-                // ─────────────────────────────────────────────────────────────
-                // OPTIONAL (Recommended): prevent weight jumping on hover in xl+
-                // If current TabSwitcher styles include hover:font-medium, neutralize it on xl+
-                "xl:[&_[role=tab]]:hover:font-normal",
-                // Keep active tab medium even on hover
-                "xl:[&_[role=tab][data-state='active']]:hover:font-medium"
-              )}
-            >
+            {/* Tab row wrapper - narrower than image, matches dashed rails alignment */}
+            <div ref={tabContainerRef} className={cn("w-full", showcaseTabInner)}>
               <TabSwitcher
                 tabs={tabsData}
                 active={activeTab}
@@ -407,44 +392,46 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
         <div className="mt-sm md:mt-md">
           <div className="mt-2xl" />
         </div>
-      </div>
 
-      {/* Content container - mock rendered here, positioned immediately after ShowcaseFrame */}
-      {/* Guides stop at ShowcaseFrame bottom which aligns with mock top edge */}
-      <div className={cn(
-        containerWithPaddingVariants({ maxWidth: '7xl', padding: 'lg', centered: true }),
-        "relative z-10"
-      )}>
-        {/* Render the content for the active tab with ARIA-compliant tabpanel */}
-        <div
-          id={`panel-${current?.id ?? 'active'}`}
-          role="tabpanel"
-          aria-labelledby={`tab-${current?.id ?? 'active'}`}
-          aria-live="polite"
+        {/* Content container - moved inside ShowcaseFrame so dashed rails span down to image area */}
+        <div 
+          ref={contentContainerRef}
+          className={cn(
+            containerWithPaddingVariants({ maxWidth: '7xl', padding: 'lg', centered: true }),
+            "relative z-[45]"
+          )}
         >
-          {current ? (
-            <div
-              ref={contentRef}
-              key={current.id}
-              className={cn(
-                // Transition animation - fade up (respects prefers-reduced-motion via CSS)
-                'animate-fadeInUp',
-                // Mobile: full-bleed, Desktop: constrained + padded
-                "mx-[calc(50%-50vw)] max-w-screen px-4 sm:px-6",
-                // lg: keep current desktop behavior
-                "lg:mx-0 lg:px-20",
-                // xl+: wider mock/image aligned with tab row outer edges
-                "xl:mx-auto xl:max-w-6xl xl:px-0"
-              )}
-            >
-              {current.content}
-            </div>
-          ) : null}
+          {/* Render the content for the active tab with ARIA-compliant tabpanel */}
+          <div
+            id={`panel-${current?.id ?? 'active'}`}
+            role="tabpanel"
+            aria-labelledby={`tab-${current?.id ?? 'active'}`}
+            aria-live="polite"
+          >
+            {current ? (
+              <div
+                ref={contentRef}
+                key={current.id}
+                className={cn(
+                  // Transition animation - fade up (respects prefers-reduced-motion via CSS)
+                  'animate-fadeInUp',
+                  // Mobile: full-bleed, Desktop: constrained + padded
+                  "mx-[calc(50%-50vw)] max-w-screen px-4 sm:px-6",
+                  // lg: keep current desktop behavior
+                  "lg:mx-0 lg:px-20",
+                  // xl+: wider mock/image, slightly wider than tabs for better visual alignment
+                  "xl:mx-auto xl:max-w-7xl xl:px-0"
+                )}
+              >
+                {current.content}
+              </div>
+            ) : null}
+          </div>
         </div>
-      </div>
 
-      {/* Content container bottom margin - outside ShowcaseFrame so guides don't extend too far */}
-      <div className="mb-4xl" />
+        {/* Content container bottom margin - inside ShowcaseFrame so rails include this space */}
+        <div className="mb-4xl" />
+      </div>
     </section>
   );
 }
