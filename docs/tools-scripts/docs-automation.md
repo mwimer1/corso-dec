@@ -1,9 +1,11 @@
 ---
-title: "Tools Scripts"
-description: "Documentation and resources for documentation functionality. Located in tools-scripts/."
-last_updated: "2025-12-31"
-category: "documentation"
-status: "stable"
+title: Tools Scripts
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  tools-scripts/.
+last_updated: '2025-12-31'
+category: documentation
+status: stable
 ---
 # Documentation Automation
 

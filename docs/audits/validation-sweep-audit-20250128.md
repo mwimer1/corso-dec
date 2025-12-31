@@ -1,9 +1,11 @@
 ---
-status: "draft"
-last_updated: "2025-12-31"
-category: "documentation"
-title: "Audits"
-description: "Documentation and resources for documentation functionality. Located in audits/."
+title: Audits
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  audits/.
+last_updated: '2025-12-31'
+category: documentation
+status: draft
 ---
 # Cursor Agent — Validation Sweep Audit Report
 

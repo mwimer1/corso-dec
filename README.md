@@ -1,9 +1,9 @@
 ---
-description: "Documentation and resources for documentation functionality."
-last_updated: "2025-12-31"
-category: "documentation"
-status: "draft"
-title: "README.md"
+title: README.md
+description: Documentation and resources for documentation functionality.
+last_updated: '2025-12-31'
+category: documentation
+status: draft
 ---
 # Repository Scripts & Docs
 
@@ -105,4 +105,3 @@ The following path aliases are configured in `config/typescript/tsconfig.base.js
   - `@shared/feature-flags` → `types/shared/feature-flags/types.ts`
   - `@tests/support/*` → `tests/support/*`
 <!-- END:alias-table -->
-

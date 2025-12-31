@@ -1,9 +1,9 @@
 ---
-title: "Ci"
-last_updated: "2025-12-31"
-category: "documentation"
-status: "draft"
-description: "Documentation and resources for documentation functionality. Located in ci/."
+title: Ci
+description: Documentation and resources for documentation functionality. Located in ci/.
+last_updated: '2025-12-31'
+category: documentation
+status: draft
 ---
 # Repository Scripts & Docs
 

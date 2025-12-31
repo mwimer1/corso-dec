@@ -1,9 +1,11 @@
 ---
-title: "Audits"
-description: "Documentation and resources for documentation functionality. Located in audits/."
-last_updated: "2025-12-31"
-category: "documentation"
-status: "draft"
+title: Audits
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  audits/.
+last_updated: '2025-12-31'
+category: documentation
+status: draft
 ---
 # Lib Barrels Production Usage Analysis
 

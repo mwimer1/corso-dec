@@ -1,9 +1,11 @@
 ---
-title: "Analytics"
-description: "Documentation and resources for documentation functionality. Located in analytics/."
-last_updated: "2025-12-31"
-category: "documentation"
-status: "draft"
+title: Analytics
+description: >-
+  Documentation and resources for documentation functionality. Located in
+  analytics/.
+last_updated: '2025-12-31'
+category: documentation
+status: draft
 ---
 ## Overview
 
