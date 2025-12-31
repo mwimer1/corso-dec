@@ -4,10 +4,13 @@
 
 :root {
   /* Font families */
-  /* NOTE: --font-sans is set by Next.js font optimization via className on <html>.
-   * Do not override here - Next/font/google sets this variable when you apply
-   * the font variable class (e.g., latoVariable) to the html element.
-   * Fallbacks are provided in tailwind.config.ts and other usages. */
+  /* NOTE: Next/font/google sets `--font-sans` when the font variable class is applied on <html>
+   * (see styles/fonts.ts). We still define a default fallback here so the token↔Tailwind
+   * contract check can validate consistently, and so non-Next contexts have a sane default.
+   * Next/font will override this value at runtime. */
+  --font-sans:
+    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
   --font-mono:
     ui-monospace, sfmono-regular, 'SF Mono', consolas, 'Liberation Mono', menlo, monospace;
 
