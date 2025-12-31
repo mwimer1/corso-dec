@@ -1,6 +1,6 @@
 ---
 title: "Contexts"
-last_updated: "2025-12-30"
+last_updated: "2025-12-31"
 category: "contexts"
 status: "draft"
 description: "React context providers for contexts state and configuration."

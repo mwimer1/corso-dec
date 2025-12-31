@@ -1,7 +1,7 @@
 ---
 title: "Codebase Apis"
 description: "Documentation and resources for documentation functionality. Located in codebase-apis/."
-last_updated: "2025-12-30"
+last_updated: "2025-12-31"
 category: "documentation"
 status: "draft"
 ---

@@ -1,6 +1,6 @@
 ---
 title: "Ui"
-last_updated: "2025-12-30"
+last_updated: "2025-12-31"
 category: "styling"
 status: "draft"
 description: "Styling system for styles, using Tailwind CSS and design tokens. Located in ui/."

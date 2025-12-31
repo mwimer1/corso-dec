@@ -214,7 +214,7 @@ export const docs = [
   },
   {
     "path": "components/ui/readme.md",
-    "title": "UI Library"
+    "title": "Ui"
   },
   {
     "path": "components/ui/shared/readme.md",

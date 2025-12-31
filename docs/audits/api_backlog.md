@@ -1,3 +1,10 @@
+---
+title: "Audits"
+description: "Documentation and resources for documentation functionality. Located in audits/."
+last_updated: "2025-12-31"
+category: "documentation"
+status: "draft"
+---
 # API Backlog - Prioritized Improvement Items
 
 **Generated**: 2025-01-XX (Sprint 0 Baseline Verification)  
