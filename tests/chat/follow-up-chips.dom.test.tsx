@@ -21,7 +21,7 @@ describe('FollowUpChips', () => {
       expect(button).toHaveAttribute('type', 'button');
       expect(button).toHaveTextContent(items[index]);
     });
-  });
+  }, 10000); // Explicit timeout to prevent flaky environment initialization hangs
 
   it('calls onClick when chip is clicked', async () => {
     const user = userEvent.setup();

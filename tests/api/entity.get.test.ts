@@ -1,6 +1,12 @@
 import { mockClerkAuth } from '@/tests/support/mocks';
 import { describe, expect, it, vi } from 'vitest';
 
+// Mock isRelaxedAuthMode to ensure strict mode (orgId required)
+const mockIsRelaxedAuthMode = vi.fn();
+vi.mock('@/lib/shared/config/auth-mode', () => ({
+  isRelaxedAuthMode: () => mockIsRelaxedAuthMode(),
+}));
+
 // Mock the entity service pages (replaces fetchEntityData)
 const mockGetEntityPage = vi.fn();
 vi.mock('@/lib/entities/pages', () => ({
@@ -20,6 +26,12 @@ vi.mock('@/lib/entities/config', () => ({
 describe('API v1: GET /entity/[entity]', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Ensure strict auth mode (orgId required) - default for all tests
+    mockIsRelaxedAuthMode.mockReturnValue(false);
+    // Clear any relaxed mode env vars to ensure strict mode
+    delete process.env.NEXT_PUBLIC_AUTH_MODE;
+    delete process.env.ALLOW_RELAXED_AUTH;
+    
     mockClerkAuth.setup({
       userId: 'test-user-123',
       orgId: 'test-org-123',
@@ -408,6 +420,11 @@ describe('API v1: GET /entity/[entity]', () => {
     });
 
     it('should return 403 when orgId is missing', async () => {
+      // Ensure strict mode is enforced (orgId required)
+      mockIsRelaxedAuthMode.mockReturnValue(false);
+      delete process.env.NEXT_PUBLIC_AUTH_MODE;
+      delete process.env.ALLOW_RELAXED_AUTH;
+      
       // Setup auth without orgId (simulating user with no org context)
       // Explicitly set orgId to null to override default
       mockClerkAuth.setup({
@@ -419,8 +436,8 @@ describe('API v1: GET /entity/[entity]', () => {
         data: [],
       });
       
-      // The route should detect missing orgId and return 403
-      // This happens when getTenantContext can't find orgId from header or session
+      // The route should detect missing orgId and return 403 in strict mode
+      // This happens when orgId cannot be resolved from header, session, or memberships
 
       const mod = await import('@/app/api/v1/entity/[entity]/route');
       const handler = mod.GET;

@@ -96,7 +96,8 @@ export const mockClerkAuth = {
     const config = {
       // Explicitly check for undefined to allow null to be passed through
       userId: options.userId !== undefined ? options.userId : DEFAULT_AUTH.userId,
-      orgId: options.orgId ?? DEFAULT_AUTH.orgId,
+      // Explicitly check for undefined to allow null to be passed through (for testing missing org scenarios)
+      orgId: options.orgId !== undefined ? options.orgId : DEFAULT_AUTH.orgId,
       orgRole: options.orgRole ?? DEFAULT_AUTH.orgRole,
       has: options.has ?? DEFAULT_AUTH.has,
       sessionClaims: {

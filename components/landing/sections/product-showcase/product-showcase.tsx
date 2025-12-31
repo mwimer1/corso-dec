@@ -22,6 +22,9 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
   const isIntersectingRef = useRef<boolean>(false);
   const prefersReducedMotion = usePrefersReducedMotion();
 
+  // Shared wide-screen inner width for tabs and image alignment (xl+)
+  const showcaseWideInner = "mx-auto w-full xl:max-w-6xl";
+
   // Detect horizontal scrollbar height and expose as CSS variable
   // This ensures sticky tabs at bottom of viewport are fully visible above the scrollbar
   React.useEffect(() => {
@@ -296,51 +299,91 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
         />
       </svg>
 
-      {/* Sticky tabs container - positioned at bottom of viewport */}
-      {/* Accounts for navbar height, mobile CTA ribbon, and horizontal scrollbar height */}
-      {/* On mobile, tabs sit above the mobile CTA ribbon (which is ~60-70px tall) */}
-      {/* On desktop, tabs sit above horizontal scrollbar (typically 15-17px on Windows) */}
-      {/* Uses containerWithPaddingVariants to align with FullWidthSection guidelines */}
-      <div 
-        className={cn(
-          "sticky z-[45] bg-showcase",
-          // On mobile, add bottom padding to account for mobile CTA ribbon (~70px tall)
-          // On desktop, account for horizontal scrollbar using CSS variable (falls back to 17px)
-          "bottom-[70px] md:bottom-[var(--scrollbar-h,17px)]",
-          // Ensure tabs are above content and mobile CTA (mobile CTA is z-40) but below navbar (navbar is z-50)
-        )}
-      >
-        <div className={cn(
-          containerWithPaddingVariants({ maxWidth: '7xl', padding: 'lg', centered: true })
-        )}>
-          <TabSwitcher
-            tabs={tabsData}
-            active={activeTab}
-            onTabChange={handleTabChange}
-            alignment="center"
-            variant="default"
-            layout="grid"
-            buttonVariant="grid"
-            gridSeparators={true}
-            aria-label="Choose a dashboard view"
-          />
+      {/* ShowcaseFrame: Wrapper for tabs + gap + spacer to mock top edge with vertical dashed guides */}
+      <div className="relative">
+        {/* Vertical dashed guides (decorative) - bracket outer edges of tab grid and extend to mock top */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 left-0 right-0 z-0"
+        >
+          {/* Inner wrapper that matches tab/image width constraints for proper guide alignment */}
+          <div className={cn(
+            containerWithPaddingVariants({ maxWidth: '7xl', padding: 'lg', centered: true }),
+            "relative h-full"
+          )}>
+            <div className={cn("relative h-full w-full", showcaseWideInner)}>
+              {/* Left guide - aligns with outer left edge of tab grid */}
+              <div
+                className="absolute inset-y-0 left-0 w-px"
+                style={{
+                  backgroundImage:
+                    'repeating-linear-gradient(to bottom, transparent, transparent 4px, hsl(var(--border) / 0.4) 4px, hsl(var(--border) / 0.4) 10px)',
+                }}
+              />
+              {/* Right guide - aligns with outer right edge of tab grid */}
+              <div
+                className="absolute inset-y-0 right-0 w-px"
+                style={{
+                  backgroundImage:
+                    'repeating-linear-gradient(to bottom, transparent, transparent 4px, hsl(var(--border) / 0.4) 4px, hsl(var(--border) / 0.4) 10px)',
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Sticky tabs container - positioned at bottom of viewport */}
+        {/* Accounts for navbar height, mobile CTA ribbon, and horizontal scrollbar height */}
+        {/* On mobile, tabs sit above the mobile CTA ribbon (which is ~60-70px tall) */}
+        {/* On desktop, tabs sit above horizontal scrollbar (typically 15-17px on Windows) */}
+        {/* Uses containerWithPaddingVariants to align with FullWidthSection guidelines */}
+        <div 
+          className={cn(
+            "sticky z-[45] bg-showcase relative",
+            // On mobile, add bottom padding to account for mobile CTA ribbon (~70px tall)
+            // On desktop, account for horizontal scrollbar using CSS variable (falls back to 17px)
+            "bottom-[70px] md:bottom-[var(--scrollbar-h,17px)]",
+            // Ensure tabs are above content and mobile CTA (mobile CTA is z-40) but below navbar (navbar is z-50)
+          )}
+        >
+          <div className={cn(
+            containerWithPaddingVariants({ maxWidth: '7xl', padding: 'lg', centered: true })
+          )}>
+            {/* Narrow tab row on wide screens (xl+) to align with image */}
+            <div className={cn("w-full", showcaseWideInner)}>
+              <TabSwitcher
+                tabs={tabsData}
+                active={activeTab}
+                onTabChange={handleTabChange}
+                alignment="center"
+                variant="default"
+                layout="grid"
+                buttonVariant="grid"
+                gridSeparators={true}
+                aria-label="Choose a dashboard view"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Spacer: gap + mt-2xl to reach mock top edge (defines guide height) */}
+        <div className="mt-sm md:mt-md">
+          <div className="mt-2xl" />
         </div>
       </div>
 
-      {/* Content container with proper spacing - reduced bottom margin from mb-5xl to mb-4xl for tighter layout */}
-      {/* Uses containerWithPaddingVariants to align with FullWidthSection guidelines */}
+      {/* Content container - mock rendered here, positioned immediately after ShowcaseFrame */}
+      {/* Guides stop at ShowcaseFrame bottom which aligns with mock top edge */}
       <div className={cn(
         containerWithPaddingVariants({ maxWidth: '7xl', padding: 'lg', centered: true }),
-        "mt-sm md:mt-md mb-4xl relative"
+        "relative z-10"
       )}>
-
         {/* Render the content for the active tab with ARIA-compliant tabpanel */}
         <div
           id={`panel-${current?.id ?? 'active'}`}
           role="tabpanel"
           aria-labelledby={`tab-${current?.id ?? 'active'}`}
           aria-live="polite"
-          className="mt-2xl"
         >
           {current ? (
             <div
@@ -350,7 +393,11 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
                 // Transition animation - fade up (respects prefers-reduced-motion via CSS)
                 'animate-fadeInUp',
                 // Mobile: full-bleed, Desktop: constrained + padded
-                "mx-[calc(50%-50vw)] max-w-screen px-4 sm:px-6 lg:mx-0 lg:px-20"
+                "mx-[calc(50%-50vw)] max-w-screen px-4 sm:px-6",
+                // lg: keep current desktop behavior
+                "lg:mx-0 lg:px-20",
+                // xl+: wider mock/image aligned with tab row outer edges
+                "xl:mx-auto xl:max-w-6xl xl:px-0"
               )}
             >
               {current.content}
@@ -358,6 +405,9 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
           ) : null}
         </div>
       </div>
+
+      {/* Content container bottom margin - outside ShowcaseFrame so guides don't extend too far */}
+      <div className="mb-4xl" />
     </section>
   );
 }
