@@ -33,5 +33,3 @@ console.log('rg:', rg.version || 'missing');
 console.log('fd:', fd.version || 'missing');
 console.log('gh:', gh.version || 'missing');
 process.exit(allOk ? 0 : 1);
-
-

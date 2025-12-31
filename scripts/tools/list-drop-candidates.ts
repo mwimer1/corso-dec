@@ -59,4 +59,3 @@ if (dropFiles.length > 0) {
   console.log('  - Part of Next.js conventions (KEEP)');
   console.log('  - Have dynamic imports (KEEP)');
 }
-

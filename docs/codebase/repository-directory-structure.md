@@ -9,7 +9,7 @@ status: "draft"
 
 > **Note**: This file is auto-generated. To regenerate, run:
 > ```bash
-> pnpm exec tsx scripts/utils/scan-directory.ts . --max-depth 6 --exclude node_modules,.next,dist,coverage,.git,.cache,reports,test-results,test-reports > docs/codebase/repository-directory-structure.md
+> pnpm tools:scan-dir . --max-depth 6 --exclude node_modules,.next,dist,coverage,.git,.cache,reports,test-results,test-reports > docs/codebase/repository-directory-structure.md
 > ```
 
 ## Directory Tree

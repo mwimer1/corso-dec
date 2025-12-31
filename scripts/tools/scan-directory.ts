@@ -6,20 +6,20 @@
  * Generates a clean, tree-like directory structure for analysis.
  * 
  * Usage:
- *   tsx tools/scripts/scan-directory.ts [directory] [options]
+ *   tsx scripts/tools/scan-directory.ts [directory] [options]
  * 
  * Examples:
- *   tsx tools/scripts/scan-directory.ts scripts
- *   tsx tools/scripts/scan-directory.ts components --max-depth 3
- *   tsx tools/scripts/scan-directory.ts . --exclude node_modules,dist,.next
+ *   tsx scripts/tools/scan-directory.ts scripts
+ *   tsx scripts/tools/scan-directory.ts components --max-depth 3
+ *   tsx scripts/tools/scan-directory.ts . --exclude node_modules,dist,.next
  */
 
 import fs from 'fs';
 import path from 'path';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { COMMON_IGNORE_PATTERNS } from './constants';
-import { walkDirectoryTreeSync, type TreeNode } from './fs/walker';
+import { COMMON_IGNORE_PATTERNS } from '../utils/constants';
+import { walkDirectoryTreeSync, type TreeNode } from '../utils/fs/walker';
 
 interface ScanOptions {
   maxDepth?: number;
@@ -294,4 +294,3 @@ function main() {
 
 // Run the script
 main();
-

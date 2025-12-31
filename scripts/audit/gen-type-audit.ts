@@ -1,5 +1,6 @@
 import fs from 'fs';
-import { logger } from './logger';
+import path from 'path';
+import { logger } from '../utils/logger';
 
 interface MissingBarrelExport {
     path: string;
@@ -43,4 +44,3 @@ try {
     logger.error('❌ Failed to generate type audit report:', error);
     process.exit(1);
 }
-
