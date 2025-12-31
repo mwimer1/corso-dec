@@ -1,16 +1,15 @@
 ---
-title: "Lint"
-description: "Documentation and resources for documentation functionality. Located in lint/."
+title: "scripts/lint"
 last_updated: "2025-12-31"
-category: "documentation"
-status: "draft"
+category: "automation"
 ---
+
 # Repository Scripts & Docs
 
 This README is generated from a single template (`README.scripts.hbs`).
 
 - Directory: `scripts/lint`
-- Last updated: `2025-12-30`
+- Last updated: `2025-12-31`
 
 > Edit the template or the generator context to change all READMEs consistently.
 
@@ -23,6 +22,7 @@ This README is generated from a single template (`README.scripts.hbs`).
 - **check-deprecations-util-extend.ts** – Regression check for util._extend deprecation warnings
 - **check-duplicate-styles.ts** – Guardrail: Detect duplicate styling sources for the same component.
 - **check-edge-compat.ts** – /{page,layout,route,error}.{ts,tsx} that export: export const runtime &#x3D; &#x27;edge&#x27;
+- **check-filename-case.ts** – scripts/lint/check-filename-case.ts
 - **check-forbidden-files.ts** – Check for forbidden files in the repository
 - **check-lockfile-major.ts** – Fallback to regex if YAML parse fails
 - **check-metadata-viewport.ts** – Extract metadata object body conservatively and check within it
@@ -32,7 +32,6 @@ This README is generated from a single template (`README.scripts.hbs`).
 - **check-route-theme-overrides.ts** – Route Theme Override Policy Enforcement
 - **check-runtime-versions.ts** – Optional: .node-version may be missing in some contexts
 - **check-token-tailwind-contract.ts** – Token↔Tailwind Contract Enforcement
-- **checkFilenameCase.ts** – scripts/lint/checkFilenameCase.ts
 - **contrast-check.ts** – No description available
 - **css-size-analyzer.ts** – No description available
 - **fix-eslint-plugin-dts.ts** – Post-build fixer for eslint-plugin-corso d.ts

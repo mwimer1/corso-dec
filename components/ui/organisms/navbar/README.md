@@ -1,15 +1,15 @@
 ---
-title: "Navbar"
-description: "UI components for the components system, following atomic design principles. Located in ui/organisms/navbar/."
+title: "components/ui/organisms/navbar"
 last_updated: "2025-12-31"
-category: "components"
-status: "draft"
+category: "automation"
 ---
+
 # Repository Scripts & Docs
 
 This README is generated from a single template (`README.scripts.hbs`).
 
 - Directory: `components/ui/organisms/navbar`
-- Last updated: `2025-12-30`
+- Last updated: `2025-12-31`
 
 > Edit the template or the generator context to change all READMEs consistently.
+

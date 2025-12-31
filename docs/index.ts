@@ -310,43 +310,43 @@ export const docs = [
   },
   {
     "path": "readme.md",
-    "title": "README.md"
+    "title": "."
   },
   {
     "path": "scripts/analysis/readme.md",
-    "title": "Analysis"
+    "title": "scripts/analysis"
   },
   {
     "path": "scripts/audit/readme.md",
-    "title": "Audit"
+    "title": "scripts/audit"
   },
   {
     "path": "scripts/ci/readme.md",
-    "title": "Ci"
+    "title": "scripts/ci"
   },
   {
     "path": "scripts/codemods/readme.md",
-    "title": "Codemods"
+    "title": "scripts/codemods"
   },
   {
     "path": "scripts/docs/readme.md",
-    "title": "Docs"
+    "title": "scripts/docs"
   },
   {
     "path": "scripts/lint/readme.md",
-    "title": "Lint"
+    "title": "scripts/lint"
   },
   {
     "path": "scripts/maintenance/docs/readme.md",
-    "title": "Docs"
+    "title": "scripts/maintenance/docs"
   },
   {
     "path": "scripts/maintenance/readme.md",
-    "title": "Maintenance"
+    "title": "scripts/maintenance"
   },
   {
     "path": "scripts/readme.md",
-    "title": "Scripts"
+    "title": "scripts"
   },
   {
     "path": "scripts/rules/ast-grep/readme.md",
@@ -354,19 +354,23 @@ export const docs = [
   },
   {
     "path": "scripts/rules/readme.md",
-    "title": "Rules"
+    "title": "scripts/rules"
   },
   {
     "path": "scripts/setup/readme.md",
-    "title": "Setup"
+    "title": "scripts/setup"
+  },
+  {
+    "path": "scripts/tools/readme.md",
+    "title": "scripts/tools"
   },
   {
     "path": "scripts/utils/readme.md",
-    "title": "Utils"
+    "title": "scripts/utils"
   },
   {
     "path": "scripts/validation/readme.md",
-    "title": "Validation"
+    "title": "scripts/validation"
   },
   {
     "path": "styles/readme.md",
