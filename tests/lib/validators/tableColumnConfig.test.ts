@@ -1,4 +1,4 @@
-import { TableColumnConfigSchema, TableColumnFormatEnum } from '@/lib/validators/tableColumnConfig';
+import { TableColumnConfigSchema, TableColumnFormatEnum } from '@/lib/entities/types';
 import { describe, expect, it } from 'vitest';
 
 describe('TableColumnConfigSchema', () => {
@@ -16,6 +16,7 @@ describe('TableColumnConfigSchema', () => {
       label: 'Name',
       accessor: 'name',
       sortable: false, // default value
+      hidden: false, // default value
     });
   });
 

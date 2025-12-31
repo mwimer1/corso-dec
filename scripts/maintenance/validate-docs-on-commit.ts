@@ -2,7 +2,8 @@
 // scripts/validate-docs-on-commit.ts
 // Validates documentation freshness before allowing commits
 
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
+
 const logger = {
   info: (...a: unknown[]) => console.log('[info]', ...a),
   warn: (...a: unknown[]) => console.warn('[warn]', ...a),
@@ -10,15 +11,23 @@ const logger = {
   success: (...a: unknown[]) => console.log('[success]', ...a),
 };
 
+// Cross-platform pnpm command (Windows uses pnpm.cmd, Unix uses pnpm)
+const PNPM = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
+
 function validateDocsOnCommit() {
   logger.info('🔍 Validating documentation freshness...');
 
   try {
     // Generate fresh docs index
-    execSync('pnpm docs:index', { stdio: 'inherit' });
+    // Use execFileSync without shell to avoid shell interpolation issues
+    execFileSync(PNPM, ['docs:index'], { stdio: 'inherit' });
 
     // Check if README.md has uncommitted changes
-    const gitStatus = execSync('git status --porcelain README.md', { encoding: 'utf8' });
+    // Fix: Use execFileSync with argument array + -- separator to prevent pathspec interpretation.
+    // This ensures paths with brackets are treated as literal paths (defense in depth).
+    const gitStatus = execFileSync('git', ['status', '--porcelain', '--', 'README.md'], { 
+      encoding: 'utf8' 
+    });
 
     if (gitStatus.trim()) {
       logger.error('❌ Documentation index is stale!');

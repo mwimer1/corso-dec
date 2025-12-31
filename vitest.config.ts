@@ -134,7 +134,10 @@ export default defineConfig({
             'tests/scripts/**/*.test.{ts,tsx}',
             'scripts/**/__tests__/**/*.test.ts',
           ],
-          exclude: ['tests/**/*.dom.test.{ts,tsx}'],
+          exclude: [
+            'tests/**/*.dom.test.{ts,tsx}',
+            'scripts/**/__tests__/git.test.ts', // Standalone script, not a Vitest test
+          ],
           setupFiles: [
             'tests/support/setup/vitest.setup.shared.ts',
             'tests/support/setup/vitest.setup.node.ts'
