@@ -496,7 +496,7 @@ export default [
                 '@/lib/shared/cache/simple-cache',
               ],
               'message':
-                "Policy A: import cache utilities from the barrel '@/lib/shared/cache' instead of deep file imports.",
+                "Policy A: import cache utilities from the root barrel '@/lib/shared' instead of deep file imports.",
             },
           ]
         }

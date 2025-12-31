@@ -84,6 +84,9 @@ async function main() {
   // Files to skip (manually maintained, not auto-generated)
   const skipFiles = new Set([
     'types/shared/README.md',
+    'lib/shared/README.md', // Manually maintained
+    'lib/shared/cache/README.md', // Prevent auto-generation
+    'lib/shared/validation/README.md', // Prevent auto-generation (deleted, but prevent recreation)
   ]);
 
   let changed = 0;
