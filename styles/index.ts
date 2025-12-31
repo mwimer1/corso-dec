@@ -8,7 +8,7 @@
 //   - @/styles/ui/molecules
 //   - @/styles/ui/organisms
 
-export { latoVariable, interVariable } from './fonts';
+export { latoVariable } from './fonts';
 export { cn, tv } from './utils';
 export type { VariantProps } from './utils';
 

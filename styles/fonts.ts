@@ -37,9 +37,3 @@ const lato = Lato({
  * Use this in CSS/Tailwind configuration
  */
 export const latoVariable = lato.variable;
-
-/**
- * Legacy export for backward compatibility
- * @deprecated Use `latoVariable` instead.
- */
-export const interVariable = latoVariable;
