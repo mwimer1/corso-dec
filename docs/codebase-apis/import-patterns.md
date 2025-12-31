@@ -9,6 +9,8 @@ status: "draft"
 
 This guide covers strict client/server separation, runtime boundaries, and import patterns that prevent server-only code from leaking into client bundles.
 
+> **📋 For a complete list of all TypeScript path aliases, see [README.md](../../README.md#typescript-path-aliases)**
+
 ## 📋 Core Architecture Overview (Client/Server Entry Points)
 
 Use explicit entry points per domain to avoid mixed barrels:
@@ -450,7 +452,8 @@ export * from './server-only-module';
 
 - The root `@/lib` barrel has been removed to prevent cross-domain, transitive imports.
 - Use domain-specific entry points and subpaths instead, for example:
-  - `@/lib/auth` (server-only helpers like `requireUserId`)
+  - `@/lib/auth/server` (server-only helpers like `requireUserId`)
+  - `@/lib/auth/client` (client-only auth utilities)
   - `@/lib/integrations/stripe/client` (Stripe client proxy)
   - `@/lib/middleware/http` (edge-safe HTTP helpers)
   - `@/lib/shared/*` (narrow, explicit utilities)

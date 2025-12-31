@@ -26,7 +26,7 @@ Codemod (Auth):
 // Replace deep auth imports with entrypoints
 @/lib/auth/jwt/*           -> @/lib/auth/server
 @/lib/auth/session/*       -> @/lib/auth/server
-@/lib/auth/authorization/* -> @/lib/auth (if using roles/assertRole)
+@/lib/auth/authorization/* -> @/lib/auth/authorization/roles (or specific path, @/lib/auth barrel removed)
 
 // Replace duplicated Clerk helpers with provider adapter
 import { auth } from '@clerk/nextjs/server' -> keep; ensure callers import from @/lib/auth/server for wrappers
