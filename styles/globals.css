@@ -69,7 +69,7 @@ html, body {
   /* Font rendering optimization */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
+  text-rendering: optimizelegibility;
 }
 
 /* Global focus styles for accessibility */
@@ -189,18 +189,17 @@ html, body {
   }
 }
 
-/* Navbar scroll shadow class toggle */
-.navbar.scrolled {
-  box-shadow: var(--nav-shadow);
-  border-bottom: 1px solid var(--nav-border);
-}
+/* Component-specific utility classes
+ * Note: These are kept in globals.css as they're applied conditionally via className.
+ * Consider moving to component-specific CSS files if they grow in scope.
+ */
 
-/* Hide FAQ under 901px (CSS-only) */
+/* Hide FAQ under 901px (CSS-only utility for navbar) */
 @media (width <= 900px) {
   .hide-faq-901 { display: none !important; }
 }
 
-/* Ensure mobile overlay item borders use nav token color */
+/* Mobile menu border color utility (uses nav token) */
 .mobile-menu .border-b {
   border-color: var(--nav-border) !important;
 } 

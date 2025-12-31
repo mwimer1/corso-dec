@@ -21,6 +21,7 @@
 }
 
 /* Density modes: Comfortable (default) and Compact */
+
 /* 
  * Override theme params for density modes.
  * Uses --ag-spacing (replaces legacy --ag-grid-size) per AG Grid Theming API.
@@ -36,6 +37,7 @@
 }
 
 /* --- Header Visual Hierarchy --- */
+
 /* Subtle header background for better visual separation */
 .corso-ag-grid .ag-header {
   background-color: hsl(var(--surface, 0 0% 100%));
@@ -43,6 +45,7 @@
 }
 
 /* --- Vertical Centering Fix --- */
+
 /* 
  * Fix vertical centering when rowHeight/headerHeight are set via grid options.
  * This preserves ellipsis behavior and avoids rewriting AG Grid layout.
@@ -52,7 +55,7 @@
 }
 
 /* Center typical cell value content WITHOUT breaking editors */
-.corso-ag-grid .ag-cell:not(.ag-cell-inline-editing):not(.ag-cell-popup-editing) .ag-cell-value {
+.corso-ag-grid .ag-cell:not(.ag-cell-inline-editing, .ag-cell-popup-editing) .ag-cell-value {
   height: 100%;
   display: flex;
   align-items: center;
@@ -60,6 +63,7 @@
 }
 
 /* --- Focus States --- */
+
 /* Use design system ring token for focus outlines */
 .corso-ag-grid .ag-cell:focus,
 .corso-ag-grid .ag-header-cell:focus {
@@ -68,6 +72,7 @@
 }
 
 /* --- Row Separators --- */
+
 /* Ensure row borders use subtle border color */
 .corso-ag-grid .ag-row {
   border-bottom-color: hsl(var(--border, 214.3 31.8% 89%));
