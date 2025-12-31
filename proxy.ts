@@ -36,7 +36,7 @@ const publicRoutes = createRouteMatcher([
   '/(marketing)(.*)',
   '/sign-in(.*)',
   '/sign-up(.*)',
-  '/api/public/(.*)',
+  '/api/health(.*)',
 ]);
 
 // Marketing routes that should redirect authenticated users to dashboard

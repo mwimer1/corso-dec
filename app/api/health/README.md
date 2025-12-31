@@ -10,11 +10,9 @@ status: "draft"
 Health check endpoints provide operational monitoring capabilities for the Corso application and its dependencies. These endpoints are designed for load balancers, monitoring systems, and operational tooling.
 
 **Implementation Note**: 
-- **Canonical public paths** (documented in OpenAPI, used by CI/CD): `/api/health` and `/api/health/clickhouse`
-- **Implementation location**: `/api/public/health` and `/api/public/health/clickhouse` (internal structure)
-- The `/api/health/*` routes are alias endpoints that re-export from `/api/public/health/*` implementations
-- This provides backward compatibility and aligns with OpenAPI documentation while maintaining a single source of truth for the health check logic
-- **OpenAPI spec documents `/api/health` paths only** (not `/api/public/health`)
+- **Canonical paths** (documented in OpenAPI, used by CI/CD): `/api/health` and `/api/health/clickhouse`
+- **Implementation location**: `/api/health` and `/api/health/clickhouse` (canonical implementation)
+- Health endpoints are public, unversioned endpoints documented in OpenAPI
 
 ## Endpoints
 
@@ -22,7 +20,7 @@ Health check endpoints provide operational monitoring capabilities for the Corso
 
 **Purpose**: Canonical application health endpoint for general service availability monitoring.
 
-- **Path**: `/api/health` (alias to `/api/public/health`)
+- **Path**: `/api/health`
 - **Methods**: GET, HEAD, OPTIONS
 - **Runtime**: Edge (fast responses, no database dependencies)
 - **Authentication**: None (public endpoint)
@@ -52,7 +50,7 @@ Health check endpoints provide operational monitoring capabilities for the Corso
 
 **Purpose**: Database connectivity health check for ClickHouse data warehouse operations.
 
-- **Path**: `/api/health/clickhouse` (alias to `/api/public/health/clickhouse`)
+- **Path**: `/api/health/clickhouse`
 - **Methods**: GET, HEAD, OPTIONS
 - **Runtime**: Node.js (required for ClickHouse client)
 - **Authentication**: None (public endpoint)

@@ -79,9 +79,9 @@ All public endpoints are versioned under `/api/v1/*`:
 - Public, unauthenticated endpoints
 - Marked `x-public: true` in OpenAPI
 - **Canonical paths** (documented in OpenAPI, used by CI/CD):
-  - `/api/health` - Service health check (alias to `/api/public/health`)
-  - `/api/health/clickhouse` - ClickHouse connectivity check (alias to `/api/public/health/clickhouse`)
-- **Implementation location**: `/api/public/health/*` (internal structure, not documented in OpenAPI)
+  - `/api/health` - Service health check
+  - `/api/health/clickhouse` - ClickHouse connectivity check
+- **Implementation location**: `/api/health/*` (canonical implementation)
 - See [Health Endpoints README](health/README.md) for details
 
 > **Note**: Routes under `/api/v1/dashboard/**` were removed as of October 2025. Use `/api/v1/entity/**` for resource operations and `/api/v1/ai/**` for AI helpers.

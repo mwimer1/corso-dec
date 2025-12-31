@@ -46,8 +46,8 @@ API route tests validate Next.js API handlers for correct behavior, error handli
 |-------|------|--------|-------|
 | `/api/health` | `health.test.ts` | ✅ | Runtime boundary, response format |
 | `/api/health/clickhouse` | `health-clickhouse.test.ts` | ✅ | ClickHouse health check |
-| `/api/public/health` | `health.test.ts` | ✅ | Public health endpoint (shared with `/api/health`) |
-| `/api/public/health/clickhouse` | `health-clickhouse.test.ts` | ✅ | Public ClickHouse health (shared) |
+| `/api/health` | `health.test.ts` | ✅ | Public health endpoint |
+| `/api/health/clickhouse` | `health-clickhouse.test.ts` | ✅ | Public ClickHouse health |
 | `/api/v1/ai/chat` | `chat-streaming.test.ts` | ✅ | AI chat streaming, auth, RBAC |
 | `/api/v1/ai/generate-sql` | `../chat/generate-sql.route.*.test.ts` | ✅ | SQL generation (split into 6 test files) |
 | `/api/v1/entity/{entity}` | `entity.get.test.ts` | ✅ | Entity base operations, pagination, filtering |
