@@ -935,13 +935,8 @@ status: "draft"
     │   ├── analysis
     │   │   ├── data
     │   │   │   ├── styles-keep-allowlist.json
-    │   │   ├── analyze-knip-baseline.cjs
-    │   │   ├── analyze-unused-exports.cjs
-    │   │   ├── analyze-unused-files.cjs
-    │   │   ├── categorize-unused-exports.mts
     │   │   ├── filter-orphans-high-signal.ts
     │   │   ├── generate-agent-index.ts
-    │   │   ├── orphans.allowlist.txt
     │   │   ├── purge-styles.ts
     │   │   ├── README.md
     │   │   ├── scan-atoms-usage.ts
