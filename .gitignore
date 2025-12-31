@@ -1,21 +1,17 @@
-*.bak
-reports/
-!reports/.gitkeep
 # ================================
 # Corso Next.js Application
 # ================================
-REFERENCE-TO-IMPLEMENT
+
 # Dependencies
 node_modules/
 .pnp/
 .pnp.js
 .pnpm-store/
-grid-reference/
+
 # Next.js
 .next/
 out/
-**/*.bak
-
+next-env.d.ts
 
 # Build outputs
 build/
@@ -30,8 +26,8 @@ tsconfig.tsbuildinfo
 config/typescript/*.tsbuildinfo
 config/typescript/tsconfig.app.tsbuildinfo
 config/typescript/tsconfig.dev.tsbuildinfo
-next-env.d.ts
 
+# Documentation
 docs/audit/
 
 # Logs
@@ -63,18 +59,19 @@ coverage/
 test-results/
 test-reports/
 __test_lib_structure__/
+playwright-report/
+.playwright/
+playwright/.cache/
+jest-coverage/
+tests/failures.json
+
 # Reports (generated) — keep folder visible but ignore contents
+/reports/
 full-deps.json
 shared-deps.json
 remaining-clones.json
 skip-list.json
 orphan-report.json
-playwright-report/
-# CI reports
-reports/ci/
-playwright/.cache/
-jest-coverage/
-tests/failures.json
 
 # Storybook build output
 storybook-static/
@@ -131,7 +128,7 @@ yarn.lock
 *.tar.gz
 tree-sitter-windows-x64.gz
 
-# patch-package output
+# patch-package output (created by patch-package tool)
 patches/
 
 # Vercel
@@ -140,9 +137,6 @@ patches/
 # Dependency analysis outputs
 dependency-graph.dot
 dependency-graph.svg
-
-# Reports (generated)
-/reports/
 
 # Tailwind generated CSS (root-level build artefact)
 styles/tailwind.css
@@ -162,8 +156,6 @@ styles/tailwind.css
 
 v8-compile-cache-*/
 
-# Vitest reports are now covered by reports/ directory exclusion above
-
 # Generated artefacts
 .test-results.json
 violation-files.txt
@@ -181,6 +173,7 @@ styles/build/*
 !styles/build/
 !styles/build/*.css
 
+# scripts/build – allow if it exists (currently doesn't, but kept for future use)
 !scripts/build/
 
 # Environment files
@@ -203,7 +196,7 @@ debug-*.txt
 knip-baseline-*.json
 bundle-size-current.json
 
-# clerk configuration (can include secrets)
+# Clerk configuration (can include secrets)
 /.clerk/
 
 # Generated agent indexes (created by pnpm agent:indexes)
