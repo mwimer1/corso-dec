@@ -72,8 +72,9 @@ function isLifecycleHook(key: string): boolean {
 }
 
 /**
- * Extracts potential file paths from a command string.
- * Handles quoted paths, Windows separators, and common command patterns.
+ * Extracts executable script entrypoint paths from a command string.
+ * Only validates paths that are directly executed by tsx/node/pnpm tsx/jscodeshift.
+ * Does NOT validate output files, cache files, report files, or other non-entrypoint paths.
  */
 function extractFilePaths(command: string): string[] {
   const paths: string[] = [];
@@ -82,51 +83,43 @@ function extractFilePaths(command: string): string[] {
   const segments = command.split(/(?:&&|;)/).map(s => s.trim());
   
   for (const segment of segments) {
-    // Tokenize: respect quotes but extract tokens
-    // Match: "quoted" | 'quoted' | unquoted-token
-    const tokenPattern = /"([^"]+)"|'([^']+)'|([^\s]+)/g;
-    const tokens: string[] = [];
-    let match;
+    // Look for executable patterns that indicate script entrypoints
+    // Patterns: tsx <path>, node <path>, pnpm tsx <path>, pnpm exec tsx <path>, jscodeshift -t <path>
     
-    while ((match = tokenPattern.exec(segment)) !== null) {
-      const token = match[1] || match[2] || match[3];
-      if (token) tokens.push(token);
+    // Pattern 1: tsx <path> (may be prefixed with pnpm exec or pnpm)
+    // Match: "tsx" or "pnpm tsx" or "pnpm exec tsx" followed by a path
+    const tsxPattern = /(?:^|\s)(?:pnpm\s+(?:exec\s+)?)?tsx\s+([^\s&;|><"']+|"[^"]+"|'[^']+')/;
+    let match = segment.match(tsxPattern);
+    if (match && match[1]) {
+      const path = match[1].replace(/^["']|["']$/g, ''); // Remove quotes
+      if (path.startsWith('scripts/')) {
+        paths.push(path);
+      }
+      continue; // Skip rest of tokenization for this segment
     }
     
-    // Skip command name and flags, look for file paths
-    for (const token of tokens) {
-      // Skip flags (start with -)
-      if (token.startsWith('-')) continue;
-      
-      // Skip known binaries (exact match or first token)
-      if (KNOWN_BINARIES.has(token.split('/').pop()?.split('\\').pop() || '')) continue;
-      
-      // Skip URLs
-      if (token.startsWith('http://') || token.startsWith('https://')) continue;
-      
-      // Skip env vars
-      if (token.startsWith('$') || token.startsWith('%')) continue;
-      
-      // Skip glob patterns (contain ** or * wildcards)
-      if (token.includes('**') || token.includes('*')) continue;
-      
-      // Skip regex patterns (contain escaped characters like \\. or \|)
-      // These are typically search patterns, not file paths
-      // Check for common regex escape sequences before normalization
-      if (/\\[\\|\.\(\)\[\]\{\}\+\?\^\$]/.test(token) || token.includes('\\\\.') || token.includes('\\|')) continue;
-      
-      // Normalize for path checking (Windows separators -> forward slashes)
-      // But skip if normalization creates malformed paths (indicates regex pattern)
-      const normalizedToken = token.replace(/\\/g, '/');
-      if (normalizedToken.endsWith('/.ts') || normalizedToken.endsWith('/.js') || normalizedToken.endsWith('/.json')) {
-        continue; // Likely a regex pattern that got mangled
+    // Pattern 2: node <path> (standalone node execution)
+    // Match: "node" (but not "node -e" or other node flags) followed by scripts/ path
+    const nodePattern = /(?:^|\s)node\s+(?!-)([^\s&;|><"']+|"[^"]+"|'[^']+')/;
+    match = segment.match(nodePattern);
+    if (match && match[1]) {
+      const path = match[1].replace(/^["']|["']$/g, '');
+      if (path.startsWith('scripts/')) {
+        paths.push(path);
       }
-      
-      // Look for file paths with extensions (use normalized version)
-      const fileExtPattern = /\.(ts|tsx|js|mjs|cjs|mts|cts|json)$/i;
-      if (fileExtPattern.test(normalizedToken)) {
-        paths.push(normalizedToken);
+      continue;
+    }
+    
+    // Pattern 3: jscodeshift -t <path> (jscodeshift transform file)
+    const jscodeshiftPattern = /(?:^|\s)jscodeshift\s+(?:[^\s]+\s+)*-t\s+([^\s&;|><"']+|"[^"]+"|'[^']+')/;
+    match = segment.match(jscodeshiftPattern);
+    if (match && match[1]) {
+      const path = match[1].replace(/^["']|["']$/g, '');
+      // jscodeshift can reference tools/ or scripts/, validate both
+      if (path.startsWith('scripts/') || path.startsWith('tools/')) {
+        paths.push(path);
       }
+      continue;
     }
   }
   
@@ -136,6 +129,8 @@ function extractFilePaths(command: string): string[] {
 /**
  * Normalizes a file path and checks if it should be validated.
  * Returns the normalized path if it should be validated, null otherwise.
+ * 
+ * Only validates executable script entrypoints under scripts/ (and tools/ for jscodeshift).
  */
 function normalizeAndValidatePath(candidate: string): string | null {
   // Normalize Windows separators to forward slashes
@@ -151,19 +146,24 @@ function normalizeAndValidatePath(candidate: string): string | null {
     return null;
   }
   
-  // Only validate paths that look like local repo file references
-  // Priority: scripts/** paths (most common), then other top-level dirs
-  // Skip node_modules, absolute paths that don't look local, etc.
+  // Only validate script entrypoints under scripts/ or tools/
+  // This excludes outputs, reports, cache files, generated types, etc.
   const isScriptsPath = normalized.startsWith('scripts/');
-  const isTopLevelPath = /^[a-z][a-z0-9_-]*\//i.test(normalized);
+  const isToolsPath = normalized.startsWith('tools/');
   
-  if (!isScriptsPath && !isTopLevelPath) {
+  if (!isScriptsPath && !isToolsPath) {
     return null;
   }
   
-  // Additional validation: ensure it looks like a file path (has extension)
+  // Additional validation: ensure it looks like a code file (has extension)
+  // Allow .json for jscodeshift transform configs
   const hasExtension = /\.(ts|tsx|js|mjs|cjs|mts|cts|json)$/i.test(normalized);
   if (!hasExtension) {
+    return null;
+  }
+  
+  // Skip cache directories and output directories
+  if (normalized.includes('/.cache/') || normalized.includes('/cache/')) {
     return null;
   }
   
