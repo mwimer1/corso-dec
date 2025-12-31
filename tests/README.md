@@ -147,12 +147,16 @@ Tests automatically run in the appropriate environment based on file naming conv
 
 The test suite includes automated pattern enforcement to maintain consistency. These rules are checked automatically via `pnpm test:patterns` and in the pre-push hook.
 
+**Note**: E2E smoke tests (`tests/e2e/**`) are excluded from pattern enforcement as they use Playwright and have their own naming conventions (e.g., `*.smoke.test.ts`).
+
 ### Enforced Rules
 
 #### 1. DOM Test Naming (`*.dom.test.tsx`)
 **Rule**: React component tests that use DOM APIs or `@testing-library/react` must be named `*.dom.test.tsx`.
 
 **Why**: Ensures proper environment selection (jsdom) and clear test categorization.
+
+**Exclusions**: E2E tests (`tests/e2e/**`) are excluded as they use Playwright's `document.` API in `page.evaluate()` which is different from actual DOM component tests.
 
 **Example**:
 ```typescript
@@ -169,6 +173,8 @@ import { Button } from '@/components/ui/button';
 **Rule**: API route tests must use `new Request(...)` with `JSON.stringify(body)` for request bodies.
 
 **Why**: Ensures consistent request construction and proper serialization.
+
+**Exclusions**: E2E tests (`tests/e2e/**`) are excluded as they use Playwright's request API.
 
 **Example**:
 ```typescript
@@ -187,6 +193,8 @@ const req = { json: async () => ({ key: 'value' }) };
 **Rule**: Use the centralized `mockClerkAuth` helper instead of direct `vi.mock('@clerk/nextjs/server')`.
 
 **Why**: Reduces boilerplate and ensures consistent auth mocking across tests.
+
+**Exclusions**: E2E tests (`tests/e2e/**`) are excluded as they use Playwright and don't use Vitest mocks.
 
 **Example**:
 ```typescript
@@ -212,8 +220,10 @@ pnpm test:patterns
 
 # Pattern checks run automatically in:
 # - Pre-push hook (via pnpm test:fast)
-# - CI pipeline (via pnpm test:ci)
+# - CI pipeline (explicit step before test:ci)
 ```
+
+**CI Enforcement**: Pattern enforcement runs as an explicit step in CI workflows (`.github/workflows/ci.yml` and `.github/workflows/deploy.yml`) before the test suite, ensuring patterns cannot be bypassed even if pre-push hooks are skipped.
 
 ### Bypassing Checks
 

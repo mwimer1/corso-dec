@@ -35,6 +35,17 @@ interface Violation {
 const violations: Violation[] = [];
 
 /**
+ * Check if a file path is an E2E test (Playwright smoke tests)
+ * E2E tests have their own naming conventions and should be excluded from pattern enforcement
+ */
+function isE2ETest(file: string): boolean {
+  // Normalize path separators for cross-platform compatibility
+  const normalizedPath = file.replace(/\\/g, '/');
+  // Check if file is in tests/e2e directory
+  return normalizedPath.includes('tests/e2e/') || normalizedPath.includes('/e2e/');
+}
+
+/**
  * Recursively find all test files
  */
 function findTestFiles(dir: string, extensions: string[] = ['.test.ts', '.test.tsx', '.spec.ts', '.spec.tsx']): string[] {
@@ -85,9 +96,7 @@ function isDOMTest(content: string): boolean {
  */
 function checkDOMTestNaming(file: string, content: string): void {
   // Skip E2E tests (Playwright) - they use document. in page.evaluate() but aren't DOM component tests
-  // Check for both forward and backslash paths (Windows vs Unix)
-  if (file.includes('tests/e2e') || file.includes('tests\\e2e') || 
-      file.includes('/e2e/') || file.includes('\\e2e\\')) {
+  if (isE2ETest(file)) {
     return;
   }
 
@@ -109,6 +118,11 @@ function checkDOMTestNaming(file: string, content: string): void {
  * Rule 2: API route tests must use new Request(...) and JSON.stringify(body)
  */
 function checkAPIRequestPattern(file: string, content: string): void {
+  // Skip E2E tests - they have their own conventions
+  if (isE2ETest(file)) {
+    return;
+  }
+
   // Only check API route test files
   if (!file.includes('tests/api') && !file.includes('tests/chat') && !file.includes('tests/security')) {
     return;
@@ -157,6 +171,11 @@ function checkAPIRequestPattern(file: string, content: string): void {
  * Rule 3: Disallow direct vi.mock('@clerk/nextjs/server') when centralized helper exists
  */
 function checkClerkMockUsage(file: string, content: string): void {
+  // Skip E2E tests - they use Playwright, not Vitest mocks
+  if (isE2ETest(file)) {
+    return;
+  }
+
   // Skip the centralized mock helper itself
   if (file.includes('tests/support/mocks/clerk.ts')) {
     return;

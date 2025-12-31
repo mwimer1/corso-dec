@@ -45,6 +45,9 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      - name: Enforce Test Patterns
+        run: pnpm test:patterns
+
       - name: Test Suite
         run: pnpm test:ci
 

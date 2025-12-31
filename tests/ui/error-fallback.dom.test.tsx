@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
+import { axe } from 'vitest-axe';
 import { ErrorFallback } from '@/components/ui/organisms';
 
 describe('ErrorFallback', () => {
@@ -38,5 +39,17 @@ describe('ErrorFallback', () => {
     // Component renders error message - verify it's displayed
     expect(screen.getByText(/Multi-line/)).toBeInTheDocument();
     expect(screen.getByText(/error message/)).toBeInTheDocument();
+  });
+
+  it('has no accessibility violations', async () => {
+    const mockError = new Error('Test error message');
+    const mockReset = vi.fn();
+
+    const { container } = render(
+      <ErrorFallback error={mockError} resetErrorBoundary={mockReset} />
+    );
+
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 });

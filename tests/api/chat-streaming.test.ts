@@ -8,6 +8,7 @@ import { validateSQLScope } from '@/lib/integrations/database/scope';
 import { createOpenAIClient } from '@/lib/integrations/openai/server';
 import { getTenantContext } from '@/lib/server/db/tenant-context';
 import { mockClerkAuth } from '@/tests/support/mocks';
+import { createUser, createOrg } from '@/tests/support/factories';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock dependencies
@@ -21,12 +22,15 @@ const mockValidateSQLScope = validateSQLScope as ReturnType<typeof vi.fn>;
 const mockGetTenantContext = getTenantContext as ReturnType<typeof vi.fn>;
 
 describe('POST /api/v1/ai/chat', () => {
+  const testUser = createUser({ userId: 'user-123' });
+  const testOrg = createOrg({ orgId: 'test-org-123' });
+
   beforeEach(() => {
     vi.clearAllMocks();
-    mockClerkAuth.setup({ userId: 'user-123' });
+    mockClerkAuth.setup({ userId: testUser.userId });
     mockGetTenantContext.mockResolvedValue({
-      orgId: 'test-org-123',
-      userId: 'user-123',
+      orgId: testOrg.orgId,
+      userId: testUser.userId,
     });
   });
 
@@ -42,7 +46,7 @@ describe('POST /api/v1/ai/chat', () => {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
-        'x-corso-org-id': 'test-org-123',
+        'x-corso-org-id': testOrg.orgId,
       },
       body: JSON.stringify({ content: 'Hello' }),
     });
@@ -87,7 +91,7 @@ describe('POST /api/v1/ai/chat', () => {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
-        'x-corso-org-id': 'test-org-123',
+        'x-corso-org-id': testOrg.orgId,
       },
       body: JSON.stringify({ content: 'Hello' }),
     });
@@ -195,7 +199,7 @@ describe('POST /api/v1/ai/chat', () => {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
-        'x-corso-org-id': 'test-org-123',
+        'x-corso-org-id': testOrg.orgId,
       },
       body: JSON.stringify({ content: 'Delete all users' }),
     });
@@ -246,7 +250,7 @@ describe('POST /api/v1/ai/chat', () => {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
-        'x-corso-org-id': 'test-org-123',
+        'x-corso-org-id': testOrg.orgId,
       },
       body: JSON.stringify({}), // Missing required 'content' field
     });
@@ -290,7 +294,7 @@ describe('POST /api/v1/ai/chat', () => {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
-        'x-corso-org-id': 'test-org-123',
+        'x-corso-org-id': testOrg.orgId,
       },
       body: JSON.stringify({ content: 'Long query' }),
       signal: abortController.signal,

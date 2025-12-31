@@ -1,4 +1,5 @@
 import { mockClerkAuth } from '@/tests/support/mocks';
+import { createUser, createOrg } from '@/tests/support/factories';
 import { describe, expect, it, vi } from 'vitest';
 
 // Set mock database environment for tests
@@ -11,11 +12,14 @@ vi.mock('@/lib/auth/authorization/roles', () => ({
 // Export functionality is implemented directly in the API route
 
 describe('Entity Export Route', () => {
+  const testUser = createUser({ userId: 'user_123' });
+  const testOrg = createOrg({ orgId: 'org_123' });
+
   beforeEach(() => {
     vi.clearAllMocks();
     mockClerkAuth.setup({
-      userId: 'user_123',
-      orgId: 'org_123',
+      userId: testUser.userId,
+      orgId: testOrg.orgId,
     });
   });
 

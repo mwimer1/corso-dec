@@ -1,4 +1,5 @@
 import { mockClerkAuth } from '@/tests/support/mocks';
+import { createUser, createOrg } from '@/tests/support/factories';
 import { describe, expect, it, vi } from 'vitest';
 
 // Mock isRelaxedAuthMode to ensure strict mode (orgId required)
@@ -24,6 +25,9 @@ vi.mock('@/lib/entities/config', () => ({
 }));
 
 describe('API v1: GET /entity/[entity]', () => {
+  const testUser = createUser({ userId: 'test-user-123' });
+  const testOrg = createOrg({ orgId: 'test-org-123' });
+
   beforeEach(() => {
     vi.clearAllMocks();
     // Ensure strict auth mode (orgId required) - default for all tests
@@ -33,8 +37,8 @@ describe('API v1: GET /entity/[entity]', () => {
     delete process.env.ALLOW_RELAXED_AUTH;
     
     mockClerkAuth.setup({
-      userId: 'test-user-123',
-      orgId: 'test-org-123',
+      userId: testUser.userId,
+      orgId: testOrg.orgId,
     });
     mockClerkAuth.getClerkClient().users.getOrganizationMembershipList.mockResolvedValue({
       data: [],
@@ -262,8 +266,8 @@ describe('API v1: GET /entity/[entity]', () => {
 
     it('should return 403 when user lacks member role', async () => {
       mockClerkAuth.setup({
-        userId: 'test-user-123',
-        orgId: 'test-org-123',
+        userId: testUser.userId,
+        orgId: testOrg.orgId,
         has: vi.fn().mockReturnValue(false), // No member role
       });
 
@@ -428,7 +432,7 @@ describe('API v1: GET /entity/[entity]', () => {
       // Setup auth without orgId (simulating user with no org context)
       // Explicitly set orgId to null to override default
       mockClerkAuth.setup({
-        userId: 'test-user-123',
+        userId: testUser.userId,
         orgId: null, // Explicitly null to simulate missing org
       });
       // Mock clerkClient to return empty organizations list (simulating user with no orgs)

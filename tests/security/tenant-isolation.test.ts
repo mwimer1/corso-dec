@@ -1,6 +1,7 @@
 // tests/integration/tenant-isolation.test.ts
 // Integration tests for tenant isolation via RLS context
 import { mockClerkAuth } from '@/tests/support/mocks';
+import { createUser, createOrg } from '@/tests/support/factories';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { getTenantContext } from '@/lib/server/db/tenant-context';
 import { getTenantScopedSupabaseClient } from '@/lib/server/db/supabase-tenant-client';
@@ -15,28 +16,31 @@ vi.mock('@/lib/integrations/supabase/server', () => ({
 }));
 
 describe('Tenant Isolation', () => {
+  const testUser = createUser({ userId: 'user-123' });
+  const testOrg = createOrg({ orgId: 'org-456' });
+
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   describe('getTenantContext', () => {
     it('should extract orgId from X-Corso-Org-Id header', async () => {
-      mockClerkAuth.setup({ userId: 'user-123' });
+      mockClerkAuth.setup({ userId: testUser.userId });
 
       const req = {
         headers: new Headers({
-          'x-corso-org-id': 'org-456',
+          'x-corso-org-id': testOrg.orgId,
         }),
       } as unknown as NextRequest;
 
       const context = await getTenantContext(req);
 
-      expect(context.orgId).toBe('org-456');
-      expect(context.userId).toBe('user-123');
+      expect(context.orgId).toBe(testOrg.orgId);
+      expect(context.userId).toBe(testUser.userId);
     });
 
     it('should throw if orgId is missing', async () => {
-      mockClerkAuth.setup({ userId: 'user-123' });
+      mockClerkAuth.setup({ userId: testUser.userId });
 
       const req = {
         headers: new Headers({}),
@@ -50,7 +54,7 @@ describe('Tenant Isolation', () => {
 
       const req = {
         headers: new Headers({
-          'x-corso-org-id': 'org-456',
+          'x-corso-org-id': testOrg.orgId,
         }),
       } as unknown as NextRequest;
 
@@ -60,7 +64,7 @@ describe('Tenant Isolation', () => {
 
   describe('getTenantScopedSupabaseClient', () => {
     it('should set RLS context before returning client', async () => {
-      mockClerkAuth.setup({ userId: 'user-123' });
+      mockClerkAuth.setup({ userId: testUser.userId });
 
       const mockRpc = vi.fn().mockResolvedValue({ error: null });
       const { getSupabaseAdmin } = await import('@/lib/integrations/supabase/server');
@@ -72,21 +76,21 @@ describe('Tenant Isolation', () => {
 
       const req = {
         headers: new Headers({
-          'x-corso-org-id': 'org-456',
+          'x-corso-org-id': testOrg.orgId,
         }),
       } as unknown as NextRequest;
 
       const client = await getTenantScopedSupabaseClient(req);
 
       expect(mockRpc).toHaveBeenCalledWith('set_rls_context', {
-        org_id: 'org-456',
-        user_id: 'user-123',
+        org_id: testOrg.orgId,
+        user_id: testUser.userId,
       });
       expect(client).toBe(mockClient);
     });
 
     it('should throw if RLS context setting fails', async () => {
-      mockClerkAuth.setup({ userId: 'user-123' });
+      mockClerkAuth.setup({ userId: testUser.userId });
 
       const mockRpc = vi.fn().mockResolvedValue({
         error: { message: 'Database error' },
@@ -100,7 +104,7 @@ describe('Tenant Isolation', () => {
 
       const req = {
         headers: new Headers({
-          'x-corso-org-id': 'org-456',
+          'x-corso-org-id': testOrg.orgId,
         }),
       } as unknown as NextRequest;
 

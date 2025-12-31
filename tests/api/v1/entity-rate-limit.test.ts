@@ -1,5 +1,6 @@
 import { withRateLimitEdge } from '@/lib/middleware/edge/rate-limit';
 import { mockClerkAuth } from '@/tests/support/mocks';
+import { createUser, createOrg } from '@/tests/support/factories';
 import { NextRequest } from 'next/server';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -33,11 +34,14 @@ function makeReq(ip: string, path: string, method: string = 'GET', body?: any): 
 }
 
 describe('Rate Limiting - Entity Routes', () => {
+  const testUser = createUser({ userId: 'test-user-123' });
+  const testOrg = createOrg({ orgId: 'test-org-123' });
+
   beforeEach(() => {
     vi.clearAllMocks();
     mockClerkAuth.setup({
-      userId: 'test-user-123',
-      orgId: 'test-org-123',
+      userId: testUser.userId,
+      orgId: testOrg.orgId,
       has: (options: { role: string }) => options.role === 'org:member' || options.role === 'member',
     });
     mockGetEntityPage.mockResolvedValue({

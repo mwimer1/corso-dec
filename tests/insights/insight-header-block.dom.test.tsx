@@ -1,6 +1,7 @@
 import { InsightHeaderBlock } from '@/components/insights/widgets/insight-header-block';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { axe } from 'vitest-axe';
 
 // Mock Next.js Image component to avoid priority/lazy loading conflicts in tests
 vi.mock('next/image', () => ({
@@ -128,6 +129,13 @@ describe('InsightHeaderBlock', () => {
 
     const header = container.querySelector('header');
     expect(header).toHaveClass('custom-class');
+  });
+
+  it('has no accessibility violations', async () => {
+    const { container } = render(<InsightHeaderBlock {...defaultProps} />);
+
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 });
 

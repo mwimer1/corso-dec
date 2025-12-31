@@ -180,6 +180,9 @@ jobs:
       - name: Set NODE_ENV for production builds
         run: echo "NODE_ENV=production" >> $GITHUB_ENV
 
+      - name: Enforce Test Patterns
+        run: pnpm test:patterns
+
       - name: Run Test Suite & Generate Coverage
         run: pnpm test:ci
 
