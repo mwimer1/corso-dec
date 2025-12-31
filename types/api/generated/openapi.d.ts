@@ -83,7 +83,18 @@ export interface paths {
         put?: never;
         /**
          * CSP violation report intake
-         * @description Public Edge-safe endpoint for receiving CSP violation reports
+         * @description Public Edge-safe endpoint for receiving CSP violation reports.
+         *
+         *     **Supported Content Types:**
+         *     - `application/reports+json` - Reporting API batch format
+         *     - `application/csp-report` - Legacy wrapped format `{ "csp-report": {...} }`
+         *     - `application/json` - Permissive format (accepts direct violation body or legacy wrapped format)
+         *
+         *     **Behavior:**
+         *     - Always returns 204 No Content on success (to avoid browser retries)
+         *     - Invalid JSON returns 204 (no spam/retries)
+         *     - Invalid CSP report structure returns 400
+         *     - Optional forwarding to `CSP_FORWARD_URI` (non-blocking)
          */
         post: operations["security_cspReport"];
         delete?: never;
@@ -738,6 +749,7 @@ export interface operations {
                     type?: string;
                     body?: components["schemas"]["CspViolation"];
                 }[];
+                "application/json": components["schemas"]["CspViolation"];
             };
         };
         responses: {
