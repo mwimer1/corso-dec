@@ -4,7 +4,7 @@ import { ClerkEventsHandler } from '@/components/auth';
 // Defer importing shared barrels at module scope to avoid import-time side-effects
 // when Next collects route config. Use process.env for build-time checks here.
 import { getEnv } from '@/lib/server/env';
-import { interVariable } from "@/styles/fonts";
+import { latoVariable } from "@/styles/fonts";
 import "@/styles/globals.css";
 // AG Grid base CSS (required for structural styles)
 import 'ag-grid-community/styles/ag-grid.css';
@@ -57,7 +57,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   };
 
   return (
-    <html lang="en" className={interVariable} data-route-theme="protected" suppressHydrationWarning>
+    <html lang="en" className={latoVariable} data-route-theme="protected" suppressHydrationWarning>
       <head>
         <Script
           id="public-env"

@@ -4,7 +4,10 @@
 
 :root {
   /* Font families */
-  --font-sans: inter, system-ui, -apple-system, blinkmacsystemfont, 'Segoe UI', roboto, sans-serif;
+  /* NOTE: --font-sans is set by Next.js font optimization via className on <html>.
+   * Do not override here - Next/font/google sets this variable when you apply
+   * the font variable class (e.g., latoVariable) to the html element.
+   * Fallbacks are provided in tailwind.config.ts and other usages. */
   --font-mono:
     ui-monospace, sfmono-regular, 'SF Mono', consolas, 'Liberation Mono', menlo, monospace;
 
