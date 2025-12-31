@@ -1,15 +1,10 @@
 // tests/integration/tenant-isolation.test.ts
 // Integration tests for tenant isolation via RLS context
+import { mockClerkAuth } from '@/tests/support/mocks';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { getTenantContext } from '@/lib/server/db/tenant-context';
 import { getTenantScopedSupabaseClient } from '@/lib/server/db/supabase-tenant-client';
-import { auth } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
-
-// Mock Clerk auth
-vi.mock('@clerk/nextjs/server', () => ({
-  auth: vi.fn(),
-}));
 
 // Mock Supabase admin client
 vi.mock('@/lib/integrations/supabase/server', () => ({
@@ -26,8 +21,7 @@ describe('Tenant Isolation', () => {
 
   describe('getTenantContext', () => {
     it('should extract orgId from X-Corso-Org-Id header', async () => {
-      const mockAuth = auth as ReturnType<typeof vi.fn>;
-      mockAuth.mockResolvedValue({ userId: 'user-123' });
+      mockClerkAuth.setup({ userId: 'user-123' });
 
       const req = {
         headers: new Headers({
@@ -42,8 +36,7 @@ describe('Tenant Isolation', () => {
     });
 
     it('should throw if orgId is missing', async () => {
-      const mockAuth = auth as ReturnType<typeof vi.fn>;
-      mockAuth.mockResolvedValue({ userId: 'user-123' });
+      mockClerkAuth.setup({ userId: 'user-123' });
 
       const req = {
         headers: new Headers({}),
@@ -53,8 +46,7 @@ describe('Tenant Isolation', () => {
     });
 
     it('should throw if user is not authenticated', async () => {
-      const mockAuth = auth as ReturnType<typeof vi.fn>;
-      mockAuth.mockResolvedValue({ userId: null });
+      mockClerkAuth.setup({ userId: null });
 
       const req = {
         headers: new Headers({
@@ -68,8 +60,7 @@ describe('Tenant Isolation', () => {
 
   describe('getTenantScopedSupabaseClient', () => {
     it('should set RLS context before returning client', async () => {
-      const mockAuth = auth as ReturnType<typeof vi.fn>;
-      mockAuth.mockResolvedValue({ userId: 'user-123' });
+      mockClerkAuth.setup({ userId: 'user-123' });
 
       const mockRpc = vi.fn().mockResolvedValue({ error: null });
       const { getSupabaseAdmin } = await import('@/lib/integrations/supabase/server');
@@ -95,8 +86,7 @@ describe('Tenant Isolation', () => {
     });
 
     it('should throw if RLS context setting fails', async () => {
-      const mockAuth = auth as ReturnType<typeof vi.fn>;
-      mockAuth.mockResolvedValue({ userId: 'user-123' });
+      mockClerkAuth.setup({ userId: 'user-123' });
 
       const mockRpc = vi.fn().mockResolvedValue({
         error: { message: 'Database error' },

@@ -1,26 +1,20 @@
+import { mockClerkAuth } from '@/tests/support/mocks';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { resolveRouteModule } from '../../support/resolve-route';
 import { createUser } from '../../support/factories';
-
-// Mock the auth function
-const mockAuth = vi.fn();
-vi.mock('@clerk/nextjs/server', () => ({
-  auth: () => mockAuth(),
-}));
 
 describe('User Route', () => {
   const testUser = createUser({ userId: 'test-user-123' });
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockAuth.mockResolvedValue({
+    mockClerkAuth.setup({
       userId: testUser.userId,
-      has: vi.fn().mockReturnValue(true),
     });
   });
   describe('POST /api/v1/user', () => {
     it('should return 401 when unauthenticated', async () => {
-      mockAuth.mockResolvedValue({ userId: null });
+      mockClerkAuth.setup({ userId: null });
       const url = resolveRouteModule('v1/user');
       if (!url) return expect(true).toBe(true);
 
@@ -44,7 +38,7 @@ describe('User Route', () => {
     });
 
     it('should return 403 when user lacks member role', async () => {
-      mockAuth.mockResolvedValue({
+      mockClerkAuth.setup({
         userId: testUser.userId,
         has: vi.fn().mockReturnValue(false), // No member role
       });

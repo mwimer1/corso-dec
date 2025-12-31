@@ -14,6 +14,7 @@ const fullWidthSectionVariants = tv({
       primary: 'bg-primary',
       secondary: 'bg-secondary',
       muted: 'bg-muted',
+      showcase: 'bg-showcase',
       transparent: 'bg-transparent',
     },
     padding: {

@@ -1,13 +1,8 @@
+import { mockClerkAuth } from '@/tests/support/mocks';
 import { describe, expect, it, vi } from 'vitest';
 
 // Set mock database environment for tests
 process.env.CORSO_USE_MOCK_DB = 'true';
-
-// Mock the auth function
-const mockAuth = vi.fn();
-vi.mock('@clerk/nextjs/server', () => ({
-  auth: () => mockAuth(),
-}));
 
 vi.mock('@/lib/auth/authorization/roles', () => ({
   enforceRBAC: vi.fn().mockResolvedValue(undefined),
@@ -18,7 +13,7 @@ vi.mock('@/lib/auth/authorization/roles', () => ({
 describe('Entity Export Route', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockAuth.mockResolvedValue({
+    mockClerkAuth.setup({
       userId: 'user_123',
       orgId: 'org_123',
     });
@@ -66,7 +61,7 @@ describe('Entity Export Route', () => {
     });
 
     it('should return 401 for unauthenticated user', async () => {
-      mockAuth.mockResolvedValue({
+      mockClerkAuth.setup({
         userId: null,
         orgId: null,
       });

@@ -1,14 +1,9 @@
 import { ApplicationError, ErrorCategory, ErrorSeverity } from '@/lib/shared';
 import { SecurityError } from '@/lib/shared/errors/types';
+import { mockClerkAuth } from '@/tests/support/mocks';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { resolveRouteModule } from '../../support/resolve-route';
 import { createUser, createOrg, createQueryRequest } from '../../support/factories';
-
-// Mock the auth function
-const mockAuth = vi.fn();
-vi.mock('@clerk/nextjs/server', () => ({
-  auth: () => mockAuth(),
-}));
 
 // Mock getTenantContext
 const mockGetTenantContext = vi.fn();
@@ -35,9 +30,8 @@ describe('POST /api/v1/query', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Default: authenticated user with member role
-    mockAuth.mockResolvedValue({
+    mockClerkAuth.setup({
       userId: testUser.userId,
-      has: vi.fn().mockReturnValue(true), // Has member role
     });
     // Default: mock tenant context with org ID from header
     mockGetTenantContext.mockImplementation(async (req?: any) => {
@@ -109,7 +103,7 @@ describe('POST /api/v1/query', () => {
   });
 
   it('should return 401 when unauthenticated', async () => {
-    mockAuth.mockResolvedValue({ userId: null });
+    mockClerkAuth.setup({ userId: null });
 
     const url = resolveRouteModule('query');
     if (!url) return expect(true).toBe(true);
@@ -137,7 +131,7 @@ describe('POST /api/v1/query', () => {
   });
 
   it('should return 403 when user lacks member role', async () => {
-    mockAuth.mockResolvedValue({
+    mockClerkAuth.setup({
       userId: 'test-user-123',
       has: vi.fn().mockReturnValue(false), // No member role
     });

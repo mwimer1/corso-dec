@@ -1,16 +1,6 @@
+import { mockClerkAuth } from '@/tests/support/mocks';
 import { NextRequest } from 'next/server';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-
-// Mock the auth function
-const mockAuth = vi.fn();
-vi.mock('@clerk/nextjs/server', () => ({
-  auth: () => mockAuth(),
-  clerkClient: {
-    users: {
-      getOrganizationMembershipList: vi.fn().mockResolvedValue({ data: [] }),
-    },
-  },
-}));
 
 // Mock the entity service pages - will return mock DB data when CORSO_USE_MOCK_DB=true
 const mockGetEntityPage = vi.fn();
@@ -41,7 +31,7 @@ describe('GET /api/v1/entity/[entity] - Relaxed Auth + Mock DB', () => {
     mockIsRelaxedAuthMode.mockReturnValue(true);
     
     // Mock auth to return userId (no org required in relaxed mode)
-    mockAuth.mockResolvedValue({
+    mockClerkAuth.setup({
       userId: 'test-user-relaxed-123',
       orgId: null, // No org in relaxed mode
       has: vi.fn().mockReturnValue(false), // No RBAC in relaxed mode
@@ -148,7 +138,7 @@ describe('GET /api/v1/entity/[entity] - Relaxed Auth + Mock DB', () => {
 
   it('should work without orgId in relaxed mode', async () => {
     // Ensure no orgId is provided
-    mockAuth.mockResolvedValue({
+    mockClerkAuth.setup({
       userId: 'test-user-relaxed-123',
       orgId: null,
       has: vi.fn().mockReturnValue(false),

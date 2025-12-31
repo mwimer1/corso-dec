@@ -47,6 +47,7 @@ const config: Config = {
           foreground: 'hsl(var(--secondary-foreground, 222.2 47.4% 11.2%))',
         },
         background: 'hsl(var(--background, 0 0% 100%))',
+        showcase: 'hsl(var(--showcase-background, 0 0% 99.2%))',
         foreground: 'hsl(var(--foreground, 222.2 47.4% 11.2%))',
         surface: {
           DEFAULT: 'hsl(var(--surface, 0 0% 100%))',

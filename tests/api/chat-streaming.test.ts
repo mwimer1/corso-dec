@@ -7,17 +7,15 @@
 import { validateSQLScope } from '@/lib/integrations/database/scope';
 import { createOpenAIClient } from '@/lib/integrations/openai/server';
 import { getTenantContext } from '@/lib/server/db/tenant-context';
-import { auth } from '@clerk/nextjs/server';
+import { mockClerkAuth } from '@/tests/support/mocks';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock dependencies
-vi.mock('@clerk/nextjs/server');
 vi.mock('@/lib/integrations/openai/server');
 vi.mock('@/lib/integrations/clickhouse/server');
 vi.mock('@/lib/integrations/database/scope');
 vi.mock('@/lib/server/db/tenant-context');
 
-const mockAuth = auth as ReturnType<typeof vi.fn>;
 const mockCreateOpenAIClient = createOpenAIClient as ReturnType<typeof vi.fn>;
 const mockValidateSQLScope = validateSQLScope as ReturnType<typeof vi.fn>;
 const mockGetTenantContext = getTenantContext as ReturnType<typeof vi.fn>;
@@ -25,7 +23,7 @@ const mockGetTenantContext = getTenantContext as ReturnType<typeof vi.fn>;
 describe('POST /api/v1/ai/chat', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockAuth.mockResolvedValue({ userId: 'user-123' });
+    mockClerkAuth.setup({ userId: 'user-123' });
     mockGetTenantContext.mockResolvedValue({
       orgId: 'test-org-123',
       userId: 'user-123',
@@ -37,7 +35,7 @@ describe('POST /api/v1/ai/chat', () => {
   });
 
   it('returns 401 when unauthenticated', async () => {
-    mockAuth.mockResolvedValue({ userId: null });
+    mockClerkAuth.setup({ userId: null });
 
     const { POST } = await import('@/app/api/v1/ai/chat/route');
     const req = new Request('http://localhost/api/v1/ai/chat', {

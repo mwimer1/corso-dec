@@ -1,16 +1,5 @@
+import { mockClerkAuth } from '@/tests/support/mocks';
 import { describe, expect, it, vi } from 'vitest';
-
-// Mock the auth function
-const mockAuth = vi.fn();
-const mockClerkClient = {
-  users: {
-    getOrganizationMembershipList: vi.fn(),
-  },
-};
-vi.mock('@clerk/nextjs/server', () => ({
-  auth: () => mockAuth(),
-  clerkClient: mockClerkClient,
-}));
 
 // Mock the entity service pages (replaces fetchEntityData)
 const mockGetEntityPage = vi.fn();
@@ -31,12 +20,11 @@ vi.mock('@/lib/entities/config', () => ({
 describe('API v1: GET /entity/[entity]', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockAuth.mockResolvedValue({
+    mockClerkAuth.setup({
       userId: 'test-user-123',
       orgId: 'test-org-123',
-      has: vi.fn().mockReturnValue(true),
     });
-    mockClerkClient.users.getOrganizationMembershipList.mockResolvedValue({
+    mockClerkAuth.getClerkClient().users.getOrganizationMembershipList.mockResolvedValue({
       data: [],
     });
     mockGetEntityPage.mockResolvedValue({
@@ -239,7 +227,7 @@ describe('API v1: GET /entity/[entity]', () => {
     });
 
     it('should return 401 for unauthenticated user', async () => {
-      mockAuth.mockResolvedValue({
+      mockClerkAuth.setup({
         userId: null,
       });
 
@@ -261,9 +249,9 @@ describe('API v1: GET /entity/[entity]', () => {
     });
 
     it('should return 403 when user lacks member role', async () => {
-      mockAuth.mockResolvedValue({
+      mockClerkAuth.setup({
         userId: 'test-user-123',
-        orgId: 'test-org-123', // Include orgId so we can test role check
+        orgId: 'test-org-123',
         has: vi.fn().mockReturnValue(false), // No member role
       });
 
@@ -420,13 +408,12 @@ describe('API v1: GET /entity/[entity]', () => {
     });
 
     it('should return 403 when orgId is missing', async () => {
-      mockAuth.mockResolvedValue({
+      mockClerkAuth.setup({
         userId: 'test-user-123',
-        // orgId is missing
-        has: vi.fn().mockReturnValue(true),
+        orgId: undefined, // orgId is missing
       });
       // Mock clerkClient to return empty organizations list (simulating user with no orgs)
-      mockClerkClient.users.getOrganizationMembershipList.mockResolvedValue({
+      mockClerkAuth.getClerkClient().users.getOrganizationMembershipList.mockResolvedValue({
         data: [],
       });
 

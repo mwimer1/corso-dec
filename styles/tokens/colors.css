@@ -17,6 +17,7 @@
 
   /* Background and surfaces */
   --background: 0 0% 100%;
+  --showcase-background: 0 0% 99.2%; /* #FDFDFD - subtle off-white for ProductShowcase */
   --foreground: 222.2 47.4% 11.2%;
 
   /* High-contrast foreground alias used by components (promoted from compat) */
@@ -60,6 +61,7 @@
   --secondary: 221 86% 20%;
   --secondary-foreground: 210 40% 98%;
   --background: 222.2 84% 4.9%;
+  --showcase-background: 222.2 84% 4.9%; /* Match dark background for proper contrast */
   --foreground: 210 40% 98%;
   --surface: 222.2 84% 4.9%;
   --surface-contrast: 217.2 32.6% 17.5%;

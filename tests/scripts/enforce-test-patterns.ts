@@ -80,8 +80,17 @@ function isDOMTest(content: string): boolean {
 
 /**
  * Rule 1: DOM component tests must be named *.dom.test.tsx
+ * Note: E2E tests (Playwright) are excluded as they use document. in page.evaluate()
+ * which is different from actual DOM component tests.
  */
 function checkDOMTestNaming(file: string, content: string): void {
+  // Skip E2E tests (Playwright) - they use document. in page.evaluate() but aren't DOM component tests
+  // Check for both forward and backslash paths (Windows vs Unix)
+  if (file.includes('tests/e2e') || file.includes('tests\\e2e') || 
+      file.includes('/e2e/') || file.includes('\\e2e\\')) {
+    return;
+  }
+
   const isDOM = isDOMTest(content);
   const isDOMTestFile = file.endsWith('.dom.test.tsx');
   const isTestFile = file.match(/\.(test|spec)\.(ts|tsx)$/);
