@@ -530,16 +530,8 @@ status: "draft"
     │   │   ├── domain-driven-architecture.md
     │   │   ├── ui-design-guide.md
     │   ├── audits
-    │   │   ├── ag-grid-implementation-audit-20250128.md
     │   │   ├── ag-grid-versions-20251012.md
-    │   │   ├── dead-code-baseline-20250126.md
-    │   │   ├── deprecated-files-removal-plan.md
     │   │   ├── deprecated-files-removal-summary.md
-    │   │   ├── domain6-review-guide-20250115.md
-    │   │   ├── generate-sql-route-test-audit-2025-12.md
-    │   │   ├── lib-barrels-analysis.md
-    │   │   ├── lib-cleanup-20250916.md
-    │   │   ├── lib-declutter-plan.md
     │   │   ├── next-steps.md
     │   │   ├── orphan-triage-report.md
     │   │   ├── orphans-20251009-context.md
@@ -547,8 +539,6 @@ status: "draft"
     │   │   ├── production-audit-20250115.md
     │   │   ├── quality-gates-summary-20251214.md
     │   │   ├── removal-summary-20251214.md
-    │   │   ├── unused-css-tokens-audit.md
-    │   │   ├── validation-sweep-audit-20250128.md
     │   ├── cicd-workflow
     │   │   ├── ci-pipeline.md
     │   │   ├── ci-workflows.md
