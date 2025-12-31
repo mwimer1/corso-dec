@@ -1,7 +1,7 @@
 "use client";
 
 import { Badge, Button, Input } from "@/components/ui/atoms";
-import { devError, devWarn } from "@/lib/log";
+import { devError, devWarn } from "@/lib/shared/log";
 import { cn } from "@/styles";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 // Grid state context removed - using local state instead

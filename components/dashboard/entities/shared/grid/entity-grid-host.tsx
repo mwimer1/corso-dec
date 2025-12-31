@@ -1,6 +1,6 @@
 "use client";
 
-import { devError } from '@/lib/log';
+import { devError } from '@/lib/shared/log';
 import { publicEnv } from '@/lib/shared/config/client';
 import type { EntityGridConfig } from '@/types/dashboard';
 import type { ColumnState, FilterModel, StateUpdatedEvent } from 'ag-grid-community';

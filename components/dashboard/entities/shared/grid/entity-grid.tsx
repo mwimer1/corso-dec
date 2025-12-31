@@ -2,7 +2,7 @@
 
 // AG Grid registration is handled in the useEffect hook via ensureAgGridReadyFor().
 // This ensures registration happens client-side after mount when environment variables are available.
-import { devError } from '@/lib/log';
+import { devError } from '@/lib/shared/log';
 import { isRelaxedAuthMode } from '@/lib/shared/config/auth-mode';
 import { ensureAgGridReadyFor, isAgGridEnterpriseEnabled } from '@/lib/vendors/ag-grid.client';
 import { corsoAgGridTheme } from '@/lib/vendors/ag-grid.theme';
