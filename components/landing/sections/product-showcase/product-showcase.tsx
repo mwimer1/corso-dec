@@ -350,7 +350,19 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
             containerWithPaddingVariants({ maxWidth: '7xl', padding: 'lg', centered: true })
           )}>
             {/* Narrow tab row on wide screens (xl+) to align with image */}
-            <div className={cn("w-full", showcaseWideInner)}>
+            <div
+              className={cn(
+                "w-full",
+                showcaseWideInner,
+                // xl+ typography tighten (scoped to ProductShowcase only)
+                // Higher specificity than utility classes on the button via [role=tab] selector
+                "xl:[&_[role=tab]]:text-[14px]",
+                "xl:[&_[role=tab]]:leading-5",
+                "xl:[&_[role=tab]]:tracking-[-0.01em]",
+                // Reduce horizontal padding for tighter feel on wide layouts
+                "xl:[&_[role=tab]]:px-3"
+              )}
+            >
               <TabSwitcher
                 tabs={tabsData}
                 active={activeTab}
