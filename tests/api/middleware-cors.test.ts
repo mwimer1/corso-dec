@@ -14,7 +14,7 @@ beforeEach(() => {
 describe('CORS Middleware', () => {
   describe('corsHeaders', () => {
     it('includes Vary and sets Allow-Origin when origin provided', async () => {
-      const { corsHeaders } = await import('@/lib/middleware/http/cors');
+      const { corsHeaders } = await import('@/lib/middleware/shared/cors');
       const headers = corsHeaders('https://example.com');
 
       expect(headers['Vary']).toBe('Origin, Access-Control-Request-Method, Access-Control-Request-Headers');
@@ -22,7 +22,7 @@ describe('CORS Middleware', () => {
     });
 
     it('includes Vary and omits Allow-Origin when origin missing', async () => {
-      const { corsHeaders } = await import('@/lib/middleware/http/cors');
+      const { corsHeaders } = await import('@/lib/middleware/shared/cors');
       const headers = corsHeaders();
 
       expect(headers['Vary']).toBe('Origin, Access-Control-Request-Method, Access-Control-Request-Headers');
@@ -30,7 +30,7 @@ describe('CORS Middleware', () => {
     });
 
     it('echoes requested method when provided', async () => {
-      const { corsHeaders } = await import('@/lib/middleware/http/cors');
+      const { corsHeaders } = await import('@/lib/middleware/shared/cors');
       const headers = corsHeaders('https://example.com', 'POST');
       expect(headers['Access-Control-Allow-Methods']).toBe('POST');
     });
@@ -38,7 +38,7 @@ describe('CORS Middleware', () => {
 
   describe('handleCors', () => {
     it('returns 204 for valid preflight request and echoes method', async () => {
-      const { handleCors } = await import('@/lib/middleware/http/cors');
+      const { handleCors } = await import('@/lib/middleware/shared/cors');
 
       const req = {
         method: 'OPTIONS',
@@ -56,7 +56,7 @@ describe('CORS Middleware', () => {
     });
 
     it('returns 403 for invalid origin in preflight', async () => {
-      const { handleCors } = await import('@/lib/middleware/http/cors');
+      const { handleCors } = await import('@/lib/middleware/shared/cors');
 
       // Allowed only example.com; request from malicious.com
       mockEnv = { CORS_ALLOWED_ORIGINS: 'https://example.com' };
@@ -76,7 +76,7 @@ describe('CORS Middleware', () => {
     });
 
     it('returns null for non-preflight requests', async () => {
-      const { handleCors } = await import('@/lib/middleware/http/cors');
+      const { handleCors } = await import('@/lib/middleware/shared/cors');
       const req = { method: 'POST', headers: { get: () => null } } as any;
       const res = handleCors(req);
       expect(res).toBeNull();
