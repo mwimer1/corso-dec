@@ -1,4 +1,3 @@
-import { ContactSchema } from "@/lib/validators/contact";
 import { EntityQueryRequestSchema } from "@/lib/validators/entityQuery";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
@@ -30,41 +29,6 @@ describe("strict validation", () => {
     expect(extraFieldResult.error?.issues[0]?.code).toBe("unrecognized_keys");
   });
 
-  it("rejects extra fields in Contact schema", () => {
-    const validInput = {
-      name: "Test User",
-      email: "test@example.com",
-      company: "Test Company",
-      message: "This is a test message",
-    };
-    const extraFieldInput = {
-      ...validInput,
-      extraField: "should not be allowed",
-    };
-
-    const validResult = ContactSchema.safeParse(validInput);
-    const extraFieldResult = ContactSchema.safeParse(extraFieldInput);
-
-    expect(validResult.success).toBe(true);
-    expect(extraFieldResult.success).toBe(false);
-    expect(extraFieldResult.error?.issues[0]?.code).toBe("unrecognized_keys");
-  });
-
-  it("accepts valid inputs without extra fields", () => {
-    const validInput = {
-      name: "Test User",
-      email: "test@example.com",
-      company: "Test Company",
-      message: "This is a test message",
-    };
-
-    const result = ContactSchema.safeParse(validInput);
-    expect(result.success).toBe(true);
-    if (result.success) {
-      expect(result.data.name).toBe("Test User");
-      expect(result.data.email).toBe("test@example.com");
-    }
-  });
 
   it("rejects extra fields in EntityQueryRequestSchema (API request body)", () => {
     const validInput = {

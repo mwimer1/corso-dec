@@ -15,6 +15,8 @@
  */
 
 export { buildClerkAuthState, mockClerkAuth, type ClerkAuthMockOptions } from './clerk';
+// Export mockHeaders - using explicit re-export to ensure it's available
+// This works around Vitest's alias system which maps 'next/headers' to next-headers.ts
 export { mockHeaders, type NextHeadersMockOptions } from './next-headers';
 
 // Re-export other existing mocks for convenience

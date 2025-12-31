@@ -7,6 +7,8 @@ const mockHeadersFn = vi.fn();
 const mockCookiesStore = new Map<string, string>();
 
 // Top-level module mock registration (Vitest best practice)
+// Note: This file is aliased as 'next/headers' in vitest.config.ts
+// When importing mockHeaders from this file, use a relative path to avoid alias interception
 vi.mock('next/headers', () => ({
   headers: () => mockHeadersFn(),
   cookies: () => ({
