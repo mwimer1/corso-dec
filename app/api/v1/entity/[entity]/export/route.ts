@@ -1,6 +1,6 @@
 // Node.js required: ClickHouse database operations
 import { http } from '@/lib/api';
-import { handleCors, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit } from '@/lib/middleware';
+import { handleCors, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_30_PER_MIN } from '@/lib/middleware';
 import { auth } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
 
@@ -51,7 +51,7 @@ const createWrappedHandler = (params: { entity: string }) => {
       async (req: NextRequest) => {
         return handler(req, { params }) as any;
       },
-      { windowMs: 60_000, maxRequests: 30 }
+      RATE_LIMIT_30_PER_MIN
     )
   );
 };

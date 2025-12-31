@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 import { getEnvEdge, http, readJsonOnce, withErrorHandlingEdge as withErrorHandling, withRateLimitEdge as withRateLimit } from "@/lib/api/edge";
+import { RATE_LIMIT_30_PER_MIN } from "@/lib/middleware";
 import { handleCors } from '@/lib/middleware/http/cors';
 import {
     cspViolationBodySchema,
@@ -117,7 +118,7 @@ const post = withErrorHandling(
     return http.noContent({
       headers: { 'Access-Control-Allow-Origin': '*' },
     });
-  }) as any, { windowMs: 60_000, maxRequests: 30 })
+  }) as any, RATE_LIMIT_30_PER_MIN)
 );
 
 export const POST = post;

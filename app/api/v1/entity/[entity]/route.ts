@@ -7,7 +7,7 @@ import { http } from '@/lib/api';
 import { getEntityConfig } from '@/lib/entities/config';
 import type { EntityFetchParams } from '@/lib/entities/contracts';
 import { getEntityPage } from '@/lib/entities/pages';
-import { handleCors, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit } from '@/lib/middleware';
+import { handleCors, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_60_PER_MIN } from '@/lib/middleware';
 import { isRelaxedAuthMode } from '@/lib/shared/config/auth-mode';
 import {
   EntityListQuerySchema,
@@ -433,7 +433,7 @@ const createWrappedHandler = (params: { entity: string }) => {
       async (req: NextRequest): Promise<NextResponse> => {
         return handler(req, { params });
       },
-      { windowMs: 60_000, maxRequests: 60 }
+      RATE_LIMIT_60_PER_MIN
     )
   );
 };

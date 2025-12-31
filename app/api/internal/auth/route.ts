@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 import { http } from '@/lib/api';
-import { handleCors, withErrorHandlingNode, withRateLimitNode } from '@/lib/middleware';
+import { handleCors, withErrorHandlingNode, withRateLimitNode, RATE_LIMIT_100_PER_MIN } from '@/lib/middleware';
 import { getEnv } from '@/lib/server/env';
 import { ClerkEventEnvelope } from '@/lib/validators/clerk-webhook';
 import type { NextRequest } from 'next/server';
@@ -47,7 +47,7 @@ const handler = async (req: NextRequest): Promise<Response> => {
 };
 
 export const POST = withErrorHandlingNode(
-  withRateLimitNode(async (req: NextRequest) => handler(req) as any, { windowMs: 60_000, maxRequests: 100 })
+  withRateLimitNode(async (req: NextRequest) => handler(req) as any, RATE_LIMIT_100_PER_MIN)
 );
 
 export async function OPTIONS(req: Request) {

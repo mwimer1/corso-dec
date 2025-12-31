@@ -37,7 +37,7 @@ function getDisableRateLimitFlag(): boolean {
  * Uses Node.js logger with AsyncLocalStorage for proper request context propagation
  * Uses server-side store (Redis if available, otherwise in-memory)
  */
-export function withRateLimitNode<R extends NextResponse | Response = NextResponse>(
+export function withRateLimitNode<R extends NextResponse | Response = Response>(
   handler: (req: NextRequest) => Promise<R> | R,
   opts: RateLimitOptions & { onKey?: (_key: string) => void },
 ): (req: NextRequest) => Promise<R> | R {

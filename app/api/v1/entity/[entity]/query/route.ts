@@ -26,7 +26,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 import { http, validateJson } from '@/lib/api';
-import { handleCors, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit } from '@/lib/middleware';
+import { handleCors, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_60_PER_MIN } from '@/lib/middleware';
 import { getEntityConfig } from '@/lib/entities/config';
 import { getEntityPage } from '@/lib/entities/pages';
 import { EntityParamSchema, type EntityParam } from '@/lib/validators';
@@ -119,7 +119,7 @@ const createWrappedHandler = (params: { entity: string }) => {
       async (req: NextRequest) => {
         return handler(req, { params }) as any;
       },
-      { windowMs: 60_000, maxRequests: 60 }
+      RATE_LIMIT_60_PER_MIN
     )
   );
 };

@@ -23,7 +23,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 import { http } from '@/lib/api';
-import { withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit } from '@/lib/middleware';
+import { withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_30_PER_MIN } from '@/lib/middleware';
 import { validateSQLScope } from '@/lib/integrations/database/scope';
 import { createOpenAIClient } from '@/lib/integrations/openai/server';
 import { handleCors } from '@/lib/middleware';
@@ -194,7 +194,7 @@ SQL: SELECT COUNT(*) FROM companies WHERE headcount > 100`;
 };
 
 export const POST = withErrorHandling(
-  withRateLimit(async (req: NextRequest) => handler(req) as any, { windowMs: 60_000, maxRequests: 30 })
+  withRateLimit(async (req: NextRequest) => handler(req) as any, RATE_LIMIT_30_PER_MIN)
 );
 
 export async function OPTIONS(req: Request) {

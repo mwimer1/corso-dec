@@ -26,7 +26,7 @@ import { queryMockDb } from '@/lib/integrations/mockdb';
 import { logToolCall, normalizeSQLForLogging } from '@/lib/integrations/openai/chat-logging';
 import { streamResponseEvents } from '@/lib/integrations/openai/responses';
 import { createOpenAIClient } from '@/lib/integrations/openai/server';
-import { handleCors, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit } from '@/lib/middleware';
+import { handleCors, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_30_PER_MIN } from '@/lib/middleware';
 import { getTenantContext } from '@/lib/server/db/tenant-context';
 import { getEnv } from '@/lib/server/env';
 import { logger } from '@/lib/monitoring';
@@ -1005,7 +1005,7 @@ const handler = async (req: NextRequest): Promise<Response> => {
 export const POST = withErrorHandling(
   withRateLimit(
     async (req: NextRequest) => handler(req) as any,
-    { windowMs: 60_000, maxRequests: 30 }
+    RATE_LIMIT_30_PER_MIN
   )
 );
 

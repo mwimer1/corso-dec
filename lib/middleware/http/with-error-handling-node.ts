@@ -17,7 +17,7 @@ import { addRequestIdHeader, getRequestId } from './request-id';
  * Node.js error handling wrapper
  * Uses Node.js logger with AsyncLocalStorage for proper request context propagation
  */
-export function withErrorHandlingNode<R extends NextResponse = NextResponse>(
+export function withErrorHandlingNode<R extends NextResponse | Response = Response>(
   handler: (req: NextRequest) => Promise<R> | R,
 ): (req: NextRequest) => Promise<R> | R {
   return async (req: NextRequest) => {

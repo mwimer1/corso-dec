@@ -26,7 +26,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 import { http, validateJson } from '@/lib/api';
-import { withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit } from '@/lib/middleware';
+import { withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_60_PER_MIN } from '@/lib/middleware';
 import { clickhouseQuery } from '@/lib/integrations/clickhouse/server';
 import { validateSQLScope } from '@/lib/integrations/database/scope';
 import { handleCors } from '@/lib/middleware';
@@ -115,6 +115,6 @@ const handler = async (req: NextRequest): Promise<Response> => {
 export const POST = withErrorHandling(
   withRateLimit(
     async (req: NextRequest) => handler(req) as any,
-    { windowMs: 60_000, maxRequests: 60 }
+    RATE_LIMIT_60_PER_MIN
   )
 );

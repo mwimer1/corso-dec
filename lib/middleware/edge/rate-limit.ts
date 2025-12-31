@@ -36,7 +36,7 @@ function createRateLimitResponse(): NextResponse {
   );
 }
 
-export function withRateLimitEdge<R extends NextResponse | Response = NextResponse>(
+export function withRateLimitEdge<R extends NextResponse | Response = Response>(
   _handler: (_req: NextRequest) => Promise<R> | R,
   opts: RateLimitEdgeOptions & { onKey?: (_key: string) => void },
 ) {

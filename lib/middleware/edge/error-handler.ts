@@ -15,7 +15,7 @@ import { addRequestIdHeader, getRequestId } from '../http/request-id';
  * Edge-safe error handling wrapper
  * Uses Edge-safe logger and error utilities (no Node-only dependencies)
  */
-export function withErrorHandlingEdge<R extends NextResponse = NextResponse>(
+export function withErrorHandlingEdge<R extends NextResponse | Response = Response>(
   handler: (req: NextRequest) => Promise<R> | R,
 ): (req: NextRequest) => Promise<R> | R {
   return async (req: NextRequest) => {

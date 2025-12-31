@@ -20,7 +20,7 @@ export const revalidate = 60; // Cache for 60 seconds (public content, ISR-frien
 
 import { http } from '@/lib/api';
 import { getAllInsights } from '@/lib/marketing/server';
-import { handleCors, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit } from '@/lib/middleware';
+import { handleCors, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_60_PER_MIN } from '@/lib/middleware';
 import { z } from 'zod';
 
 export async function OPTIONS(req: Request) {
@@ -180,6 +180,6 @@ const handler = async (req: Request): Promise<Response> => {
 export const GET = withErrorHandling(
   withRateLimit(
     async (req: Request) => handler(req) as any,
-    { windowMs: 60_000, maxRequests: 60 }
+    RATE_LIMIT_60_PER_MIN
   )
 );

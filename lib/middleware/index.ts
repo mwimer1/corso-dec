@@ -19,7 +19,11 @@ export { withRateLimitNode } from './http/with-rate-limit-node';
 // Note: Server-side rate limiting available via '@/lib/ratelimiting/middleware'
 // withApiWrappers removed - use makeEdgeRoute() or individual wrapper composition
 
-// ── Rate Limiting Helpers ─────────────────────────────────────────
-// Server-side rate limiting available via '@/lib/ratelimiting/middleware'
+// ── Rate Limiting Presets ─────────────────────────────────────────
+export {
+  RATE_LIMIT_30_PER_MIN,
+  RATE_LIMIT_60_PER_MIN,
+  RATE_LIMIT_100_PER_MIN,
+} from './rate-limit-presets';
 
 

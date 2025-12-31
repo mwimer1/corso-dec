@@ -21,7 +21,7 @@
 // app/api/v1/user/route.ts
 // Requires member role – enforced via Clerk v6 RBAC below
 import { http, validateJson } from "@/lib/api";
-import { withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit } from "@/lib/middleware";
+import { withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_30_PER_MIN } from "@/lib/middleware";
 import { corsHeaders, handleCors } from '@/lib/middleware';
 // withApiWrappers is re-exported from lib/api to keep imports consistent in tests
 import { UserSchema } from "@/lib/validators";
@@ -66,7 +66,7 @@ const handler = async (req: NextRequest): Promise<Response> => {
 };
 
 export const POST = withErrorHandling(
-  withRateLimit(async (req: NextRequest) => handler(req) as any, { windowMs: 60_000, maxRequests: 30 })
+  withRateLimit(async (req: NextRequest) => handler(req) as any, RATE_LIMIT_30_PER_MIN)
 );
 
 // CORS preflight
