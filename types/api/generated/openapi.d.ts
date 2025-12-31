@@ -233,26 +233,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/internal/auth": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Clerk authentication webhook
-         * @description Process Clerk authentication events and user management webhooks
-         */
-        post: operations["internal_auth_webhook"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1111,61 +1091,6 @@ export interface operations {
             401: components["responses"]["Unauthorized"];
             429: components["responses"]["RateLimited"];
             500: components["responses"]["InternalError"];
-        };
-    };
-    internal_auth_webhook: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                /**
-                 * @example {
-                 *       "type": "user.created",
-                 *       "data": {
-                 *         "id": "user_123",
-                 *         "email_addresses": [
-                 *           {
-                 *             "email_address": "user@example.com"
-                 *           }
-                 *         ],
-                 *         "first_name": "John",
-                 *         "last_name": "Doe"
-                 *       }
-                 *     }
-                 */
-                "application/json": Record<string, never>;
-            };
-        };
-        responses: {
-            /** @description Webhook processed successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Invalid webhook payload or signature */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Rate limited */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
         };
     };
 }

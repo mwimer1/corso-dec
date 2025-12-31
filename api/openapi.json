@@ -38,10 +38,6 @@
       "description": "Public content and insights"
     },
     {
-      "name": "Internal",
-      "description": "Internal system endpoints and webhooks"
-    },
-    {
       "name": "Users",
       "description": "User/profile APIs"
     },
@@ -432,7 +428,8 @@
         ],
         "x-corso-rbac": [
           "member",
-          "viewer"
+          "admin",
+          "owner"
         ],
         "x-rate-limit": {
           "limit": 60,
@@ -481,8 +478,7 @@
           }
         ],
         "x-corso-rbac": [
-          "member",
-          "viewer"
+          "member"
         ],
         "x-rate-limit": {
           "limit": 30,
@@ -564,8 +560,7 @@
           }
         ],
         "x-corso-rbac": [
-          "member",
-          "viewer"
+          "member"
         ],
         "x-rate-limit": {
           "limit": 60,
@@ -723,7 +718,8 @@
         ],
         "x-corso-rbac": [
           "member",
-          "viewer"
+          "admin",
+          "owner"
         ],
         "x-rate-limit": {
           "limit": 60,
@@ -950,8 +946,7 @@
           }
         ],
         "x-corso-rbac": [
-          "member",
-          "viewer"
+          "member"
         ],
         "x-rate-limit": {
           "limit": 30,
@@ -1015,8 +1010,7 @@
           }
         ],
         "x-corso-rbac": [
-          "member",
-          "viewer"
+          "member"
         ],
         "x-rate-limit": {
           "limit": 30,
@@ -1073,66 +1067,6 @@
             "$ref": "#/components/parameters/OrgIdHeader"
           }
         ]
-      }
-    },
-    "/api/internal/auth": {
-      "post": {
-        "operationId": "internal_auth_webhook",
-        "tags": [
-          "Internal"
-        ],
-        "summary": "Clerk authentication webhook",
-        "description": "Process Clerk authentication events and user management webhooks",
-        "x-public": false,
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "description": "Clerk webhook payload (varies by event type)"
-              },
-              "example": {
-                "type": "user.created",
-                "data": {
-                  "id": "user_123",
-                  "email_addresses": [
-                    {
-                      "email_address": "user@example.com"
-                    }
-                  ],
-                  "first_name": "John",
-                  "last_name": "Doe"
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Webhook processed successfully"
-          },
-          "400": {
-            "description": "Invalid webhook payload or signature",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelope"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Rate limited",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelope"
-                }
-              }
-            }
-          }
-        }
       }
     }
   },

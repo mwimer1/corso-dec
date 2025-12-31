@@ -208,3 +208,6 @@ bundle-size-current.json
 
 # Generated agent indexes (created by pnpm agent:indexes)
 .agent/
+
+# OpenAPI temporary files
+api/openapi.base.json
