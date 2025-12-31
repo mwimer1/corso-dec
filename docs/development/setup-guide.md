@@ -137,7 +137,7 @@ This guide provides a complete setup solution that includes:
     - [`.inputrc` Settings](#inputrc-settings)
     - [VS Code Integration](#vs-code-integration)
   - [🖥️ Platform Support](#️-platform-support)
-    - [Windows (Git Bash/MSYS2)](#windows-git-bashmsys2)
+    - [Windows (PowerShell/Git Bash)](#windows-powershellgit-bash)
     - [Linux/Container](#linuxcontainer)
     - [macOS](#macos)
   - [🧪 Testing \& Validation](#-testing--validation)

@@ -8,7 +8,6 @@ status: "draft"
 # TypeScript Guide
 
 > **Complete guide to TypeScript usage, type safety, and best practices for the Corso codebase**
-
 > **📋 For a complete list of all TypeScript path aliases, see [README.md](../../README.md#typescript-path-aliases)**
 
 ## 📋 Quick Reference

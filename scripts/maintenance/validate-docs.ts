@@ -405,8 +405,20 @@ async function validateReadmeMetrics(): Promise<void> {
  */
 async function runMarkdownLinting(): Promise<void> {
   logger.info('Running markdown linting...');
-  const res = await runLocalBin('markdownlint', ['docs/**/*.md', 'README.md', '--config', '.markdownlint.jsonc']).catch(() => ({ exitCode: 1, stdout: '', stderr: '' }));
+  const res = await runLocalBin('markdownlint', ['docs/**/*.md', 'README.md', '--config', '.markdownlint.jsonc']).catch((err) => ({ 
+    exitCode: 1, 
+    stdout: err?.message || '', 
+    stderr: String(err) || '' 
+  }));
   if (res.exitCode !== 0) {
+    if (res.stdout) {
+      logger.error('Markdown lint errors (stdout):');
+      console.error(res.stdout);
+    }
+    if (res.stderr) {
+      logger.error('Markdown lint errors (stderr):');
+      console.error(res.stderr);
+    }
     logger.error('❌ Markdown linting failed');
     throw new Error('markdownlint failed');
   }
