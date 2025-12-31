@@ -1,5 +1,5 @@
 #!/usr/bin/env tsx
-// scripts/lint/checkFilenameCase.ts
+// scripts/lint/check-filename-case.ts
 
 import { basename } from 'path';
 import { logger } from '../utils/logger';
