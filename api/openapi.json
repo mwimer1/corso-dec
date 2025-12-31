@@ -860,8 +860,7 @@
           }
         ],
         "x-corso-rbac": [
-          "member",
-          "viewer"
+          "member"
         ],
         "x-rate-limit": {
           "limit": 30,

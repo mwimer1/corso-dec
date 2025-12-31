@@ -96,4 +96,9 @@ AI_MAX_TOOL_CALLS=3
 - **Resource vs AI Split**: Entity routes handle data operations; AI routes handle intelligence features.
 - **Runtime Strategy**: Most routes use Node.js runtime for consistency and ClickHouse integration capabilities. CSP report uses Edge for low-latency responses.
 - **Public Endpoints**: CSP report and insights search are public (no authentication required).
-- **Deprecated Endpoints**: `/api/v1/entity/[entity]/export` returns 410 Gone (removed 2025-01-15, sunset 2025-04-15).
+- **Deprecated Endpoints**: 
+  - `/api/v1/entity/[entity]/export` — **DEPRECATED** (returns 410 Gone)
+    - **Removed**: 2025-01-15
+    - **Sunset**: 2025-04-15
+    - **Alternative**: Use `POST /api/v1/entity/{entity}/query` for data access
+    - **Example**: `POST /api/v1/entity/projects/query` with pagination/filtering

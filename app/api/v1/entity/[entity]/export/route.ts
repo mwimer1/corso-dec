@@ -14,7 +14,7 @@ export async function OPTIONS(req: Request) {
   return http.noContent();
 }
 
-const handler = async (_req: NextRequest, _ctx: { params: { entity: string } }): Promise<Response> => {
+const handler = async (_req: NextRequest, ctx: { params: { entity: string } }): Promise<Response> => {
   // AuthN
   const { userId } = await auth();
   if (!userId) {
@@ -23,18 +23,22 @@ const handler = async (_req: NextRequest, _ctx: { params: { entity: string } }):
 
   // Export functionality has been removed during entity grid migration
   // Return 410 Gone with deprecation headers
+  const entity = ctx.params.entity;
   const sunsetDate = '2025-04-15'; // 90 days from 2025-01-15
+  const alternativeEndpoint = `/api/v1/entity/${entity}/query`;
+  
   return http.error(410, 'Gone - Export feature no longer available', {
     code: 'EXPORT_REMOVED',
     details: {
       message: 'Export functionality was removed during the entity grid migration. Use entity query endpoints for data access.',
       removedDate: '2025-01-15',
-      alternativeEndpoint: '/api/v1/entity/{entity}/query',
+      sunsetDate: sunsetDate,
+      alternativeEndpoint: alternativeEndpoint,
     },
     headers: {
       'Deprecation': 'true',
       'Sunset': new Date(sunsetDate).toUTCString(),
-      'Link': '</api/v1/entity/{entity}/query>; rel="alternate"; type="application/json"',
+      'Link': `<${alternativeEndpoint}>; rel="alternate"; type="application/json"`,
     },
   });
 };

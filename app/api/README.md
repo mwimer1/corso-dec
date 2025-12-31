@@ -214,7 +214,7 @@ while (true) {
 ## Quick File References
 
 - Entity query: `app/api/v1/entity/[entity]/query/route.ts`
-- Entity export: `app/api/v1/entity/[entity]/export/route.ts`
+- Entity export: `app/api/v1/entity/[entity]/export/route.ts` (⚠️ **DEPRECATED** - returns 410 Gone, use `/api/v1/entity/{entity}/query` instead)
 - Entity base operations: `app/api/v1/entity/[entity]/route.ts`
 - AI generate SQL: `app/api/v1/ai/generate-sql/route.ts`
 - User operations: `app/api/v1/user/route.ts`
@@ -223,10 +223,17 @@ while (true) {
 ## Usage Examples
 
 ```bash
-# Entity query with pagination/filtering
-curl -X POST http://localhost:3000/api/v1/entity/permits/query \
+# Entity query with pagination/filtering (replaces deprecated export endpoint)
+curl -X POST http://localhost:3000/api/v1/entity/projects/query \
   -H "Content-Type: application/json" \
-  -d '{"page":{"index":0,"size":10},"filter":[{"field":"status","op":"eq","value":"active"}]}'
+  -H "Authorization: Bearer <token>" \
+  -H "X-Corso-Org-Id: <org-id>" \
+  -d '{"page":{"index":0,"size":10},"filter":{},"sort":[]}'
+
+# Deprecated export endpoint (returns 410 Gone with deprecation headers)
+curl -X GET http://localhost:3000/api/v1/entity/projects/export?format=csv \
+  -H "Authorization: Bearer <token>" \
+  # Response: 410 Gone with Deprecation, Sunset, and Link headers
 
 # AI SQL generation
 curl -X POST http://localhost:3000/api/v1/ai/generate-sql \

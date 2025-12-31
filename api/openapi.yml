@@ -572,7 +572,6 @@ paths:
         - bearerAuth: []
       x-corso-rbac:
         - member
-        - viewer
       x-rate-limit:
         limit: 30
         window: 1m
