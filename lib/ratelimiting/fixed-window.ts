@@ -1,10 +1,10 @@
 /**
  * @fileoverview Fixed-window counter algorithm for rate limiting
- * @module lib/rate-limiting/algorithms/fixed-window
+ * @module lib/rate-limiting/fixed-window
  */
 
-import { executeRateLimit } from '../core';
-import type { RateLimitOptions, RateLimitResult, StoreAdapter } from '../types';
+import { executeRateLimit } from './core';
+import type { RateLimitOptions, RateLimitResult, StoreAdapter } from './types';
 
 /**
  * Fixed-window counter algorithm.
@@ -18,4 +18,3 @@ export async function fixedWindowRateLimit(
 ): Promise<RateLimitResult> {
   return executeRateLimit(store, key, { windowMs, maxRequests });
 }
-

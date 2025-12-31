@@ -14,7 +14,7 @@ import { exposeHeader } from '@/lib/middleware/http/headers';
 import { addRequestIdHeader, getRequestId } from '@/lib/middleware/http/request-id';
 import type { RateLimitOptions as RateLimitEdgeOptions } from '@/lib/ratelimiting';
 import { checkRateLimit } from '@/lib/ratelimiting';
-import { createMemoryStore } from '@/lib/ratelimiting/adapters/memory';
+import { createMemoryStore } from '@/lib/ratelimiting/memory';
 import { buildCompositeKey } from '@/lib/ratelimiting/key';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';

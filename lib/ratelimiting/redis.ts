@@ -1,9 +1,9 @@
 /**
  * @fileoverview Redis store adapter for rate limiting
- * @module lib/rate-limiting/adapters/redis
+ * @module lib/rate-limiting/redis
  */
 
-import type { StoreAdapter } from '../types';
+import type { StoreAdapter } from './types';
 
 /**
  * Redis store adapter using Upstash Redis
@@ -33,4 +33,3 @@ export function createRedisStore(): StoreAdapter {
     },
   };
 }
-

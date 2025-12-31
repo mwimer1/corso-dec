@@ -4,8 +4,8 @@
  */
 
 import { getEnv } from '@/lib/server/env';
-import { createMemoryStore } from './adapters/memory';
-import { createRedisStore } from './adapters/redis';
+import { createMemoryStore } from './memory';
+import { createRedisStore } from './redis';
 import type { StoreAdapter } from './types';
 
 let defaultStore: StoreAdapter | null = null;

@@ -1,9 +1,9 @@
 /**
  * @fileoverview Rate limiting configurations for actions domain
- * @module lib/rate-limiting/domains/actions
+ * @module lib/rate-limiting/actions
  */
 
-import type { DomainRateLimits } from '../types';
+import type { DomainRateLimits } from './types';
 
 /**
  * Rate limiting configurations for different action types
@@ -21,4 +21,3 @@ export const ACTION_RATE_LIMITS: DomainRateLimits = {
   SUBSCRIPTION_READ: { windowMs: 60000, maxRequests: 30 },
   SUBSCRIPTION_WRITE: { windowMs: 60000, maxRequests: 10 },
 };
-

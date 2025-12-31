@@ -1,9 +1,9 @@
 /**
  * @fileoverview In-memory store adapter for rate limiting
- * @module lib/rate-limiting/adapters/memory
+ * @module lib/rate-limiting/memory
  */
 
-import type { StoreAdapter } from '../types';
+import type { StoreAdapter } from './types';
 
 interface MemoryEntry {
   count: number;
@@ -41,4 +41,3 @@ export function createMemoryStore(): StoreAdapter {
     },
   };
 }
-
