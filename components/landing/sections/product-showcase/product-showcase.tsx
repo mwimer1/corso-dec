@@ -81,7 +81,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
       id: "corso-ai",
       label: "AI Chat",
       content: (
-        <div className="rounded-lg border border-border shadow-sm overflow-hidden">
+        <div className="rounded-lg border border-border shadow-md overflow-hidden">
           <div className="u-mask-fade-bottom">
             <Image
               src="/demos/corso-ai-interface.png"
@@ -100,7 +100,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
       id: "projects",
       label: "Projects",
       content: (
-        <div className="rounded-lg border border-border shadow-sm overflow-hidden">
+        <div className="rounded-lg border border-border shadow-md overflow-hidden">
           <div className="u-mask-fade-bottom">
             <Image
               src="/demos/projects-interface.png"
@@ -119,7 +119,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
       id: "companies",
       label: "Companies",
       content: (
-        <div className="rounded-lg border border-border shadow-sm overflow-hidden">
+        <div className="rounded-lg border border-border shadow-md overflow-hidden">
           <div className="u-mask-fade-bottom">
             <Image
               src="/demos/companies-interface.png"
@@ -138,7 +138,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
       id: "addresses",
       label: "Addresses",
       content: (
-        <div className="rounded-lg border border-border shadow-sm overflow-hidden">
+        <div className="rounded-lg border border-border shadow-md overflow-hidden">
           <div className="u-mask-fade-bottom">
             <Image
               src="/demos/addresses-interface.png"
@@ -283,7 +283,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
       {/* Dashed horizontal line decoration */}
       <svg 
         aria-hidden="true"
-        className="absolute inset-x-0 top-12 lg:top-10 text-border/40 pointer-events-none"
+        className="absolute inset-x-0 top-12 lg:top-10 text-border/30 pointer-events-none"
         height="1"
         preserveAspectRatio="none"
       >
