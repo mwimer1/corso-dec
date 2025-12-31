@@ -1,11 +1,10 @@
 ---
-title: "Dashboard UI Standards"
-description: "Design system standards and best practices for maintaining venture-backed polish in the Corso dashboard."
-last_updated: "2025-01-29"
-category: "documentation"
 status: "active"
+last_updated: "2025-12-31"
+category: "documentation"
+title: "Architecture Design"
+description: "Documentation and resources for documentation functionality. Located in architecture-design/."
 ---
-
 # Dashboard UI Standards
 
 This document provides actionable guidelines for maintaining consistent, polished UI in the Corso dashboard. Follow these standards to ensure all dashboard work maintains the "venture-backed SaaS" aesthetic.

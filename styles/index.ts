@@ -2,13 +2,13 @@
 // Main styles barrel export - Global utilities only
 //
 // Import Policy:
-// - ✅ Global utilities: cn, latoVariable, tv
+// - ✅ Global utilities: cn, interVariable, tv
 // - ❌ Component variants: Import from category barrels instead:
 //   - @/styles/ui/atoms
 //   - @/styles/ui/molecules
 //   - @/styles/ui/organisms
 
-export { latoVariable } from './fonts';
+export { interVariable } from './fonts';
 export { cn, tv } from './utils';
 export type { VariantProps } from './utils';
 
