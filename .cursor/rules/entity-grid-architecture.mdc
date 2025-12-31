@@ -175,12 +175,10 @@ API routes enforce organization-scoped RBAC:
 - Route options: export top-level literals (`runtime`, `dynamic`, `revalidate`). No `as const`.
 - **AG Grid registration**: Never call `ModuleRegistry.registerModules()` directly in components. Use `ensureAgGridRegistered()` from `@/lib/vendors/ag-grid.client`.
 
-## Quality Gates
-- Run sequentially:
-  - `pnpm typecheck`
-  - `pnpm lint`
-  - `pnpm test`
-  - `pnpm validate:cursor-rules`
+## Quality gates
+
+See the canonical command set in
+[ai-agent-development-environment.mdc](mdc:.cursor/rules/ai-agent-development-environment.mdc#quality-gates-and-validation-commands).
 
 ## Migration Status
 ✅ **Phase 3B Complete** - Full TableColumnConfig adoption, legacy cleanup finished

@@ -13,6 +13,7 @@ related_rules:
   - runtime-boundaries
 alwaysApply: true
 globs: ["app/api/**", "actions/**", "lib/api/**", "lib/middleware/**"]
+summary: Zero-trust security with Clerk auth, Zod validation, rate limiting, and error handling for all API routes.
 # Reviewed in Dec 2025 - Current security practices verified, no deprecated patterns found
 ---
 
@@ -337,7 +338,7 @@ logger.error("Security violation detected", {
 - `@corso/require-validation`: Enforce input validation
 - `@corso/require-rate-limit`: Enforce rate limiting
 
-### Pattern Validation Commands (Windows-friendly)
+### Pattern Validation Commands (Domain-Specific)
 ```bash
 # Check for missing authentication
 sg -p 'export const $METHOD = withErrorHandlingEdge' --lang typescript app/api/
@@ -349,7 +350,12 @@ rg 'process\.env' --type ts app/api/
 sg -p 'export const $METHOD = withErrorHandlingEdge' --lang typescript app/api/
 ```
 
-### Quality Gates
+### Quality gates
+
+See the canonical command set in
+[ai-agent-development-environment.mdc](mdc:.cursor/rules/ai-agent-development-environment.mdc#quality-gates-and-validation-commands).
+
+### Enforcement Criteria
 - **Authentication Coverage**: 100% for protected routes
 - **Rate Limiting Coverage**: 100% for applicable routes
 - **Input Validation**: 100% with Zod schemas
@@ -385,11 +391,9 @@ The `@/lib/shared` barrel **must remain client-compatible** at all times:
 **Breaking this rule will cause all client components to fail at runtime.**
 
 ## Windows-first tips
-- Use `git --no-pager` for logs/diffs.
-- Avoid Unix-only pagers/pipes; prefer no pager or `| type` when needed.
-- Run commands sequentially; avoid long `&&` chains.
-- Do not use `pnpm -s/--silent`.
-- Ensure `ast-grep` v0.38+ (`ast-grep scan`/`run`).
+
+See the canonical guidance in
+[ai-agent-development-environment.mdc](mdc:.cursor/rules/ai-agent-development-environment.mdc#windows-first-tips).
 
 ## Clerk UI Contract (Dashboard)
 

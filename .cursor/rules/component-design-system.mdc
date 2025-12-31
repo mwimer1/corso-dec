@@ -13,6 +13,7 @@ related_rules:
   - code-quality-standards
 alwaysApply: false
 globs: ["components/**", "app/**/_components/**", "stories/**", "styles/**"]
+summary: Atomic design patterns, import conventions, design system standards, and theming for React components.
 ---
 
 # Component Design System & Architecture (Consolidated)

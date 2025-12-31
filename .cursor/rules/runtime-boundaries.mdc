@@ -14,7 +14,20 @@ globs:
   - "app/**/route.@(ts|tsx|js|jsx|mjs)"
   - "app/**/page.@(ts|tsx|js|jsx|mjs)"
   - "app/**/layout.@(ts|tsx|js|jsx|mjs)"
+summary: Enforce strict runtime boundaries between Edge and Node.js, preventing server-only imports in client/shared code.
 ---
+
+# Runtime Boundaries & Server/Edge Imports
+
+**Enforce strict runtime boundaries between Edge and Node.js to prevent runtime errors and maintain bundle safety.**
+
+## TL;DR
+- **Route runtime**: Route files MUST declare `export const runtime = 'edge' | 'nodejs'`
+- **Server imports**: Client/shared code cannot import from `@/lib/server/**` (AST-grep enforced)
+- **Edge safety**: `@/lib/api` barrel must remain Edge-compatible at all times
+- **Client safety**: `@/lib/shared` barrel must remain client-compatible at all times
+- **Server-only**: Use `index.server.ts` barrels for server-only exports
+- **Environment**: Only `@/lib/server/env` for server env access
 
 ## Server vs Client boundaries (final)
 
@@ -64,6 +77,5 @@ The `@/lib/shared` barrel **must remain client-compatible** at all times. This i
 
 ## Windows-first tips
 
-- Run runtime boundary validation with `pnpm validate:runtime-boundaries` before commits.
-- Use `ast-grep scan --rule scripts/rules/ast-grep/runtime-boundaries/ban-server-imports-in-app.yml` to check for violations locally.
-- Ensure Node-only imports are properly isolated to prevent Edge runtime errors on Windows builds.
+See the canonical guidance in
+[ai-agent-development-environment.mdc](mdc:.cursor/rules/ai-agent-development-environment.mdc#windows-first-tips).

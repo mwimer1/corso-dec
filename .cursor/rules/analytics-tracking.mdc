@@ -12,6 +12,7 @@ related_rules:
   - code-quality-standards
 alwaysApply: true
 globs: ["components/**", "lib/shared/analytics/**", "hooks/**"]
+summary: Edge-safe analytics tracking with graceful degradation, privacy-first approach, and zero-impact performance.
 ---
 
 # Analytics Tracking & User Insights
@@ -403,12 +404,10 @@ pnpm ast-grep run --pattern "window\.analytics" --lang typescript
 - ✅ **Performance Optimized**: Zero blocking, lazy-loaded when possible
 - ✅ **Test Coverage**: Unit tests for all tracking functions
 
-## Windows-First Tips
+## Windows-first tips
 
-- Use `pnpm test:unit --filter analytics` to validate tracking
-- Avoid `window.analytics` direct access; use shared utilities
-- Test analytics in development with mock providers
-- Ensure fallback tracking works when primary provider fails
+See the canonical guidance in
+[ai-agent-development-environment.mdc](mdc:.cursor/rules/ai-agent-development-environment.mdc#windows-first-tips).
 
 ## Related Rules
 

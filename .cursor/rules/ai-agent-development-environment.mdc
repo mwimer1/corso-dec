@@ -14,7 +14,7 @@ related_rules:
   - documentation-standards
   - code-quality-standards
 last_reviewed: "2025-12-15"
-summary: Keep agent/rules artifacts versioned, indexed, and validated in CI.
+summary: Windows-first development environment, workflow standards, and quality gates for Corso applications.
 # Reviewed in Dec 2025 - Development workflow and tooling standards current
 ---
 # 🚀 Development Environment & Workflow (Consolidated)
@@ -50,7 +50,9 @@ pnpm quality:local
 - **Env vars**: `pnpm validate:env` (ensures all required env vars are set and type-safe).
 - **Quality gates**: Run in order – `pnpm typecheck`, then `pnpm lint`, then `pnpm test`, then `pnpm validate:cursor-rules`. All must pass locally before committing.
 
-### Windows-friendly Examples
+## Windows-first tips
+
+### Git Commands
 ```bash
 # Git: Windows-friendly log (no pager)
 git --no-pager log --oneline
@@ -61,6 +63,13 @@ git --no-pager show -s --format=%H HEAD
 # Git: View log piped safely on Windows
 git --no-pager log --oneline | type
 ```
+
+### Command Execution
+- **Avoid Unix-only operations**: Don't use Unix-specific shell features like `pbcopy` or `cat` in examples; use `type` or native PowerShell equivalents if needed
+- **Run commands sequentially**: Execute commands one-by-one rather than chaining with `&&` for easier debugging
+- **No `pnpm -s/--silent`**: Avoid silent mode – it suppresses output that could contain important warnings
+- **Don't rely on `cd` for scripts**: Run commands from the repository root or use subshells/`--prefix` flags to execute in subdirs (avoids path issues on Windows shells)
+- **Use forward slashes**: Prefer forward slashes in file paths for consistency across platforms
 
 ## Git Workflow & Conventional Commits
 
@@ -188,21 +197,57 @@ const opts = {
 | Troubleshooting | `typecheck:clean` | When experiencing slowdowns |
 | Quick Feedback | `typecheck:fast` | During development |
 
-### Quality Gates
+## Quality gates and validation commands
 
-#### Development Workflow
+### Development Workflow
 ```bash
 # Fast feedback during development
 pnpm typecheck
 
-# Full validation before commit (local)
-pnpm typecheck && pnpm lint && pnpm test
+# Full validation before commit (run sequentially, not chained)
+pnpm typecheck
+pnpm lint
+pnpm test
+pnpm validate:cursor-rules
 ```
 
-#### CI/CD Pipeline
+### CI/CD Pipeline
 ```bash
-# Complete validation (CI)
-pnpm typecheck && pnpm lint && pnpm test && pnpm validate:cursor-rules
+# Complete validation (CI - run sequentially)
+pnpm typecheck
+pnpm lint
+pnpm test
+pnpm validate:cursor-rules
+```
+
+### Common Validation Commands
+```bash
+# Type checking (fast feedback)
+pnpm typecheck
+
+# Linting (ESLint-based, uses cache)
+pnpm lint
+
+# Testing (unit, integration, components)
+pnpm test
+
+# Cursor rules validation
+pnpm validate:cursor-rules
+
+# Full quality gates (local development)
+pnpm quality:local
+```
+
+### Domain-Specific Validation
+```bash
+# Runtime boundaries
+pnpm validate:runtime-boundaries
+
+# OpenAPI RBAC
+pnpm openapi:rbac:check
+
+# Environment validation
+pnpm validate:env
 ```
 
 ## Development Best Practices

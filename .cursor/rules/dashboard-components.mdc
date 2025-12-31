@@ -12,6 +12,7 @@ related_rules:
   - runtime-boundaries
 alwaysApply: false
 globs: ["components/dashboard/**/*.tsx"]
+summary: Dashboard component development patterns for chat interfaces and data tables with proper runtime boundaries.
 ---
 
 # Dashboard Components — Chat & Tables (Consolidated)
@@ -241,18 +242,20 @@ rule: |
 }
 ```
 
-### Quality Gates
-- **Development**: `pnpm typecheck`
+### Quality gates
+
+See the canonical command set in
+[ai-agent-development-environment.mdc](mdc:.cursor/rules/ai-agent-development-environment.mdc#quality-gates-and-validation-commands).
+
+### Domain-Specific Dashboard Commands
 - **Component Tests**: `pnpm test:components`
 - **Boundary Validation**: `pnpm validate:runtime-boundaries`
 - **Dashboard Specific**: `pnpm validate:dashboard-components`
 
-## Windows-First Tips
+## Windows-first tips
 
-- Use `pnpm vitest run tests/components --run` for dashboard component tests
-- Prefer explicit import paths over barrel imports within dashboard components
-- Test chat and table components separately for faster feedback
-- Use `git --no-pager log --oneline --grep="dashboard"` to track dashboard changes
+See the canonical guidance in
+[ai-agent-development-environment.mdc](mdc:.cursor/rules/ai-agent-development-environment.mdc#windows-first-tips).
 
 ## Related Rules
 

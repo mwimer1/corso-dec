@@ -9,13 +9,13 @@
 ---
 rule_id: cursor/rule-name
 title: Human-readable title
+summary: Brief description of rule (<120 chars)
 owners:
   - team@corso.io
-last_reviewed: 2025-10-06
-status: stable
+last_reviewed: YYYY-MM-DD
+status: active
 domains: [primary, secondary]
-enforcement:
-  - tool:pattern
+enforcement: advise|warn|block
 related_rules:
   - cursor/related-rule
 alwaysApply: true|false
@@ -28,15 +28,14 @@ globs: ["**/*.{ext}"]
 ---
 rule_id: cursor/security-rule
 title: Security Rule Title
+summary: Brief security-focused description (<120 chars)
 owners:
   - security@corso.io
   - platform@corso.io
-last_reviewed: 2025-10-06
-status: stable
+last_reviewed: YYYY-MM-DD
+status: active
 domains: [security, api]
-enforcement:
-  - ast-grep:pattern
-  - script:validator
+enforcement: block
 related_rules:
   - cursor/security-standards
 alwaysApply: true
@@ -46,35 +45,24 @@ globs: ["app/api/**", "lib/**"]
 
 ## Common Section Templates
 
-### Windows-First Tips Section
+### Windows-First Tips Section (Reference Only)
+**NOTE**: All Windows-first tips should reference the canonical section in `ai-agent-development-environment.mdc`:
+
 ```markdown
 ## Windows-first tips
 
-- Prefer explicit imports over shell globs in docs examples.
-- Avoid glob-based shell expansions; use explicit paths.
-- Keep commands simple and sequential; avoid long `&&` chains in docs.
+See the canonical guidance in
+[ai-agent-development-environment.mdc](mdc:.cursor/rules/ai-agent-development-environment.mdc#windows-first-tips).
 ```
 
-### Quality Gates Section
+### Quality Gates Section (Reference Only)
+**NOTE**: All quality gates should reference the canonical section in `ai-agent-development-environment.mdc`:
+
 ```markdown
-## Quality Gates
+## Quality gates
 
-### Development Validation
-```bash
-# Validate implementation
-pnpm typecheck
-
-# Check enforcement
-pnpm validate:cursor-rules
-
-# Domain-specific validation
-pnpm validate:domain-specific
-```
-
-### Production Readiness
-- ✅ **Validation**: Automated checks pass
-- ✅ **Documentation**: Examples provided and accurate
-- ✅ **Testing**: Test coverage maintained
+See the canonical command set in
+[ai-agent-development-environment.mdc](mdc:.cursor/rules/ai-agent-development-environment.mdc#quality-gates-and-validation-commands).
 ```
 
 ### Related Rules Section
@@ -114,11 +102,6 @@ rule: |
   }
 }
 ```
-
-### Quality Gates
-- **Development**: `pnpm typecheck`
-- **CI**: `pnpm validate:cursor-rules`
-- **Domain**: `pnpm validate:domain-specific`
 ```
 
 ## Common Content Patterns
@@ -133,6 +116,9 @@ rule: |
 - **Key Point 1**: Brief explanation
 - **Key Point 2**: Brief explanation
 - **Key Point 3**: Brief explanation
+
+## Purpose (2-6 lines)
+Brief explanation of why this rule exists and what problem it solves.
 ```
 
 ### Do/Don't Section Template
@@ -177,45 +163,14 @@ describe('RuleName', () => {
 });
 ```
 
-## Common Validation Commands
-
-### Standard Validation Commands
-```bash
-# Type checking
-pnpm typecheck
-
-# Linting
-pnpm lint
-
-# Rule validation
-pnpm validate:cursor-rules
-
-# Domain-specific validation
-pnpm validate:security
-pnpm validate:runtime-boundaries
-pnpm openapi:rbac:check
-```
-
-### Windows-Compatible Commands
-```bash
-# Git operations (Windows-safe)
-git --no-pager log --oneline
-
-# File operations
-type file.txt | findstr "pattern"
-
-# Path handling
-# Use forward slashes for consistency
-# Avoid platform-specific path separators in docs
-```
-
 ## Common Metadata Patterns
 
 ### Standard Metadata Values
-- `status`: `"stable"` (default)
+- `status`: `"active"` (default)
 - `domains`: `["docs"]` (default)
 - `owners`: `["platform@corso.io"]` (default)
-- `enforcement`: `[]` (default empty array)
+- `enforcement`: `"advise"` (default: advise|warn|block)
+- `summary`: Required (<120 chars)
 
 ### Common Domain Values
 - `"security"` - Security and authentication

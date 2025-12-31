@@ -15,9 +15,19 @@ globs:
   - "app/api/**"
   - "api/**"
   - "docs/api/**"
+summary: Enforce RBAC and tenant isolation in OpenAPI specs via vendor extensions (x-corso-rbac) and automated validation.
 ---
 
 # OpenAPI Vendor Extensions & RBAC Guard
+
+**Enforce consistent RBAC and tenant isolation patterns in the OpenAPI specification through vendor extensions and automated validation.**
+
+## TL;DR
+- **RBAC annotations**: All bearer-authenticated operations must have `x-corso-rbac` or `x-public`
+- **OrgIdHeader**: All bearer operations must include `OrgIdHeader` parameter
+- **Validation**: Run `pnpm openapi:rbac:check` to validate compliance
+- **Role hierarchy**: owner > admin > member > viewer > service
+- **CI enforcement**: Automated validation in PR pipeline
 
 ## 🎯 Purpose
 Enforce consistent RBAC and tenant isolation patterns in the OpenAPI specification through vendor extensions and automated validation.
@@ -217,7 +227,5 @@ get:
 
 ## Windows-first tips
 
-- Use `pnpm openapi:rbac:check` after `pnpm openapi:gen`
-- Avoid direct `process.env` access; use `getEnv()`
-- Run commands sequentially; avoid long `&&` chains
-- Use `git --no-pager` for commit history reviews
+See the canonical guidance in
+[ai-agent-development-environment.mdc](mdc:.cursor/rules/ai-agent-development-environment.mdc#windows-first-tips).

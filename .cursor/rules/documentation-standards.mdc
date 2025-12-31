@@ -11,6 +11,7 @@ enforcement: warn
 related_rules: []
 alwaysApply: false
 globs: ["docs/**", "**/README.md"]
+summary: Documentation consistency standards with canonical references, consolidation, and maintenance guidelines.
 # Reviewed in Dec 2025 - Updated to reflect current documentation consolidation and standards
 ---
 
@@ -209,19 +210,21 @@ rule: |
 }
 ```
 
-### Quality Gates
+### Quality gates
+
+See the canonical command set in
+[ai-agent-development-environment.mdc](mdc:.cursor/rules/ai-agent-development-environment.mdc#quality-gates-and-validation-commands).
+
+### Domain-Specific Documentation Commands
 - **Development**: `pnpm docs:validate`
 - **CI**: `pnpm docs:check && pnpm docs:urls:validate`
 - **Freshness**: `pnpm docs:stale-check`
 - **Structure**: `pnpm docs:structure-check`
 
-## Windows-First Tips
+## Windows-first tips
 
-- Avoid Unix-only pagers/pipes in examples; show plain commands
-- Keep sequences linear (one command per line) for copy-paste friendliness
-- Access Next.js docs via browser from Windows development environment
-- Use canonical Next.js URLs (or a local index if present) for consistent documentation references
-- Prefer explicit file paths over glob patterns in documentation examples
+See the canonical guidance in
+[ai-agent-development-environment.mdc](mdc:.cursor/rules/ai-agent-development-environment.mdc#windows-first-tips).
 
 ## Related Resources
 

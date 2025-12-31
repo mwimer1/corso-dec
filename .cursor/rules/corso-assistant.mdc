@@ -12,6 +12,7 @@ globs:
   - ".cursor/**"
   - ".agent/**"
   - "scripts/**"
+summary: Canonical source for Cursor rules; edit this file, then run pnpm rules:sync to update generated artifacts.
 ---
 
 # Corso Codebase Assistant — Operating Rules (vNext)

@@ -13,6 +13,7 @@ related_rules:
   - code-quality-standards
 alwaysApply: true
 globs: ["hooks/**", "app/**", "components/**"]
+summary: Secure, performant React hooks for ClickHouse queries with React Query integration and type safety.
 ---
 
 # Warehouse Query Hooks & Best Practices
@@ -441,9 +442,7 @@ rule: |
 }
 ```
 
-## Windows-First Tips
+## Windows-first tips
 
-- Use `pnpm typecheck` to quickly validate warehouse query usage
-- Run `ast-grep scan --rule scripts/rules/ast-grep/warehouse-query-hooks.yml` for pattern validation (if rule exists)
-- Use `git --no-pager log --oneline --grep="warehouse"` to track query-related changes
-- Prefer `| type` over `| cat` when piping query results in Windows terminals
+See the canonical guidance in
+[ai-agent-development-environment.mdc](mdc:.cursor/rules/ai-agent-development-environment.mdc#windows-first-tips).
