@@ -60,22 +60,3 @@ export function useGridDensity({
     setDensity: handleDensityChange,
   };
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

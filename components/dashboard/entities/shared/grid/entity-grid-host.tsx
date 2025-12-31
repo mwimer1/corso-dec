@@ -10,7 +10,7 @@ import { useSearchParams } from 'next/navigation';
 import * as React from 'react';
 import EntityGrid from './entity-grid';
 import { GridMenubar } from './grid-menubar';
-import { useGridDensity } from './hooks/use-grid-density';
+import { useGridDensity } from './use-grid-density';
 
 /**
  * Minimal type for grid state applied by GridMenubar

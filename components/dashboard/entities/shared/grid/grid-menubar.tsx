@@ -12,7 +12,7 @@ import { ArrowDownToLine, Columns, CopyPlus, FileDown, GripVertical, ListRestart
 import type React from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useGridDensity } from './hooks/use-grid-density';
+import { useGridDensity } from './use-grid-density';
 // GridSaveAsDialog removed - using simple prompt for now
 // Simple number formatting function (can be replaced with numeral if needed)
 const formatNumber = (num: string | null): string => {
