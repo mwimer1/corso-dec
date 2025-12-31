@@ -38,6 +38,7 @@ describe('Rate Limiting - Entity Routes', () => {
     mockClerkAuth.setup({
       userId: 'test-user-123',
       orgId: 'test-org-123',
+      has: (options: { role: string }) => options.role === 'org:member' || options.role === 'member',
     });
     mockGetEntityPage.mockResolvedValue({
       data: [{ id: 1, name: 'Test Entity' }],

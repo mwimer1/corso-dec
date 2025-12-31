@@ -408,22 +408,29 @@ describe('API v1: GET /entity/[entity]', () => {
     });
 
     it('should return 403 when orgId is missing', async () => {
+      // Setup auth without orgId (simulating user with no org context)
+      // Explicitly set orgId to null to override default
       mockClerkAuth.setup({
         userId: 'test-user-123',
-        orgId: undefined, // orgId is missing
+        orgId: null, // Explicitly null to simulate missing org
       });
       // Mock clerkClient to return empty organizations list (simulating user with no orgs)
       mockClerkAuth.getClerkClient().users.getOrganizationMembershipList.mockResolvedValue({
         data: [],
       });
+      
+      // The route should detect missing orgId and return 403
+      // This happens when getTenantContext can't find orgId from header or session
 
       const mod = await import('@/app/api/v1/entity/[entity]/route');
       const handler = mod.GET;
 
+      // Create request without orgId header
       const url = new URL('http://localhost/api/v1/entity/projects?page=0&pageSize=10');
       const req = {
         nextUrl: url,
         url: url.toString(),
+        headers: new Headers(), // Explicitly no headers (no x-corso-org-id)
       };
 
       const res = await handler(req as any, { params: { entity: 'projects' } });

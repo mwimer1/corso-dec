@@ -32,6 +32,7 @@ describe('POST /api/v1/query', () => {
     // Default: authenticated user with member role
     mockClerkAuth.setup({
       userId: testUser.userId,
+      has: (options: { role: string }) => options.role === 'org:member' || options.role === 'member',
     });
     // Default: mock tenant context with org ID from header
     mockGetTenantContext.mockImplementation(async (req?: any) => {

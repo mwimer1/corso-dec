@@ -36,7 +36,7 @@ export interface ClerkAuthMockOptions {
     publicMetadata?: Record<string, unknown>;
   };
   /** Custom has() function for role checking */
-  has?: (role: string) => boolean;
+  has?: (options: { role: string } | string) => boolean;
 }
 
 /**
@@ -46,7 +46,10 @@ const DEFAULT_AUTH = {
   userId: 'test-user-123',
   orgId: 'test-org-123',
   orgRole: 'org:member',
-  has: (role: string) => role === 'org:member' || role === 'member',
+  has: (options: { role: string } | string) => {
+    const role = typeof options === 'string' ? options : options.role;
+    return role === 'org:member' || role === 'member';
+  },
   sessionClaims: {
     publicMetadata: {
       role: 'org:member',
