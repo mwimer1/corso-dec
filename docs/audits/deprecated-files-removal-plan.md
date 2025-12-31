@@ -111,7 +111,7 @@ Since `components/index.ts` exports from domain barrels (`./ui/atoms`, `./ui/mol
    - `@/components/ui/molecules` → keep as is or import from specific file
    - `@/components/ui/organisms` → keep as is or import from specific file
    - `APP_LINKS` → import from `@/lib/shared`
-   - Pricing plan UI → import from `@/components/marketing/pricing/plan-ui`
+   - Pricing plan UI → import from `@/components/marketing/sections/pricing/plan-ui` or `@/components` (barrel)
 3. Delete `components/index.ts`
 4. Update `scripts/audit/orphans.allowlist.json` to remove `components/index.ts`
 5. Update any ESLint config or codemod scripts that reference it

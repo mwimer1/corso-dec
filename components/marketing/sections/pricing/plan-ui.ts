@@ -56,4 +56,3 @@ export function selectPlanHref(plan: PlanKey) {
   // Use sign-in for auth gating; marketing selects should redirect to sign-up for new users
   return { pathname: '/sign-in', query: { plan } } as const;
 }
-

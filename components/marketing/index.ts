@@ -16,6 +16,7 @@ export * from './sections/legal/privacy-content';
 export * from './sections/legal/terms-content';
 
 // Section components - Pricing
+export * from './sections/pricing/plan-ui';
 export * from './sections/pricing/pricing-faq';
 export * from './sections/pricing/pricing-header';
 export * from './sections/pricing/pricing-page';

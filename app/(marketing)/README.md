@@ -170,7 +170,7 @@ export const dynamic = "force-dynamic";
 
 import { PricingPage } from "@/components/marketing";
 import { PublicLayout } from "@/components/ui/organisms";
-import { PRICING_UI, formatPriceUSD } from "@/lib/marketing/pricing/plan-ui";
+import { PRICING_UI, formatPriceUSD } from "@/components";
 import { useRouter } from "next/navigation";
 import ScrollToFAQ from "./scroll-to-faq";
 import { landingNavItems } from "@/components/landing/layout/nav.config";
@@ -719,10 +719,10 @@ export default function NotFound() {
 |-----------|----------|---------|
 | `Hero` | `components/landing/sections/hero/hero.tsx` | Main hero section |
 | `ProductShowcase` | `components/landing/sections/product-showcase/product-showcase.tsx` | Features showcase |
-| `PricingPage` | `components/marketing/pricing/pricing-page.tsx` | Pricing with plans/FAQ |
+| `PricingPage` | `components/marketing/sections/pricing/pricing-page.tsx` | Pricing with plans/FAQ |
 | `ContactFormWrapper` | `components/marketing/contact/contact-form-wrapper.tsx` | Secure contact form |
 | `InsightsList` | `components/insights/sections/insights-list.tsx` | Blog articles list (3×2 grid) |
-| `PRICING_UI` | `lib/marketing/pricing/plan-ui.ts` | Plan configuration |
+| `PRICING_UI` | `components/marketing/sections/pricing/plan-ui.ts` | Plan configuration |
 | `staticInsights` | `lib/marketing/insights/static-data.ts` | Blog data (6 mock articles) |
 | `submitContactForm` | `app/(marketing)/contact/actions.ts` | Contact server action (feature-colocated) |
 

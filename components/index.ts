@@ -7,7 +7,7 @@
 // Import from shared barrel to avoid deep import violation
 export { APP_LINKS } from "@/lib/shared";
 
-export * from "./marketing/pricing/plan-ui";
+export * from "./marketing/sections/pricing/plan-ui";
 export * from "./ui/atoms";
 export * from "./ui/molecules";
 export * from "./ui/organisms";
