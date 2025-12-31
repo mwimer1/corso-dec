@@ -1,4 +1,5 @@
 import { mockClerkAuth } from '@/tests/support/mocks';
+import { createUser } from '@/tests/support/factories';
 import { NextRequest } from 'next/server';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -21,6 +22,8 @@ vi.mock('@/lib/shared/config/auth-mode', () => ({
 }));
 
 describe('GET /api/v1/entity/[entity] - Relaxed Auth + Mock DB', () => {
+  const testUser = createUser({ userId: 'test-user-relaxed-123' });
+
   beforeEach(() => {
     vi.clearAllMocks();
     
@@ -32,7 +35,7 @@ describe('GET /api/v1/entity/[entity] - Relaxed Auth + Mock DB', () => {
     
     // Mock auth to return userId (no org required in relaxed mode)
     mockClerkAuth.setup({
-      userId: 'test-user-relaxed-123',
+      userId: testUser.userId,
       orgId: null, // No org in relaxed mode
       has: vi.fn().mockReturnValue(false), // No RBAC in relaxed mode
     });
@@ -139,7 +142,7 @@ describe('GET /api/v1/entity/[entity] - Relaxed Auth + Mock DB', () => {
   it('should work without orgId in relaxed mode', async () => {
     // Ensure no orgId is provided
     mockClerkAuth.setup({
-      userId: 'test-user-relaxed-123',
+      userId: testUser.userId,
       orgId: null,
       has: vi.fn().mockReturnValue(false),
     });
