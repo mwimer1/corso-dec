@@ -76,7 +76,7 @@
     "docs:validate": "tsx scripts/maintenance/validate-docs.ts",
     "docs:validate:content": "tsx scripts/maintenance/validate-docs-content.ts",
     "docs:env:toc": "tsx scripts/maintenance/generate-env-docs-toc.ts",
-    "openapi:bundle": "pnpm exec redocly bundle api/openapi.yml -o api/openapi.json --ext json",
+    "openapi:bundle": "node scripts/openapi/openapi-bundle.mjs",
     "openapi:lint": "spectral lint api/openapi.yml",
     "openapi:types": "openapi-typescript api/openapi.json -o types/api/generated/openapi.d.ts",
     "openapi:gen": "pnpm openapi:bundle && pnpm openapi:lint && pnpm openapi:types",
