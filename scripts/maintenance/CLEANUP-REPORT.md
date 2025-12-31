@@ -16,17 +16,17 @@ After comprehensive reference sweeps, the following files are safe to delete (ze
 5. **list-missing-frontmatter.ts** - No references found, unused
 6. **docs-patterns-common.ts** - Not imported anywhere (was meant to be shared but never used)
 
-### ✅ PR #2: Archived Files
+### ✅ PR #2: Deleted Files
 
-1. **autofix-doc-links.js** - ✅ Archived to `_archived/`
+1. **autofix-doc-links.js** - ✅ Deleted
    - Reason: Legacy CommonJS heuristic script, replaced by config-driven `fix-links.ts`
    - Different approaches:
      - `autofix-doc-links.js`: Heuristic basename-based auto-discovery (less predictable)
      - `fix-links.ts`: Pattern-based fixes using config (safer, maintainable)
 
-2. **replace-package-script-references.ts** - ✅ Archived to `_archived/`
-   - Reason: One-time migration codemod (migration complete)
-   - Can be safely deleted after a few releases if no longer needed
+2. **replace-package-script-references.ts** - ✅ Deleted
+   - Reason: One-time migration codemod (migration complete, no longer needed)
+   - All package.json script references have been migrated
 
 3. **generate-readme.ts** - ✅ Kept (Active Use)
    - Purpose: Generates READMEs for script domains (scripts/analysis, scripts/ci, etc.)
@@ -64,14 +64,14 @@ After comprehensive reference sweeps, the following files are safe to delete (ze
 
 ### ✅ PR #2: Archive/Review Remaining Files (COMPLETED)
 
-**Files Archived:**
-- ✅ `autofix-doc-links.js` → `_archived/autofix-doc-links.js`
+**Files Deleted:**
+- ✅ `autofix-doc-links.js` - Deleted
   - Reason: Legacy CommonJS heuristic script, replaced by config-driven `fix-links.ts`
-  - Status: Archived with deprecation notice
+  - Status: Removed completely
   
-- ✅ `replace-package-script-references.ts` → `_archived/replace-package-script-references.ts`
-  - Reason: One-time migration codemod (migration complete)
-  - Status: Archived with deprecation notice, can be deleted after a few releases
+- ✅ `replace-package-script-references.ts` - Deleted
+  - Reason: One-time migration codemod (migration complete, no longer needed)
+  - Status: Removed completely
 
 **Files Kept (Active Use):**
 - ✅ `generate-readme.ts` - Script domain README generator (serves unique purpose)
