@@ -4,6 +4,7 @@ import { cn } from '@/styles';
 import { Building2, Hammer, Package, Shield } from 'lucide-react';
 import React from 'react';
 import type { UseCaseKey } from '@/lib/marketing/client';
+import { industryPreviewContainerVariants } from './use-case-explorer.variants';
 
 interface IndustryPreviewPlaceholderProps {
   industryKey: UseCaseKey;
@@ -32,9 +33,8 @@ export function IndustryPreviewPlaceholder({
   return (
     <div
       className={cn(
-        'relative rounded-xl overflow-hidden',
+        industryPreviewContainerVariants(),
         'bg-gradient-to-br from-muted/60 via-muted/40 to-muted/20',
-        'aspect-[16/10]',
         className
       )}
     >

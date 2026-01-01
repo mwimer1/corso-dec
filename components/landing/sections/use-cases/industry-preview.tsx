@@ -5,6 +5,11 @@ import { cn } from '@/styles';
 import Image from 'next/image';
 import { useState } from 'react';
 import { IndustryPreviewPlaceholder } from './industry-preview-placeholder';
+import {
+  industryPreviewContainerVariants,
+  industryPreviewImageVariants,
+  industryPreviewSkeletonVariants,
+} from './use-case-explorer.variants';
 
 interface PreviewImage {
   src: string;
@@ -43,13 +48,10 @@ export function IndustryPreview({
   }
 
   return (
-    <div className={cn('relative rounded-xl overflow-hidden aspect-[16/10]', className)}>
+    <div className={cn(industryPreviewContainerVariants(), className)}>
       {/* Skeleton loading state */}
       {isLoading && (
-        <div
-          className="absolute inset-0 bg-gradient-to-br from-muted/60 via-muted/40 to-muted/20 animate-pulse"
-          aria-hidden="true"
-        />
+        <div className={industryPreviewSkeletonVariants()} aria-hidden="true" />
       )}
 
       {/* Preview image */}
@@ -57,10 +59,7 @@ export function IndustryPreview({
         src={previewImage.src}
         alt={previewImage.alt}
         fill
-        className={cn(
-          'object-cover transition-opacity duration-200',
-          isLoading ? 'opacity-0' : 'opacity-100'
-        )}
+        className={industryPreviewImageVariants({ loading: isLoading })}
         sizes="(max-width: 1024px) 100vw, 33vw"
         onLoad={() => setIsLoading(false)}
         onError={() => {

@@ -8,6 +8,7 @@ import { Check } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { IndustryPreview } from './industry-preview';
 import type { Industry } from './types';
+import { industryTabButtonVariants } from './use-case-explorer.variants';
 
 interface IndustrySelectorPanelProps {
   industries: Industry[];
@@ -123,15 +124,7 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
                     aria-controls={`industry-panel-${industry.key}`}
                     id={`tab-${industry.key}`}
                     data-state={isActive ? 'active' : 'inactive'}
-                    className={cn(
-                      // Tab button base styles (matches tabButtonVariants preset: 'default')
-                      'inline-flex items-center gap-2 px-lg py-xs rounded-[10px] text-sm font-medium tracking-wide transition-colors border-solid',
-                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))] focus-visible:ring-offset-2 focus-visible:ring-offset-background',
-                      // Active/inactive states
-                      isActive
-                        ? 'border border-foreground bg-muted text-foreground font-semibold'
-                        : 'border border-border bg-background text-foreground hover:bg-muted/60'
-                    )}
+                    className={industryTabButtonVariants({ isActive })}
                     onClick={() => handleTabChange(index)}
                     onKeyDown={(e) => onKeyDown(e, index)}
                   >
