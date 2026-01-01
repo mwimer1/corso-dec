@@ -37,7 +37,6 @@ vi.mock('*.module.css', () => ({}));
 // Mock @/molecules for component tests
 vi.mock('@/molecules', () => ({
   LinkTrack: ({ children, ..._props }: any) => children,
-  TabSwitcher: ({ children, ..._props }: any) => children,
   EmptyStateActions: ({ children, ..._props }: any) => children,
   EmptyStateDescription: ({ children, ..._props }: any) => children,
   EmptyStateIcon: ({ children, ..._props }: any) => children,

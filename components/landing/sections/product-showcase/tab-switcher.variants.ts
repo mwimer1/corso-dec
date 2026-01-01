@@ -1,6 +1,6 @@
 import { tv, type VariantProps } from '@/styles';
 import { containerMaxWidthVariants } from '@/styles/ui/shared/container-base';
-import { focusRing } from "../shared/focus-ring";
+import { focusRing } from "@/styles/ui/shared/focus-ring";
 
 const tabSwitcherVariants = tv({
   base: 'mx-auto',
@@ -94,7 +94,3 @@ const tabButtonVariants = tv({
 export type TabSwitcherVariantProps = VariantProps<typeof tabSwitcherVariants>;
 
 export { tabButtonVariants, tabSwitcherVariants };
-
-
-
-

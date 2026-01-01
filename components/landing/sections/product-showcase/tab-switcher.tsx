@@ -12,8 +12,8 @@ import { useArrowKeyNavigation } from "@/components/ui/hooks/use-arrow-key-navig
 import {
   tabSwitcherVariants,
   type TabSwitcherVariantProps,
-} from "@/styles/ui/molecules";
-import { tabButtonVariants } from "@/styles/ui/molecules/tab-switcher";
+  tabButtonVariants,
+} from "./tab-switcher.variants";
 import { cn } from "@/styles";
 import * as React from "react";
 

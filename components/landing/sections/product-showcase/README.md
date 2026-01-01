@@ -305,7 +305,7 @@ See `product-showcase.tsx` in this directory for the complete implementation inc
 ## File Locations
 
 - **Component**: `components/landing/sections/product-showcase/tab-switcher.tsx`
-- **Styles**: `styles/ui/molecules/tab-switcher.ts` (design system variants)
+- **Styles**: `components/landing/sections/product-showcase/tab-switcher.variants.ts` (Tailwind Variants)
 - **Usage**: `components/landing/sections/product-showcase/product-showcase.tsx`
 
 ## Related Documentation
