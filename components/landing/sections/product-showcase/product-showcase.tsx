@@ -1,7 +1,7 @@
 // components/landing/sections/product-showcase/product-showcase.tsx
 "use client";
 
-import { TabSwitcher, type TabItem } from "@/components/ui/molecules";
+import { TabSwitcher, type TabItem } from "./tab-switcher";
 import { trackEvent } from "@/lib/shared/analytics/track";
 import { cn } from "@/styles";
 import { containerWithPaddingVariants } from "@/styles/ui/shared/container-helpers";

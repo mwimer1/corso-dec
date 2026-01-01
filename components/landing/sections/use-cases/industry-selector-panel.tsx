@@ -1,7 +1,8 @@
 'use client';
 
 import { Badge, Card, CardContent } from '@/components/ui/atoms';
-import { TabSwitcher, type TabItem } from '@/components/ui/molecules';
+import { useArrowKeyNavigation } from '@/components/ui/hooks/use-arrow-key-navigation';
+import { tabButtonVariants } from '@/styles/ui/molecules/tab-switcher';
 import { trackEvent } from '@/lib/shared/analytics/track';
 import { cn } from '@/styles';
 import { Check } from 'lucide-react';
@@ -25,6 +26,17 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
   // Get valid industries array (default to empty if invalid)
   const validIndustries = industries && industries.length > 0 ? industries : [];
   const activeIndustry = validIndustries[activeIndex] ?? validIndustries[0] ?? null;
+
+  const handleTabChange = (index: number) => {
+    setIsUserInteraction(true);
+    setActiveIndex(index);
+  };
+
+  // Keyboard navigation for tab buttons - must be called unconditionally
+  const { getRef, onKeyDown } = useArrowKeyNavigation<HTMLButtonElement>({
+    itemCount: validIndustries.length,
+    onSelect: handleTabChange,
+  });
 
   // Fix invalid index if needed (use effect to avoid state update during render)
   useEffect(() => {
@@ -78,17 +90,6 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
     return null;
   }
 
-  const handleTabChange = (index: number) => {
-    setIsUserInteraction(true);
-    setActiveIndex(index);
-  };
-
-  // Convert industries to TabItem format for TabSwitcher
-  const tabs: TabItem[] = validIndustries.map((industry) => ({
-    id: industry.key,
-    label: industry.title,
-  }));
-
   // Use structured impactMetrics if available, otherwise fall back to empty array
   const metrics = activeIndustry.impactMetrics?.slice(0, MAX_IMPACT_METRICS) ?? [];
 
@@ -103,19 +104,40 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
     <Card variant="highlight" className="overflow-hidden">
       <CardContent className="p-6 lg:p-8">
         <div className="space-y-6 lg:space-y-8">
-          {/* Tab switcher - matches ProductShowcase pattern */}
+          {/* Tab switcher - inline implementation for industry selection */}
           <div className="w-full">
-            <TabSwitcher
-              tabs={tabs}
-              active={activeIndex}
-              onTabChange={handleTabChange}
-              alignment="left"
-              variant="default"
-              layout="row"
-              buttonVariant="default"
-              hideUnderlines={true}
+            <div
+              role="tablist"
               aria-label="Choose an industry"
-            />
+              className="flex w-full justify-start gap-xs sm:gap-sm"
+            >
+              {validIndustries.map((industry, index) => {
+                const isActive = activeIndex === index;
+                return (
+                  <button
+                    key={industry.key}
+                    ref={getRef(index)}
+                    type="button"
+                    role="tab"
+                    tabIndex={isActive ? 0 : -1}
+                    aria-selected={isActive}
+                    aria-controls={`industry-panel-${industry.key}`}
+                    id={`tab-${industry.key}`}
+                    data-state={isActive ? 'active' : 'inactive'}
+                    className={cn(
+                      tabButtonVariants({ isActive, preset: 'default' }),
+                      // Typography alignment - medium size, visible color, strong weight when active
+                      'inline-flex items-center gap-2 px-3 py-2 text-sm text-foreground',
+                      isActive ? 'font-semibold' : 'font-medium'
+                    )}
+                    onClick={() => handleTabChange(index)}
+                    onKeyDown={(e) => onKeyDown(e, index)}
+                  >
+                    {industry.title}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* Content panel with transition */}

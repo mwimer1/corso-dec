@@ -56,44 +56,32 @@ const tabButtonVariants = tv({
       /**
        * Grid preset: used when TabSwitcher layout="grid". Buttons behave like grid cards
        * rather than inline pills. They stretch to full width and use a rectangular geometry.
+       * Focus ring offset uses showcase background to match ProductShowcase section.
        */
-      grid: 'relative w-full text-left rounded-none px-4 py-0 h-16 flex items-center justify-center transition-colors shadow-none text-lg',
+      grid: 'relative w-full text-left rounded-none px-4 py-0 h-16 flex items-center justify-center transition-colors shadow-none text-lg xl:text-[14px] xl:leading-5 xl:tracking-[-0.01em] xl:px-3 focus-visible:ring-offset-showcase',
     },
   },
   compoundVariants: [
-    // Grid preset overrides: use only bottom border and square geometry
+    // Grid preset overrides: no per-button borders (tablist owns border-y)
+    // Backgrounds are handled inline in component for grid layout to match parent container
     {
       preset: 'grid',
       isActive: true,
-      // Active: use baseline border color so it visually matches the tablist divider
-      // and lift it above the divider to avoid visual darkening from stacking.
-      // Includes animated underline rail (3px) that scales from left to right.
+      // Active: no borders (tablist owns top/bottom borders)
+      // Background and font-weight handled inline in component
       class: [
-        'border-0 border-b border-border',
-        'bg-muted/30 text-foreground font-semibold',
-        'relative z-10',
-        // Underline rail: 3px animated bar at bottom
-        'after:content-[""] after:absolute after:inset-x-0 after:bottom-0 after:h-[3px]',
-        'after:bg-foreground after:origin-left after:scale-x-100',
-        'after:transition-transform after:duration-200',
-        'motion-reduce:after:transition-none',
+        'border-0',
+        'text-foreground',
       ],
     },
     {
       preset: 'grid',
       isActive: false,
-      // Inactive: visible text and border; hover darkens text only (no bg change)
-      // Underline rail exists but scaled to 0 (hidden) until active
+      // Inactive: no borders (tablist owns top/bottom borders)
+      // Background and font-weight handled inline in component
       class: [
-        'border-0 border-b border-foreground/30',
-        'bg-transparent text-foreground',
-        'hover:text-foreground hover:bg-muted/20',
-        'font-normal hover:font-medium',
-        // Underline rail: hidden (scale-x-0) until active
-        'after:content-[""] after:absolute after:inset-x-0 after:bottom-0 after:h-[3px]',
-        'after:bg-foreground after:origin-left after:scale-x-0',
-        'after:transition-transform after:duration-200',
-        'motion-reduce:after:transition-none',
+        'border-0',
+        'text-foreground',
       ],
     },
   ],

@@ -40,19 +40,8 @@ export * from './pricing-card';
 // Removed: LottieAnimation component
 
 // ===== TABS =====
-// Tab switcher components (individual exports)
-export { TabSwitcher, type TabItem } from './tab-switcher';
-// ===== TABS SYSTEM COMPONENTS =====
-// Advanced tab system with context management and accessibility
-
-// Legacy Tabs API pruned; TabSwitcher internals not exported
-
-// ===== USAGE NOTES =====
-// 1. Use TabsProvider + TabList + Tab + TabPanel for complex tab systems
-// 2. Use simple Tabs component for basic tab functionality
-// 3. All components include design system variants and full accessibility support
-
-
+// TabSwitcher has been moved to components/landing/sections/product-showcase/
+// (component-specific to ProductShowcase section)
 
 // ===== NAV ANALYTICS =====
 export * from './link-track';

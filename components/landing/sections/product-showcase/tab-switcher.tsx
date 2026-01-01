@@ -1,7 +1,10 @@
-// components/ui/molecules/tab-switcher.tsx
+// components/landing/sections/product-showcase/tab-switcher.tsx
 /**
  * Tab switcher component with internal utility functions
  * Combines TabSwitcher component and internal getTabButtonClass utility
+ * 
+ * Note: This component is specific to ProductShowcase and uses the grid layout pattern.
+ * For other tab switching needs, consider using a simpler inline implementation.
  */
 "use client";
 
@@ -98,6 +101,8 @@ function normalizeTabs(tabs: string[] | TabItem[]): { id: string; label: string 
 /**
  * Accessible tab list component supporting either a simple `string[]`
  * or an array of `TabItem` objects for richer semantics.
+ * 
+ * This component is specific to ProductShowcase and uses the grid layout pattern.
  */
 const TabSwitcherOverloads = React.forwardRef<HTMLDivElement, Props>(function TabSwitcher(
   props,
@@ -112,7 +117,7 @@ const TabSwitcherOverloads = React.forwardRef<HTMLDivElement, Props>(function Ta
     alignment = "center",
     buttonVariant = "default",
     layout = "row",
-    gridSeparators = true,
+    gridSeparators = false,
     activeUnderlineColor = "foreground",
     hideUnderlines = false,
     className,
@@ -143,7 +148,7 @@ const TabSwitcherOverloads = React.forwardRef<HTMLDivElement, Props>(function Ta
       ref={ref}
       className={cn(
         tabSwitcherVariants({ variant, size, alignment }),
-        layout === 'grid' && 'relative overflow-hidden',
+        layout === 'grid' && 'relative w-full',
         className,
       )}
       {...rest}
@@ -152,7 +157,13 @@ const TabSwitcherOverloads = React.forwardRef<HTMLDivElement, Props>(function Ta
         role="tablist"
         className={cn(
           layout === 'grid'
-            ? cn('grid w-full grid-cols-2 lg:grid-cols-4', gridSeparators ? 'divide-x divide-border' : 'divide-x-0')
+            ? cn(
+                'grid w-full grid-cols-2 lg:grid-cols-4',
+                // Bottom rail only (top border comes from section wrapper)
+                'border-b border-border',
+                // Internal separators: gap-px works for both 2x2 (mobile) and 1x4 (desktop) grids
+                gridSeparators && 'gap-px bg-border/40'
+              )
             : 'flex w-full justify-center gap-xs sm:gap-sm',
           // Hide baseline divider for minimal showcase pills, grid layout, or when hideUnderlines is true
           !(variant === 'minimal' && buttonVariant === 'showcaseWhite') && layout !== 'grid' && !hideUnderlines && 'border-b border-border',
@@ -162,6 +173,62 @@ const TabSwitcherOverloads = React.forwardRef<HTMLDivElement, Props>(function Ta
           const isActive = currentIndex === idx;
           const activeUnderlineColorSafe = activeUnderlineColor ?? 'foreground';
           const underlineClass = UNDERLINE_CLASS_BY_COLOR[activeUnderlineColorSafe];
+          
+          if (layout === 'grid') {
+            // Grid layout: wrap button in relative container for stable underline (Attio pattern)
+            // Wrapper needs background for gap-px separators to work properly
+            return (
+              <div key={isObjectTabs ? item.id : idx} className={cn(
+                "relative w-full",
+                // Background matches button so gap separators show tablist bg-border/40
+                isActive ? 'bg-muted' : 'bg-showcase'
+              )}>
+                <button
+                  type="button"
+                  ref={getRef(idx)}
+                  role="tab"
+                  tabIndex={isActive ? 0 : -1}
+                  className={cn(
+                    tabButtonVariants({ isActive, preset: 'grid' }),
+                    getTabButtonClass(isActive),
+                    // Grid-specific backgrounds: button inherits wrapper background
+                    'w-full h-full bg-transparent',
+                    "data-[state='active']:bg-transparent",
+                    'font-normal',
+                    "data-[state='active']:font-medium",
+                    'hover:font-normal',
+                    "data-[state='active']:hover:font-medium",
+                  )}
+                  onClick={() => handleSelectTab(idx)}
+                  onKeyDown={(e) => onKeyDown(e, idx)}
+                  aria-selected={isActive}
+                  data-state={isActive ? 'active' : 'inactive'}
+                  aria-controls={`panel-${item.id}`}
+                  id={`tab-${item.id}`}
+                >
+                  {item.label}
+                </button>
+                {/* Stable selected underline (no flicker): keep element, toggle opacity/width */}
+                <div
+                  className={cn(
+                    'absolute inset-x-0 bottom-0 h-[3px] bg-border-subtle',
+                    'transition-opacity duration-150',
+                    isActive ? 'opacity-100' : 'opacity-0'
+                  )}
+                >
+                  <div
+                    className={cn(
+                      'h-full bg-foreground',
+                      'transition-[width] duration-150 ease-out',
+                      isActive ? 'w-full' : 'w-0'
+                    )}
+                  />
+                </div>
+              </div>
+            );
+          }
+          
+          // Row layout: standard button
           return (
             <button
               type="button"
@@ -170,10 +237,10 @@ const TabSwitcherOverloads = React.forwardRef<HTMLDivElement, Props>(function Ta
               role="tab"
               tabIndex={isActive ? 0 : -1}
               className={cn(
-                tabButtonVariants({ isActive, preset: layout === 'grid' ? 'grid' : buttonVariant }),
+                tabButtonVariants({ isActive, preset: buttonVariant }),
                 getTabButtonClass(isActive),
                 // Active underline that aligns to the baseline divider; only for row layout when not hidden
-                layout !== 'grid' && isActive && !hideUnderlines &&
+                isActive && !hideUnderlines &&
                   cn(
                     'relative after:content-[""] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full after:z-[1]',
                     underlineClass,
@@ -185,7 +252,7 @@ const TabSwitcherOverloads = React.forwardRef<HTMLDivElement, Props>(function Ta
               data-state={isActive ? 'active' : 'inactive'}
               aria-controls={`panel-${item.id}`}
               id={`tab-${item.id}`}
-              data-underline={variant === "minimal" && layout !== 'grid' ? "true" : undefined}
+              data-underline={variant === "minimal" ? "true" : undefined}
             >
               {item.label}
             </button>
