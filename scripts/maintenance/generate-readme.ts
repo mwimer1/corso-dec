@@ -43,44 +43,6 @@ interface DomainConfig {
   checkBarrel?: boolean;
 }
 
-
-function readContextsBarrelExports(domainPath: string): string[] {
-  const indexPath = path.join(domainPath, 'index.ts');
-  if (!fs.existsSync(indexPath)) return [];
-  
-  const content = fs.readFileSync(indexPath, 'utf8');
-  const exportRegex = /export\s+\*\s+from\s+'\.\/(.*?)';/g;
-  const exports: string[] = [];
-  let match;
-  
-  while ((match = exportRegex.exec(content))) {
-    const modulePath = match[1] ?? '';
-    if (modulePath) {
-      // Read the actual module to extract exported names
-      const fullModulePath = path.join(domainPath, modulePath + '.tsx');
-      if (fs.existsSync(fullModulePath)) {
-        const moduleContent = fs.readFileSync(fullModulePath, 'utf8');
-        
-        // Extract provider exports
-        const providerRegex = /\b(?:export\s+)?(?:function|const|class)\s+(\w+Provider)\b/g;
-        let pm;
-        while ((pm = providerRegex.exec(moduleContent))) {
-          exports.push(pm[1] ?? '');
-        }
-        
-        // Extract hook exports
-        const hookRegex = /\b(?:export\s+)?(?:function|const)\s+(use[A-Z]\w+)/g;
-        let hm;
-        while ((hm = hookRegex.exec(moduleContent))) {
-          exports.push(hm[1] ?? '');
-        }
-      }
-    }
-  }
-  
-  return exports;
-}
-
 /**
  * Recursively read barrel exports starting from a directory that has an index.ts barrel.
  * This is used for hierarchical barrels like components/ui which re-export atoms/molecules/organisms.
@@ -222,47 +184,6 @@ const CONFIGS: DomainConfig[] = [
             return `| ${kind} | Purpose | Import Path |\n|-----------|---------|-------------|\n${rows}`;
         },
         checkBarrel: true,
-    },
-    {
-        name: 'Contexts',
-        baseDir: path.join(ROOT, 'contexts'),
-        getDomains: () => [''], // Single root barrel, no subdomain barrels
-        getExports: (domainPath: string) => {
-            // Scan all provider files in subdirectories for the root barrel
-            const allProviderFiles = globbySync(['**/*provider.tsx', '**/*-provider.tsx'], { cwd: path.join(ROOT, 'contexts') });
-            const identifiers = new Set<string>();
-            
-            allProviderFiles.forEach(fileRel => {
-                const fullPath = path.join(ROOT, 'contexts', fileRel);
-                const content = fs.readFileSync(fullPath, 'utf8');
-                
-                // Extract provider exports
-                const providerRegex = /\b(?:export\s+)?(?:function|const|class)\s+(\w+Provider)\b/g;
-                let pm;
-                while ((pm = providerRegex.exec(content))) {
-                    identifiers.add(pm[1] ?? '');
-                }
-                
-                // Extract hook exports
-                const hookRegex = /\b(?:export\s+)?(?:function|const)\s+(use[A-Z]\w+)/g;
-                let hm;
-                while ((hm = hookRegex.exec(content))) {
-                    identifiers.add(hm[1] ?? '');
-                }
-            });
-            
-            return Array.from(identifiers);
-        },
-        buildReadmeTable: (exports: string[], _domain: string, kind: ReadmeKind = 'Provider') => {
-            const rows = exports.map(e => {
-                if (e.endsWith('Provider')) {
-                    return `| \`${e}\` |  | React context provider | \`@/contexts\``;
-                }
-                return `|  | \`${e}\` | React hook | \`@/contexts\``;
-            }).join('\n');
-            return `| ${kind} | Hook | Purpose | Import Path |\n|----------|------|---------|-------------|\n${rows}`;
-        },
-        checkBarrel: false, // No subdomain barrels to validate - single root barrel
     },
 
     {
@@ -590,12 +511,12 @@ function main() {
         const domains = config.getDomains();
 
         domains.forEach(domain => {
-            const domainPath = config.name === 'Contexts' || config.name === 'Actions' ? config.baseDir : path.join(config.baseDir, domain);
+            const domainPath = config.name === 'Actions' ? config.baseDir : path.join(config.baseDir, domain);
             const exports = config.getExports(domainPath);
             
             if (exports.length > 0) {
                 const table = config.buildReadmeTable(exports, domain);
-                const readmePath = (config.name === 'Contexts' || config.name === 'Actions') ? path.join(config.baseDir, 'README.md') : path.join(domainPath, 'README.md');
+                const readmePath = config.name === 'Actions' ? path.join(config.baseDir, 'README.md') : path.join(domainPath, 'README.md');
                 updateReadme(readmePath, table);
                 console.log(`Updated README for ${config.name}${domain ? '/' + domain : ''}`);
             }
@@ -665,18 +586,8 @@ function main() {
                       }
                     }
                 });
-            } else if (config.name === 'Contexts') {
-                // Special handling for contexts: validate root barrel exports
-                const rootBarrelPath = path.join(ROOT, 'contexts', 'index.ts');
-                const rootBarrelExports = readContextsBarrelExports(path.join(ROOT, 'contexts'));
-                
-                exports.forEach(e => {
-                    if (!rootBarrelExports.includes(e)) {
-                        console.warn(`[${config.name}] Root barrel missing export: ${e}`);
-                        hasWarn = true;
-                    }
-                });
             }
+            // Barrel validation skipped for domains without checkBarrel enabled
         });
     });
 

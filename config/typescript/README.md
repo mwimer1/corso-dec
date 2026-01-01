@@ -51,7 +51,7 @@ tsconfig.json (root)
 ├── tsconfig.base.json (shared options & aliases)
 ├── tsconfig.app.json (Next.js application)
 ├── tsconfig.styles.json (styles/design system)
-├── tsconfig.lib.json (libraries: lib/hooks/contexts/validators)
+├── tsconfig.lib.json (libraries: lib/hooks/validators)
 ├── tsconfig.components.json (UI components)
 ├── tsconfig.testing.json (test files)
 ├── tsconfig.tooling.json (build tools)
@@ -260,7 +260,6 @@ The path alias system provides consistent import resolution across all configura
   "@/app/*": ["./app/*"],
   "@/components/*": ["./components/*"],
   "@/hooks/*": ["./hooks/*"],
-  "@/contexts/*": ["./contexts/*"],
   "@/tests/*": ["./tests/*"]
 }
 ```

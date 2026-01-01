@@ -97,8 +97,8 @@ import { LinkTrack } from '@/components/ui/molecules/link-track';
 ### ❌ INCORRECT: Import Violations
 ```typescript
 // ❌ Cross-domain imports
-// import { useDashboardContext } from '@/contexts';
 // import { logger } from '@/lib/monitoring';
+// Note: contexts/ directory was removed - providers are now in app/providers/
 
 // ❌ Deep paths when facades exist
 // import { BarChart } from '@/components/ui/organisms/charts/bar-chart';

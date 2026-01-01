@@ -20,7 +20,7 @@ corso-app/
 ├── lib/                    # Business logic, utilities, configurations
 ├── types/                  # TypeScript type definitions
 # hooks/                   # Hooks are domain-colocated (components/*/hooks/, components/ui/hooks/)
-├── contexts/               # React contexts and providers
+# contexts/                # Removed - providers are now in app/providers/
 ├── docs/                   # Documentation
 ├── config/                 # Build and tooling configuration
 ├── scripts/                # Development and build scripts
