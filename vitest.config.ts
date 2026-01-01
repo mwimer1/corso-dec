@@ -21,7 +21,6 @@ const alias = {
   '@/styles': r('./styles'),
   '@/types': r('./types'),
   '@/hooks': r('./hooks'),
-  '@/contexts': r('./contexts'),
   '@/app': r('./app'),
   '@/scripts': r('./scripts'),
 

@@ -300,7 +300,6 @@ export default [
         src: [
           'app/**/*.{ts,tsx}',
           'components/**/*.{ts,tsx}',
-          'contexts/**/*.{ts,tsx}',
           'lib/**/*.{ts,tsx}',
         ],
         ignoreExports: [
@@ -346,9 +345,7 @@ export default [
           // Note: actions/ directory was removed in PR5.2 - Server Actions are now feature-colocated
           // 'actions/**/*.ts', // Removed - Server Actions are feature-colocated
           // Note: hooks/ directory was removed - hooks are now domain-colocated (e.g., components/ui/hooks/, components/chat/hooks/)
-          // Contexts - React context providers used in app
-          'contexts/**/*.tsx',
-          'contexts/**/*.ts',
+          // Note: contexts/ directory was removed - providers are now in app/providers/
           // Entity services - used internally via registry
           'lib/entities/**/*.ts',
           // Marketing content services - server-side functions used in pages

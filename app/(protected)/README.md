@@ -152,7 +152,6 @@ export default function DashboardSubscriptionPage() {
 | Component | Location | Purpose |
 |-----------|----------|---------|
 | `DashboardLayout` | `@/components/dashboard` | Main dashboard shell |
-| `DashboardProvider` | `@/contexts/dashboard` | State management |
 | `AuthCard` | `@/components/ui` | Consistent card styling |
 | `RouteLoading` | `@/components/ui` | Loading states |
 | `AppErrorBoundary` | `@/organisms` | Error recovery |

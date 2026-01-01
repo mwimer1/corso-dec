@@ -29,12 +29,6 @@
       "@/lib": [
         "lib/index.ts"
       ],
-      "@/contexts/*": [
-        "contexts/*"
-      ],
-      "@/contexts": [
-        "contexts/index.ts"
-      ],
       "@/styles": [
         "styles/index.ts"
       ],
@@ -96,8 +90,6 @@
     "components/**/*.ts",
     "components/**/*.tsx",
     "config/**/*.ts",
-    "contexts/**/*.ts",
-    "contexts/**/*.tsx",
     "eslint-plugin-corso/**/*",
     "hooks/**/*.ts",
     "hooks/**/*.tsx",

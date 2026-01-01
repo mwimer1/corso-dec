@@ -89,9 +89,6 @@
       "@/hooks/*": ["hooks/*"],
       "@/hooks/protected": ["hooks/index.ts"],
 
-      // Contexts
-      "@/contexts": ["contexts/index.ts"],
-      "@/contexts/*": ["contexts/*"],
 
       // Components
       "@/components/*": ["components/*"],

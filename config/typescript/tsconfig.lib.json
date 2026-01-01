@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "./tsconfig.base.json",
-  "display": "Libraries (lib, hooks, contexts, validators)",
+  "display": "Libraries (lib, hooks, validators)",
   "compilerOptions": {
     "composite": true,
     "noEmit": false,
@@ -24,8 +24,6 @@
     "../../lib/**/*.tsx",
     "../../hooks/**/*.ts",
     "../../hooks/**/*.tsx",
-    "../../contexts/**/*.ts",
-    "../../contexts/**/*.tsx",
     "../../lib/validators/**/*.ts"
   ],
   "files": [

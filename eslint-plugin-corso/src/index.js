@@ -1425,17 +1425,7 @@ export default {
             const importPath = node.source.value;
             if (typeof importPath !== 'string') return;
 
-            // Check for deep context imports
-            if (importPath.startsWith('@/contexts/') && importPath.includes('/') && !importPath.endsWith('/')) {
-              // Split the path to check if it has more than one level
-              const pathParts = importPath.replace('@/contexts/', '').split('/');
-              if (pathParts.length > 1) {
-                context.report({
-                  node: node.source,
-                  message: "Import contexts via '@/contexts' barrel; avoid deep subpath imports."
-                });
-              }
-            }
+            // Note: contexts/ directory was removed - providers are now in app/providers/
           }
         };
       }
@@ -1490,11 +1480,11 @@ export default {
       }
     },
     'no-clerkprovider-outside-root': {
-      meta: { type: 'problem', docs: { description: 'Use centralized ClerkProvider in contexts/providers.tsx only' } },
+      meta: { type: 'problem', docs: { description: 'Use centralized ClerkProvider in app/providers.tsx only' } },
       create(context) {
         const filename = context.getFilename().replace(/\\/g, '/');
-        // Allow in providers.tsx file
-        if (filename.includes('contexts/providers.tsx')) return {};
+        // Allow in app/providers.tsx file
+        if (filename.includes('app/providers.tsx')) return {};
 
         return {
           ImportDeclaration(node) {
@@ -1509,7 +1499,7 @@ export default {
                   if (spec.imported.name === 'ClerkProvider') {
                     context.report({
                       node: spec,
-                      message: "Use the centralized ClerkProvider in contexts/providers.tsx only. Do not import ClerkProvider directly elsewhere."
+                      message: "Use the centralized ClerkProvider in app/providers.tsx only. Do not import ClerkProvider directly elsewhere."
                     });
                   }
                 }

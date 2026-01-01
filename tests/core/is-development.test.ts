@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 
-import { isDevelopment } from '@/contexts/shared/is-development';
+import { isDevelopment } from '@/lib/shared/env/is-development';
 
 declare global {
 

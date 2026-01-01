@@ -58,4 +58,3 @@ function readStage(): string | null {
     return null;
   }
 }
-
