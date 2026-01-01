@@ -325,8 +325,12 @@ status: "draft"
     │   │   │   │   ├── roi-output-panel.tsx
     │   │   │   │   ├── roi.module.css
     │   │   │   ├── use-cases
+    │   │   │   │   ├── industry-preview-placeholder.tsx
+    │   │   │   │   ├── industry-preview.tsx
     │   │   │   │   ├── industry-selector-panel.tsx
+    │   │   │   │   ├── types.ts
     │   │   │   │   ├── use-case-explorer.tsx
+    │   │   │   │   ├── use-case-explorer.variants.ts
     │   │   │   │   ├── use-cases.data.ts
     │   │   │   ├── README.md
     │   │   ├── utils

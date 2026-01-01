@@ -1,9 +1,7 @@
 ---
-title: "(marketing)"
-description: "Documentation and resources for documentation functionality. Located in (marketing)/."
-last_updated: "2025-12-31"
-category: "documentation"
 status: "draft"
+last_updated: "2026-01-01"
+category: "documentation"
 ---
 ## 🚀 Quick Reference
 
