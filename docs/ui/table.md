@@ -51,3 +51,10 @@ This doc summarizes the recent updates to the dashboard table UI:
 - feat(dashboard-table): link format support for URL columns
 - fix(dashboard-table): consistent padding alignment with top bar
 - refactor(dashboard-table): convert dropdown triggers to Button components
+
+## 📚 Related Documentation
+
+- [Entity Grid Architecture](../.cursor/rules/entity-grid-architecture.mdc) - Entity grid implementation patterns
+- [Dashboard UI Standards](../architecture-design/dashboard-ui-standards.md) - Dashboard component standards
+- [UI Design Guide](../architecture-design/ui-design-guide.md) - Component design patterns
+- [Warehouse Query Hooks](../analytics/warehouse-query-hooks.md) - Data fetching patterns

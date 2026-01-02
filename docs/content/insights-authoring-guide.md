@@ -405,6 +405,14 @@ No additional styling is needed or supported in article content.
 
 ---
 
+## 📚 Related Documentation
+
+- [UI Design Guide](../architecture-design/ui-design-guide.md) - Component design patterns
+- [Development Setup Guide](../development/setup-guide.md) - Development environment setup
+- [API Design Guide](../api/api-design-guide.md) - API patterns for content management
+
+---
+
 **Last Updated**: December 20, 2025  
 **Maintained By**: Platform Team  
 **Questions**: Contact [platform@corso.io](mailto:platform@corso.io)

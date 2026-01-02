@@ -308,3 +308,10 @@ export const POST = withErrorHandlingEdge(async (req) => {
   // Route handler implementation
 });
 ```
+
+## 📚 Related Documentation
+
+- [API Design Guide](../api/api-design-guide.md) - Complete API patterns, OpenAPI workflow, and implementation guide
+- [Security Standards](../security/README.md) - Security implementation and RBAC patterns
+- [Error Handling Guide](../error-handling/error-handling-guide.md) - Error handling patterns
+- [OpenAPI Vendor Extensions](../.cursor/rules/openapi-vendor-extensions.mdc) - RBAC guard and vendor extensions

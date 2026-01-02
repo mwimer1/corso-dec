@@ -30,3 +30,10 @@ Example:
   - Job Summary: markdown table of all jobs, including offenders.
   - Artifact: `reports/ci/workflows-consistency.report.json` (full JSON report) retained for 30 days.
 - Fix guidance: Ensure a step using `./.github/actions/setup-node-pnpm` appears before any `pnpm` commands in each job.
+
+## 📚 Related Documentation
+
+- [CI Pipeline](./ci-pipeline.md) - Detailed CI pipeline documentation
+- [Quality Gates](./quality-gates.md) - Quality gate requirements
+- [CICD Enhancement Guide](./cicd-enhancement-guide.md) - CI/CD enhancement patterns
+- [Development Setup Guide](../development/setup-guide.md) - Development environment setup

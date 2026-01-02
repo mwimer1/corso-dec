@@ -57,3 +57,11 @@ Artifacts and visibility
 Notes
 - Uses repository composite action `./.github/actions/setup-node-pnpm` for consistent Node/pnpm setup.
 - Commands avoid interactive prompts and Unix‑only constructs to remain Windows‑friendly.
+
+## 📚 Related Documentation
+
+- [CI Pipeline](./ci-pipeline.md) - Detailed CI pipeline documentation
+- [CI Workflows](./ci-workflows.md) - Workflow configuration patterns
+- [CICD Enhancement Guide](./cicd-enhancement-guide.md) - CI/CD enhancement patterns
+- [Testing Guide](../testing-quality/testing-guide.md) - Testing patterns and coverage
+- [Development Setup Guide](../development/setup-guide.md) - Development environment setup

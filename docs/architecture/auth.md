@@ -47,3 +47,10 @@ status: "draft"
 - Subscription management via `/dashboard/subscription` page.
 - User profile includes Billing tab at `/dashboard/account` for invoice history and payment methods.
 - Migrated from custom Stripe integration to Clerk Billing end-to-end.
+
+## 📚 Related Documentation
+
+- [Security Standards](../security/README.md) - Security implementation and authentication patterns
+- [Auth Patterns](../security/auth-patterns.md) - Authentication and authorization patterns
+- [API Design Guide](../api/api-design-guide.md) - API authentication patterns
+- [Architecture Overview](./architecture-overview.md) - System architecture

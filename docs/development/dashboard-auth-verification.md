@@ -207,3 +207,10 @@ status: "active"
 - Explicit approval
 - Understanding security implications
 - Proper tenant scoping (if using real DB)
+
+## 📚 Related Documentation
+
+- [Dashboard Setup](./dashboard-setup.md) - Dashboard development setup
+- [Security Standards](../security/README.md) - Security implementation and authentication patterns
+- [API Design Guide](../api/api-design-guide.md) - API authentication patterns
+- [Request Storm Check](../architecture/request-storm-check-explained.md) - Request storm verification

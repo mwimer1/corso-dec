@@ -187,3 +187,9 @@ If the direct git command works but scripts fail, the issue is in argument passi
 - `scripts/utils/git.ts` - Core git utility functions (fixed)
 - `scripts/lint/check-forbidden-files.ts` - Uses `listTrackedFiles` (benefits from fix)
 - `scripts/ci/check-temp-directories.ts` - Uses git utilities (benefits from fix)
+
+## 📚 Related Documentation
+
+- [Development Setup Guide](./setup-guide.md) - Development environment setup
+- [Coding Standards](./coding-standards.md) - Code quality and style guidelines
+- [Tools & Scripts](../tools-scripts/development-tools.md) - Development tools reference

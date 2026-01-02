@@ -28,3 +28,10 @@ export const revalidate = 0;
 ```
 
 Run `pnpm validate:cursor-rules` locally to validate these rules during development.
+
+## 📚 Related Documentation
+
+- [Runtime Boundaries](../architecture/runtime-boundaries.md) - Edge vs Node.js runtime patterns
+- [API Design Guide](../api/api-design-guide.md) - Runtime selection for API routes
+- [Edge Runtime Reference](../reference/edge-runtime.md) - Edge runtime boundaries and guardrails
+- [ESLint Runtime Boundaries](./eslint-runtime-boundaries.md) - ESLint rules for runtime boundaries

@@ -718,6 +718,14 @@ import { getEnv } from '@/lib/server/env';
 import { publicEnv } from '@/lib/shared/config/client';
 
 const mockDb = getEnv().CORSO_USE_MOCK_DB;
+```
+
+## 📚 Related Documentation
+
+- [Development Setup Guide](../development/setup-guide.md) - Environment configuration during setup
+- [API Design Guide](../api/api-design-guide.md) - API development patterns and environment usage
+- [Security Standards](../security/README.md) - Security configuration and environment variables
+- [Testing Guide](../testing-quality/testing-guide.md) - Test environment configuration
 const apiUrl = publicEnv.NEXT_PUBLIC_API_URL;
 ```
 

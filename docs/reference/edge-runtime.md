@@ -53,3 +53,10 @@ git commit -m "chore(boundary): add ESLint restriction, runtime-boundary tests, 
 # 6) Push topic branch
 git push -u origin chore/edge-boundary-guards
 ```
+
+## 📚 Related Documentation
+
+- [Runtime Boundaries](../architecture/runtime-boundaries.md) - Detailed Edge vs Node.js runtime patterns
+- [API Design Guide](../api/api-design-guide.md) - Runtime selection for API routes
+- [Route Configuration](../development/route-config.md) - Next.js route configuration patterns
+- [ESLint Runtime Boundaries](../development/eslint-runtime-boundaries.md) - ESLint rules for runtime boundaries

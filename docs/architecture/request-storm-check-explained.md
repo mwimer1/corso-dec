@@ -68,3 +68,10 @@ The column ordering functionality is **separate** from the request storm check. 
 - A different feature that needs to be implemented
 
 The request storm check is **only** about verifying API requests don't loop infinitely.
+
+## 📚 Related Documentation
+
+- [Entity Grid Architecture](../.cursor/rules/entity-grid-architecture.mdc) - Entity grid implementation patterns
+- [Warehouse Query Hooks](../analytics/warehouse-query-hooks.md) - Data fetching patterns
+- [API Design Guide](../api/api-design-guide.md) - API patterns and error handling
+- [Dashboard Setup](../development/dashboard-setup.md) - Dashboard development setup

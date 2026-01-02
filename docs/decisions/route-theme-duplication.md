@@ -154,3 +154,10 @@ If flicker is observed, consider these options (in order of risk):
 - `app/(marketing)/layout.tsx`
 - `app/providers/route-theme-provider.tsx`
 - `styles/tokens/{auth,marketing,protected}.css`
+
+## 📚 Related Documentation
+
+- [Architecture Overview](../architecture/architecture-overview.md) - System architecture
+- [Runtime Boundaries](../architecture/runtime-boundaries.md) - Edge vs Node.js runtime patterns
+- [Route Configuration](../development/route-config.md) - Next.js route configuration patterns
+- [UI Design Guide](../architecture-design/ui-design-guide.md) - Component design patterns

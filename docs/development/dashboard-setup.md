@@ -536,3 +536,12 @@ See `tests/e2e/README.md` for detailed E2E test documentation.
 - **Column Configuration**: See `lib/entities/<entity>/columns.config.ts`
 - **API Routes**: See `app/api/v1/entity/[entity]/route.ts`
 - **Development Setup**: See `docs/development/setup-guide.md`
+
+## 📚 Related Documentation
+
+- [Development Setup Guide](./setup-guide.md) - Complete development environment setup
+- [Dashboard Auth Verification](./dashboard-auth-verification.md) - Auth mode verification guide
+- [Entity Grid Architecture](../.cursor/rules/entity-grid-architecture.mdc) - Entity grid implementation patterns
+- [Warehouse Query Hooks](../analytics/warehouse-query-hooks.md) - Data fetching patterns
+- [API Design Guide](../api/api-design-guide.md) - API patterns and implementation
+- [UI Table Documentation](../ui/table.md) - Dashboard table UI updates

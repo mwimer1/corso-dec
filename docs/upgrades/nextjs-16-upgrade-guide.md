@@ -687,3 +687,10 @@ The upgrade should be **straightforward** with minimal breaking changes. Most ro
 ---
 
 **Status**: Ready for implementation. Follow phases sequentially and test at each checkpoint.
+
+## 📚 Related Documentation
+
+- [Development Setup Guide](../development/setup-guide.md) - Development environment setup
+- [Route Configuration](../development/route-config.md) - Next.js route configuration patterns
+- [Runtime Boundaries](../architecture/runtime-boundaries.md) - Edge vs Node.js runtime patterns
+- [Architecture Overview](../architecture/architecture-overview.md) - System architecture and technology stack
