@@ -70,39 +70,51 @@ function getProcessesWindows(): ProcessInfo[] {
   const processes: ProcessInfo[] = [];
   
   try {
-    // Use wmic to get process information
+    // Use PowerShell Get-CimInstance (modern replacement for wmic)
+    const psScript = `Get-CimInstance Win32_Process -Filter "Name='node.exe' OR Name='deno.exe'" | Select-Object ProcessId, CommandLine, CreationDate, ParentProcessId | ConvertTo-Json -Compress`;
+    
     const output = execSync(
-      'wmic process where "name=\'node.exe\' OR name=\'deno.exe\'" get ProcessId,CommandLine,CreationDate,ParentProcessId /format:csv',
+      `powershell -NoProfile -Command "${psScript}"`,
       { encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 }
     );
 
-    const lines = output.split('\n').filter(line => line.trim() && !line.startsWith('Node'));
     const pattern = /(next\s+dev|vitest|tsc\s+-w|tsx\s+watch|nodemon)/i;
-
-    for (const line of lines) {
-      const parts = line.split(',');
-      if (parts.length >= 5) {
-        const commandLine = parts[parts.length - 3] || '';
-        const pidStr = parts[parts.length - 4];
-        const parentPidStr = parts[parts.length - 2];
-        const creationDate = parts[parts.length - 1]?.trim();
+    
+    try {
+      // Parse JSON output from PowerShell
+      const jsonData = JSON.parse(output);
+      const processArray = Array.isArray(jsonData) ? jsonData : [jsonData];
+      
+      for (const proc of processArray) {
+        if (!proc || !proc.ProcessId || !proc.CreationDate) continue;
         
-        if (!pidStr || !creationDate) continue;
-        
-        const pid = parseInt(pidStr, 10);
-        const parentPid = parentPidStr ? parseInt(parentPidStr, 10) : undefined;
+        const commandLine = proc.CommandLine || '';
+        const pid = parseInt(String(proc.ProcessId), 10);
+        const parentPid = proc.ParentProcessId ? parseInt(String(proc.ParentProcessId), 10) : undefined;
+        const creationDate = proc.CreationDate;
 
         if (pattern.test(commandLine) && !isNaN(pid) && creationDate) {
           try {
-            // Parse WMI date format: YYYYMMDDHHmmss.ffffff+UUU
-            const year = parseInt(creationDate.substring(0, 4), 10);
-            const month = parseInt(creationDate.substring(4, 6), 10) - 1;
-            const day = parseInt(creationDate.substring(6, 8), 10);
-            const hour = parseInt(creationDate.substring(8, 10), 10);
-            const minute = parseInt(creationDate.substring(10, 12), 10);
-            const second = parseInt(creationDate.substring(12, 14), 10);
-
-            const startTime = new Date(year, month, day, hour, minute, second);
+            // Parse date from Get-CimInstance (ISO format or WMI format)
+            let startTime: Date;
+            if (typeof creationDate === 'string') {
+              if (creationDate.includes('T')) {
+                // ISO format: "2024-01-01T12:00:00.0000000+00:00"
+                startTime = new Date(creationDate);
+              } else {
+                // WMI format: "20240101120000.000000+000"
+                const dateStr = creationDate.replace(/[.+-].*$/, '');
+                const year = parseInt(dateStr.substring(0, 4), 10);
+                const month = parseInt(dateStr.substring(4, 6), 10) - 1;
+                const day = parseInt(dateStr.substring(6, 8), 10);
+                const hour = parseInt(dateStr.substring(8, 10), 10);
+                const minute = parseInt(dateStr.substring(10, 12), 10);
+                const second = parseInt(dateStr.substring(12, 14), 10);
+                startTime = new Date(year, month, day, hour, minute, second);
+              }
+            } else {
+              startTime = new Date(creationDate);
+            }
 
             processes.push({
               pid,
@@ -115,9 +127,11 @@ function getProcessesWindows(): ProcessInfo[] {
           }
         }
       }
+    } catch (parseErr) {
+      // If JSON parsing fails, silently return empty array
     }
   } catch (err) {
-    // If wmic fails, try alternative approach using tasklist and PowerShell
+    // If PowerShell fails, try fallback approach using tasklist
     try {
       const tasklistOutput = execSync('tasklist /FI "IMAGENAME eq node.exe" /FO CSV /NH', {
         encoding: 'utf8',
@@ -199,16 +213,13 @@ function getProcessesUnix(): ProcessInfo[] {
 function getParentProcessName(pid: number, platform: string): string | null {
   try {
     if (platform === 'win32') {
+      // Use PowerShell Get-CimInstance instead of wmic
+      const psScript = `(Get-CimInstance Win32_Process -Filter "ProcessId=${String(pid)}").Name`;
       const output = execSync(
-        `wmic process where "ProcessId=${String(pid)}" get Name /format:csv`,
+        `powershell -NoProfile -Command "${psScript}"`,
         { encoding: 'utf8', maxBuffer: 1024 * 1024 }
       );
-      const lines = output.split('\n').filter(l => l.trim() && !l.startsWith('Node'));
-      if (lines.length > 0 && lines[0]) {
-        const parts = lines[0].split(',');
-        const lastPart = parts[parts.length - 1];
-        return lastPart?.trim() || null;
-      }
+      return output.trim() || null;
     } else {
       const output = execSync(`ps -p ${String(pid)} -o comm=`, {
         encoding: 'utf8',
@@ -219,8 +230,6 @@ function getParentProcessName(pid: number, platform: string): string | null {
   } catch {
     return null;
   }
-  
-  return null;
 }
 
 function killProcess(pid: number, platform: string): boolean {
