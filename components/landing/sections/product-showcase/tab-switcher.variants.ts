@@ -58,7 +58,7 @@ const tabButtonVariants = tv({
        * rather than inline pills. They stretch to full width and use a rectangular geometry.
        * Focus ring offset uses showcase background to match ProductShowcase section.
        */
-      grid: 'relative w-full text-left rounded-none px-4 py-0 h-16 flex items-center justify-center transition-colors shadow-none text-lg xl:text-[14px] xl:leading-5 xl:tracking-[-0.01em] xl:px-3 focus-visible:ring-offset-showcase',
+      grid: 'relative w-full text-left rounded-none px-4 py-0 h-[290px] flex items-center justify-center transition-colors shadow-none text-lg xl:text-[14px] xl:leading-5 xl:tracking-[-0.01em] xl:px-3 focus-visible:ring-offset-showcase',
     },
   },
   compoundVariants: [

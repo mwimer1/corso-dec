@@ -59,7 +59,7 @@ const navbarStyleVariants = tv({
     ],
     sentinel: 'absolute top-0 left-0 right-0 h-[150px] pointer-events-none -z-10',
     button: [
-      'min-h-[290px] px-md py-sm',
+      'min-h-[44px] px-md py-sm',
       'text-base font-medium',
       'focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2',
       'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
