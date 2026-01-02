@@ -1,8 +1,9 @@
 ---
-title: "scripts/docs"
-last_updated: "2025-12-31"
+title: "Docs"
+last_updated: "2026-01-02"
 category: "documentation"
 status: "draft"
+description: "Documentation and resources for documentation functionality. Located in docs/."
 ---
 # Repository Scripts & Docs
 

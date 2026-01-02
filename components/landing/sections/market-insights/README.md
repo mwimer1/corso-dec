@@ -1,8 +1,9 @@
 ---
-title: "components/landing/sections/market-insights"
-last_updated: "2025-12-31"
+title: "Market Insights"
+last_updated: "2026-01-02"
 category: "components"
 status: "draft"
+description: "UI components for the components system, following atomic design principles. Located in landing/sections/market-insights/."
 ---
 # Repository Scripts & Docs
 

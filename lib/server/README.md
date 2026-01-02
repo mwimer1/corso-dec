@@ -1,8 +1,9 @@
 ---
-title: "lib/server"
-last_updated: "2025-12-31"
+title: "Server"
+last_updated: "2026-01-02"
 category: "library"
 status: "draft"
+description: "Core lib utilities and functionality for the Corso platform. Located in server/."
 ---
 # Repository Scripts & Docs
 

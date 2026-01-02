@@ -1,8 +1,9 @@
 ---
-title: "scripts/utils"
-last_updated: "2025-12-31"
+title: "Utils"
+last_updated: "2026-01-02"
 category: "documentation"
 status: "draft"
+description: "Documentation and resources for documentation functionality. Located in utils/."
 ---
 # Repository Scripts & Docs
 

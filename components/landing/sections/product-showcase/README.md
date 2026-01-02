@@ -1,7 +1,9 @@
 ---
 status: "stable"
-last_updated: "2026-01-01"
-category: "documentation"
+last_updated: "2026-01-02"
+category: "components"
+title: "Product Showcase"
+description: "UI components for the components system, following atomic design principles. Located in landing/sections/product-showcase/."
 ---
 # ProductShowcase TabSwitcher
 

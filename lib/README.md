@@ -1,8 +1,9 @@
 ---
-title: "lib"
-last_updated: "2025-12-31"
-category: "automation"
+title: "Lib"
+last_updated: "2026-01-02"
+category: "library"
 status: "draft"
+description: "Core lib utilities and functionality for the Corso platform."
 ---
 # Repository Scripts & Docs
 

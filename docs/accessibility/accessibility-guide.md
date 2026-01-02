@@ -1,7 +1,7 @@
 ---
 title: "Accessibility"
 description: "Documentation and resources for documentation functionality. Located in accessibility/."
-last_updated: "2025-12-31"
+last_updated: "2026-01-02"
 category: "documentation"
 status: "draft"
 ---

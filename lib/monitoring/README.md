@@ -1,8 +1,9 @@
 ---
-title: "lib/monitoring"
-last_updated: "2025-12-31"
+title: "Monitoring"
+last_updated: "2026-01-02"
 category: "library"
 status: "draft"
+description: "Core lib utilities and functionality for the Corso platform. Located in monitoring/."
 ---
 # Repository Scripts & Docs
 

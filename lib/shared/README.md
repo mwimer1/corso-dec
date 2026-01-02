@@ -1,7 +1,7 @@
 ---
 title: "Shared"
 description: "Core lib utilities and functionality for the Corso platform. Located in shared/."
-last_updated: "2025-12-31"
+last_updated: "2026-01-02"
 category: "library"
 status: "draft"
 ---

@@ -1,8 +1,9 @@
 ---
-title: "lib/marketing"
-last_updated: "2025-12-31"
+title: "Marketing"
+last_updated: "2026-01-02"
 category: "library"
 status: "draft"
+description: "Core lib utilities and functionality for the Corso platform. Located in marketing/."
 ---
 # Repository Scripts & Docs
 

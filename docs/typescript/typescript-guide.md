@@ -1,7 +1,9 @@
 ---
 status: "draft"
-last_updated: "2026-01-01"
+last_updated: "2026-01-02"
 category: "documentation"
+title: "Typescript"
+description: "Documentation and resources for documentation functionality. Located in typescript/."
 ---
 # TypeScript Guide
 

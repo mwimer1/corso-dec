@@ -1,7 +1,9 @@
 ---
 status: "draft"
-last_updated: "2026-01-01"
+last_updated: "2026-01-02"
 category: "documentation"
+title: "(protected)"
+description: "Documentation and resources for documentation functionality. Located in (protected)/."
 ---
 ## Overview
 

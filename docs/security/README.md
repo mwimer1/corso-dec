@@ -1,8 +1,9 @@
 ---
-title: "docs/security"
-last_updated: "2025-12-31"
-category: "automation"
+title: "Security"
+last_updated: "2026-01-02"
+category: "documentation"
 status: "draft"
+description: "Documentation and resources for documentation functionality. Located in security/."
 ---
 # Repository Scripts & Docs
 

@@ -1,8 +1,9 @@
 ---
-title: "types/marketing"
-last_updated: "2025-12-31"
+title: "Marketing"
+last_updated: "2026-01-02"
 category: "types"
 status: "draft"
+description: "TypeScript type definitions for types, ensuring type safety across the platform. Located in marketing/."
 ---
 # Repository Scripts & Docs
 

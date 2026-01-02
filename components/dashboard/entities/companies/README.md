@@ -1,8 +1,9 @@
 ---
-title: "components/dashboard/entities/companies"
-last_updated: "2025-12-31"
+title: "Companies"
+last_updated: "2026-01-02"
 category: "components"
 status: "draft"
+description: "UI components for the components system, following atomic design principles. Located in dashboard/entities/companies/."
 ---
 # Repository Scripts & Docs
 
