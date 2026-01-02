@@ -1,5 +1,12 @@
 # Gitleaks configuration for Corso app
 # https://github.com/zricethezav/gitleaks
+#
+# IMPORTANT: The 'paths' field in [allowlist] requires Go regex patterns, NOT glob patterns.
+# Common conversions:
+#   - **/*.md → .*\.md$ (matches any .md file)
+#   - **/*.test.ts → .*\.test\.ts$ (matches any .test.ts file)
+#   - docs/ → ^docs/ (matches files in docs directory)
+#   - .env.example → ^\.env\.example$ (exact match)
 
 title = "Corso App Secret Scanning"
 
@@ -29,15 +36,16 @@ keywords = ["eyJ"]
 # Allow certain patterns that are false positives
 [allowlist]
 description = "Allowlist for common false positives"
+# NOTE: paths must be valid Go regex patterns, not glob patterns
 paths = [
-    ".env.example",
-    "docs/",
-    "README.md",
-    "**/*.md",
-    "**/*.test.ts",
-    "**/*.test.tsx",
-    "**/*.stories.tsx",
-    "lib/security/utils/masking.ts"  # Contains example API keys in code comments
+    '''^\.env\.example$''',              # Exact match: .env.example
+    '''^docs/''',                        # Files in docs/ directory
+    '''^README\.md$''',                  # Exact match: README.md
+    '''.*\.md$''',                       # Any .md file (was: **/*.md)
+    '''.*\.test\.ts$''',                 # Any .test.ts file (was: **/*.test.ts)
+    '''.*\.test\.tsx$''',                # Any .test.tsx file (was: **/*.test.tsx)
+    '''.*\.stories\.tsx$''',             # Any .stories.tsx file (was: **/*.stories.tsx)
+    '''^lib/security/utils/masking\.ts$'''  # Exact match: lib/security/utils/masking.ts
 ]
 
 regexes = [
