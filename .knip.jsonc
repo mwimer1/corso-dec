@@ -1,4 +1,6 @@
 {
+  "$schema": "https://unpkg.com/knip@5/schema-jsonc.json",
+
   // Entries that represent what actually runs/ships/tests in this monorepo
   "entry": [
     "app/**/*",
@@ -14,31 +16,36 @@
     "next.config.*",
     "package.json"
   ],
-  "ignoreExports": [
-    // Next.js framework exports & route handlers
-    "runtime",
-    "dynamic",
-    "revalidate",
-    "metadata",
-    "viewport",
-    "generateMetadata",
-    "generateStaticParams",
-    "dynamicParams",
-    "GET",
-    "POST",
-    "PUT",
-    "PATCH",
-    "DELETE",
-    "OPTIONS",
-    "HEAD"
-  ],
-  "tsConfigFile": "tsconfig.json",
+
+  // Ignore unused exports in Next.js special files (route handlers, metadata, etc.)
+  "ignoreIssues": {
+    "app/**/route.ts": ["exports"],
+    "app/**/page.tsx": ["exports"],
+    "app/**/layout.tsx": ["exports"],
+    "app/**/error.tsx": ["exports"],
+    "app/**/loading.tsx": ["exports"],
+    "app/**/not-found.tsx": ["exports"],
+    "app/**/sitemap.ts": ["exports"],
+    "app/**/robots.ts": ["exports"]
+  },
+
+  // TypeScript configuration
+  "typescript": {
+    "config": ["tsconfig.json"]
+  },
+
+  // Disable GitHub Actions plugin to avoid parsing YAML workflow files
+  "github-actions": false,
+
   // Treat public types as API; they'll be allowlisted here over time.
+  // Exclude .github workflows and YAML files from analysis (not TypeScript/JavaScript)
   "ignore": [
-    "types/**"
-  ],
-  "reporter": [
-    "json"
+    "types/**",
+    ".github/**",
+    "**/*.yml",
+    "**/*.yaml"
   ]
+
+  // reporter intentionally omitted; use CLI --reporter json
 }
 

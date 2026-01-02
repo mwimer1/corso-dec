@@ -269,7 +269,7 @@
     "docs:hints": "tsx scripts/utils/add-barrel-docs-hints.ts",
     "docs:index": "pnpm exec tsx scripts/maintenance/manage-docs.ts index",
     "docs:idempotent:check": "node scripts/docs/check-docs-idempotent.mjs",
-    "docs:setup": "tsx scripts/setup/setup-docs-environment.ts",
+    "docs:setup": "tsx scripts/setup/recommend-docs-environment.ts",
     "docs:spellcheck": "cspell --config config/.cspell.json 'docs/**/*.md' 'README.md'",
     "docs:stale:check": "tsx scripts/docs/freshen.ts --mode=check --maxAgeDays=30",
     "docs:sync": "pnpm exec tsx scripts/maintenance/manage-docs.ts counts",
