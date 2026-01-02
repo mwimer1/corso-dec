@@ -110,7 +110,7 @@ function checkContrast() {
 
   if (failed) {
     console.error('\nContrast checks failed.');
-    process.exit(1);
+    process.exitCode = 1;
   } else {
     console.log('\nAll contrast checks passed.');
   }

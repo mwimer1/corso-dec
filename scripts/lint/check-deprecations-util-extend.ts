@@ -127,7 +127,8 @@ function findPackages(): void {
     }
   } catch (error) {
     console.error('Error scanning node_modules:', error);
-    process.exit(1);
+    process.exitCode = 1;
+    return;
   }
 }
 
@@ -166,73 +167,77 @@ function isAllowed(finding: Finding, allowlist: AllowlistEntry[]): boolean {
   });
 }
 
-// Main execution
-console.log('Scanning node_modules for util._extend usage...\n');
-findPackages();
+function main() {
+  // Main execution
+  console.log('Scanning node_modules for util._extend usage...\n');
+  findPackages();
 
-if (findings.length === 0) {
-  console.log('✅ No util._extend usage found in node_modules');
-  process.exit(0);
-}
+  if (findings.length === 0) {
+    console.log('✅ No util._extend usage found in node_modules');
+    return;
+  }
 
-const allowlist = loadAllowlist();
-const unallowedFindings = findings.filter((f) => !isAllowed(f, allowlist));
+  const allowlist = loadAllowlist();
+  const unallowedFindings = findings.filter((f) => !isAllowed(f, allowlist));
 
-if (unallowedFindings.length === 0) {
-  console.log(`✅ All ${findings.length} util._extend occurrences are allowlisted\n`);
-  
-  // Show allowlisted findings for transparency
+  if (unallowedFindings.length === 0) {
+    console.log(`✅ All ${findings.length} util._extend occurrences are allowlisted\n`);
+    
+    // Show allowlisted findings for transparency
+    const byPackage = new Map<string, Finding[]>();
+    for (const finding of findings) {
+      if (!byPackage.has(finding.package)) {
+        byPackage.set(finding.package, []);
+      }
+      byPackage.get(finding.package)!.push(finding);
+    }
+    
+    console.log('Allowlisted packages:');
+    for (const [pkg, pkgFindings] of byPackage.entries()) {
+      const entry = allowlist.find((e) => e.package === pkg);
+      console.log(`  - ${pkg} (${pkgFindings.length} occurrence(s))${entry?.reason ? ` - ${entry.reason}` : ''}`);
+    }
+    
+    return;
+  }
+
+  // Fail with detailed output
+  console.log(`\n❌ Found ${unallowedFindings.length} unallowlisted util._extend occurrence(s):\n`);
+
+  // Group by package
   const byPackage = new Map<string, Finding[]>();
-  for (const finding of findings) {
+  for (const finding of unallowedFindings) {
     if (!byPackage.has(finding.package)) {
       byPackage.set(finding.package, []);
     }
     byPackage.get(finding.package)!.push(finding);
   }
-  
-  console.log('Allowlisted packages:');
+
   for (const [pkg, pkgFindings] of byPackage.entries()) {
-    const entry = allowlist.find((e) => e.package === pkg);
-    console.log(`  - ${pkg} (${pkgFindings.length} occurrence(s))${entry?.reason ? ` - ${entry.reason}` : ''}`);
+    console.log(`\n📦 Package: ${pkg}`);
+    for (const finding of pkgFindings.slice(0, 3)) {
+      // Show first 3 occurrences per package
+      console.log(`   ${finding.file}:${finding.line}`);
+      console.log(`   ${finding.content}`);
+    }
+    if (pkgFindings.length > 3) {
+      console.log(`   ... and ${pkgFindings.length - 3} more occurrence(s)`);
+    }
   }
-  
-  process.exit(0);
+
+  console.log(`\n💡 To allowlist these findings:`);
+  console.log(`   1. Create or update: ${allowlistPath}`);
+  console.log(`   2. Add entries in format:`);
+  console.log(`      [`);
+  console.log(`        {`);
+  console.log(`          "package": "package-name",`);
+  console.log(`          "file": "path/to/file.js",`);
+  console.log(`          "reason": "Optional reason for allowlisting"`);
+  console.log(`        }`);
+  console.log(`      ]`);
+  console.log(`   3. Re-run this script to verify\n`);
+
+  process.exitCode = 1;
 }
 
-// Fail with detailed output
-console.log(`\n❌ Found ${unallowedFindings.length} unallowlisted util._extend occurrence(s):\n`);
-
-// Group by package
-const byPackage = new Map<string, Finding[]>();
-for (const finding of unallowedFindings) {
-  if (!byPackage.has(finding.package)) {
-    byPackage.set(finding.package, []);
-  }
-  byPackage.get(finding.package)!.push(finding);
-}
-
-for (const [pkg, pkgFindings] of byPackage.entries()) {
-  console.log(`\n📦 Package: ${pkg}`);
-  for (const finding of pkgFindings.slice(0, 3)) {
-    // Show first 3 occurrences per package
-    console.log(`   ${finding.file}:${finding.line}`);
-    console.log(`   ${finding.content}`);
-  }
-  if (pkgFindings.length > 3) {
-    console.log(`   ... and ${pkgFindings.length - 3} more occurrence(s)`);
-  }
-}
-
-console.log(`\n💡 To allowlist these findings:`);
-console.log(`   1. Create or update: ${allowlistPath}`);
-console.log(`   2. Add entries in format:`);
-console.log(`      [`);
-console.log(`        {`);
-console.log(`          "package": "package-name",`);
-console.log(`          "file": "path/to/file.js",`);
-console.log(`          "reason": "Optional reason for allowlisting"`);
-console.log(`        }`);
-console.log(`      ]`);
-console.log(`   3. Re-run this script to verify\n`);
-
-process.exit(1);
+main();

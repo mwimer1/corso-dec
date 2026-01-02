@@ -14,17 +14,18 @@ function main() {
     if (result) {
       logger.error('❌ CSS files found outside styles/ directory:');
       logger.error(result);
-      process.exit(1);
+      process.exitCode = 1;
+      return;
     }
 
     logger.success('✅ No stray CSS files found.');
   } catch (error: any) {
     if (error.status === 1) {
       logger.success('✅ No stray CSS files found.');
-      process.exit(0);
+      return;
     }
     logger.error('❌ Error running ripgrep:', error);
-    process.exit(1);
+    process.exitCode = 1;
   }
 }
 

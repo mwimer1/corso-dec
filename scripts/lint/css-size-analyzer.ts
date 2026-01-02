@@ -29,7 +29,7 @@ function analyzeCssSize() {
     console.error(
       `❌ CSS size exceeds the maximum allowed size of ${MAX_CSS_SIZE_KB} KB.`,
     );
-    process.exit(1);
+    process.exitCode = 1;
   } else {
     console.log(`✅ CSS size is within the allowed limit.`);
   }

@@ -82,10 +82,10 @@ function main() {
     for (const e of errors) {
       logger.error(e);
     }
-    process.exit(1);
+    process.exitCode = 1;
+  } else {
+    logger.success('✅ No duplicate styling sources found.');
   }
-
-  logger.success('✅ No duplicate styling sources found.');
 }
 
 main();

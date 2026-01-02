@@ -33,12 +33,16 @@ async function main(): Promise<void> {
 
   if (errors.length) {
     console.error('verify:routes failed:\n' + errors.map(e => ` - ${e}`).join('\n'));
-    process.exit(1);
+    process.exitCode = 1;
+  } else {
+    console.log('verify:routes: OK');
   }
-  console.log('verify:routes: OK');
 }
 
-main().catch((e) => { console.error(e); process.exit(1); });
+main().catch((e) => {
+  console.error(e);
+  process.exitCode = 1;
+});
 
 
 

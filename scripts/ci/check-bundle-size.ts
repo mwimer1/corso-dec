@@ -83,7 +83,7 @@ function main() {
     } else {
       console.log(`Bundle dir not found: ${dir}. Skipping bundle size check (run 'next build' to enable).`);
     }
-    process.exit(0);
+    return;
   }
 
   let   files = walk(dir).filter((f) => cfg.extensions.includes(path.extname(f)));
@@ -100,7 +100,7 @@ function main() {
     } else {
       console.log(`No ${cfg.extensions.join(', ')} files under ${dir}. Skipping bundle size check.`);
     }
-    process.exit(0);
+    return;
   }
 
   let totalBrotli = 0;
@@ -166,7 +166,7 @@ function main() {
 
   if (violations.length) {
     console.error('\n❌ Bundle size violations:\n- ' + violations.join('\n- '));
-    process.exit(1);
+    process.exitCode = 1;
   } else {
     console.log('\n✅ Bundle size within limits.');
   }

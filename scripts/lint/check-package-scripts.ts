@@ -273,7 +273,7 @@ if (errors.length) {
   if (missingScriptTargets.size > 0) {
     console.error('\nFix: update package.json to point at an existing file, or restore/remove the referenced script.');
   }
-  process.exit(1);
+  process.exitCode = 1;
 } else {
   console.log('script-key linter: OK');
   if (warnings.length) {

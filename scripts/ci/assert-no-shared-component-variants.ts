@@ -53,7 +53,7 @@ for (const f of files) {
 
 if (violations.length) {
   console.error('❌ Orphaned variant files were reintroduced:\n' + violations.map(v => ' - ' + v).join('\n'));
-  process.exit(1);
+  process.exitCode = 1;
 } else {
   console.log('✅ No orphaned variant files present.');
 }

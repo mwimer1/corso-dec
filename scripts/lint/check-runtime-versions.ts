@@ -46,14 +46,18 @@ if (engineNorm && fileNorm && engineNorm.split('.')[0] !== fileNorm.split('.')[0
   warnings.push(`Node major mismatch: engines.node="${enginesNode}" vs .node-version="${nodeFile}". Recommend aligning.`);
 }
 
-if (errors.length) {
-  console.error('versions-guard: FAIL');
-  for (const e of errors) console.error(' - ' + e);
-  process.exit(1);
-} else {
-  console.log('versions-guard: OK');
-  for (const w of warnings) console.log(' - ' + w);
+function main() {
+  if (errors.length) {
+    console.error('versions-guard: FAIL');
+    for (const e of errors) console.error(' - ' + e);
+    process.exitCode = 1;
+  } else {
+    console.log('versions-guard: OK');
+    for (const w of warnings) console.log(' - ' + w);
+  }
 }
+
+main();
 
 
 

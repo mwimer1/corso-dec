@@ -215,11 +215,11 @@ async function runChecks() {
     console.log('   • Ensure no secrets are exposed in AI request logs');
   }
 
-  process.exit(securityIssues.length > 0 ? 1 : 0);
+  process.exitCode = securityIssues.length > 0 ? 1 : 0;
 }
 
 runChecks().catch((error) => {
   console.error('❌ Script failed:', error);
-  process.exit(1);
+  process.exitCode = 1;
 });
 

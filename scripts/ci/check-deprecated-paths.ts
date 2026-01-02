@@ -112,10 +112,10 @@ function main() {
     console.error('  - scripts/rules/ast-grep/ (not tools/ast-grep/ or .astgrep/)');
     console.error('  - eslint-plugin-corso/ (not tools/eslint-plugin-corso/)');
     
-    process.exit(1);
+    process.exitCode = 1;
+  } else {
+    console.log('✅ No deprecated path references found');
   }
-  
-  console.log('✅ No deprecated path references found');
 }
 
 main();

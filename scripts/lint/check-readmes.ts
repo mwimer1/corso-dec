@@ -39,7 +39,7 @@ async function main() {
   if (missing.length) {
     console.log('README coverage warnings for:');
     for (const m of missing) console.log(' -', m);
-    if (STRICT) process.exit(1);
+    if (STRICT) process.exitCode = 1;
   } else {
     console.log('✅ README coverage looks good');
   }
@@ -47,7 +47,7 @@ async function main() {
 
 main().catch((err) => {
   console.error(err);
-  process.exit(1);
+  process.exitCode = 1;
 });
 
 

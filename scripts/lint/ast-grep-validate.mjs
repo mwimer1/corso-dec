@@ -28,7 +28,8 @@ function listRuleFiles(dir) {
 
 if (!fs.existsSync(RULES_DIR)) {
   console.error(`ast-grep rules dir missing: ${RULES_DIR}`);
-  process.exit(1);
+  process.exitCode = 1;
+  // Allow script to continue and report the error
 }
 fs.mkdirSync(REPORTS_DIR, { recursive: true });
 
@@ -42,16 +43,19 @@ const args = ['scan', '--json', '--config', 'sgconfig.yml', '.'];
 const res = spawnSync('sg', args, { encoding: 'utf8' });
 if (res.error) {
   console.error('Failed to run ast-grep (sg):', res.error.message);
-  process.exit(1);
+  process.exitCode = 1;
+} else {
+  try {
+    fs.writeFileSync(REPORT_PATH, res.stdout || '{}', 'utf8');
+    console.log(`ast-grep JSON saved → ${path.relative(process.cwd(), REPORT_PATH)}`);
+  } catch (err) {
+    console.error('Failed to write ast-grep report:', err.message);
+    process.exitCode = 1;
+  }
+  
+  if (res.status !== null && res.status !== 0) {
+    process.exitCode = res.status;
+  }
 }
-
-try {
-  fs.writeFileSync(REPORT_PATH, res.stdout || '{}', 'utf8');
-  console.log(`ast-grep JSON saved → ${path.relative(process.cwd(), REPORT_PATH)}`);
-} catch (err) {
-  console.error('Failed to write ast-grep report:', err.message);
-}
-
-process.exit(res.status ?? 1);
 
 

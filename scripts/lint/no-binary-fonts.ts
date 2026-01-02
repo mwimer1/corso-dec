@@ -41,14 +41,16 @@ async function checkForBinaryFonts(): Promise<boolean> {
       logger.error('  2. Self-hosted npm: pnpm add @fontsource-variable/lato');
       logger.error('  3. See docs/fonts-offline-build.md for offline builds');
 
-      process.exit(1);
+      process.exitCode = 1;
+      return false;
     }
 
     logger.success('✅ No binary font files found - using next/font is the way!');
     return true;
   } catch (error) {
     logger.error('❌ Error checking for binary fonts:', error);
-    process.exit(1);
+    process.exitCode = 1;
+    return false;
   }
 }
 
@@ -101,12 +103,11 @@ async function main() {
 
   if (fontCheck && importCheck) {
     logger.success('✅ Font guardrails passed!');
-    process.exit(0);
   }
 }
 
 main().catch((error) => {
     logger.error('❌ Font guardrail check failed:', error);
-    process.exit(1);
+    process.exitCode = 1;
 });
 

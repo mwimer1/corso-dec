@@ -70,10 +70,10 @@ export function formatValidationResult(result: ValidationSummary | ConsolidatedV
 /**
  * Common error handler for validation scripts
  */
-export function handleValidationError(error: unknown, context: string): never {
+export function handleValidationError(error: unknown, context: string): void {
   logger.error(`❌ ${context} failed:`);
   logger.error(error instanceof Error ? error.message : String(error));
-  process.exit(1);
+  process.exitCode = 1;
 }
 
 /**
@@ -86,7 +86,7 @@ export function runValidationScript(
   mainFn().catch((error) => {
     logger.error(`❌ Unexpected error during ${scriptName}:`);
     logger.error(error instanceof Error ? error.message : String(error));
-    process.exit(1);
+    process.exitCode = 1;
   });
 }
 

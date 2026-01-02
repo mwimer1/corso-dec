@@ -15,7 +15,8 @@ if (run.error || run.status !== 0) {
   console.error(
     "gitleaks not found or scan failed. Install it via `pnpm tools:gitleaks:install` and re-run."
   );
-  process.exit(run.status ?? 1);
+  process.exitCode = run.status ?? 1;
+  // Continue to workflow audit even if gitleaks fails
 }
 
 const WORKFLOWS_DIR = '.github/workflows';
@@ -145,8 +146,8 @@ console.log(`📄 Full report generated: ${REPORT_FILE}`);
 
 if (secretWorkflows > protectedWorkflows) {
   console.log(`⚠️  Warning: ${secretWorkflows - protectedWorkflows} workflows use secrets without fork protection`);
-  process.exit(1);
-}
-
-console.log('✅ Security audit completed successfully'); 
+  process.exitCode = 1;
+} else {
+  console.log('✅ Security audit completed successfully');
+} 
 

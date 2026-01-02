@@ -104,7 +104,7 @@ for (const r of rules) {
 if (problems.length) {
   console.error("❌ Cursor rules validation failed:");
   for (const p of problems) console.error(" -", p);
-  process.exit(1);
+  process.exitCode = 1;
 } else {
   console.log("✅ Cursor rules validation passed.");
 }

@@ -15,7 +15,8 @@ function main() {
       console.error('Exhaustive-deps check failed:');
       console.error(stderr);
       console.log(stdout);
-      process.exit(1);
+      process.exitCode = 1;
+      return;
     }
 
     if (stdout) {

@@ -15,7 +15,7 @@ function main(): void {
       .filter(line => /glob\(|globby|fast\-glob|readFile|transform\(/i.test(line));
     if (suspects.length > 0) {
       console.error('[verify-no-dts-transform] Suspicious .d.ts handling found in scripts:\n' + suspects.join('\n'));
-      process.exit(1);
+      process.exitCode = 1;
       return;
     }
   } catch {

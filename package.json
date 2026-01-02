@@ -42,6 +42,7 @@
     "verify:scripts:no-dts-transform": "tsx scripts/lint/verify-no-dts-transform.ts",
     "validate:types": "tsc --noEmit --skipLibCheck",
     "lint:scripts": "tsx scripts/lint/check-package-scripts.ts",
+    "lint:no-process-exit": "tsx scripts/lint/no-process-exit-ci-lint.ts",
     "lint:full": "pnpm -F @corso/eslint-plugin run build && pnpm run lint:scripts && pnpm lint",
     "check:tokens": "tsx scripts/lint/check-token-tailwind-contract.ts",
     "check:route-themes": "tsx scripts/lint/check-route-theme-overrides.ts",

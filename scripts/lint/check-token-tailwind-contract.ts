@@ -232,17 +232,17 @@ function main() {
       errors.forEach((e) => console.error(e));
       console.error('\n💡 Fix: Ensure all tokens are defined in styles/tokens/*.css');
       console.error('   and fallback values match token defaults exactly.\n');
-      process.exit(1);
-    }
-    
-    // Success
-    console.log('✅ Token↔Tailwind contract validated successfully');
-    if (warnings.length > 0) {
-      console.log(`   (${warnings.length} warning(s) - consider adding fallbacks)`);
+      process.exitCode = 1;
+    } else {
+      // Success
+      console.log('✅ Token↔Tailwind contract validated successfully');
+      if (warnings.length > 0) {
+        console.log(`   (${warnings.length} warning(s) - consider adding fallbacks)`);
+      }
     }
   } catch (error) {
     console.error('❌ Error validating token contract:', error);
-    process.exit(1);
+    process.exitCode = 1;
   }
 }
 

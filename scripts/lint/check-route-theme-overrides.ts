@@ -181,17 +181,17 @@ function main() {
       console.error('❌ Route Theme Override Policy Violations:\n');
       errors.forEach((e) => console.error(e));
       console.error('\n💡 Fix: Remove forbidden overrides or add to allowlist if justified.\n');
-      process.exit(1);
-    }
-    
-    // Success
-    console.log('✅ Route theme override policy validated successfully');
-    if (warnings.length > 0) {
-      console.log(`   (${warnings.length} warning(s))`);
+      process.exitCode = 1;
+    } else {
+      // Success
+      console.log('✅ Route theme override policy validated successfully');
+      if (warnings.length > 0) {
+        console.log(`   (${warnings.length} warning(s))`);
+      }
     }
   } catch (error) {
     console.error('❌ Error validating route theme overrides:', error);
-    process.exit(1);
+    process.exitCode = 1;
   }
 }
 

@@ -82,7 +82,7 @@ function main() {
 
   if (allForbidden.length === 0) {
     console.log('✅ No forbidden files found.');
-    process.exit(0);
+    return;
   }
 
   // Report all forbidden files
@@ -96,7 +96,7 @@ function main() {
   }
 
   console.error('');
-  process.exit(1);
+  process.exitCode = 1;
 }
 
 void main();

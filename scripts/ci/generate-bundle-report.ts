@@ -140,13 +140,15 @@ function main() {
   if (!args.current) {
     console.error('Error: --current argument is required');
     console.error('Usage: tsx scripts/ci/generate-bundle-report.ts --current=<file> --base=<file> --output=<file>');
-    process.exit(1);
+    process.exitCode = 1;
+    return;
   }
 
   const currentData = loadBundleData(args.current);
   if (!currentData) {
     console.error('Error: Could not load current bundle data');
-    process.exit(1);
+    process.exitCode = 1;
+    return;
   }
 
   const baseData = args.base ? loadBundleData(args.base) : null;

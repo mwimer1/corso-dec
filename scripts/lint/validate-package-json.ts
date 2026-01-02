@@ -57,7 +57,7 @@ function main() {
 
   if (hasDuplicates) {
     logger.error('\n⚠️  Please remove duplicate script definitions from package.json');
-    process.exit(1);
+    process.exitCode = 1;
   } else {
     logger.success('✅ No duplicate scripts found in package.json');
   }

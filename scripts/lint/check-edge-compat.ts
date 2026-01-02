@@ -213,12 +213,12 @@ function main() {
 
   if (!entries.length) {
     console.log("edge-guard: no Edge entrypoints detected (middleware or runtime='edge').");
-    process.exit(0);
+    return;
   }
 
   if (!violations.length) {
     console.log(`edge-guard: OK (${entries.length} Edge entrypoint${entries.length>1?"s":""} scanned)`);
-    process.exit(0);
+    return;
   }
 
   console.error(`edge-guard: Found ${violations.length} violation(s):`);
@@ -229,7 +229,7 @@ function main() {
     console.error("Chain:");
     for (const c of v.chain) console.error(`  → ${c}`);
   }
-  process.exit(1);
+  process.exitCode = 1;
 }
 
 main();

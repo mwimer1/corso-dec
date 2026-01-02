@@ -47,7 +47,7 @@ walk(CWD);
 if (offenders.length) {
   console.error("Deprecated imports detected (use '@/lib/security/rate-limiting' instead):");
   for (const f of offenders) console.error(" - " + f);
-  process.exit(1);
+  process.exitCode = 1;
 } else {
   console.log("OK: no deprecated rate-limiting imports found.");
 }

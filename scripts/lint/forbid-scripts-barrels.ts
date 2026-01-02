@@ -19,13 +19,18 @@ function walk(dir: string, hits: string[] = []) {
   return hits;
 }
 
-const hits = walk(SCRIPTS_DIR);
-if (hits.length) {
-  console.error('❌ Barrel index files are forbidden under /scripts:');
-  for (const p of hits) console.error(' - ' + path.relative(ROOT, p));
-  process.exit(1);
+function main() {
+  const hits = walk(SCRIPTS_DIR);
+  if (hits.length) {
+    console.error('❌ Barrel index files are forbidden under /scripts:');
+    for (const p of hits) console.error(' - ' + path.relative(ROOT, p));
+    process.exitCode = 1;
+  } else {
+    console.log('✅ No barrel index files under /scripts');
+  }
 }
-console.log('✅ No barrel index files under /scripts');
+
+main();
 
 
 

@@ -137,7 +137,7 @@ function main() {
 
   if (failedRequiredChecks > 0) {
     logger.error(`🔥 ${failedRequiredChecks} required check(s) failed.`);
-    process.exit(1);
+    process.exitCode = 1;
   } else {
     logger.info('✅ All required quality gates passed!');
   }

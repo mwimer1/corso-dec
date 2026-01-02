@@ -23,13 +23,17 @@ for (const f of files) {
 
   if (constMetaHasViewport || genMetaHasViewport || notFoundHasMetaOrViewport) offenders.push(f);
 }
-if (offenders.length) {
-  console.error(
-    "Viewport must not live under metadata. Move it to `export const viewport` or `generateViewport()`.",
-  );
-  offenders.forEach((o) => console.error(" - " + o));
-  process.exit(1);
+function main() {
+  if (offenders.length) {
+    console.error(
+      "Viewport must not live under metadata. Move it to `export const viewport` or `generateViewport()`.",
+    );
+    offenders.forEach((o) => console.error(" - " + o));
+    process.exitCode = 1;
+  }
 }
+
+main();
 
 
 

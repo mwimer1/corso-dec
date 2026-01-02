@@ -35,7 +35,7 @@ async function main() {
 
   if (hasDuplicates) {
     console.log('🔥 Token audit failed.');
-    process.exit(1);
+    process.exitCode = 1;
   } else {
     console.log('✅ No duplicate tokens found.');
   }
@@ -43,6 +43,6 @@ async function main() {
 
 main().catch(err => {
     console.error(err);
-    process.exit(1);
+    process.exitCode = 1;
 }); 
 

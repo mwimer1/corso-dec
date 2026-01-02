@@ -27,7 +27,7 @@ function main(): void {
     src = readTextSync(dtsPath);
   } catch (e) {
     console.error(`[fix-eslint-plugin-dts] Unable to read ${dtsPath}:`, (e as Error).message);
-    process.exit(1);
+    process.exitCode = 1;
     return;
   }
 

@@ -186,10 +186,10 @@ export class DataUtils {
  * Common error handling patterns
  */
 export class ErrorUtils {
-  static handleError(error: unknown, context: string): never {
+  static handleError(error: unknown, context: string): void {
     const message = error instanceof Error ? error.message : String(error);
     LoggingUtils.error(`${context}: ${message}`);
-    process.exit(1);
+    process.exitCode = 1;
   }
 
   static tryOrDefault<T>(fn: () => T, defaultValue: T): T {
