@@ -137,7 +137,7 @@ function getProcessesOnPortUnix(port: number): number[] {
   const pids: number[] = [];
   
   try {
-    // Use lsof to find processes on port
+    // Use lsof to find processes on port (most reliable on Unix)
     const output = execSync(
       `lsof -ti:${String(port)}`,
       { encoding: 'utf8', maxBuffer: 1024 * 1024 }
@@ -152,26 +152,11 @@ function getProcessesOnPortUnix(port: number): number[] {
     }
   } catch {
     // Port might not be in use, or lsof failed
-    // Try alternative with netstat
-    try {
-      // Use shell command for Unix pipeline
-      const cmd = `netstat -tlnp 2>/dev/null | grep ":${String(port)}" || ss -tlnp 2>/dev/null | grep ":${String(port)}" || true`;
-      const output = execSync(cmd, {
-        encoding: 'utf8',
-        shell: '/bin/sh',
-        maxBuffer: 1024 * 1024,
-      });
-      
-      const pidMatch = output.match(/pid=(\d+)/);
-      if (pidMatch && pidMatch[1]) {
-        const pid = parseInt(pidMatch[1], 10);
-        if (!isNaN(pid)) {
-          pids.push(pid);
-        }
-      }
-    } catch {
-      // Both methods failed, port likely not in use
-    }
+    // Fallback: Use Node.js net module to check if port is in use
+    // (This doesn't give us PIDs, but we can at least detect usage)
+    // Note: The isPortInUse function already handles this, so we rely on that
+    // for the "port in use" check. This function is only called when we need PIDs.
+    // If lsof fails, we return empty array (port likely not in use or no permission)
   }
 
   return [...new Set(pids)];

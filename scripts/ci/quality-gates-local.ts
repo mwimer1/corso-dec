@@ -2,7 +2,8 @@
 // scripts/quality-gates-local.ts
 // Local simulation of critical CI checks for fast feedback.
 
-import { spawnSync } from 'node:child_process';
+import { execa } from 'execa';
+import pLimit from 'p-limit';
 import { logger } from '../utils/logger';
 
 interface QualityCheck {
@@ -72,21 +73,21 @@ const checks: QualityCheck[] = [
   },
 ];
 
-function runCheck(check: QualityCheck): { status: 'passed' | 'failed'; duration: number } {
+async function runCheck(check: QualityCheck): Promise<{ status: 'passed' | 'failed'; duration: number }> {
   const startTime = Date.now();
   logger.info(`Running: ${check.name}...`);
 
   try {
-    const result = spawnSync(check.command, check.args, {
-      stdio: 'pipe',
-      encoding: 'utf8',
-      shell: true, // Required for Windows compatibility with pnpm
-      cwd: process.cwd()
+    const result = await execa(check.command, check.args, {
+      cwd: process.cwd(),
+      preferLocal: true, // Find repo-local bins (pnpm, tsx, etc.)
+      stdio: 'pipe', // Capture output for error reporting
+      reject: false, // Don't throw on non-zero exit
     });
 
     const duration = Date.now() - startTime;
 
-    if (result.status === 0) {
+    if (result.exitCode === 0) {
       logger.info(`✅ Passed: ${check.name} (${duration}ms)`);
       return { status: 'passed', duration };
     } else {
@@ -104,7 +105,7 @@ function runCheck(check: QualityCheck): { status: 'passed' | 'failed'; duration:
         console.error('STDERR (last 50 lines):', relevant);
       }
       if (!result.stdout && !result.stderr) {
-        console.error(`Command failed with exit code ${result.status}`);
+        console.error(`Command failed with exit code ${result.exitCode ?? 'unknown'}`);
       }
       return { status: 'failed', duration };
     }
@@ -118,17 +119,41 @@ function runCheck(check: QualityCheck): { status: 'passed' | 'failed'; duration:
   }
 }
 
-function main() {
+async function main() {
   logger.info('Running Local Quality Gates (CI Simulation)...');
-  const results = [];
+  const results: Array<QualityCheck & { status: 'passed' | 'failed'; duration: number }> = [];
   let failedRequiredChecks = 0;
 
-  for (const check of checks) {
-    const result = runCheck(check);
+  // Separate required and optional checks
+  const requiredChecks = checks.filter(c => c.required);
+  const optionalChecks = checks.filter(c => !c.required);
+
+  // Run required checks sequentially (fail fast)
+  logger.info(`Running ${requiredChecks.length} required check(s) sequentially...`);
+  for (const check of requiredChecks) {
+    const result = await runCheck(check);
     results.push({ ...check, ...result });
-    if (result.status === 'failed' && check.required) {
+    if (result.status === 'failed') {
       failedRequiredChecks++;
+      // Continue running to collect all failures, but we'll exit with error at end
     }
+  }
+
+  // Run optional checks in parallel (with concurrency limit)
+  if (optionalChecks.length > 0) {
+    logger.info(`Running ${optionalChecks.length} optional check(s) in parallel (max 4 concurrent)...`);
+    const limit = pLimit(4); // Max 4 concurrent checks
+    
+    const optionalResults = await Promise.all(
+      optionalChecks.map(check => 
+        limit(async () => {
+          const result = await runCheck(check);
+          return { ...check, ...result };
+        })
+      )
+    );
+    
+    results.push(...optionalResults);
   }
 
   logger.info('--- Quality Gates Summary ---');

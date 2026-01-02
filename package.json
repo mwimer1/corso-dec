@@ -136,7 +136,7 @@
     "lint:deprecations": "tsx scripts/lint/check-deprecations-util-extend.ts",
     "lint:ci": "pnpm run -s lint:eslint --max-warnings=0 && pnpm run -s lint:ast-grep",
     "lint:menu-no-any": "pnpm --package=@ast-grep/cli dlx sg scan --rule scripts/rules/ast-grep/menu-no-any.yml .",
-    "lint:filenames": "node -e \"require('glob').globSync('**/*.*',{ignore:['**/node_modules/**','**/.next/**','**/dist/**','**/build/**']}).forEach(f=>require('child_process').spawnSync('tsx',['scripts/lint/check-filename-case.ts',f],{stdio:'inherit'}) )\"",
+    "lint:filenames": "tsx scripts/lint/check-filenames.ts",
     "lint:circular": "madge --circular --extensions ts ./types ./lib",
     "lint:css": "stylelint --config config/.stylelintrc.cjs \"styles/**/*.{css,scss}\" --cache",
     "lint:css:fix": "stylelint --config config/.stylelintrc.cjs \"styles/**/*.{css,scss}\" --fix --cache",
