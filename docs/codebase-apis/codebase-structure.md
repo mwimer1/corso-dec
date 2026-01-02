@@ -1,9 +1,9 @@
 ---
-status: "draft"
+title: "Codebase Structure & Conventions"
+description: "Definitive reference for Corso's codebase organization, development patterns, and coding standards."
 last_updated: "2026-01-02"
 category: "documentation"
-title: "Codebase Apis"
-description: "Documentation and resources for documentation functionality. Located in codebase-apis/."
+status: "active"
 ---
 # Codebase Structure & Conventions
 
@@ -283,6 +283,8 @@ describe('Component', () => {
 ## 📚 Related Documentation
 
 - [Import Patterns](./import-patterns.md) - Detailed import guidelines
+- [Repository Directory Structure](../codebase/repository-directory-structure.md) - Complete auto-generated directory tree reference
+- [App Directory Structure](../codebase/app-directory-structure.md) - Next.js App Router organization
 - [UI Design Guide](../architecture-design/ui-design-guide.md) - Component patterns
-- [API Patterns](../api-data/api-patterns.md) - API development patterns
+- [API Design Guide](../api/api-design-guide.md) - API development patterns and implementation guide
 - [Security Standards](../security/README.md) - Security implementation

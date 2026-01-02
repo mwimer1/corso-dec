@@ -582,7 +582,7 @@ import { someUtil } from '@/lib/shared';        // Shared utility
 - [Import Patterns & Boundaries](../codebase-apis/import-patterns.md)
 - [Testing Strategy](../testing-quality/testing-strategy.md)
 - [Security Patterns](../security/README.md)
-- [API Patterns](../api-data/api-patterns.md)
+- [API Design Guide](../api/api-design-guide.md)
 
 ---
 

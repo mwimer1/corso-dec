@@ -120,7 +120,7 @@ The following tasks require manual browser testing that cannot be automated in t
 - Accessibility structure (ARIA roles, keyboard handlers)
 - Server/client boundaries
 - Code quality (lint, test, typecheck)
-- Legacy code removal
+- Code cleanup and refactoring
 
 ### ⚠️ Requires Manual Testing
 - Responsive breakpoints

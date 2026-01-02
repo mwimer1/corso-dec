@@ -162,7 +162,7 @@ console.error(`${context} failed:`, error as any);
 
 - [TypeScript Guide](./typescript-guide.md) - Complete TypeScript reference
 - [Coding Standards](../development/coding-standards.md) - General coding standards
-- [API Patterns](../api-data/api-patterns.md) - API type safety
+- [API Design Guide](../api/api-design-guide.md) - API type safety and patterns
 
 ---
 

@@ -376,6 +376,6 @@ function AuthAwareComponent() {
 ---
 
 **Related Documentation:**
-- [API Patterns & Data Fetching](../api-data/api-patterns.md)
+- [API Design Guide](../api/api-design-guide.md) - API patterns and data fetching
 - [Development Setup Guide](../development/setup-guide.md)
 - [Security Policy](security-policy.md)

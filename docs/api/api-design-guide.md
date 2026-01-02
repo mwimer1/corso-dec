@@ -1,9 +1,9 @@
 ---
-title: "Api"
-description: "Documentation and resources for documentation functionality. Located in api/."
+title: "API Design Guide"
+description: "Complete guide to API design, OpenAPI compliance, validation, and documentation for the Corso API."
 last_updated: "2026-01-02"
 category: "documentation"
-status: "draft"
+status: "active"
 ---
 # API Design Guide
 
@@ -49,6 +49,117 @@ pnpm openapi:docs
 │   └── csp-report/      # Security reporting
 └── internal/            # Internal endpoints (webhooks)
 ```
+
+## ⚙️ Runtime Selection
+
+### ⚠️ CRITICAL: Runtime Declaration & Wrapper Matching
+
+**Always declare the runtime** in API route handlers and use the matching wrapper. Next.js defaults to Edge if not specified, which can cause failures if Node.js code is used.
+
+**Quick Reference:**
+- **Edge Runtime**: `export const runtime = 'edge';` → Use `withErrorHandlingEdge`, `withRateLimitEdge` from `@/lib/api`
+- **Node.js Runtime**: `export const runtime = 'nodejs';` → Use `withErrorHandlingNode`, `withRateLimitNode` from `@/lib/middleware`
+
+**When to use Edge:**
+- Fast, stateless endpoints (health checks, CSP reports, public APIs)
+- No database access, no Clerk `auth()`, no Node.js-only features
+- Low latency requirements
+
+**When to use Node.js:**
+- Database operations (ClickHouse, Supabase)
+- Clerk authentication (`auth()` from `@clerk/nextjs/server`)
+- Webhooks with signature verification
+- Any route requiring Node.js-only features (file system, streams, etc.)
+
+**Import Locations:**
+- Edge wrappers: `@/lib/api` or `@/lib/middleware`
+- Node wrappers: `@/lib/middleware` only
+
+See [Rate Limiting](#-rate-limiting) section for implementation examples.
+
+## 🏗️ Server Actions
+
+### Core Principles
+
+Server Actions are Next.js server functions that can be called directly from client components. They differ from API routes in that they:
+- Use `'use server'` directive instead of route handlers
+- Are called directly from client components (no fetch needed)
+- Automatically handle form submissions and mutations
+
+**Server Actions Rules:**
+- Always start with `'use server'`
+- 5-15 lines maximum per action (delegate to service layer)
+- Authenticate, validate, rate-limit, then delegate
+- Throw structured errors, never generic ones
+- Use Zod schemas for all input validation
+
+### Basic Structure
+
+```typescript
+'use server';
+
+import { z } from 'zod';
+import { auth } from '@clerk/nextjs/server';
+import { withRateLimitNode } from '@/lib/middleware';
+import { updateUserProfile } from '@/lib/user/service';
+
+const UpdateProfileSchema = z.object({
+  name: z.string().min(1).max(100),
+  email: z.string().email(),
+});
+
+export async function updateProfile(input: unknown) {
+  // 1. Authenticate
+  const { userId } = await auth();
+  if (!userId) {
+    throw new Error('Unauthorized');
+  }
+
+  // 2. Validate input
+  const data = UpdateProfileSchema.parse(input);
+
+  // 3. Delegate to business logic
+  return await updateUserProfile(userId, data);
+}
+```
+
+### Authentication & Authorization
+
+```typescript
+import { auth } from '@clerk/nextjs/server';
+
+export async function validateAuth() {
+  const { userId, orgId } = await auth();
+  if (!userId) {
+    throw new AuthError('Authentication required', 'AUTH_REQUIRED');
+  }
+  return { userId, orgId };
+}
+```
+
+**Important**: Use Clerk's `has({ role })` method for role checks. Never use deprecated `hasRole()` utilities.
+
+```typescript
+import { auth } from '@clerk/nextjs/server';
+
+export async function adminAction(input: unknown) {
+  const { userId, has } = await auth();
+  
+  if (!userId) {
+    throw new AuthError('Authentication required', 'AUTH_REQUIRED');
+  }
+  
+  // ✅ CORRECT: Use Clerk's has({ role }) method
+  if (!has({ role: 'admin' })) {
+    throw new ForbiddenError('Admin access required', 'INSUFFICIENT_PERMISSIONS');
+  }
+
+  // Proceed with admin operation
+  return performAdminAction(input);
+}
+```
+
+**Available Roles**: `'member'`, `'admin'`, `'owner'`, `'viewer'`, `'service'` (see OpenAPI RBAC configuration)
 
 ## 📝 OpenAPI Specification
 
@@ -609,6 +720,35 @@ Before committing your OpenAPI changes:
         $ref: '#/components/responses/RateLimited'
 ```
 
+## 📊 Data Fetching Patterns
+
+### Warehouse Query Hooks
+
+For detailed warehouse query patterns and hook usage, see:
+- [Warehouse Queries (Canonical)](../codebase-apis/warehouse-queries.md) - Query rules and patterns
+- [Warehouse Query Hooks](../analytics/warehouse-query-hooks.md) - React hook usage
+
+**Quick Reference:**
+```typescript
+// Simple query with automatic cache key
+const { data, isLoading, error } = useWarehouseQuery<Project>(
+  'SELECT * FROM projects'
+);
+
+// Cached query with custom key
+const { data } = useWarehouseQueryCached<Project>(
+  ['projects', filters],
+  'SELECT * FROM projects WHERE status = ?',
+  { staleTime: 5 * 60 * 1000 }
+);
+```
+
+**Key Principles:**
+- Always use parameterized queries (no string interpolation)
+- Use appropriate cache keys for optimal performance
+- Handle loading, error, and empty states
+- See canonical documentation for complete patterns
+
 ## 🔐 Security & RBAC
 
 ### Authentication
@@ -646,6 +786,36 @@ parameters:
 ```
 
 ### RBAC Validation
+
+### CSRF Protection
+
+Server actions include CSRF token automatically. For custom forms, include the token:
+
+```typescript
+import { csrf } from '@/lib/security/csrf';
+
+export async function secureAction(formData: FormData) {
+  const token = formData.get('csrfToken') as string;
+  await csrf.verify(token);
+
+  // Proceed with action
+}
+```
+
+### Input Sanitization
+
+Sanitize user input to prevent XSS attacks:
+
+```typescript
+import DOMPurify from 'isomorphic-dompurify';
+
+export async function createPost(input: CreatePostInput) {
+  // Sanitize HTML content
+  const sanitizedContent = DOMPurify.sanitize(input.content);
+
+  return createPostInDb({ ...input, content: sanitizedContent });
+}
+```
 
 **Automated Check:**
 ```bash
@@ -1009,6 +1179,73 @@ describe('API v1: example endpoint', () => {
 - Rate limiting
 - Error handling
 
+### Query Testing Patterns
+
+For testing warehouse queries and data fetching:
+
+```typescript
+import { vi } from 'vitest';
+
+// Mock warehouse query hooks
+vi.mock('@/components/dashboard/hooks/use-warehouse-query', () => ({
+  useWarehouseQuery: vi.fn(() => ({
+    data: mockProjects,
+    isLoading: false,
+    error: null
+  }))
+}));
+
+describe('ProjectList', () => {
+  it('displays loading state', () => {
+    vi.mocked(useWarehouseQuery).mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      error: null
+    });
+
+    render(<ProjectList />);
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
+  });
+});
+```
+
+## 🔄 Migration from Legacy Patterns
+
+### From Direct Fetch
+
+```typescript
+// ❌ OLD: Direct fetch (no caching, error handling)
+const [data, setData] = useState(null);
+useEffect(() => {
+  fetch('/api/query', { body: JSON.stringify({ sql }) })
+    .then(res => res.json())
+    .then(setData);
+}, [sql]);
+
+// ✅ NEW: Warehouse hooks (caching, error handling, type safety)
+const { data, isLoading, error } = useWarehouseQuery<MyData>(
+  'SELECT * FROM my_table'
+);
+```
+
+### From Custom Hooks
+
+```typescript
+// ❌ OLD: Custom hook without proper caching
+function useCustomData() {
+  return useSWR('/api/custom', fetcher);
+}
+
+// ✅ NEW: Consistent warehouse pattern
+function useCustomData() {
+  return useWarehouseQueryCached(
+    ['custom-data'],
+    'SELECT * FROM custom_table',
+    { staleTime: 5 * 60 * 1000 }
+  );
+}
+```
+
 ## 📚 Documentation & Tooling
 
 ### OpenAPI Documentation Generation
@@ -1291,7 +1528,7 @@ responses:
 
 - [API README](../../api/README.md) - Complete OpenAPI specification details and tooling
 - [API v1 README](../../app/api/v1/README.md) - Route implementation documentation
-- [API Patterns](../api-data/api-patterns.md) - Code patterns and implementation guide
+- [API Design Guide](./api-design-guide.md) - Complete API patterns and implementation guide (this document)
 - [Security Standards](../../.cursor/rules/security-standards.mdc) - Security patterns and RBAC
 - [Error Handling](../error-handling/error-handling-guide.md) - Error handling patterns
 - [Testing Guide](../testing-quality/testing-guide.md) - API testing patterns

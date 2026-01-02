@@ -497,7 +497,7 @@ pnpm typecheck:prod
 
 - [Coding Standards](../development/coding-standards.md) - General coding standards
 - [Testing Strategy](../testing-quality/testing-strategy.md) - Testing with TypeScript
-- [API Patterns](../api-data/api-patterns.md) - API type safety
+- [API Design Guide](../api/api-design-guide.md) - API type safety and patterns
 
 ---
 

@@ -11,6 +11,8 @@ status: "draft"
 > ```bash
 > pnpm tools:scan-dir . --max-depth 6 --exclude node_modules,.next,dist,coverage,.git,.cache,reports,test-results,test-reports > docs/codebase/repository-directory-structure.md
 > ```
+>
+> **For codebase organization patterns and conventions**, see [Codebase Structure & Conventions](../codebase-apis/codebase-structure.md).
 
 ## Directory Tree
 🌳 Directory Structure: .
@@ -616,7 +618,6 @@ status: "draft"
     │   │   ├── manual-verification-guide.md
     │   │   ├── pricing-page-qa-checklist.md
     │   │   ├── README.md
-    │   │   ├── verification-steps.md
     │   │   ├── verification-summary.md
     │   ├── reference
     │   │   ├── edge-runtime.md
@@ -646,11 +647,9 @@ status: "draft"
     │   │   ├── nextjs-16-upgrade-guide.md
     │   ├── .markdownlintrc
     │   ├── best-practices.md
-    │   ├── guardrails.json
     │   ├── index.ts
     │   ├── pattern-library.md
     │   ├── README.md
-    │   ├── repo-root-policy.md
     ├── eslint-plugin-corso
     │   ├── rules
     │   │   ├── domain-config.json
@@ -658,7 +657,6 @@ status: "draft"
     │   │   ├── build.mjs
     │   ├── src
     │   │   ├── index.js
-    │   ├── guardrails.json
     │   ├── package.json
     │   ├── README.md
     ├── hooks
