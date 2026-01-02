@@ -58,8 +58,8 @@ export const FooterCTA: React.FC<FooterCTAProps> = (props) => {
   const blueInner = isTall
     ? // Tall mode: scales smoothly on large screens (no weird "xl gets smaller" effect)
       "py-[2.625rem] sm:py-[3.625rem] lg:py-[clamp(3.25rem,6.5vh,4.75rem)] text-center"
-    : // Default mode: keep current behavior for non-home pages
-      "py-[2.625rem] sm:py-[3.625rem] lg:py-[2.5rem] xl:py-[2rem] text-center";
+    : // Default mode: clamp-based desktop padding (no xl shrink)
+      "py-[2.625rem] sm:py-[3.625rem] lg:py-[clamp(3.25rem,7vh,5.5rem)] text-center";
 
   const inner = cn(
     containerWithPaddingVariants({ maxWidth: '7xl', padding: 'lg', centered: true }),

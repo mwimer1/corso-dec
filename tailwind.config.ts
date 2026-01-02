@@ -118,6 +118,7 @@ const config: Config = {
         '2xl': 'var(--radius-2xl, 1rem)',
         '3xl': 'var(--radius-3xl, 1.5rem)',
         'full': 'var(--radius-full, 9999px)',
+        'button': 'var(--radius-button, 0.625rem)',
         // Legacy mapping
         DEFAULT: 'var(--radius-md, 0.375rem)',
       },

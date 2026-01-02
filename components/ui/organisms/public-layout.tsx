@@ -8,7 +8,6 @@ import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
 import { containerWithPaddingVariants } from "@/styles/ui/shared/container-helpers";
 import type { NavItemData } from "@/types/shared";
 import { useAuth } from "@clerk/nextjs";
-import { usePathname } from "next/navigation";
 import type { HTMLAttributes, ReactNode } from "react";
 import { useEffect, useState } from "react";
 import Footer from "./footer-system/footer";
@@ -52,8 +51,6 @@ export function PublicLayout({
   ...props
 }: PublicLayoutProps): React.ReactElement {
   const { isSignedIn } = useAuth();
-  const pathname = usePathname();
-  const isHomepage = pathname === '/';
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -138,7 +135,7 @@ export function PublicLayout({
         </div>
       )}
 
-      <Footer showCTA={showFooterCTA} variant={isHomepage ? 'hero' : 'fillViewport'} />
+      <Footer showCTA={showFooterCTA} variant={showFooterCTA ? 'hero' : 'content'} />
     </div>
   );
 }

@@ -65,7 +65,7 @@ export function SiteFooterShell({
     variant === 'fillViewport'
       ? 'min-h-[calc(100vh-var(--nav-h,0px)-var(--legal-h,0px))]'
       : variant === 'hero'
-      ? 'lg:min-h-[clamp(400px,50vh,650px)]'
+      ? 'lg:min-h-[calc(clamp(560px,65vh,1050px)-var(--legal-h,0px))]'
       : ''; // 'content' variant has no min-height constraint
 
   return (

@@ -23,6 +23,9 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
   const previousIndexRef = useRef<number>(0);
   const contentRef = useRef<HTMLDivElement>(null);
 
+  // Stable base ID for ARIA relationships
+  const baseId = 'industry-selector';
+
   // Get valid industries array (default to empty if invalid)
   const validIndustries = industries && industries.length > 0 ? industries : [];
   const activeIndustry = validIndustries[activeIndex] ?? validIndustries[0] ?? null;
@@ -109,10 +112,22 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
             <div
               role="tablist"
               aria-label="Choose an industry"
-              className="flex w-full justify-start gap-xs sm:gap-sm"
+              className={cn(
+                'flex w-full justify-start gap-xs sm:gap-sm',
+                // Mobile: horizontal scroll for narrow screens, ensure focus rings not clipped
+                'overflow-x-auto overflow-y-visible',
+                // Hide scrollbar on mobile for cleaner look (still scrollable via touch)
+                'scrollbar-hide',
+                // Prevent wrapping to maintain tab button sizing
+                'flex-nowrap',
+                // Ensure focus rings are visible (no overflow-hidden on parent)
+                'min-w-0'
+              )}
             >
               {validIndustries.map((industry, index) => {
                 const isActive = activeIndex === index;
+                const tabId = `${baseId}-tab-${industry.key}`;
+                const panelId = `${baseId}-panel-${industry.key}`;
                 return (
                   <button
                     key={industry.key}
@@ -121,12 +136,24 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
                     role="tab"
                     tabIndex={isActive ? 0 : -1}
                     aria-selected={isActive}
-                    aria-controls={`industry-panel-${industry.key}`}
-                    id={`tab-${industry.key}`}
+                    aria-controls={panelId}
+                    id={tabId}
                     data-state={isActive ? 'active' : 'inactive'}
-                    className={industryTabButtonVariants({ isActive })}
+                    className={cn(
+                      industryTabButtonVariants({ isActive }),
+                      // Ensure minimum touch target size on mobile (44px height)
+                      'min-h-[44px] sm:min-h-0'
+                    )}
                     onClick={() => handleTabChange(index)}
-                    onKeyDown={(e) => onKeyDown(e, index)}
+                    onKeyDown={(e) => {
+                      // Handle Enter/Space for activation (in addition to arrow keys)
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleTabChange(index);
+                        return;
+                      }
+                      onKeyDown(e, index);
+                    }}
                   >
                     {industry.title}
                   </button>
@@ -137,10 +164,10 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
 
           {/* Content panel with transition */}
           <div
-            id={`industry-panel-${activeIndustry.key}`}
+            id={`${baseId}-panel-${activeIndustry.key}`}
             role="tabpanel"
             aria-live="polite"
-            aria-labelledby={`tab-${activeIndustry.key}`}
+            aria-labelledby={`${baseId}-tab-${activeIndustry.key}`}
             className="min-w-0"
           >
             <div
@@ -162,7 +189,8 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
                   <p className="text-base text-muted-foreground mb-3">
                     {activeIndustry.subtitle}
                   </p>
-                  <p className="text-sm text-foreground/90 leading-relaxed">
+                  {/* Constrain description width for readability */}
+                  <p className="text-sm text-foreground/90 leading-relaxed max-w-prose">
                     {activeIndustry.description}
                   </p>
                 </div>
@@ -171,7 +199,7 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
                   {activeIndustry.benefits.slice(0, 3).map((benefit) => (
                     <li key={benefit} className="flex gap-2 text-sm text-foreground">
                       <Check
-                        className="h-4 w-4 text-primary mt-0.5 flex-shrink-0"
+                        className="h-4 w-4 text-primary flex-shrink-0 self-start mt-0.5"
                         aria-hidden="true"
                       />
                       <span>{benefit}</span>

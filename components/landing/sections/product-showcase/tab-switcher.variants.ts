@@ -35,7 +35,7 @@ const tabSwitcherVariants = tv({
 const tabButtonVariants = tv({
   // Pill buttons with token-based borders and clear active state
   base: [
-    'px-lg py-xs rounded-[10px] font-medium tracking-wide transition-colors',
+    'px-lg py-xs rounded-button font-medium tracking-wide transition-colors',
     'border-solid',
     focusRing('primary'),
   ],
@@ -52,7 +52,7 @@ const tabButtonVariants = tv({
     preset: {
       default: '',
       // Product Showcase pills: ensure a clearly visible 2px border
-      showcaseWhite: 'h-[32px] px-[14px] py-[6px] rounded-[10px] text-[16px] leading-5 shadow-none border-2',
+      showcaseWhite: 'h-[32px] px-[14px] py-[6px] rounded-button text-[16px] leading-5 shadow-none border-2',
       /**
        * Grid preset: used when TabSwitcher layout="grid". Buttons behave like grid cards
        * rather than inline pills. They stretch to full width and use a rectangular geometry.

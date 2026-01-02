@@ -3,7 +3,7 @@ import { tv } from '@/styles';
 
 // Badge styles: small pill with color variants.
 const badgeVariants = tv({
-  base: 'inline-block rounded-[10px] px-2 py-0.5 text-xs font-semibold',
+  base: 'inline-block rounded-button px-2 py-0.5 text-xs font-semibold',
   variants: {
     color: {
       default: 'bg-muted text-muted-foreground',
