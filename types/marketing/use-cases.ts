@@ -26,4 +26,3 @@ export type UseCaseKey = 'insurance' | 'suppliers' | 'construction' | 'developer
 export type UseCase = z.infer<typeof zUseCase>;
 
 export const zUseCaseMap = z.record(z.enum(['insurance','suppliers','construction','developers']), zUseCase);
-

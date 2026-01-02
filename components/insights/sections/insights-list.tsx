@@ -2,7 +2,7 @@
 
 import { InsightCard } from "@/components/insights/insight-card";
 import { ContentListSkeleton } from "@/components/ui/molecules";
-import { resolveInsightImageUrl } from "@/lib/marketing/insights/image-resolver";
+import { resolveInsightImageUrl } from "@/components/insights/utils/image-resolver";
 import { cn } from "@/styles";
 import { emptyStateVariants } from "@/styles/ui/molecules";
 import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";

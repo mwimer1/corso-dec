@@ -44,8 +44,12 @@ async function selectContentSource(): Promise<InsightContentSource> {
   }
   
   // Priority 2: Directus CMS (when provider is set to directus)
+  // ⚠️ NOTE: Directus adapter is not yet implemented - will throw error if selected
+  // The source selector will catch the error and fall back to legacy adapter
   const cmsProvider = env.CORSO_CMS_PROVIDER?.toLowerCase();
   if (cmsProvider === 'directus') {
+    // Directus adapter not yet implemented - will throw descriptive error
+    // In production, consider adding try/catch here to fall back gracefully
     return {
       getAllInsights: getDirectusInsightsIndex,
       getInsightBySlug: getDirectusInsightBySlug,

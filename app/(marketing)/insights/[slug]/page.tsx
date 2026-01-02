@@ -9,7 +9,7 @@
 import { PublicLayout } from "@/components";
 import { InsightDetail } from "@/components/insights";
 import { getInsightsNavItems } from "@/components/insights/layout/nav.config";
-import { resolveInsightImageUrl } from "@/lib/marketing/insights/image-resolver";
+import { resolveInsightImageUrl } from "@/components/insights/utils/image-resolver";
 import { getInsightBySlug, getRelatedInsights } from "@/lib/marketing/server";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";

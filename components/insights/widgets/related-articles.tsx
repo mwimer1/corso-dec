@@ -1,7 +1,7 @@
 'use client';
 
 import { InsightCard } from '@/components/insights/insight-card';
-import { resolveInsightImageUrl } from '@/lib/marketing/insights/image-resolver';
+import { resolveInsightImageUrl } from '@/components/insights/utils/image-resolver';
 import { cn } from '@/styles';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';

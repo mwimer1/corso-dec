@@ -78,10 +78,14 @@ function fmToItem(data: FrontmatterShape, html: string, readingTime?: number): I
 }
 
 /**
- * Minimal Markdown→HTML fallback. For production we should switch to remark/rehype.
- * Here we preserve existing behavior (InsightDetail expects HTML) by applying a
- * conservative conversion for common paragraphs and headings, leaving advanced
- * markdown features as-is.
+ * Fallback Markdown→HTML converter (used when remark/rehype pipeline fails).
+ * 
+ * This is a minimal converter that handles basic markdown:
+ * - Headings (# ## ###)
+ * - Paragraphs
+ * 
+ * Advanced features (lists, links, code blocks) are preserved as plain text.
+ * This fallback ensures the app doesn't crash if the main converter fails.
  */
 function markdownToHtmlLoose(markdown: string): string {
   const lines = markdown.split(/\r?\n/);
@@ -96,6 +100,15 @@ function markdownToHtmlLoose(markdown: string): string {
     .join('\n');
 }
 
+/**
+ * Rich Markdown→HTML converter using remark/rehype pipeline.
+ * 
+ * Features:
+ * - Full markdown support (GFM extensions)
+ * - Automatic heading IDs (for table of contents)
+ * - HTML sanitization (XSS protection)
+ * - Falls back to markdownToHtmlLoose on errors
+ */
 async function markdownToHtmlRich(markdown: string): Promise<string> {
   try {
     // Extend the default schema to allow 'id' attributes on heading elements

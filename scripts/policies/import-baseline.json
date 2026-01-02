@@ -60,6 +60,7 @@
     "lib/marketing/insights/static-data.ts -> @/types/shared",
     "lib/marketing/insights/content-loader.ts -> @/types/marketing",
     "lib/marketing/insights/content-loader.ts -> @/types/shared",
+    "lib/marketing/client.ts -> @/types/marketing",
     "lib/middleware/edge/rate-limit.ts -> @/api/edge-env",
     "lib/middleware/edge/rate-limit.ts -> @/monitoring/logger-edge",
     "lib/middleware/edge/rate-limit.ts -> @/ratelimiting/memory",

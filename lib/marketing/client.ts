@@ -6,9 +6,9 @@
 // ROI Calculator
 export { calcRoi, clamp } from './roi';
 
-// Use Cases
-export { zUseCaseMap } from './use-cases';
-export type { UseCase, UseCaseKey } from './use-cases';
+// Use Cases (re-exported from types barrel for convenience)
+export { zUseCaseMap } from '@/types/marketing';
+export type { UseCase, UseCaseKey } from '@/types/marketing';
 
 
 

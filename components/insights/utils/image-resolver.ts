@@ -1,4 +1,4 @@
-// lib/marketing/insights/image-resolver.ts
+// components/insights/utils/image-resolver.ts
 // Shared image resolver for insights - ensures consistent image URLs across list, detail, metadata, and related articles.
 // Safe to import from both server and client components (no Node.js-only APIs).
 

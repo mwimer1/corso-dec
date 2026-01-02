@@ -732,7 +732,7 @@ status: "draft"
     │   │   ├── insights
     │   │   │   ├── content-service.ts
     │   │   │   ├── directus-adapter.ts
-    │   │   │   ├── image-resolver.ts
+    │   │   │   └── (image-resolver.ts moved to components/insights/utils/)
     │   │   │   ├── legacy-adapter.ts
     │   │   │   ├── mockcms-adapter.ts
     │   │   │   ├── source.ts
@@ -741,7 +741,7 @@ status: "draft"
     │   │   ├── README.md
     │   │   ├── roi.ts
     │   │   ├── server.ts
-    │   │   ├── use-cases.ts
+    │   │   └── (use-cases.ts moved to types/marketing/use-cases.ts)
     │   ├── middleware
     │   │   ├── edge
     │   │   │   ├── error-handler.ts

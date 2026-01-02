@@ -7,7 +7,7 @@ import { useArticleAnalytics } from "@/components/insights/hooks/use-article-ana
 import { InsightHeaderBlock } from "@/components/insights/widgets/insight-header-block";
 import { RelatedArticles } from "@/components/insights/widgets/related-articles";
 import { TableOfContents } from "@/components/insights/widgets/table-of-contents";
-import { resolveInsightImageUrl } from "@/lib/marketing/insights/image-resolver";
+import { resolveInsightImageUrl } from "@/components/insights/utils/image-resolver";
 import { cn } from "@/styles";
 import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
 import { containerWithPaddingVariants } from "@/styles/ui/shared/container-helpers";
