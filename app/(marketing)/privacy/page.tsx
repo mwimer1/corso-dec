@@ -3,8 +3,10 @@
 import { LegalPageSection, PrivacyContent } from "@/components/marketing";
 import type { Metadata } from "next";
 
+/** @knipignore */
 export const runtime = "nodejs";
 
+/** @knipignore */
 export const metadata: Metadata = {
   title: "Privacy Policy | Corso",
   description: "Details on data collection, usage, and protection at Corso.",

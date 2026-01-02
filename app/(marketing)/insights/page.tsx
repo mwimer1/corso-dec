@@ -9,11 +9,14 @@ import { getAllInsights, getCategories } from "@/lib/marketing/server";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
+/** @knipignore */
 export const runtime = "nodejs";
 // Use ISR for static content - revalidate every 5 minutes
 // This allows URL query params while still benefiting from caching
+/** @knipignore */
 export const revalidate = 300; // 5 minutes
 
+/** @knipignore */
 export const metadata: Metadata = {
   title: "Insights | Corso",
   description:

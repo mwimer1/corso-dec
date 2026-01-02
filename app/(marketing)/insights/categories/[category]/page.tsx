@@ -5,8 +5,10 @@ import { getInsightsByCategory } from '@/lib/marketing/server';
 import { trackEvent } from '@/lib/shared/analytics/track';
 import type { Metadata } from 'next';
 
+/** @knipignore */
 export const runtime = 'nodejs';
 
+/** @knipignore */
 export async function generateMetadata({ params }: { params: Promise<{ category: string }> }): Promise<Metadata> {
   const { category: cat } = await params;
   return { title: `${cat} | Corso Insights`, description: `Insights in category ${cat}` };

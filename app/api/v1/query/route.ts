@@ -21,8 +21,11 @@
  */
 
 // Node.js required: ClickHouse database operations
+/** @knipignore */
 export const runtime = 'nodejs';
+/** @knipignore */
 export const dynamic = 'force-dynamic';
+/** @knipignore */
 export const revalidate = 0;
 
 import { http, validateJson } from '@/lib/api';
@@ -35,6 +38,7 @@ import { auth } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
 import { z } from 'zod';
 
+/** @knipignore */
 export async function OPTIONS(req: Request) {
   const response = handleCors(req);
   if (response) return response;

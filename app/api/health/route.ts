@@ -1,10 +1,14 @@
 // Canonical health endpoint - Edge runtime for fast responses
+/** @knipignore */
 export const runtime = 'edge';
+/** @knipignore */
 export const dynamic = 'force-dynamic';
+/** @knipignore */
 export const revalidate = 0;
 
 import { getEnvEdge, http } from '@/lib/api/edge';
 
+/** @knipignore */
 export async function GET(_req: Request) {
   const env = getEnvEdge();
 
@@ -20,10 +24,12 @@ export async function GET(_req: Request) {
   });
 }
 
+/** @knipignore */
 export async function HEAD() {
   return http.noContent();
 }
 
+/** @knipignore */
 export async function OPTIONS() {
   return http.noContent();
 }

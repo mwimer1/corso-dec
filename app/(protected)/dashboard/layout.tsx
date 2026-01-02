@@ -1,4 +1,5 @@
 // app/(protected)/dashboard/layout.tsx
+/** @knipignore */
 export const runtime = 'nodejs';
 import { DashboardLayout } from "@/components/dashboard";
 import { auth } from "@clerk/nextjs/server";

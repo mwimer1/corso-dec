@@ -1,6 +1,9 @@
 // app/api/v1/csp-report/route.ts
+/** @knipignore */
 export const runtime = 'edge';
+/** @knipignore */
 export const dynamic = 'force-dynamic';
+/** @knipignore */
 export const revalidate = 0;
 
 import { getEnvEdge, http, readJsonOnce, withErrorHandlingEdge as withErrorHandling, withRateLimitEdge as withRateLimit } from "@/lib/api/edge";

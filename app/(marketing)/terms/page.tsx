@@ -3,8 +3,10 @@
 import { LegalPageSection, TermsContent } from "@/components/marketing";
 import type { Metadata } from "next";
 
+/** @knipignore */
 export const runtime = "nodejs";
 
+/** @knipignore */
 export const metadata: Metadata = {
   title: "Terms of Service | Corso",
   description: "Legal terms and conditions for using the Corso platform.",

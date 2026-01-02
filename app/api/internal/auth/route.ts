@@ -1,6 +1,9 @@
 // Node.js required: Clerk webhook verification
+/** @knipignore */
 export const runtime = 'nodejs';
+/** @knipignore */
 export const dynamic = 'force-dynamic';
+/** @knipignore */
 export const revalidate = 0;
 
 import { http } from '@/lib/api';
@@ -50,6 +53,7 @@ export const POST = withErrorHandlingNode(
   withRateLimitNode(async (req: NextRequest) => handler(req) as any, RATE_LIMIT_100_PER_MIN)
 );
 
+/** @knipignore */
 export async function OPTIONS(req: Request) {
   const response = handleCors(req);
   if (response) return response;

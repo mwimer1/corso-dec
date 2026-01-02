@@ -1,6 +1,9 @@
 // Server component: Account page with client-side UserProfile component
+/** @knipignore */
 export const runtime = "nodejs";
+/** @knipignore */
 export const dynamic = "force-dynamic";
+/** @knipignore */
 export const revalidate = 0;
 
 import { AuthCard } from "@/components";

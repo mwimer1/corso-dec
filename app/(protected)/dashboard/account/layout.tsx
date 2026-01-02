@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 
+/** @knipignore */
 export const metadata: Metadata = {
   title: 'Account | Dashboard | Corso',
   description: 'Manage your account settings and profile',

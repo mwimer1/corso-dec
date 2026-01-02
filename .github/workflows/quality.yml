@@ -173,10 +173,7 @@ jobs:
               total_deleted=$(( total_deleted + 1 ))
               # Pace between calls to avoid spiking the API
               # Supports fractional (e.g. 0.5)
-              python3 - <<PY
-import time
-time.sleep(float("${PACE}"))
-PY
+              sleep "${PACE:-0}"
             done <<< "$ids"
 
             # If less than a full page, we reached the end

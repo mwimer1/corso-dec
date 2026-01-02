@@ -3,7 +3,9 @@
 // Client component to handle plan selection redirects
 "use client";
 
+/** @knipignore */
 export const runtime = "nodejs";
+/** @knipignore */
 export const dynamic = "force-dynamic";
 
 import { formatPriceUSD, PRICING_UI, PublicLayout } from "@/components";

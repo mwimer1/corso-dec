@@ -15,8 +15,11 @@
  * ```
  */
 
+/** @knipignore */
 export const runtime = 'nodejs';
+/** @knipignore */
 export const dynamic = 'force-dynamic';
+/** @knipignore */
 export const revalidate = 0;
 
 import { http } from '@/lib/api';
@@ -1009,6 +1012,7 @@ export const POST = withErrorHandling(
   )
 );
 
+/** @knipignore */
 export async function OPTIONS(req: Request) {
   const response = handleCors(req);
   if (response) return response;

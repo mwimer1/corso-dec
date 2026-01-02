@@ -4,10 +4,14 @@ import { handleCors, withErrorHandlingNode as withErrorHandling, withRateLimitNo
 import { auth } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
 
+/** @knipignore */
 export const runtime = 'nodejs';
+/** @knipignore */
 export const dynamic = 'force-dynamic';
+/** @knipignore */
 export const revalidate = 0;
 
+/** @knipignore */
 export async function OPTIONS(req: Request) {
   const response = handleCors(req);
   if (response) return response;
@@ -57,6 +61,7 @@ const createWrappedHandler = (params: { entity: string }) => {
 };
 
 // Next.js dynamic route signature: (req, { params }) => Response
+/** @knipignore */
 export async function GET(req: NextRequest, ctx: { params: Promise<{ entity: string }> | { entity: string } }): Promise<Response> {
   // Resolve params if it's a Promise (Next.js 15+)
   const resolvedParams = 'then' in ctx.params ? await ctx.params : ctx.params;

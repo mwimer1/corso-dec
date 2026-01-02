@@ -6,8 +6,10 @@ import { ContactFormWrapper, ContactInfo, ContactLayout } from "@/components/mar
 import type { ContactFormSubmitData } from "@/types/forms";
 import type { Metadata } from "next";
 
+/** @knipignore */
 export const runtime = "nodejs";
 
+/** @knipignore */
 export const metadata: Metadata = {
   title: "Contact | Corso",
   description: "Get in touch with the Corso team.",

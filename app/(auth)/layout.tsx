@@ -6,6 +6,7 @@ import { SkipNavLink } from '@/components/ui/atoms';
 import type { PropsWithChildren } from 'react';
 import RouteThemeAuth from './_theme';
 
+/** @knipignore */
 export const runtime = 'nodejs'; // client layout; avoid Edge hydration pitfalls
 
 export default function AuthLayout({ children }: PropsWithChildren) {

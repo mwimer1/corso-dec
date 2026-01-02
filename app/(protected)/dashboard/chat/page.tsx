@@ -1,8 +1,10 @@
+/** @knipignore */
 export const runtime = 'nodejs';
 
 import { ChatPage } from '@/components/chat';
 import type { Metadata } from 'next';
 
+/** @knipignore */
 export const metadata: Metadata = {
   title: 'Chat | Dashboard | Corso',
   description: 'Corso AI chat workspace',

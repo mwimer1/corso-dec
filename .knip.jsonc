@@ -17,17 +17,11 @@
     "package.json"
   ],
 
-  // Ignore unused exports in Next.js special files (route handlers, metadata, etc.)
-  "ignoreIssues": {
-    "app/**/route.ts": ["exports"],
-    "app/**/page.tsx": ["exports"],
-    "app/**/layout.tsx": ["exports"],
-    "app/**/error.tsx": ["exports"],
-    "app/**/loading.tsx": ["exports"],
-    "app/**/not-found.tsx": ["exports"],
-    "app/**/sitemap.ts": ["exports"],
-    "app/**/robots.ts": ["exports"]
-  },
+  // Tag-based filtering: exclude exports tagged with @knipignore (Next.js framework exports)
+  "tags": ["-knipignore"],
+
+  // Narrow ignoreIssues: only for truly framework-only files if needed
+  "ignoreIssues": {},
 
   // TypeScript configuration
   "typescript": {

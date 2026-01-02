@@ -7,8 +7,11 @@ import { landingNavItems } from '@/components/landing/layout/nav.config';
 
 
 
+/** @knipignore */
 export const dynamic = "force-static";
+/** @knipignore */
 export const revalidate = 3600; // 1 hour
+/** @knipignore */
 export const runtime = "nodejs";
 
 export default function MarketingHomePage() {

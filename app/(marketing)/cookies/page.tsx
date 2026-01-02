@@ -3,8 +3,10 @@
 import { CookiesContent, LegalPageSection } from "@/components/marketing";
 import type { Metadata } from "next";
 
+/** @knipignore */
 export const runtime = "nodejs";
 
+/** @knipignore */
 export const metadata: Metadata = {
   title: "Cookie Notice | Corso",
   description: "Information about cookies and tracking technologies used on the Corso platform.",

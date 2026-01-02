@@ -6,8 +6,11 @@ import { notFound } from "next/navigation";
 import React from "react";
 
 // Route config: use plain literals (no `as const`) so Next.js static analysis can read them.
+/** @knipignore */
 export const runtime = 'nodejs';
+/** @knipignore */
 export const dynamic = 'force-dynamic';
+/** @knipignore */
 export const revalidate = 0;
 
 // Helper to derive title from entity ID (capitalize first letter)
@@ -15,6 +18,7 @@ function getEntityTitle(entity: string): string {
   return entity.charAt(0).toUpperCase() + entity.slice(1);
 }
 
+/** @knipignore */
 export async function generateMetadata({ params }: { params: Promise<{ entity: string }> }): Promise<Metadata> {
   const data = EntityParamSchema.safeParse(await params);
   if (!data.success) notFound();

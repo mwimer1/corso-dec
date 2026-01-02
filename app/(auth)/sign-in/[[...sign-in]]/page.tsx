@@ -4,10 +4,14 @@ import { publicEnv } from '@/lib/shared/config/client';
 import { ClerkLoaded, ClerkLoading as ClerkLoadingState, SignIn } from '@clerk/nextjs';
 import type { Metadata } from 'next';
 
+/** @knipignore */
 export const runtime = 'nodejs';
+/** @knipignore */
 export const dynamic = 'force-dynamic';
+/** @knipignore */
 export const revalidate = 0;
 
+/** @knipignore */
 export const metadata: Metadata = {
   title: 'Sign In | Corso',
   robots: 'noindex',

@@ -5,9 +5,12 @@ import { redirect } from 'next/navigation';
 import type { PropsWithChildren } from 'react';
 import ProtectedClientWrapper from './client';
 
+/** @knipignore */
 export const runtime = 'nodejs';
 // Prefer request-time auth checks in v6; avoid forcing global dynamic unless necessary
+/** @knipignore */
 export const dynamic = 'force-dynamic';
+/** @knipignore */
 export const revalidate = 0;
 
 export default async function ProtectedLayout({ children }: PropsWithChildren) {

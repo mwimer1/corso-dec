@@ -3,8 +3,10 @@
 import { LegalPageSection } from '@/components/marketing';
 import type { Metadata } from 'next';
 
+/** @knipignore */
 export const runtime = 'nodejs';
 
+/** @knipignore */
 export const metadata: Metadata = {
   title: 'Status | Corso',
   description: 'Corso system status and uptime information.',

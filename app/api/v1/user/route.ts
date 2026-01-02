@@ -27,8 +27,11 @@ import { corsHeaders, handleCors } from '@/lib/middleware';
 import { UserSchema } from "@/lib/validators";
 import { auth } from "@clerk/nextjs/server";
 import { type NextRequest } from "next/server";
+/** @knipignore */
 export const runtime = 'nodejs';
+/** @knipignore */
 export const dynamic = 'force-dynamic';
+/** @knipignore */
 export const revalidate = 0;
 
 /**

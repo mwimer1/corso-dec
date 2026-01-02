@@ -18,10 +18,14 @@ import type { ReactNode } from "react";
 import Providers from './providers';
 
 // App Router segment config — must be top-level literals
+/** @knipignore */
 export const runtime = 'nodejs';
+/** @knipignore */
 export const dynamic = 'force-dynamic';
+/** @knipignore */
 export const revalidate = 0;
 
+/** @knipignore */
 export async function generateMetadata() {
   // Avoid importing BrandAssets at module scope; use static paths to prevent
   // evaluating barrels that may pull client-only modules during config collection.
@@ -76,6 +80,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     </html>
   );
 }
+/** @knipignore */
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,

@@ -14,13 +14,16 @@ import { getInsightBySlug, getRelatedInsights } from "@/lib/marketing/server";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+/** @knipignore */
 export const runtime = "nodejs";
 // Use ISR for static content - revalidate every 5 minutes
+/** @knipignore */
 export const revalidate = 300; // 5 minutes
 
 // Client component; dynamic not required
 
 /** Build <title> + <meta> from fetched article. */
+/** @knipignore */
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const item = await getInsightBySlug(slug);
