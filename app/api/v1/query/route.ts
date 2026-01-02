@@ -29,20 +29,18 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 import { http, validateJson } from '@/lib/api';
-import { withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_60_PER_MIN } from '@/lib/middleware';
+import { mapTenantContextError } from '@/lib/api/tenant-context-helpers';
+import { getTenantContext } from '@/lib/server';
+import { withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_60_PER_MIN, handleOptions } from '@/lib/middleware';
 import { clickhouseQuery } from '@/lib/integrations/clickhouse/server';
 import { validateSQLScope } from '@/lib/integrations/database/scope';
-import { handleCors } from '@/lib/middleware';
-import { getTenantContext } from '@/lib/server/db/tenant-context';
 import { auth } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
 import { z } from 'zod';
 
 /** @knipignore */
 export async function OPTIONS(req: Request) {
-  const response = handleCors(req);
-  if (response) return response;
-  return http.noContent();
+  return handleOptions(req);
 }
 
 /**
@@ -71,16 +69,7 @@ const handler = async (req: NextRequest): Promise<Response> => {
   try {
     tenantContext = await getTenantContext(req);
   } catch (error) {
-    if (error && typeof error === 'object' && 'code' in error) {
-      const code = error.code as string;
-      if (code === 'UNAUTHENTICATED') {
-        return http.error(401, 'Unauthorized', { code: 'HTTP_401' });
-      }
-      if (code === 'MISSING_ORG_CONTEXT') {
-        return http.error(400, 'Organization ID required. Provide X-Corso-Org-Id header or ensure org_id in session metadata.', { code: 'MISSING_ORG_CONTEXT' });
-      }
-    }
-    return http.error(400, 'Failed to determine organization context', { code: 'MISSING_ORG_CONTEXT' });
+    return mapTenantContextError(error);
   }
   const { orgId } = tenantContext;
 

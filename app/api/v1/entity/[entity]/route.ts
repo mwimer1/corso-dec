@@ -10,7 +10,7 @@ import { http } from '@/lib/api';
 import { getEntityConfig } from '@/lib/entities/config';
 import type { EntityFetchParams } from '@/lib/entities/contracts';
 import { getEntityPage } from '@/lib/entities/pages';
-import { handleCors, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_60_PER_MIN } from '@/lib/middleware';
+import { handleOptions, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_60_PER_MIN } from '@/lib/middleware';
 import { isRelaxedAuthMode } from '@/lib/shared/config/auth-mode';
 import {
   EntityListQuerySchema,
@@ -122,9 +122,7 @@ async function getAllowedFilterFields(entity: EntityParam): Promise<Set<string>>
 
 /** @knipignore */
 export async function OPTIONS(req: Request) {
-  const response = handleCors(req);
-  if (response) return response;
-  return http.noContent();
+  return handleOptions(req);
 }
 
 const handler = async (req: NextRequest, ctx: { params: { entity: string } }): Promise<NextResponse> => {

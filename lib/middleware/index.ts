@@ -4,7 +4,7 @@
  */
 
 // ── Shared Utilities (Edge-safe) ──────────────────────────────────
-export { corsHeaders, handleCors } from './shared/cors';
+export { corsHeaders, handleCors, handleOptions } from './shared/cors';
 export { addRequestIdHeader, getRequestId } from './shared/request-id';
 
 // ── Edge Runtime Middleware ───────────────────────────────────────

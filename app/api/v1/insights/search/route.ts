@@ -23,14 +23,12 @@ export const revalidate = 60; // Cache for 60 seconds (public content, ISR-frien
 
 import { http } from '@/lib/api';
 import { getAllInsights } from '@/lib/marketing/server';
-import { handleCors, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_60_PER_MIN } from '@/lib/middleware';
+import { handleOptions, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_60_PER_MIN } from '@/lib/middleware';
 import { z } from 'zod';
 
 /** @knipignore */
 export async function OPTIONS(req: Request) {
-  const response = handleCors(req);
-  if (response) return response;
-  return http.noContent();
+  return handleOptions(req);
 }
 
 /**

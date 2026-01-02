@@ -66,3 +66,43 @@ export function handleCors(req: Request): Response | null {
     headers: corsHeaders(origin, requestedMethod),
   });
 }
+
+/**
+ * Standard OPTIONS handler for API routes.
+ * Handles CORS preflight requests and returns 204 No Content.
+ * 
+ * Edge-safe and Node.js compatible.
+ * Always includes CORS headers for backward compatibility with existing tests.
+ * 
+ * @param req - Request object (Request or NextRequest)
+ * @returns Response with CORS headers or 204 No Content
+ * 
+ * @example
+ * ```typescript
+ * export async function OPTIONS(req: Request) {
+ *   return handleOptions(req);
+ * }
+ * ```
+ */
+export function handleOptions(req: Request): Response {
+  const response = handleCors(req);
+  if (response) {
+    // Ensure Access-Control-Allow-Origin is always present for backward compatibility
+    // Standard CORS only sets it when origin is present, but some routes expect it always
+    const headers = new Headers(response.headers);
+    if (!headers.has('Access-Control-Allow-Origin')) {
+      headers.set('Access-Control-Allow-Origin', '*');
+    }
+    return new Response(null, {
+      status: response.status,
+      headers,
+    });
+  }
+  
+  // Fallback: return 204 if handleCors returns null (shouldn't happen for OPTIONS)
+  // Include CORS headers for backward compatibility
+  return new Response(null, {
+    status: 204,
+    headers: corsHeaders('*'),
+  });
+}

@@ -125,10 +125,61 @@ All API responses follow standardized format:
 ```
 
 ### CORS Policy
-Browser-facing endpoints implement OPTIONS handlers with:
-- Origin validation via `handleCors()`
-- Standardized headers (`Access-Control-Allow-Origin`, `Access-Control-Allow-Methods`, etc.)
-- Production-hardened origin allowlist
+
+All browser-facing API endpoints implement CORS preflight handling via standardized OPTIONS handlers.
+
+#### Standard OPTIONS Handler
+
+**For Node.js routes**, use the shared `handleOptions` helper:
+
+```typescript
+import { handleOptions } from '@/lib/middleware';
+
+export async function OPTIONS(req: Request) {
+  return handleOptions(req);
+}
+```
+
+**Behavior:**
+- Handles CORS preflight requests (OPTIONS method)
+- Returns 204 No Content with appropriate CORS headers
+- Validates origin against `CORS_ALLOWED_ORIGINS` environment variable
+- Always includes `Access-Control-Allow-Origin` header (backward compatibility)
+- Edge-safe and Node.js compatible
+
+**Location:** `lib/middleware/shared/cors.ts` - `handleOptions()` function
+
+#### Edge Runtime Routes
+
+Edge routes may use custom CORS handling when needed:
+
+```typescript
+// Example: Edge route with custom CORS
+import { handleCors, http } from '@/lib/api/edge';
+
+export const OPTIONS = (req: Request) => {
+  const res = handleCors(req);
+  return res ?? http.noContent();
+};
+```
+
+#### Health Check Endpoints
+
+Health check endpoints (`/api/health`, `/api/health/clickhouse`) use simple 204 responses without CORS headers, as they don't require browser preflight handling.
+
+#### CORS Configuration
+
+- **Environment variable:** `CORS_ALLOWED_ORIGINS` (comma-separated list)
+- **Default behavior:** When unconfigured, all origins are allowed (dev-friendly)
+- **Production:** Set `CORS_ALLOWED_ORIGINS` to restrict allowed origins
+
+#### Standardized Headers
+
+All OPTIONS responses include:
+- `Vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers`
+- `Access-Control-Allow-Origin: <origin>` or `*` (when no origin provided)
+- `Access-Control-Allow-Methods: <requested-method>` or default methods
+- `Access-Control-Allow-Headers: Content-Type, Authorization`
 
 ### Adding New Routes
 1. Create route file with proper runtime declaration

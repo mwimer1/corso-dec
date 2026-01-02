@@ -1,6 +1,6 @@
 // Node.js required: ClickHouse database operations
 import { http } from '@/lib/api';
-import { handleCors, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_30_PER_MIN } from '@/lib/middleware';
+import { handleOptions, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_30_PER_MIN } from '@/lib/middleware';
 import { auth } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
 
@@ -13,9 +13,7 @@ export const revalidate = 0;
 
 /** @knipignore */
 export async function OPTIONS(req: Request) {
-  const response = handleCors(req);
-  if (response) return response;
-  return http.noContent();
+  return handleOptions(req);
 }
 
 const handler = async (_req: NextRequest, ctx: { params: { entity: string } }): Promise<Response> => {

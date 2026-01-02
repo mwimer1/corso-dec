@@ -29,7 +29,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 import { http, validateJson } from '@/lib/api';
-import { handleCors, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_60_PER_MIN } from '@/lib/middleware';
+import { handleOptions, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_60_PER_MIN } from '@/lib/middleware';
 import { getEntityConfig } from '@/lib/entities/config';
 import { getEntityPage } from '@/lib/entities/pages';
 import { EntityParamSchema, type EntityParam } from '@/lib/validators';
@@ -38,9 +38,7 @@ import { auth } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
 
 export async function OPTIONS(req: Request) {
-  const response = handleCors(req);
-  if (response) return response;
-  return http.noContent();
+  return handleOptions(req);
 }
 
 const handler = async (req: NextRequest, ctx: { params: { entity: string } }): Promise<Response> => {

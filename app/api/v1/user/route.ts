@@ -21,9 +21,7 @@
 // app/api/v1/user/route.ts
 // Requires member role – enforced via Clerk v6 RBAC below
 import { http, validateJson } from "@/lib/api";
-import { withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_30_PER_MIN } from "@/lib/middleware";
-import { corsHeaders, handleCors } from '@/lib/middleware';
-// withApiWrappers is re-exported from lib/api to keep imports consistent in tests
+import { handleOptions, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_30_PER_MIN } from "@/lib/middleware";
 import { UserSchema } from "@/lib/validators";
 import { auth } from "@clerk/nextjs/server";
 import { type NextRequest } from "next/server";
@@ -59,7 +57,6 @@ const handler = async (req: NextRequest): Promise<Response> => {
     return http.badRequest('Invalid input', {
       code: 'VALIDATION_ERROR',
       details: parsed.error,
-      headers: corsHeaders(req.headers.get('origin') ?? undefined),
     });
   }
 
@@ -73,23 +70,7 @@ export const POST = withErrorHandling(
 );
 
 // CORS preflight
-export const OPTIONS = (req: NextRequest) => {
-  const response = handleCors(req);
-  if (response) {
-    // Ensure CORS headers are always present
-    const newHeaders = new Headers(response.headers);
-    if (!newHeaders.has('Access-Control-Allow-Origin')) {
-      newHeaders.set('Access-Control-Allow-Origin', '*');
-    }
-    return new Response(null, {
-      status: response.status,
-      headers: newHeaders,
-    });
-  }
-  // Fallback for non-preflight requests (shouldn't happen for OPTIONS)
-  return new Response(null, {
-    status: 204,
-    headers: corsHeaders('*'),
-  });
-};
+export async function OPTIONS(req: Request) {
+  return handleOptions(req);
+}
 

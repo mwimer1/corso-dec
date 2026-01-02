@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 import { http } from '@/lib/api';
-import { handleCors, withErrorHandlingNode, withRateLimitNode, RATE_LIMIT_100_PER_MIN } from '@/lib/middleware';
+import { handleOptions, withErrorHandlingNode, withRateLimitNode, RATE_LIMIT_100_PER_MIN } from '@/lib/middleware';
 import { getEnv } from '@/lib/server/env';
 import { ClerkEventEnvelope } from '@/lib/validators/clerk-webhook';
 import type { NextRequest } from 'next/server';
@@ -55,7 +55,5 @@ export const POST = withErrorHandlingNode(
 
 /** @knipignore */
 export async function OPTIONS(req: Request) {
-  const response = handleCors(req);
-  if (response) return response;
-  return http.noContent();
+  return handleOptions(req);
 }

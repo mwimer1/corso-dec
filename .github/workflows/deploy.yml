@@ -45,7 +45,7 @@ jobs:
         run: pnpm typecheck
 
       - name: Lint
-        run: pnpm lint
+        run: pnpm lint:full
 
       - name: Enforce Test Patterns
         run: pnpm test:patterns

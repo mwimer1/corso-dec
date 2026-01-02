@@ -26,11 +26,12 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 import { http } from '@/lib/api';
-import { withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_30_PER_MIN } from '@/lib/middleware';
+import { mapTenantContextError } from '@/lib/api/tenant-context-helpers';
+import { getTenantContext } from '@/lib/server';
+import { handleOptions, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_30_PER_MIN } from '@/lib/middleware';
 import { validateSQLScope } from '@/lib/integrations/database/scope';
 import { createOpenAIClient } from '@/lib/integrations/openai/server';
-import { handleCors } from '@/lib/middleware';
-import { getTenantContext } from '@/lib/server/db/tenant-context';
+import { sanitizeUserInput } from '@/lib/security/prompt-injection';
 import { getEnv } from '@/lib/server/env';
 import { auth } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
@@ -71,17 +72,7 @@ const handler = async (req: NextRequest): Promise<Response> => {
   try {
     tenantContext = await getTenantContext(req);
   } catch (error) {
-    // getTenantContext throws ApplicationError with appropriate codes
-    if (error && typeof error === 'object' && 'code' in error) {
-      const code = error.code as string;
-      if (code === 'UNAUTHENTICATED') {
-        return http.error(401, 'Unauthorized', { code: 'HTTP_401' });
-      }
-      if (code === 'MISSING_ORG_CONTEXT') {
-        return http.error(400, 'Organization ID required. Provide X-Corso-Org-Id header or ensure org_id in session metadata.', { code: 'MISSING_ORG_CONTEXT' });
-      }
-    }
-    return http.error(400, 'Failed to determine organization context', { code: 'MISSING_ORG_CONTEXT' });
+    return mapTenantContextError(error);
   }
   const { orgId } = tenantContext;
 
@@ -99,21 +90,7 @@ const handler = async (req: NextRequest): Promise<Response> => {
   }
 
   // Security: Sanitize user input to prevent prompt injection
-  // Filter out known attack patterns while preserving legitimate queries
-  let sanitizedCandidate = candidate.trim();
-  const injectionPatterns = [
-    /ignore\s+(all\s+)?previous\s+instructions?/gi,
-    /forget\s+(all\s+)?previous\s+instructions?/gi,
-    /disregard\s+(all\s+)?previous\s+instructions?/gi,
-    /you\s+are\s+now\s+a\s+different\s+(assistant|ai|model)/gi,
-    /system\s*:\s*ignore\s+previous/gi,
-  ];
-  
-  for (const pattern of injectionPatterns) {
-    if (pattern.test(sanitizedCandidate)) {
-      sanitizedCandidate = sanitizedCandidate.replace(pattern, '').trim();
-    }
-  }
+  const sanitizedCandidate = sanitizeUserInput(candidate);
   
   if (!sanitizedCandidate) {
     return http.badRequest('Invalid input: content cannot be empty after sanitization', {
@@ -202,9 +179,7 @@ export const POST = withErrorHandling(
 
 /** @knipignore */
 export async function OPTIONS(req: Request) {
-  const response = handleCors(req);
-  if (response) return response;
-  return http.noContent();
+  return handleOptions(req);
 }
 
 

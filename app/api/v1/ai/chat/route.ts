@@ -23,14 +23,16 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 import { http } from '@/lib/api';
+import { mapTenantContextError } from '@/lib/api/tenant-context-helpers';
+import { getTenantContext } from '@/lib/server';
 import { clickhouseQuery } from '@/lib/integrations/clickhouse/server';
 import { getSchemaJSON, getSchemaSummary, guardSQL, SQLGuardError } from '@/lib/integrations/database/sql-guard';
 import { queryMockDb } from '@/lib/integrations/mockdb';
 import { logToolCall, normalizeSQLForLogging } from '@/lib/integrations/openai/chat-logging';
 import { streamResponseEvents } from '@/lib/integrations/openai/responses';
 import { createOpenAIClient } from '@/lib/integrations/openai/server';
-import { handleCors, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_30_PER_MIN } from '@/lib/middleware';
-import { getTenantContext } from '@/lib/server/db/tenant-context';
+import { handleOptions, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_30_PER_MIN } from '@/lib/middleware';
+import { sanitizeUserInput } from '@/lib/security/prompt-injection';
 import { getEnv } from '@/lib/server/env';
 import { logger } from '@/lib/monitoring';
 import { withTimeout } from '@/lib/server/utils/timeout';
@@ -39,37 +41,6 @@ import type { NextRequest } from 'next/server';
 import type OpenAI from 'openai';
 import { z } from 'zod';
 
-/**
- * Sanitize user input to prevent prompt injection attacks
- * Filters out known attack patterns while preserving legitimate queries
- */
-function sanitizeUserInput(content: string): string {
-  let sanitized = content.trim();
-  
-  // Filter out prompt injection attempts (case-insensitive)
-  const injectionPatterns = [
-    /ignore\s+(all\s+)?previous\s+instructions?/gi,
-    /forget\s+(all\s+)?previous\s+instructions?/gi,
-    /disregard\s+(all\s+)?previous\s+instructions?/gi,
-    /you\s+are\s+now\s+a\s+different\s+(assistant|ai|model)/gi,
-    /system\s*:\s*ignore\s+previous/gi,
-    /<\|im_end\|>/g, // OpenAI token that could break conversation
-    /<\|im_start\|>/g, // OpenAI token that could break conversation
-  ];
-  
-  for (const pattern of injectionPatterns) {
-    if (pattern.test(sanitized)) {
-      // Log potential injection attempt (in dev only)
-      if (process.env.NODE_ENV === 'development') {
-        console.warn('[AI Security] Potential prompt injection detected and filtered:', pattern.toString());
-      }
-      // Remove the pattern but keep the rest of the content
-      sanitized = sanitized.replace(pattern, '').trim();
-    }
-  }
-  
-  return sanitized;
-}
 
 /**
  * Request body schema for chat endpoint.
@@ -809,17 +780,7 @@ const handler = async (req: NextRequest): Promise<Response> => {
   try {
     tenantContext = await getTenantContext(req);
   } catch (error) {
-    // getTenantContext throws ApplicationError with appropriate codes
-    if (error && typeof error === 'object' && 'code' in error) {
-      const code = error.code as string;
-      if (code === 'UNAUTHENTICATED') {
-        return http.error(401, 'Unauthorized', { code: 'HTTP_401' });
-      }
-      if (code === 'MISSING_ORG_CONTEXT') {
-        return http.error(400, 'Organization ID required. Provide X-Corso-Org-Id header or ensure org_id in session metadata.', { code: 'MISSING_ORG_CONTEXT' });
-      }
-    }
-    return http.error(400, 'Failed to determine organization context', { code: 'MISSING_ORG_CONTEXT' });
+    return mapTenantContextError(error);
   }
   const { orgId } = tenantContext;
 
@@ -1014,7 +975,5 @@ export const POST = withErrorHandling(
 
 /** @knipignore */
 export async function OPTIONS(req: Request) {
-  const response = handleCors(req);
-  if (response) return response;
-  return http.noContent();
+  return handleOptions(req);
 }

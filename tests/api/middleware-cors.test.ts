@@ -82,5 +82,91 @@ describe('CORS Middleware', () => {
       expect(res).toBeNull();
     });
   });
+
+  describe('handleOptions', () => {
+    it('returns 204 with CORS headers for OPTIONS request with origin', async () => {
+      const { handleOptions } = await import('@/lib/middleware/shared/cors');
+
+      const req = new Request('http://localhost/api/v1/test', {
+        method: 'OPTIONS',
+        headers: {
+          'Origin': 'https://example.com',
+          'Access-Control-Request-Method': 'POST',
+        },
+      });
+
+      const res = handleOptions(req);
+      expect(res.status).toBe(204);
+      expect(res.headers.get('Access-Control-Allow-Origin')).toBe('https://example.com');
+      expect(res.headers.get('Access-Control-Allow-Methods')).toBe('POST');
+      expect(res.headers.get('Vary')).toBe('Origin, Access-Control-Request-Method, Access-Control-Request-Headers');
+    });
+
+    it('returns 204 with Access-Control-Allow-Origin: * when no origin provided', async () => {
+      const { handleOptions } = await import('@/lib/middleware/shared/cors');
+
+      const req = new Request('http://localhost/api/v1/test', {
+        method: 'OPTIONS',
+      });
+
+      const res = handleOptions(req);
+      expect(res.status).toBe(204);
+      // handleOptions ensures Access-Control-Allow-Origin is always present (backward compatibility)
+      expect(res.headers.get('Access-Control-Allow-Origin')).toBe('*');
+      expect(res.headers.get('Vary')).toBe('Origin, Access-Control-Request-Method, Access-Control-Request-Headers');
+    });
+
+    it('returns 403 for invalid origin when CORS is restricted', async () => {
+      const { handleOptions } = await import('@/lib/middleware/shared/cors');
+
+      // Restrict CORS to example.com only
+      mockEnv = { CORS_ALLOWED_ORIGINS: 'https://example.com' };
+
+      const req = new Request('http://localhost/api/v1/test', {
+        method: 'OPTIONS',
+        headers: {
+          'Origin': 'https://malicious.com',
+          'Access-Control-Request-Method': 'POST',
+        },
+      });
+
+      const res = handleOptions(req);
+      expect(res.status).toBe(403);
+      // Even for 403, handleOptions ensures Access-Control-Allow-Origin is present
+      expect(res.headers.get('Access-Control-Allow-Origin')).toBe('*');
+      expect(res.headers.get('Vary')).toBe('Origin, Access-Control-Request-Method, Access-Control-Request-Headers');
+    });
+
+    it('echoes requested method in Access-Control-Allow-Methods', async () => {
+      const { handleOptions } = await import('@/lib/middleware/shared/cors');
+
+      const req = new Request('http://localhost/api/v1/test', {
+        method: 'OPTIONS',
+        headers: {
+          'Origin': 'https://example.com',
+          'Access-Control-Request-Method': 'PUT',
+        },
+      });
+
+      const res = handleOptions(req);
+      expect(res.status).toBe(204);
+      expect(res.headers.get('Access-Control-Allow-Methods')).toBe('PUT');
+    });
+
+    it('uses default methods when Access-Control-Request-Method is not provided', async () => {
+      const { handleOptions } = await import('@/lib/middleware/shared/cors');
+
+      const req = new Request('http://localhost/api/v1/test', {
+        method: 'OPTIONS',
+        headers: {
+          'Origin': 'https://example.com',
+        },
+      });
+
+      const res = handleOptions(req);
+      expect(res.status).toBe(204);
+      expect(res.headers.get('Access-Control-Allow-Methods')).toBe('GET,POST,PUT,PATCH,DELETE,OPTIONS');
+    });
+  });
 });
 
