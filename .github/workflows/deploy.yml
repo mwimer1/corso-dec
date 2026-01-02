@@ -38,6 +38,8 @@ jobs:
 
       - name: Validate Environment Variables
         run: pnpm validate:env
+        env:
+          NODE_ENV: production
 
       - name: Type Check
         run: pnpm typecheck
