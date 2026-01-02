@@ -24,7 +24,7 @@ const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, "..", "..");
 const tsconfig = path.resolve(repoRoot, "tsconfig.json");
 const usageJson = path.resolve(repoRoot, "scripts/.cache/ui-usage.json");
-const keepJson = path.resolve(repoRoot, "scripts/analysis/data/ui-keep-allowlist.json");
+const keepJson = path.resolve(repoRoot, "scripts/analysis/ui-keep-allowlist.json");
 
 const argv = yargs(hideBin(process.argv))
   .option("write", { 

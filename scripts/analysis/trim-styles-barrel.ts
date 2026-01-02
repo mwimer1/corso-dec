@@ -14,7 +14,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, "../..");
 const usagePath = path.join(repoRoot, "scripts/.cache/styles-usage.json");
-const allowlistPath = path.join(repoRoot, "scripts/analysis/data/styles-keep-allowlist.json");
+const allowlistPath = path.join(repoRoot, "scripts/analysis/styles-keep-allowlist.json");
 
 const argv = yargs(hideBin(process.argv))
   .scriptName('trim-styles-barrel')

@@ -49,7 +49,7 @@ const ALLOW = path.join(
   ROOT,
   argVal(
     "allowlist",
-    "scripts/analysis/data/organisms-keep-allowlist.json"
+    "scripts/analysis/organisms-keep-allowlist.json"
   )!
 );
 const WRITE = argFlag("write");

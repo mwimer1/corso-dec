@@ -14,6 +14,7 @@ import { fileURLToPath } from 'url';
 import { readBarrelExports, readBarrelReferencedModules } from '../utils/barrel-utils';
 import { parseMd, stringifyMd } from './_utils/frontmatter';
 import { LIB_POLICIES } from './barrel.config';
+import { renderReadme } from '../utils/docs-template-engine';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '../..');
@@ -663,55 +664,24 @@ function generateScriptReadmeData(domain: string, exports: string[]) {
 
 /**
  * Generate script README using template
+ * Uses the Handlebars template engine from docs-template-engine.ts
  */
 function generateScriptReadme(data: any): string {
-  const templatePath = path.join(__dirname, '../docs/templates/README.scripts.md');
-
   try {
-    let template = fs.readFileSync(templatePath, 'utf8');
+    // Use the existing template engine with the correct template
+    // Adapt data structure to match template expectations
+    const templateContext = {
+      directory: `scripts/${data.domain}`,
+      last_updated: data.last_updated,
+      scripts: data.scripts.map((script: any) => ({
+        name: script.file,
+        description: script.purpose || 'Script utility'
+      }))
+    };
 
-    // Simple template replacement
-    template = template.replace(/\{\{title\}\}/g, data.title);
-    template = template.replace(/\{\{description\}\}/g, data.description);
-    template = template.replace(/\{\{last_updated\}\}/g, data.last_updated);
-    template = template.replace(/\{\{category\}\}/g, data.category);
-    template = template.replace(/\{\{domain\}\}/g, data.domain);
-
-    // Handle arrays
-    template = template.replace(/\{\{#exports\}\}[\s\S]*?\{\{\/exports\}\}/g, () => {
-      return data.exports.map((name: string) => `| \`${name}\` | script file | \`@/scripts/${data.domain}\` |`).join('\n');
-    });
-
-    template = template.replace(/\{\{#scripts\}\}[\s\S]*?\{\{\/scripts\}\}/g, () => {
-      return data.scripts.map((script: any) =>
-        `| \`${script.file}\` | ${script.type} | ${script.purpose} | \`${script.execution}\` |`
-      ).join('\n');
-    });
-
-    // Handle simple string replacements
-    template = template.replace(/\{\{overview\}\}/g, data.overview);
-    template = template.replace(/\{\{quick_start\}\}/g, data.quick_start);
-    template = template.replace(/\{\{usage_examples\}\}/g, data.usage_examples);
-    template = template.replace(/\{\{performance\}\}/g, data.performance);
-    template = template.replace(/\{\{dependencies\}\}/g, data.dependencies);
-    template = template.replace(/\{\{related_docs\}\}/g, data.related_docs);
-
-    // Handle array replacements
-    template = template.replace(/\{\{#ci_examples\}\}[\s\S]*?\{\{\/ci_examples\}\}/g, () => {
-      return data.ci_examples.map((example: string) => `${example}`).join('\n');
-    });
-
-    template = template.replace(/\{\{#dev_examples\}\}[\s\S]*?\{\{\/dev_examples\}\}/g, () => {
-      return data.dev_examples.map((example: string) => `${example}`).join('\n');
-    });
-
-    template = template.replace(/\{\{#precommit_examples\}\}[\s\S]*?\{\{\/precommit_examples\}\}/g, () => {
-      return data.precommit_examples.map((example: string) => `${example}`).join('\n');
-    });
-
-    return template;
+    return renderReadme('README.scripts', templateContext);
   } catch (error) {
-    console.warn(`Warning: Could not read template ${templatePath}, using simple format`);
+    console.warn(`Warning: Could not render template, using simple format: ${error instanceof Error ? error.message : String(error)}`);
     return generateSimpleScriptReadme(data);
   }
 }
