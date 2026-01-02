@@ -183,27 +183,20 @@ vi.mock('@/lib/actions/validation', () => ({
 }));
 
 // Provide TextEncoder/Decoder for browser tests
-// Use browser-compatible approach instead of node:util to avoid Vite externalization warning
+// Use browser-compatible polyfill instead of node:util to avoid Vite externalization warning
 // jsdom should provide these natively, but we ensure they're available for compatibility
-if (typeof globalThis.TextEncoder === 'undefined') {
-  // Use Node.js TextEncoder/Decoder if available (for Node.js test environments)
-  // Otherwise, jsdom should provide them natively in browser environment
-  try {
-    // Try to use Node.js built-in (works in Node.js test environment)
-    const { TextEncoder: NodeTextEncoder, TextDecoder: NodeTextDecoder } = await import('util');
-    // @ts-expect-error - Assigning Node.js polyfill for compatibility
-    globalThis.TextEncoder = NodeTextEncoder;
-    // @ts-expect-error - Assigning Node.js polyfill for compatibility
-    globalThis.TextDecoder = NodeTextDecoder;
-  } catch {
-    // Fallback: jsdom should provide these natively, but provide minimal polyfill if needed
-    // @ts-expect-error - Minimal polyfill for browser compatibility
+if (typeof globalThis.TextEncoder === 'undefined' || typeof globalThis.TextDecoder === 'undefined') {
+  // Use Buffer-based polyfill (available in Node.js test environments)
+  // This avoids importing node:util which causes Vite externalization warnings
+  if (typeof globalThis.TextEncoder === 'undefined') {
+    // @ts-expect-error - Polyfill for browser compatibility
     globalThis.TextEncoder = class TextEncoder {
       encode(str: string): Uint8Array {
+        // Use Buffer in Node.js environments (available in vitest Node.js test environment)
         if (typeof Buffer !== 'undefined') {
           return new Uint8Array(Buffer.from(str, 'utf-8'));
         }
-        // Minimal UTF-8 encoding (for environments without Buffer)
+        // Minimal UTF-8 encoding fallback (for pure browser environments)
         const utf8: number[] = [];
         for (let i = 0; i < str.length; i++) {
           const charCode = str.charCodeAt(i);
@@ -218,13 +211,16 @@ if (typeof globalThis.TextEncoder === 'undefined') {
         return new Uint8Array(utf8);
       }
     };
-    // @ts-expect-error - Minimal polyfill for browser compatibility
+  }
+  if (typeof globalThis.TextDecoder === 'undefined') {
+    // @ts-expect-error - Polyfill for browser compatibility
     globalThis.TextDecoder = class TextDecoder {
       decode(bytes: Uint8Array): string {
+        // Use Buffer in Node.js environments (available in vitest Node.js test environment)
         if (typeof Buffer !== 'undefined') {
           return Buffer.from(bytes).toString('utf-8');
         }
-        // Minimal UTF-8 decoding (for environments without Buffer)
+        // Minimal UTF-8 decoding fallback (for pure browser environments)
         let result = '';
         let i = 0;
         while (i < bytes.length) {
