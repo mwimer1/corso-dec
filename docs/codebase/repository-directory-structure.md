@@ -972,7 +972,6 @@ status: "draft"
     │   │   ├── check-placeholder-directories.ts
     │   │   ├── check-protected-auth.ts
     │   │   ├── check-temp-directories.ts
-    │   │   ├── cleanup-branches.ts
     │   │   ├── ensure-api-in-v1-or-internal.ts
     │   │   ├── generate-bundle-report.ts
     │   │   ├── quality-gates-local.ts
@@ -1024,6 +1023,7 @@ status: "draft"
     │   │   ├── verify-eslint-plugin-dts.ts
     │   │   ├── verify-no-dts-transform.ts
     │   ├── maintenance
+    │   │   ├── cleanup-branches.ts
     │   │   ├── `_utils`
     │   │   │   ├── `__tests__`
     │   │   │   │   ├── guards.test.ts

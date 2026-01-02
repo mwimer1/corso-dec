@@ -1,4 +1,25 @@
 #!/usr/bin/env node
+/**
+ * Workflow Consistency Report Generator
+ * 
+ * Analyzes GitHub Actions workflows for pnpm setup consistency.
+ * Checks that all jobs use the standardized composite action or reusable workflow
+ * for Node.js/pnpm setup, rather than direct pnpm/action-setup usage.
+ * 
+ * Generates two output files:
+ * - reports/ci/workflows-consistency.report.json (detailed JSON data)
+ * - reports/ci/workflows-consistency.summary.md (markdown summary table)
+ * 
+ * Exit behavior:
+ * Sets process.exitCode = 1 on violations so CI fails after report generation completes.
+ * This allows reports to be written fully before the process exits, preventing truncated
+ * output. The process will exit with code 1 once the event loop drains.
+ * 
+ * @usage pnpm lint:workflows:pnpm
+ * @output reports/ci/workflows-consistency.report.json
+ * @output reports/ci/workflows-consistency.summary.md
+ */
+
 import { globbySync } from 'globby';
 import fs from 'node:fs';
 import path from 'node:path';

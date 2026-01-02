@@ -17,6 +17,7 @@
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import type { CheckResult } from './check-common.js';
+import { printCheckResults, setExitFromResults } from '../utils/report-helpers';
 
 const TOP_LEVEL_ACTIONS_DIR = 'actions';
 // Strict enforcement enabled by default after PR5.2 (actions/ directory removed)
@@ -71,28 +72,9 @@ async function checkNoTopActions(): Promise<CheckResult[]> {
 
 async function main() {
   const results = await checkNoTopActions();
-  const failures = results.filter(r => !r.success);
-  const firstResult = results[0];
-
-  if (failures.length > 0) {
-    console.error('\n❌ Top-level actions/ directory check failed:\n');
-    failures.forEach(f => {
-      console.error(f.message);
-      f.details?.forEach(d => console.error(`  ${d}`));
-    });
-    if (firstResult?.recommendations) {
-      console.error('\n💡 Recommendations:');
-      firstResult.recommendations.forEach(r => console.error(`  - ${r}`));
-    }
-    process.exit(1);
-  } else {
-    if (firstResult?.warnings && firstResult.warnings.length > 0) {
-      console.warn('\n⚠️  Warnings:');
-      firstResult.warnings.forEach(w => console.warn(`  ${w}`));
-    }
-    console.log('\n✅ Top-level actions/ directory check passed');
-    process.exit(0);
-  }
+  
+  printCheckResults(results, 'Top-level actions/ directory check');
+  setExitFromResults(results);
 }
 
 void main();

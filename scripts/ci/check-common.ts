@@ -8,6 +8,12 @@ import { globby } from 'globby';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
+/**
+ * Result interface for CI check operations
+ * 
+ * All check scripts should return arrays of CheckResult objects for consistent
+ * error reporting and exit code handling.
+ */
 export interface CheckResult {
   success: boolean;
   message: string;
@@ -17,7 +23,30 @@ export interface CheckResult {
 }
 
 /**
- * Common pattern for checking files exist and have specific content
+ * Checks files matching a pattern and validates their content
+ * 
+ * This is a common pattern for CI checks that need to:
+ * 1. Find files matching glob pattern(s)
+ * 2. Read and validate each file's content
+ * 3. Return structured results for reporting
+ * 
+ * @param pattern - Glob pattern(s) to match files (string or array of strings)
+ * @param contentChecker - Async function that validates file content and returns CheckResult
+ * @returns Array of CheckResult objects, one per file checked
+ * 
+ * @example
+ * ```ts
+ * const results = await checkFilesWithPattern(
+ *   'app/(protected)/dashboard/page.tsx',
+ *   async (content, filePath) => {
+ *     const hasAuth = /\\bauth\\s*\\(/.test(content);
+ *     return {
+ *       success: hasAuth,
+ *       message: hasAuth ? 'Has auth' : 'Missing auth'
+ *     };
+ *   }
+ * );
+ * ```
  */
 export async function checkFilesWithPattern(
   pattern: string | string[],
@@ -45,13 +74,53 @@ export async function checkFilesWithPattern(
 }
 
 /**
- * Common pattern for checking layout files have specific exports
+ * Options for checking layout files with custom boundary conditions
  */
-async function checkLayoutHasExport(
+export interface CheckLayoutOptions {
+  /**
+   * Function that determines if we should stop walking up the directory tree.
+   * Receives the current directory path. Returns true to stop, false to continue.
+   * 
+   * @example
+   * ```ts
+   * // Stop when outside (protected) directory
+   * boundaryPredicate: (dir) => !dir.includes(path.sep + '(protected)')
+   * 
+   * // Stop when outside app directory (default)
+   * boundaryPredicate: (dir) => !dir.includes(path.sep + 'app' + path.sep)
+   * ```
+   */
+  boundaryPredicate?: (dir: string) => boolean;
+}
+
+/**
+ * Checks if a layout file in the directory hierarchy has a specific export pattern
+ * 
+ * Walks up the directory tree from startDir, checking each layout.tsx file for the
+ * given export pattern. Stops when the pattern is found or when the boundary
+ * predicate returns true.
+ * 
+ * @param startDir - Directory path to start checking from
+ * @param exportPattern - Regex pattern to match exports in layout files
+ * @param options - Optional configuration for boundary checking
+ * @returns true if export pattern found in any layout in the hierarchy, false otherwise
+ * 
+ * @example
+ * ```ts
+ * // Check for auth() in protected routes
+ * const hasAuth = await checkLayoutHasExport(
+ *   'app/(protected)/dashboard/account',
+ *   /\bauth\s*\(/,
+ *   { boundaryPredicate: (dir) => !dir.includes(path.sep + '(protected)') }
+ * );
+ * ```
+ */
+export async function checkLayoutHasExport(
   startDir: string,
   exportPattern: RegExp,
-  exportName: string
+  options: CheckLayoutOptions = {}
 ): Promise<boolean> {
+  const { boundaryPredicate = (dir) => !dir.includes(path.sep + 'app' + path.sep) } = options;
   let dir = startDir;
 
   while (true) {
@@ -66,8 +135,8 @@ async function checkLayoutHasExport(
     if (parent === dir) break;
     dir = parent;
 
-    // Stop climbing outside app directory
-    if (!dir.includes(path.sep + 'app' + path.sep)) break;
+    // Stop climbing if boundary predicate says so
+    if (boundaryPredicate(dir)) break;
   }
 
   return false;
@@ -75,22 +144,41 @@ async function checkLayoutHasExport(
 
 /**
  * Common pattern for checking protected routes have auth
+ * 
+ * @deprecated Use checkLayoutHasExport with boundaryPredicate option instead
  */
 async function checkProtectedRouteHasAuth(
   startDir: string,
   authPattern: RegExp = /\bauth\s*\(/
 ): Promise<boolean> {
-  return checkLayoutHasExport(startDir, authPattern, 'auth()');
+  return checkLayoutHasExport(startDir, authPattern);
 }
 
 /**
- * Common pattern for checking public routes have metadata
+ * Checks if a public route has metadata exports in its layout hierarchy
+ * 
+ * Walks up the directory tree from startDir, checking each layout.tsx file
+ * for metadata exports (either `export const metadata =` or `generateMetadata` function).
+ * Stops when metadata is found or when walking outside the app directory.
+ * 
+ * @param startDir - Directory path to start checking from (typically a page directory)
+ * @param metadataPattern - Optional regex pattern to match metadata exports.
+ *                          Defaults to matching standard Next.js metadata patterns
+ * @returns true if metadata found in current or parent layout, false otherwise
+ * 
+ * @example
+ * ```ts
+ * const hasMetadata = await checkPublicRouteHasMetadata('app/(marketing)/about');
+ * if (!hasMetadata) {
+ *   // Route is missing metadata
+ * }
+ * ```
  */
 export async function checkPublicRouteHasMetadata(
   startDir: string,
   metadataPattern: RegExp = /export\s+const\s+metadata\s*=|export\s+async\s+function\s+generateMetadata\s*\(/
 ): Promise<boolean> {
-  return checkLayoutHasExport(startDir, metadataPattern, 'metadata');
+  return checkLayoutHasExport(startDir, metadataPattern);
 }
 
 

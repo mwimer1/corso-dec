@@ -277,7 +277,7 @@
     "lint:clear-cache": "node -e \"try { require('fs').rmSync('node_modules/.cache/eslint/.eslintcache', { force: true }); console.log('ESLint cache cleared'); } catch(e) { console.log('Cache file not found or already cleared'); }\"",
     "cleanup:all": "echo '🧹 Force cleaning all caches and rebuilding...' && pnpm dlx rimraf .next .cache .eslintcache reports test-reports test-results tsconfig.tsbuildinfo && (pnpm dlx rimraf \"config/typescript\" || true) && git checkout HEAD -- config/typescript/ && pnpm store prune && pnpm install && pnpm build",
     "cleanup:reports": "rimraf reports/ test-reports/ test-results/",
-    "cleanup:branches": "pnpm exec tsx ./scripts/ci/cleanup-branches.ts",
+    "cleanup:branches": "pnpm exec tsx ./scripts/maintenance/cleanup-branches.ts",
     "postinstall": "echo \"Postinstall hooks skipped. Run 'pnpm browsers:update' or 'pnpm docs:index' manually if needed.\" && patch-package || true",
     "validate:cursor-rules": "tsx scripts/ci/validate-cursor-rules.ts",
     "validate:deprecated-paths": "tsx scripts/ci/check-deprecated-paths.ts",

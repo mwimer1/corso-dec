@@ -15,6 +15,7 @@
 import { readdir, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { CheckResult } from './check-common.js';
+import { printCheckResults, setExitFromResults } from '../utils/report-helpers';
 
 /**
  * Directories that are explicitly allowed to be placeholder-only.
@@ -201,26 +202,8 @@ async function checkPlaceholderDirectories(): Promise<CheckResult[]> {
 async function main() {
   const results = await checkPlaceholderDirectories();
   
-  if (results.some(r => !r.success)) {
-    console.error('\n❌ Placeholder directory check failed:\n');
-    for (const result of results) {
-      if (!result.success) {
-        console.error(result.message);
-        if (result.details) {
-          result.details.forEach(detail => console.error(detail));
-        }
-        if (result.recommendations) {
-          console.error('\n💡 Recommendations:');
-          result.recommendations.forEach(rec => console.error(`  - ${rec}`));
-        }
-      }
-    }
-    console.error('');
-    process.exit(1);
-  }
-  
-  console.log('✅ Placeholder directory check passed');
-  process.exit(0);
+  printCheckResults(results, 'Placeholder directory check');
+  setExitFromResults(results);
 }
 
 void main();

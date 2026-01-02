@@ -74,3 +74,50 @@ export function calculateSummary(results: CheckResult[]): SummaryStats {
   };
 }
 
+/**
+ * Options for setting exit code from check results
+ */
+export interface SetExitOptions {
+  /**
+   * Whether warnings should cause the process to exit with code 1.
+   * Default: false (warnings are informational only)
+   */
+  failOnWarnings?: boolean;
+}
+
+/**
+ * Sets process.exitCode based on check results
+ * 
+ * Uses process.exitCode (not process.exit()) to allow logs to flush
+ * and reports to be written fully before the process exits.
+ * 
+ * Policy:
+ * - Failures (success: false) always cause exit code 1
+ * - Warnings only cause exit code 1 if failOnWarnings is true (default: false)
+ * - Recommendations are purely informational and never affect exit code
+ * 
+ * @param results - Array of CheckResult objects from a check
+ * @param options - Optional configuration for exit behavior
+ * 
+ * @example
+ * ```ts
+ * const results = await runCheck();
+ * printCheckResults(results, 'My Check');
+ * setExitFromResults(results);
+ * // Process will exit with code 0 or 1 once event loop drains
+ * ```
+ */
+export function setExitFromResults(
+  results: CheckResult[],
+  options: SetExitOptions = {}
+): void {
+  const { failOnWarnings = false } = options;
+  const failures = results.filter(r => !r.success);
+  const warnings = results.flatMap(r => r.warnings || []);
+
+  const shouldFail =
+    failures.length > 0 || (failOnWarnings && warnings.length > 0);
+
+  process.exitCode = shouldFail ? 1 : 0;
+}
+

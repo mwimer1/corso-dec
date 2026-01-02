@@ -13,7 +13,7 @@
 import { access, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { isGitIgnored, listTrackedFiles } from '../utils/git';
-import { printCheckResults } from '../utils/report-helpers';
+import { printCheckResults, setExitFromResults } from '../utils/report-helpers';
 import type { CheckResult } from './check-common.js';
 
 /**
@@ -180,16 +180,8 @@ async function checkTempDirectories(): Promise<CheckResult[]> {
 async function main() {
   const results = await checkTempDirectories();
   
-  const failures = results.filter(r => !r.success);
-  
-  if (failures.length > 0) {
-    printCheckResults(results, 'Temp directory check');
-    process.exit(1);
-  }
-  
-  // Show summary for successful checks
   printCheckResults(results, 'Temp directory check');
-  process.exit(0);
+  setExitFromResults(results);
 }
 
 void main();
