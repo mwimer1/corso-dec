@@ -183,9 +183,68 @@ vi.mock('@/lib/actions/validation', () => ({
 }));
 
 // Provide TextEncoder/Decoder for browser tests
-import { TextDecoder, TextEncoder } from 'node:util';
-(globalThis as any).TextEncoder = TextEncoder;
-(globalThis as any).TextDecoder = TextDecoder;
+// Use browser-compatible approach instead of node:util to avoid Vite externalization warning
+// jsdom should provide these natively, but we ensure they're available for compatibility
+if (typeof globalThis.TextEncoder === 'undefined') {
+  // Use Node.js TextEncoder/Decoder if available (for Node.js test environments)
+  // Otherwise, jsdom should provide them natively in browser environment
+  try {
+    // Try to use Node.js built-in (works in Node.js test environment)
+    const { TextEncoder: NodeTextEncoder, TextDecoder: NodeTextDecoder } = await import('util');
+    // @ts-expect-error - Assigning Node.js polyfill for compatibility
+    globalThis.TextEncoder = NodeTextEncoder;
+    // @ts-expect-error - Assigning Node.js polyfill for compatibility
+    globalThis.TextDecoder = NodeTextDecoder;
+  } catch {
+    // Fallback: jsdom should provide these natively, but provide minimal polyfill if needed
+    // @ts-expect-error - Minimal polyfill for browser compatibility
+    globalThis.TextEncoder = class TextEncoder {
+      encode(str: string): Uint8Array {
+        if (typeof Buffer !== 'undefined') {
+          return new Uint8Array(Buffer.from(str, 'utf-8'));
+        }
+        // Minimal UTF-8 encoding (for environments without Buffer)
+        const utf8: number[] = [];
+        for (let i = 0; i < str.length; i++) {
+          const charCode = str.charCodeAt(i);
+          if (charCode < 0x80) {
+            utf8.push(charCode);
+          } else if (charCode < 0x800) {
+            utf8.push(0xc0 | (charCode >> 6), 0x80 | (charCode & 0x3f));
+          } else {
+            utf8.push(0xe0 | (charCode >> 12), 0x80 | ((charCode >> 6) & 0x3f), 0x80 | (charCode & 0x3f));
+          }
+        }
+        return new Uint8Array(utf8);
+      }
+    };
+    // @ts-expect-error - Minimal polyfill for browser compatibility
+    globalThis.TextDecoder = class TextDecoder {
+      decode(bytes: Uint8Array): string {
+        if (typeof Buffer !== 'undefined') {
+          return Buffer.from(bytes).toString('utf-8');
+        }
+        // Minimal UTF-8 decoding (for environments without Buffer)
+        let result = '';
+        let i = 0;
+        while (i < bytes.length) {
+          const byte1 = bytes[i++];
+          if (byte1 < 0x80) {
+            result += String.fromCharCode(byte1);
+          } else if ((byte1 >> 5) === 0x06) {
+            const byte2 = bytes[i++];
+            result += String.fromCharCode(((byte1 & 0x1f) << 6) | (byte2 & 0x3f));
+          } else {
+            const byte2 = bytes[i++];
+            const byte3 = bytes[i++];
+            result += String.fromCharCode(((byte1 & 0x0f) << 12) | ((byte2 & 0x3f) << 6) | (byte3 & 0x3f));
+          }
+        }
+        return result;
+      }
+    };
+  }
+}
 (globalThis as any).React = React;
 
 // matchMedia polyfill

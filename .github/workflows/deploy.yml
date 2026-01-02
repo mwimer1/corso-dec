@@ -57,7 +57,20 @@ jobs:
         run: pnpm test:patterns
 
       - name: Test Suite
-        run: pnpm test:ci
+        run: |
+          echo "Running test suite with coverage..."
+          pnpm test:ci || (echo "❌ Test suite failed - check output above for details" && exit 1)
+
+      - name: Upload Coverage Reports
+        if: always()
+        uses: actions/upload-artifact@50769540e67300e7d4d145dcc8b4db9f8b3a5724 # v4
+        with:
+          name: coverage-reports
+          path: |
+            coverage/
+            reports/
+          retention-days: 7
+          if-no-files-found: ignore
 
       - name: Build Verification
         run: pnpm build
