@@ -1,7 +1,8 @@
 // Node.js required: ClickHouse database operations
 import { http } from '@/lib/api';
 import { requireAuth } from '@/lib/api/auth-helpers';
-import { handleOptions, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_30_PER_MIN } from '@/lib/middleware';
+import { createDynamicRouteHandler } from '@/lib/api/dynamic-route';
+import { handleOptions, RATE_LIMIT_30_PER_MIN } from '@/lib/middleware';
 import type { NextRequest } from 'next/server';
 
 /** @knipignore */
@@ -47,24 +48,8 @@ const handler = async (_req: NextRequest, ctx: { params: { entity: string } }): 
 };
 
 // Rate limit: 30/min per OpenAPI spec
-// Note: Next.js passes params as second argument, but rate limiter expects single-arg function
-const createWrappedHandler = (params: { entity: string }) => {
-  return withErrorHandling(
-    withRateLimit(
-      async (req: NextRequest) => {
-        return handler(req, { params }) as any;
-      },
-      RATE_LIMIT_30_PER_MIN
-    )
-  );
-};
-
 // Next.js dynamic route signature: (req, { params }) => Response
 /** @knipignore */
-export async function GET(req: NextRequest, ctx: { params: Promise<{ entity: string }> | { entity: string } }): Promise<Response> {
-  // Resolve params if it's a Promise (Next.js 15+)
-  const resolvedParams = 'then' in ctx.params ? await ctx.params : ctx.params;
-  // Create wrapped handler with resolved params
-  const wrappedHandler = createWrappedHandler(resolvedParams);
-  return wrappedHandler(req) as Promise<Response>;
-}
+export const GET = createDynamicRouteHandler(handler, {
+  rateLimit: RATE_LIMIT_30_PER_MIN,
+});

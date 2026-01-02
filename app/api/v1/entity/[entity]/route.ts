@@ -7,10 +7,11 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 import { http } from '@/lib/api';
+import { createDynamicRouteHandler } from '@/lib/api/dynamic-route';
 import { getEntityConfig } from '@/lib/entities/config';
 import type { EntityFetchParams } from '@/lib/entities/contracts';
 import { getEntityPage } from '@/lib/entities/pages';
-import { handleOptions, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_60_PER_MIN } from '@/lib/middleware';
+import { handleOptions, RATE_LIMIT_60_PER_MIN } from '@/lib/middleware';
 import { isRelaxedAuthMode } from '@/lib/shared/config/auth-mode';
 import {
   EntityListQuerySchema,
@@ -428,25 +429,8 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
 };
 
 // Rate limit: 60/min per OpenAPI spec
-// Note: Next.js passes params as second argument, but rate limiter expects single-arg function
-// We wrap the handler to extract params from URL for rate limiting, then use actual params in handler
-const createWrappedHandler = (params: { entity: string }) => {
-  return withErrorHandling(
-    withRateLimit(
-      async (req: NextRequest): Promise<NextResponse> => {
-        return handler(req, { params });
-      },
-      RATE_LIMIT_60_PER_MIN
-    )
-  );
-};
-
 // Next.js dynamic route signature: (req, { params }) => Response
 /** @knipignore */
-export async function GET(req: NextRequest, ctx: { params: Promise<{ entity: string }> | { entity: string } }): Promise<NextResponse> {
-  // Resolve params if it's a Promise (Next.js 15+)
-  const resolvedParams = 'then' in ctx.params ? await ctx.params : ctx.params;
-  // Create wrapped handler with resolved params
-  const wrappedHandler = createWrappedHandler(resolvedParams);
-  return wrappedHandler(req);
-}
+export const GET = createDynamicRouteHandler(handler, {
+  rateLimit: RATE_LIMIT_60_PER_MIN,
+});

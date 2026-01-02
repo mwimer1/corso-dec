@@ -30,7 +30,8 @@ export const revalidate = 0;
 
 import { http, validateJson } from '@/lib/api';
 import { requireAuthWithRBAC } from '@/lib/api/auth-helpers';
-import { handleOptions, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_60_PER_MIN } from '@/lib/middleware';
+import { createDynamicRouteHandler } from '@/lib/api/dynamic-route';
+import { handleOptions, RATE_LIMIT_60_PER_MIN } from '@/lib/middleware';
 import { getEntityConfig } from '@/lib/entities/config';
 import { getEntityPage } from '@/lib/entities/pages';
 import { EntityParamSchema, type EntityParam } from '@/lib/validators';
@@ -109,25 +110,9 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
 };
 
 // Rate limit: 60/min per OpenAPI spec
-// Note: Next.js passes params as second argument, but rate limiter expects single-arg function
-const createWrappedHandler = (params: { entity: string }) => {
-  return withErrorHandling(
-    withRateLimit(
-      async (req: NextRequest) => {
-        return handler(req, { params }) as any;
-      },
-      RATE_LIMIT_60_PER_MIN
-    )
-  );
-};
-
 // Next.js dynamic route signature: (req, { params }) => Response
 /** @knipignore */
-export async function POST(req: NextRequest, ctx: { params: Promise<{ entity: string }> | { entity: string } }): Promise<Response> {
-  // Resolve params if it's a Promise (Next.js 15+)
-  const resolvedParams = 'then' in ctx.params ? await ctx.params : ctx.params;
-  // Create wrapped handler with resolved params
-  const wrappedHandler = createWrappedHandler(resolvedParams);
-  return wrappedHandler(req) as Promise<Response>;
-}
+export const POST = createDynamicRouteHandler(handler, {
+  rateLimit: RATE_LIMIT_60_PER_MIN,
+});
 
