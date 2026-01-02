@@ -505,6 +505,10 @@ export const docs = [
     "title": "Dashboard"
   },
   {
+    "path": "types/forms/readme.md",
+    "title": "Forms"
+  },
+  {
     "path": "types/marketing/readme.md",
     "title": "Marketing"
   },
@@ -515,6 +519,10 @@ export const docs = [
   {
     "path": "types/shared/readme.md",
     "title": "Shared"
+  },
+  {
+    "path": "types/supabase/readme.md",
+    "title": "Supabase"
   },
   {
     "path": "docs/security/dependency-policy.md",
