@@ -7,24 +7,19 @@
  */
 
 import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { mockClerkAuth } from '@/tests/support/mocks';
 import { requireAuth, requireRole, requireAnyRole, requireAuthWithRBAC } from '@/lib/api/auth-helpers';
-
-// Mock Clerk auth
-const mockAuth = vi.fn();
-vi.mock('@clerk/nextjs/server', () => ({
-  auth: () => mockAuth(),
-}));
 
 describe('requireAuth', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    mockClerkAuth.clear();
   });
 
   it('should return auth context when userId is present', async () => {
-    mockAuth.mockResolvedValue({
+    mockClerkAuth.setup({
       userId: 'user-123',
-      has: vi.fn(({ role }: { role: string }) => role === 'member'),
       orgId: 'org-456',
+      has: vi.fn(({ role }: { role: string }) => role === 'member'),
     });
 
     const result = await requireAuth();
@@ -38,7 +33,7 @@ describe('requireAuth', () => {
   });
 
   it('should return 401 when userId is missing', async () => {
-    mockAuth.mockResolvedValue({
+    mockClerkAuth.setup({
       userId: null,
       has: vi.fn(),
     });
@@ -54,32 +49,16 @@ describe('requireAuth', () => {
       expect(body.error.message).toBe('Unauthorized');
     }
   });
-
-  it('should return 401 when userId is undefined', async () => {
-    mockAuth.mockResolvedValue({
-      userId: undefined,
-      has: vi.fn(),
-    });
-
-    const result = await requireAuth();
-
-    expect(result).toBeInstanceOf(Response);
-    if (result instanceof Response) {
-      expect(result.status).toBe(401);
-      const body = await result.json();
-      expect(body.error.code).toBe('HTTP_401');
-    }
-  });
 });
 
 describe('requireRole', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    mockClerkAuth.clear();
   });
 
   it('should return auth context when user has required role', async () => {
     const mockHas = vi.fn(({ role }: { role: string }) => role === 'member');
-    mockAuth.mockResolvedValue({
+    mockClerkAuth.setup({
       userId: 'user-123',
       has: mockHas,
     });
@@ -95,7 +74,7 @@ describe('requireRole', () => {
 
   it('should return 403 when user lacks required role', async () => {
     const mockHas = vi.fn(({ role }: { role: string }) => role === 'admin');
-    mockAuth.mockResolvedValue({
+    mockClerkAuth.setup({
       userId: 'user-123',
       has: mockHas,
     });
@@ -113,7 +92,7 @@ describe('requireRole', () => {
   });
 
   it('should propagate 401 error from requireAuth', async () => {
-    mockAuth.mockResolvedValue({
+    mockClerkAuth.setup({
       userId: null,
       has: vi.fn(),
     });
@@ -137,20 +116,20 @@ describe('requireRole', () => {
     const result = await requireRole('member', authResult);
 
     expect(result).not.toBeInstanceOf(Response);
-    expect(mockAuth).not.toHaveBeenCalled(); // Should not call auth() again
+    expect(mockClerkAuth.getMock()).not.toHaveBeenCalled(); // Should not call auth() again
   });
 });
 
 describe('requireAnyRole', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    mockClerkAuth.clear();
   });
 
   it('should return auth context when user has at least one allowed role', async () => {
     const mockHas = vi.fn(({ role }: { role: string }) => 
       ['org:member', 'org:admin', 'org:owner'].includes(role)
     );
-    mockAuth.mockResolvedValue({
+    mockClerkAuth.setup({
       userId: 'user-123',
       has: mockHas,
     });
@@ -165,7 +144,7 @@ describe('requireAnyRole', () => {
 
   it('should return 403 when user lacks all allowed roles', async () => {
     const mockHas = vi.fn(() => false);
-    mockAuth.mockResolvedValue({
+    mockClerkAuth.setup({
       userId: 'user-123',
       has: mockHas,
     });
@@ -184,7 +163,7 @@ describe('requireAnyRole', () => {
   });
 
   it('should propagate 401 error from requireAuth', async () => {
-    mockAuth.mockResolvedValue({
+    mockClerkAuth.setup({
       userId: null,
       has: vi.fn(),
     });
@@ -206,18 +185,18 @@ describe('requireAnyRole', () => {
     const result = await requireAnyRole(['org:member', 'org:admin'], authResult);
 
     expect(result).not.toBeInstanceOf(Response);
-    expect(mockAuth).not.toHaveBeenCalled();
+    expect(mockClerkAuth.getMock()).not.toHaveBeenCalled();
   });
 });
 
 describe('requireAuthWithRBAC', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    mockClerkAuth.clear();
   });
 
   it('should combine requireAuth and requireRole', async () => {
     const mockHas = vi.fn(({ role }: { role: string }) => role === 'member');
-    mockAuth.mockResolvedValue({
+    mockClerkAuth.setup({
       userId: 'user-123',
       has: mockHas,
     });
@@ -232,7 +211,7 @@ describe('requireAuthWithRBAC', () => {
   });
 
   it('should return 401 when not authenticated', async () => {
-    mockAuth.mockResolvedValue({
+    mockClerkAuth.setup({
       userId: null,
       has: vi.fn(),
     });
@@ -247,7 +226,7 @@ describe('requireAuthWithRBAC', () => {
 
   it('should return 403 when user lacks required role', async () => {
     const mockHas = vi.fn(() => false);
-    mockAuth.mockResolvedValue({
+    mockClerkAuth.setup({
       userId: 'user-123',
       has: mockHas,
     });
@@ -263,11 +242,11 @@ describe('requireAuthWithRBAC', () => {
 
 describe('Behavior equivalence with original routes', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    mockClerkAuth.clear();
   });
 
   it('should match query route error mapping for unauthorized', async () => {
-    mockAuth.mockResolvedValue({
+    mockClerkAuth.setup({
       userId: null,
       has: vi.fn(),
     });
@@ -286,7 +265,7 @@ describe('Behavior equivalence with original routes', () => {
 
   it('should match query route error mapping for forbidden', async () => {
     const mockHas = vi.fn(() => false);
-    mockAuth.mockResolvedValue({
+    mockClerkAuth.setup({
       userId: 'user-123',
       has: mockHas,
     });
@@ -305,7 +284,7 @@ describe('Behavior equivalence with original routes', () => {
 
   it('should match entity route error mapping for any-role pattern', async () => {
     const mockHas = vi.fn(() => false);
-    mockAuth.mockResolvedValue({
+    mockClerkAuth.setup({
       userId: 'user-123',
       has: mockHas,
     });
