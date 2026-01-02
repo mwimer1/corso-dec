@@ -47,6 +47,12 @@ jobs:
       - name: Lint
         run: pnpm lint:full
 
+      - name: Set NODE_ENV for tests
+        run: echo "NODE_ENV=production" >> $GITHUB_ENV
+
+      - name: Create reports directory
+        run: mkdir -p reports
+
       - name: Enforce Test Patterns
         run: pnpm test:patterns
 
