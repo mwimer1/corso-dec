@@ -61,7 +61,15 @@ export function validateEnv<TShape extends z.ZodRawShape>(
   };
 }
 
-/** Sugar: same as validateEnv but named for discoverability. */
+/**
+ * Sugar: same as validateEnv but named for discoverability.
+ * 
+ * @note This is intentionally an alias - both exports are used:
+ * - `validateEnv`: Generic validation function
+ * - `getEnv`: Convenience alias for common use case
+ * 
+ * Knip may flag this as a duplicate, but both names serve different purposes.
+ */
 export const getEnv = validateEnv;
 
 /**

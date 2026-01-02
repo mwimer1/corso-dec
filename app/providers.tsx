@@ -22,7 +22,7 @@ interface ProvidersProps {
   children: React.ReactNode;
 }
 
-export const Providers: React.FC<ProvidersProps> = ({ children }) => {
+const Providers: React.FC<ProvidersProps> = ({ children }) => {
   const [queryClient] = React.useState(
     () =>
       new QueryClient({

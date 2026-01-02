@@ -33,13 +33,5 @@ export * from './insights-hero';
 // Client components
 export * from './insights-client';
 
-// Default exports for layout components
-export { default as InsightsSection } from './layout/insights-section';
-export { default as InsightsNavbar } from './layout/navbar';
-
-// Default exports for main content components
-export { default as InsightDetail } from './sections/insight-detail';
-export { default as InsightsList } from './sections/insights-list';
-
 
 

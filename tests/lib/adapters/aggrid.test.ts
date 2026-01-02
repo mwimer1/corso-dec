@@ -1,5 +1,5 @@
 import { toColDef } from '@/lib/entities/adapters/aggrid';
-import type { TableColumnConfig } from '@/lib/validators/tableColumnConfig';
+import type { TableColumnConfig } from '@/lib/entities/types';
 import { describe, expect, it, vi } from 'vitest';
 
 // Mock the lazy-loaded formatters

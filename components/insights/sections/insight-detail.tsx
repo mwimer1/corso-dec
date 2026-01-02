@@ -236,6 +236,4 @@ export function generateArticleMetadata(article: InsightItem): Metadata {
   };
 }
 
-export default InsightDetail;
-
 

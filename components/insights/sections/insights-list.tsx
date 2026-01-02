@@ -110,6 +110,4 @@ export const InsightsList = React.forwardRef<HTMLDivElement, InsightsListProps>(
 );
 InsightsList.displayName = "InsightsList";
 
-export default InsightsList;
-
 

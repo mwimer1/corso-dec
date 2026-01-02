@@ -28,8 +28,9 @@
     "config": ["tsconfig.json"]
   },
 
-  // Disable GitHub Actions plugin to avoid parsing YAML workflow files
-  "github-actions": false,
+  // GitHub Actions plugin enabled: workflow YAML is now valid, so we can parse workflow references
+  // This provides more accurate repo-wide usage detection (includes CI/CD script references)
+  // "github-actions": true, // Default: enabled when .github/workflows exists
 
   // Treat public types as API; they'll be allowlisted here over time.
   // Exclude .github workflows and YAML files from analysis (not TypeScript/JavaScript)

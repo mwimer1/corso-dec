@@ -44,5 +44,3 @@ export function DashboardHeader({ title, subtitle, left, right, sticky = true, c
   );
 }
 
-export default DashboardHeader;
-

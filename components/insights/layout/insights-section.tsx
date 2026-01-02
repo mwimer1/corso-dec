@@ -41,5 +41,3 @@ export function InsightsSection({
     </SectionShell>
   );
 }
-
-export default InsightsSection;

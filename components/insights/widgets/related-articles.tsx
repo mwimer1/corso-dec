@@ -79,5 +79,3 @@ export function RelatedArticles({ articles, className }: RelatedArticlesProps) {
     </section>
   );
 }
-
-export default RelatedArticles;

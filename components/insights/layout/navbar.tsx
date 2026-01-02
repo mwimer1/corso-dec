@@ -36,5 +36,3 @@ export function InsightsNavbar({
     />
   );
 }
-
-export default InsightsNavbar;

@@ -1,4 +1,6 @@
 // Available test support utilities
+// @note: @tests/support is a TypeScript path alias (defined in tsconfig.base.json),
+// not an npm package. Knip may flag this as "unlisted" but it's a false positive.
 export * from '@tests/support/env-mocks';
 export * from '@tests/support/harness/api-route-harness';
 export * from '@tests/support/harness/node-mocks';
