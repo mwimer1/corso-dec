@@ -58,7 +58,7 @@ export function SegmentedControl<T extends string>({ value, onChange, options, c
             onClick={() => onChange(opt.id)}
             onKeyDown={(e) => onKeyDown(e, i)}
             className={cn(
-              "relative inline-flex items-center justify-center h-7 px-3 text-xs font-medium rounded-md transition-colors",
+              "relative inline-flex items-center justify-center h-9 px-3 text-xs font-medium rounded-md transition-colors",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
               selected
                 ? "bg-primary text-primary-foreground shadow-sm"
