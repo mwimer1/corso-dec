@@ -1,11 +1,10 @@
 ---
-title: "Forms"
-description: "TypeScript type definitions for form components and form data structures, ensuring type safety for form operations."
-last_updated: "2026-01-16"
-category: "types"
 status: "draft"
+last_updated: "2026-01-02"
+category: "types"
+title: "Forms"
+description: "TypeScript type definitions for types, ensuring type safety across the platform. Located in forms/."
 ---
-
 # Forms Types
 
 > **Type definitions for form components, form data structures, and form configuration interfaces.**

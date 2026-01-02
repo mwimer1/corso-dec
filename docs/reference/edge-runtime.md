@@ -1,9 +1,9 @@
 ---
-title: "Reference"
-description: "Documentation and resources for documentation functionality. Located in reference/."
+status: "draft"
 last_updated: "2026-01-02"
 category: "documentation"
-status: "draft"
+title: "Reference"
+description: "Documentation and resources for documentation functionality. Located in reference/."
 ---
 # Edge vs Node API: Boundaries & Guardrails
 

@@ -1,9 +1,9 @@
 ---
-title: "Architecture"
-description: "Documentation and resources for documentation functionality. Located in architecture/."
+status: "draft"
 last_updated: "2026-01-02"
 category: "documentation"
-status: "draft"
+title: "Architecture"
+description: "Documentation and resources for documentation functionality. Located in architecture/."
 ---
 # Auth & Account Surfaces (Clerk v6)
 

@@ -1,9 +1,9 @@
 ---
-title: "Development Best Practices"
-description: "Essential coding guardrails and development standards for the Corso platform."
+status: "active"
 last_updated: "2026-01-02"
 category: "documentation"
-status: "active"
+title: "Docs"
+description: "Documentation and resources for documentation functionality."
 ---
 # Development Best Practices
 

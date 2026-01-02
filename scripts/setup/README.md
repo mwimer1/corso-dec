@@ -1,3 +1,10 @@
+---
+last_updated: "2026-01-02"
+category: "documentation"
+status: "draft"
+title: "Setup"
+description: "Documentation and resources for documentation functionality. Located in setup/."
+---
 # Setup Scripts
 
 This directory contains setup and validation scripts for the Corso development environment.

@@ -1,6 +1,6 @@
 ---
-title: "Testing Guide"
-description: "Comprehensive testing patterns, examples, and best practices for the Corso platform using Vitest and React Testing Library."
+title: "Testing Quality"
+description: "Documentation and resources for documentation functionality. Located in testing-quality/."
 last_updated: "2026-01-02"
 category: "documentation"
 status: "active"

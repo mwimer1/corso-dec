@@ -1,9 +1,9 @@
 ---
-title: "Config"
-description: "Documentation and resources for documentation functionality."
+status: "draft"
 last_updated: "2026-01-02"
 category: "documentation"
-status: "draft"
+title: "Config"
+description: "Documentation and resources for documentation functionality."
 ---
 # Global Project Configuration (`config/`)
 

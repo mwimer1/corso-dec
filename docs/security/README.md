@@ -1,6 +1,6 @@
 ---
-title: "Security Documentation"
-description: "Security implementation guide covering authentication, authorization, validation, rate limiting, and error handling."
+title: "Security"
+description: "Documentation and resources for documentation functionality. Located in security/."
 last_updated: "2026-01-02"
 category: "documentation"
 status: "active"

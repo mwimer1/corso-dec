@@ -1,3 +1,10 @@
+---
+last_updated: "2026-01-02"
+category: "documentation"
+status: "draft"
+title: "README.md"
+description: "Documentation and resources for documentation functionality."
+---
 # Corso
 
 A modern, type-safe Next.js application built with domain-driven architecture, zero-trust security, and comprehensive developer tooling.

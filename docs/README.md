@@ -1,9 +1,9 @@
 ---
-title: "Documentation"
+title: "Docs"
 last_updated: "2026-01-02"
 category: "documentation"
 status: "active"
-description: "Comprehensive documentation for the Corso platform including architecture, development guides, API references, and operational procedures."
+description: "Documentation and resources for documentation functionality."
 ---
 # Corso Documentation
 

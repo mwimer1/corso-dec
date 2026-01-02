@@ -1,11 +1,10 @@
 ---
-title: "Multi-Branch Development & Auto-Merge Audit"
-description: "Comprehensive audit and recommendations for parallel branch development and automated merging"
-last_updated: "2026-01-15"
-category: "development"
 status: "active"
+last_updated: "2026-01-02"
+category: "documentation"
+title: "Development"
+description: "Documentation and resources for documentation functionality. Located in development/."
 ---
-
 # Multi-Branch Development & Auto-Merge Audit
 
 **Goal**: Enable parallel work on multiple changes (feature + bugfix + refactor) with minimal friction, and merge automatically once CI gates are satisfied.

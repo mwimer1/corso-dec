@@ -1,9 +1,9 @@
 ---
-title: "Architecture Design"
-description: "Documentation and resources for documentation functionality. Located in architecture-design/."
+status: "draft"
 last_updated: "2026-01-02"
 category: "documentation"
-status: "draft"
+title: "Architecture Design"
+description: "Documentation and resources for documentation functionality. Located in architecture-design/."
 ---
 # Domain-Driven Architecture Guidelines
 

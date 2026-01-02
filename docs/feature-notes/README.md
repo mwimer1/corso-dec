@@ -3,7 +3,7 @@ title: "Feature Notes"
 last_updated: "2026-01-02"
 category: "documentation"
 status: "active"
-description: "Feature implementation summaries, design documents, and sprint notes."
+description: "Documentation and resources for documentation functionality. Located in feature-notes/."
 ---
 # Feature Notes
 

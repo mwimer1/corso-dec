@@ -1,11 +1,10 @@
 ---
-title: "Multi-Branch Development Quick Start"
-description: "Quick reference for working on multiple branches simultaneously"
-last_updated: "2026-01-15"
-category: "development"
 status: "active"
+last_updated: "2026-01-02"
+category: "documentation"
+title: "Development"
+description: "Documentation and resources for documentation functionality. Located in development/."
 ---
-
 # Multi-Branch Development Quick Start
 
 **TL;DR**: Use git worktrees to work on multiple branches simultaneously. Each worktree can run its own dev server on a different port.

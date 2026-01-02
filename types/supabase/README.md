@@ -1,11 +1,10 @@
 ---
-title: "Supabase"
-description: "TypeScript type definitions for Supabase database schema and API types, ensuring type safety for database operations."
-last_updated: "2026-01-16"
-category: "types"
 status: "draft"
+last_updated: "2026-01-02"
+category: "types"
+title: "Supabase"
+description: "TypeScript type definitions for types, ensuring type safety across the platform. Located in supabase/."
 ---
-
 # Supabase Types
 
 > **Type definitions for Supabase database schema, API responses, and SQL execution configuration.**

@@ -1,3 +1,10 @@
+---
+last_updated: "2026-01-02"
+category: "documentation"
+status: "draft"
+title: "Commands"
+description: "Documentation and resources for documentation functionality. Located in commands/."
+---
 # Cursor Project Commands
 
 This directory contains project-specific commands for the Corso codebase that can be executed directly from Cursor IDE.

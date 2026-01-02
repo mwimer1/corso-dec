@@ -1,9 +1,9 @@
 ---
-title: "API Design Guide"
-description: "Complete guide to API design, OpenAPI compliance, validation, and documentation for the Corso API."
+status: "active"
 last_updated: "2026-01-02"
 category: "documentation"
-status: "active"
+title: "Api"
+description: "Documentation and resources for documentation functionality. Located in api/."
 ---
 # API Design Guide
 

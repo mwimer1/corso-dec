@@ -1,9 +1,9 @@
 ---
-title: "Development Setup Guide"
-description: "Complete guide for setting up the Corso development environment, including prerequisites, installation, and configuration."
+status: "active"
 last_updated: "2026-01-02"
 category: "documentation"
-status: "active"
+title: "Development"
+description: "Documentation and resources for documentation functionality. Located in development/."
 ---
 # 🚀 Development Environment & Workflows
 

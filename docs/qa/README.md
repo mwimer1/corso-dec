@@ -1,9 +1,9 @@
 ---
-title: "QA Documentation"
+title: "Qa"
 last_updated: "2026-01-02"
 category: "documentation"
 status: "active"
-description: "Quality assurance documentation including verification guides, QA checklists, and testing procedures."
+description: "Documentation and resources for documentation functionality. Located in qa/."
 ---
 # QA Documentation
 

@@ -1,3 +1,10 @@
+---
+last_updated: "2026-01-02"
+category: "library"
+status: "draft"
+title: "Marketing"
+description: "Core lib utilities and functionality for the Corso platform. Located in marketing/."
+---
 # Marketing Library (`lib/marketing/`)
 
 Core utilities and services for marketing pages, insights/blog content, and landing page features.
