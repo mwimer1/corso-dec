@@ -66,6 +66,8 @@ vi.mock('@/ui/molecules', () => ({
 // Mock next/dynamic to return components directly in tests (no lazy loading)
 // This allows dynamically imported components to render immediately in tests
 const dynamicComponentCache = new Map<string, any>();
+// Track pending loads to prevent duplicate requests
+const pendingLoads = new Map<string, Promise<any>>();
 
 vi.mock('next/dynamic', async () => {
   const React = await import('react');
@@ -79,56 +81,77 @@ vi.mock('next/dynamic', async () => {
       return function DynamicComponent(componentProps: any) {
         // Ensure props is always an object to prevent destructuring errors
         const props = componentProps || {};
+        const loadingStartedRef = React.useRef(false);
+        
+        // Try to get from cache immediately (synchronous)
         const [Component, setComponent] = React.useState<any>(() => {
-          // Try to get from cache immediately
           const cached = dynamicComponentCache.get(cacheKey);
           return cached && typeof cached === 'function' ? cached : null;
         });
         const [isLoading, setIsLoading] = React.useState(!Component);
         
-        React.useEffect(() => {
-          // If already cached and valid, use it immediately
+        // Use useLayoutEffect for synchronous execution before paint
+        // This ensures components load as quickly as possible in tests
+        React.useLayoutEffect(() => {
+          // If component is already loaded, no need to do anything
+          if (Component) {
+            return;
+          }
+          
+          // If already cached, use it immediately
           if (dynamicComponentCache.has(cacheKey)) {
             const cached = dynamicComponentCache.get(cacheKey);
-            if (cached && typeof cached === 'function' && !Component) {
+            if (cached && typeof cached === 'function') {
               setComponent(() => cached);
               setIsLoading(false);
             }
             return;
           }
           
-          // Load the component
-          let cancelled = false;
-          const loadComponent = async () => {
-            try {
-              const mod = await importFn();
-              if (!cancelled) {
+          // Prevent duplicate loads
+          if (loadingStartedRef.current) {
+            return;
+          }
+          loadingStartedRef.current = true;
+          
+          // Check if there's already a pending load for this component
+          let loadPromise = pendingLoads.get(cacheKey);
+          if (!loadPromise) {
+            // Start loading the component
+            loadPromise = (async () => {
+              try {
+                const mod = await importFn();
                 // Handle both default exports and named exports
                 const resolved = mod.default || mod;
                 // Ensure we have a valid React component (must be a function)
                 if (typeof resolved === 'function') {
                   dynamicComponentCache.set(cacheKey, resolved);
-                  setComponent(() => resolved);
-                  setIsLoading(false);
+                  return resolved;
                 } else {
                   console.warn('Dynamic import resolved to non-component:', resolved, 'Module:', mod);
-                  setIsLoading(false);
+                  return null;
                 }
-              }
-            } catch (err) {
-              if (!cancelled) {
+              } catch (err) {
                 console.error('Dynamic import failed:', err);
-                setIsLoading(false);
+                return null;
+              } finally {
+                // Clean up pending load
+                pendingLoads.delete(cacheKey);
               }
+            })();
+            pendingLoads.set(cacheKey, loadPromise);
+          }
+          
+          // Wait for the load to complete and update state
+          void loadPromise.then((resolved) => {
+            if (resolved && typeof resolved === 'function') {
+              setComponent(() => resolved);
+              setIsLoading(false);
+            } else {
+              setIsLoading(false);
             }
-          };
-          
-          void loadComponent();
-          
-          return () => {
-            cancelled = true;
-          };
-        }, [Component, cacheKey]);
+          });
+        }, [cacheKey]); // Only depend on cacheKey, not Component
         
         // Only render if Component is a valid function
         if (Component && typeof Component === 'function') {
