@@ -25,23 +25,22 @@ const handler = async (_req: NextRequest, ctx: { params: { entity: string } }): 
   }
   const { userId: _userId } = authResult;
 
-  // Export functionality has been removed during entity grid migration
-  // Return 410 Gone with deprecation headers
+  // Export functionality has been permanently removed during entity grid migration
+  // This endpoint is kept as a permanent stub to provide guidance to external clients
+  // Returns 410 Gone with deprecation headers pointing to the replacement endpoint
   const entity = ctx.params.entity;
-  const sunsetDate = '2025-04-15'; // 90 days from 2025-01-15
+  const removedDate = '2025-01-15';
   const alternativeEndpoint = `/api/v1/entity/${entity}/query`;
   
   return http.error(410, 'Gone - Export feature no longer available', {
     code: 'EXPORT_REMOVED',
     details: {
-      message: 'Export functionality was removed during the entity grid migration. Use entity query endpoints for data access.',
-      removedDate: '2025-01-15',
-      sunsetDate: sunsetDate,
+      message: 'Export functionality was permanently removed during the entity grid migration. Use entity query endpoints for data access.',
+      removedDate: removedDate,
       alternativeEndpoint: alternativeEndpoint,
     },
     headers: {
       'Deprecation': 'true',
-      'Sunset': new Date(sunsetDate).toUTCString(),
       'Link': `<${alternativeEndpoint}>; rel="alternate"; type="application/json"`,
     },
   });

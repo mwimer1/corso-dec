@@ -826,8 +826,8 @@
         "tags": [
           "Dashboard"
         ],
-        "summary": "Export entity data",
-        "description": "Export entity data in CSV or XLSX format",
+        "summary": "Export entity data (Permanently Removed)",
+        "description": "**⚠️ PERMANENTLY REMOVED** - This endpoint has been permanently removed.\nIt returns 410 Gone with guidance to use `/api/v1/entity/{entity}/query` instead.\n\nExport functionality was removed during the entity grid migration (2025-01-15).\nUse the entity query endpoint for data access with filtering, sorting, and pagination.\n",
         "deprecated": true,
         "parameters": [
           {
@@ -897,11 +897,24 @@
             "$ref": "#/components/responses/Forbidden"
           },
           "410": {
-            "description": "Gone - Export feature no longer available",
+            "description": "Gone - Export feature permanently removed. Use `/api/v1/entity/{entity}/query` instead.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorEnvelope"
+                },
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "EXPORT_REMOVED",
+                    "message": "Gone - Export feature no longer available",
+                    "timestamp": "2025-01-15T00:00:00Z",
+                    "details": {
+                      "message": "Export functionality was permanently removed during the entity grid migration. Use entity query endpoints for data access.",
+                      "removedDate": "2025-01-15",
+                      "alternativeEndpoint": "/api/v1/entity/{entity}/query"
+                    }
+                  }
                 }
               }
             },
@@ -912,16 +925,10 @@
                   "example": "true"
                 }
               },
-              "Sunset": {
-                "schema": {
-                  "type": "string",
-                  "format": "date-time",
-                  "example": "2025-04-15T00:00:00Z"
-                }
-              },
               "Link": {
                 "schema": {
                   "type": "string",
+                  "description": "Link to alternative endpoint",
                   "example": "</api/v1/entity/{entity}/query>; rel=\"alternate\"; type=\"application/json\""
                 }
               }

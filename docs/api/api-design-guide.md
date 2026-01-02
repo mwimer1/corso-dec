@@ -1033,9 +1033,10 @@ responses:
 - Pagination support
 - No rate limit (internal use)
 
-**GET `/api/v1/entity/{entity}/export`**
-- Export entity data (CSV/XLSX)
-- No rate limit (internal use)
+**GET `/api/v1/entity/{entity}/export`** ⚠️ **PERMANENTLY REMOVED**
+- Returns 410 Gone as permanent stub
+- Removed: 2025-01-15 (entity grid migration)
+- Alternative: Use `POST /api/v1/entity/{entity}/query` for data access
 
 ### AI Operations
 

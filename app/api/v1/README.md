@@ -31,7 +31,7 @@ export const revalidate = 0;
 | Domain | Method | Path | Purpose | Runtime | Auth | Rate limit |
 |--------|--------|------|---------|---------|------|------------|
 | Entity | POST | `/api/v1/entity/[entity]/query` | Entity queries (pagination/filtering/sorting) | Node.js | Bearer | 60/min |
-| Entity | GET | `/api/v1/entity/[entity]/export` | Entity exports (deprecated - 410 Gone) | Node.js | Bearer | 30/min |
+| Entity | GET | `/api/v1/entity/[entity]/export` | Entity exports (permanently removed - 410 Gone stub) | Node.js | Bearer | 30/min |
 | Entity | GET | `/api/v1/entity/[entity]` | Entity base operations | Node.js | Bearer | 60/min |
 | AI | POST | `/api/v1/ai/chat` | AI chat processing (streaming NDJSON) | Node.js | Bearer | 30/min |
 | AI | POST | `/api/v1/ai/generate-sql` | AI SQL generation | Node.js | Bearer | 30/min |
@@ -97,8 +97,8 @@ AI_MAX_TOOL_CALLS=3
 - **Runtime Strategy**: Most routes use Node.js runtime for consistency and ClickHouse integration capabilities. CSP report uses Edge for low-latency responses.
 - **Public Endpoints**: CSP report and insights search are public (no authentication required).
 - **Deprecated Endpoints**: 
-  - `/api/v1/entity/[entity]/export` — **DEPRECATED** (returns 410 Gone)
-    - **Removed**: 2025-01-15
-    - **Sunset**: 2025-04-15
+  - `/api/v1/entity/[entity]/export` — **PERMANENTLY REMOVED** (returns 410 Gone as permanent stub)
+    - **Removed**: 2025-01-15 (permanently removed during entity grid migration)
+    - **Status**: Kept as permanent stub to provide guidance to external clients
     - **Alternative**: Use `POST /api/v1/entity/{entity}/query` for data access
     - **Example**: `POST /api/v1/entity/projects/query` with pagination/filtering

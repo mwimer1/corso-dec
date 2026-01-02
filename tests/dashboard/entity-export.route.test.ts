@@ -44,17 +44,14 @@ describe('Entity Export Route', () => {
       
       // Verify error details structure
       expect(body.error.details).toBeDefined();
-      expect(body.error.details.message).toContain('removed during the entity grid migration');
+      expect(body.error.details.message).toContain('permanently removed during the entity grid migration');
       expect(body.error.details.removedDate).toBe('2025-01-15');
-      expect(body.error.details.sunsetDate).toBe('2025-04-15');
       expect(body.error.details.alternativeEndpoint).toBe(`/api/v1/entity/${entity}/query`);
 
       // Check deprecation headers (RFC 8594)
       expect(res.headers.get('Deprecation')).toBe('true');
-      const sunset = res.headers.get('Sunset');
-      expect(sunset).toBeTruthy();
-      // Sunset header is in RFC 1123 format (e.g., "Tue, 15 Apr 2025 00:00:00 GMT")
-      expect(sunset).toMatch(/2025.*Apr.*15|15.*Apr.*2025/); // Verify it contains the date components
+      // Sunset header removed - endpoint is now a permanent stub
+      expect(res.headers.get('Sunset')).toBeNull();
       
       // Link header should contain actual entity value, not placeholder
       const linkHeader = res.headers.get('Link');

@@ -191,9 +191,13 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Export entity data
+         * Export entity data (Permanently Removed)
          * @deprecated
-         * @description Export entity data in CSV or XLSX format
+         * @description **⚠️ PERMANENTLY REMOVED** - This endpoint has been permanently removed.
+         *     It returns 410 Gone with guidance to use `/api/v1/entity/{entity}/query` instead.
+         *
+         *     Export functionality was removed during the entity grid migration (2025-01-15).
+         *     Use the entity query endpoint for data access with filtering, sorting, and pagination.
          */
         get: operations["entity_export"];
         put?: never;
@@ -1018,15 +1022,29 @@ export interface operations {
             400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
-            /** @description Gone - Export feature no longer available */
+            /** @description Gone - Export feature permanently removed. Use `/api/v1/entity/{entity}/query` instead. */
             410: {
                 headers: {
                     Deprecation?: string;
-                    Sunset?: string;
                     Link?: string;
                     [name: string]: unknown;
                 };
                 content: {
+                    /**
+                     * @example {
+                     *       "success": false,
+                     *       "error": {
+                     *         "code": "EXPORT_REMOVED",
+                     *         "message": "Gone - Export feature no longer available",
+                     *         "timestamp": "2025-01-15T00:00:00Z",
+                     *         "details": {
+                     *           "message": "Export functionality was permanently removed during the entity grid migration. Use entity query endpoints for data access.",
+                     *           "removedDate": "2025-01-15",
+                     *           "alternativeEndpoint": "/api/v1/entity/{entity}/query"
+                     *         }
+                     *       }
+                     *     }
+                     */
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };

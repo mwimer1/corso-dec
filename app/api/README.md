@@ -267,7 +267,7 @@ while (true) {
 ## Quick File References
 
 - Entity query: `app/api/v1/entity/[entity]/query/route.ts`
-- Entity export: `app/api/v1/entity/[entity]/export/route.ts` (⚠️ **DEPRECATED** - returns 410 Gone, use `/api/v1/entity/{entity}/query` instead)
+- Entity export: `app/api/v1/entity/[entity]/export/route.ts` (⚠️ **PERMANENTLY REMOVED** - returns 410 Gone as permanent stub, use `/api/v1/entity/{entity}/query` instead)
 - Entity base operations: `app/api/v1/entity/[entity]/route.ts`
 - AI generate SQL: `app/api/v1/ai/generate-sql/route.ts`
 - User operations: `app/api/v1/user/route.ts`
@@ -283,10 +283,10 @@ curl -X POST http://localhost:3000/api/v1/entity/projects/query \
   -H "X-Corso-Org-Id: <org-id>" \
   -d '{"page":{"index":0,"size":10},"filter":{},"sort":[]}'
 
-# Deprecated export endpoint (returns 410 Gone with deprecation headers)
+# Permanently removed export endpoint (returns 410 Gone as permanent stub)
 curl -X GET http://localhost:3000/api/v1/entity/projects/export?format=csv \
   -H "Authorization: Bearer <token>" \
-  # Response: 410 Gone with Deprecation, Sunset, and Link headers
+  # Response: 410 Gone with Deprecation and Link headers pointing to /query endpoint
 
 # AI SQL generation
 curl -X POST http://localhost:3000/api/v1/ai/generate-sql \
