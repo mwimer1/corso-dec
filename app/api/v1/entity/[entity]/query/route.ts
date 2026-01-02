@@ -29,12 +29,12 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 import { http, validateJson } from '@/lib/api';
+import { requireAuthWithRBAC } from '@/lib/api/auth-helpers';
 import { handleOptions, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_60_PER_MIN } from '@/lib/middleware';
 import { getEntityConfig } from '@/lib/entities/config';
 import { getEntityPage } from '@/lib/entities/pages';
 import { EntityParamSchema, type EntityParam } from '@/lib/validators';
 import { EntityQueryRequestSchema } from '@/lib/validators/entityQuery';
-import { auth } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
 
 export async function OPTIONS(req: Request) {
@@ -42,16 +42,12 @@ export async function OPTIONS(req: Request) {
 }
 
 const handler = async (req: NextRequest, ctx: { params: { entity: string } }): Promise<Response> => {
-  // 1. Authentication
-  const { userId, has } = await auth();
-  if (!userId) {
-    return http.error(401, 'Unauthorized', { code: 'HTTP_401' });
+  // 1. Authentication and RBAC enforcement (member role required per OpenAPI spec)
+  const authResult = await requireAuthWithRBAC('member');
+  if (authResult instanceof Response) {
+    return authResult;
   }
-
-  // 2. RBAC enforcement (member role required per OpenAPI spec)
-  if (!has({ role: 'member' })) {
-    return http.error(403, 'Insufficient permissions', { code: 'FORBIDDEN' });
-  }
+  const { userId: _userId } = authResult;
 
   // 3. Entity param validation
   const entityParsed = EntityParamSchema.safeParse((ctx.params?.entity ?? '').toLowerCase());

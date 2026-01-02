@@ -1,7 +1,7 @@
 // Node.js required: ClickHouse database operations
 import { http } from '@/lib/api';
+import { requireAuth } from '@/lib/api/auth-helpers';
 import { handleOptions, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_30_PER_MIN } from '@/lib/middleware';
-import { auth } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
 
 /** @knipignore */
@@ -18,10 +18,11 @@ export async function OPTIONS(req: Request) {
 
 const handler = async (_req: NextRequest, ctx: { params: { entity: string } }): Promise<Response> => {
   // AuthN
-  const { userId } = await auth();
-  if (!userId) {
-    return http.error(401, 'Unauthorized', { code: 'HTTP_401' });
+  const authResult = await requireAuth();
+  if (authResult instanceof Response) {
+    return authResult;
   }
+  const { userId: _userId } = authResult;
 
   // Export functionality has been removed during entity grid migration
   // Return 410 Gone with deprecation headers

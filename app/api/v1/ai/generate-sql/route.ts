@@ -26,6 +26,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 import { http } from '@/lib/api';
+import { requireAuth } from '@/lib/api/auth-helpers';
 import { mapTenantContextError } from '@/lib/api/tenant-context-helpers';
 import { getTenantContext } from '@/lib/server';
 import { handleOptions, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_30_PER_MIN } from '@/lib/middleware';
@@ -33,7 +34,6 @@ import { validateSQLScope } from '@/lib/integrations/database/scope';
 import { createOpenAIClient } from '@/lib/integrations/openai/server';
 import { sanitizeUserInput } from '@/lib/security/prompt-injection';
 import { getEnv } from '@/lib/server/env';
-import { auth } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
 import { z } from 'zod';
 
@@ -62,10 +62,11 @@ const BodySchema = z
  */
 const handler = async (req: NextRequest): Promise<Response> => {
   // Authentication check
-  const { userId } = await auth();
-  if (!userId) {
-    return http.error(401, 'Unauthorized', { code: 'HTTP_401' });
+  const authResult = await requireAuth();
+  if (authResult instanceof Response) {
+    return authResult;
   }
+  const { userId: _userId } = authResult;
 
   // Get tenant context for org isolation
   let tenantContext;

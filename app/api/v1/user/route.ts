@@ -21,9 +21,9 @@
 // app/api/v1/user/route.ts
 // Requires member role – enforced via Clerk v6 RBAC below
 import { http, validateJson } from "@/lib/api";
+import { requireAuthWithRBAC } from '@/lib/api/auth-helpers';
 import { handleOptions, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_30_PER_MIN } from "@/lib/middleware";
 import { UserSchema } from "@/lib/validators";
-import { auth } from "@clerk/nextjs/server";
 import { type NextRequest } from "next/server";
 /** @knipignore */
 export const runtime = 'nodejs';
@@ -44,13 +44,11 @@ export const revalidate = 0;
  */
 const handler = async (req: NextRequest): Promise<Response> => {
   // 1 – Auth and RBAC enforcement using Clerk v6 (member role required per OpenAPI spec)
-  const { userId, has } = await auth();
-  if (!userId) {
-    return http.error(401, 'Unauthorized', { code: 'HTTP_401' });
+  const authResult = await requireAuthWithRBAC('member');
+  if (authResult instanceof Response) {
+    return authResult;
   }
-  if (!has({ role: 'member' })) {
-    return http.error(403, 'Insufficient permissions', { code: 'FORBIDDEN' });
-  }
+  const { userId: _userId } = authResult;
 
   const parsed = await validateJson(req, UserSchema);
   if (!parsed.success) {

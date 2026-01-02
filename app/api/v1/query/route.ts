@@ -29,12 +29,12 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 import { http, validateJson } from '@/lib/api';
+import { requireAuthWithRBAC } from '@/lib/api/auth-helpers';
 import { mapTenantContextError } from '@/lib/api/tenant-context-helpers';
 import { getTenantContext } from '@/lib/server';
-import { withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_60_PER_MIN, handleOptions } from '@/lib/middleware';
 import { clickhouseQuery } from '@/lib/integrations/clickhouse/server';
 import { validateSQLScope } from '@/lib/integrations/database/scope';
-import { auth } from '@clerk/nextjs/server';
+import { withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_60_PER_MIN, handleOptions } from '@/lib/middleware';
 import type { NextRequest } from 'next/server';
 import { z } from 'zod';
 
@@ -53,18 +53,14 @@ const QueryRequestSchema = z.object({
 }).strict();
 
 const handler = async (req: NextRequest): Promise<Response> => {
-  // 1. Authentication
-  const { userId, has } = await auth();
-  if (!userId) {
-    return http.error(401, 'Unauthorized', { code: 'HTTP_401' });
+  // 1. Authentication and RBAC enforcement (member role required)
+  const authResult = await requireAuthWithRBAC('member');
+  if (authResult instanceof Response) {
+    return authResult;
   }
+  const { userId: _userId } = authResult;
 
-  // 2. RBAC enforcement (member role required)
-  if (!has({ role: 'member' })) {
-    return http.error(403, 'Insufficient permissions', { code: 'FORBIDDEN' });
-  }
-
-  // 3. Get tenant context for org isolation
+  // 2. Get tenant context for org isolation
   let tenantContext;
   try {
     tenantContext = await getTenantContext(req);
