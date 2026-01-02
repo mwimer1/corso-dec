@@ -34,7 +34,7 @@ export type ValidationResult<T> = EnvValidationOk<T> | EnvValidationError;
  * - Strict: unknown keys are ignored; only keys in the shape are returned.
  * - No top-level env reads at module scope: evaluation happens at call time.
  */
-export function validateEnv<TShape extends z.ZodRawShape>(
+function validateEnv<TShape extends z.ZodRawShape>(
   shape: TShape
 ): ValidationResult<z.infer<z.ZodObject<TShape>>> {
   const schema = z.object(shape).strict();
@@ -62,13 +62,10 @@ export function validateEnv<TShape extends z.ZodRawShape>(
 }
 
 /**
- * Sugar: same as validateEnv but named for discoverability.
+ * Validate process.env against a Zod object shape.
  * 
- * @note This is intentionally an alias - both exports are used:
- * - `validateEnv`: Generic validation function
- * - `getEnv`: Convenience alias for common use case
- * 
- * Knip may flag this as a duplicate, but both names serve different purposes.
+ * Primary API for environment validation. Returns a result object that callers
+ * can check for success/failure without throwing.
  */
 export const getEnv = validateEnv;
 
