@@ -106,6 +106,52 @@ config/
 
 **Note**: `security-policy.json` is documentation-only and not enforced by runtime or CI. It serves as a reference for security policies and best practices.
 
+#### Gitleaks Configuration (`.gitleaks.toml`)
+
+**Important**: Gitleaks v8 requires **Go regex patterns** (RE2-based) in the `paths` allowlist, **NOT glob patterns**. This is a common source of CI failures.
+
+**Pattern Conversion Reference:**
+
+| Glob Pattern (❌ Invalid) | Regex Pattern (✅ Valid) | Description |
+|---------------------------|--------------------------|-------------|
+| `**/*.md` | `.*\.md$` | Any .md file at any depth |
+| `**/*.test.ts` | `.*\.test\.ts$` | Any .test.ts file at any depth |
+| `**/*.test.tsx` | `.*\.test\.tsx$` | Any .test.tsx file at any depth |
+| `**/*.stories.tsx` | `.*\.stories\.tsx$` | Any .stories.tsx file at any depth |
+| `.env.example` | `^\.env\.example$` | Exact match (root level) |
+| `docs/` | `^docs/` | Files in docs directory |
+| `README.md` | `^README\.md$` | Exact match (root level) |
+| `lib/security/utils/masking.ts` | `^lib/security/utils/masking\.ts$` | Exact match with full path |
+
+**Key Regex Rules:**
+- Use `.*` instead of `**` for "match any characters"
+- Use `^` for start of string (exact path matches)
+- Use `$` for end of string (file extension matches)
+- Escape special characters: `.` → `\.`, `*` → `\*`, etc.
+- Use triple quotes `'''` for multi-line or complex patterns
+
+**Validation:**
+```bash
+# Validate gitleaks config syntax
+pnpm tools:gitleaks:validate
+
+# Run secret scanning locally
+pnpm ci:gitleaks
+```
+
+**Troubleshooting:**
+
+**Error**: `error parsing regexp: missing argument to repetition operator: *`
+- **Cause**: Glob pattern `**/*.md` used instead of regex
+- **Fix**: Convert to `.*\.md$`
+
+**Error**: `File results.sarif does not exist`
+- **Cause**: Gitleaks crashed before generating report (usually due to invalid config)
+- **Fix**: Run `pnpm tools:gitleaks:validate` to check config syntax
+
+**Error**: `gitleaks not found`
+- **Fix**: Run `pnpm tools:gitleaks:install` to install gitleaks
+
 ### 🔄 Development Workflow
 
 | File | Purpose | Configuration |
