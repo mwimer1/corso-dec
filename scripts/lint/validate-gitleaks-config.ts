@@ -142,11 +142,12 @@ function main() {
   for (const { path: pattern, line } of paths) {
     const validation = isValidGoRegex(pattern);
     if (!validation.valid) {
+      const suggestion = getSuggestion(pattern);
       errors.push({
         line,
         path: pattern,
         issue: validation.error || 'Invalid pattern',
-        suggestion: getSuggestion(pattern),
+        ...(suggestion && { suggestion }),
       });
     }
   }
