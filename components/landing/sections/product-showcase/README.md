@@ -1,9 +1,7 @@
 ---
-title: "ProductShowcase TabSwitcher"
-description: "Documentation for TabSwitcher grid layout with gap-based separators and decorative dashed rails pattern."
-last_updated: "2025-01-15"
-category: "components"
 status: "stable"
+last_updated: "2026-01-01"
+category: "documentation"
 ---
 # ProductShowcase TabSwitcher
 

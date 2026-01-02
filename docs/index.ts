@@ -30,7 +30,7 @@ export const docs = [
   },
   {
     "path": "app/(marketing)/readme.md",
-    "title": "(marketing)"
+    "title": "README"
   },
   {
     "path": "app/(protected)/dashboard/readme.md",
@@ -38,7 +38,7 @@ export const docs = [
   },
   {
     "path": "app/(protected)/readme.md",
-    "title": "(protected)"
+    "title": "README"
   },
   {
     "path": "app/api/health/readme.md",
@@ -125,6 +125,10 @@ export const docs = [
     "title": "components/landing/sections/market-insights"
   },
   {
+    "path": "components/landing/sections/product-showcase/readme.md",
+    "title": "ProductShowcase TabSwitcher"
+  },
+  {
     "path": "components/landing/sections/readme.md",
     "title": "components/landing/sections"
   },
@@ -206,11 +210,7 @@ export const docs = [
   },
   {
     "path": "config/typescript/readme.md",
-    "title": "Typescript"
-  },
-  {
-    "path": "contexts/readme.md",
-    "title": "contexts"
+    "title": "TypeScript Configuration"
   },
   {
     "path": "docs/decisions/readme.md",
@@ -319,10 +319,6 @@ export const docs = [
   {
     "path": "scripts/audit/readme.md",
     "title": "scripts/audit"
-  },
-  {
-    "path": "scripts/ci/readme.md",
-    "title": "README"
   },
   {
     "path": "scripts/codemods/readme.md",
