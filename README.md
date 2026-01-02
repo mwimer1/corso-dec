@@ -41,9 +41,37 @@ pnpm quality:local
 pnpm dev
 ```
 
-The dev server runs on `http://localhost:3000`. The `predev` hook automatically:
+The dev server runs on `http://localhost:3000` (or the port specified by `PORT` environment variable). The `predev` hook automatically:
 - Cleans ports 3000 and 9323
 - Kills orphaned processes older than 30 minutes
+
+### Multi-Branch Development
+
+Work on multiple branches simultaneously using git worktrees:
+
+```bash
+# Create a worktree for a feature branch
+pnpm worktree:create feat/auth/improvements
+
+# List all active worktrees
+pnpm worktree:list
+
+# Work in the new worktree (use different port)
+cd ../corso-code-feat-auth-improvements
+pnpm install
+PORT=3001 pnpm dev  # Run on port 3001 to avoid conflicts
+
+# Remove worktree when done
+pnpm worktree:remove feat/auth/improvements
+```
+
+**Benefits:**
+- No stashing/switching between branches
+- Run multiple dev servers simultaneously (different ports)
+- Each worktree has its own `node_modules` and build cache
+- Cursor-friendly (Cursor uses worktrees for parallel agents)
+
+See [Multi-Branch Workflow Audit](docs/development/multi-branch-workflow-audit.md) for detailed guidance.
 
 ## 🏗️ Technology Stack
 
