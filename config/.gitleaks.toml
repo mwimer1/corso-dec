@@ -45,7 +45,7 @@ paths = [
     '''.*\.test\.ts$''',                 # Any .test.ts file (was: **/*.test.ts)
     '''.*\.test\.tsx$''',                # Any .test.tsx file (was: **/*.test.tsx)
     '''.*\.stories\.tsx$''',             # Any .stories.tsx file (was: **/*.stories.tsx)
-    '''^lib/security/utils/masking\.ts$'''  # Exact match: lib/security/utils/masking.ts
+    '''^lib/security/masking\.ts$'''  # Exact match: lib/security/masking.ts (contains example API keys in code comments)
 ]
 
 regexes = [
