@@ -76,7 +76,7 @@ type Props = {
             "z-[var(--sb-tip-z,60)]",
             "pointer-events-none opacity-100",
             "origin-left-center",
-            "transition-opacity transition-transform duration-[120ms] ease-in-out",
+            "transition-opacity transition-transform duration-100 ease-in-out",
             side === 'left' && "left-auto right-[calc(100%+var(--sb-tip-gap))]",
             side === 'left' && "data-[open=true]:-translate-x-0.5"
           )}
