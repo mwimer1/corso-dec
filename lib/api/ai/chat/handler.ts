@@ -4,7 +4,7 @@
 import 'server-only';
 
 import type { NextRequest } from 'next/server';
-import { requireAnyRole } from '@/lib/api/auth-helpers';
+import { requireAnyRoleForAI } from '@/lib/api/auth-helpers';
 import { mapTenantContextError } from '@/lib/api/tenant-context-helpers';
 import { getTenantContext } from '@/lib/server';
 import { createOpenAIClient } from '@/lib/integrations/openai/server';
@@ -22,7 +22,11 @@ import { createResponsesStreamResponse, createStreamResponse, createErrorRespons
 export async function handleChatRequest(req: NextRequest): Promise<Response> {
   // Authentication and RBAC enforcement (member or higher role required)
   // Support both 'member'/'org:member' and 'admin'/'org:admin' and 'owner'/'org:owner' formats
-  const authResult = await requireAnyRole(['member', 'org:member', 'admin', 'org:admin', 'owner', 'org:owner']);
+  // Feature flag ENFORCE_AI_RBAC can disable RBAC (default: enforced)
+  const authResult = await requireAnyRoleForAI(
+    ['member', 'org:member', 'admin', 'org:admin', 'owner', 'org:owner'],
+    '/api/v1/ai/chat'
+  );
   if (authResult instanceof Response) {
     return authResult;
   }

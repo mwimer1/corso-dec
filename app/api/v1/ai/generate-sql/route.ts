@@ -26,7 +26,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 import { http } from '@/lib/api';
-import { requireAnyRole } from '@/lib/api/auth-helpers';
+import { requireAnyRoleForAI } from '@/lib/api/auth-helpers';
 import { mapTenantContextError } from '@/lib/api/tenant-context-helpers';
 import { getTenantContext } from '@/lib/server';
 import { handleOptions, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_30_PER_MIN } from '@/lib/middleware';
@@ -64,7 +64,11 @@ const BodySchema = z
 const handler = async (req: NextRequest): Promise<Response> => {
   // Authentication and RBAC enforcement (member or higher role required)
   // Support both 'member'/'org:member' and 'admin'/'org:admin' and 'owner'/'org:owner' formats
-  const authResult = await requireAnyRole(['member', 'org:member', 'admin', 'org:admin', 'owner', 'org:owner']);
+  // Feature flag ENFORCE_AI_RBAC can disable RBAC (default: enforced)
+  const authResult = await requireAnyRoleForAI(
+    ['member', 'org:member', 'admin', 'org:admin', 'owner', 'org:owner'],
+    '/api/v1/ai/generate-sql'
+  );
   if (authResult instanceof Response) {
     return authResult;
   }
