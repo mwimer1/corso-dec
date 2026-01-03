@@ -26,7 +26,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 import { http } from '@/lib/api';
-import { requireAuth } from '@/lib/api/auth-helpers';
+import { requireAnyRole } from '@/lib/api/auth-helpers';
 import { mapTenantContextError } from '@/lib/api/tenant-context-helpers';
 import { getTenantContext } from '@/lib/server';
 import { handleOptions, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_30_PER_MIN } from '@/lib/middleware';
@@ -58,11 +58,13 @@ const BodySchema = z
  * @returns HTTP response with generated SQL or error
  * 
  * @throws {401} If user is not authenticated
+ * @throws {403} If user lacks 'member' role
  * @throws {400} If request body is invalid or contains unsafe SQL
  */
 const handler = async (req: NextRequest): Promise<Response> => {
-  // Authentication check
-  const authResult = await requireAuth();
+  // Authentication and RBAC enforcement (member role required per OpenAPI spec)
+  // Support both 'member' and 'org:member' formats for backward compatibility
+  const authResult = await requireAnyRole(['member', 'org:member']);
   if (authResult instanceof Response) {
     return authResult;
   }

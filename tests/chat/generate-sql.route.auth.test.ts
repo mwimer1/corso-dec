@@ -30,11 +30,12 @@ describe("API v1: ai/generate-sql route - Authentication & RBAC", () => {
     expect(data.error.code).toBe("HTTP_401");
   });
 
-  it("allows authenticated users to access endpoint (no role restrictions in handler)", async () => {
-    // Note: The handler only checks for userId, not specific roles.
-    // OpenAPI spec indicates [member, viewer] are allowed, but handler doesn't enforce roles.
-    // This test verifies the actual behavior: any authenticated user can access.
-    mockClerkAuth.setup({ userId: 'test-user-any-role' });
+  it("allows authenticated users with member role to access endpoint", async () => {
+    // Handler enforces RBAC: requires 'member' or 'org:member' role per OpenAPI spec
+    mockClerkAuth.setup({
+      userId: 'test-user-member',
+      has: ({ role }: { role: string }) => role === 'member' || role === 'org:member',
+    });
 
     // Override default streaming mock with non-streaming response for generate-sql
     mockCreateCompletion.mockResolvedValueOnce({
@@ -65,6 +66,69 @@ describe("API v1: ai/generate-sql route - Authentication & RBAC", () => {
     expect(data.success).toBe(true);
   });
 
+  it("allows authenticated users with org:member role to access endpoint", async () => {
+    // Handler supports both 'member' and 'org:member' formats
+    mockClerkAuth.setup({
+      userId: 'test-user-org-member',
+      has: ({ role }: { role: string }) => role === 'org:member',
+    });
+
+    // Override default streaming mock with non-streaming response for generate-sql
+    mockCreateCompletion.mockResolvedValueOnce({
+      choices: [{
+        message: {
+          content: 'SELECT * FROM users',
+        },
+      }],
+    });
+
+    const url = resolveRouteModule("ai/generate-sql");
+    if (!url) return expect(true).toBe(true);
+
+    const mod: any = await import(url);
+    const handler = mod.POST;
+    const req = new Request("http://localhost/api/v1/ai/generate-sql", {
+      method: "POST",
+      headers: { 
+        "content-type": "application/json",
+        "X-Corso-Org-Id": "test-org-123",
+      },
+      body: JSON.stringify({ question: "show users" }),
+    });
+
+    const res = await handler(req as any);
+    expect(res.status).toBe(200);
+    const data = await res.json();
+    expect(data.success).toBe(true);
+  });
+
+  it("returns 403 when authenticated user lacks member role", async () => {
+    mockClerkAuth.setup({
+      userId: 'test-user-no-role',
+      has: () => false, // No member role
+    });
+
+    const url = resolveRouteModule("ai/generate-sql");
+    if (!url) return expect(true).toBe(true);
+
+    const mod: any = await import(url);
+    const handler = mod.POST;
+    const req = new Request("http://localhost/api/v1/ai/generate-sql", {
+      method: "POST",
+      headers: { 
+        "content-type": "application/json",
+        "X-Corso-Org-Id": "test-org-123",
+      },
+      body: JSON.stringify({ question: "show users" }),
+    });
+
+    const res = await handler(req as any);
+    expect(res.status).toBe(403);
+    const data = await res.json();
+    expect(data.success).toBe(false);
+    expect(data.error.code).toBe("FORBIDDEN");
+  });
+
   it("denies unauthenticated users (401)", async () => {
     mockClerkAuth.setup({ userId: null });
 
@@ -89,11 +153,4 @@ describe("API v1: ai/generate-sql route - Authentication & RBAC", () => {
     expect(data.error.code).toBe("HTTP_401");
   });
 
-  // Note: Role-based access control (RBAC) is not enforced in the handler code.
-  // The OpenAPI spec indicates x-corso-rbac: [member, viewer], but the handler
-  // only checks for authentication (userId), not specific roles.
-  // If RBAC enforcement is added in the future, additional tests should verify:
-  // - Viewer role → 200 (if allowed) or 403 (if denied)
-  // - Member role → 200
-  // - Admin role → 200 (if allowed) or 403 (if denied)
 });

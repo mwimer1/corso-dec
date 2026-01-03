@@ -30,12 +30,18 @@ describe("API v1: ai/chat route - Authentication & RBAC", () => {
     expect(data.error.code).toBe("HTTP_401");
   });
 
-  it("allows authenticated users to access endpoint (no role restrictions in handler)", async () => {
-    // Note: The handler only checks for userId, not specific roles.
-    // OpenAPI spec indicates [member, viewer] are allowed, but handler doesn't enforce roles.
-    // This test verifies the actual behavior: any authenticated user can access.
-    const mod: any = await importChatRouteModule('test-user-any-role');
+  it("allows authenticated users with member role to access endpoint", async () => {
+    // Handler enforces RBAC: requires 'member' or 'org:member' role per OpenAPI spec
+    const mod: any = await importChatRouteModule('test-user-member');
     if (!mod) return expect(true).toBe(true);
+    
+    // Setup mock to allow member role (after module import to ensure mock is re-registered)
+    const { mockClerkAuth: reimportedMock } = await import('@/tests/support/mocks');
+    reimportedMock.setup({
+      userId: 'test-user-member',
+      has: ({ role }: { role: string }) => role === 'member' || role === 'org:member',
+    });
+    
     const handler = mod.POST;
     const req = new Request("http://localhost/api/v1/ai/chat", {
       method: "POST",
@@ -49,6 +55,61 @@ describe("API v1: ai/chat route - Authentication & RBAC", () => {
     const res = await handler(req as any);
     expect(res.status).toBe(200);
     expect(res.headers.get('Content-Type')).toBe('application/x-ndjson');
+  });
+
+  it("allows authenticated users with org:member role to access endpoint", async () => {
+    // Handler supports both 'member' and 'org:member' formats
+    const mod: any = await importChatRouteModule('test-user-org-member');
+    if (!mod) return expect(true).toBe(true);
+    
+    // Setup mock to allow org:member role (after module import to ensure mock is re-registered)
+    const { mockClerkAuth: reimportedMock } = await import('@/tests/support/mocks');
+    reimportedMock.setup({
+      userId: 'test-user-org-member',
+      has: ({ role }: { role: string }) => role === 'org:member',
+    });
+    
+    const handler = mod.POST;
+    const req = new Request("http://localhost/api/v1/ai/chat", {
+      method: "POST",
+      headers: { 
+        "content-type": "application/json",
+        "X-Corso-Org-Id": "test-org-123",
+      },
+      body: JSON.stringify({ content: "Hello" }),
+    });
+
+    const res = await handler(req as any);
+    expect(res.status).toBe(200);
+    expect(res.headers.get('Content-Type')).toBe('application/x-ndjson');
+  });
+
+  it("returns 403 when authenticated user lacks member role", async () => {
+    const mod: any = await importChatRouteModule('test-user-no-role');
+    if (!mod) return expect(true).toBe(true);
+    
+    // Setup mock to deny all roles (after module import to ensure mock is re-registered)
+    const { mockClerkAuth: reimportedMock } = await import('@/tests/support/mocks');
+    reimportedMock.setup({
+      userId: 'test-user-no-role',
+      has: () => false, // No member role
+    });
+    
+    const handler = mod.POST;
+    const req = new Request("http://localhost/api/v1/ai/chat", {
+      method: "POST",
+      headers: { 
+        "content-type": "application/json",
+        "X-Corso-Org-Id": "test-org-123",
+      },
+      body: JSON.stringify({ content: "Hello" }),
+    });
+
+    const res = await handler(req as any);
+    expect(res.status).toBe(403);
+    const data = await res.json();
+    expect(data.success).toBe(false);
+    expect(data.error.code).toBe("FORBIDDEN");
   });
 
   it("denies unauthenticated users (401)", async () => {
@@ -72,11 +133,4 @@ describe("API v1: ai/chat route - Authentication & RBAC", () => {
     expect(data.error.code).toBe("HTTP_401");
   });
 
-  // Note: Role-based access control (RBAC) is not enforced in the handler code.
-  // The OpenAPI spec indicates x-corso-rbac: [member, viewer], but the handler
-  // only checks for authentication (userId), not specific roles.
-  // If RBAC enforcement is added in the future, additional tests should verify:
-  // - Viewer role → 200 (if allowed) or 403 (if denied)
-  // - Member role → 200
-  // - Admin role → 200 (if allowed) or 403 (if denied)
 });

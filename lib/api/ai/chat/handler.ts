@@ -4,7 +4,7 @@
 import 'server-only';
 
 import type { NextRequest } from 'next/server';
-import { requireAuth } from '@/lib/api/auth-helpers';
+import { requireAnyRole } from '@/lib/api/auth-helpers';
 import { mapTenantContextError } from '@/lib/api/tenant-context-helpers';
 import { getTenantContext } from '@/lib/server';
 import { createOpenAIClient } from '@/lib/integrations/openai/server';
@@ -20,8 +20,9 @@ import { createResponsesStreamResponse, createStreamResponse, createErrorRespons
  * Main handler for chat requests.
  */
 export async function handleChatRequest(req: NextRequest): Promise<Response> {
-  // Authentication check
-  const authResult = await requireAuth();
+  // Authentication and RBAC enforcement (member role required per OpenAPI spec)
+  // Support both 'member' and 'org:member' formats for backward compatibility
+  const authResult = await requireAnyRole(['member', 'org:member']);
   if (authResult instanceof Response) {
     return authResult;
   }
