@@ -16,7 +16,6 @@ on:
       - "pnpm-lock.yaml"
       - "next.config.mjs"
       - "tailwind.config.ts"
-      - ".storybook/**"
   workflow_dispatch:
 
 concurrency:

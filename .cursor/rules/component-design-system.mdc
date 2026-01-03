@@ -12,7 +12,7 @@ related_rules:
   - file-organization
   - code-quality-standards
 alwaysApply: false
-globs: ["components/**", "app/**/_components/**", "stories/**", "styles/**"]
+globs: ["components/**", "app/**/_components/**", "styles/**"]
 summary: Atomic design patterns, import conventions, design system standards, and theming for React components.
 ---
 

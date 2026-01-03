@@ -161,25 +161,6 @@
       }
     },
     {
-      "label": "🎨 Build Storybook",
-      "type": "shell",
-      "command": "pnpm build-storybook",
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared"
-      }
-    },
-    {
-      "label": "🎨 Start Storybook",
-      "type": "shell",
-      "command": "pnpm storybook",
-      "isBackground": true,
-      "presentation": {
-        "reveal": "always",
-        "panel": "new"
-      }
-    },
-    {
       "label": "🔍 Quality Local Check",
       "type": "shell",
       "command": "pnpm quality:local",

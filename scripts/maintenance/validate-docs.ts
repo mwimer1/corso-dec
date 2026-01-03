@@ -273,7 +273,7 @@ async function runLinkChecker(): Promise<void> {
 
   try {
     const opts = await loadConfig();
-    const files = await glob('{README.md,docs/**/*.md,.github/**/*.md,eslint-plugin-corso/**/*.md,stories/**/*.md,styles/**/*.md,.vscode/**/*.md,public/**/*.md,.husky/**/*.md,.cursor/**/*.md}', {
+    const files = await glob('{README.md,docs/**/*.md,.github/**/*.md,eslint-plugin-corso/**/*.md,styles/**/*.md,.vscode/**/*.md,public/**/*.md,.husky/**/*.md,.cursor/**/*.md}', {
       ignore: ['**/node_modules/**']
     });
 

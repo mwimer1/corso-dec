@@ -73,9 +73,6 @@ remaining-clones.json
 skip-list.json
 orphan-report.json
 
-# Storybook build output
-storybook-static/
-build-storybook.log
 
 # Caches
 .npm

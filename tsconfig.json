@@ -26,9 +26,6 @@
       "@/lib/*": [
         "lib/*"
       ],
-      "@/lib": [
-        "lib/index.ts"
-      ],
       "@/styles": [
         "styles/index.ts"
       ],
@@ -37,9 +34,6 @@
       ],
       "@/hooks/*": [
         "hooks/*"
-      ],
-      "@/hooks": [
-        "hooks/index.ts"
       ],
       "@/molecules": [
         "components/ui/molecules/index.ts"
@@ -61,9 +55,6 @@
       ],
       "@/scripts/*": [
         "scripts/*"
-      ],
-      "@/tools": [
-        "tools/index.ts"
       ]
     }
   },
@@ -72,7 +63,6 @@
   },
   "exclude": [
     "node_modules",
-    ".next",
     "scripts/codemods/_archive/**/*",
     "**/*.spec.tsx",
     "**/*.spec.ts",
@@ -83,8 +73,6 @@
     "docs/examples/**/*"
   ],
   "include": [
-    "actions/**/*.ts",
-    "actions/**/*.tsx",
     "app/**/*.ts",
     "app/**/*.tsx",
     "components/**/*.ts",
@@ -101,14 +89,10 @@
     "scripts/**/*.tsx",
     "styles/**/*.ts",
     "styles/**/*.tsx",
-    "tools/**/*.ts",
-    "tools/**/*.tsx",
     "types/**/*.d.ts",
     "types/**/*.ts",
     "types/**/*.tsx",
     ".next/types/**/*.ts",
-    "assets/**/*.ts",
-    "assets/**/*.tsx",
     "tailwind.config.ts"
   ]
 }

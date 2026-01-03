@@ -19,7 +19,6 @@ const config: Config = {
     './styles/**/*.{js,ts,jsx,tsx}',
     './hooks/**/*.{js,ts,jsx,tsx}',
     './lib/**/*.{js,ts,jsx,tsx}',
-    './stories/**/*.{js,ts,jsx,tsx}',
   ],
   darkMode: ['class'],
   theme: {

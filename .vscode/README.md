@@ -46,7 +46,6 @@ scripts/dev-workflows.bat
 
 ### ⚡ **Development**
 - Quick Dev Start
-- Start Storybook
 - OpenAPI Generate/Validate
 
 ### 🔍 **Quality & Testing**
@@ -63,7 +62,6 @@ scripts/dev-workflows.bat
 
 ### 🔧 **Build & Cleanup**
 - Build Project
-- Build Storybook
 - Clean Cache
 - Clean All Caches
 

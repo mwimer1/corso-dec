@@ -7,7 +7,6 @@ targets:
   - "app/**/*.{ts,tsx}"
   - "components/**/*.{ts,tsx}"
   - "lib/**/*.{ts,tsx}"
-  - "stories/**/*.{ts,tsx,mdx}"
   - "tests/**/*.{ts,tsx}"
   - "tools/**/*.ts"
 exclude:
