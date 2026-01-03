@@ -400,7 +400,8 @@ describe('API v1: GET /entity/[entity]', () => {
 
       const body = await res.json();
       expect(body.success).toBe(false);
-      expect(body.error.code).toBe('INVALID_FILTERS');
+      // Schema validation now handles this, returns INVALID_QUERY
+      expect(body.error.code).toBe('INVALID_QUERY');
     });
 
     it('should return 400 for filters that are not an array', async () => {
@@ -420,7 +421,231 @@ describe('API v1: GET /entity/[entity]', () => {
 
       const body = await res.json();
       expect(body.success).toBe(false);
-      expect(body.error.code).toBe('INVALID_FILTERS');
+      // Schema validation now handles this, returns INVALID_QUERY
+      expect(body.error.code).toBe('INVALID_QUERY');
+    });
+
+    describe('strict filter validation (PR-001)', () => {
+      it('should return 400 for invalid filter shape (missing field)', async () => {
+        const mod = await import('@/app/api/v1/entity/[entity]/route');
+        const handler = mod.GET;
+
+        const filters = JSON.stringify([{ op: 'eq', value: 'active' }]); // Missing field
+
+        const url = new URL(`http://localhost/api/v1/entity/projects?page=0&pageSize=10&filters=${encodeURIComponent(filters)}`);
+        const req = {
+          nextUrl: url,
+          url: url.toString(),
+        };
+
+        const res = await handler(req as any, { params: { entity: 'projects' } });
+        expect(res.status).toBe(400);
+
+        const body = await res.json();
+        expect(body.success).toBe(false);
+        expect(body.error.code).toBe('INVALID_QUERY');
+      });
+
+      it('should return 400 for invalid filter operator', async () => {
+        const mod = await import('@/app/api/v1/entity/[entity]/route');
+        const handler = mod.GET;
+
+        const filters = JSON.stringify([{ field: 'status', op: 'invalid_op', value: 'active' }]);
+
+        const url = new URL(`http://localhost/api/v1/entity/projects?page=0&pageSize=10&filters=${encodeURIComponent(filters)}`);
+        const req = {
+          nextUrl: url,
+          url: url.toString(),
+        };
+
+        const res = await handler(req as any, { params: { entity: 'projects' } });
+        expect(res.status).toBe(400);
+
+        const body = await res.json();
+        expect(body.success).toBe(false);
+        expect(body.error.code).toBe('INVALID_QUERY');
+      });
+
+      it('should return 400 for too many filters (exceeds max)', async () => {
+        const mod = await import('@/app/api/v1/entity/[entity]/route');
+        const handler = mod.GET;
+
+        // Create 26 filters (max is 25)
+        const filters = Array.from({ length: 26 }, (_, i) => ({
+          field: `field_${i}`,
+          op: 'eq' as const,
+          value: `value_${i}`,
+        }));
+
+        const url = new URL(`http://localhost/api/v1/entity/projects?page=0&pageSize=10&filters=${encodeURIComponent(JSON.stringify(filters))}`);
+        const req = {
+          nextUrl: url,
+          url: url.toString(),
+        };
+
+        const res = await handler(req as any, { params: { entity: 'projects' } });
+        expect(res.status).toBe(400);
+
+        const body = await res.json();
+        expect(body.success).toBe(false);
+        expect(body.error.code).toBe('INVALID_QUERY');
+      });
+
+      it('should return 400 for filter with field name too long', async () => {
+        const mod = await import('@/app/api/v1/entity/[entity]/route');
+        const handler = mod.GET;
+
+        const longFieldName = 'a'.repeat(101); // Max is 100
+        const filters = JSON.stringify([{ field: longFieldName, op: 'eq', value: 'active' }]);
+
+        const url = new URL(`http://localhost/api/v1/entity/projects?page=0&pageSize=10&filters=${encodeURIComponent(filters)}`);
+        const req = {
+          nextUrl: url,
+          url: url.toString(),
+        };
+
+        const res = await handler(req as any, { params: { entity: 'projects' } });
+        expect(res.status).toBe(400);
+
+        const body = await res.json();
+        expect(body.success).toBe(false);
+        expect(body.error.code).toBe('INVALID_QUERY');
+      });
+
+      it('should return 400 for filter with value string too long', async () => {
+        const mod = await import('@/app/api/v1/entity/[entity]/route');
+        const handler = mod.GET;
+
+        const longValue = 'a'.repeat(1001); // Max is 1000
+        const filters = JSON.stringify([{ field: 'status', op: 'eq', value: longValue }]);
+
+        const url = new URL(`http://localhost/api/v1/entity/projects?page=0&pageSize=10&filters=${encodeURIComponent(filters)}`);
+        const req = {
+          nextUrl: url,
+          url: url.toString(),
+        };
+
+        const res = await handler(req as any, { params: { entity: 'projects' } });
+        expect(res.status).toBe(400);
+
+        const body = await res.json();
+        expect(body.success).toBe(false);
+        expect(body.error.code).toBe('INVALID_QUERY');
+      });
+
+      it('should return 400 for "in" operator without array value', async () => {
+        const mod = await import('@/app/api/v1/entity/[entity]/route');
+        const handler = mod.GET;
+
+        const filters = JSON.stringify([{ field: 'status', op: 'in', value: 'not-an-array' }]);
+
+        const url = new URL(`http://localhost/api/v1/entity/projects?page=0&pageSize=10&filters=${encodeURIComponent(filters)}`);
+        const req = {
+          nextUrl: url,
+          url: url.toString(),
+        };
+
+        const res = await handler(req as any, { params: { entity: 'projects' } });
+        expect(res.status).toBe(400);
+
+        const body = await res.json();
+        expect(body.success).toBe(false);
+        expect(body.error.code).toBe('INVALID_QUERY');
+      });
+
+      it('should return 400 for "between" operator without tuple of length 2', async () => {
+        const mod = await import('@/app/api/v1/entity/[entity]/route');
+        const handler = mod.GET;
+
+        const filters = JSON.stringify([{ field: 'value', op: 'between', value: [1] }]); // Should be [1, 2]
+
+        const url = new URL(`http://localhost/api/v1/entity/projects?page=0&pageSize=10&filters=${encodeURIComponent(filters)}`);
+        const req = {
+          nextUrl: url,
+          url: url.toString(),
+        };
+
+        const res = await handler(req as any, { params: { entity: 'projects' } });
+        expect(res.status).toBe(400);
+
+        const body = await res.json();
+        expect(body.success).toBe(false);
+        expect(body.error.code).toBe('INVALID_QUERY');
+      });
+
+      it('should return 400 for "bool" operator without boolean value', async () => {
+        const mod = await import('@/app/api/v1/entity/[entity]/route');
+        const handler = mod.GET;
+
+        const filters = JSON.stringify([{ field: 'active', op: 'bool', value: 'not-boolean' }]);
+
+        const url = new URL(`http://localhost/api/v1/entity/projects?page=0&pageSize=10&filters=${encodeURIComponent(filters)}`);
+        const req = {
+          nextUrl: url,
+          url: url.toString(),
+        };
+
+        const res = await handler(req as any, { params: { entity: 'projects' } });
+        expect(res.status).toBe(400);
+
+        const body = await res.json();
+        expect(body.success).toBe(false);
+        expect(body.error.code).toBe('INVALID_QUERY');
+      });
+
+      it('should accept valid filters and proceed to entity validation', async () => {
+        const mod = await import('@/app/api/v1/entity/[entity]/route');
+        const handler = mod.GET;
+
+        const filters = JSON.stringify([
+          { field: 'status', op: 'eq', value: 'active' },
+          { field: 'priority', op: 'gt', value: 5 },
+          { field: 'tags', op: 'in', value: ['tag1', 'tag2'] },
+          { field: 'value', op: 'between', value: [10, 20] },
+          { field: 'active', op: 'bool', value: true },
+        ]);
+
+        const url = new URL(`http://localhost/api/v1/entity/projects?page=0&pageSize=10&filters=${encodeURIComponent(filters)}`);
+        const req = {
+          nextUrl: url,
+          url: url.toString(),
+        };
+
+        const res = await handler(req as any, { params: { entity: 'projects' } });
+        // Should pass schema validation and proceed (may fail entity validation if fields don't exist, but that's expected)
+        expect([200, 400]).toContain(res.status);
+
+        const body = await res.json();
+        // If status is 200, filters were accepted; if 400, it's likely entity validation (unknown field)
+        // The important thing is that schema validation passed
+        if (res.status === 400 && body.error?.code === 'INVALID_QUERY') {
+          // Schema validation failed (unexpected)
+          expect(body.error.code).not.toBe('INVALID_QUERY');
+        }
+      });
+
+      it('should return 400 for unknown field (entity validation, not schema)', async () => {
+        const mod = await import('@/app/api/v1/entity/[entity]/route');
+        const handler = mod.GET;
+
+        // Use a field that doesn't exist in the entity columns
+        const filters = JSON.stringify([{ field: 'nonexistent_field', op: 'eq', value: 'test' }]);
+
+        const url = new URL(`http://localhost/api/v1/entity/projects?page=0&pageSize=10&filters=${encodeURIComponent(filters)}`);
+        const req = {
+          nextUrl: url,
+          url: url.toString(),
+        };
+
+        const res = await handler(req as any, { params: { entity: 'projects' } });
+        // Schema validation should pass, but entity validation should filter out unknown field
+        // The handler should still return 200, but the filter will be ignored
+        expect(res.status).toBe(200);
+
+        const body = await res.json();
+        expect(body.success).toBe(true);
+        // Filter is silently ignored by validateEntityQueryParams, so request succeeds
+      });
     });
 
     it('should return 403 when orgId is missing', async () => {

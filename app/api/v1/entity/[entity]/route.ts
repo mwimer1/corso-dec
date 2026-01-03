@@ -12,7 +12,8 @@ import type { EntityFetchParams } from '@/lib/entities/contracts';
 import { getEntityPage } from '@/lib/entities/pages';
 import { resolveOrgContext } from '@/lib/entities/org-resolution';
 import {
-  parseFiltersParam,
+  type EntityFilter,
+  type EntityFilterOp,
   validateEntityQueryParams,
 } from '@/lib/entities/validation';
 import { handleOptions, RATE_LIMIT_60_PER_MIN } from '@/lib/middleware';
@@ -140,49 +141,20 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
       details: qpParsed.error.flatten(),
     }));
   }
-  const { page, pageSize, sortDir } = qpParsed.data;
+  const { page, pageSize, sortDir, filters: schemaValidatedFilters } = qpParsed.data;
 
   // Prefer reading these directly from URLSearchParams to avoid any defaulting surprises.
   const sortByRaw = (sp.get('sortBy') ?? '').trim();
   const searchRaw = (sp.get('search') ?? '').trim();
-  const filtersParamRaw = sp.get('filters');
   
-  // Validate filters param format: if present, must be valid JSON array
-  if (filtersParamRaw !== null) {
-    try {
-      const candidates = [filtersParamRaw];
-      try {
-        candidates.unshift(decodeURIComponent(filtersParamRaw));
-      } catch {
-        // ignore decode failures
-      }
-      
-      let parsed: unknown;
-      let parseSuccess = false;
-      for (const c of candidates) {
-        try {
-          parsed = JSON.parse(c);
-          parseSuccess = true;
-          break;
-        } catch {
-          // try next candidate
-        }
-      }
-      
-      if (!parseSuccess) {
-        return await toNextResponse(http.badRequest('Invalid filters format', { code: 'INVALID_FILTERS' }));
-      }
-      
-      if (!Array.isArray(parsed)) {
-        return await toNextResponse(http.badRequest('Invalid filters format: must be an array', { code: 'INVALID_FILTERS' }));
-      }
-    } catch {
-      return await toNextResponse(http.badRequest('Invalid filters format', { code: 'INVALID_FILTERS' }));
-    }
-  }
-  
-  // Parse and validate filters
-  const parsedFilters = parseFiltersParam(filtersParamRaw);
+  // Convert schema-validated filters to EntityFilter format for entity-specific validation
+  // Schema validates structure (JSON format, array shape, operator types, value types, max filters)
+  // Entity-specific validation (validateEntityQueryParams) will validate field names against column config
+  const parsedFilters: EntityFilter[] | undefined = schemaValidatedFilters?.map((f) => ({
+    field: f.field,
+    op: f.op as EntityFilterOp,
+    value: f.value ?? null, // Convert undefined to null for EntityFilter (schema ensures values for current operators)
+  }));
   
   // Validate sort and filter parameters against entity column config
   const { sortBy: validatedSortBy, filters: validatedFilters } = await validateEntityQueryParams(
