@@ -76,34 +76,34 @@ jobs:
             cat coverage/coverage-summary.json | jq -r '.total | "Lines: \(.lines.pct)%\nFunctions: \(.functions.pct)%\nBranches: \(.branches.pct)%\nStatements: \(.statements.pct)%"'
             echo ""
             echo "Threshold check:"
-            LINES=$(cat coverage/coverage-summary.json | jq -r '.total.lines.pct')
-            FUNCTIONS=$(cat coverage/coverage-summary.json | jq -r '.total.functions.pct')
-            BRANCHES=$(cat coverage/coverage-summary.json | jq -r '.total.branches.pct')
-            STATEMENTS=$(cat coverage/coverage-summary.json | jq -r '.total.statements.pct')
+            LINES=$(cat coverage/coverage-summary.json | jq -r '.total.lines.pct | floor')
+            FUNCTIONS=$(cat coverage/coverage-summary.json | jq -r '.total.functions.pct | floor')
+            BRANCHES=$(cat coverage/coverage-summary.json | jq -r '.total.branches.pct | floor')
+            STATEMENTS=$(cat coverage/coverage-summary.json | jq -r '.total.statements.pct | floor')
             
             FAILED=0
-            if (( $(echo "$LINES < 80" | bc -l) )); then
+            if [ "$LINES" -lt 80 ]; then
               echo "❌ Lines coverage: ${LINES}% (threshold: 80%)"
               FAILED=1
             else
               echo "✅ Lines coverage: ${LINES}% (threshold: 80%)"
             fi
             
-            if (( $(echo "$FUNCTIONS < 75" | bc -l) )); then
+            if [ "$FUNCTIONS" -lt 75 ]; then
               echo "❌ Functions coverage: ${FUNCTIONS}% (threshold: 75%)"
               FAILED=1
             else
               echo "✅ Functions coverage: ${FUNCTIONS}% (threshold: 75%)"
             fi
             
-            if (( $(echo "$BRANCHES < 70" | bc -l) )); then
+            if [ "$BRANCHES" -lt 70 ]; then
               echo "❌ Branches coverage: ${BRANCHES}% (threshold: 70%)"
               FAILED=1
             else
               echo "✅ Branches coverage: ${BRANCHES}% (threshold: 70%)"
             fi
             
-            if (( $(echo "$STATEMENTS < 80" | bc -l) )); then
+            if [ "$STATEMENTS" -lt 80 ]; then
               echo "❌ Statements coverage: ${STATEMENTS}% (threshold: 80%)"
               FAILED=1
             else
