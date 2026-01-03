@@ -75,7 +75,6 @@ function getAgGridEnterpriseErrorMessage(): string {
  * 
  * @throws {Error} If Enterprise is disabled but server-side row model is used
  */
-// eslint-disable-next-line import/no-unused-modules -- Used in test setup (tests/support/setup/vitest.setup.shared.ts) and re-exported via lib/vendors/ag-grid.ts
 export function ensureAgGridRegistered(): void {
   if (registered) return;
   registered = true;
