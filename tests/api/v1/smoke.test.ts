@@ -174,7 +174,7 @@ describe('API v1: Smoke Tests', () => {
       const req = new Request('http://localhost/api/v1/ai/chat', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ message: 'test' }),
+        body: JSON.stringify({ content: 'test' }),
       });
       (req as any).nextUrl = new URL(req.url);
 
@@ -184,6 +184,35 @@ describe('API v1: Smoke Tests', () => {
       const body = await res.json();
       expect(body).toHaveProperty('success', false);
       expect(body.error).toHaveProperty('code', 'HTTP_401');
+    });
+
+    it('POST /api/v1/ai/chat should return 403 when authenticated but lacks required role', async () => {
+      // Setup: authenticated user but without member/admin/owner role
+      mockClerkAuth.setup({
+        userId: 'test-user-123',
+        orgId: 'test-org-123',
+        has: () => false, // No member/admin/owner role
+      });
+
+      const mod = await import('@/app/api/v1/ai/chat/route');
+      const handler = mod.POST;
+
+      const req = new Request('http://localhost/api/v1/ai/chat', {
+        method: 'POST',
+        headers: { 
+          'content-type': 'application/json',
+          'X-Corso-Org-Id': 'test-org-123',
+        },
+        body: JSON.stringify({ content: 'test' }),
+      });
+      (req as any).nextUrl = new URL(req.url);
+
+      const res = await handler(req);
+      expect(res.status).toBe(403);
+
+      const body = await res.json();
+      expect(body).toHaveProperty('success', false);
+      expect(body.error).toHaveProperty('code', 'FORBIDDEN');
     });
 
     it('POST /api/v1/ai/generate-sql should return 401 when unauthenticated', async () => {
@@ -203,6 +232,35 @@ describe('API v1: Smoke Tests', () => {
       const body = await res.json();
       expect(body).toHaveProperty('success', false);
       expect(body.error).toHaveProperty('code', 'HTTP_401');
+    });
+
+    it('POST /api/v1/ai/generate-sql should return 403 when authenticated but lacks required role', async () => {
+      // Setup: authenticated user but without member/admin/owner role
+      mockClerkAuth.setup({
+        userId: 'test-user-123',
+        orgId: 'test-org-123',
+        has: () => false, // No member/admin/owner role
+      });
+
+      const mod = await import('@/app/api/v1/ai/generate-sql/route');
+      const handler = mod.POST;
+
+      const req = new Request('http://localhost/api/v1/ai/generate-sql', {
+        method: 'POST',
+        headers: { 
+          'content-type': 'application/json',
+          'X-Corso-Org-Id': 'test-org-123',
+        },
+        body: JSON.stringify({ question: 'test question' }),
+      });
+      (req as any).nextUrl = new URL(req.url);
+
+      const res = await handler(req);
+      expect(res.status).toBe(403);
+
+      const body = await res.json();
+      expect(body).toHaveProperty('success', false);
+      expect(body.error).toHaveProperty('code', 'FORBIDDEN');
     });
   });
 

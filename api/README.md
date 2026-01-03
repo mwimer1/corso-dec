@@ -158,7 +158,7 @@ interface ChatProcessResponse = ChatProcessOp['responses']['200']['content']['ap
 import { http } from '@/lib/api';
 
 // Type-safe API calls
-const response = await http.post('/api/v1/dashboard/chat/process', {
+const response = await http.post('/api/v1/ai/chat', {
   body: chatRequest,
   headers: { 'Content-Type': 'application/json' }
 });
