@@ -4,17 +4,24 @@
 import 'server-only';
 
 /**
+ * Maximum length for sanitized user input (conservative limit to prevent abuse).
+ * Matches the chat endpoint's maxMessageLength limit (2000 chars).
+ */
+const MAX_INPUT_LENGTH = 2000;
+
+/**
  * Sanitize user input to prevent prompt injection attacks.
- * Filters out known attack patterns while preserving legitimate queries.
+ * Applies conservative sanitization while preserving legitimate queries.
  * 
- * This function removes common prompt injection patterns that could be used
- * to manipulate AI model behavior, such as:
- * - Instructions to ignore previous system prompts
- * - Attempts to change the AI's role or behavior
- * - OpenAI-specific tokens that could break conversation flow
+ * This function performs the following sanitization steps:
+ * 1. Removes null bytes and control characters (except newlines/tabs)
+ * 2. Normalizes line endings (CRLF → LF, CR → LF)
+ * 3. Removes prompt injection patterns (instructions to ignore system prompts, etc.)
+ * 4. Trims whitespace
+ * 5. Enforces maximum length limit
  * 
  * @param content - Raw user input string
- * @returns Sanitized string with injection patterns removed
+ * @returns Sanitized string with injection patterns and unsafe characters removed
  * 
  * @example
  * ```typescript
@@ -23,9 +30,23 @@ import 'server-only';
  * ```
  */
 export function sanitizeUserInput(content: string): string {
-  let sanitized = content.trim();
-  
-  // Filter out prompt injection attempts (case-insensitive)
+  if (!content || typeof content !== 'string') {
+    return '';
+  }
+
+  let sanitized = content;
+
+  // Step 1: Remove null bytes and control characters (preserve newlines \n, tabs \t, carriage returns \r)
+  // Control chars: 0x00-0x1F except \n (0x0A), \r (0x0D), \t (0x09)
+  sanitized = sanitized.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
+
+  // Step 2: Normalize line endings (CRLF → LF, CR → LF)
+  sanitized = sanitized.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+
+  // Step 3: Trim leading/trailing whitespace
+  sanitized = sanitized.trim();
+
+  // Step 4: Filter out prompt injection attempts (case-insensitive)
   const injectionPatterns = [
     /ignore\s+(all\s+)?previous\s+instructions?/gi,
     /forget\s+(all\s+)?previous\s+instructions?/gi,
@@ -45,6 +66,11 @@ export function sanitizeUserInput(content: string): string {
       // Remove the pattern but keep the rest of the content
       sanitized = sanitized.replace(pattern, '').trim();
     }
+  }
+
+  // Step 5: Enforce maximum length (trim to max length if exceeded)
+  if (sanitized.length > MAX_INPUT_LENGTH) {
+    sanitized = sanitized.slice(0, MAX_INPUT_LENGTH).trim();
   }
   
   return sanitized;
