@@ -39,6 +39,14 @@
     ".github/**",
     "**/*.yml",
     "**/*.yaml"
+  ],
+
+  // Ignore tool config files from unused-file detection (they're used via filesystem paths, not imports)
+  "ignoreFiles": [
+    ".prettierrc.js",
+    "config/.stylelintrc.cjs",
+    "config/domain-map.ts",
+    "docs/index.ts"
   ]
 
   // reporter intentionally omitted; use CLI --reporter json
