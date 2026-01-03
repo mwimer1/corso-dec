@@ -42,6 +42,35 @@ if (!has({ role: 'member' })) {
 }
 ```
 
+### Relaxed Auth Mode (Development Only)
+
+**⚠️ CRITICAL SECURITY**: Relaxed auth mode is **development-only** and **cannot be enabled in production**.
+
+Relaxed auth mode bypasses organization membership and RBAC checks, allowing any signed-in user to access protected resources. This is useful for local development but creates a critical security vulnerability if enabled in production.
+
+**Production Guard:**
+- The application **will fail to start** if relaxed auth mode is enabled in production
+- `isRelaxedAuthMode()` throws an error when called in production
+- `getEnv()` validates and throws during startup if production + relaxed auth detected
+- `pnpm validate:env` script checks for this configuration and fails CI
+
+**Configuration:**
+```bash
+# Development only (.env.local)
+NEXT_PUBLIC_AUTH_MODE=relaxed
+ALLOW_RELAXED_AUTH=true
+```
+
+**Guard Implementation:**
+- Runtime check: `isRelaxedAuthMode()` throws error in production
+- Startup check: `getEnv()` validates during application initialization
+- CI check: `validate-env.ts` script validates before deployment
+
+**Never enable in production:**
+- Build will fail if `NODE_ENV=production` and relaxed auth is enabled
+- Deployment will be blocked by environment validation
+- Application startup will throw error if guard is bypassed
+
 ### Middleware Protection
 
 The `middleware.ts` file protects all routes:

@@ -20,8 +20,24 @@ export function getEnv(): ValidatedEnv {
   const e = process.env as Record<string, string | undefined>;
   const g = (k: keyof ValidatedEnv) => e[k as string];
 
+  // CRITICAL: Validate relaxed auth mode is not enabled in production
+  const nodeEnv = g('NODE_ENV') as ValidatedEnv['NODE_ENV'];
+  const authMode = e['NEXT_PUBLIC_AUTH_MODE'];
+  const allowRelaxed = e['ALLOW_RELAXED_AUTH'];
+  
+  if (nodeEnv === 'production') {
+    const isRelaxedEnabled = authMode === 'relaxed' && allowRelaxed === 'true';
+    if (isRelaxedEnabled) {
+      throw new Error(
+        'SECURITY ERROR: Relaxed auth mode cannot be enabled in production. ' +
+        'This mode bypasses organization membership and RBAC checks, creating a critical security vulnerability. ' +
+        'Remove NEXT_PUBLIC_AUTH_MODE=relaxed and ALLOW_RELAXED_AUTH=true from production environment variables.'
+      );
+    }
+  }
+
   _cache = {
-    NODE_ENV: g('NODE_ENV') as ValidatedEnv['NODE_ENV'],
+    NODE_ENV: nodeEnv,
     NEXT_RUNTIME: g('NEXT_RUNTIME'),
     NEXT_PHASE: g('NEXT_PHASE'),
     VERCEL_ENV: g('VERCEL_ENV'),

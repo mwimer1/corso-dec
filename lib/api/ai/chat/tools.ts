@@ -5,7 +5,7 @@ import 'server-only';
 
 import type { NextRequest } from 'next/server';
 import type OpenAI from 'openai';
-import { getSchemaJSON, getSchemaSummary, guardSQL, SQLGuardError } from '@/lib/integrations/database/sql-guard';
+import { getSchemaJSON, guardSQL, SQLGuardError } from '@/lib/integrations/database/sql-guard';
 import { clickhouseQuery } from '@/lib/integrations/clickhouse/server';
 import { queryMockDb } from '@/lib/integrations/mockdb';
 import { logToolCall, normalizeSQLForLogging } from '@/lib/integrations/openai/chat-logging';

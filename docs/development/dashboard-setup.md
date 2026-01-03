@@ -73,17 +73,22 @@ You should see a working data grid with mock data!
   - Entity APIs skip org context and role validation
   - Signed-in user is still required (auth() must return userId)
 
-### Production Warning
+### Production Guard (CRITICAL)
 
-If relaxed mode is enabled in production (`NODE_ENV=production`), you'll see a console warning:
+**⚠️ SECURITY**: Relaxed auth mode **cannot be enabled in production**. The application will fail to start if attempted:
 
+- `isRelaxedAuthMode()` throws an error when called in production
+- `getEnv()` validates during startup and throws if production + relaxed auth detected
+- `pnpm validate:env` script checks for this and fails CI/deployment
+
+**Error message:**
 ```
-⚠️  WARNING: Relaxed auth mode is enabled in PRODUCTION. 
-This bypasses organization membership and RBAC checks. 
-Only use this for development/testing or with explicit approval.
+SECURITY ERROR: Relaxed auth mode cannot be enabled in production. 
+This mode bypasses organization membership and RBAC checks, creating a critical security vulnerability. 
+Remove NEXT_PUBLIC_AUTH_MODE=relaxed and ALLOW_RELAXED_AUTH=true from production environment variables.
 ```
 
-The mode still works, but the warning reminds you that security is reduced.
+This ensures relaxed auth mode is **development-only** and prevents accidental production deployment.
 
 ### Opt-in Requirement
 

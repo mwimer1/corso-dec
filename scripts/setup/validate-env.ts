@@ -39,6 +39,19 @@ async function main() {
       }
     }
 
+    // CRITICAL: Check for relaxed auth mode in production
+    const nodeEnv = process.env.NODE_ENV;
+    const authMode = process.env['NEXT_PUBLIC_AUTH_MODE'];
+    const allowRelaxed = process.env['ALLOW_RELAXED_AUTH'];
+    const isRelaxedEnabled = authMode === 'relaxed' && allowRelaxed === 'true';
+
+    if (nodeEnv === 'production' && isRelaxedEnabled) {
+      console.error('❌ SECURITY ERROR: Relaxed auth mode cannot be enabled in production.');
+      console.error('   This mode bypasses organization membership and RBAC checks, creating a critical security vulnerability.');
+      console.error('   Remove NEXT_PUBLIC_AUTH_MODE=relaxed and ALLOW_RELAXED_AUTH=true from production environment variables.');
+      process.exit(1);
+    }
+
     if (missingRequired.length === 0) {
       console.log('✅ Basic environment validation passed');
       console.log('   - All required environment variables are properly configured');

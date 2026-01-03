@@ -34,8 +34,10 @@ function safeGetEnv(key: string): string | undefined {
  * 
  * Guard rails:
  * - Requires explicit opt-in via ALLOW_RELAXED_AUTH=true
- * - Warns in production if enabled
+ * - **CRITICAL**: Cannot be enabled in production - will throw error
  * - Defaults to 'strict' if not set
+ * 
+ * @throws {Error} If relaxed auth mode is attempted in production environment
  */
 export function isRelaxedAuthMode(): boolean {
   const mode = safeGetEnv('NEXT_PUBLIC_AUTH_MODE');
@@ -55,12 +57,12 @@ export function isRelaxedAuthMode(): boolean {
   
   const isRelaxed = mode === 'relaxed' && allowRelaxed;
   
-  // Warn in production (but still allow if explicitly enabled)
+  // CRITICAL: Fail fast in production - relaxed auth mode is a security risk
   if (isRelaxed && nodeEnv === 'production') {
-    console.warn(
-      '⚠️  WARNING: Relaxed auth mode is enabled in PRODUCTION. ' +
-      'This bypasses organization membership and RBAC checks. ' +
-      'Only use this for development/testing or with explicit approval.'
+    throw new Error(
+      'SECURITY ERROR: Relaxed auth mode cannot be enabled in production. ' +
+      'This mode bypasses organization membership and RBAC checks, creating a critical security vulnerability. ' +
+      'Remove NEXT_PUBLIC_AUTH_MODE=relaxed and ALLOW_RELAXED_AUTH=true from production environment variables.'
     );
   }
   
