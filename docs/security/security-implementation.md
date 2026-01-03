@@ -290,6 +290,47 @@ Track security events for:
 - Rate limit exceeded
 - Input validation failures
 - SQL injection attempts
+- Prompt injection attempts (logged in development mode)
+
+## 🤖 AI Prompt Sanitization
+
+### Shared Sanitization Utility
+
+All AI endpoints use a shared sanitization utility (`lib/security/prompt-injection.ts`) to prevent prompt injection attacks:
+
+**Sanitization Steps:**
+1. **Control Character Removal**: Removes null bytes and control characters (preserves newlines `\n` and tabs `\t`)
+2. **Line Ending Normalization**: Normalizes CRLF (`\r\n`) and CR (`\r`) to LF (`\n`)
+3. **Prompt Injection Pattern Removal**: Removes common injection patterns:
+   - "ignore previous instructions"
+   - "forget previous instructions"
+   - "disregard previous instructions"
+   - "you are now a different assistant/AI/model"
+   - "system: ignore previous"
+   - OpenAI tokens (`<|im_end|>`, `<|im_start|>`)
+4. **Whitespace Trimming**: Removes leading/trailing whitespace
+5. **Length Limiting**: Enforces maximum length of 2000 characters
+
+**Usage:**
+```typescript
+import { sanitizeUserInput } from '@/lib/security/prompt-injection';
+
+// Applied in both AI endpoints:
+// - /api/v1/ai/chat: sanitizes user content before OpenAI calls
+// - /api/v1/ai/generate-sql: sanitizes prompt/question fields before OpenAI calls
+
+const sanitized = sanitizeUserInput(userInput);
+if (!sanitized) {
+  return http.badRequest('Invalid input: content cannot be empty after sanitization', {
+    code: 'VALIDATION_ERROR',
+  });
+}
+```
+
+**Applied Consistently:**
+- ✅ `/api/v1/ai/chat` - User content sanitized in `processUserInput()` function
+- ✅ `/api/v1/ai/generate-sql` - Prompt/question fields sanitized before OpenAI API calls
+- ✅ No double-sanitization (applied once per endpoint)
 
 ## ✅ Security Checklist
 

@@ -169,11 +169,28 @@ const sanitizedSQL = validateAISQLSecurity(generatedSQL);
 
 ### XSS Prevention
 ```typescript
-import { sanitizeUserInput } from "@/lib/security/assessment/input-security";
+import { sanitizeUserInput } from "@/lib/security/prompt-injection";
 
 // Sanitize user input before processing
 const sanitizedInput = sanitizeUserInput(userInput);
 ```
+
+### AI Prompt Injection Prevention
+```typescript
+import { sanitizeUserInput } from "@/lib/security/prompt-injection";
+
+// Shared sanitizer for all AI endpoints (chat and generate-sql)
+// Applies conservative sanitization:
+// - Removes null bytes and control characters (preserves newlines/tabs)
+// - Normalizes line endings (CRLF → LF, CR → LF)
+// - Removes prompt injection patterns (ignore previous instructions, etc.)
+// - Enforces maximum length limit (2000 characters)
+const sanitized = sanitizeUserInput(userInput);
+```
+
+**Applied in:**
+- `/api/v1/ai/chat` - User content sanitized before OpenAI calls
+- `/api/v1/ai/generate-sql` - Prompt/question fields sanitized before OpenAI calls
 
 ## 🔒 Webhook Security
 
