@@ -5,7 +5,6 @@
  * Uses real guardSQL but mocks clickhouseQuery and queryMockDb to verify they're never called with invalid SQL.
  */
 
-import { SQLGuardError } from '@/lib/integrations/database/sql-guard';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { executeSqlAndFormat } from '@/lib/api/ai/chat/tools';
 

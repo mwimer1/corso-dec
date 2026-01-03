@@ -5,8 +5,6 @@
  * Uses real validateSQLScope but mocks clickhouseQuery to verify it's never called with invalid SQL.
  */
 
-import { ApplicationError, ErrorCategory, ErrorSeverity } from '@/lib/shared';
-import { SecurityError } from '@/lib/shared/errors/types';
 import { mockClerkAuth } from '@/tests/support/mocks';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { resolveRouteModule } from '../support/resolve-route';

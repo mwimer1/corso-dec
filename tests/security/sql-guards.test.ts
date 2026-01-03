@@ -250,8 +250,8 @@ describe('SQL Guards: Known-Safe SELECT Patterns', () => {
     // Test JOIN query separately - it uses p.org_id which the current regex doesn't match
     // This is a known limitation: validateSQLScope regex doesn't handle table-prefixed org_id
     // In practice, guardSQL (AST-based) handles this correctly, but validateSQLScope (regex-based) doesn't
-    const joinQuery = `SELECT p.*, c.name FROM projects p JOIN companies c ON p.company_id = c.id WHERE p.org_id = '${ORG_ID}'`;
     // This will fail with current regex implementation - skip for now or use guardSQL for JOIN queries
+    // const joinQuery = `SELECT p.*, c.name FROM projects p JOIN companies c ON p.company_id = c.id WHERE p.org_id = '${ORG_ID}'`;
     // expect(() => validateSQLScope(joinQuery, ORG_ID)).not.toThrow();
   });
 
