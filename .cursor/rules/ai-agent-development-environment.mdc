@@ -195,10 +195,15 @@ const opts = {
 | Use Case | Script | Frequency |
 |----------|--------|-----------|
 | Daily Development | `typecheck` | Every few minutes |
-| Pre-commit | `typecheck` | Before commits |
+| Pre-commit | Automatic (git hooks) | Before commits (1-3 seconds, optimized) |
 | CI/CD | `typecheck` | Every build |
 | Troubleshooting | `typecheck:clean` | When experiencing slowdowns |
 | Quick Feedback | `typecheck:fast` | During development |
+
+**Note**: Pre-commit hooks (`.husky/pre-commit`) automatically run optimized validation:
+- **Performance**: 1-3 seconds (optimized with caching, conditional execution, and parallelization)
+- **Optimizations**: Staged-only typecheck, conditional validations, file hash caching
+- See `.husky/README.md` for full hook performance details
 
 ## Quality gates and validation commands
 

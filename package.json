@@ -19,6 +19,7 @@
   },
   "scripts": {
     "typecheck:fast": "tsc -p config/typescript/tsconfig.tooling.json --noEmit",
+    "typecheck:staged": "tsx scripts/lint/typecheck-staged.ts",
     "validate:mock-schema": "tsx scripts/maintenance/validate-mock-schema.ts",
     "port:mockcms:insights": "tsx scripts/maintenance/port-static-insights-to-mockcms.ts",
     "verify:edge": "tsx scripts/verify-edge-safe.ts",

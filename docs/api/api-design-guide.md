@@ -1341,10 +1341,11 @@ type NotificationQuery = paths['/api/v1/notifications']['post']['parameters']['q
 ### CI/CD Integration
 
 **Pre-commit Validation:**
-The `pretypecheck` hook automatically runs `pnpm openapi:gen` before type checking, ensuring:
-- OpenAPI spec is always bundled
-- Types are always up-to-date
-- Spec validation happens before commits
+The `pretypecheck` script automatically runs `pnpm openapi:gen` before type checking (via `package.json` scripts). The optimized pre-commit hooks ensure:
+- OpenAPI spec is bundled when types are checked
+- Types are validated for staged files only (performance optimization)
+- Validation checks run in parallel and skip when not needed
+- See `.husky/README.md` for full hook optimization details
 
 **CI Pipeline:**
 ```yaml

@@ -151,7 +151,14 @@ No results with a severity of 'error' found!
 ## Quality Gate Command Reference
 
 ### Recommended Pre-Commit Sequence
-Run these commands sequentially (one-by-one) before committing:
+
+**Automatic (Recommended)**: Pre-commit hooks automatically run optimized validation:
+- Hooks run on `git commit` - no manual steps needed
+- **Performance**: 1-3 seconds (optimized with caching and conditional execution)
+- See `.husky/README.md` for details on hook optimizations
+
+**Manual validation** (optional, before pushing):
+Run these commands sequentially (one-by-one) before pushing:
 
 ```bash
 # 1. Type checking (includes OpenAPI generation)

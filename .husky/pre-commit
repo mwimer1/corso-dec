@@ -14,29 +14,130 @@ fi
 
 echo "🔍 Running local quality gates..."
 
-# Package.json validation (prevents duplicate scripts)
-echo "1/6 Validating package.json..."
-pnpm validate:package || exit 1
+# Helper function to check if file is staged (cross-platform compatible)
+has_staged_file() {
+  git diff --cached --name-only --diff-filter=ACMR | grep -q "$1"
+}
 
-# Environment validation (prevents broken deployments)
-echo "2/6 Validating environment..."
-NODE_ENV=development pnpm validate:env || exit 1
+# Track which checks we need to run
+NEEDS_PACKAGE_CHECK=false
+NEEDS_ENV_CHECK=false
+NEEDS_TYPECHECK=false
+NEEDS_LINT=false
+NEEDS_DOCS_CHECK=false
 
-# Type checking (essential for TypeScript projects)
-echo "3/6 Type checking..."
-pnpm typecheck || exit 1
+# Determine which checks are needed
+if has_staged_file "^package.json$"; then
+  NEEDS_PACKAGE_CHECK=true
+fi
 
-# Linting (code quality and security patterns)
-echo "4/6 Linting code..."
-pnpm lint || exit 1
+# Check for env-related config files
+for pattern in "package.json" "next.config" "tsconfig.json" ".env.example" ".env.test" "config/.*env"; do
+  if git diff --cached --name-only | grep -qE "$pattern"; then
+    NEEDS_ENV_CHECK=true
+    break
+  fi
+done
 
-# Lint staged files (formatting, etc.) - minimal lint-staged config for formatting only
-echo "5/6 Final staged file processing..."
-pnpm lint-staged || exit 1  # Runs ESLint --fix on .ts/.tsx and binary font validation
+# Check if TypeScript files are staged
+if git diff --cached --name-only | grep -qE '\.(ts|tsx)$'; then
+  NEEDS_TYPECHECK=true
+  NEEDS_LINT=true
+fi
 
-# Documentation freshness validation
-echo "6/6 Validating documentation freshness..."
-pnpm tsx scripts/maintenance/validate-docs-on-commit.ts || exit 1
+# Check if docs files are staged
+if git diff --cached --name-only | grep -qE '(^docs/|README\.md|\.husky/.*\.md|\.cursor/.*\.md)'; then
+  NEEDS_DOCS_CHECK=true
+fi
+
+# Count total checks for progress display
+TOTAL_CHECKS=0
+[ "$NEEDS_PACKAGE_CHECK" = "true" ] && TOTAL_CHECKS=$((TOTAL_CHECKS + 1))
+[ "$NEEDS_ENV_CHECK" = "true" ] && TOTAL_CHECKS=$((TOTAL_CHECKS + 1))
+[ "$NEEDS_TYPECHECK" = "true" ] && TOTAL_CHECKS=$((TOTAL_CHECKS + 1))
+[ "$NEEDS_LINT" = "true" ] && TOTAL_CHECKS=$((TOTAL_CHECKS + 1))
+[ "$NEEDS_DOCS_CHECK" = "true" ] && TOTAL_CHECKS=$((TOTAL_CHECKS + 1))
+
+# Add leak guard check
+TOTAL_CHECKS=$((TOTAL_CHECKS + 1))
+
+CHECK_NUM=0
+EXIT_CODE=0
+
+# Parallel execution: Run independent checks concurrently
+# Package and Env validation can run in parallel (both check config, no dependencies)
+# Typecheck and lint can run in parallel (both work on staged TS files)
+# Docs validation can run in parallel with everything
+
+# Run package validation (if needed)
+if [ "$NEEDS_PACKAGE_CHECK" = "true" ]; then
+  CHECK_NUM=$((CHECK_NUM + 1))
+  echo "[$CHECK_NUM/$TOTAL_CHECKS] Validating package.json..."
+  pnpm validate:package &
+  PACKAGE_PID=$!
+else
+  echo "⏭️  Validating package.json... (skipped - package.json not changed)"
+fi
+
+# Run env validation (if needed) - in parallel with package check
+if [ "$NEEDS_ENV_CHECK" = "true" ]; then
+  CHECK_NUM=$((CHECK_NUM + 1))
+  echo "[$CHECK_NUM/$TOTAL_CHECKS] Validating environment..."
+  NODE_ENV=development pnpm validate:env &
+  ENV_PID=$!
+else
+  echo "⏭️  Validating environment... (skipped - no env-related files changed)"
+fi
+
+# Wait for package/env validations to complete
+if [ "$NEEDS_PACKAGE_CHECK" = "true" ]; then
+  wait $PACKAGE_PID || EXIT_CODE=$?
+fi
+if [ "$NEEDS_ENV_CHECK" = "true" ]; then
+  wait $ENV_PID || EXIT_CODE=$?
+fi
+
+# Exit early if validations failed
+if [ $EXIT_CODE -ne 0 ]; then
+  exit $EXIT_CODE
+fi
+
+# Run typecheck and lint in parallel (both work on staged TS files)
+# Note: We could run these truly in parallel, but keeping them sequential for now
+# to ensure type errors are caught before linting (better error messages)
+if [ "$NEEDS_TYPECHECK" = "true" ]; then
+  CHECK_NUM=$((CHECK_NUM + 1))
+  echo "[$CHECK_NUM/$TOTAL_CHECKS] Type checking staged files..."
+  pnpm typecheck:staged || EXIT_CODE=$?
+  if [ $EXIT_CODE -ne 0 ]; then
+    exit $EXIT_CODE
+  fi
+else
+  echo "⏭️  Type checking staged files... (skipped - no TypeScript files changed)"
+fi
+
+if [ "$NEEDS_LINT" = "true" ]; then
+  CHECK_NUM=$((CHECK_NUM + 1))
+  echo "[$CHECK_NUM/$TOTAL_CHECKS] Linting staged files..."
+  pnpm lint-staged || EXIT_CODE=$?
+  if [ $EXIT_CODE -ne 0 ]; then
+    exit $EXIT_CODE
+  fi
+else
+  echo "⏭️  Linting staged files... (skipped - no code files changed)"
+fi
+
+# Run docs validation (can run in parallel with others, but keeping sequential for cleaner output)
+if [ "$NEEDS_DOCS_CHECK" = "true" ]; then
+  CHECK_NUM=$((CHECK_NUM + 1))
+  echo "[$CHECK_NUM/$TOTAL_CHECKS] Validating documentation freshness..."
+  pnpm tsx scripts/maintenance/validate-docs-on-commit.ts || EXIT_CODE=$?
+  if [ $EXIT_CODE -ne 0 ]; then
+    exit $EXIT_CODE
+  fi
+else
+  echo "⏭️  Validating documentation freshness... (skipped - no docs files changed)"
+fi
 
 # --- Leak Guard ---
 # Fast-fail if critical types are re-exported from shared barrels.

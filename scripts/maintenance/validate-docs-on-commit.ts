@@ -14,7 +14,45 @@ const logger = {
 // Cross-platform pnpm command (Windows uses pnpm.cmd, Unix uses pnpm)
 const PNPM = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
 
+function hasDocsChanges(): boolean {
+  try {
+    // Get all staged files
+    const allStagedFiles = execFileSync('git', ['diff', '--cached', '--name-only'], {
+      encoding: 'utf8',
+    });
+
+    const stagedFiles = allStagedFiles
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0);
+
+    // Check if any staged files match docs patterns
+    const docsPatterns = [
+      /^docs\//,           // Any file in docs/
+      /^README\.md$/i,     // README.md (case-insensitive)
+      /^\.husky\/.*\.md$/i, // .husky/**/*.md
+      /^\.cursor\/.*\.md$/i, // .cursor/**/*.md
+    ];
+
+    const hasDocsFiles = stagedFiles.some((file) =>
+      docsPatterns.some((pattern) => pattern.test(file))
+    );
+
+    return hasDocsFiles;
+  } catch (error) {
+    // If git command fails, assume docs changed to be safe
+    logger.warn('⚠️  Could not check for docs changes, assuming docs changed');
+    return true;
+  }
+}
+
 function validateDocsOnCommit() {
+  // Early exit if no docs files changed (performance optimization)
+  if (!hasDocsChanges()) {
+    logger.info('✅ No documentation files changed, skipping docs validation');
+    return;
+  }
+
   logger.info('🔍 Validating documentation freshness...');
 
   try {

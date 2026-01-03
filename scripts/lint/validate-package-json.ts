@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { join } from 'path';
 import { readTextSync } from '../utils/fs/read';
 import { logger, createLintResult, resolveFromRepo } from './_utils';
+import { hasStagedFiles, getCachedResult, saveCachedResult } from './_utils/cache';
 
 interface ScriptKey {
   key: string;
@@ -15,8 +16,25 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = join(__filename, '..');
 
 function main() {
-  const result = createLintResult();
   const packagePath = resolveFromRepo('package.json');
+  
+  // Performance optimization: Use cache if package.json not staged
+  const isPackageStaged = hasStagedFiles(['package.json']);
+  
+  // If package.json is not staged, try to use cache
+  if (!isPackageStaged) {
+    const cached = getCachedResult('validate-package', [packagePath]);
+    if (cached === true) {
+      logger.success('✅ No duplicate scripts found in package.json (cached)');
+      return; // Cache hit - skip validation
+    }
+    // If cached === false or null, we need to validate (package.json may have been fixed)
+  }
+  
+  // Always validate if package.json is staged (it might have changed)
+  // or if cache is invalid/missing
+
+  const result = createLintResult();
   const packageContent = readTextSync(packagePath);
   const lines = packageContent.split('\n');
   const scriptKeys: ScriptKey[] = [];
@@ -60,9 +78,16 @@ function main() {
       logger.error(`❌ ${error}`);
     }
     logger.error('\n⚠️  Please remove duplicate script definitions from package.json');
+    
+    // Cache the failure result
+    saveCachedResult('validate-package', [packagePath], false);
+    
     process.exitCode = 1;
   } else {
     logger.success('✅ No duplicate scripts found in package.json');
+    
+    // Cache the success result
+    saveCachedResult('validate-package', [packagePath], true);
   }
 }
 

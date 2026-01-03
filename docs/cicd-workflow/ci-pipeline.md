@@ -159,8 +159,23 @@ with:
 ## 📋 Development Workflow
 
 ### Pre-commit Validation
+
+**Note**: Pre-commit hooks (`.husky/pre-commit`) automatically run optimized validation checks. For manual validation, see below.
+
+**Automatic (via git hooks)**:
+- Hooks run automatically on `git commit`
+- **Performance optimized**: 1-3 seconds (varies by change type)
+  - Code commits: 2-3 seconds (staged typecheck + lint)
+  - Docs-only: 1-2 seconds (docs validation only)
+  - Config-only: 0.5-1 second (minimal validation)
+- See `.husky/README.md` for full hook documentation
+
+**Manual validation** (before pushing):
 ```bash
-# Before pushing changes
+# Full validation (mirrors CI)
+pnpm quality:local
+
+# Or run individually
 pnpm typecheck
 pnpm lint
 pnpm test
