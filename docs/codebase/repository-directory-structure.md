@@ -1108,23 +1108,15 @@ title: "Codebase"
     │   │   ├── ast-grep
     │   │   │   ├── dashboard
     │   │   │   │   ├── no-client-import-server-barrel.yml
-    │   │   │   │   ├── no-literal-entity-keys.yml
     │   │   │   ├── hardening
     │   │   │   │   ├── no-api-test-routes.yml
     │   │   │   ├── patterns
     │   │   │   │   ├── no-server-only-in-pages.yml
     │   │   │   ├── runtime-boundaries
-    │   │   │   │   ├── ban-server-imports-in-app.yml
     │   │   │   │   ├── forbid-at-alias-in-rules.yml
     │   │   │   ├── ag-grid-no-direct-registration.yml
-    │   │   │   ├── consolidated-forbid-server-only-in-shared.yml
     │   │   │   ├── consolidated-no-direct-clickhouse-import-outside-integration.yml
-    │   │   │   ├── env-no-process-env.yml
-    │   │   │   ├── forbid-shared-deep-imports.yml
-    │   │   │   ├── no-server-imports-in-client-code.yml
-    │   │   │   ├── no-server-reexport-in-shared-barrels.yml
     │   │   │   ├── README.md
-    │   │   │   ├── routes-config-hardening.yml
     │   │   │   ├── ui-no-any.yml
     │   │   ├── lib
     │   │   │   ├── build-index.ts

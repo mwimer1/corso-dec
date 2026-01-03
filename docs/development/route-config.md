@@ -17,7 +17,8 @@ Short guidance for route authors:
 
 New repository checks:
 
-- `scripts/rules/ast-grep/routes-config-hardening.yml` — errors on `export const config =` and `as const` usage for route config exports in `app/**` files.
+- ESLint rule `@corso/require-runtime-exports` — requires runtime configuration in API route files.
+- ESLint rule `@corso/no-edge-runtime-on-pages` — blocks Edge runtime on pages/layouts.
 
 If you need to make a route Node runtime (for ClickHouse, Stripe, streaming), declare:
 

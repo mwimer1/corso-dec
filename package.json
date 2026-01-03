@@ -85,7 +85,7 @@
     "jscpd:report": "pnpm dlx jscpd --reporters json --output reports/duplication && echo ok",
     "jscpd:docs": "pnpm dlx jscpd docs --reporters json,console --output reports/jscpd-docs",
     "diag:build": "cross-env NODE_OPTIONS=\"--trace-uncaught --enable-source-maps --unhandled-rejections=strict\" next build",
-    "scan:edge-runtime": "pnpm --package=@ast-grep/cli dlx sg scan --rule scripts/rules/ast-grep/runtime-boundaries/ban-server-imports-in-app.yml app",
+    "scan:edge-runtime": "pnpm lint:edge",
     "jscpd:sarif": "pnpm dlx jscpd --reporters sarif",
     "jscpd:jsinspect": "pnpm dlx jsinspect app components lib hooks --ignore \"**/*.stories.*\" --ignore \"**/__snapshots__/**\" --threshold 30 --reporter json --no-color > reports/duplication/jsinspect.json",
     "jscpd:jsinspect:sarif": "pnpm run jscpd:jsinspect && pnpm tsx scripts/utils/jsinspect-to-sarif.ts --in reports/duplication/jsinspect.json --out reports/duplication/jsinspect.sarif",

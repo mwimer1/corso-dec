@@ -33,7 +33,7 @@ rules:
   # - aria-tab-requires-tabpanel.yml
   # - atomic-ui-missing.yml
   # Dashboard rules (excluding migrated rules)
-  # - "scripts/rules/ast-grep/dashboard/no-literal-entity-keys.yml"  # Migrated to ESLint: dashboard-literal-entity-keys
+  # - "scripts/rules/ast-grep/dashboard/no-literal-entity-keys.yml"  # Migrated to ESLint: dashboard-literal-entity-keys (Sprint 1: deleted)
   # - "scripts/rules/ast-grep/no-client-in-icons.yml"  # Migrated to ESLint: no-client-in-icons
   - "scripts/rules/ast-grep/runtime-boundaries/forbid-at-alias-in-tools.yml"
   # - "scripts/rules/ast-grep/patterns/require-client-directive-for-client-code.yml"  # Migrated to ESLint: require-client-directive-for-client-code
@@ -41,9 +41,16 @@ rules:
   # Project-local rule files (exists check): include only if present in scripts/rules/ast-grep/
   # (these entries were intentionally removed from the active list to avoid false loads)
   # - "scripts/rules/ast-grep/scripts-shebang.yml"  # Rule file not found - may have been migrated or removed
+  # - "scripts/rules/ast-grep/env-no-process-env.yml"  # Migrated to ESLint: no-direct-process-env + require-env-utilities (Sprint 1: deleted)
   # - "scripts/rules/ast-grep/no-direct-process-env.yml"  # Migrated to ESLint: no-direct-process-env
+  # - "scripts/rules/ast-grep/consolidated-forbid-server-only-in-shared.yml"  # Migrated to ESLint: no-server-in-client + require-server-only-directive (Sprint 1: deleted)
+  # - "scripts/rules/ast-grep/no-server-imports-in-client-code.yml"  # Migrated to ESLint: no-server-in-client (Sprint 1: deleted)
+  # - "scripts/rules/ast-grep/no-server-reexport-in-shared-barrels.yml"  # Migrated to ESLint: no-server-reexports (Sprint 1: deleted)
   # - "scripts/rules/ast-grep/consolidated-no-server-reexports.yml"  # Migrated to ESLint: no-server-reexports
   # - "scripts/rules/ast-grep/no-server-reexports.yml"  # Migrated to ESLint: no-server-reexports
+  # - "scripts/rules/ast-grep/forbid-shared-deep-imports.yml"  # Migrated to ESLint: no-deep-imports + no-cross-domain-imports (Sprint 1: deleted)
+  # - "scripts/rules/ast-grep/runtime-boundaries/ban-server-imports-in-app.yml"  # Migrated to ESLint: no-server-in-edge + check-edge-compat.ts (Sprint 1: deleted)
+  # - "scripts/rules/ast-grep/routes-config-hardening.yml"  # Migrated to ESLint: require-runtime-exports (Sprint 1: deleted)
   # - "scripts/rules/ast-grep/require-shared-env-server.yml"  # Migrated to ESLint: require-server-env-imports
   # - "scripts/rules/ast-grep/no-deprecated-lib-imports.yml"  # Migrated to ESLint: no-deprecated-lib-imports
   # - "scripts/rules/ast-grep/no-runtime-in-types.yml"  # Migrated to ESLint: no-runtime-in-types
