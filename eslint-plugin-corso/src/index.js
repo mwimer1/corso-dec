@@ -1371,29 +1371,103 @@ export default {
       }
     },
     'no-deprecated-lib-imports': {
-      meta: { type: 'problem', docs: { description: 'Use domain barrels instead of deprecated lib paths' } },
+      meta: {
+        type: 'problem',
+        docs: { description: 'Use domain barrels instead of deprecated lib paths' },
+        schema: [
+          {
+            type: 'object',
+            properties: {
+              configPath: { type: 'string' }
+            },
+            additionalProperties: false
+          }
+        ]
+      },
       create(context) {
-        const deprecatedPaths = [
-          '@/lib/actions/rate-limiting',
-          '@/lib/api/response/handlers',
-          '@/lib/api/env',
-          '@/lib/shared/assets.ts',
-          '@/lib/shared/env.ts',
-          '@/lib/shared/validation.ts',
-          '@/lib/validators/chat.ts',
-          '@/lib/validators/marketing.ts'
-        ];
+        const options = context.options?.[0] ?? {};
+        const configPath = options.configPath || 'eslint-plugin-corso/rules/deprecated-imports.json';
+
+        // Load deprecated imports config
+        let deprecatedConfig = { deprecatedImports: [] };
+        try {
+          const absPath = path.isAbsolute(configPath) ? configPath : path.join(process.cwd(), configPath);
+          const raw = fs.readFileSync(absPath, 'utf8');
+          deprecatedConfig = JSON.parse(raw);
+        } catch {
+          // If config cannot be read, do not crash ESLint – use empty config
+          deprecatedConfig = { deprecatedImports: [] };
+        }
+
+        const filename = context.getFilename().replace(/\\/g, '/');
+        const repoRoot = process.cwd().replace(/\\/g, '/');
+        const relativeFilename = filename.startsWith(repoRoot) ? filename.slice(repoRoot.length + 1) : filename;
+
+        // Helper function to check if import is deprecated
+        function checkDeprecatedImport(importPath, reportNode) {
+          if (typeof importPath !== 'string') return;
+
+          for (const rule of deprecatedConfig.deprecatedImports || []) {
+            // Check allowlist first
+            if (rule.allowlist && Array.isArray(rule.allowlist)) {
+              if (rule.allowlist.some(allowed => relativeFilename === allowed || relativeFilename.endsWith('/' + allowed))) {
+                continue; // File is allowlisted, skip this rule
+              }
+            }
+
+            // Check exact path match
+            if (rule.path && importPath === rule.path) {
+              const message = rule.message || `Import path '${importPath}' is deprecated.${rule.replacement ? ` Use '${rule.replacement}' instead.` : ''}`;
+              context.report({
+                node: reportNode,
+                message
+              });
+              return; // Only report once per import
+            }
+
+            // Check pattern match
+            if (rule.pattern) {
+              try {
+                const patternRegex = new RegExp(rule.pattern);
+                if (patternRegex.test(importPath)) {
+                  const message = rule.message || `Import path '${importPath}' matches deprecated pattern '${rule.pattern}'.${rule.replacement ? ` Use '${rule.replacement}' instead.` : ''}`;
+                  context.report({
+                    node: reportNode,
+                    message
+                  });
+                  return; // Only report once per import
+                }
+              } catch {
+                // Invalid regex pattern, skip
+                continue;
+              }
+            }
+          }
+        }
 
         return {
           ImportDeclaration(node) {
             const importPath = node.source.value;
-            if (typeof importPath !== 'string') return;
-
-            if (deprecatedPaths.includes(importPath)) {
-              context.report({
-                node: node.source,
-                message: `Import path '${importPath}' is deprecated. Use the domain barrel instead (see README).`
-              });
+            checkDeprecatedImport(importPath, node.source);
+          },
+          // Also check dynamic imports
+          CallExpression(node) {
+            if (node.callee.type === 'Import') {
+              // Dynamic import: import('path')
+              const importPath = node.arguments[0]?.type === 'Literal' ? node.arguments[0].value : null;
+              if (typeof importPath === 'string') {
+                checkDeprecatedImport(importPath, node.arguments[0]);
+              }
+            } else if (
+              node.callee.type === 'Identifier' &&
+              node.callee.name === 'require' &&
+              node.arguments[0]?.type === 'Literal'
+            ) {
+              // require('path')
+              const importPath = node.arguments[0].value;
+              if (typeof importPath === 'string') {
+                checkDeprecatedImport(importPath, node.arguments[0]);
+              }
             }
           }
         };

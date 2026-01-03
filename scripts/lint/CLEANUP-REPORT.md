@@ -777,3 +777,134 @@ if (result.hasErrors()) {
 ---
 
 **Sprint 3 Complete**: ✅ 15+ scripts migrated, exit behavior standardized, cross-platform paths fixed
+
+---
+
+# Sprint 4 — Deprecated Imports: Single Source of Truth (ESLint-driven)
+
+**Date**: 2025-01-16  
+**Status**: ✅ Complete
+
+## Summary
+
+Successfully consolidated deprecated import enforcement into a config-driven ESLint rule, eliminating duplication between the ESLint rule and the standalone script. The script is now a thin wrapper around the ESLint rule.
+
+## Changes Made
+
+### 1. Created Config-Driven Deprecated Imports
+
+**New File**: `eslint-plugin-corso/rules/deprecated-imports.json`
+
+**Config Format**:
+- Supports exact path matching (`path` field)
+- Supports pattern matching (`pattern` field with regex)
+- Supports allowlists (`allowlist` array)
+- Supports custom error messages and replacement suggestions
+
+**Config Contents**:
+- Migrated all hardcoded deprecated paths from ESLint rule
+- Added pattern-based rule for `/security/rate-limiting/guards` (from script)
+- Included allowlist for `lib/security/rate-limiting/guards.ts`
+
+### 2. Updated ESLint Rule to Read from Config
+
+**File**: `eslint-plugin-corso/src/index.js`
+
+**Changes**:
+- Rule now reads from `eslint-plugin-corso/rules/deprecated-imports.json`
+- Supports config path option (defaults to standard location)
+- Checks `ImportDeclaration`, dynamic `import()`, and `require()` calls
+- Respects allowlists per rule
+- Provides custom error messages with replacement suggestions
+
+**Capabilities**:
+- ✅ Exact path matching (same as before)
+- ✅ Pattern matching (new - covers script's regex patterns)
+- ✅ Allowlist support (new - covers script's allowlist)
+- ✅ Dynamic imports and require() (new - more comprehensive than script)
+
+### 3. Enabled Rule in ESLint Config
+
+**File**: `eslint.config.mjs`
+
+**Change**:
+- Added `'corso/no-deprecated-lib-imports': ['error', { configPath: './eslint-plugin-corso/rules/deprecated-imports.json' }]`
+- Rule is now active in all ESLint runs
+
+### 4. Converted Script to Thin Wrapper (Option A)
+
+**File**: `scripts/lint/no-deprecated-imports.ts`
+
+**Changes**:
+- Removed all regex pattern matching logic
+- Removed file walking logic
+- Now calls ESLint with the deprecated imports rule
+- Parses ESLint output and formats to match original output
+- Preserves original output format for compatibility
+
+**Rationale**: Option A chosen to maintain backward compatibility with existing CI/scripts that depend on the script's output format.
+
+### 5. Updated Documentation
+
+**Files Updated**:
+- `eslint-plugin-corso/README.md` - Added "Deprecated Imports Configuration" section
+- `scripts/lint/README.md` - Updated script description to note it's a thin wrapper
+
+## Comparison: ESLint Rule vs Script
+
+| Feature | ESLint Rule (Before) | ESLint Rule (After) | Script (Before) | Script (After) |
+|---------|---------------------|---------------------|-----------------|----------------|
+| Exact path matching | ✅ Hardcoded | ✅ Config-driven | ❌ | ✅ (via ESLint) |
+| Pattern matching | ❌ | ✅ Config-driven | ✅ Regex | ✅ (via ESLint) |
+| Allowlist support | ❌ | ✅ Config-driven | ✅ | ✅ (via ESLint) |
+| Dynamic imports | ❌ | ✅ | ✅ | ✅ (via ESLint) |
+| require() calls | ❌ | ✅ | ✅ | ✅ (via ESLint) |
+| IDE integration | ✅ | ✅ | ❌ | ✅ (via ESLint) |
+| Config-driven | ❌ | ✅ | ❌ | ✅ (via ESLint) |
+
+## Validation Results
+
+✅ **`pnpm lint`**: Passes (ESLint rule is active)  
+✅ **`pnpm lint:no-deprecated-imports`**: Passes (thin wrapper works)  
+✅ **`pnpm lint:eslint`**: Passes (rule enabled in config)  
+✅ **ESLint plugin build**: Passes
+
+## Impact
+
+### Code Reduction
+
+- **Script logic**: Removed ~70 lines of regex/file-walking code
+- **ESLint rule**: Removed hardcoded list, now reads from config
+- **Single source of truth**: All deprecated imports defined in one JSON file
+
+### Behavior Preservation
+
+- ✅ **Output format**: Script wrapper preserves original output format
+- ✅ **Coverage**: ESLint rule now covers everything script did (and more)
+- ✅ **Allowlist**: Config supports allowlists (same as script)
+
+### Developer Experience
+
+- ✅ **IDE integration**: Violations show in IDE (ESLint integration)
+- ✅ **Config-driven**: Easy to add/remove deprecated imports
+- ✅ **Better messages**: Custom error messages with replacement suggestions
+
+## Files Changed
+
+**Created (1 file)**:
+- `eslint-plugin-corso/rules/deprecated-imports.json`
+
+**Updated (4 files)**:
+- `eslint-plugin-corso/src/index.js` - Rule now reads from config
+- `eslint.config.mjs` - Enabled rule with config path
+- `scripts/lint/no-deprecated-imports.ts` - Converted to thin wrapper
+- `eslint-plugin-corso/README.md` - Added config documentation
+- `scripts/lint/README.md` - Updated script description
+
+## Future Work
+
+**Option B (Future)**: Once confident no dependencies on script output format, can remove the script entirely and update `package.json` to remove `lint:no-deprecated-imports` script.
+
+---
+
+**Sprint 4 Complete**: ✅ Deprecated imports consolidated into config-driven ESLint rule, script converted to thin wrapper

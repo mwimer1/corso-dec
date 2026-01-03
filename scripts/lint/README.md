@@ -56,7 +56,7 @@ result.report({ successMessage: '✅ All checks passed' });
 - **fix-eslint-plugin-dts.ts** – Post-build fixer for eslint-plugin-corso d.ts
 - **forbid-scripts-barrels.ts** – No description available
 - **no-binary-fonts.ts** – &#x27;,
-- **no-deprecated-imports.ts** – Patterns that capture only actual module specifiers in import/export/require/dynamic import
+- **no-deprecated-imports.ts** – Thin wrapper around ESLint rule `corso/no-deprecated-lib-imports` (config-driven via `eslint-plugin-corso/rules/deprecated-imports.json`)
 - **no-process-exit-ci-lint.ts** – Regression guard: Prevents reintroducing process.exit() calls in CI/lint scripts
 - **token-syntax-audit.ts** – scripts/token-syntax-audit.ts
 - **validate-effect-deps.ts** – scripts/validate-effect-deps.ts

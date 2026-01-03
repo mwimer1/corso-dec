@@ -141,7 +141,7 @@ export function hasStagedFiles(patterns: (string | RegExp)[]): boolean {
         return stagedFiles.includes(pattern);
       } else {
         // RegExp pattern
-        return stagedFiles.some((file) => pattern.test(file));
+        return stagedFiles.some((file: string) => pattern.test(file));
       }
     });
   } catch (error) {

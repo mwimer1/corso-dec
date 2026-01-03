@@ -64,7 +64,7 @@ The `@corso/eslint-plugin` enforces Corso's strict coding standards and architec
 ### Phase 6: Environment & Import Rules
 - `require-env-utilities` - Enforces proper environment variable access
 - `no-direct-process-env` - Prevents direct process.env usage
-- `no-deprecated-lib-imports` - Blocks deprecated import paths
+- `no-deprecated-lib-imports` - Blocks deprecated import paths (config-driven via `rules/deprecated-imports.json`)
 
 ### Phase 7: Type & API Rules
 - `no-runtime-in-types` - Prevents runtime exports in type directories
@@ -116,6 +116,39 @@ The following rules are currently stubs and marked for future implementation:
   }
 }
 ```
+
+### Deprecated Imports Configuration (`rules/deprecated-imports.json`)
+
+The `no-deprecated-lib-imports` rule reads from a config file to enforce deprecated import paths:
+
+```json
+{
+  "deprecatedImports": [
+    {
+      "path": "@/lib/actions/rate-limiting",
+      "replacement": "@/lib/security/rate-limiting",
+      "message": "Import path '@/lib/actions/rate-limiting' is deprecated. Use '@/lib/security/rate-limiting' instead."
+    },
+    {
+      "pattern": "/security/rate-limiting/guards",
+      "replacement": "@/lib/security/rate-limiting",
+      "message": "Import path containing '/security/rate-limiting/guards' is deprecated. Use '@/lib/security/rate-limiting' instead.",
+      "allowlist": [
+        "lib/security/rate-limiting/guards.ts"
+      ]
+    }
+  ]
+}
+```
+
+**Config Options:**
+- `path` - Exact import path to ban (e.g., `'@/lib/actions/rate-limiting'`)
+- `pattern` - Regex pattern to match (e.g., `'/security/rate-limiting/guards'`)
+- `replacement` - Suggested replacement path
+- `message` - Custom error message (optional)
+- `allowlist` - Array of file paths (relative to repo root) that are allowed to use this import
+
+**Note:** Use either `path` OR `pattern`, not both. The rule checks `ImportDeclaration`, dynamic `import()`, and `require()` calls.
 
 ### ESLint Configuration
 
