@@ -12,8 +12,11 @@ pnpm check:styles
 # Run lightweight test suite (node + dom tests, fast subset)
 # Can be bypassed with: git push --no-verify
 echo "Running pre-push test checks..."
-pnpm test:fast || {
+if ! pnpm test:fast; then
   echo "❌ Pre-push tests failed. Run 'pnpm test' to see full output."
   echo "   To bypass: git push --no-verify"
   exit 1
-}
+fi
+
+# Explicitly exit successfully to ensure git knows the hook completed
+exit 0
