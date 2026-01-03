@@ -1,35 +1,15 @@
 ---
-title: "Security"
-description: "Documentation and resources for documentation functionality. Located in security/."
+title: "docs/security"
 last_updated: "2026-01-03"
-category: "documentation"
-status: "active"
+category: "automation"
 ---
-# Security Documentation
 
-Last updated: 2026-01-03
+# Repository Scripts & Docs
 
-This directory contains security-related documentation for the Corso platform, including authentication patterns, security policies, and implementation guides.
+This README is generated from a single template (`README.scripts.hbs`).
 
-## 📋 Contents
+- Directory: `docs/security`
+- Last updated: `2026-01-03`
 
-- **[Security Policy](./security-policy.md)** - Security policies and standards
-- **[Security Implementation](./security-implementation.md)** - Implementation patterns and examples
-- **[Auth Patterns](./auth-patterns.md)** - Authentication and authorization patterns
-- **[Dependency Policy](./dependency-policy.md)** - Dependency security policies
-
-## 🔐 Key Topics
-
-- Zero-trust architecture
-- Authentication and authorization (Clerk)
-- Input validation (Zod)
-- Rate limiting
-- Error handling
-- SQL injection prevention
-- Webhook security
-
-## 📚 Related Documentation
-
-- [API Design Guide](../api/api-design-guide.md) - API security patterns
-- [Security Standards](../.cursor/rules/security-standards.mdc) - Cursor rules for security
+> Edit the template or the generator context to change all READMEs consistently.
 

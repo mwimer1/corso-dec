@@ -1,16 +1,15 @@
 ---
-title: "Lint"
+title: "scripts/lint"
 last_updated: "2026-01-03"
-category: "documentation"
-status: "draft"
-description: "Documentation and resources for documentation functionality. Located in lint/."
+category: "automation"
 ---
+
 # Repository Scripts & Docs
 
 This README is generated from a single template (`README.scripts.hbs`).
 
 - Directory: `scripts/lint`
-- Last updated: `2025-12-31`
+- Last updated: `2026-01-03`
 
 > Edit the template or the generator context to change all READMEs consistently.
 
@@ -18,12 +17,13 @@ This README is generated from a single template (`README.scripts.hbs`).
 
 - **audit-ai-security.ts** – /*.ts&#x60;, &#x60;${chatComponents}/*
 - **audit-breakpoints.ts** – /*.{ts,tsx,css,mdx}&#x27;,
-- **audit-workflow-secrets.ts** – Initialize report
+- **audit-workflow-secrets.ts** – Continue to workflow audit even if gitleaks fails
 - **check-css-paths.ts** – scripts/lint/check-css-paths.ts
 - **check-deprecations-util-extend.ts** – Regression check for util._extend deprecation warnings
 - **check-duplicate-styles.ts** – Guardrail: Detect duplicate styling sources for the same component.
 - **check-edge-compat.ts** – /{page,layout,route,error}.{ts,tsx} that export: export const runtime &#x3D; &#x27;edge&#x27;
 - **check-filename-case.ts** – scripts/lint/check-filename-case.ts
+- **check-filenames.ts** – &#x27;,
 - **check-forbidden-files.ts** – Check for forbidden files in the repository
 - **check-lockfile-major.ts** – Fallback to regex if YAML parse fails
 - **check-metadata-viewport.ts** – Extract metadata object body conservatively and check within it
@@ -39,8 +39,10 @@ This README is generated from a single template (`README.scripts.hbs`).
 - **forbid-scripts-barrels.ts** – No description available
 - **no-binary-fonts.ts** – &#x27;,
 - **no-deprecated-imports.ts** – Patterns that capture only actual module specifiers in import/export/require/dynamic import
+- **no-process-exit-ci-lint.ts** – Regression guard: Prevents reintroducing process.exit() calls in CI/lint scripts
 - **token-syntax-audit.ts** – scripts/token-syntax-audit.ts
 - **validate-effect-deps.ts** – scripts/validate-effect-deps.ts
+- **validate-gitleaks-config.ts** – Validates that a string is a valid Go regex pattern (not a glob pattern)
 - **validate-package-json.ts** – scripts/lint/validate-package-json.ts
 - **verify-ai-tools.ts** – AI Agent Tools Verification Script
 - **verify-eslint-plugin-dts.ts** – Inside namespaces (configs.recommended/strict), ensure rules is exported as a value

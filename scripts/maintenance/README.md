@@ -1,16 +1,15 @@
 ---
-title: "Maintenance"
+title: "scripts/maintenance"
 last_updated: "2026-01-03"
-category: "documentation"
-status: "draft"
-description: "Documentation and resources for documentation functionality. Located in maintenance/."
+category: "automation"
 ---
+
 # Repository Scripts & Docs
 
 This README is generated from a single template (`README.scripts.hbs`).
 
 - Directory: `scripts/maintenance`
-- Last updated: `2025-12-31`
+- Last updated: `2026-01-03`
 
 > Edit the template or the generator context to change all READMEs consistently.
 
@@ -23,6 +22,7 @@ This README is generated from a single template (`README.scripts.hbs`).
 - **check-readme-freshness.ts** – Check README freshness - validates that README files with frontmatter
 - **clean-next-build.ts** – Cross-platform script to clean .next directory before build
 - **clean-typescript-cache.ts** – scripts/maintenance/clean-typescript-cache.ts
+- **cleanup-branches.ts** – Branch Cleanup Script
 - **cleanup-cursor.ts** – Cross-platform script to preview or delete .cursor directories older than 1 day
 - **ensure-ports.ts** – Cross-platform script to check and kill processes on specified ports
 - **extract-docs-rules.ts** – scripts/maintenance/extract-docs-rules.ts

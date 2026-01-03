@@ -1,7 +1,15 @@
 ---
+title: "types/api"
 last_updated: "2026-01-03"
-category: "types"
-status: "draft"
-title: "Api"
-description: "TypeScript type definitions for types, ensuring type safety across the platform. Located in api/."
+category: "automation"
 ---
+
+# Repository Scripts & Docs
+
+This README is generated from a single template (`README.scripts.hbs`).
+
+- Directory: `types/api`
+- Last updated: `2026-01-03`
+
+> Edit the template or the generator context to change all READMEs consistently.
+
