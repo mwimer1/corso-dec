@@ -228,7 +228,9 @@ import { headers } from 'next/headers';
 import { http } from "@/lib/api";
 
 export async function POST(req: NextRequest): Promise<Response> {
-  const body = await req.text();
+  // CRITICAL: Read raw body as string (not JSON) to preserve signature integrity
+  // Any re-serialization (JSON.parse/stringify) will invalidate the signature
+  const rawBody = await req.text();
   const headersList = await headers();
   const svix_id = headersList.get("svix-id");
   const svix_timestamp = headersList.get("svix-timestamp");
@@ -240,7 +242,8 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   const wh = new Webhook(getEnv().CLERK_WEBHOOK_SECRET);
   try {
-    wh.verify(body, {
+    // Verify signature using raw body string - must be exact as received
+    wh.verify(rawBody, {
       "svix-id": svix_id,
       "svix-timestamp": svix_timestamp,
       "svix-signature": svix_signature,

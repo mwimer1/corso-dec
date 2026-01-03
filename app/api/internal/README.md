@@ -57,10 +57,12 @@ export const revalidate = 0;
 ### Implementation Notes (Clerk)
 - Route: `app/api/internal/auth/route.ts`
 - Runtime: `nodejs`; `dynamic = 'force-dynamic'`; `revalidate = 0`
-- Verify signature using Svix `Webhook.verify(rawBody, headers)`
-- Validate payload with Zod (`lib/validators/clerk-webhook.ts`)
-- Error handling: `withErrorHandlingNode` wrapper for consistent error responses
-- Rate limiting: `withRateLimitNode` wrapper (100 requests per minute)
+- **Raw body verification**: Read body via `req.text()` (not `req.json()`) to preserve signature integrity
+- Verify signature using Svix `Webhook.verify(rawBody, headers)` with the exact raw body string
+- **Critical**: Signature verification must use the raw body string as received - any re-serialization (JSON.parse/stringify) will invalidate the signature
+- Validate payload with Zod (`lib/validators/clerk-webhook.ts`) after signature verification
+- Error handling: `withErrorHandlingNode` wrapper for consistent error responses (does NOT read body)
+- Rate limiting: `withRateLimitNode` wrapper (100 requests per minute) (does NOT read body)
 - CORS: implement `OPTIONS` using `handleCors()`
 
 ## Endpoint Specifications

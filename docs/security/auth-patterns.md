@@ -156,11 +156,14 @@ import { headers } from 'next/headers';
 import { getEnv } from '@/lib/server/env';
 
 export async function POST(req: Request) {
-  const body = await req.text();
+  // CRITICAL: Read raw body as string (not JSON) to preserve signature integrity
+  // Any re-serialization (JSON.parse/stringify) will invalidate the signature
+  const rawBody = await req.text();
   const headersList = await headers();
 
   const wh = new Webhook(getEnv().CLERK_WEBHOOK_SECRET!);
-  const payload = wh.verify(body, {
+  // Verify signature using raw body string - must be exact as received
+  const payload = wh.verify(rawBody, {
     'svix-id': headersList.get('svix-id')!,
     'svix-timestamp': headersList.get('svix-timestamp')!,
     'svix-signature': headersList.get('svix-signature')!,
