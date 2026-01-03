@@ -4,15 +4,25 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 // Mock svix Webhook verification
 let verifyShouldThrow = false;
 let verifyShouldReturnInvalid = false;
+let capturedRawBody: string | null = null; // Track raw body passed to verify()
 
 vi.mock('svix', () => {
   return {
     Webhook: class {
       constructor(_secret: string) {}
       verify(raw: string, _headers: Record<string, string>) {
+        // Capture the raw body to verify it's passed as string (not re-serialized)
+        capturedRawBody = raw;
+        
+        // Verify it's a string (not an object) - this is critical for signature verification
+        if (typeof raw !== 'string') {
+          throw new Error('verify() must receive raw string, not parsed object');
+        }
+        
         if (verifyShouldThrow) {
           throw new Error('Signature verification failed');
         }
+        
         // Parse the raw JSON and return a properly formatted Clerk event object
         const parsed = JSON.parse(raw);
         const result = {
@@ -33,6 +43,7 @@ describe('POST /api/internal/auth (Clerk webhook)', () => {
     process.env.CLERK_WEBHOOK_SECRET = 'whsec_test';
     verifyShouldThrow = false;
     verifyShouldReturnInvalid = false;
+    capturedRawBody = null; // Reset captured body
     vi.clearAllMocks();
   });
 
@@ -142,6 +153,38 @@ describe('POST /api/internal/auth (Clerk webhook)', () => {
 
     const res = await (POST as unknown as (r: Request) => Promise<Response>)(req);
     expect(res.status).toBe(204);
+  });
+
+  it('verifies signature using raw body string (not re-serialized JSON)', async () => {
+    // This test ensures that the raw body string is passed to verify(), not a re-serialized version
+    // Re-serialization would change the body and break signature verification
+    const originalBody = JSON.stringify({
+      id: 'evt_raw_test',
+      type: 'user.created',
+      data: { id: 'user_raw' },
+    });
+
+    const req = new Request('http://localhost/api/internal/auth', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'svix-id': 'msg_raw',
+        'svix-timestamp': String(Math.floor(Date.now() / 1000)),
+        'svix-signature': 'v1,stub',
+      },
+      body: originalBody,
+    });
+
+    const res = await (POST as unknown as (r: Request) => Promise<Response>)(req);
+    
+    expect(res.status).toBe(204);
+    // Verify the exact raw body string was passed to verify() (not re-serialized)
+    expect(capturedRawBody).toBe(originalBody);
+    expect(typeof capturedRawBody).toBe('string');
+    
+    // Verify that we preserve the exact original string (not re-serialized)
+    // Re-serialization would change the body and break signature verification
+    expect(capturedRawBody).toBe(originalBody);
   });
 
   it('returns 500 when webhook secret is not configured', async () => {
