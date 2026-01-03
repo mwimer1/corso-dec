@@ -6,7 +6,7 @@ import 'server-only';
 import { auth, clerkClient } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
 import { http } from '@/lib/api';
-import { isRelaxedAuthMode } from '@/lib/shared/config/auth-mode';
+import { isRelaxedAuthMode } from '@/lib/shared';
 
 /**
  * Organization resolution result

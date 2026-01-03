@@ -102,6 +102,8 @@ export { trackEvent, trackNavClick } from './analytics/track';
 // Re-export public client env to avoid deep imports
 // Re-export client-safe env and logger to avoid deep imports from callers
 export { logger, publicEnv } from './config/client';
+// Re-export auth mode config (client+server safe)
+export { isRelaxedAuthMode } from './config/auth-mode';
 // Removed: httpFetch - unused per dead code audit
 
 
