@@ -8,4 +8,5 @@ export * from './files';
 export * from './paths';
 export * from './log';
 export * from './result';
+export * from './file-cache';
 export * from './cache';
