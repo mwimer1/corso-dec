@@ -289,7 +289,7 @@ CSP_FONT_DOMAINS='self',fonts.gstatic.com
 CSP_IMG_DOMAINS='self',images.clerk.dev,js.stripe.com
 CSP_CONNECT_DOMAINS='self',api.openai.com,api.stripe.com
 CSP_FRAME_DOMAINS='self',js.stripe.com,accounts.clerk.dev
-CSP_REPORT_URI=http://localhost:3000/api/public/csp-report
+CSP_FORWARD_URI=http://localhost:3000/api/v1/csp-report
 CSP_REPORT_ONLY=false
 ```
 
@@ -320,7 +320,7 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 # Other services: Clerk, Stripe, OpenAI, etc. (see .env.example)
 
 # 🔒 Security & CSP (reports sent to local endpoint)
-CSP_REPORT_URI=http://localhost:3000/api/public/csp-report
+CSP_FORWARD_URI=http://localhost:3000/api/v1/csp-report
 ```
 
 **`.env.test` (Test/CI; loaded by pipeline)**
@@ -336,7 +336,7 @@ SUPABASE_URL=https://YOUR-PROJECT.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=ci-service-role-key
 
 # 🔒 Security & CSP (reports sent to local endpoint for testing)
-CSP_REPORT_URI=http://localhost:3000/api/public/csp-report
+CSP_FORWARD_URI=http://localhost:3000/api/v1/csp-report
 ```
 
 ### Supabase CLI usage

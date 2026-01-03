@@ -22,7 +22,11 @@ export const revalidate = 0;
 
 ## Auth & RBAC
 - **Protected routes**: bearerAuth (see OpenAPI)
-- **Member-level RBAC** is enforced for protected routes
+- **RBAC enforcement**: Protected routes require `member`, `admin`, or `owner` roles (see `x-corso-rbac` in OpenAPI)
+- **AI endpoints** (`/api/v1/ai/chat`, `/api/v1/ai/generate-sql`): Require `member` or higher role (member/admin/owner)
+  - Returns `401` for unauthenticated requests
+  - Returns `403` for authenticated users without required role
+  - Can be bypassed via `ENFORCE_AI_RBAC=false` (emergency rollback only)
 - **Public routes**: `/api/v1/csp-report` and `/api/v1/insights/search` are public (no auth required)
 - **Error shape**: `{ success: false, error: { code, message, details? } }`
 

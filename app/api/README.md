@@ -143,7 +143,7 @@ export async function OPTIONS(req: Request) {
 **Behavior:**
 - Handles CORS preflight requests (OPTIONS method)
 - Returns 204 No Content with appropriate CORS headers
-- Validates origin against `CORS_ALLOWED_ORIGINS` environment variable
+- Validates origin against `CORS_ORIGINS` environment variable (or `CORS_ALLOWED_ORIGINS` alias)
 - Always includes `Access-Control-Allow-Origin` header (backward compatibility)
 - Edge-safe and Node.js compatible
 
@@ -169,9 +169,10 @@ Health check endpoints (`/api/health`, `/api/health/clickhouse`) use simple 204 
 
 #### CORS Configuration
 
-- **Environment variable:** `CORS_ALLOWED_ORIGINS` (comma-separated list)
+- **Environment variable:** `CORS_ORIGINS` (primary, comma-separated list)
+- **Alias:** `CORS_ALLOWED_ORIGINS` is supported for backward compatibility but `CORS_ORIGINS` is preferred
 - **Default behavior:** When unconfigured, all origins are allowed (dev-friendly)
-- **Production:** Set `CORS_ALLOWED_ORIGINS` to restrict allowed origins
+- **Production:** Set `CORS_ORIGINS` to restrict allowed origins
 
 #### Standardized Headers
 

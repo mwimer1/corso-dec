@@ -32,7 +32,7 @@ summary: Dashboard component development patterns for chat interfaces and data t
 ### Chat Components
 - `components/dashboard/chat/chat-dock.tsx`
 - `components/dashboard/chat/chat-window.tsx`
-- **API Endpoint**: `POST /api/v1/dashboard/chat/process` (streaming NDJSON chat processing)
+- **API Endpoint**: `POST /api/v1/ai/chat` (streaming NDJSON chat processing)
 
 ### Table Components
 - `components/dashboard/entities/**/*.tsx` - Entity grid components
@@ -209,7 +209,7 @@ pnpm validate:cursor-rules
 - Include accessibility guidelines
 
 ### API Documentation
-- Document chat processing endpoint: `POST /api/v1/dashboard/chat/process`
+- Document chat processing endpoint: `POST /api/v1/ai/chat`
 - Include streaming NDJSON format specifications
 - Document entity data helper functions
 

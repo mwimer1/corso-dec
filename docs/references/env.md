@@ -474,8 +474,10 @@ status: "draft"
 ## CORS_ORIGINS
 
 - Type: string | string[]
-- Purpose: Allowed CORS origins for API endpoints.
+- Purpose: Allowed CORS origins for API endpoints (primary variable).
 - Example: `"*"` (all origins) or `"https://app.corso.com,https://staging.corso.com"`
+- **Alias**: `CORS_ALLOWED_ORIGINS` is supported for backward compatibility but `CORS_ORIGINS` is preferred.
+- Default: When unconfigured, all origins are allowed (dev-friendly behavior).
 - Security: Server-only variable. Controls which origins can access the API.
 
 ## CSP_SCRIPT_DOMAINS
@@ -523,9 +525,9 @@ status: "draft"
 ## CSP_REPORT_URI
 
 - Type: string | undefined
-- Purpose: URI for CSP violation reports.
-- Example: `/api/v1/csp-report`
-- Security: Server-only variable. Endpoint that receives CSP violation reports.
+- **Status**: ⚠️ **DEPRECATED** - Not used in code. This variable is defined but not consumed by the CSP report route.
+- Purpose: ~~URI for CSP violation reports~~ (legacy, unused)
+- **Note**: The CSP report endpoint (`/api/v1/csp-report`) is hardcoded and does not read this variable. Use `CSP_FORWARD_URI` if you need to forward reports to an external service.
 
 ## CSP_REPORT_ONLY
 

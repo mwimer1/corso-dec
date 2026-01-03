@@ -39,11 +39,11 @@ Required for all bearer-authenticated operations. Defines the minimum role requi
 
 ```yaml
 paths:
-  /api/v1/dashboard/query:
+  /api/v1/ai/chat:
     post:
       security:
         - bearerAuth: []
-      x-corso-rbac: [member]  # Available: owner, admin, member, viewer, service
+      x-corso-rbac: [member, admin, owner]  # Available: owner, admin, member, viewer, service
       parameters:
         - $ref: '#/components/parameters/OrgIdHeader'
 ```

@@ -233,7 +233,7 @@ import { AITableIntentSchema } from '@/lib/security';
 
 #### Missing RBAC Annotation
 ```bash
-# Error: POST /api/v1/dashboard/query: missing x-corso-rbac
+# Error: POST /api/v1/ai/chat: missing x-corso-rbac
 # Fix: Add RBAC annotation to the operation
 post:
   security:
@@ -255,7 +255,7 @@ post:
 
 #### Invalid Role Value
 ```bash
-# Error: POST /api/v1/dashboard/query: invalid role 'superuser' (not in config/security/rbac-roles.json)
+# Error: POST /api/v1/ai/chat: invalid role 'superuser' (not in config/security/rbac-roles.json)
 # Fix: Use only roles defined in rbac-roles.json
 post:
   security:
@@ -265,7 +265,7 @@ post:
 
 #### Missing Security on Protected Route
 ```bash
-# Error: POST /api/v1/dashboard/query: protected route missing security definition
+# Error: POST /api/v1/ai/chat: protected route missing security definition
 # Fix: Add security requirements for protected operations
 post:
   security:
@@ -275,7 +275,7 @@ post:
 
 #### Incorrect Public Endpoint
 ```bash
-# Error: GET /api/v1/dashboard/query: public endpoint with bearerAuth security
+# Error: GET /api/v1/insights/search: public endpoint with bearerAuth security
 # Fix: Use x-public for truly public endpoints or add proper security
 get:
   x-public: true  # ← Use x-public OR proper security, not both
