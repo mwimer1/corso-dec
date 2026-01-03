@@ -20,9 +20,9 @@ import { createResponsesStreamResponse, createStreamResponse, createErrorRespons
  * Main handler for chat requests.
  */
 export async function handleChatRequest(req: NextRequest): Promise<Response> {
-  // Authentication and RBAC enforcement (member role required per OpenAPI spec)
-  // Support both 'member' and 'org:member' formats for backward compatibility
-  const authResult = await requireAnyRole(['member', 'org:member']);
+  // Authentication and RBAC enforcement (member or higher role required)
+  // Support both 'member'/'org:member' and 'admin'/'org:admin' and 'owner'/'org:owner' formats
+  const authResult = await requireAnyRole(['member', 'org:member', 'admin', 'org:admin', 'owner', 'org:owner']);
   if (authResult instanceof Response) {
     return authResult;
   }

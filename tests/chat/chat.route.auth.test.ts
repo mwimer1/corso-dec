@@ -31,7 +31,7 @@ describe("API v1: ai/chat route - Authentication & RBAC", () => {
   });
 
   it("allows authenticated users with member role to access endpoint", async () => {
-    // Handler enforces RBAC: requires 'member' or 'org:member' role per OpenAPI spec
+    // Handler enforces RBAC: requires 'member' or higher role
     const mod: any = await importChatRouteModule('test-user-member');
     if (!mod) return expect(true).toBe(true);
     
@@ -67,6 +67,106 @@ describe("API v1: ai/chat route - Authentication & RBAC", () => {
     reimportedMock.setup({
       userId: 'test-user-org-member',
       has: ({ role }: { role: string }) => role === 'org:member',
+    });
+    
+    const handler = mod.POST;
+    const req = new Request("http://localhost/api/v1/ai/chat", {
+      method: "POST",
+      headers: { 
+        "content-type": "application/json",
+        "X-Corso-Org-Id": "test-org-123",
+      },
+      body: JSON.stringify({ content: "Hello" }),
+    });
+
+    const res = await handler(req as any);
+    expect(res.status).toBe(200);
+    expect(res.headers.get('Content-Type')).toBe('application/x-ndjson');
+  });
+
+  it("allows authenticated users with admin role to access endpoint", async () => {
+    const mod: any = await importChatRouteModule('test-user-admin');
+    if (!mod) return expect(true).toBe(true);
+    
+    const { mockClerkAuth: reimportedMock } = await import('@/tests/support/mocks');
+    reimportedMock.setup({
+      userId: 'test-user-admin',
+      has: ({ role }: { role: string }) => role === 'admin' || role === 'org:admin',
+    });
+    
+    const handler = mod.POST;
+    const req = new Request("http://localhost/api/v1/ai/chat", {
+      method: "POST",
+      headers: { 
+        "content-type": "application/json",
+        "X-Corso-Org-Id": "test-org-123",
+      },
+      body: JSON.stringify({ content: "Hello" }),
+    });
+
+    const res = await handler(req as any);
+    expect(res.status).toBe(200);
+    expect(res.headers.get('Content-Type')).toBe('application/x-ndjson');
+  });
+
+  it("allows authenticated users with org:admin role to access endpoint", async () => {
+    const mod: any = await importChatRouteModule('test-user-org-admin');
+    if (!mod) return expect(true).toBe(true);
+    
+    const { mockClerkAuth: reimportedMock } = await import('@/tests/support/mocks');
+    reimportedMock.setup({
+      userId: 'test-user-org-admin',
+      has: ({ role }: { role: string }) => role === 'org:admin',
+    });
+    
+    const handler = mod.POST;
+    const req = new Request("http://localhost/api/v1/ai/chat", {
+      method: "POST",
+      headers: { 
+        "content-type": "application/json",
+        "X-Corso-Org-Id": "test-org-123",
+      },
+      body: JSON.stringify({ content: "Hello" }),
+    });
+
+    const res = await handler(req as any);
+    expect(res.status).toBe(200);
+    expect(res.headers.get('Content-Type')).toBe('application/x-ndjson');
+  });
+
+  it("allows authenticated users with owner role to access endpoint", async () => {
+    const mod: any = await importChatRouteModule('test-user-owner');
+    if (!mod) return expect(true).toBe(true);
+    
+    const { mockClerkAuth: reimportedMock } = await import('@/tests/support/mocks');
+    reimportedMock.setup({
+      userId: 'test-user-owner',
+      has: ({ role }: { role: string }) => role === 'owner' || role === 'org:owner',
+    });
+    
+    const handler = mod.POST;
+    const req = new Request("http://localhost/api/v1/ai/chat", {
+      method: "POST",
+      headers: { 
+        "content-type": "application/json",
+        "X-Corso-Org-Id": "test-org-123",
+      },
+      body: JSON.stringify({ content: "Hello" }),
+    });
+
+    const res = await handler(req as any);
+    expect(res.status).toBe(200);
+    expect(res.headers.get('Content-Type')).toBe('application/x-ndjson');
+  });
+
+  it("allows authenticated users with org:owner role to access endpoint", async () => {
+    const mod: any = await importChatRouteModule('test-user-org-owner');
+    if (!mod) return expect(true).toBe(true);
+    
+    const { mockClerkAuth: reimportedMock } = await import('@/tests/support/mocks');
+    reimportedMock.setup({
+      userId: 'test-user-org-owner',
+      has: ({ role }: { role: string }) => role === 'org:owner',
     });
     
     const handler = mod.POST;

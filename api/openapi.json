@@ -483,7 +483,9 @@
           }
         ],
         "x-corso-rbac": [
-          "member"
+          "member",
+          "admin",
+          "owner"
         ],
         "x-rate-limit": {
           "limit": 30,
@@ -957,7 +959,9 @@
           }
         ],
         "x-corso-rbac": [
-          "member"
+          "member",
+          "admin",
+          "owner"
         ],
         "x-rate-limit": {
           "limit": 30,

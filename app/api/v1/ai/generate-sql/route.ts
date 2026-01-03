@@ -58,13 +58,13 @@ const BodySchema = z
  * @returns HTTP response with generated SQL or error
  * 
  * @throws {401} If user is not authenticated
- * @throws {403} If user lacks 'member' role
+ * @throws {403} If user lacks 'member' or higher role (member/admin/owner)
  * @throws {400} If request body is invalid or contains unsafe SQL
  */
 const handler = async (req: NextRequest): Promise<Response> => {
-  // Authentication and RBAC enforcement (member role required per OpenAPI spec)
-  // Support both 'member' and 'org:member' formats for backward compatibility
-  const authResult = await requireAnyRole(['member', 'org:member']);
+  // Authentication and RBAC enforcement (member or higher role required)
+  // Support both 'member'/'org:member' and 'admin'/'org:admin' and 'owner'/'org:owner' formats
+  const authResult = await requireAnyRole(['member', 'org:member', 'admin', 'org:admin', 'owner', 'org:owner']);
   if (authResult instanceof Response) {
     return authResult;
   }
