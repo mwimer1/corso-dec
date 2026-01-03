@@ -10,8 +10,8 @@
  *   tsx scripts/lint/check-forbidden-files.ts
  */
 
-import { globSync } from 'glob';
-import { COMMON_IGNORE_GLOBS } from '../utils/constants';
+import { findFilesGlob } from './_utils';
+import { createLintResult } from './_utils';
 import { listTrackedFiles } from '../utils/git';
 
 interface ForbiddenPattern {
@@ -33,8 +33,6 @@ const FORBIDDEN_PATTERNS: ForbiddenPattern[] = [
   },
 ];
 
-const IGNORE_PATTERNS = [...COMMON_IGNORE_GLOBS];
-
 function checkTrackedFiles(pattern: ForbiddenPattern): string[] {
   // Use git utility for consistent behavior
   const files: string[] = [];
@@ -48,17 +46,16 @@ function checkTrackedFiles(pattern: ForbiddenPattern): string[] {
 
 function checkUntrackedFiles(pattern: ForbiddenPattern): string[] {
   try {
-    const files = globSync(pattern.globPattern, {
-      ignore: IGNORE_PATTERNS,
-    });
+    const files = findFilesGlob(pattern.globPattern);
     return files;
-  } catch (error) {
+  } catch {
     // Glob failed
     return [];
   }
 }
 
 function main() {
+  const result = createLintResult();
   const allForbidden: Array<{ pattern: string; files: string[] }> = [];
 
   for (const pattern of FORBIDDEN_PATTERNS) {
@@ -85,7 +82,14 @@ function main() {
     return;
   }
 
-  // Report all forbidden files
+  // Report all forbidden files (preserves existing output format)
+  for (const { pattern, files } of allForbidden) {
+    for (const file of files) {
+      result.addError(`${pattern}: ${file}`);
+    }
+  }
+
+  // Custom output format to match original
   console.error('❌ Forbidden files present:\n');
   
   for (const { pattern, files } of allForbidden) {

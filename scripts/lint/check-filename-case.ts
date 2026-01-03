@@ -1,8 +1,8 @@
 #!/usr/bin/env tsx
 // scripts/lint/check-filename-case.ts
 
-import { basename } from 'path';
-import { logger } from '../utils/logger';
+import { getFilename } from './_utils';
+import { logger } from './_utils';
 
 function main() {
   const filePath = process.argv[2];
@@ -12,7 +12,7 @@ function main() {
     return;
   }
 
-  const filename = basename(filePath);
+  const filename = getFilename(filePath);
 
   // Ignore dotfiles
   if (filename.startsWith('.')) {

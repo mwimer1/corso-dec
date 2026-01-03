@@ -7,12 +7,13 @@
  * - Guarantees fast feedback on `pnpm lint` via "prelint".
  */
 import { existsSync } from 'node:fs';
-import { resolve, dirname } from 'node:path';
+import { resolve } from 'node:path';
+import { resolveFromRepo, getRepoRoot } from './_utils';
 import { readJsonSync } from '../utils/fs/read';
 
 type Pkg = { scripts?: Record<string, string> };
-const pkgPath = resolve(process.cwd(), 'package.json');
-const repoRoot = dirname(pkgPath);
+const pkgPath = resolveFromRepo('package.json');
+const repoRoot = getRepoRoot();
 const pkg = readJsonSync(pkgPath) as Pkg;
 const scripts = pkg.scripts ?? {};
 const keys = Object.keys(scripts);
@@ -24,8 +25,9 @@ const KNOWN_BINARIES = new Set([
   'commitlint', 'typecheck', 'ts-node', 'nodemon', 'concurrently', 'husky'
 ]);
 
-const errors: string[] = [];
-const warnings: string[] = [];
+import { createLintResult } from './_utils';
+
+const result = createLintResult();
 
 // Allowed prefixes (tuned to current repo conventions)
 // Expanded to avoid false warnings for legitimate script groups
@@ -215,7 +217,7 @@ function validateScriptTargets(scripts: Record<string, string>): Map<string, str
 // 1) Prefix guidance (warning only)
 for (const k of keys) {
   if (!prefixRe.test(k) && !isLifecycleHook(k)) {
-    warnings.push(
+    result.addWarning(
       `Non-standard script prefix: "${k}". ` +
       `Consider aligning with: ${allowedPrefixes.join(', ')}`
     );
@@ -235,7 +237,7 @@ for (const [cmd, ks] of commandToKeys.entries()) {
   if (ks.length > 1) {
     const preferred = ks.find(k => canonicalKeys.has(k)) ?? [...ks].sort((a, b) => a.length - b.length)[0];
     const others = ks.filter(k => k !== preferred);
-    errors.push(
+    result.addError(
       `Duplicate script command detected: ${JSON.stringify(cmd)} is defined under [${ks.join(', ')}]. ` +
       `Prefer a single key: "${preferred}". Remove: ${others.map(o => `"${o}"`).join(', ')}`
     );
@@ -244,7 +246,7 @@ for (const [cmd, ks] of commandToKeys.entries()) {
 
 // 3) Recommend core validate scripts exist (warning)
 for (const req of ['validate','validate:dead-code','validate:dead-code:all']) {
-  if (!scripts[req]) warnings.push(`Missing recommended script "${req}".`);
+  if (!scripts[req]) result.addWarning(`Missing recommended script "${req}".`);
 }
 
 // 4) Script target existence validation (error)
@@ -252,13 +254,14 @@ const missingScriptTargets = validateScriptTargets(scripts);
 if (missingScriptTargets.size > 0) {
   for (const [scriptName, paths] of missingScriptTargets.entries()) {
     const missingList = paths.map(path => `  - ${path} (missing)`).join('\n');
-    errors.push(`Script "${scriptName}" references missing file(s):\n${missingList}`);
+    result.addError(`Script "${scriptName}" references missing file(s):\n${missingList}`);
   }
 }
 
-if (errors.length) {
+// Preserve existing output format exactly
+if (result.hasErrors()) {
   console.error('script-key linter: FAIL');
-  for (const e of errors) {
+  for (const e of result.getErrors()) {
     // Handle multi-line errors (missing file lists)
     if (e.includes('\n')) {
       console.error(' - ' + e.replace(/\n/g, '\n   '));
@@ -266,9 +269,9 @@ if (errors.length) {
       console.error(' - ' + e);
     }
   }
-  if (warnings.length) {
+  if (result.hasWarnings()) {
     console.error('\nWarnings:');
-    for (const w of warnings) console.error(' - ' + w);
+    for (const w of result.getWarnings()) console.error(' - ' + w);
   }
   if (missingScriptTargets.size > 0) {
     console.error('\nFix: update package.json to point at an existing file, or restore/remove the referenced script.');
@@ -276,9 +279,9 @@ if (errors.length) {
   process.exitCode = 1;
 } else {
   console.log('script-key linter: OK');
-  if (warnings.length) {
+  if (result.hasWarnings()) {
     console.log('Warnings:');
-    for (const w of warnings) console.log(' - ' + w);
+    for (const w of result.getWarnings()) console.log(' - ' + w);
   }
 }
 

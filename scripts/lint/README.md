@@ -13,6 +13,24 @@ This README is generated from a single template (`README.scripts.hbs`).
 
 > Edit the template or the generator context to change all READMEs consistently.
 
+## Shared Utilities
+
+Lint scripts use shared utilities from `scripts/lint/_utils/`:
+- **files.ts** - File walking and globbing (`findFiles`, `findFilesGlob`)
+- **paths.ts** - Path normalization (`getRepoRoot`, `resolveFromRepo`, `normalizePath`)
+- **log.ts** - Standardized logging (re-exports `logger` from `scripts/utils/logger`)
+- **result.ts** - Error collection and exit code handling (`LintResult`, `createLintResult`)
+
+**Usage example:**
+```typescript
+import { findFiles, getRepoRoot, logger, createLintResult } from './_utils';
+
+const result = createLintResult();
+const files = findFiles('**/*.ts');
+// ... check files ...
+result.report({ successMessage: '✅ All checks passed' });
+```
+
 ## Scripts in `scripts/lint`
 
 - **audit-ai-security.ts** – /*.ts&#x60;, &#x60;${chatComponents}/*

@@ -528,4 +528,118 @@ Successfully removed 8 duplicate ast-grep rules that were fully covered by ESLin
 
 ---
 
-**Sprint 1 Complete**: ✅ All duplicate ast-grep rules removed, enforcement maintained via ESLint
+# Sprint 2 — scripts/lint Shared Utilities (Pilot Migration)
+
+**Date**: 2025-01-16  
+**Status**: ✅ Complete
+
+## Summary
+
+Successfully created shared utilities module (`scripts/lint/_utils/`) and migrated 5 pilot scripts to use it, reducing code duplication while preserving exact output behavior.
+
+## Changes Made
+
+### 1. Created Shared Utilities Module
+
+**New Directory**: `scripts/lint/_utils/`
+
+**Files Created**:
+- `files.ts` - File walking and globbing utilities
+  - `findFiles()` - Uses globby (recommended)
+  - `findFilesGlob()` - Uses glob (for compatibility)
+- `paths.ts` - Path normalization utilities
+  - `getRepoRoot()` - Get repository root directory
+  - `resolveFromRepo()` - Resolve path relative to repo root
+  - `normalizePath()` - Cross-platform path normalization
+  - `getFilename()` - Get filename from path
+- `log.ts` - Standardized logging
+  - Re-exports `logger` from `scripts/utils/logger`
+  - `isJsonOutput()` - Check for `--json` flag
+  - Format helpers for errors/warnings
+- `result.ts` - Error collection and exit code handling
+  - `LintResult` class - Collects errors/warnings, handles exit codes
+  - `createLintResult()` - Factory function
+  - Preserves existing output format by default
+- `index.ts` - Barrel export for all utilities
+
+### 2. Migrated Pilot Scripts (5 scripts)
+
+**Migrated Scripts**:
+1. `check-filename-case.ts` - Uses `getFilename()` from `_utils`
+2. `check-filenames.ts` - Uses `findFiles()`, `getFilename()`, `createLintResult()`
+3. `check-forbidden-files.ts` - Uses `findFilesGlob()` (compatibility with existing glob usage)
+4. `check-runtime-versions.ts` - Uses `resolveFromRepo()`, `createLintResult()`
+5. `check-package-scripts.ts` - Uses `resolveFromRepo()`, `getRepoRoot()`, `createLintResult()`
+
+**Migration Pattern**:
+- Replaced direct `globbySync`/`globSync` with `findFiles()`/`findFilesGlob()`
+- Replaced `basename()` with `getFilename()`
+- Replaced `resolve(process.cwd(), ...)` with `resolveFromRepo()`
+- Replaced manual error arrays with `LintResult` class
+- Preserved exact output format (custom reporting where needed)
+
+### 3. Created Smoke Test Runner
+
+**New File**: `scripts/lint/_smoke-runner.ts`
+
+- Runs all 5 pilot scripts
+- Handles scripts that require arguments (e.g., `check-filename-case.ts`)
+- Handles scripts with expected non-zero exit codes (e.g., `check-filenames.ts` finds violations)
+- Reports pass/fail status and duration
+
+### 4. Updated Documentation
+
+**Updated**: `scripts/lint/README.md`
+- Added "Shared Utilities" section documenting `_utils/` usage
+- Included usage example
+
+## Validation Results
+
+✅ **`pnpm lint`**: Passes (ESLint + ast-grep)  
+✅ **`pnpm lint:repo`**: Passes (check-forbidden-files.ts)  
+✅ **`pnpm lint:scripts`**: Passes (check-package-scripts.ts)  
+✅ **`pnpm lint:versions`**: Passes (check-runtime-versions.ts)  
+✅ **`pnpm lint:filenames`**: Works (finds violations as expected)  
+✅ **`pnpm exec tsx scripts/lint/_smoke-runner.ts`**: All 5 scripts pass  
+✅ **`pnpm quality:local`**: Passes (all quality gates)
+
+## Impact
+
+### Code Reduction
+
+- **Shared utilities**: 4 utility modules (files, paths, log, result)
+- **Reduced duplication**: File walking, path normalization, error collection patterns now centralized
+- **Consistent patterns**: All pilot scripts use same utilities
+
+### Behavior Preservation
+
+- ✅ **Output format**: Exact same output as before (preserved via custom reporting)
+- ✅ **Exit codes**: Same behavior (`process.exitCode = 1` on errors)
+- ✅ **Error messages**: Identical error messages
+
+### Files Changed
+
+**Created (6 files)**:
+- `scripts/lint/_utils/files.ts`
+- `scripts/lint/_utils/paths.ts`
+- `scripts/lint/_utils/log.ts`
+- `scripts/lint/_utils/result.ts`
+- `scripts/lint/_utils/index.ts`
+- `scripts/lint/_smoke-runner.ts`
+
+**Updated (6 files)**:
+- `scripts/lint/check-filename-case.ts`
+- `scripts/lint/check-filenames.ts`
+- `scripts/lint/check-forbidden-files.ts`
+- `scripts/lint/check-runtime-versions.ts`
+- `scripts/lint/check-package-scripts.ts`
+- `scripts/lint/README.md`
+
+## Next Steps
+
+**Sprint 3**: Migrate remaining scripts/lint to shared utilities (bulk refactor)  
+**Sprint 4**: Consolidate deprecated imports (optional)
+
+---
+
+**Sprint 2 Complete**: ✅ Shared utilities created, 5 pilot scripts migrated, behavior preserved

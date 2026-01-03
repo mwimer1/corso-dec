@@ -2,12 +2,11 @@
 // scripts/lint/check-filenames.ts
 // Batch filename case checking (single-process, replaces per-file spawns)
 
-import { globbySync } from 'globby';
-import { basename } from 'path';
-import { logger } from '../utils/logger';
+import { findFiles, getFilename } from './_utils';
+import { logger, createLintResult } from './_utils';
 
 function checkFilenameCase(filePath: string): { valid: boolean; error?: string } {
-  const filename = basename(filePath);
+  const filename = getFilename(filePath);
 
   // Ignore dotfiles
   if (filename.startsWith('.')) {
@@ -27,7 +26,7 @@ function main() {
   logger.info('Checking filename casing...');
 
   // Get all files (excluding ignored directories)
-  const files = globbySync('**/*.*', {
+  const files = findFiles('**/*.*', {
     ignore: [
       '**/node_modules/**',
       '**/.next/**',
@@ -42,27 +41,21 @@ function main() {
     ],
   });
 
-  const violations: string[] = [];
+  const result = createLintResult();
 
   // Check all files in a single process
   for (const file of files) {
-    const result = checkFilenameCase(file);
-    if (!result.valid) {
-      violations.push(result.error!);
+    const checkResult = checkFilenameCase(file);
+    if (!checkResult.valid) {
+      result.addError(checkResult.error!);
     }
   }
 
-  // Report results
-  if (violations.length > 0) {
-    logger.error(`❌ Found ${violations.length} filename casing violation(s):`);
-    for (const violation of violations) {
-      logger.error(`  ${violation}`);
-    }
-    process.exitCode = 1;
-    return;
-  }
-
-  logger.success(`✅ Filename casing is correct for all ${files.length} files`);
+  // Report results (preserves existing output format)
+  result.report({
+    successMessage: `✅ Filename casing is correct for all ${files.length} files`,
+    errorPrefix: '❌',
+  });
 }
 
 main();
