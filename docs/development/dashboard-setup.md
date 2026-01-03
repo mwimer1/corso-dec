@@ -282,7 +282,7 @@ Check that column accessors match JSON keys in mock data or database schema.
 - API returns 200 with data (filtered by valid fields only)
 
 **Invalid filters format behavior**:
-- If `filters` param is not a valid JSON array → returns **400** with `INVALID_FILTERS` error code
+- If `filters` param is not a valid JSON array → returns **400** with `INVALID_QUERY` error code
 - Must be a JSON array: `[{"field": "...", "op": "...", "value": "..."}]`
 
 **Example URLs**:
@@ -307,8 +307,8 @@ Response:
 {
   "success": false,
   "error": {
-    "code": "INVALID_FILTERS",
-    "message": "Invalid filters format"
+    "code": "INVALID_QUERY",
+    "message": "Invalid query parameters"
   }
 }
 ```

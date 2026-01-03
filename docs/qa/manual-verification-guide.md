@@ -77,12 +77,12 @@ http://localhost:3000/api/v1/entity/projects?page=0&pageSize=50&filters=%7B%22ba
 
 **Expected Results:**
 - ✅ HTTP Status: **400 Bad Request**
-- ✅ Response body: `{ "success": false, "error": { "code": "INVALID_FILTERS", "message": "Invalid filters format: must be an array" } }`
+- ✅ Response body: `{ "success": false, "error": { "code": "INVALID_QUERY", "message": "Invalid query parameters" } }`
 
 **What to check:**
 1. Open URL in browser (must be signed in)
 2. Check browser DevTools → Network tab → Status should be 400
-3. Check Response → Should have error with code "INVALID_FILTERS"
+3. Check Response → Should have error with code "INVALID_QUERY"
 4. Server terminal → No warning needed (400 is expected)
 
 ---

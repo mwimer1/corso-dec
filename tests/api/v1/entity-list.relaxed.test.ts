@@ -136,7 +136,7 @@ describe('GET /api/v1/entity/[entity] - Relaxed Auth + Mock DB', () => {
     expect(res.status).toBe(400);
     const body = await res.json();
     expect(body.success).toBe(false);
-    expect(body.error.code).toBe('INVALID_FILTERS');
+    expect(body.error.code).toBe('INVALID_QUERY');
   });
 
   it('should work without orgId in relaxed mode', async () => {

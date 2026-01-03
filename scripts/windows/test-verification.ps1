@@ -38,7 +38,7 @@ Read-Host
 Write-Host "Test 2.3: Invalid filters format" -ForegroundColor Yellow
 $url3 = "$baseUrl/api/v1/entity/projects?page=0&pageSize=50&filters=%7B%22bad%22%3A%22format%22%7D"
 Write-Host "URL: $url3"
-Write-Host "Expected: 400 Bad Request with INVALID_FILTERS error"
+Write-Host "Expected: 400 Bad Request with INVALID_QUERY error"
 Write-Host ""
 Write-Host "⚠️  Note: This test requires authentication. Open in browser while signed in."
 Write-Host ""

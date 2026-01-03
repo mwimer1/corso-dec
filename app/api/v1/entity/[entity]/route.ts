@@ -136,15 +136,12 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
   const queryObj = Object.fromEntries(sp.entries());
   const qpParsed = EntityListQuerySchema.safeParse(queryObj);
   if (!qpParsed.success) {
-    // Check if error is specifically about filters format
+    // All query parameter validation errors (including filters) return INVALID_QUERY
+    // Schema validation handles all parameter validation uniformly
     const errorDetails = qpParsed.error.flatten();
-    const hasFilterError = qpParsed.error.issues.some(
-      (issue) => issue.path.includes('filters') || issue.message.includes('filters format')
-    );
-    const errorCode = hasFilterError ? 'INVALID_FILTERS' : 'INVALID_QUERY';
     
     return await toNextResponse(http.badRequest('Invalid query parameters', {
-      code: errorCode,
+      code: 'INVALID_QUERY',
       details: errorDetails,
     }));
   }
