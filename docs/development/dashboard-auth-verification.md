@@ -13,10 +13,15 @@ status: "active"
 1. **Restart dev server** after changing env vars (Next.js caches env at build time)
 2. Set `.env.local`:
    ```bash
-   NEXT_PUBLIC_AUTH_MODE=relaxed
-   ALLOW_RELAXED_AUTH=true
    CORSO_USE_MOCK_DB=true
    DISABLE_RATE_LIMIT=true
+   ```
+3. Set `.env.development.local` (recommended for relaxed auth):
+   ```bash
+   # ⚠️  This file is ONLY loaded in `next dev` (not during `next build`)
+   # This prevents production builds from failing due to relaxed auth mode
+   NEXT_PUBLIC_AUTH_MODE=relaxed
+   ALLOW_RELAXED_AUTH=true
    ```
 
 ### Step 1: Verify API Endpoint Directly
@@ -87,10 +92,14 @@ status: "active"
 
 ### Step 4: Verify Strict Mode Still Works
 
-1. Set `.env.local`:
+1. Remove or comment out relaxed auth from `.env.development.local` (or `.env.local`):
+   ```bash
+   # NEXT_PUBLIC_AUTH_MODE=relaxed
+   # ALLOW_RELAXED_AUTH=true
+   ```
+   Or set strict mode explicitly:
    ```bash
    NEXT_PUBLIC_AUTH_MODE=strict
-   # or remove NEXT_PUBLIC_AUTH_MODE entirely
    ```
 2. **Restart dev server**
 3. Navigate to `/dashboard/projects` (without org membership)
@@ -126,8 +135,8 @@ status: "active"
 **Root cause:** Auth mode not being read or not enabled
 
 **Check:**
-1. `NEXT_PUBLIC_AUTH_MODE=relaxed` in `.env.local`
-2. `ALLOW_RELAXED_AUTH=true` in `.env.local` (required opt-in)
+1. `NEXT_PUBLIC_AUTH_MODE=relaxed` in `.env.development.local` (recommended) or `.env.local`
+2. `ALLOW_RELAXED_AUTH=true` in `.env.development.local` (recommended) or `.env.local` (required opt-in)
 3. Dev server restarted after env change
 4. Check server logs for: `[entity route] Relaxed auth mode enabled`
 
@@ -141,7 +150,7 @@ status: "active"
 **Root cause:** Rate limiter not bypassed or another limiter active
 
 **Check:**
-1. `DISABLE_RATE_LIMIT=true` in `.env.local`
+1. `DISABLE_RATE_LIMIT=true` in `.env.local` (or `.env.development.local`)
 2. `NODE_ENV=development` (bypass only works in dev, not test)
 3. Response headers for `x-ratelimit-*` (indicates which limiter)
 4. Server logs for rate limit warnings

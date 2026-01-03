@@ -16,15 +16,11 @@ Complete guide to running the dashboard locally with mock data in 2-3 minutes.
 pnpm install
 ```
 
-### Create `.env.local`
+### Create Environment Files
 
-Create a `.env.local` file in the project root with these minimal working flags:
+**Create `.env.local`** in the project root with these minimal working flags:
 
 ```bash
-# Auth: Relaxed mode for development (no org required)
-NEXT_PUBLIC_AUTH_MODE=relaxed
-ALLOW_RELAXED_AUTH=true
-
 # Data: Use mock JSON files instead of real database
 CORSO_USE_MOCK_DB=true
 
@@ -34,6 +30,22 @@ DISABLE_RATE_LIMIT=true
 # AG Grid: Enable Enterprise features (required for server-side row model)
 NEXT_PUBLIC_AGGRID_ENTERPRISE=1
 ```
+
+**Create `.env.development.local`** for development-only auth configuration:
+
+```bash
+# Auth: Relaxed mode for development (no org required)
+# ⚠️  IMPORTANT: This file is ONLY loaded in `next dev` (not during `next build`)
+# This prevents production builds from failing due to relaxed auth mode
+NEXT_PUBLIC_AUTH_MODE=relaxed
+ALLOW_RELAXED_AUTH=true
+```
+
+**Why separate files?**
+- `.env.local` is loaded in all environments (including production builds)
+- `.env.development.local` is ONLY loaded during `next dev` (development mode)
+- This ensures relaxed auth mode never affects production builds
+- Production builds will fail if relaxed auth is detected (security guard)
 
 ### Run Development Server
 ```bash
@@ -61,11 +73,13 @@ You should see a working data grid with mock data!
 ### Relaxed Mode (Development)
 - **Requires**: Only a signed-in user (no org/RBAC required)
 - **Use case**: Local development, testing
-- **How to enable**:
+- **How to enable** (recommended pattern):
   ```bash
+  # Create .env.development.local (only loaded in next dev, not next build)
   NEXT_PUBLIC_AUTH_MODE=relaxed
   ALLOW_RELAXED_AUTH=true  # Explicit opt-in required
   ```
+- **Alternative** (not recommended): You can also set these in `.env.local`, but they will be commented out during production builds to prevent build failures.
 - **Behavior**:
   - Organization membership is optional
   - RBAC checks are bypassed
@@ -96,7 +110,7 @@ Relaxed mode requires **explicit opt-in** via `ALLOW_RELAXED_AUTH=true`. If you 
 
 ```
 ⚠️  NEXT_PUBLIC_AUTH_MODE=relaxed requires ALLOW_RELAXED_AUTH=true to enable. 
-Relaxed mode is currently DISABLED. Set ALLOW_RELAXED_AUTH=true in .env.local to enable.
+Relaxed mode is currently DISABLED. Set ALLOW_RELAXED_AUTH=true in .env.development.local to enable.
 ```
 
 ## 3) Mock DB Behavior
@@ -489,7 +503,7 @@ See `tests/e2e/README.md` for detailed E2E test documentation.
 1. Verify `CORSO_USE_MOCK_DB=true` in `.env.local`
 2. Check browser console for schema mismatch warnings
 3. Verify JSON files exist in `public/__mockdb__/`
-4. Verify auth mode is set correctly
+4. Verify auth mode is set correctly in `.env.development.local` (for relaxed mode)
 
 ### API Returns 401 Unauthorized
 
@@ -508,7 +522,7 @@ See `tests/e2e/README.md` for detailed E2E test documentation.
 2. Making too many requests in rapid succession
 
 **Solution**:
-1. Add `DISABLE_RATE_LIMIT=true` to `.env.local`
+1. Add `DISABLE_RATE_LIMIT=true` to `.env.local` (or `.env.development.local`)
 2. Restart dev server
 
 ### Columns Render Blank

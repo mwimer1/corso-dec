@@ -56,7 +56,9 @@ Relaxed auth mode bypasses organization membership and RBAC checks, allowing any
 
 **Configuration:**
 ```bash
-# Development only (.env.local)
+# Development only (.env.development.local - recommended)
+# ⚠️  This file is ONLY loaded in `next dev` (not during `next build`)
+# This prevents production builds from failing due to relaxed auth mode
 NEXT_PUBLIC_AUTH_MODE=relaxed
 ALLOW_RELAXED_AUTH=true
 ```
