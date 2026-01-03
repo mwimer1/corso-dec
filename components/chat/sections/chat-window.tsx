@@ -7,6 +7,7 @@ import { useChat } from '../hooks/use-chat';
 import { isChatMode, type ChatMode } from '../lib/chat-mode';
 import ChatWelcome from '../widgets/chat-welcome';
 import { MessageItem } from '../widgets/message-item';
+import styles from '../chat.module.css';
 
 // Move dynamic import outside component to prevent remounting on re-renders
 const ChatComposer = dynamic(() => import('./chat-composer'), { ssr: false });
@@ -106,22 +107,12 @@ export default function ChatWindow() {
   // The client composer calls `onInputAutoGrow` for the textarea; no local ref here
 
   return (
-    <div
-      className="flex flex-col flex-1 min-h-0"
-      // tokenized chat surface vars: presets/bubbles/composer border widths
-      style={
-        {
-          '--chat-bubble-asst-border': '1px',
-          '--chat-preset-border': '1px',
-          '--chat-composer-border': '1px',
-        } as React.CSSProperties
-      }
-    >
+    <div className={styles['chatWindow']}>
       {/* Messages list */}
-      <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto bg-background flex flex-col justify-end">
+      <div ref={scrollRef} className={styles['messagesContainer']}>
         {hasHistory ? (
-          <div className="mx-auto w-full max-w-3xl lg:max-w-4xl 2xl:max-w-5xl px-6 py-4">
-            <ul role="log" aria-live="polite" aria-relevant="additions" className="space-y-4">
+          <div className={styles['messagesList']}>
+            <ul role="log" aria-live="polite" aria-relevant="additions" className={styles['messagesListUl']}>
               {messages.map((m) => (
                 <li key={m.id}>
                   <MessageItem message={m} onSelectFollowUp={handleSelectFollowUp} />
@@ -130,17 +121,17 @@ export default function ChatWindow() {
             </ul>
           </div>
         ) : (
-          <div className="mx-auto w-full max-w-3xl lg:max-w-4xl 2xl:max-w-5xl px-6 pt-4 md:pt-6 pb-3">
+          <div className={styles['welcomeContainer']}>
             <ChatWelcome onPreset={handleSelectFollowUp} {...(firstName ? { firstName } : {})} />
           </div>
         )}
       </div>
 
       {/* Composer — server placeholder + client-only composer */}
-      <div className="bg-background px-6 pt-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] flex-shrink-0 border-t-[var(--chat-composer-border)] border-border">
+      <div className={styles['composerContainer']}>
         {/* Server-only placeholder to preserve layout pre-hydration; mark as region for a11y */}
         {!hydrated && (
-          <div className="mx-auto w-full max-w-3xl lg:max-w-4xl 2xl:max-w-5xl rounded-2xl bg-surface p-3 shadow-sm" role="region" aria-hidden="true">
+          <div className={styles['composerPlaceholder']} role="region" aria-hidden="true">
             {/* Empty shell matches sizing of composer */}
           </div>
         )}

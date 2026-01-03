@@ -648,7 +648,46 @@ export default {
         const file = context.getFilename().replace(/\\/g, '/');
         const isIgnored = /lib\/.*\/api(-client)?\.ts$/.test(file) || /lib\/.*\/api\//.test(file) || /scripts\//.test(file) || /tests?\//.test(file);
         if (isIgnored) return {};
+        
+        // Track imports to determine if http/https come from Node.js modules
+        const importedIdentifiers = new Map(); // identifier name -> import source
+        
         return {
+          ImportDeclaration(node) {
+            const importPath = node.source.value;
+            if (typeof importPath !== 'string') return;
+            
+            // Track identifiers imported from Node.js http/https modules
+            const isNodeHttpModule = importPath === 'http' || importPath === 'https' || importPath === 'node:http' || importPath === 'node:https';
+            
+            for (const spec of node.specifiers || []) {
+              if (spec.type === 'ImportDefaultSpecifier' && spec.local) {
+                const localName = spec.local.name;
+                if (isNodeHttpModule) {
+                  importedIdentifiers.set(localName, importPath);
+                } else {
+                  // Track non-Node imports too, so we can allow them (e.g., @/lib/api)
+                  importedIdentifiers.set(localName, importPath);
+                }
+              } else if (spec.type === 'ImportSpecifier' && spec.local && spec.imported) {
+                const localName = spec.local.name;
+                // For named imports like "import { http } from '@/lib/api'"
+                // Track if the imported or local name is http/https
+                if (localName === 'http' || localName === 'https') {
+                  importedIdentifiers.set(localName, importPath);
+                } else if (spec.imported.type === 'Identifier' && (spec.imported.name === 'http' || spec.imported.name === 'https')) {
+                  importedIdentifiers.set(localName, importPath);
+                }
+              } else if (spec.type === 'ImportNamespaceSpecifier' && spec.local) {
+                const localName = spec.local.name;
+                if (isNodeHttpModule) {
+                  importedIdentifiers.set(localName, importPath);
+                } else {
+                  importedIdentifiers.set(localName, importPath);
+                }
+              }
+            }
+          },
           CallExpression(node) {
             const callee = node.callee;
             if (callee.type === 'Identifier' && callee.name === 'axios') {
@@ -657,7 +696,13 @@ export default {
             if (callee.type === 'MemberExpression' && callee.object && callee.object.type === 'Identifier') {
               const obj = callee.object.name;
               if (obj === 'http' || obj === 'https') {
-                context.report({ node: callee, message: 'Use internal API wrappers instead of http/https in app code.' });
+                // Check if this identifier comes from a Node.js module
+                const importSource = importedIdentifiers.get(obj);
+                if (importSource && (importSource === 'http' || importSource === 'https' || importSource === 'node:http' || importSource === 'node:https')) {
+                  context.report({ node: callee, message: 'Use internal API wrappers instead of http/https in app code.' });
+                }
+                // If importSource is undefined, it might be a global (less common but possible)
+                // If importSource exists but is not a Node module (e.g., '@/lib/api'), allow it
               }
             }
           }

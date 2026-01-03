@@ -1,0 +1,115 @@
+/* Chat interface component styles */
+
+/* Chat window container */
+.chatWindow {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Messages container */
+.messagesContainer {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  background: hsl(var(--background));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+/* Messages list wrapper */
+.messagesList {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: var(--chat-container-max-w-sm);
+  padding: 1rem 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .messagesList {
+    max-width: var(--chat-container-max-w-md);
+  }
+}
+
+@media (min-width: 1400px) {
+  .messagesList {
+    max-width: var(--chat-container-max-w-lg);
+  }
+}
+
+/* Welcome screen container */
+.welcomeContainer {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: var(--chat-container-max-w-sm);
+  padding-top: 1rem;
+  padding-bottom: 0.75rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .welcomeContainer {
+    padding-top: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .welcomeContainer {
+    max-width: var(--chat-container-max-w-md);
+  }
+}
+
+@media (min-width: 1400px) {
+  .welcomeContainer {
+    max-width: var(--chat-container-max-w-lg);
+  }
+}
+
+/* Composer container */
+.composerContainer {
+  background: hsl(var(--background));
+  padding-left: var(--chat-composer-padding-x);
+  padding-top: var(--chat-composer-padding-y);
+  padding-bottom: calc(1.25rem + env(safe-area-inset-bottom));
+  flex-shrink: 0;
+  border-top: var(--chat-composer-border) solid hsl(var(--border));
+}
+
+/* Composer placeholder (server-side hydration) */
+.composerPlaceholder {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: var(--chat-container-max-w-sm);
+  border-radius: var(--chat-composer-radius);
+  background: hsl(var(--surface));
+  padding: 0.75rem;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+@media (min-width: 1024px) {
+  .composerPlaceholder {
+    max-width: var(--chat-container-max-w-md);
+  }
+}
+
+@media (min-width: 1400px) {
+  .composerPlaceholder {
+    max-width: var(--chat-container-max-w-lg);
+  }
+}
+
+/* Messages list */
+.messagesListUl {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--chat-message-gap);
+}

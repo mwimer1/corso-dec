@@ -264,7 +264,6 @@ description: "Documentation and resources for documentation functionality. Locat
     │   │   │   ├── sidebar-tooltip.tsx
     │   │   │   ├── sidebar-top.tsx
     │   │   │   ├── sidebar-user-profile.tsx
-    │   │   │   ├── sidebar.module.css
     │   │   ├── corso-ai-mode.tsx
     │   │   ├── index.ts
     │   │   ├── README.md

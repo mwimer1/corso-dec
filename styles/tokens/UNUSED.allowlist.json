@@ -144,6 +144,25 @@
     "space-9",
     "space-1-5",
     "space-2-5",
-    "space-4px"
+    "space-4px",
+    "nav-shadow",
+    "radius-button",
+    "showcase-background",
+    "chat-container-max-w-sm",
+    "chat-container-max-w-md",
+    "chat-container-max-w-lg",
+    "chat-composer-padding-x",
+    "chat-composer-padding-y",
+    "chat-composer-border",
+    "chat-composer-radius",
+    "chat-message-gap",
+    "chat-bubble-padding",
+    "chat-bubble-radius",
+    "chat-bubble-user-bg",
+    "chat-bubble-user-fg",
+    "chat-bubble-asst-bg",
+    "chat-bubble-asst-fg",
+    "chat-bubble-asst-border",
+    "chat-preset-border"
   ]
 }

@@ -157,8 +157,8 @@ Before submitting dashboard UI changes, ensure:
 // Synthetic font weights
 <span className="font-[500]"> // Lato doesn't have 500
 
-// CSS Modules for new sidebar work
-import styles from './sidebar.module.css';
+// Sidebar styles migrated to Tailwind utilities with CSS tokens
+// See styles/tokens/sidebar.css for sidebar design tokens
 
 // Missing focus states
 <button onClick={handleClick}>Action</button>

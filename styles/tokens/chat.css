@@ -1,0 +1,36 @@
+/* Chat interface tokens - single source of truth for chat design variables */
+
+:root {
+  /* Chat border widths */
+  --chat-bubble-asst-border: 1px;
+  --chat-preset-border: 1px;
+  --chat-composer-border: 1px;
+
+  /* Chat spacing */
+  --chat-bubble-padding: 1rem; /* 16px - padding inside message bubbles */
+  --chat-message-gap: 1rem; /* 16px - vertical gap between messages */
+  --chat-composer-padding-x: 1.5rem; /* 24px - horizontal padding for composer container */
+  --chat-composer-padding-y: 1.25rem; /* 20px - vertical padding for composer container */
+
+  /* Chat container widths */
+  --chat-container-max-w-sm: 48rem; /* 768px - max-width for small screens */
+  --chat-container-max-w-md: 56rem; /* 896px - max-width for medium screens (lg) */
+  --chat-container-max-w-lg: 64rem; /* 1024px - max-width for large screens (2xl) */
+
+  /* Chat bubble styling */
+  --chat-bubble-radius: 0.75rem; /* 12px - border radius for message bubbles */
+  --chat-composer-radius: 1rem; /* 16px - border radius for composer container */
+
+  /* Chat colors (using semantic tokens where possible) */
+  --chat-bubble-user-bg: hsl(var(--primary));
+  --chat-bubble-user-fg: hsl(var(--primary-foreground));
+  --chat-bubble-asst-bg: hsl(var(--surface));
+  --chat-bubble-asst-fg: hsl(var(--foreground));
+  --chat-bubble-asst-border: hsl(var(--border));
+}
+
+/* Dark mode adjustments */
+:root.dark {
+  /* Chat colors remain consistent with semantic tokens in dark mode */
+  /* No additional overrides needed as tokens handle dark mode automatically */
+}
