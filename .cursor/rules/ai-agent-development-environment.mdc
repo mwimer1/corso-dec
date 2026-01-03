@@ -94,6 +94,7 @@ pnpm typecheck && pnpm lint && pnpm test && pnpm quality:local
 - **Descriptive titles** using Conventional Commits format
 - **CI must pass** before review
 - **Force push with lease**: `git push --force-with-lease` for updates
+- **Bypass pre-push hooks**: `git push --no-verify` (use sparingly, skips tests and style checks)
 
 ### Post-merge Cleanup
 ```bash

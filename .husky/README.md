@@ -135,6 +135,7 @@ pnpm install  # Runs prepare script which installs Husky hooks
 **Temporary bypass** (use sparingly):
 ```bash
 git commit --no-verify  # Skip all pre-commit hooks
+git push --no-verify    # Skip pre-push hooks (tests, style checks)
 ```
 
 ### CI/CD Integration
