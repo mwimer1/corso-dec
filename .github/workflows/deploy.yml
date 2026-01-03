@@ -61,6 +61,63 @@ jobs:
           echo "Running test suite with coverage..."
           pnpm test:ci || (echo "❌ Test suite failed - check output above for details" && exit 1)
 
+      - name: Show Coverage Summary
+        if: always()
+        run: |
+          echo "=== Coverage Summary ==="
+          if [ -f coverage/coverage-summary.json ]; then
+            echo "Coverage thresholds:"
+            echo "- Lines: ≥ 80%"
+            echo "- Functions: ≥ 75%"
+            echo "- Branches: ≥ 70%"
+            echo "- Statements: ≥ 80%"
+            echo ""
+            echo "Actual coverage:"
+            cat coverage/coverage-summary.json | jq -r '.total | "Lines: \(.lines.pct)%\nFunctions: \(.functions.pct)%\nBranches: \(.branches.pct)%\nStatements: \(.statements.pct)%"'
+            echo ""
+            echo "Threshold check:"
+            LINES=$(cat coverage/coverage-summary.json | jq -r '.total.lines.pct')
+            FUNCTIONS=$(cat coverage/coverage-summary.json | jq -r '.total.functions.pct')
+            BRANCHES=$(cat coverage/coverage-summary.json | jq -r '.total.branches.pct')
+            STATEMENTS=$(cat coverage/coverage-summary.json | jq -r '.total.statements.pct')
+            
+            FAILED=0
+            if (( $(echo "$LINES < 80" | bc -l) )); then
+              echo "❌ Lines coverage: ${LINES}% (threshold: 80%)"
+              FAILED=1
+            else
+              echo "✅ Lines coverage: ${LINES}% (threshold: 80%)"
+            fi
+            
+            if (( $(echo "$FUNCTIONS < 75" | bc -l) )); then
+              echo "❌ Functions coverage: ${FUNCTIONS}% (threshold: 75%)"
+              FAILED=1
+            else
+              echo "✅ Functions coverage: ${FUNCTIONS}% (threshold: 75%)"
+            fi
+            
+            if (( $(echo "$BRANCHES < 70" | bc -l) )); then
+              echo "❌ Branches coverage: ${BRANCHES}% (threshold: 70%)"
+              FAILED=1
+            else
+              echo "✅ Branches coverage: ${BRANCHES}% (threshold: 70%)"
+            fi
+            
+            if (( $(echo "$STATEMENTS < 80" | bc -l) )); then
+              echo "❌ Statements coverage: ${STATEMENTS}% (threshold: 80%)"
+              FAILED=1
+            else
+              echo "✅ Statements coverage: ${STATEMENTS}% (threshold: 80%)"
+            fi
+            
+            if [ $FAILED -eq 1 ]; then
+              echo ""
+              echo "⚠️  Coverage thresholds not met. See coverage report for details."
+            fi
+          else
+            echo "⚠️  Coverage summary file not found"
+          fi
+
       - name: Upload Coverage Reports
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -71,6 +128,15 @@ jobs:
             reports/
           retention-days: 7
           if-no-files-found: ignore
+
+      - name: Display Coverage Report Location
+        if: always()
+        run: |
+          echo "📊 Coverage reports available as artifacts:"
+          echo "- HTML report: coverage/index.html"
+          echo "- LCOV report: coverage/lcov.info"
+          echo "- JSON summary: coverage/coverage-summary.json"
+          echo "- JUnit test results: reports/vitest-junit.xml"
 
       - name: Build Verification
         run: pnpm build
