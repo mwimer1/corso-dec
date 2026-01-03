@@ -66,6 +66,33 @@ import { getEntityPage } from '@/lib/entities/pages';
 
 ## 💬 Chat Components
 
+### Chat Navigation & State Management
+
+**New Chat Clearing Pattern:**
+- The sidebar "Chat" link automatically adds `?new=true` query parameter to `/dashboard/chat`
+- When `ChatWindow` detects `?new=true` in the URL, it automatically calls `clearChat()` from the `useChat` hook
+- `clearChat()` clears both the React state and localStorage, ensuring a fresh chat state
+- This allows users to start a new chat session by clicking the Chat link in the sidebar, even when already on the chat page
+
+**Implementation Pattern:**
+```typescript
+// In ChatWindow component
+const { clearChat } = useChat({ ... });
+
+// Clear chat when ?new=true is in URL (e.g., when clicking Chat in sidebar)
+useEffect(() => {
+  const isNewChat = searchParams?.get('new') === 'true';
+  if (isNewChat) {
+    clearChat();
+  }
+}, [searchParams, clearChat]);
+```
+
+**Key Files:**
+- `components/chat/sections/chat-window.tsx` - Detects `?new=true` and calls `clearChat()`
+- `components/chat/hooks/use-chat.ts` - Provides `clearChat()` function
+- `components/dashboard/layout/dashboard-sidebar.tsx` - Adds `?new=true` to chat href
+
 ### ChatWindow Props (Additive)
 ```typescript
 interface ChatWindowProps {

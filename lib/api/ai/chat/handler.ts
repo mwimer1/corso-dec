@@ -15,6 +15,8 @@ import { buildChatMessages, buildResponseInputItems } from './messages';
 import { buildSystemPrompt } from './prompts';
 import { getChatCompletionsTools } from './tools';
 import { createResponsesStreamResponse, createStreamResponse, createErrorResponse } from './streaming';
+import { checkDeepResearchLimit, incrementDeepResearchUsage } from './usage-limits';
+import { http } from '@/lib/api';
 
 /**
  * Maps model tier selection to actual OpenAI model.
@@ -92,12 +94,33 @@ export async function handleChatRequest(req: NextRequest): Promise<Response> {
   }
   const { content: cleanedContent, preferredTable } = processResult;
 
+  // Check Deep Research usage limits if enabled
+  const deepResearch = body.deepResearch ?? false;
+  if (deepResearch) {
+    const limitCheck = await checkDeepResearchLimit(req);
+    if (limitCheck instanceof Response) {
+      return limitCheck; // Error response from limit check
+    }
+    
+    if (!limitCheck.allowed) {
+      return http.error(429, 'Deep Research usage limit exceeded', {
+        code: 'DEEP_RESEARCH_LIMIT_EXCEEDED',
+        details: {
+          limit: limitCheck.limit,
+          currentUsage: limitCheck.currentUsage,
+          remaining: limitCheck.remaining,
+        },
+      });
+    }
+  }
+
   // Get OpenAI client and model
   const env = getEnv();
   const client = createOpenAIClient();
   
   // Map modelTier to actual OpenAI model
-  const modelTier = body.modelTier ?? 'auto';
+  // Override to 'pro' tier when Deep Research is enabled
+  const modelTier = deepResearch ? 'pro' : (body.modelTier ?? 'auto');
   const model = mapModelTierToOpenAIModel(modelTier, env);
   
   // Security: Warn if using unpinned model (model drift risk)
@@ -128,10 +151,10 @@ export async function handleChatRequest(req: NextRequest): Promise<Response> {
   if (env.AI_USE_RESPONSES === true) {
     try {
       // Convert messages to Responses API input format
-      const systemPrompt = buildSystemPrompt(preferredTable);
+      const systemPrompt = buildSystemPrompt(preferredTable, deepResearch);
       const inputItems = buildResponseInputItems(body, cleanedContent);
       
-      return createResponsesStreamResponse(
+      const response = await createResponsesStreamResponse(
         systemPrompt,
         inputItems,
         model,
@@ -139,6 +162,16 @@ export async function handleChatRequest(req: NextRequest): Promise<Response> {
         req,
         abortController.signal,
       );
+      
+      // Increment usage after successful request (if Deep Research)
+      if (deepResearch) {
+        // Don't await - fire and forget to avoid blocking response
+        incrementDeepResearchUsage(req).catch((err) => {
+          logger.error('[Handler] Failed to increment Deep Research usage', { error: err });
+        });
+      }
+      
+      return response;
     } catch (error) {
       return createErrorResponse(error);
     }
@@ -146,7 +179,7 @@ export async function handleChatRequest(req: NextRequest): Promise<Response> {
 
   // Fallback to Chat Completions API
   try {
-    const messages = buildChatMessages(body, cleanedContent, preferredTable);
+    const messages = buildChatMessages(body, cleanedContent, preferredTable, deepResearch);
     const stream = await client.chat.completions.create({
       model,
       messages,
@@ -157,7 +190,17 @@ export async function handleChatRequest(req: NextRequest): Promise<Response> {
       max_tokens: 2000,
     });
 
-    return createStreamResponse(stream, client, model, messages, orgId, req, abortController.signal);
+    const response = await createStreamResponse(stream, client, model, messages, orgId, req, abortController.signal);
+    
+    // Increment usage after successful request (if Deep Research)
+    if (deepResearch) {
+      // Don't await - fire and forget to avoid blocking response
+      incrementDeepResearchUsage(req).catch((err) => {
+        logger.error('[Handler] Failed to increment Deep Research usage', { error: err });
+      });
+    }
+    
+    return response;
   } catch (error) {
     return createErrorResponse(error);
   }

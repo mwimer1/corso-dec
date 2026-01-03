@@ -38,6 +38,7 @@ export const Logo = React.forwardRef<HTMLDivElement, LogoProps>(
               objectPosition: "left center",
               clipPath: "inset(0 70% 0 0)", // Show only the left 30% of the logo
             }}
+            {...(width && width >= 32 ? { priority: true } : {})}
           />
         </div>
       );
@@ -52,6 +53,7 @@ export const Logo = React.forwardRef<HTMLDivElement, LogoProps>(
           width={width || 120}
           height={height || 32}
           className="object-contain"
+          {...(width && width >= 180 ? { priority: true } : {})}
         />
       </div>
     );

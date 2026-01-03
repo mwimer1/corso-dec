@@ -7,9 +7,9 @@ import { getEnv } from '@/lib/server/env';
 import { getSchemaSummary } from '@/lib/integrations/database/sql-guard';
 
 /**
- * Builds system prompt based on preferred table/mode
+ * Builds system prompt based on preferred table/mode and Deep Research mode
  */
-export function buildSystemPrompt(preferredTable?: string | null): string {
+export function buildSystemPrompt(preferredTable?: string | null, deepResearch?: boolean): string {
   const env = getEnv();
   const maxToolCalls = env.AI_MAX_TOOL_CALLS ?? 3;
   const schemaSummary = getSchemaSummary();
@@ -18,7 +18,29 @@ export function buildSystemPrompt(preferredTable?: string | null): string {
     ? ` You have access to a database with a "${preferredTable}" table. Answer questions about this data using SQL queries when appropriate.`
     : ' You have access to a database with the following tables:';
   
-  return `You are Corso AI, an intelligent assistant that helps users explore and understand their data.${tableContext}
+  // Deep Research mode: comprehensive audit report instructions
+  const deepResearchInstructions = deepResearch 
+    ? `
+
+DEEP RESEARCH MODE - COMPREHENSIVE AUDIT REPORT:
+You are performing a deep audit analysis based on customer findings. Your task is to:
+1. Conduct a thorough, multi-step analysis of the ${preferredTable || 'selected'} data
+2. Identify patterns, trends, anomalies, and key insights
+3. Generate a comprehensive audit report with:
+   - Executive Summary: High-level findings and recommendations
+   - Detailed Analysis: Deep dive into data patterns and relationships
+   - Key Metrics: Quantified insights with supporting data
+   - Findings: Specific observations and their implications
+   - Recommendations: Actionable next steps based on the analysis
+4. Use multiple SQL queries to gather comprehensive data from different angles
+5. Cross-reference findings across related data points
+6. Provide detailed explanations with context and reasoning
+7. Format the report clearly with sections, headings, and structured content
+
+This is a premium feature that requires thorough, professional analysis. Take your time to ensure completeness and accuracy.`
+    : '';
+  
+  const basePrompt = `You are Corso AI, an intelligent assistant that helps users explore and understand their data.${tableContext}
 
 Database Schema:
 ${preferredTable ? `- ${preferredTable} (see describe_schema tool for columns)` : schemaSummary}
@@ -37,6 +59,7 @@ Guidelines:
 - Answer questions clearly and concisely
 - When asked about data, use execute_sql to run SQL queries
 - After executing queries, provide clear insights and summaries
-- Be helpful and professional
-`;
+- Be helpful and professional${deepResearchInstructions}`;
+  
+  return basePrompt;
 }

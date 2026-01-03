@@ -38,7 +38,11 @@ export function DashboardTopBar({
   const isChatVariant = variant === 'chat';
 
   return (
-    <header className={cn("px-6 py-4 border-b border-border bg-background", className)}>
+    <header className={cn(
+      "px-6 py-4 bg-background",
+      !isChatVariant && "border-b border-border", // Only show border for non-chat variant
+      className
+    )}>
       <div className="flex items-center justify-between w-full">
         {/* Left side: Breadcrumbs + Current Page + (Actions if chat variant) */}
         <div className="flex items-center gap-2 min-w-0 flex-1">

@@ -29,6 +29,7 @@ export const ChatRequestSchema = z.object({
     content: z.string(),
   })).optional(),
   modelTier: z.enum(['auto', 'fast', 'thinking', 'pro']).optional().default('auto'),
+  deepResearch: z.boolean().optional().default(false),
 }).strict();
 
 export type ChatRequest = z.infer<typeof ChatRequestSchema>;

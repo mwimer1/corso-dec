@@ -2,25 +2,11 @@
 
 import { DashboardTopBar } from '@/components/dashboard/layout/dashboard-top-bar';
 import { ChatModelDropdown } from '@/components/chat/components/chat-model-dropdown';
-import { clearLocalChatHistory } from '@/lib/chat';
-import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
 import { ChatWindow } from './chat-window';
 
 export function ChatPage() {
-  const searchParams = useSearchParams();
-  
-  // If URL has ?new=true, clear any saved chat history on mount
-  useEffect(() => {
-    const isNewChat = searchParams?.get('new') !== null;
-    if (isNewChat) {
-      try {
-        clearLocalChatHistory();
-      } catch (err) {
-        console.error('Failed to clear chat history for new chat:', err);
-      }
-    }
-  }, [searchParams]);
+  // Chat clearing is handled by ChatWindow component when ?new=true is detected
+  // The clearChat() function from useChat handles both state and localStorage clearing
 
   return (
     <div className="flex flex-col h-full">

@@ -16,7 +16,8 @@ export async function* processUserMessageStreamClient(
   signal?: AbortSignal | null,
   history?: Array<{ role: 'user' | 'assistant'; content: string }>,
   orgId?: string | null,
-  modelTier?: 'auto' | 'fast' | 'thinking' | 'pro'
+  modelTier?: 'auto' | 'fast' | 'thinking' | 'pro',
+  deepResearch?: boolean
 ): AsyncGenerator<AIChunk, void, unknown> {
   const baseUrl = publicEnv.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
   const url = `${baseUrl}/api/v1/ai/chat`;
@@ -86,6 +87,7 @@ export async function* processUserMessageStreamClient(
       preferredTable: preferredTable ?? undefined,
       history: history ?? undefined,
       modelTier: modelTier ?? 'auto',
+      deepResearch: deepResearch ?? false,
     }),
     // TS lib.dom types sometimes expect AbortSignal | null; cast to satisfy
     signal: (signal ?? null) as unknown as AbortSignal,

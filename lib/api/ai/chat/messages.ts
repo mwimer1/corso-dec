@@ -13,14 +13,15 @@ import type { ChatRequest } from './request';
 export function buildChatMessages(
   body: ChatRequest,
   cleanedContent: string,
-  preferredTable: string | null
+  preferredTable: string | null,
+  deepResearch?: boolean
 ): OpenAI.Chat.Completions.ChatCompletionMessageParam[] {
   const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [];
   
-  // Add system prompt
+  // Add system prompt (with Deep Research mode if enabled)
   messages.push({
     role: 'system',
-    content: buildSystemPrompt(preferredTable),
+    content: buildSystemPrompt(preferredTable, deepResearch),
   });
 
   // Add conversation history (last 10 messages to avoid token limits)

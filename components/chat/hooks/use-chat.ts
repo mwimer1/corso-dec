@@ -33,6 +33,7 @@ interface UseChatOptions {
   autoSaveDelay?: number;
   preferredTable?: 'projects' | 'companies' | 'addresses';
   modelTier?: 'auto' | 'fast' | 'thinking' | 'pro';
+  deepResearch?: boolean;
 }
 
 interface UseChatReturn {
@@ -264,7 +265,8 @@ export function useChat(opts: UseChatOptions = {}): UseChatReturn {
           abortRef.current.signal,
           recentHistory.length > 0 ? recentHistory : undefined,
           orgId,
-          modelTier
+          modelTier,
+          opts.deepResearch ?? false
         ) as StreamOrPromise;
 
         if (isIterable<AIChunk>(result)) {
@@ -348,7 +350,7 @@ export function useChat(opts: UseChatOptions = {}): UseChatReturn {
         });
       }
     },
-    [preferredTable, modelTier, messages, orgId]
+    [preferredTable, modelTier, opts.deepResearch, messages, orgId]
   );
 
   /* ----------------------- convenience actions ------------------------- */

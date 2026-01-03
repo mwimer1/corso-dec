@@ -19,6 +19,17 @@
   justify-content: flex-end;
 }
 
+/* Messages container - centered for new chat mode */
+.messagesContainerCentered {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  background: hsl(var(--background));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 /* Messages list wrapper */
 .messagesList {
   margin-left: auto;
@@ -70,14 +81,28 @@
   }
 }
 
-/* Composer container */
+/* Composer container - active chat mode (positioned at bottom) */
 .composerContainer {
   background: hsl(var(--background));
   padding-left: var(--chat-composer-padding-x);
   padding-top: var(--chat-composer-padding-y);
   padding-bottom: calc(var(--space-ml) + env(safe-area-inset-bottom));
   flex-shrink: 0;
-  border-top: var(--chat-composer-border) solid hsl(var(--border));
+  display: flex;
+  flex-direction: column;
+  /* Removed border-top for cleaner look */
+}
+
+/* Composer container - reduced top padding for new chat mode */
+.composerContainerCentered {
+  background: hsl(var(--background));
+  padding-left: var(--chat-composer-padding-x);
+  padding-top: var(--space-sm);
+  padding-bottom: calc(var(--space-ml) + env(safe-area-inset-bottom));
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 /* Composer placeholder (server-side hydration) */
