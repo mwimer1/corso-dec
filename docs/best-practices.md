@@ -1,6 +1,6 @@
 ---
 status: "active"
-last_updated: "2026-01-02"
+last_updated: "2026-01-03"
 category: "documentation"
 title: "Docs"
 description: "Documentation and resources for documentation functionality."

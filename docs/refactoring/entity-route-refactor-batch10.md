@@ -1,3 +1,10 @@
+---
+last_updated: "2026-01-03"
+category: "documentation"
+status: "draft"
+title: "Refactoring"
+description: "Documentation and resources for documentation functionality. Located in refactoring/."
+---
 # Batch 10 — Entity Route Refactoring Summary
 
 **Goal**: Extract validation and org resolution helpers from `/api/v1/entity/[entity]` route to improve maintainability and code reuse.

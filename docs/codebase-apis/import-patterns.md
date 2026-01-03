@@ -1,6 +1,6 @@
 ---
 status: "draft"
-last_updated: "2026-01-02"
+last_updated: "2026-01-03"
 category: "documentation"
 title: "Codebase Apis"
 description: "Documentation and resources for documentation functionality. Located in codebase-apis/."

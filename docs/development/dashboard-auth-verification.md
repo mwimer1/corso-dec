@@ -1,7 +1,7 @@
 ---
 title: "Development"
 description: "Documentation and resources for documentation functionality. Located in development/."
-last_updated: "2026-01-02"
+last_updated: "2026-01-03"
 category: "documentation"
 status: "active"
 ---

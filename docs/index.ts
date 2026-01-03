@@ -2,7 +2,7 @@
 export const docs = [
   {
     "path": ".cursor/commands/readme.md",
-    "title": "Cursor Project Commands"
+    "title": "Commands"
   },
   {
     "path": ".cursor/rules/readme.md",
@@ -226,11 +226,11 @@ export const docs = [
   },
   {
     "path": "docs/qa/readme.md",
-    "title": "QA Documentation"
+    "title": "Qa"
   },
   {
     "path": "docs/readme.md",
-    "title": "Documentation"
+    "title": "Docs"
   },
   {
     "path": "docs/references/readme.md",
@@ -238,7 +238,7 @@ export const docs = [
   },
   {
     "path": "docs/security/readme.md",
-    "title": "Security Documentation"
+    "title": "Security"
   },
   {
     "path": "eslint-plugin-corso/readme.md",
@@ -274,7 +274,7 @@ export const docs = [
   },
   {
     "path": "lib/marketing/readme.md",
-    "title": "My Article Title"
+    "title": "Marketing"
   },
   {
     "path": "lib/middleware/readme.md",
@@ -314,7 +314,7 @@ export const docs = [
   },
   {
     "path": "readme.md",
-    "title": "Corso"
+    "title": "README.md"
   },
   {
     "path": "scripts/analysis/readme.md",
@@ -358,7 +358,7 @@ export const docs = [
   },
   {
     "path": "scripts/setup/readme.md",
-    "title": "Setup Scripts"
+    "title": "Setup"
   },
   {
     "path": "scripts/tools/readme.md",

@@ -1,3 +1,10 @@
+---
+last_updated: "2026-01-03"
+category: "documentation"
+status: "draft"
+title: "Refactoring"
+description: "Documentation and resources for documentation functionality. Located in refactoring/."
+---
 # Batch 11 — Contract Parity Report
 
 **Goal**: Lock API contracts by ensuring OpenAPI spec, implementation, and tests are consistent.

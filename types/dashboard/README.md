@@ -1,6 +1,6 @@
 ---
 title: "Dashboard"
-last_updated: "2026-01-02"
+last_updated: "2026-01-03"
 category: "types"
 status: "draft"
 description: "TypeScript type definitions for types, ensuring type safety across the platform. Located in dashboard/."

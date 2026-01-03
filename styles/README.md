@@ -1,6 +1,6 @@
 ---
 title: "Styles"
-last_updated: "2026-01-02"
+last_updated: "2026-01-03"
 category: "styling"
 status: "draft"
 description: "Styling system for styles, using Tailwind CSS and design tokens."
