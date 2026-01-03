@@ -1,4 +1,15 @@
 #!/usr/bin/env tsx
+/**
+ * Verifies ESLint plugin TypeScript declaration file structure.
+ * 
+ * Validates that eslint-plugin-corso/dist/index.d.ts has proper exports structure:
+ * - Top-level rules export as concrete value (not alias)
+ * - Namespace configs export rules as values (not aliases)
+ * 
+ * Intent: Ensure ESLint plugin TypeScript definitions are correct
+ * Files: eslint-plugin-corso/dist/index.d.ts
+ * Invocation: pnpm verify:plugin:dts
+ */
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { readTextSync } from '../utils/fs/read';

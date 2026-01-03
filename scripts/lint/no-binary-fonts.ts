@@ -1,7 +1,14 @@
 #!/usr/bin/env tsx
-// scripts/lint/no-binary-fonts.ts
-// CI guardrail to prevent binary fonts from being committed
-
+/**
+ * Prevents binary font files from being committed to the repository.
+ * 
+ * Scans for binary font files (.woff, .woff2, .ttf, .otf, .eot) and fails if any
+ * are found. Fonts should be served from CDN or external sources, not committed.
+ * 
+ * Intent: Prevent binary font files in repository
+ * Files: Binary font files (woff, woff2, ttf, otf, eot)
+ * Invocation: pnpm validate:fonts (via lint-staged)
+ */
 import { findFiles } from './_utils';
 import { readTextSync } from '../utils/fs/read';
 import { logger, createLintResult, getRepoRoot } from './_utils';

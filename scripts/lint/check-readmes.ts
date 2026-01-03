@@ -1,4 +1,14 @@
 #!/usr/bin/env tsx
+/**
+ * Validates that required directories have README.md files.
+ * 
+ * Checks that top-level route groups (e.g., (marketing)) and UI component directories
+ * (atoms, molecules, organisms) have README.md files for documentation.
+ * 
+ * Intent: Ensure documentation exists for key directories
+ * Files: README.md files in route groups and UI component directories
+ * Invocation: pnpm docs:readmes:check
+ */
 import { globby } from 'globby';
 import fs from 'node:fs/promises';
 import { join } from 'node:path';

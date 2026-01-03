@@ -1,7 +1,14 @@
 #!/usr/bin/env tsx
-// scripts/lint/should-skip-check.ts
-// Helper to determine if a validation check should be skipped based on staged files
-
+/**
+ * Helper functions to determine if validation checks should be skipped.
+ * 
+ * Provides utilities to check if validation should be skipped based on staged files.
+ * Used to optimize pre-commit hooks by skipping checks when relevant files haven't changed.
+ * 
+ * Intent: Optimize pre-commit hook performance
+ * Files: Uses git staged files to determine skip conditions
+ * Invocation: Imported by other lint scripts
+ */
 import { hasStagedFiles } from './_utils/cache';
 
 /**

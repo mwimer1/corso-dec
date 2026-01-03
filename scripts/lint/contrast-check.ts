@@ -1,12 +1,13 @@
 #!/usr/bin/env tsx
-/*
- * FILE: scripts/contrast-check.ts
- *
- * Description: Ensures all color combinations in the design system meet WCAG 2.1 AA contrast ratios.
- *
- * Usage:
- *
- * pnpm run a11y:contrast
+/**
+ * Ensures all color combinations in the design system meet WCAG 2.1 AA contrast ratios.
+ * 
+ * Validates foreground/background color pairs from CSS custom properties to ensure
+ * accessibility compliance. Checks both light and dark theme variants.
+ * 
+ * Intent: Enforce WCAG 2.1 AA contrast ratio requirements
+ * Files: styles directory CSS files (CSS custom properties)
+ * Invocation: pnpm a11y:contrast
  */
 import chroma from 'chroma-js';
 import { readFileSync } from 'fs';

@@ -1,4 +1,14 @@
 #!/usr/bin/env tsx
+/**
+ * Prevents barrel index files (index.ts, index.tsx, index.js) in the scripts/ directory.
+ * 
+ * Barrel files are forbidden under scripts/ to maintain explicit imports and
+ * prevent circular dependencies. Only _utils directories are allowed to have barrels.
+ * 
+ * Intent: Prevent barrel files in scripts directory
+ * Files: scripts directory index files (index.ts, index.tsx, index.js)
+ * Invocation: pnpm scripts:forbid:scripts-barrels
+ */
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { getRepoRoot, getRelativePath, createLintResult } from './_utils';

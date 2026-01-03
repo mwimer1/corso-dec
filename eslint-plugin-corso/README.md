@@ -5,87 +5,117 @@ last_updated: "2026-01-03"
 category: "documentation"
 status: "draft"
 ---
+
 # Corso ESLint Plugin
 
 > **Comprehensive ESLint plugin enforcing Corso's architectural boundaries, security standards, and code quality rules for Next.js applications.**
 
 ## 📋 Overview
 
-The `@corso/eslint-plugin` enforces Corso's strict coding standards and architectural principles across the entire codebase. It provides 57+ specialized rules organized into 8 phases of enforcement, ensuring consistent code quality, runtime safety, and architectural compliance.
+The `@corso/eslint-plugin` enforces Corso's strict coding standards and architectural principles across the entire codebase. It provides 59 specialized rules organized into multiple categories, ensuring consistent code quality, runtime safety, and architectural compliance.
 
-## 🔧 Core Features
+## 📊 Rule Statistics
 
-### Runtime Boundary Enforcement
-- **Client/Server Separation**: Prevents server-only imports in client components (`use client` files)
-- **Edge Runtime Safety**: Disallows Node.js APIs and server modules in Edge runtime routes
-- **Security Barrel Protection**: Blocks `@/lib/security` imports in client/edge contexts
-- **Environment Variable Safety**: Enforces proper `process.env` usage patterns
+- **59 Total Rules** across all categories
+- **7 Stub Rules** awaiting implementation
+- **52 Active Rules** currently enforcing standards
+- **100% TypeScript** implementation with full type safety
 
-### Domain Import Boundaries
-- **Clean Architecture**: Enforces domain-specific import boundaries using configurable domain rules
-- **Deep Import Prevention**: Blocks unauthorized deep imports into domain subdirectories
-- **Cross-Domain Protection**: Prevents architectural violations through import path validation
+## 📚 Rule Categories
 
-### Security & Standards
-- **Input Validation**: Requires Zod `.strict()` mode for object schemas
-- **API Safety**: Enforces proper API wrapper usage and runtime exports
-- **Authentication**: Validates Clerk provider usage and server-only directive requirements
-- **Type Safety**: Prevents runtime exports in type-only directories
+### API & Fetch
 
-### Code Quality & Consistency
-- **Import Standards**: Enforces alias imports over relative paths
-- **CTA Tracking**: Requires analytics tracking for landing page CTAs
-- **UI Consistency**: Prevents ad-hoc navbar implementations
-- **Link Management**: Enforces centralized link constants
+- `ensure-api-wrappers` - No description available
+- `no-raw-internal-fetch` - No description available
 
-## 📊 Rule Categories
+### Authentication
 
-### Phase 1: Import Boundaries
-- `no-cross-domain-imports` - Enforces domain import boundaries
-- `no-deep-imports` - Prevents unauthorized deep imports
-- `force-root-imports` - Promotes alias imports over relative paths
-- `forbid-ui-self-barrel` - Prevents self-imports in UI components
+- `no-clerkprovider-outside-root` - No description available
 
-### Phase 2: Runtime Boundaries
-- `no-server-in-client` - Blocks server modules in client components
-- `no-server-in-edge` - Prevents server modules in Edge runtime
-- `require-server-only-directive` - Enforces server-only imports in server files
-- `no-client-apis-in-server-components` - Prevents client APIs in server contexts
+### Dashboard
 
-### Phase 3: API & Fetch Rules
-- `no-raw-internal-fetch` - Enforces API wrapper usage
-- `ensure-api-wrappers` - Prevents direct axios/http usage
-- `require-runtime-exports` - Requires runtime configuration in API routes
+- `dashboard-literal-entity-keys` - No description available
+- `forbid-header-spacing-in-dashboard` - No description available
 
-### Phase 4: Migration Rules
-- `dashboard-literal-entity-keys` - Enforces shared query key helpers
-- `no-client-in-icons` - Ensures SSR-safe icon modules
+### Environment
 
-### Phase 6: Environment & Import Rules
-- `require-env-utilities` - Enforces proper environment variable access
-- `no-direct-process-env` - Prevents direct process.env usage
-- `no-deprecated-lib-imports` - Blocks deprecated import paths (config-driven via `rules/deprecated-imports.json`)
+- `no-direct-process-env` - No description available
+- `require-env-utilities` - No description available
 
-### Phase 7: Type & API Rules
-- `no-runtime-in-types` - Prevents runtime exports in type directories
-- `no-await-headers` - Prevents awaiting synchronous Next.js APIs
-- `contexts-barrel-usage` - Enforces context barrel imports
+### Import Boundaries
 
-### Phase 8: Optimization Rules
-- `forbid-header-spacing-in-dashboard` - Prevents shared header imports in dashboard
-- `no-clerkprovider-outside-root` - Centralizes ClerkProvider usage
-- `require-zod-strict` - Enforces strict Zod schemas
+- `cta-add-link-import` - No description available
+- `dashboard-import-guard` - No description available
+- `force-root-imports` - No description available
+- `legacy-shared-import` - No description available
+- `no-client-logger-import` - No description available
+- `no-cross-domain-imports` - No description available
+- `no-deep-imports` - No description available
+- `no-deprecated-lib-imports` - No description available
+- `no-lib-imports-in-types` - No description available
+- `no-root-lib-imports` - No description available
+- `require-server-env-imports` - No description available
+
+### Next.js
+
+- `next-script-no-empty-nonce` - No description available
+- `nextjs15-route-params-async` - No description available
+- `nextjs15-route-params-optimization` - No description available
+
+### Other
+
+- `contexts-barrel-usage` - No description available
+- `forbid-ui-self-barrel` - No description available
+- `no-await-headers` - No description available
+- `no-direct-supabase-admin` - No description available
+- `no-inline-color-literals` - No description available
+- `no-underscore-dirs` - No description available
+- `no-widgets-from-outside` - No description available
+- `rate-limits-bracket-access` - No description available
+
+### Runtime Boundaries
+
+- `api-edge-barrel-no-server-exports` - No description available
+- `forbid-security-barrel-in-client-or-edge` - No description available
+- `no-clerkclient-invoke` - No description available
+- `no-client-apis-in-server-components` - No description available
+- `no-client-in-icons` - No description available
+- `no-edge-runtime-on-pages` - No description available
+- `no-mixed-runtime-exports` - No description available
+- `no-runtime-in-types` - No description available
+- `no-security-barrel-in-client` - No description available
+- `no-server-in-client` - No description available
+- `no-server-in-edge` - No description available
+- `no-server-only-directive-in-shared` - No description available
+- `no-server-only-in-client` - No description available
+- `no-server-reexports` - No description available
+- `require-client-directive-for-client-code` - No description available
+- `require-runtime-exports` - No description available
+- `require-server-only-directive` - No description available
+
+### UI Standards
+
+- `cta-external-anchor-hardening` - No description available
+- `cta-internal-link-to-link` - No description available
+- `cta-require-linktrack-or-tracking` - No description available
+- `no-ad-hoc-navbars` - No description available
+- `no-hardcoded-links` - No description available
+
+### Validation
+
+- `require-zod-strict` - No description available
 
 ## 🚨 Stub Rules (Future Implementation)
 
 The following rules are currently stubs and marked for future implementation:
-- `use-server-directive` - Server directive enforcement
-- `enforce-action-validation` - Action validation rules
-- `require-action-readme` - Action documentation requirements
-- `no-alias-imports-in-tests` - Test file import restrictions
-- `no-random-test-directories` - Test directory organization
-- `require-supabase-scope` - Supabase scope enforcement
-- `storybook-auto-generation` - Storybook automation
+
+- `enforce-action-validation` - No description available
+- `no-alias-imports-in-tests` - No description available
+- `no-random-test-directories` - No description available
+- `require-action-readme` - No description available
+- `require-supabase-scope` - No description available
+- `storybook-auto-generation` - No description available
+- `use-server-directive` - No description available
 
 ## ⚙️ Configuration
 
@@ -171,43 +201,13 @@ export default [
 ];
 ```
 
-## 📈 Usage Statistics
-
-- **57 Total Rules** across 8 enforcement phases
-- **8 Stub Rules** awaiting implementation
-- **49 Active Rules** currently enforcing standards
-- **100% TypeScript** implementation with full type safety
-
 ## 🔍 Quality Gates
 
 - ✅ **Runtime Safety**: All rules maintain proper client/server/edge separation
-- ✅ **Type Safety**: Full TypeScript support with comprehensive error reporting
-- ✅ **Performance**: Rules are optimized for ESLint's analysis pipeline
-- ✅ **Extensibility**: Configurable domain boundaries and rule options
-
-## 🏗️ Architecture
-
-The plugin is organized into logical phases that build upon each other:
-
-1. **Foundation**: Import boundaries and basic structural rules
-2. **Runtime Safety**: Client/server/edge runtime enforcement
-3. **API Standards**: Fetch wrappers and API route requirements
-4. **Migration Support**: Legacy code migration assistance
-5. **Environment Safety**: Process.env and configuration management
-6. **Type System**: TypeScript and schema validation rules
-7. **Advanced Patterns**: Context usage and optimization rules
-8. **Future Extensions**: Placeholder rules for upcoming features
-
-## 📚 Related Documentation
-
-- [Security Standards](../.cursor/rules/security-standards.mdc) - Security and authentication patterns
-- [Warehouse Query Hooks](../docs/analytics/warehouse-query-hooks.md) - Data access patterns
-- [ESLint Configuration](../eslint.config.mjs) - Main ESLint setup
-
-## 🏷️ Tags
-
-`#eslint` `#linting` `#code-quality` `#architecture` `#runtime-safety`
+- ✅ **Type Safety**: Full TypeScript support with strict type checking
+- ✅ **Architectural Compliance**: Enforces domain boundaries and import rules
+- ✅ **Security Standards**: Validates authentication, validation, and security patterns
 
 ---
 
-*Last updated: 2025-01-16*
+_This documentation is auto-generated from `eslint-plugin-corso/src/index.js`. Last updated: 2026-01-03_

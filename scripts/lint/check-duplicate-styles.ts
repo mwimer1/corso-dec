@@ -1,6 +1,15 @@
 #!/usr/bin/env tsx
-// scripts/lint/check-duplicate-styles.ts
-
+/**
+ * Detects duplicate styling sources for the same component.
+ * 
+ * Flags if both a pattern CSS file (styles/ui/patterns/[name].css) and a component
+ * CSS file (components/[any]/[name].module.css) exist for the same component name,
+ * unless explicitly allowlisted.
+ * 
+ * Intent: Prevent duplicate styling sources for components
+ * Files: CSS files in styles/ui/patterns and component CSS files
+ * Invocation: pnpm lint (via prelint hook)
+ */
 import { execSync } from 'child_process';
 import { existsSync, readdirSync } from 'node:fs';
 import { basename, join } from 'node:path';

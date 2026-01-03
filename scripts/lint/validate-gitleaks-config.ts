@@ -1,6 +1,14 @@
 #!/usr/bin/env tsx
-// scripts/lint/validate-gitleaks-config.ts
-
+/**
+ * Validates gitleaks configuration file syntax and patterns.
+ * 
+ * Checks that config/.gitleaks.toml uses valid Go regex patterns (not glob patterns)
+ * and validates the structure of the configuration file to prevent runtime errors.
+ * 
+ * Intent: Ensure gitleaks configuration is valid
+ * Files: config/.gitleaks.toml
+ * Invocation: pnpm tools:gitleaks:validate
+ */
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';

@@ -1,14 +1,16 @@
-// Edge runtime guard:
-// - Finds Edge entrypoints:
-//    - middleware.ts (always Edge)
-//    - app/**/{page,layout,route,error}.{ts,tsx} that export: export const runtime = 'edge'
-// - Walks their import graphs (simple static scan) and flags:
-//    - Node core modules (fs, path, crypto, etc.)
-//    - Blocklisted packages (e.g., pg, mysql2, sharp, node-fetch, ioredis/redis)
-//    - Common Node-only globals: process, Buffer, __dirname/__filename, require()
-// - Also warns on process.env usage unless NEXT_PUBLIC_.
-//
-// Zero external deps. Alias @/ is resolved via project root.
+#!/usr/bin/env tsx
+/**
+ * Validates Edge runtime compatibility for Next.js routes and middleware.
+ * 
+ * Finds Edge entrypoints (middleware.ts, routes with runtime='edge') and scans their
+ * import graphs to flag Node.js-only dependencies (core modules, packages like pg/mysql2,
+ * Node globals like Buffer, __dirname, require()). Also warns on process.env usage
+ * unless NEXT_PUBLIC_ prefix is used.
+ * 
+ * Intent: Ensure Edge runtime routes don't use Node.js-only APIs
+ * Files: middleware.ts and app route files with runtime='edge' export
+ * Invocation: pnpm lint:edge-runtime
+ */
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, extname, join, resolve } from "node:path";
 

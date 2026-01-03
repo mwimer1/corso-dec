@@ -1,7 +1,15 @@
 #!/usr/bin/env tsx
-// scripts/lint/check-filenames.ts
-// Batch filename case checking (single-process, replaces per-file spawns)
-
+/**
+ * Batch filename case validation for all repository files.
+ * 
+ * Scans all files in the repository and validates they follow kebab-case naming
+ * convention (lowercase letters, numbers, hyphens only). Dotfiles are ignored.
+ * More efficient than per-file validation for full repository scans.
+ * 
+ * Intent: Enforce kebab-case filename convention across repository
+ * Files: All files in repository (excluding ignored directories)
+ * Invocation: pnpm lint (via prelint hook)
+ */
 import { findFiles, getFilename } from './_utils';
 import { logger, createLintResult } from './_utils';
 

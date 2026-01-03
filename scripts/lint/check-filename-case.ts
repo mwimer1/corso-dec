@@ -1,6 +1,14 @@
 #!/usr/bin/env tsx
-// scripts/lint/check-filename-case.ts
-
+/**
+ * Validates that a single filename follows kebab-case naming convention.
+ * 
+ * Checks that filenames use lowercase letters, numbers, and hyphens only.
+ * Dotfiles are ignored. Used by lint-staged for per-file validation.
+ * 
+ * Intent: Enforce kebab-case filename convention
+ * Files: Single file path provided as argument
+ * Invocation: tsx scripts/lint/check-filename-case.ts <file-path>
+ */
 import { getFilename } from './_utils';
 import { logger } from './_utils';
 

@@ -1,4 +1,15 @@
 #!/usr/bin/env tsx
+/**
+ * Validates that Next.js metadata exports don't include viewport configuration.
+ * 
+ * Checks that page/layout files don't export viewport in metadata or generateMetadata,
+ * and ensures not-found.tsx files don't export metadata at all. Viewport should be
+ * configured at the root layout level only.
+ * 
+ * Intent: Enforce centralized viewport configuration
+ * Files: Page, layout, template, loading, and not-found files in app directory
+ * Invocation: pnpm lint:metadata-viewport
+ */
 import { findFiles } from './_utils';
 import fs from "node:fs";
 import { createLintResult, normalizePath } from './_utils';

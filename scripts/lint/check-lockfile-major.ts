@@ -1,4 +1,14 @@
 #!/usr/bin/env tsx
+/**
+ * Validates that pnpm-lock.yaml uses a compatible lockfile version.
+ * 
+ * Checks the lockfileVersion in pnpm-lock.yaml to ensure it matches the expected
+ * major version for the current pnpm version. Prevents lockfile format mismatches.
+ * 
+ * Intent: Ensure lockfile version compatibility
+ * Files: pnpm-lock.yaml
+ * Invocation: pnpm lint:lockfile
+ */
 import fs from 'node:fs';
 import { join } from 'node:path';
 import YAML from 'yaml';

@@ -70,6 +70,8 @@
     "guards:repo-structure": "pnpm guards:placeholders && pnpm guards:temp && pnpm guards:no-top-actions",
     "docs:readmes:check": "tsx scripts/lint/check-readmes.ts",
     "docs:generate:readme": "tsx scripts/maintenance/docs/generate-readmes.ts",
+    "docs:generate:lint": "tsx scripts/maintenance/generate-eslint-plugin-docs.ts && tsx scripts/maintenance/generate-lint-scripts-docs.ts && tsx scripts/maintenance/generate-ast-grep-docs.ts",
+    "docs:check:sync": "tsx scripts/ci/check-docs-sync.ts",
     "docs:links": "pnpm docs:validate",
     "docs:validate": "tsx scripts/maintenance/validate-docs.ts",
     "docs:validate:content": "tsx scripts/maintenance/validate-docs-content.ts",

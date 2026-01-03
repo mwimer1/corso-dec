@@ -1,7 +1,14 @@
 #!/usr/bin/env tsx
-// scripts/lint/typecheck-staged.ts
-// Typechecks only staged TypeScript files for faster pre-commit hooks
-
+/**
+ * Typechecks only staged TypeScript files for faster pre-commit hooks.
+ * 
+ * Runs TypeScript compiler on only the staged .ts/.tsx files instead of the entire
+ * codebase, providing faster feedback during development while maintaining type safety.
+ * 
+ * Intent: Fast type checking for staged files only
+ * Files: Git staged .ts/.tsx files
+ * Invocation: pnpm typecheck:staged (via pre-commit hook)
+ */
 import { execFileSync } from 'child_process';
 import { existsSync } from 'fs';
 

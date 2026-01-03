@@ -1,4 +1,14 @@
-// scripts/validate-effect-deps.ts
+#!/usr/bin/env tsx
+/**
+ * Validates React hook dependency arrays for exhaustive-deps compliance.
+ * 
+ * Runs ESLint with exhaustive-deps rule on hooks/ directory to ensure all
+ * React hooks (useEffect, useMemo, useCallback, etc.) have complete dependency arrays.
+ * 
+ * Intent: Enforce exhaustive-deps rule for React hooks
+ * Files: TypeScript files in hooks directory
+ * Invocation: pnpm validate:effect-deps
+ */
 import { exec } from 'child_process';
 import { fileURLToPath } from 'node:url';
 import path from 'path';

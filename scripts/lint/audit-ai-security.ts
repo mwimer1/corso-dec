@@ -1,4 +1,14 @@
 #!/usr/bin/env tsx
+/**
+ * Audits AI security practices in OpenAI integration endpoints.
+ * 
+ * Checks for prompt injection vulnerabilities, SQL injection in AI-generated queries,
+ * and ensures proper input sanitization is applied in AI endpoints.
+ * 
+ * Intent: Enforce AI security best practices
+ * Files: app/api/v1/dashboard and lib/chat/query TypeScript files
+ * Invocation: pnpm audit:ai
+ */
 import { existsSync, readFileSync } from 'fs';
 import { glob } from 'glob';
 

@@ -1,4 +1,15 @@
 #!/usr/bin/env tsx
+/**
+ * Validates consistency between Node.js version specifications.
+ * 
+ * Ensures that package.json engines.node, package.json packageManager, and
+ * .node-version file all specify compatible Node.js versions to prevent
+ * environment mismatches.
+ * 
+ * Intent: Ensure Node.js version consistency across configuration files
+ * Files: package.json, .node-version
+ * Invocation: pnpm lint:versions
+ */
 import { readFileSync } from 'node:fs';
 import { resolveFromRepo } from './_utils';
 import { readJsonSync } from '../utils/fs/read';

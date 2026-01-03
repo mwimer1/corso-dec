@@ -1,6 +1,14 @@
 #!/usr/bin/env tsx
-// scripts/lint/validate-package-json.ts
-
+/**
+ * Validates package.json for duplicate script keys and other issues.
+ * 
+ * Checks for duplicate script commands, validates script key naming conventions,
+ * and uses caching to optimize performance when package.json hasn't changed.
+ * 
+ * Intent: Ensure package.json scripts are well-organized
+ * Files: package.json
+ * Invocation: pnpm validate:package
+ */
 import { fileURLToPath } from 'node:url';
 import { join } from 'path';
 import { readTextSync } from '../utils/fs/read';

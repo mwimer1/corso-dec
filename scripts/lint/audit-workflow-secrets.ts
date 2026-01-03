@@ -1,3 +1,14 @@
+#!/usr/bin/env tsx
+/**
+ * Audits GitHub Actions workflows for secrets usage and generates security report.
+ * 
+ * Runs gitleaks to detect secrets in the repository, then audits workflow files
+ * to ensure secrets are properly referenced (not hardcoded) and generates a report.
+ * 
+ * Intent: Ensure secrets are properly managed in CI/CD workflows
+ * Files: YAML files in .github/workflows directory
+ * Invocation: pnpm audit:secrets
+ */
 import { spawnSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import path, { basename, dirname, extname, resolve } from "node:path";

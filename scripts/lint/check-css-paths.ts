@@ -1,6 +1,14 @@
 #!/usr/bin/env tsx
-// scripts/lint/check-css-paths.ts
-
+/**
+ * Validates that all CSS files are located in the styles/ directory.
+ * 
+ * Scans the repository for CSS files outside the styles/ directory and reports
+ * them as errors to enforce consistent file organization.
+ * 
+ * Intent: Enforce CSS file organization standards
+ * Files: All .css files outside styles/ directory
+ * Invocation: pnpm lint (via prelint hook)
+ */
 import { execSync } from 'child_process';
 import { logger, createLintResult } from './_utils';
 
