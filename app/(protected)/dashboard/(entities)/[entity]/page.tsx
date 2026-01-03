@@ -1,4 +1,6 @@
+import { DashboardTopBar } from '@/components/dashboard/layout/dashboard-top-bar';
 import { EntityGridHost, getEntityConfig } from '@/components/dashboard/entities';
+import { getDashboardBreadcrumbs } from '@/lib/dashboard/breadcrumbs';
 import { isChatEntity, isGridEntity } from '@/lib/entities/registry';
 import { EntityParamSchema } from '@/lib/validators/entity';
 import type { Metadata } from "next";
@@ -53,13 +55,13 @@ export default async function EntityPage({ params }: { params: Promise<{ entity:
     // Use registry as single source of truth
     const gridConfig = getEntityConfig(entity as 'projects' | 'addresses' | 'companies');
     const title = getEntityTitle(entity);
+    const pathname = `/dashboard/${entity}`;
+    const breadcrumbs = getDashboardBreadcrumbs(pathname);
     
     return (
       <div className="flex flex-col h-full">
-        {/* Page header with title */}
-        <div className="px-6 py-4 border-b border-border bg-background">
-          <h1 className="text-2xl font-semibold text-foreground">{title}</h1>
-        </div>
+        {/* Top Bar with breadcrumbs (Corso > [Entity]) and page title */}
+        <DashboardTopBar currentPage={title} breadcrumbs={breadcrumbs} variant="default" />
         {/* Grid content */}
         <div className="flex-1 min-h-0">
           <EntityGridHost config={gridConfig} />

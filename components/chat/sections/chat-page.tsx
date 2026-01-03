@@ -1,5 +1,7 @@
 "use client";
 
+import { DashboardTopBar } from '@/components/dashboard/layout/dashboard-top-bar';
+import { ChatModelDropdown } from '@/components/chat/components/chat-model-dropdown';
 import { clearLocalChatHistory } from '@/lib/chat';
 import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
@@ -21,6 +23,16 @@ export function ChatPage() {
   }, [searchParams]);
 
   return (
-    <ChatWindow />
+    <div className="flex flex-col h-full">
+      <DashboardTopBar 
+        currentPage="" 
+        breadcrumbs={[]}
+        actions={<ChatModelDropdown />}
+        variant="chat"
+      />
+      <div className="flex-1 min-h-0">
+        <ChatWindow />
+      </div>
+    </div>
   );
 }

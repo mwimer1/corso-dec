@@ -32,6 +32,7 @@ interface UseChatOptions {
   autoSave?: boolean;
   autoSaveDelay?: number;
   preferredTable?: 'projects' | 'companies' | 'addresses';
+  modelTier?: 'auto' | 'fast' | 'thinking' | 'pro';
 }
 
 interface UseChatReturn {
@@ -143,7 +144,7 @@ const isIterable = <T>(v: unknown): v is AsyncIterable<T> =>
 /* -------------------------------------------------------------------------- */
 
 export function useChat(opts: UseChatOptions = {}): UseChatReturn {
-  const { maxMessages = 100, persistHistory = true, autoSave = true, autoSaveDelay = 1_000, preferredTable } = opts;
+  const { maxMessages = 100, persistHistory = true, autoSave = true, autoSaveDelay = 1_000, preferredTable, modelTier = 'auto' } = opts;
   const { user: _user } = useUser();
   const { organization, isLoaded } = useOrganization();
   
@@ -262,7 +263,8 @@ export function useChat(opts: UseChatOptions = {}): UseChatReturn {
           preferredTable,
           abortRef.current.signal,
           recentHistory.length > 0 ? recentHistory : undefined,
-          orgId
+          orgId,
+          modelTier
         ) as StreamOrPromise;
 
         if (isIterable<AIChunk>(result)) {
@@ -346,7 +348,7 @@ export function useChat(opts: UseChatOptions = {}): UseChatReturn {
         });
       }
     },
-    [preferredTable, messages, orgId]
+    [preferredTable, modelTier, messages, orgId]
   );
 
   /* ----------------------- convenience actions ------------------------- */

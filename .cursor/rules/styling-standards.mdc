@@ -148,6 +148,32 @@ font-size: var(--text-lg);
 line-height: var(--leading-relaxed);
 ```
 
+#### Dashboard Top Bar Typography
+**Standard Pattern:**
+- **Font size**: `text-lg` (18px) for all breadcrumb text and page titles
+- **Font weight**: `font-medium` (500) for consistent weight
+- **Color hierarchy**:
+  - Breadcrumb links and page titles: `text-muted-foreground` (light gray)
+  - Separator (`>`): `text-medium` (darker gray)
+  - Hover states: `text-foreground` (dark)
+
+**Entity Pages:**
+```tsx
+// Breadcrumb: "Corso > Projects"
+<nav className="text-lg text-muted-foreground">
+  <Link className="hover:text-foreground">Corso</Link>
+  <span className="text-medium"> &gt; </span>
+</nav>
+<h1 className="text-lg font-medium text-muted-foreground">Projects</h1>
+```
+
+**Chat Page:**
+```tsx
+// Dropdown: "Corso Chat"
+<span className="text-muted-foreground">Corso </span>
+<span className="text-medium">Chat</span>
+```
+
 #### Domain-Specific Tokens
 ```css
 /* Chat tokens */

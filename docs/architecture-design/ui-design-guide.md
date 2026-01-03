@@ -14,9 +14,58 @@ This guide consolidates design principles, component patterns, and styling guide
 ### Token Usage
 - **Always use design tokens**: No hardcoded colors (`text-[#1C1D1F]` ❌ → `text-foreground` ✅)
 - **Token categories**:
-  - Colors: `text-foreground`, `text-muted-foreground`, `bg-primary`, `border-border`
+  - Colors: `text-foreground`, `text-muted-foreground`, `text-medium`, `bg-primary`, `border-border`
   - Spacing: Use Tailwind utilities or custom tokens
   - Typography: Consistent font scales and weights
+
+### Typography & Breadcrumb Styling
+
+#### Dashboard Top Bar Typography
+The dashboard top bar uses consistent typography patterns across all pages:
+
+**Font Size & Weight:**
+- All breadcrumb text and page titles: `text-lg` (18px) with `font-medium` weight
+- Ensures clear readability and visual consistency
+
+**Color Hierarchy:**
+- **Breadcrumb links and page titles**: `text-muted-foreground` (light gray, HSL: `215.4 16.3% 46.9%`)
+  - Used for: "Corso" breadcrumb link, page titles ("Projects", "Companies", "Addresses")
+- **Separator**: `text-medium` (darker gray, HSL: `240 5% 25%`)
+  - Used for: `>` separator between breadcrumb items
+- **Hover states**: `text-foreground` (dark, HSL: `222.2 47.4% 11.2%`)
+  - Applied on hover for interactive elements
+
+**Entity Pages Pattern:**
+```
+[Corso > Projects]
+```
+- "Corso" = `text-muted-foreground` (light gray, clickable link)
+- `>` = `text-medium` (darker gray)
+- "Projects" = `text-muted-foreground` (light gray, same as "Corso")
+
+**Chat Page Pattern:**
+```
+[Corso Chat ▼]
+```
+- "Corso" = `text-muted-foreground` (light gray)
+- "Chat"/"Thinking"/"Deep Research" = `text-medium` (darker gray, same as separator)
+- Dropdown chevron = `text-muted-foreground` (light gray)
+
+**Implementation:**
+```tsx
+// Entity pages breadcrumb
+<nav className="text-lg text-muted-foreground">
+  <Link href="/dashboard/chat?new=true" className="hover:text-foreground">
+    Corso
+  </Link>
+  <span className="text-medium"> &gt; </span>
+</nav>
+<h1 className="text-lg font-medium text-muted-foreground">Projects</h1>
+
+// Chat page dropdown
+<span className="text-muted-foreground">Corso </span>
+<span className="text-medium">Chat</span>
+```
 
 ### Responsive Design
 - **Typography scaling**: Use `clamp()` for responsive headings

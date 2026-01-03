@@ -28,6 +28,7 @@ export const ChatRequestSchema = z.object({
     role: z.enum(['user', 'assistant']),
     content: z.string(),
   })).optional(),
+  modelTier: z.enum(['auto', 'fast', 'thinking', 'pro']).optional().default('auto'),
 }).strict();
 
 export type ChatRequest = z.infer<typeof ChatRequestSchema>;

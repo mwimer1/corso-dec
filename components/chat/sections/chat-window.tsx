@@ -2,6 +2,7 @@
 
 import { useUser } from '@clerk/nextjs';
 import dynamic from 'next/dynamic';
+import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useChat } from '../hooks/use-chat';
 import { isChatMode, type ChatMode } from '../lib/chat-mode';
@@ -13,7 +14,22 @@ import styles from '../chat.module.css';
 const ChatComposer = dynamic(() => import('./chat-composer'), { ssr: false });
 
 export default function ChatWindow() {
-  const { messages, isProcessing, sendMessage, stop, error, clearError, retryLastMessage } = useChat({ persistHistory: true, autoSave: true });
+  const searchParams = useSearchParams();
+  
+  // Read modelTier from URL, default to 'auto'
+  const modelTier = useMemo(() => {
+    const param = searchParams?.get('model');
+    if (param && ['auto', 'fast', 'thinking', 'pro'].includes(param)) {
+      return param as 'auto' | 'fast' | 'thinking' | 'pro';
+    }
+    return 'auto';
+  }, [searchParams]);
+
+  const { messages, isProcessing, sendMessage, stop, error, clearError, retryLastMessage } = useChat({ 
+    persistHistory: true, 
+    autoSave: true,
+    modelTier,
+  });
   const { user } = useUser();
 
   const [draft, setDraft] = useState<string>("");

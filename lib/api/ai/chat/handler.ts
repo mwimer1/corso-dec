@@ -17,6 +17,43 @@ import { getChatCompletionsTools } from './tools';
 import { createResponsesStreamResponse, createStreamResponse, createErrorResponse } from './streaming';
 
 /**
+ * Maps model tier selection to actual OpenAI model.
+ * 
+ * @param tier - User-selected model tier ('auto', 'fast', 'thinking', 'pro')
+ * @param env - Environment configuration
+ * @returns OpenAI model identifier
+ */
+function mapModelTierToOpenAIModel(
+  tier: 'auto' | 'fast' | 'thinking' | 'pro',
+  env: ReturnType<typeof getEnv>
+): string {
+  // Default model from env (SQL model or fallback to gpt-4o-mini)
+  const defaultModel = env.OPENAI_SQL_MODEL || 'gpt-4o-mini';
+  
+  switch (tier) {
+    case 'auto':
+      // Use default model (current behavior)
+      return defaultModel;
+    case 'fast':
+      // Fast model: use gpt-4o-mini for speed
+      return 'gpt-4o-mini';
+    case 'thinking':
+      // Thinking model: use gpt-4o for better reasoning
+      // Fallback to default if gpt-4o not available
+      return env.OPENAI_SQL_MODEL?.includes('gpt-4') ? env.OPENAI_SQL_MODEL : defaultModel;
+    case 'pro':
+      // Pro model: use best available model
+      // Prefer gpt-4o or gpt-4-turbo, fallback to default
+      if (env.OPENAI_SQL_MODEL?.includes('gpt-4')) {
+        return env.OPENAI_SQL_MODEL;
+      }
+      return defaultModel;
+    default:
+      return defaultModel;
+  }
+}
+
+/**
  * Main handler for chat requests.
  */
 export async function handleChatRequest(req: NextRequest): Promise<Response> {
@@ -58,8 +95,10 @@ export async function handleChatRequest(req: NextRequest): Promise<Response> {
   // Get OpenAI client and model
   const env = getEnv();
   const client = createOpenAIClient();
-  // Use SQL model for chat (or fallback to gpt-4o-mini)
-  const model = env.OPENAI_SQL_MODEL || 'gpt-4o-mini';
+  
+  // Map modelTier to actual OpenAI model
+  const modelTier = body.modelTier ?? 'auto';
+  const model = mapModelTierToOpenAIModel(modelTier, env);
   
   // Security: Warn if using unpinned model (model drift risk)
   // Pinned models (e.g., gpt-4-0613) ensure consistent behavior
