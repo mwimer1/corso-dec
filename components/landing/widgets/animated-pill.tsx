@@ -162,18 +162,18 @@ const AnimatedPill: React.FC<AnimatedPillProps> = ({
             ['--spin-angle' as any]: '-80deg',
             // Make the ring extend just outside the content with better edge handling
             inset: 'calc(var(--pill-overscan, 2px) * -1)',
-            borderRadius: '16px', // Increased for smoother edges
+            borderRadius: 'var(--radius-2xl)', // 1rem = 16px - Increased for smoother edges
             // Draw conic gradient that spins continuously from center (50% thinner border)
             background: `
               conic-gradient(
                 from var(--spin-angle)
                 at 50% 50%,
-                #A3ECE900 0deg,
-                #A3ECE9 7.5deg,
-                #709FF5 37.5deg,
-                #709FF5 60deg,
-                #0000 52.5deg,
-                #0000 360deg
+                hsl(var(--gradient-brand-start) / 0) 0deg,
+                hsl(var(--gradient-brand-start)) 7.5deg,
+                hsl(var(--gradient-brand-end)) 37.5deg,
+                hsl(var(--gradient-brand-end)) 60deg,
+                transparent 52.5deg,
+                transparent 360deg
               )
             `,
           }}
@@ -188,8 +188,8 @@ const AnimatedPill: React.FC<AnimatedPillProps> = ({
               inset: 0,
               borderRadius: '13px',
               padding: '1.5px',
-              background: 'conic-gradient(from var(--angle) at var(--x) var(--y), #A3ECE900, #A3ECE9 20deg, #709FF5 100deg, #709FF5 120deg, #0000 83deg)',
-              WebkitMask: 'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
+              background: 'conic-gradient(from var(--angle) at var(--x) var(--y), hsl(var(--gradient-brand-start) / 0), hsl(var(--gradient-brand-start)) 20deg, hsl(var(--gradient-brand-end)) 100deg, hsl(var(--gradient-brand-end)) 120deg, transparent 83deg)',
+              WebkitMask: 'linear-gradient(black 0 0) content-box, linear-gradient(black 0 0)',
               WebkitMaskComposite: 'xor',
               maskComposite: 'exclude',
               zIndex: 1, // above content
@@ -209,9 +209,9 @@ const AnimatedPill: React.FC<AnimatedPillProps> = ({
             // Padding tuned so pill width approximates H1 first-line width
             'py-[8px] pr-[12px] pl-[16px]',
             // Background hover transition
-            'bg-white hover:bg-[#FBFBFC] transition-colors duration-300 ease-in-out',
+            'bg-background hover:bg-surface transition-colors duration-300 ease-in-out',
             // Increased border-radius for smoother edges
-            'rounded-[16px]'
+            'rounded-2xl'
           )}
         >
           <span>{text}</span>

@@ -7,7 +7,7 @@ import { focusRing } from '@/styles/ui/shared/focus-ring';
  */
 const industryTabButtonVariants = tv({
   base: [
-    'inline-flex items-center gap-2 px-lg py-xs rounded-[10px]',
+    'inline-flex items-center gap-2 px-lg py-xs rounded-[var(--radius-button)]',
     'text-sm font-medium tracking-wide transition-colors border-solid',
     focusRing('primary'),
   ],

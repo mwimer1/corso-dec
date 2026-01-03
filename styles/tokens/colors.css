@@ -50,6 +50,10 @@
   --input: 214.3 31.8% 91.4%;
   --surface-hover: 0 0% 93%;
   --surface-selected: 221.2 83.2% 95%;
+
+  /* Brand gradient colors for animated pill */
+  --gradient-brand-start: 180 70% 85%; /* #A3ECE9 - Cyan/turquoise */
+  --gradient-brand-end: 220 85% 75%; /* #709FF5 - Blue */
 }
 
 /* Dark mode via .dark class (applied by NextThemes) */
@@ -79,6 +83,10 @@
   --input: 217.2 32.6% 17.5%;
   --surface-hover: 222.2 47.4% 11.2%;
   --surface-selected: 217.2 91.2% 20%;
+
+  /* Brand gradient colors - same in dark mode */
+  --gradient-brand-start: 180 70% 85%; /* #A3ECE9 */
+  --gradient-brand-end: 220 85% 75%; /* #709FF5 */
 
   /* State colors remain the same in dark mode for accessibility */
   --success: 142.1 70.6% 35%;

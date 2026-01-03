@@ -31,9 +31,9 @@ function ChatWelcome({ firstName, onPreset, className }: ChatWelcomeProps) {
           const classes =
             "group w-full rounded-2xl border border-border bg-surface px-5 py-3.5 text-left " +
             "flex items-center gap-3 text-foreground " +
-            "shadow-[0_1px_2px_rgba(16,24,40,0.06)] " +
+            "shadow-xs " +
             "transition-all duration-150 ease-out " +
-            "hover:-translate-y-0.5 hover:shadow-[0_8px_16px_rgba(16,24,40,0.10)] hover:border-border " +
+            "hover:-translate-y-0.5 hover:shadow-md hover:border-border " +
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2";
 
           return (

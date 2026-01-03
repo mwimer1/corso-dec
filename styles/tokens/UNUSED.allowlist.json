@@ -163,6 +163,8 @@
     "chat-bubble-asst-bg",
     "chat-bubble-asst-fg",
     "chat-bubble-asst-border",
-    "chat-preset-border"
+    "chat-preset-border",
+    "gradient-brand-start",
+    "gradient-brand-end"
   ]
 }

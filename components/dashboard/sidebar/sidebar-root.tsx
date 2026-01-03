@@ -22,7 +22,7 @@ export function SidebarRoot({ collapsed = false, children, footer, id: idProp, c
           'flex h-dvh flex-col',
           // Sidebar base styles using tokens
           'min-h-0 border-r border-[var(--sb-border)]',
-          'shadow-[1px_0_3px_rgba(0,0,0,0.03)]',
+          'shadow-sm',
           'relative overflow-x-hidden',
           'bg-[var(--sb-bg)]',
           // Ensure sidebar creates a stacking context so footer avatar can't be
