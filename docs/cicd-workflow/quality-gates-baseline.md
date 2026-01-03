@@ -1,7 +1,9 @@
 ---
-status: "active"
-last_updated: "2026-01-03"
 category: "documentation"
+last_updated: "2026-01-03"
+status: "draft"
+title: "Cicd Workflow"
+description: "Documentation and resources for documentation functionality. Located in cicd-workflow/."
 ---
 # Quality Gates Baseline Snapshot
 

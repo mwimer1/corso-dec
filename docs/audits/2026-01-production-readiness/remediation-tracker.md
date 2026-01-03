@@ -1,7 +1,9 @@
 ---
-status: "active"
-last_updated: "2026-01-03"
 category: "documentation"
+last_updated: "2026-01-03"
+status: "draft"
+title: "2026 01 Production Readiness"
+description: "Documentation and resources for documentation functionality. Located in audits/2026-01-production-readiness/."
 ---
 # Production Readiness Remediation Tracker
 

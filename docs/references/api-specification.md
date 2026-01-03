@@ -1,9 +1,9 @@
 ---
-status: "draft"
+description: "Documentation and resources for documentation functionality. Located in references/."
 last_updated: "2026-01-03"
 category: "documentation"
+status: "draft"
 title: "References"
-description: "Documentation and resources for documentation functionality. Located in references/."
 ---
 # API Specification
 

@@ -31,7 +31,10 @@ This README is generated from a single template (`README.scripts.hbs`).
 - **fix-links.ts** – Use the refactored link fixes for all sets
 - **gen-variants-index.ts** – ⛔ Explicit skip-list to prevent reintroducing removed aggregators
 - **generate-alias-doc.ts** – Load and fully parse tsconfig (handles &#x60;extends&#x60;, JSONC, etc.).
+- **generate-ast-grep-docs.ts** – Generates ast-grep rules documentation from YAML files.
 - **generate-env-docs-toc.ts** – Generate Table of Contents for environment variables documentation
+- **generate-eslint-plugin-docs.ts** – Generates ESLint plugin documentation from source code.
+- **generate-lint-scripts-docs.ts** – Generates scripts/lint documentation from JSDoc headers.
 - **generate-readme.ts** – scripts/maintenance/generate-readme.ts
 - **kill-orphans.ts** – Cross-platform script to kill orphaned Node.js processes
 - **link-fixes.config.ts** – scripts/maintenance/link-fixes.config.ts
@@ -45,6 +48,6 @@ This README is generated from a single template (`README.scripts.hbs`).
 - **validate-dead-code-optimized.ts** – Optimized Dead Code Validation
 - **validate-docs-content.ts** – Content validation for documentation files
 - **validate-docs-content.utils.ts** – Utility functions for documentation content validation
-- **validate-docs-on-commit.ts** – scripts/validate-docs-on-commit.ts
+- **validate-docs-on-commit.ts** – /*.md
 - **validate-docs.ts** – Checks if markdown-link-check tool is available
 - **validate-mock-schema.ts** – Known optional/computed fields that may not exist in mock data

@@ -5,7 +5,6 @@ last_updated: "2026-01-03"
 category: "documentation"
 status: "draft"
 ---
-
 # Corso ESLint Plugin
 
 > **Comprehensive ESLint plugin enforcing Corso's architectural boundaries, security standards, and code quality rules for Next.js applications.**

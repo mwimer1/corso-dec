@@ -217,12 +217,20 @@ export const docs = [
     "title": "Typescript"
   },
   {
+    "path": "docs/audits/2026-01-production-readiness/baseline/readme.md",
+    "title": "Baseline"
+  },
+  {
     "path": "docs/decisions/readme.md",
     "title": "Decisions"
   },
   {
     "path": "docs/feature-notes/readme.md",
     "title": "Feature Notes"
+  },
+  {
+    "path": "docs/maintenance/powershell-performance-fixes/readme.md",
+    "title": "Powershell Performance Fixes"
   },
   {
     "path": "docs/qa/readme.md",

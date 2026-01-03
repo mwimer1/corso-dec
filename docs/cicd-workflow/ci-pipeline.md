@@ -1,9 +1,9 @@
 ---
-title: "Cicd Workflow"
-description: "Documentation and resources for documentation functionality. Located in cicd-workflow/."
+status: "draft"
 last_updated: "2026-01-03"
 category: "documentation"
-status: "draft"
+title: "Cicd Workflow"
+description: "Documentation and resources for documentation functionality. Located in cicd-workflow/."
 ---
 # CI/CD Pipeline & Quality Gates
 

@@ -1,9 +1,9 @@
 ---
-title: "V1"
-description: "Documentation and resources for documentation functionality. Located in api/v1/."
+status: "draft"
 last_updated: "2026-01-03"
 category: "documentation"
-status: "draft"
+title: "V1"
+description: "Documentation and resources for documentation functionality. Located in api/v1/."
 ---
 # API v1 — Routes, Runtime & Limits
 

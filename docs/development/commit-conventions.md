@@ -1,11 +1,10 @@
 ---
-status: "active"
+description: "Documentation and resources for documentation functionality. Located in development/."
 last_updated: "2026-01-03"
 category: "documentation"
-title: "Commit Conventions"
-description: "Conventional commit message standards and scope validation for Corso platform."
+status: "draft"
+title: "Development"
 ---
-
 # Commit Message Conventions
 
 > **Source of Truth**: The authoritative list of allowed commit types and scopes is defined in `commitlint.config.cjs`. All documentation should reference this file.

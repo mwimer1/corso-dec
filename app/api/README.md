@@ -1,9 +1,9 @@
 ---
-title: "Api"
+description: "Documentation and resources for documentation functionality. Located in api/."
 last_updated: "2026-01-03"
 category: "documentation"
 status: "draft"
-description: "Documentation and resources for documentation functionality. Located in api/."
+title: "Api"
 ---
 ## Overview
 
