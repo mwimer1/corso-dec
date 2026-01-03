@@ -270,6 +270,7 @@ export default [
       'corso/require-zod-strict': 'error',
       'corso/require-runtime-exports': ['error', { files: ['app/api/**/*.ts'] }],
       'corso/no-direct-supabase-admin': 'error',
+      'corso/no-deprecated-lib-imports': ['error', { configPath: './eslint-plugin-corso/rules/deprecated-imports.json' }],
 
       // New migrated rules from AST-Grep (Phase 1-3)
       'corso/force-root-imports': 'warn', // Start with warn due to potential false positives
@@ -342,6 +343,8 @@ export default [
           'lib/security/**/*.ts',
           // Core utilities - public API types and error handling
           'lib/core/**/*.ts',
+          // Vendor integration utilities - wrap external libraries, used as public API surfaces
+          'lib/vendors/**/*.ts',
           // Note: actions/ directory was removed in PR5.2 - Server Actions are now feature-colocated
           // 'actions/**/*.ts', // Removed - Server Actions are feature-colocated
           // Note: hooks/ directory was removed - hooks are now domain-colocated (e.g., components/ui/hooks/, components/chat/hooks/)
