@@ -10,14 +10,14 @@
 .roiTitle {
   font-size: clamp(2rem, 1.5rem + 1.5vw, 3rem);
   line-height: 1.1;
-  margin: 0 0 0.5rem;
+  margin: 0 0 var(--space-sm);
   font-weight: 800;
   letter-spacing: -0.03em;
   color: hsl(var(--foreground));
 }
 
 .roiSubtitle {
-  margin-top: 0.25rem;
+  margin-top: var(--space-xs);
   font-size: 1.125rem;
   color: hsl(var(--muted-foreground));
   max-width: 38rem;
@@ -52,7 +52,7 @@
 }
 
 .roiInputGroup {
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-md);
 }
 
 .roiInputGroup:last-of-type {
@@ -61,7 +61,7 @@
 
 .roiLabel {
   display: block;
-  margin-bottom: 0.375rem;
+  margin-bottom: var(--space-1-5);
   font-weight: 700;
   color: hsl(var(--primary-foreground));
   font-size: 1.125rem;
@@ -88,8 +88,8 @@
 .numberField :global(input) {
   width: 100%;
   height: 3.5rem; /* Extra vertical room so steppers don't sit flush */
-  padding: 0.625rem 3.25rem 0.625rem 0.875rem; /* Increased right padding to accommodate steppers */
-  border-radius: 0.5rem;
+  padding: var(--space-2-5) 3.25rem var(--space-2-5) var(--space-ms); /* Increased right padding to accommodate steppers */
+  border-radius: var(--radius-lg);
   border: 1px solid hsl(var(--primary-foreground) / 25%);
   background: hsl(var(--primary-foreground) / 6%);
   color: hsl(var(--primary-foreground));
@@ -116,13 +116,13 @@
 /* Stepper container sits inside the number field on the right */
 .numberField :global([data-stepper]) {
   position: absolute;
-  right: 0.5rem;
-  top: 0.375rem;
-  bottom: 0.375rem;
+  right: var(--space-sm);
+  top: var(--space-1-5);
+  bottom: var(--space-1-5);
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 0.25rem; /* increased for better visual separation */
+  gap: var(--space-xs); /* increased for better visual separation */
   z-index: 1;
 }
 
@@ -131,7 +131,7 @@
 .numberField :global([data-stepper] button[aria-label^="Decrease"]) {
   width: 1.5rem;
   height: 1.125rem;
-  border-radius: 0.5rem;
+  border-radius: var(--radius-lg);
   display: grid;
   place-items: center;
   border: none;
@@ -169,7 +169,7 @@
 
 .prefixSymbol {
   position: absolute;
-  left: 0.75rem;
+  left: var(--space-ms);
   top: 50%;
   transform: translateY(-50%);
   color: hsl(var(--primary-foreground) / 0.8);
@@ -180,5 +180,5 @@
 }
 
 .prefixContainer .numberField :global(input) {
-  padding-left: 1.5rem; /* Increased to accommodate prefix symbol */
+  padding-left: var(--space-lg); /* Increased to accommodate prefix symbol */
 }

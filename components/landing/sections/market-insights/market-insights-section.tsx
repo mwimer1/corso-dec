@@ -15,7 +15,7 @@ import { FilterPills } from "../../widgets/filter-pills";
 import { FilterSelect } from "../../widgets/filter-select";
 import { Statistics } from "../../widgets/statistics";
 import { DEFAULT_DATA } from "./chart-data";
-import cls from './market-insights.module.css';
+import styles from './market-insights.module.css';
 // ROI calculator is rendered client-only to avoid SSR/client drift with browser extensions
 const ROICalculator = dynamic(
   () => import("../roi/roi-calculator").then(m => m.ROICalculator),
@@ -203,7 +203,7 @@ export const MarketInsightsSection: React.FC<Props> = ({
     <section
       className={cn(
         containerMaxWidthVariants({ maxWidth: '7xl', centered: true, responsive: true }),
-        cls['section']
+        styles['section']
       )}
       aria-labelledby="market-insights-title"
     >
@@ -324,7 +324,7 @@ export const MarketInsightsSection: React.FC<Props> = ({
         </div>
       </div>
 
-      <div className={"mt-8 pt-8 " + cls['roiWrap']}>
+      <div className={"mt-8 pt-8 " + styles['roiWrap']}>
         <ROICalculator />
       </div>
     </section>

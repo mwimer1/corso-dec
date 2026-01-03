@@ -2,7 +2,7 @@
 .hero{
   width:100%;
   background:var(--hero-bg-color, hsl(var(--background)));
-  gap:1rem;
+  gap:var(--space-md);
   /* Fluid min-height: scales from 400px to 650px based on viewport */
   min-height:clamp(400px,50vh,650px);
   display:flex;
@@ -18,7 +18,7 @@
 
 /* Underline accent moved to shared variant `underlineAccent` */
 .subtitle{font-size:clamp(1.125rem,2.5vw,2rem);line-height:1.4;margin:.5rem auto;text-align:center;font-weight:400;color:hsl(var(--text-medium));letter-spacing:-.2px}
-.buttons{display:flex;flex-direction:row;align-items:center;justify-content:center;gap:.75rem;margin-top:1.5rem;margin-bottom:2rem;width:100%;max-width:345px;z-index:1}
+.buttons{display:flex;flex-direction:row;align-items:center;justify-content:center;gap:var(--space-ms);margin-top:var(--space-lg);margin-bottom:var(--space-xl);width:100%;max-width:345px;z-index:1}
 
 /* Large desktop: Center content with increased min-height */
 @media (width >= 1920px){
@@ -39,7 +39,7 @@
 @media (width <= 768px){
   .hero{
     min-height:clamp(350px,55vh,560px);
-    padding-bottom:0.5rem;
+    padding-bottom:var(--space-sm);
   }
 }
 
@@ -47,12 +47,12 @@
 @media (max-height: 600px){
   .hero{
     min-height:auto;
-    padding-top:1.5rem;
-    padding-bottom:1rem;
+    padding-top:var(--space-lg);
+    padding-bottom:var(--space-md);
   }
 }
 
 /* Button layout: Stack on very small screens */
 @media (width <= 600px){
-  .buttons{flex-direction:column;align-items:stretch;max-width:100%;gap:1rem}
+  .buttons{flex-direction:column;align-items:stretch;max-width:100%;gap:var(--space-md)}
 }

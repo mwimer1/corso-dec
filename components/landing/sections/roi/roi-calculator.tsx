@@ -12,7 +12,7 @@ import { ChevronDown } from "lucide-react";
 import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { RoiOutputPanel } from "./roi-output-panel";
-import cls from "./roi.module.css";
+import styles from "./roi.module.css";
 
 // Import LandingSection for consistent layout
 import { LandingSection } from "../../layout/landing-section";
@@ -115,9 +115,9 @@ export const ROICalculator: React.FC = () => {
 
   return (
     <LandingSection tone="brand" className="text-center border-t-0">
-      <div className={cls['roiHeader']}>
-        <h2 className={cls['roiTitle']}>Turn Leads Into Revenue—Instantly</h2>
-        <p className={cls['roiSubtitle']}>
+      <div className={styles['roiHeader']}>
+        <h2 className={styles['roiTitle']}>Turn Leads Into Revenue—Instantly</h2>
+        <p className={styles['roiSubtitle']}>
           Model your ROI in seconds. See revenue lift, new deals, and days saved using your numbers.
         </p>
       </div>
@@ -128,12 +128,12 @@ export const ROICalculator: React.FC = () => {
         >
           {/* Left: Input Card */}
           <div className="max-w-[560px] lg:max-w-[480px] xl:max-w-[560px] w-full mx-auto">
-            <div className={cls['roiInputCard']} suppressHydrationWarning>
+            <div className={styles['roiInputCard']} suppressHydrationWarning>
               <h2 className="sr-only">ROI Calculator</h2>
 
               {/* Leads */}
-              <div className={cls['roiInputGroup']}>
-                <label htmlFor={ids.leads} className={cls['roiLabel']}>
+              <div className={styles['roiInputGroup']}>
+                <label htmlFor={ids.leads} className={styles['roiLabel']}>
                   Leads Identified
                 </label>
                 
@@ -146,7 +146,7 @@ export const ROICalculator: React.FC = () => {
                   step={10}
                   increaseAria="Increase leads identified by 10"
                   decreaseAria="Decrease leads identified by 10"
-                  className={cls['numberField'] || ''}
+                  className={styles['numberField'] || ''}
                   ariaDescribedBy={`${ids.leads}-hint ${ids.leads}-microcopy`}
                   formatWithCommas
                 />
@@ -154,8 +154,8 @@ export const ROICalculator: React.FC = () => {
               </div>
 
               {/* Close Rate */}
-              <div className={cls['roiInputGroup']}>
-                <label htmlFor={ids.closeRate} className={cls['roiLabel']}>Close Rate (%)</label>
+              <div className={styles['roiInputGroup']}>
+                <label htmlFor={ids.closeRate} className={styles['roiLabel']}>Close Rate (%)</label>
                 <NumberInputWithSteppers
                   id={ids.closeRate}
                   value={closeRate}
@@ -165,17 +165,17 @@ export const ROICalculator: React.FC = () => {
                   step={5}
                   increaseAria="Increase close rate by 5"
                   decreaseAria="Decrease close rate by 5"
-                  className={cls['numberField'] || ''}
+                  className={styles['numberField'] || ''}
                   ariaDescribedBy={`${ids.closeRate}-hint`}
                 />
                 <p id={`${ids.closeRate}-hint`} className="sr-only">Percentage of identified leads that close.</p>
               </div>
 
               {/* Deal Size */}
-              <div className={cls['roiInputGroup']}>
-                <label htmlFor={ids.dealSize} className={cls['roiLabel']}>Avg. Deal Size</label>
-                <div className={cls['prefixContainer']}>
-                  <span className={cls['prefixSymbol']}>$</span>
+              <div className={styles['roiInputGroup']}>
+                <label htmlFor={ids.dealSize} className={styles['roiLabel']}>Avg. Deal Size</label>
+                <div className={styles['prefixContainer']}>
+                  <span className={styles['prefixSymbol']}>$</span>
                   <NumberInputWithSteppers
                     id={ids.dealSize}
                     value={dealSize}
@@ -185,7 +185,7 @@ export const ROICalculator: React.FC = () => {
                     step={10000}
                     increaseAria="Increase average deal size by $10,000"
                     decreaseAria="Decrease average deal size by $10,000"
-                    className={cls['numberField'] || ''}
+                    className={styles['numberField'] || ''}
                     ariaDescribedBy={`${ids.dealSize}-hint`}
                     formatWithCommas
                   />
@@ -193,7 +193,7 @@ export const ROICalculator: React.FC = () => {
                 <p id={`${ids.dealSize}-hint`} className="sr-only">Average value of each closed deal in dollars.</p>
               </div>
 
-              <div className={cls['roiCta']}>
+              <div className={styles['roiCta']}>
                 <Button asChild variant="outline" size="lg" className="w-full py-4 text-base font-semibold text-primary-foreground border-primary-foreground hover:bg-primary-foreground/10">
                   {APP_LINKS.NAV.BOOK_DEMO.startsWith("/") ? (
                     <LinkTrack href={APP_LINKS.NAV.BOOK_DEMO} label="roi:book-demo">Book a demo</LinkTrack>

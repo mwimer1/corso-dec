@@ -267,6 +267,71 @@ When reviewing CSS modules or styling changes:
 - [ ] Are tokens properly scoped (domain-specific vs global)?
 - [ ] Is the CSS module file in the correct location (same dir as component)?
 
+## 📝 Real-World Examples
+
+### Example 1: Hero Section (Complex Responsive)
+```css
+/* components/landing/sections/hero/hero.module.css */
+.hero {
+  gap: var(--space-md);
+  padding-top: clamp(1.5rem, 4vh, 2.5rem);
+  padding-bottom: clamp(1rem, 3vh, 2rem);
+  min-height: clamp(400px, 50vh, 650px);
+}
+
+.buttons {
+  gap: var(--space-ms);
+  margin-top: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+```
+
+**Why CSS module**: Complex `clamp()` calculations for responsive sizing that would be unwieldy in Tailwind.
+
+### Example 2: ROI Calculator (Complex Stepper Styling)
+```css
+/* components/landing/sections/roi/roi.module.css */
+.numberField :global([data-stepper]) {
+  right: var(--space-sm);
+  top: var(--space-1-5);
+  gap: var(--space-xs);
+}
+
+.numberField :global(input) {
+  border-radius: var(--radius-lg);
+  padding: var(--space-2-5) 3.25rem var(--space-2-5) var(--space-ms);
+}
+```
+
+**Why CSS module**: Complex selectors for third-party component styling (`:global()`), precise positioning, and component-scoped overrides.
+
+### Example 3: Chat Interface (Responsive Containers)
+```css
+/* components/chat/chat.module.css */
+.messagesList {
+  max-width: var(--chat-container-max-w-sm);
+  padding: var(--space-md) var(--space-lg);
+}
+
+@media (min-width: 1024px) {
+  .messagesList {
+    max-width: var(--chat-container-max-w-md);
+  }
+}
+```
+
+**Why CSS module**: Domain-specific responsive breakpoints using chat tokens, cleaner than multiple Tailwind classes.
+
+### Example 4: Simple Component (Tailwind Only)
+```tsx
+// ✅ CORRECT: Use Tailwind for simple layouts
+<div className="flex items-center gap-4 px-6 py-4 border border-border bg-surface rounded-lg">
+  <h2 className="text-2xl font-semibold text-foreground">Title</h2>
+</div>
+```
+
+**Why Tailwind**: Simple layout, standard spacing, no complex calculations needed.
+
 ## 📚 Related Documentation
 
 - [Component Design System](component-design-system.mdc) - Component architecture

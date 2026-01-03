@@ -8,7 +8,7 @@ import { underlineAccent } from "@/styles/ui/shared/underline-accent";
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import AnimatedPill from '../../widgets/animated-pill';
-import cls from './hero.module.css';
+import styles from './hero.module.css';
 
 interface HeroProps { children?: ReactNode }
 
@@ -23,14 +23,14 @@ export default function Hero({ children }: HeroProps) {
 
   // Changed from <section> to <div> to avoid nested sections (parent FullWidthSection already renders <section>)
   return (
-    <div className={cn(cls['hero'], "flex flex-col items-center justify-center text-center")}>
+    <div className={cn(styles['hero'], "flex flex-col items-center justify-center text-center")}>
       {children}
       {/* Attention CTA pill above the H1 */}
       <AnimatedPill
         text="Construction data made easy"
         href="/redefine"
       />
-      <h1 className={cls['title']}>
+      <h1 className={styles['title']}>
         Intelligence
         <br />
         {' '}for the{' '}
@@ -39,12 +39,12 @@ export default function Hero({ children }: HeroProps) {
           <span className={underline.line()} />
         </span>
       </h1>
-      <p className={cn(cls['subtitle'], "max-w-prose mx-auto")}>
+      <p className={cn(styles['subtitle'], "max-w-prose mx-auto")}>
         Corso eliminates guesswork, translating complex
         <br />
         {' '}data into a competitive edge.
       </p>
-      <div className={cls['buttons']}>
+      <div className={styles['buttons']}>
         <Button
           asChild
           variant="secondary"

@@ -6,11 +6,10 @@ import { ClerkEventsHandler } from '@/components/auth';
 import { getEnv } from '@/lib/server/env';
 import { latoVariable } from "@/styles/fonts";
 import "@/styles/globals.css";
-// AG Grid base CSS (required for structural styles)
-import 'ag-grid-community/styles/ag-grid.css';
-// AG Grid Quartz theme base CSS (required for themeQuartz Theming API)
-import 'ag-grid-community/styles/ag-theme-quartz.css';
 // AG Grid custom theme overrides (Theming API compatible)
+// Note: When using AG Grid's Theming API (themeQuartz.withParams), do NOT import
+// the legacy CSS files (ag-grid.css or ag-theme-quartz.css) as they conflict.
+// The Theming API handles all base styling internally.
 import '@/styles/ui/ag-grid.theme.css';
 import type { Viewport } from "next";
 import Script from 'next/script';
