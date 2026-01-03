@@ -47,6 +47,16 @@
     "config/.stylelintrc.cjs",
     "config/domain-map.ts",
     "docs/index.ts"
+  ],
+
+  // Ignore dependencies that are intentionally kept but not directly imported
+  // - stylelint-* packages: Used via config strings in config/.stylelintrc.cjs
+  // - sharp: May be needed by Next.js for image optimization (listed in onlyBuiltDependencies)
+  "ignoreDependencies": [
+    "stylelint-config-standard",
+    "stylelint-config-tailwindcss",
+    "stylelint-order",
+    "sharp"
   ]
 
   // reporter intentionally omitted; use CLI --reporter json
