@@ -18,9 +18,11 @@
 #    chore    (updating grunt tasks etc; no production code change)
 #    perf     (performance improvement)
 #
-# Scope should be one of:
-#    auth, charts, dashboard, chat, components, hooks, api, types, build, 
-#    config, styles, docs, tests, or other component/feature names
+# Scope should be one of (see commitlint.config.cjs for authoritative list):
+#    auth, dashboard, chat, components, hooks, api, types, stripe, openai,
+#    supabase, clickhouse, build, config, styles, docs, tests, infrastructure,
+#    subscription, organization, deps, db, security
+#    NOTE: Scopes are strictly enforced - use only the scopes listed above
 #
 # Remember to:
 #    - Use the imperative mood in the subject line
@@ -31,7 +33,9 @@
 #
 # Examples:
 #    feat(auth): add OAuth integration with Google
-#    fix(charts): resolve data parsing for null values
-#    docs(readme): update installation instructions
+#    fix(api): resolve data parsing for null values
+#    docs(docs): update installation instructions
 #    refactor(hooks): extract shared authentication logic
-#    test(components): add accessibility tests for modals 
+#    test(components): add accessibility tests for modals
+#    feat(dashboard): add new entity grid feature
+#    fix(security): patch SQL injection vulnerability 

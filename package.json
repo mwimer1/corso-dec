@@ -55,6 +55,7 @@
     "lint:pages-runtime": "tsx scripts/lint/check-pages-runtime.ts",
     "validate": "pnpm run lint:scripts && pnpm run lint:versions && pnpm run lint:lockfile && pnpm run verify:routes && pnpm run lint && pnpm run lint:edge && pnpm run typecheck && pnpm run test && pnpm run validate:dead-code:optimized",
     "validate:lib": "tsx scripts/validation/lib-structure.ts && tsx scripts/maintenance/check-barrels.ts",
+    "validate:commit-scopes": "tsx scripts/lint/validate-commit-scopes.ts",
     "lint:workflows:pnpm": "node scripts/ci/workflows-consistency-report.mjs && echo ok",
     "lint:metadata-viewport": "tsx scripts/lint/check-metadata-viewport.ts",
     "scripts:sync:utils": "tsx scripts/utils/sync-utils-docs.ts",

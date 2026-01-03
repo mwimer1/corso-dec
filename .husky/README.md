@@ -73,9 +73,13 @@ pnpm exec commitlint --edit "$1"
 
 **Validates Against**:
 - Conventional commit format: `type(scope): description`
-- Commit types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
+- Commit types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `perf`, `ci`, `build`, `revert`
+- **Scopes**: Strictly enforced list of 22 allowed scopes (see `commitlint.config.cjs` for authoritative list):
+  - `auth`, `dashboard`, `chat`, `components`, `hooks`, `api`, `types`, `stripe`, `openai`, `supabase`, `clickhouse`, `build`, `config`, `styles`, `docs`, `tests`, `infrastructure`, `subscription`, `organization`, `deps`, `db`, `security`
 - Maximum line length and formatting standards
 - Breaking change indicators and scope validation
+
+**See**: `docs/development/commit-conventions.md` for complete commit message guidelines and scope usage.
 
 ### ✅ Pre-rebase Hook (`pre-rebase`)
 

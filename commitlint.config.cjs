@@ -1,3 +1,19 @@
+/**
+ * Commitlint Configuration - Source of Truth for Commit Message Standards
+ * 
+ * ⚠️  IMPORTANT: This file is the authoritative source for allowed commit types and scopes.
+ * 
+ * When updating allowed scopes or types, you must also update:
+ * - .gitmessage (git commit template)
+ * - .cursor/rules/ai-agent-development-environment.mdc (cursor rules)
+ * - docs/development/commit-conventions.md (documentation)
+ * 
+ * Run `pnpm validate:commit-scopes` to verify all documentation matches this file.
+ * 
+ * Allowed Types: feat, fix, docs, style, refactor, test, chore, perf, ci, build, revert
+ * Allowed Scopes: See scope-enum array below (22 scopes total)
+ */
+
 module.exports = {
   extends: ['@commitlint/config-conventional'],
   rules: {

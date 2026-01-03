@@ -108,14 +108,16 @@ git remote prune origin
 type(scope): description
 ```
 
-**Types**: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `perf`, `style`
-**Scopes**: `auth`, `dashboard`, `chat`, `components`, `api`, `hooks`, `types`, `docs`, `dev-tools`, `tooling`
+**Types**: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `perf`, `style`, `ci`, `build`, `revert`
+**Scopes** (see `commitlint.config.cjs` for authoritative list): `auth`, `dashboard`, `chat`, `components`, `hooks`, `api`, `types`, `stripe`, `openai`, `supabase`, `clickhouse`, `build`, `config`, `styles`, `docs`, `tests`, `infrastructure`, `subscription`, `organization`, `deps`, `db`, `security`
 **Subject**: imperative, ≤ 50 chars
 
 **Examples**:
 - `feat(api): add rate limit to chat generation`
-- `fix(billing): handle missing webhook signature`
+- `fix(stripe): handle missing webhook signature`
 - `refactor(api): replace NextResponse.json with http.*`
+- `docs(docs): update commit conventions documentation`
+- `feat(dashboard): add entity grid feature`
 
 **Breaking changes**: append `!` after the type or scope: `feat!: drop deprecated endpoint`
 
