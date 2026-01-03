@@ -86,6 +86,7 @@ description: "Documentation and resources for documentation functionality. Locat
 - [CORSO_MOCK_ORG_ID](#corso_mock_org_id)
 - [CORSO_USE_MOCK_CMS](#corso_use_mock_cms)
 - [CORSO_USE_MOCK_DB](#corso_use_mock_db)
+- [ENFORCE_AI_RBAC](#enforce_ai_rbac)
 - [PRESENCE_CACHE_CAPACITY](#presence_cache_capacity)
 - [PRESENCE_CACHE_TTL_MS](#presence_cache_ttl_ms)
 
@@ -348,6 +349,17 @@ description: "Documentation and resources for documentation functionality. Locat
 - Purpose: Overall timeout for entire AI chat request (including all tool calls).
 - Default: 60000 (60 seconds)
 - Security: Server-only variable.
+
+## ENFORCE_AI_RBAC
+
+- Type: boolean
+- Purpose: Enable/disable RBAC enforcement for AI endpoints (`/api/v1/ai/chat` and `/api/v1/ai/generate-sql`).
+- Default: `true` (enforced in production)
+- Usage: 
+  - `true` (default): Enforces role-based access control (member/admin/owner roles required)
+  - `false`: Bypasses RBAC checks, allowing any authenticated user (auth-only fallback)
+- Security: Server-only variable. **WARNING**: Only disable for emergency rollback scenarios. When disabled, all authenticated users can access AI endpoints regardless of role.
+- Telemetry: When RBAC is enforced and a user is denied access, structured logging records the deny event with route, userId, orgId, and required roles (no prompt/content logged).
 
 ## CLICKHOUSE_URL
 

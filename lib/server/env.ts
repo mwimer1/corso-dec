@@ -136,6 +136,9 @@ export function getEnv(): ValidatedEnv {
     // Directus connection (used only if CORSO_CMS_PROVIDER === "directus")
     DIRECTUS_URL: g('DIRECTUS_URL'),
     DIRECTUS_TOKEN: g('DIRECTUS_TOKEN'),
+
+    // AI RBAC Enforcement (default: true/enforced in production)
+    ENFORCE_AI_RBAC: toBool(g('ENFORCE_AI_RBAC'), true),
   } as ValidatedEnv;
 
   return _cache!;

@@ -135,6 +135,9 @@ export interface ValidatedEnv {
   // Content/Insights
   INSIGHTS_SOURCE?: string;
 
+  // AI RBAC Enforcement
+  ENFORCE_AI_RBAC?: boolean;
+
   // Optional metadata
   isValid?: boolean;
 }

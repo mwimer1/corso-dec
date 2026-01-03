@@ -38,20 +38,25 @@ vi.mock('@/lib/integrations/clickhouse/server', () => ({
 }));
 
 // Mock getEnv
+export const mockGetEnv = vi.fn();
 vi.mock('@/lib/server/env', () => ({
-  getEnv: () => ({
-    OPENAI_SQL_MODEL: 'gpt-4o-mini',
-    NODE_ENV: 'test',
-    AI_MAX_TOOL_CALLS: 3,
-    AI_QUERY_TIMEOUT_MS: 5000,
-    AI_TOTAL_TIMEOUT_MS: 60000,
-  }),
+  getEnv: () => mockGetEnv(),
 }));
 
 /**
  * Setup default mocks for chat/AI route tests
  */
 export function setupDefaultMocks() {
+  // Default: mock getEnv with RBAC enforcement enabled (default behavior)
+  mockGetEnv.mockReturnValue({
+    OPENAI_SQL_MODEL: 'gpt-4o-mini',
+    NODE_ENV: 'test',
+    AI_MAX_TOOL_CALLS: 3,
+    AI_QUERY_TIMEOUT_MS: 5000,
+    AI_TOTAL_TIMEOUT_MS: 60000,
+    ENFORCE_AI_RBAC: true, // Default: enforced
+  });
+
   // Default: mock tenant context with org ID from header
   mockGetTenantContext.mockImplementation(async (req?: any) => {
     const orgId = req?.headers?.get?.('x-corso-org-id') || req?.headers?.get?.('X-Corso-Org-Id');

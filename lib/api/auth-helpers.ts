@@ -5,6 +5,8 @@ import 'server-only';
 
 import { auth } from '@clerk/nextjs/server';
 import { http } from './http';
+import { getEnv } from '@/lib/server/env';
+import { logger } from '@/lib/monitoring';
 
 /**
  * Auth result from Clerk's auth() function.
@@ -138,4 +140,66 @@ export async function requireAnyRole(
  */
 export async function requireAuthWithRBAC(requiredRole: string): Promise<AuthResult | Response> {
   return requireRole(requiredRole);
+}
+
+/**
+ * Require any one of the provided roles for AI endpoints with feature flag support.
+ * 
+ * If ENFORCE_AI_RBAC is disabled, falls back to auth-only (no 403 for missing role).
+ * If RBAC is enforced and user lacks roles, logs structured deny telemetry before returning 403.
+ * 
+ * @param roles - Array of allowed roles (user must have at least one)
+ * @param routeName - Name of the route for logging (e.g., '/api/v1/ai/chat')
+ * @param authResult - Optional auth result from requireAuth() (if not provided, calls requireAuth())
+ * @returns Auth result with userId and has function, or Response for error cases
+ * 
+ * @example
+ * ```typescript
+ * const authResult = await requireAnyRoleForAI(['member', 'admin', 'owner'], '/api/v1/ai/chat');
+ * if (authResult instanceof Response) {
+ *   return authResult; // Error response
+ * }
+ * const { userId } = authResult;
+ * ```
+ */
+export async function requireAnyRoleForAI(
+  roles: readonly string[],
+  routeName: string,
+  authResult?: AuthResult | Response
+): Promise<AuthResult | Response> {
+  const authContext = authResult ?? await requireAuth();
+  
+  if (authContext instanceof Response) {
+    return authContext; // Already an error response (401)
+  }
+
+  const env = getEnv();
+  const enforceRBAC = env.ENFORCE_AI_RBAC !== false; // Default: true/enforced
+
+  // If RBAC enforcement is disabled, allow any authenticated user
+  if (!enforceRBAC) {
+    return authContext;
+  }
+
+  const hasAllowedRole = roles.some((role) => authContext.has({ role }));
+  
+  if (!hasAllowedRole) {
+    // Structured logging for RBAC deny telemetry
+    logger.warn('AI RBAC deny', {
+      route: routeName,
+      userId: authContext.userId,
+      orgId: authContext.orgId ?? null,
+      requiredRoles: roles,
+      code: 'FORBIDDEN',
+    });
+
+    return http.error(403, 'Insufficient permissions', { 
+      code: 'FORBIDDEN',
+      details: {
+        requiredRoles: roles,
+      },
+    });
+  }
+  
+  return authContext;
 }

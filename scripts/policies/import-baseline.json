@@ -118,6 +118,7 @@
     "lib/shared/feature-flags/core.ts -> @/types/shared",
     "lib/shared/index.ts -> @/types/shared/config/types",
     "lib/vendors/ag-grid.client.ts -> @/shared/config/client",
+    "lib/api/auth-helpers.ts -> @/server/env",
     "lib/api/ai/chat/handler.ts -> @/integrations/openai/server",
     "lib/api/ai/chat/handler.ts -> @/server/env",
     "lib/api/ai/chat/prompts.ts -> @/server/env",
