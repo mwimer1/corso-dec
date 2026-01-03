@@ -33,7 +33,7 @@ summary: Documentation consistency standards with canonical references, consolid
 - **Marketing Theming**: Primary details in `app/(marketing)/README.md` and `app/README.md`
 - **API**: `app/api/README.md` is the primary API reference (consolidates `v1`, `user`, `test`)
 - **Dashboard Entities**: Authoritative docs live in `app/(protected)/dashboard/(entities)/README.md` and reflect a single dynamic route `[entity]` covering `addresses`, `companies`, and `projects` (Projects: fully implemented; Companies/Addresses: server-configured, client-side pending)
-- **Dashboard Chat**: Consolidated under dashboard domain with API at `/api/v1/dashboard/chat/process` and components in `components/dashboard/chat/`
+- **Dashboard Chat**: Consolidated under dashboard domain with API at `/api/v1/ai/chat` and components in `components/dashboard/chat/`
 
 ### README Templates
 
