@@ -22,9 +22,9 @@ Successfully implemented all critical PowerShell performance fixes identified in
 4. ✅ `scripts/lint/check-filenames.ts` - New single-process batch checker
 
 ### Documentation
-5. ✅ `POWERSHELL_FIXES_IMPLEMENTED.md` - Detailed implementation notes
-6. ✅ `PR_STRUCTURE.md` - PR organization guide
-7. ✅ `CURSOR_POWERSHELL_AUDIT_REPORT.md` - Original audit report
+5. ✅ `powershell-fixes-implemented.md` - Detailed implementation notes
+6. ✅ `pr-structure.md` - PR organization guide
+7. ✅ `CURSOR_POWERSHELL_AUDIT_REPORT.md` - Original audit report (if exists)
 
 ---
 
@@ -76,7 +76,7 @@ Based on the audit report and fixes:
 
 ### 1. Create PRs (Recommended Structure)
 
-Follow `PR_STRUCTURE.md` for detailed PR organization:
+Follow `pr-structure.md` for detailed PR organization:
 
 - **PR #1**: Remove shell overuse in quality-gates-local.ts
 - **PR #2**: Fix ensure-ports.ts Windows breakage
@@ -87,7 +87,7 @@ Follow `PR_STRUCTURE.md` for detailed PR organization:
 
 ### 2. Test in PowerShell
 
-Run the verification checklist from `POWERSHELL_FIXES_IMPLEMENTED.md`:
+Run the verification checklist from `powershell-fixes-implemented.md`:
 
 ```powershell
 # Measure improvements
@@ -170,10 +170,10 @@ This is optional but recommended for agent-run commands.
 ## Documentation
 
 All documentation is in place:
-- ✅ `CURSOR_POWERSHELL_AUDIT_REPORT.md` - Original audit findings
-- ✅ `POWERSHELL_FIXES_IMPLEMENTED.md` - Implementation details
-- ✅ `PR_STRUCTURE.md` - PR organization guide
-- ✅ `IMPLEMENTATION_SUMMARY.md` - This file
+- ✅ `CURSOR_POWERSHELL_AUDIT_REPORT.md` - Original audit findings (if exists)
+- ✅ `powershell-fixes-implemented.md` - Implementation details
+- ✅ `pr-structure.md` - PR organization guide
+- ✅ `implementation-summary.md` - This file
 
 ---
 

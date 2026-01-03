@@ -27,17 +27,16 @@ New:
 - scripts/lint/check-filenames.ts
 
 Documentation:
-- CURSOR_POWERSHELL_AUDIT_REPORT.md (original audit)
-- POWERSHELL_FIXES_IMPLEMENTED.md (implementation details)
-- PR_STRUCTURE.md (PR organization guide)
-- IMPLEMENTATION_SUMMARY.md (summary)
+- `powershell-fixes-implemented.md` (implementation details)
+- `pr-structure.md` (PR organization guide)
+- `implementation-summary.md` (summary)
 ```
 
 ## 🚀 Next Steps
 
 1. **Review the changes**: Check `git diff` to see what changed
-2. **Test in PowerShell**: Run the verification checklist (see `POWERSHELL_FIXES_IMPLEMENTED.md`)
-3. **Create PRs**: Follow `PR_STRUCTURE.md` for PR organization
+2. **Test in PowerShell**: Run the verification checklist (see `powershell-fixes-implemented.md`)
+3. **Create PRs**: Follow `pr-structure.md` for PR organization
 4. **Measure improvements**: Compare before/after execution times
 
 ## ✅ Verification
@@ -51,10 +50,9 @@ All changes have been verified:
 
 ## 📖 Documentation
 
-- **Audit Report**: `CURSOR_POWERSHELL_AUDIT_REPORT.md` - Original findings
-- **Implementation**: `POWERSHELL_FIXES_IMPLEMENTED.md` - Detailed changes
-- **PR Guide**: `PR_STRUCTURE.md` - How to structure PRs
-- **Summary**: `IMPLEMENTATION_SUMMARY.md` - This summary
+- **Implementation**: `powershell-fixes-implemented.md` - Detailed changes
+- **PR Guide**: `pr-structure.md` - How to structure PRs
+- **Summary**: `implementation-summary.md` - This summary
 
 ---
 
