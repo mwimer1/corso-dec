@@ -1,9 +1,9 @@
 ---
-status: "draft"
+description: "Documentation and resources for documentation functionality. Located in codebase/."
 last_updated: "2026-01-03"
 category: "documentation"
+status: "draft"
 title: "Codebase"
-description: "Documentation and resources for documentation functionality. Located in codebase/."
 ---
 # Repository Directory Structure
 

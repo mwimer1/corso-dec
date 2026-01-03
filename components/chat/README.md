@@ -3,7 +3,7 @@ title: "Chat"
 last_updated: "2026-01-03"
 category: "components"
 status: "active"
-description: "Chat interface components for conversational data exploration. Located in chat/."
+description: "UI components for the components system, following atomic design principles. Located in chat/."
 ---
 # Chat Components
 

@@ -7,6 +7,8 @@ description: "Documentation and resources for documentation functionality. Locat
 ---
 # Feature Notes
 
+Last updated: 2026-01-03
+
 This directory contains feature implementation summaries, design documents, and sprint notes documenting the development of specific features in the Corso platform.
 
 ## 📋 Contents

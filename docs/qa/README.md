@@ -7,6 +7,8 @@ description: "Documentation and resources for documentation functionality. Locat
 ---
 # QA Documentation
 
+Last updated: 2026-01-03
+
 This directory contains quality assurance documentation for the Corso platform, including manual verification guides, QA checklists, and verification procedures.
 
 ## 📋 Contents

@@ -1,3 +1,10 @@
+---
+title: "Docs"
+description: "Documentation and resources for documentation functionality."
+last_updated: "2026-01-03"
+category: "documentation"
+status: "draft"
+---
 # Styles & Components Directory Audit - Summary Report
 
 **Date**: 2026-01-03  

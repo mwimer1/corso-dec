@@ -7,6 +7,8 @@ description: "Documentation and resources for documentation functionality."
 ---
 # Corso Documentation
 
+Last updated: 2026-01-03
+
 Welcome to the Corso platform documentation. This directory contains comprehensive guides, references, and procedures for developing, maintaining, and operating the Corso application.
 
 ## 📚 Documentation Structure

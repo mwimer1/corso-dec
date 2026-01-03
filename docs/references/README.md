@@ -7,6 +7,8 @@ description: "Documentation and resources for documentation functionality. Locat
 ---
 # Repository Scripts & Docs
 
+Last updated: 2026-01-03
+
 This README is generated from a single template (`README.scripts.hbs`).
 
 - Directory: `docs/references`

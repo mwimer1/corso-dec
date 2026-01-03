@@ -1,9 +1,9 @@
 ---
-status: "active"
+description: "Documentation and resources for documentation functionality. Located in architecture-design/."
 last_updated: "2026-01-03"
 category: "documentation"
+status: "draft"
 title: "Architecture Design"
-description: "Documentation and resources for documentation functionality. Located in architecture-design/."
 ---
 # Dashboard UI Standards
 

@@ -7,6 +7,8 @@ description: "Documentation and resources for documentation functionality."
 ---
 # Corso
 
+Last updated: 2026-01-03
+
 A modern, type-safe Next.js application built with domain-driven architecture, zero-trust security, and comprehensive developer tooling.
 
 ## 🚀 Quick Start

@@ -1,10 +1,3 @@
----
-title: "_generated"
-description: "Documentation and resources for documentation functionality. Located in codebase/_generated/."
-last_updated: "2026-01-03"
-category: "documentation"
-status: "draft"
----
 <!-- AUTO-GENERATED: do not edit directly. Run `pnpm docs:routes`. -->
 ```txt
 /

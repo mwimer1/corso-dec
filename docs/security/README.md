@@ -7,6 +7,8 @@ status: "active"
 ---
 # Security Documentation
 
+Last updated: 2026-01-03
+
 This directory contains security-related documentation for the Corso platform, including authentication patterns, security policies, and implementation guides.
 
 ## 📋 Contents
