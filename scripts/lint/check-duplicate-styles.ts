@@ -4,7 +4,7 @@
 import { execSync } from 'child_process';
 import { existsSync, readdirSync } from 'node:fs';
 import { basename, join } from 'node:path';
-import { logger } from '../utils/logger';
+import { logger, createLintResult, getRepoRoot } from './_utils';
 
 /**
  * Guardrail: Detect duplicate styling sources for the same component.
@@ -21,8 +21,8 @@ const ALLOWLIST = new Set<string>([
 ]);
 
 function main() {
-  const errors: string[] = [];
-  const patternsDir = join(process.cwd(), 'styles', 'ui', 'patterns');
+  const result = createLintResult();
+  const patternsDir = join(getRepoRoot(), 'styles', 'ui', 'patterns');
   
   // Check if patterns directory exists
   if (!existsSync(patternsDir)) {
@@ -61,7 +61,7 @@ function main() {
 
       if (moduleCss || plainCss) {
         const found = [moduleCss, plainCss].filter(Boolean).join(', ');
-        errors.push(
+        result.addError(
           `Duplicate styling detected for "${patternName}":\n` +
           `  - Pattern CSS: styles/ui/patterns/${patternName}.css\n` +
           `  - Component CSS: ${found}\n` +
@@ -77,10 +77,11 @@ function main() {
     }
   }
 
-  if (errors.length) {
+  // Preserve original output format
+  if (result.hasErrors()) {
     logger.error('❌ Duplicate styling sources detected:');
-    for (const e of errors) {
-      logger.error(e);
+    for (const error of result.getErrors()) {
+      logger.error(error);
     }
     process.exitCode = 1;
   } else {

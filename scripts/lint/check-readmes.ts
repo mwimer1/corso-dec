@@ -1,7 +1,8 @@
 #!/usr/bin/env tsx
 import { globby } from 'globby';
 import fs from 'node:fs/promises';
-import path from 'node:path';
+import { join } from 'node:path';
+import { createLintResult, isJsonOutput } from './_utils';
 
 const STRICT = process.argv.includes('--strict');
 
@@ -10,12 +11,14 @@ async function exists(p: string): Promise<boolean> {
 }
 
 async function main() {
+  const result = createLintResult();
   const routeGroups = await globby(['app/*/'], { onlyDirectories: true });
   const missing: string[] = [];
+  
   for (const dir of routeGroups) {
-    const name = path.basename(dir.slice(0, -1));
+    const name = dir.split('/').pop()?.replace(/\/$/, '') || '';
     if (!name.startsWith('(')) continue; // only top-level route groups like (marketing)
-    const readme = path.join(dir, 'README.md');
+    const readme = join(dir, 'README.md');
     if (!(await exists(readme))) missing.push(readme);
   }
 
@@ -31,14 +34,23 @@ async function main() {
   for (const base of uiTargets) {
     const dirs = await globby([`${base}/*/`], { onlyDirectories: true });
     for (const d of dirs) {
-      const readme = path.join(d, 'README.md');
+      const readme = join(d, 'README.md');
       if (!(await exists(readme))) missing.push(readme);
     }
   }
 
   if (missing.length) {
+    for (const m of missing) {
+      result.addWarning(m);
+    }
+  }
+
+  // Preserve original output format
+  if (result.hasWarnings()) {
     console.log('README coverage warnings for:');
-    for (const m of missing) console.log(' -', m);
+    for (const warning of result.getWarnings()) {
+      console.log(' -', warning);
+    }
     if (STRICT) process.exitCode = 1;
   } else {
     console.log('✅ README coverage looks good');

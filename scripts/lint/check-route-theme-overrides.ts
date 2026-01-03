@@ -22,8 +22,9 @@
 
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { getRepoRoot, createLintResult, findFiles } from './_utils';
 
-const REPO_ROOT = process.cwd();
+const REPO_ROOT = getRepoRoot();
 const TOKENS_DIR = join(REPO_ROOT, 'styles', 'tokens');
 
 /**

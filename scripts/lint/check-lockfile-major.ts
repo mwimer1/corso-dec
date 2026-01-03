@@ -1,17 +1,19 @@
 #!/usr/bin/env tsx
 import fs from 'node:fs';
-import path from 'node:path';
+import { join } from 'node:path';
 import YAML from 'yaml';
 import { readJsonSync } from '../utils/fs/read';
+import { getRepoRoot, createLintResult } from './_utils';
 
 function main() {
-  const root = process.cwd();
-  const pkg = readJsonSync(path.join(root, 'package.json')) as any;
-  const lockPath = path.join(root, 'pnpm-lock.yaml');
+  const root = getRepoRoot();
+  const pkg = readJsonSync(join(root, 'package.json')) as any;
+  const lockPath = join(root, 'pnpm-lock.yaml');
+  const result = createLintResult();
 
   if (!fs.existsSync(lockPath)) {
-    console.error('pnpm-lock.yaml not found.');
-    process.exitCode = 1;
+    result.addError('pnpm-lock.yaml not found.');
+    result.report();
     return;
   }
 
@@ -29,8 +31,8 @@ function main() {
   }
 
   if (!Number.isFinite(lockMajor)) {
-    console.error('Unable to read lockfileVersion from pnpm-lock.yaml');
-    process.exitCode = 1;
+    result.addError('Unable to read lockfileVersion from pnpm-lock.yaml');
+    result.report();
     return;
   }
 
@@ -39,22 +41,38 @@ function main() {
   const pnpmMajor = pmMatch ? Number(pmMatch[1]) : NaN;
 
   if (!Number.isFinite(pnpmMajor)) {
-    console.warn('package.json:packageManager does not specify pnpm@<major>. Add it for deterministic installs.');
+    result.addWarning('package.json:packageManager does not specify pnpm@<major>. Add it for deterministic installs.');
   } else if (lockMajor > pnpmMajor) {
-    console.error(
+    result.addError(
       `Lockfile major (${lockMajor}) is newer than configured pnpm major (${pnpmMajor}). ` +
       'Update packageManager pnpm@<version> or regenerate the lockfile using the configured pnpm.'
     );
-    process.exitCode = 1;
-    return;
   } else if (lockMajor < pnpmMajor) {
-    console.warn(
+    result.addWarning(
       `Lockfile major (${lockMajor}) is older than pnpm major (${pnpmMajor}). ` +
       'Consider re-generating the lockfile with the configured pnpm.'
     );
   }
 
-  console.log(`\u2713 pnpm-lock.yaml v${lockMajor} compatible with pnpm major ~${Number.isFinite(pnpmMajor) ? pnpmMajor : 'unknown'}`);
+  // Preserve original output format
+  if (result.hasErrors()) {
+    for (const error of result.getErrors()) {
+      console.error(error);
+    }
+    if (result.hasWarnings()) {
+      for (const warning of result.getWarnings()) {
+        console.warn(warning);
+      }
+    }
+    process.exitCode = 1;
+  } else {
+    if (result.hasWarnings()) {
+      for (const warning of result.getWarnings()) {
+        console.warn(warning);
+      }
+    }
+    console.log(`\u2713 pnpm-lock.yaml v${lockMajor} compatible with pnpm major ~${Number.isFinite(pnpmMajor) ? pnpmMajor : 'unknown'}`);
+  }
 }
 
 main();

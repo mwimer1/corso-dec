@@ -2,31 +2,36 @@
 // scripts/lint/check-css-paths.ts
 
 import { execSync } from 'child_process';
-import { logger } from '../utils/logger';
+import { logger, createLintResult } from './_utils';
 
 function main() {
+  const result = createLintResult();
+  
   try {
-    const result = execSync("rg --files -tcss --glob '!styles/**/*' .", {
+    const output = execSync("rg --files -tcss --glob '!styles/**/*' .", {
       encoding: 'utf8',
       stdio: ['pipe', 'pipe', 'ignore'],
     }).trim();
 
-    if (result) {
-      logger.error('❌ CSS files found outside styles/ directory:');
-      logger.error(result);
-      process.exitCode = 1;
-      return;
+    if (output) {
+      result.addError('CSS files found outside styles/ directory:');
+      for (const file of output.split('\n').filter(Boolean)) {
+        result.addError(`  ${file}`);
+      }
     }
-
-    logger.success('✅ No stray CSS files found.');
   } catch (error: any) {
     if (error.status === 1) {
-      logger.success('✅ No stray CSS files found.');
-      return;
+      // ripgrep exit code 1 means no matches (success)
+      // Do nothing, will report success below
+    } else {
+      result.addError(`Error running ripgrep: ${error.message || String(error)}`);
     }
-    logger.error('❌ Error running ripgrep:', error);
-    process.exitCode = 1;
   }
+
+  result.report({
+    successMessage: '✅ No stray CSS files found.',
+    errorPrefix: '❌',
+  });
 }
 
 main();

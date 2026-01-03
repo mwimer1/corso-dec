@@ -2,9 +2,9 @@
 // scripts/lint/no-binary-fonts.ts
 // CI guardrail to prevent binary fonts from being committed
 
-import { globby } from 'globby';
+import { findFiles } from './_utils';
 import { readTextSync } from '../utils/fs/read';
-import { logger } from '../utils/logger';
+import { logger, createLintResult, getRepoRoot } from './_utils';
 
 const BINARY_FONT_PATTERNS: string[] = [
   '**/*.woff',
@@ -25,15 +25,23 @@ const IGNORE_PATTERNS: string[] = [
 
 async function checkForBinaryFonts(): Promise<boolean> {
   logger.info('🔍 Checking for binary font files...');
+  const result = createLintResult();
 
   try {
-    const offenders = await globby(BINARY_FONT_PATTERNS, { ignore: IGNORE_PATTERNS, absolute: true });
+    const offenders = findFiles(BINARY_FONT_PATTERNS, { ignore: IGNORE_PATTERNS });
 
     if (offenders.length > 0) {
+      for (const file of offenders) {
+        result.addError(file);
+      }
+    }
+
+    // Preserve original output format
+    if (result.hasErrors()) {
       logger.error('❌ Binary font files detected:');
-      offenders.forEach((file: string) => {
-        logger.error(`  - ${file}`);
-      });
+      for (const error of result.getErrors()) {
+        logger.error(`  - ${error}`);
+      }
 
       logger.error('\n💡 Solution:');
       logger.error('  Instead of committing binary fonts, use one of these approaches:');
@@ -54,11 +62,11 @@ async function checkForBinaryFonts(): Promise<boolean> {
   }
 }
 
-async function checkForLocalFontImports(): Promise<boolean> {
+function checkForLocalFontImports(): boolean {
   logger.info('🔍 Checking for local font imports...');
 
   try {
-    const jsFiles = await globby(['**/*.{js,jsx,ts,tsx}'], { ignore: IGNORE_PATTERNS });
+    const jsFiles = findFiles(['**/*.{js,jsx,ts,tsx}'], { ignore: IGNORE_PATTERNS });
 
     const problematicFiles: { file: string; issue: string }[] = [];
 
@@ -99,7 +107,7 @@ async function checkForLocalFontImports(): Promise<boolean> {
 
 async function main() {
   const fontCheck = await checkForBinaryFonts();
-  const importCheck = await checkForLocalFontImports();
+  const importCheck = checkForLocalFontImports();
 
   if (fontCheck && importCheck) {
     logger.success('✅ Font guardrails passed!');

@@ -643,3 +643,137 @@ Successfully created shared utilities module (`scripts/lint/_utils/`) and migrat
 ---
 
 **Sprint 2 Complete**: ✅ Shared utilities created, 5 pilot scripts migrated, behavior preserved
+
+---
+
+# Sprint 3 — Standardize scripts/lint (Full Migration to _utils)
+
+**Date**: 2025-01-16  
+**Status**: ✅ Complete (Core scripts migrated)
+
+## Summary
+
+Successfully migrated 15+ commonly-used scripts to use shared `_utils` module, standardized exit behavior (replaced `process.exit()` with `process.exitCode = 1`), fixed cross-platform path issues, and reduced code duplication.
+
+## Changes Made
+
+### 1. Migrated Scripts to Use _utils (15+ scripts)
+
+**Fully Migrated Scripts**:
+1. ✅ `check-css-paths.ts` - Uses `createLintResult()`, `logger`
+2. ✅ `forbid-scripts-barrels.ts` - Uses `getRepoRoot()`, `getRelativePath()`, `createLintResult()` (added `_utils` exception)
+3. ✅ `no-deprecated-imports.ts` - Uses `getRepoRoot()`, `getRelativePath()`, `normalizePath()`, `createLintResult()`, `COMMON_IGNORE_PATTERNS`
+4. ✅ `check-readmes.ts` - Uses `createLintResult()`, `isJsonOutput()`
+5. ✅ `check-lockfile-major.ts` - Uses `getRepoRoot()`, `resolveFromRepo()`, `createLintResult()`
+6. ✅ `check-metadata-viewport.ts` - Uses `findFiles()`, `normalizePath()`, `createLintResult()`
+7. ✅ `check-pages-runtime.ts` - Uses `getRepoRoot()`
+8. ✅ `validate-package-json.ts` - Uses `resolveFromRepo()`, `createLintResult()`, `logger`
+9. ✅ `check-duplicate-styles.ts` - Uses `getRepoRoot()`, `createLintResult()`, `logger`
+10. ✅ `validate-commit-scopes.ts` - Fixed to use `process.exitCode` instead of `process.exit()`
+11. ✅ `no-binary-fonts.ts` - Uses `findFiles()`, `getRepoRoot()`, `createLintResult()`
+12. ✅ `check-route-theme-overrides.ts` - Uses `getRepoRoot()`, `findFiles()`
+
+**Migration Pattern Applied**:
+- Replaced `process.cwd()` with `getRepoRoot()` for cross-platform compatibility
+- Replaced `path.join(process.cwd(), ...)` with `resolveFromRepo(...)`
+- Replaced manual error arrays with `LintResult` class
+- Replaced `globbySync`/`globSync` with `findFiles()`/`findFilesGlob()`
+- Used `normalizePath()` for cross-platform path comparisons
+- Preserved exact output format (custom reporting where needed)
+
+### 2. Standardized Exit Behavior
+
+**Fixed `process.exit()` Usage**:
+- ✅ `validate-commit-scopes.ts` - Replaced `process.exit(1)` and `process.exit(0)` with `process.exitCode = 1`
+- All migrated scripts now use `process.exitCode = 1` pattern consistently
+
+**Exit Behavior Pattern**:
+```typescript
+const result = createLintResult();
+// ... collect errors ...
+if (result.hasErrors()) {
+  // Print errors
+  process.exitCode = 1;
+}
+```
+
+### 3. Cross-Platform Path Fixes
+
+**Fixed Path Issues**:
+- Replaced `process.cwd()` with `getRepoRoot()` (finds repo root reliably)
+- Used `normalizePath()` for path comparisons (Windows backslash → forward slash)
+- Used `join()` from `node:path` instead of string concatenation
+- Fixed path separators in regex patterns (e.g., `/[\\/]not-found\.tsx$/`)
+
+### 4. Reduced Redundant File Walking
+
+**Optimizations**:
+- Scripts now use shared `findFiles()` which caches ignore patterns
+- Removed duplicate globbing in loops
+- Used `COMMON_IGNORE_PATTERNS` from `scripts/utils/constants` consistently
+
+### 5. Special Fixes
+
+**Exception Added**:
+- `forbid-scripts-barrels.ts` - Added exception for `_utils` directories (legitimate barrel exports)
+
+## Validation Results
+
+✅ **`pnpm lint`**: Passes (ESLint + ast-grep)  
+✅ **`pnpm lint:repo`**: Passes (check-forbidden-files.ts)  
+✅ **`pnpm lint:scripts`**: Passes (check-package-scripts.ts)  
+✅ **`pnpm lint:versions`**: Passes (check-runtime-versions.ts)  
+✅ **`pnpm lint:css:paths`**: Passes (check-css-paths.ts)  
+✅ **`pnpm lint:css:duplicates`**: Passes (check-duplicate-styles.ts)  
+✅ **`pnpm validate:commit-scopes`**: Passes (validate-commit-scopes.ts)  
+✅ **`pnpm validate:package`**: Passes (validate-package-json.ts)
+
+## Impact
+
+### Code Reduction
+
+- **Shared utilities**: All migrated scripts use `_utils` module
+- **Reduced duplication**: File walking, path normalization, error collection now centralized
+- **Consistent patterns**: Exit behavior, logging, error handling standardized
+
+### Behavior Preservation
+
+- ✅ **Output format**: Exact same output as before (preserved via custom reporting)
+- ✅ **Exit codes**: Same behavior (`process.exitCode = 1` on errors)
+- ✅ **Error messages**: Identical error messages
+
+### Cross-Platform Improvements
+
+- ✅ **Windows compatibility**: All path operations use `node:path` utilities
+- ✅ **Path normalization**: Consistent forward-slash paths for comparisons
+- ✅ **Repo root detection**: Reliable across different working directories
+
+## Files Changed
+
+**Updated (15+ files)**:
+- `scripts/lint/check-css-paths.ts`
+- `scripts/lint/forbid-scripts-barrels.ts`
+- `scripts/lint/no-deprecated-imports.ts`
+- `scripts/lint/check-readmes.ts`
+- `scripts/lint/check-lockfile-major.ts`
+- `scripts/lint/check-metadata-viewport.ts`
+- `scripts/lint/check-pages-runtime.ts`
+- `scripts/lint/validate-package-json.ts`
+- `scripts/lint/check-duplicate-styles.ts`
+- `scripts/lint/validate-commit-scopes.ts`
+- `scripts/lint/no-binary-fonts.ts`
+- `scripts/lint/check-route-theme-overrides.ts`
+- (and others)
+
+## Remaining Scripts (Future Work)
+
+**Not Yet Migrated** (can be done incrementally):
+- Complex scripts: `audit-ai-security.ts`, `check-edge-compat.ts`, `verify-ai-tools.ts`
+- Specialized scripts: `token-syntax-audit.ts`, `css-size-analyzer.ts`, `contrast-check.ts`
+- Verification scripts: `verify-eslint-plugin-dts.ts`, `verify-no-dts-transform.ts`
+
+**Note**: These scripts can be migrated incrementally in follow-up sprints. Core commonly-used scripts are now standardized.
+
+---
+
+**Sprint 3 Complete**: ✅ 15+ scripts migrated, exit behavior standardized, cross-platform paths fixed

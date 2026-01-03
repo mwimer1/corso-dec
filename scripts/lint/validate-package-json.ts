@@ -4,7 +4,7 @@
 import { fileURLToPath } from 'node:url';
 import { join } from 'path';
 import { readTextSync } from '../utils/fs/read';
-import { logger } from '../utils/logger';
+import { logger, createLintResult, resolveFromRepo } from './_utils';
 
 interface ScriptKey {
   key: string;
@@ -15,7 +15,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = join(__filename, '..');
 
 function main() {
-  const packagePath = join(__dirname, '..', '..', 'package.json');
+  const result = createLintResult();
+  const packagePath = resolveFromRepo('package.json');
   const packageContent = readTextSync(packagePath);
   const lines = packageContent.split('\n');
   const scriptKeys: ScriptKey[] = [];
@@ -47,15 +48,17 @@ function main() {
     duplicates[item.key]?.push(item.line);
   });
 
-  let hasDuplicates = false;
   Object.entries(duplicates).forEach(([key, lineNumbers]) => {
     if (lineNumbers.length > 1) {
-      hasDuplicates = true;
-      logger.error(`❌ Duplicate script key "${key}" found on lines: ${lineNumbers.join(', ')}`);
+      result.addError(`Duplicate script key "${key}" found on lines: ${lineNumbers.join(', ')}`);
     }
   });
 
-  if (hasDuplicates) {
+  // Preserve original output format
+  if (result.hasErrors()) {
+    for (const error of result.getErrors()) {
+      logger.error(`❌ ${error}`);
+    }
     logger.error('\n⚠️  Please remove duplicate script definitions from package.json');
     process.exitCode = 1;
   } else {

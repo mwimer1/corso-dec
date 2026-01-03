@@ -192,7 +192,8 @@ function main(): void {
       results.push(result);
     } catch (error) {
       console.error(`❌ Error validating ${filePath}:`, error);
-      process.exit(1);
+      process.exitCode = 1;
+      return;
     }
   }
   
@@ -228,10 +229,9 @@ function main(): void {
     console.error('❌ Commit scope validation failed!');
     console.error('   Please update the files listed above to match commitlint.config.cjs');
     console.error('   See docs/development/commit-conventions.md for the complete scope list.');
-    process.exit(1);
+    process.exitCode = 1;
   } else {
     console.log('✅ All commit scope documentation is consistent!');
-    process.exit(0);
   }
 }
 
