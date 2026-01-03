@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 # Run Git LFS hook when available; otherwise no-op (silent)
 if command -v git-lfs >/dev/null 2>&1; then
   git lfs post-commit "$@"

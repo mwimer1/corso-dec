@@ -97,7 +97,7 @@
   "terminal.integrated.enableMultiLinePasteWarning": "auto",
   "terminal.integrated.rightClickBehavior": "paste",
   "terminal.integrated.cwd": "${workspaceFolder}",
-  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.defaultProfile.windows": "Git Bash (fast)",
   "terminal.integrated.automationProfile.windows": {
     "path": "powershell.exe",
     "args": ["-NoLogo"]

@@ -103,28 +103,66 @@ if [ $EXIT_CODE -ne 0 ]; then
 fi
 
 # Run typecheck and lint in parallel (both work on staged TS files)
-# Note: We could run these truly in parallel, but keeping them sequential for now
-# to ensure type errors are caught before linting (better error messages)
-if [ "$NEEDS_TYPECHECK" = "true" ]; then
-  CHECK_NUM=$((CHECK_NUM + 1))
-  echo "[$CHECK_NUM/$TOTAL_CHECKS] Type checking staged files..."
-  pnpm typecheck:staged || EXIT_CODE=$?
-  if [ $EXIT_CODE -ne 0 ]; then
-    exit $EXIT_CODE
-  fi
-else
-  echo "⏭️  Type checking staged files... (skipped - no TypeScript files changed)"
+# Parallel execution enabled by default; set HUSKY_PARALLEL=0 to disable
+HUSKY_PARALLEL=${HUSKY_PARALLEL:-1}
+
+# Determine execution strategy
+RUN_PARALLEL=false
+if [ "$NEEDS_TYPECHECK" = "true" ] && [ "$NEEDS_LINT" = "true" ] && [ "$HUSKY_PARALLEL" = "1" ]; then
+  RUN_PARALLEL=true
 fi
 
-if [ "$NEEDS_LINT" = "true" ]; then
+if [ "$RUN_PARALLEL" = "true" ]; then
+  # Run both in parallel for faster execution
+  CHECK_NUM=$((CHECK_NUM + 1))
+  echo "[$CHECK_NUM/$TOTAL_CHECKS] Type checking staged files..."
+  pnpm typecheck:staged &
+  TYPECHECK_PID=$!
+  
   CHECK_NUM=$((CHECK_NUM + 1))
   echo "[$CHECK_NUM/$TOTAL_CHECKS] Linting staged files..."
-  pnpm lint-staged || EXIT_CODE=$?
-  if [ $EXIT_CODE -ne 0 ]; then
+  pnpm lint-staged &
+  LINT_PID=$!
+  
+  # Wait for both and capture exit codes
+  TYPECHECK_EXIT=0
+  LINT_EXIT=0
+  wait $TYPECHECK_PID || TYPECHECK_EXIT=$?
+  wait $LINT_PID || LINT_EXIT=$?
+  
+  # Fail if either failed
+  if [ $TYPECHECK_EXIT -ne 0 ] || [ $LINT_EXIT -ne 0 ]; then
+    if [ $TYPECHECK_EXIT -ne 0 ]; then
+      EXIT_CODE=$TYPECHECK_EXIT
+    fi
+    if [ $LINT_EXIT -ne 0 ]; then
+      EXIT_CODE=$LINT_EXIT
+    fi
     exit $EXIT_CODE
   fi
 else
-  echo "⏭️  Linting staged files... (skipped - no code files changed)"
+  # Sequential execution (when only one needed, or parallel disabled)
+  if [ "$NEEDS_TYPECHECK" = "true" ]; then
+    CHECK_NUM=$((CHECK_NUM + 1))
+    echo "[$CHECK_NUM/$TOTAL_CHECKS] Type checking staged files..."
+    pnpm typecheck:staged || EXIT_CODE=$?
+    if [ $EXIT_CODE -ne 0 ]; then
+      exit $EXIT_CODE
+    fi
+  else
+    echo "⏭️  Type checking staged files... (skipped - no TypeScript files changed)"
+  fi
+
+  if [ "$NEEDS_LINT" = "true" ]; then
+    CHECK_NUM=$((CHECK_NUM + 1))
+    echo "[$CHECK_NUM/$TOTAL_CHECKS] Linting staged files..."
+    pnpm lint-staged || EXIT_CODE=$?
+    if [ $EXIT_CODE -ne 0 ]; then
+      exit $EXIT_CODE
+    fi
+  else
+    echo "⏭️  Linting staged files... (skipped - no code files changed)"
+  fi
 fi
 
 # Run docs validation (can run in parallel with others, but keeping sequential for cleaner output)

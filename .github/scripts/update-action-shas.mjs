@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Script to update GitHub Action SHA pins
- * Alternative to update-action-shas.sh that uses Node.js and fetch API
+ * Cross-platform Node.js implementation using fetch API
  */
 
 import { readFileSync, writeFileSync } from 'fs';

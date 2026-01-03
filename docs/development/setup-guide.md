@@ -480,14 +480,14 @@ set keymap emacs
 
 `.vscode/settings.json` is pre-configured with:
 
-- **PowerShell as default terminal** (prevents Cursor Agent Mode bash integration issues)
+- **Git Bash (fast) as default terminal** (optimized for Windows performance with Git hooks)
 - **Automation profile** set to PowerShell for tasks and automation
 - **Shell integration disabled** to avoid terminal noise
 - **Bracketed paste mode** enabled for better terminal ergonomics
 
 ```json
 {
-  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.defaultProfile.windows": "Git Bash (fast)",
   "terminal.integrated.automationProfile.windows": {
     "path": "powershell.exe",
     "args": ["-NoLogo"]
@@ -499,7 +499,7 @@ set keymap emacs
 }
 ```
 
-**Note**: Git Bash profiles are still available for manual use if needed, but PowerShell is recommended for Cursor Agent Mode to avoid `dump_bash_state` errors.
+**Note**: Git Bash (fast) is the default for optimal Git hook performance on Windows. PowerShell and standard Git Bash profiles are still available for manual use if needed.
 
 Disable per‑user if needed:
 
@@ -511,13 +511,13 @@ Disable per‑user if needed:
 
 ## 🖥️ Platform Support
 
-### Windows (PowerShell/Git Bash)
+### Windows (Git Bash/PowerShell)
 
-- ✅ **PowerShell is the default** — Configured in `.vscode/settings.json` to prevent Cursor Agent Mode terminal issues
-- ✅ Git Bash available as alternative profile — Use if you prefer bash syntax
+- ✅ **Git Bash (fast) is the default** — Configured in `.vscode/settings.json` for optimal Git hook performance
+- ✅ PowerShell available as alternative profile — Use for automation and tasks
+- ✅ Standard Git Bash profile available — Use if you need full bash profile initialization
 - ✅ MSYS2 ok with `.inputrc` — For advanced users
 - ✅ WSL recommended for native Linux behavior — Best for Linux-like development experience
-- ✅ PowerShell is the default terminal (configured in `.vscode/settings.json`). Git Bash is available as an alternative profile if needed.
 
 #### Shell requirements and usage (Windows)
 

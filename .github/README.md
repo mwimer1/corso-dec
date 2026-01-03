@@ -103,7 +103,7 @@ Visual testing can be restored post-MVP launch by:
 ├── codeql/                  # CodeQL security scanning configuration
 │   └── codeql-config.yml    # CodeQL configuration (uses default security queries)
 ├── scripts/                 # GitHub-specific automation scripts
-│   └── update-action-shas.sh # SHA pinning automation script
+│   └── update-action-shas.mjs # SHA pinning automation script (Node.js, cross-platform)
 ├── workflows/               # 8 active GitHub Actions workflows
 │   ├── _reusable-node-job.yml # Reusable workflow component
 │   ├── ci.yml               # Core CI/CD pipeline
@@ -182,7 +182,7 @@ All actions follow consistent patterns:
 
 | Script | Purpose | Status | Frequency | Key Features |
 |--------|---------|---------|-----------|--------------|
-| `update-action-shas.sh` | Update GitHub Action SHA pins | ✅ Active | Monthly | Automated discovery, SHA resolution, batch processing |
+| `update-action-shas.mjs` | Update GitHub Action SHA pins | ✅ Active | Monthly | Automated discovery, SHA resolution, batch processing (Node.js, cross-platform) |
 
 ### Script Architecture
 
@@ -249,7 +249,7 @@ The CI/CD pipeline implements comprehensive security measures with zero-trust pr
 
 **📌 Supply Chain Security:**
 - 100% SHA-pinned GitHub Actions prevent supply chain attacks
-- Automated SHA pinning updates via `update-action-shas.sh`
+- Automated SHA pinning updates via `update-action-shas.mjs` (Node.js, cross-platform)
 - Dependency vulnerability scanning via CodeQL and `pnpm audit`
 
 **🛡️ Runtime Security:**
