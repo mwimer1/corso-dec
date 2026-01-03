@@ -1,11 +1,8 @@
 ---
-title: "Quality Gates Baseline"
-description: "Authoritative baseline snapshot of quality gate commands and results"
+status: "active"
 last_updated: "2026-01-03"
 category: "documentation"
-status: "active"
 ---
-
 # Quality Gates Baseline Snapshot
 
 **Date**: 2026-01-03  
