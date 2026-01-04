@@ -113,7 +113,15 @@ Runs: lint + typecheck + typecheck:prod + test:coverage + madge:ci + jscpd:ci + 
   - **Line 132-171:** Error handling with status codes
   - **Note:** Error handling exists; verify UX polish
 
-### Sprint 3: Chat Data Tooling (SQL Integration)
+### Sprint 3: Chat Data Tooling (SQL Integration) ✅ COMPLETE
+
+**Status:** Already implemented in previous sprint - functionality is complete.
+
+- **Tool calling:** OpenAI function calling integrated in chat handler (`lib/api/ai/chat/handler.ts`)
+- **Tools defined:** `execute_sql` and `describe_schema` tools in `lib/api/ai/chat/tools.ts`
+- **Streaming support:** Tool calls handled in streaming responses (`lib/api/ai/chat/streaming.ts`)
+- **Security validation:** Uses `guardSQL()` for SQL validation with tenant isolation
+- **Tests:** Tool definitions and streaming tested (`tests/api/ai/chat/tools.test.ts`, `tests/api/chat-streaming.test.ts`)
 
 #### Chat API Route
 - **Primary file:** `app/api/v1/ai/chat/route.ts`
@@ -122,9 +130,9 @@ Runs: lint + typecheck + typecheck:prod + test:coverage + madge:ci + jscpd:ci + 
   - **Streaming format:** NDJSON (per OpenAPI spec)
   - **Rate limit:** 30 requests/minute
 
-- **Chat handler:** `lib/api/ai/chat/handler.ts` (inferred, not read in Sprint 0)
+- **Chat handler:** `lib/api/ai/chat/handler.ts`
   - **Contains:** Main chat processing logic
-  - **Note:** Need to add tool calling integration here
+  - **Tools integration:** ✅ Complete - tools passed to OpenAI via `getChatCompletionsTools()`
 
 #### SQL Generation Route (for tool calling)
 - **Primary file:** `app/api/v1/ai/generate-sql/route.ts`
@@ -132,9 +140,8 @@ Runs: lint + typecheck + typecheck:prod + test:coverage + madge:ci + jscpd:ci + 
   - **Line 33:** Uses `validateSQLScope()` for security
   - **Line 34:** Uses OpenAI client
   - **Line 100:** Sanitizes user input
-  - **Note:** This can be called internally from chat handler (don't make HTTP call to yourself)
 
-- **SQL validation:** `lib/integrations/database/scope.ts` (inferred)
+- **SQL validation:** `lib/integrations/database/scope.ts`
   - **Contains:** `validateSQLScope()` function
   - **Note:** Already enforces tenant scoping and security
 
@@ -163,11 +170,11 @@ Runs: lint + typecheck + typecheck:prod + test:coverage + madge:ci + jscpd:ci + 
 
 ## Known Issues / Gaps (for later sprints)
 
-1. **Dashboard layout:** Content stretches too wide on large screens (1920px+)
-2. **Mobile sidebar:** No drawer pattern; sidebar always visible or collapsed inline
-3. **AG Grid numeric alignment:** Numeric columns are left-aligned
-4. **Chat data tooling:** No tool calling integration yet (chat handler needs OpenAI function calling)
-5. **Chat mobile UX:** May need safe-area padding improvements (to be verified in Sprint 3)
+1. ✅ **Dashboard layout:** Fixed in Sprint 1 - Content width controlled via `contentWidth` prop
+2. ✅ **Mobile sidebar:** Fixed in Sprint 1 - Drawer pattern implemented for mobile
+3. ✅ **AG Grid numeric alignment:** Fixed in Sprint 2 - Right alignment for numeric columns
+4. ✅ **Chat data tooling:** Complete - Tool calling integration already implemented
+5. **Chat mobile UX:** May need safe-area padding improvements (to be verified in Sprint 4)
 
 ## Architecture Notes
 
@@ -192,10 +199,10 @@ Runs: lint + typecheck + typecheck:prod + test:coverage + madge:ci + jscpd:ci + 
 
 ## Next Steps
 
-1. **Sprint 1:** Dashboard layout max-width + mobile sidebar drawer
-2. **Sprint 2:** AG Grid numeric alignment + formatting polish
-3. **Sprint 3:** Chat tool calling (SQL integration)
-4. **Sprint 4:** Hardening, docs, final QA
+1. ✅ **Sprint 1:** Dashboard layout max-width + mobile sidebar drawer - COMPLETE
+2. ✅ **Sprint 2:** AG Grid numeric alignment + formatting polish - COMPLETE
+3. ✅ **Sprint 3:** Chat tool calling (SQL integration) - COMPLETE (was already implemented)
+4. **Sprint 4:** Hardening, docs, final QA - IN PROGRESS
 
 ## Verification Checklist (for PR)
 
