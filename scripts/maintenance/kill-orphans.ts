@@ -74,7 +74,7 @@ function getProcessesWindows(): ProcessInfo[] {
     const psScript = `Get-CimInstance Win32_Process -Filter "Name='node.exe' OR Name='deno.exe'" | Select-Object ProcessId, CommandLine, CreationDate, ParentProcessId | ConvertTo-Json -Compress`;
     
     const output = execSync(
-      `powershell -NoProfile -Command "${psScript}"`,
+      `powershell -NoProfile -NonInteractive -Command "${psScript}"`,
       { encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 }
     );
 
@@ -216,7 +216,7 @@ function getParentProcessName(pid: number, platform: string): string | null {
       // Use PowerShell Get-CimInstance instead of wmic
       const psScript = `(Get-CimInstance Win32_Process -Filter "ProcessId=${String(pid)}").Name`;
       const output = execSync(
-        `powershell -NoProfile -Command "${psScript}"`,
+        `powershell -NoProfile -NonInteractive -Command "${psScript}"`,
         { encoding: 'utf8', maxBuffer: 1024 * 1024 }
       );
       return output.trim() || null;

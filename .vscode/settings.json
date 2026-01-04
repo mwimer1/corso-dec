@@ -100,7 +100,7 @@
   "terminal.integrated.defaultProfile.windows": "Git Bash (fast)",
   "terminal.integrated.automationProfile.windows": {
     "path": "powershell.exe",
-    "args": ["-NoLogo"]
+    "args": ["-NoProfile", "-NonInteractive"]
   },
   "terminal.integrated.profiles.windows": {
     "Git Bash": {
@@ -116,6 +116,11 @@
     "PowerShell": {
       "path": "powershell.exe",
       "args": ["-NoLogo"],
+      "icon": "terminal-powershell"
+    },
+    "PowerShell (NoProfile)": {
+      "path": "powershell.exe",
+      "args": ["-NoProfile", "-NonInteractive"],
       "icon": "terminal-powershell"
     },
     "Command Prompt": {

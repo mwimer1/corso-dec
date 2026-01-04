@@ -43,10 +43,6 @@ async function generateDocsIndex() {
   const componentsReadmes = await glob('components/**/README.md', { ignore: commonIgnore });
   docFiles.push(...componentsReadmes);
 
-  // Get actions directory README files (Windows-compatible)
-  const actionsReadmes = await glob('actions/**/README.md', { ignore: commonIgnore });
-  docFiles.push(...actionsReadmes);
-
   // Get contexts directory README files (Windows-compatible)
   const contextsReadmes = await glob('contexts/**/README.md', { ignore: commonIgnore });
   docFiles.push(...contextsReadmes);
@@ -148,7 +144,6 @@ async function generateDocsIndex() {
   console.log(`  Tests: ${testReadmes.length}`);
   console.log(`  Types: ${typesReadmes.length}`);
   console.log(`  Components: ${componentsReadmes.length}`);
-  console.log(`  Actions: ${actionsReadmes.length}`);
   console.log(`  Contexts: ${contextsReadmes.length}`);
   console.log(`  Hooks: ${hooksReadmes.length}`);
   console.log(`  Styles: ${stylesReadmes.length}`);
