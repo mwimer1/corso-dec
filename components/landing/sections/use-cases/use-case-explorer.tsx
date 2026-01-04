@@ -3,6 +3,8 @@ import { zUseCaseMap, type UseCaseKey } from '@/lib/marketing/client';
 import { IndustrySelectorPanel } from './industry-selector-panel';
 import type { Industry } from './types';
 import { DEFAULT_USE_CASES } from './use-cases.data';
+import styles from './use-case-explorer.module.css';
+import { cn } from '@/styles';
 
 export default function IndustryExplorer() {
   // Production-safe validation
@@ -45,7 +47,7 @@ export default function IndustryExplorer() {
   // Removed inner section wrapper - parent FullWidthSection provides full-bleed background and border
   // Header is left-aligned to match the Industry Explorer content below
   return (
-    <div className="space-y-lg">
+    <div className={cn(styles['useCaseExplorer'], 'space-y-lg')}>
       <SectionHeader
         id="use-cases-title"
         headingLevel={2}

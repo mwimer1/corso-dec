@@ -5,11 +5,7 @@ import { cn } from '@/styles';
 import Image from 'next/image';
 import { useState } from 'react';
 import { IndustryPreviewPlaceholder } from './industry-preview-placeholder';
-import {
-  industryPreviewContainerVariants,
-  industryPreviewImageVariants,
-  industryPreviewSkeletonVariants,
-} from './use-case-explorer.variants';
+import styles from './use-case-explorer.module.css';
 
 interface PreviewImage {
   src: string;
@@ -24,8 +20,8 @@ interface IndustryPreviewProps {
 }
 
 /**
- * IndustryPreview - Renders preview image or placeholder
- * Provides skeleton loading state and fixed aspect ratio to prevent layout shift
+ * IndustryPreview - Renders preview image or placeholder with enhanced transitions
+ * Provides smooth fade-in loading state and fixed aspect ratio to prevent layout shift
  */
 export function IndustryPreview({
   industryKey,
@@ -48,18 +44,19 @@ export function IndustryPreview({
   }
 
   return (
-    <div className={cn(industryPreviewContainerVariants(), className)}>
-      {/* Skeleton loading state */}
+    <div className={cn(styles['previewContainer'], className)}>
+      {/* Enhanced skeleton loading state */}
       {isLoading && (
-        <div className={industryPreviewSkeletonVariants()} aria-hidden="true" />
+        <div className={styles['skeleton']} aria-hidden="true" />
       )}
 
-      {/* Preview image */}
+      {/* Preview image with smooth fade-in transition */}
       <Image
         src={previewImage.src}
         alt={previewImage.alt}
         fill
-        className={industryPreviewImageVariants({ loading: isLoading })}
+        className={styles['previewImage']}
+        data-loading={isLoading}
         sizes="(max-width: 1024px) 100vw, 33vw"
         onLoad={() => setIsLoading(false)}
         onError={() => {

@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from 'react';
 import { IndustryPreview } from './industry-preview';
 import type { Industry } from './types';
 import { industryTabButtonVariants } from './use-case-explorer.variants';
+import styles from './use-case-explorer.module.css';
 
 interface IndustrySelectorPanelProps {
   industries: Industry[];
@@ -113,6 +114,7 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
               role="tablist"
               aria-label="Choose an industry"
               className={cn(
+                styles['tabList'],
                 'flex w-full justify-start gap-xs sm:gap-sm',
                 // Mobile: horizontal scroll for narrow screens, ensure focus rings not clipped
                 'overflow-x-auto overflow-y-visible',
@@ -174,14 +176,12 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
               ref={contentRef}
               key={activeIndustry.key}
               className={cn(
-                'grid gap-6 lg:gap-8',
-                'lg:grid-cols-12 lg:items-start',
-                // Transition animation - fade + slight slide (respects prefers-reduced-motion via CSS)
-                'animate-fadeIn'
+                styles['contentPanel'],
+                styles['contentGrid']
               )}
             >
               {/* Left: Narrative + benefits */}
-              <div className="lg:col-span-7 min-w-0 space-y-4 lg:space-y-6">
+              <div className="min-w-0 space-y-4 lg:space-y-6">
                 <div>
                   <h3 className="text-2xl font-bold text-foreground mb-1">
                     {activeIndustry.title}
@@ -195,14 +195,14 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
                   </p>
                 </div>
 
-                <ul className="space-y-2" aria-label="Key benefits">
+                <ul className={styles['benefitsList']} aria-label="Key benefits">
                   {activeIndustry.benefits.slice(0, 3).map((benefit) => (
-                    <li key={benefit} className="flex gap-2 text-sm text-foreground">
+                    <li key={benefit} className={styles['benefitItem']}>
                       <Check
-                        className="h-4 w-4 text-primary flex-shrink-0 self-start mt-0.5"
+                        className={styles['benefitIcon']}
                         aria-hidden="true"
                       />
-                      <span>{benefit}</span>
+                      <span className="text-sm text-foreground">{benefit}</span>
                     </li>
                   ))}
                 </ul>
@@ -214,7 +214,7 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
                       Typical outcomes
                     </p>
                     <div
-                      className="flex flex-wrap gap-2"
+                      className={styles['impactMetrics']}
                       aria-label="Impact metrics"
                     >
                       {metrics.map((metric) => (
@@ -228,7 +228,7 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
               </div>
 
               {/* Right: Preview - visible on mobile (stacked) and desktop */}
-              <div className="lg:col-span-5">
+              <div>
                 <IndustryPreview
                   industryKey={activeIndustry.key}
                   title={activeIndustry.title}

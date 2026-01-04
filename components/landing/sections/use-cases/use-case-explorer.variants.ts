@@ -4,6 +4,9 @@ import { focusRing } from '@/styles/ui/shared/focus-ring';
 /**
  * Variants for industry tab buttons in the use-case-explorer section.
  * Intentionally local to use-cases (separate from product-showcase TabSwitcher).
+ * 
+ * Note: Preview container, skeleton, and image variants have been moved to
+ * use-case-explorer.module.css for better control over transitions and responsive behavior.
  */
 const industryTabButtonVariants = tv({
   base: [
@@ -22,45 +25,6 @@ const industryTabButtonVariants = tv({
   },
 });
 
-/**
- * Container variant for industry preview images and placeholders.
- * Shared between IndustryPreview and IndustryPreviewPlaceholder components.
- */
-const industryPreviewContainerVariants = tv({
-  base: 'relative rounded-xl overflow-hidden aspect-[16/10]',
-});
-
-/**
- * Skeleton loading state variant for industry preview images.
- */
-const industryPreviewSkeletonVariants = tv({
-  base: 'absolute inset-0 bg-gradient-to-br from-muted/60 via-muted/40 to-muted/20 animate-pulse',
-});
-
-/**
- * Image variant for industry preview with loading state support.
- */
-const industryPreviewImageVariants = tv({
-  base: 'object-cover transition-opacity duration-200',
-  variants: {
-    loading: {
-      true: 'opacity-0',
-      false: 'opacity-100',
-    },
-  },
-  defaultVariants: {
-    loading: false,
-  },
-});
-
 export type IndustryTabButtonVariantProps = VariantProps<typeof industryTabButtonVariants>;
-export type IndustryPreviewContainerVariantProps = VariantProps<typeof industryPreviewContainerVariants>;
-export type IndustryPreviewSkeletonVariantProps = VariantProps<typeof industryPreviewSkeletonVariants>;
-export type IndustryPreviewImageVariantProps = VariantProps<typeof industryPreviewImageVariants>;
 
-export {
-  industryTabButtonVariants,
-  industryPreviewContainerVariants,
-  industryPreviewSkeletonVariants,
-  industryPreviewImageVariants,
-};
+export { industryTabButtonVariants };

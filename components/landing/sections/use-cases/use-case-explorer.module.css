@@ -1,0 +1,368 @@
+/* Use Case Explorer Section - Enhanced Styling */
+
+/* Component-scoped CSS variables for theming and transitions */
+.useCaseExplorer {
+  --preview-transition-duration: 300ms;
+  --preview-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --content-transition-duration: 400ms;
+  --content-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --preview-aspect-ratio: 16/10;
+  --preview-border-radius: var(--radius-xl);
+}
+
+/* Content panel with smooth transitions */
+.contentPanel {
+  /* Smooth fade + slight slide animation */
+  animation: fadeInUp var(--content-transition-duration) var(--content-transition-easing);
+}
+
+/* Enhanced preview container with better visual treatment */
+.previewContainer {
+  position: relative;
+  border-radius: var(--preview-border-radius);
+  overflow: hidden;
+  aspect-ratio: var(--preview-aspect-ratio);
+  background: hsl(var(--muted));
+  /* Subtle border and shadow for depth */
+  border: 1px solid hsl(var(--border));
+  box-shadow: 
+    0 1px 3px hsl(var(--foreground) / 0.05),
+    0 1px 2px hsl(var(--foreground) / 0.1);
+  transition: 
+    box-shadow var(--preview-transition-duration) var(--preview-transition-easing),
+    border-color var(--preview-transition-duration) var(--preview-transition-easing);
+}
+
+.previewContainer:hover {
+  box-shadow: 
+    0 4px 6px hsl(var(--foreground) / 0.07),
+    0 2px 4px hsl(var(--foreground) / 0.12);
+  border-color: hsl(var(--border) / 0.8);
+}
+
+/* Enhanced placeholder with layered design */
+.placeholderContainer {
+  position: relative;
+  border-radius: var(--preview-border-radius);
+  overflow: hidden;
+  aspect-ratio: var(--preview-aspect-ratio);
+  background: linear-gradient(
+    135deg,
+    hsl(var(--muted) / 0.6) 0%,
+    hsl(var(--muted) / 0.4) 50%,
+    hsl(var(--muted) / 0.2) 100%
+  );
+  border: 1px solid hsl(var(--border));
+  box-shadow: 
+    0 1px 3px hsl(var(--foreground) / 0.05),
+    inset 0 1px 2px hsl(var(--foreground) / 0.05);
+}
+
+/* Industry-specific gradient overlays */
+.placeholderContainer[data-industry="insurance"] {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary) / 0.08) 0%,
+    hsl(var(--muted) / 0.4) 50%,
+    hsl(var(--muted) / 0.2) 100%
+  );
+}
+
+.placeholderContainer[data-industry="suppliers"] {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--success) / 0.08) 0%,
+    hsl(var(--muted) / 0.4) 50%,
+    hsl(var(--muted) / 0.2) 100%
+  );
+}
+
+.placeholderContainer[data-industry="construction"] {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--warning) / 0.08) 0%,
+    hsl(var(--muted) / 0.4) 50%,
+    hsl(var(--muted) / 0.2) 100%
+  );
+}
+
+.placeholderContainer[data-industry="developers"] {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--ring) / 0.08) 0%,
+    hsl(var(--muted) / 0.4) 50%,
+    hsl(var(--muted) / 0.2) 100%
+  );
+}
+
+/* Icon container with enhanced styling */
+.iconContainer {
+  position: absolute;
+  inset-x: 0;
+  top: 0;
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  z-index: 2;
+}
+
+.iconWrapper {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background: hsl(var(--primary) / 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid hsl(var(--primary) / 0.2);
+  box-shadow: 
+    0 2px 8px hsl(var(--primary) / 0.15),
+    inset 0 1px 2px hsl(var(--foreground) / 0.05);
+}
+
+.iconTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  text-align: center;
+}
+
+/* Mock UI elements with better styling */
+.mockElements {
+  position: absolute;
+  inset-x: 0;
+  bottom: 0;
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  z-index: 1;
+}
+
+.mockRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.mockIndicator {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.mockBar {
+  height: 0.75rem;
+  background: hsl(var(--foreground) / 0.1);
+  border-radius: var(--radius-sm);
+  flex: 1;
+}
+
+.mockBadge {
+  height: 0.75rem;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+/* Industry-specific mock element colors */
+.placeholderContainer[data-industry="insurance"] .mockIndicator {
+  background: hsl(var(--primary) / 0.6);
+}
+
+.placeholderContainer[data-industry="insurance"] .mockBadge {
+  background: hsl(var(--primary) / 0.2);
+  width: 3rem;
+}
+
+.placeholderContainer[data-industry="suppliers"] .mockIndicator {
+  background: hsl(var(--success) / 0.6);
+}
+
+.placeholderContainer[data-industry="suppliers"] .mockBadge {
+  background: hsl(var(--success) / 0.2);
+  width: 4rem;
+}
+
+.placeholderContainer[data-industry="construction"] .mockIndicator {
+  background: hsl(var(--warning) / 0.6);
+}
+
+.placeholderContainer[data-industry="construction"] .mockBadge {
+  background: hsl(var(--warning) / 0.2);
+  width: 3.5rem;
+}
+
+.placeholderContainer[data-industry="developers"] .mockIndicator {
+  background: hsl(var(--ring) / 0.6);
+}
+
+.placeholderContainer[data-industry="developers"] .mockBadge {
+  background: hsl(var(--ring) / 0.2);
+  width: 4rem;
+}
+
+/* Image loading skeleton */
+.skeleton {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    hsl(var(--muted) / 0.6) 0%,
+    hsl(var(--muted) / 0.4) 50%,
+    hsl(var(--muted) / 0.6) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Image with smooth fade-in */
+.previewImage {
+  object-fit: cover;
+  transition: opacity var(--preview-transition-duration) var(--preview-transition-easing);
+}
+
+.previewImage[data-loading="true"] {
+  opacity: 0;
+}
+
+.previewImage[data-loading="false"] {
+  opacity: 1;
+}
+
+/* Tab button enhancements */
+.tabList {
+  /* Ensure smooth scrolling on mobile */
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Content grid with better spacing */
+.contentGrid {
+  display: grid;
+  gap: var(--space-lg);
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+/* Benefits list styling */
+.benefitsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.benefitItem {
+  display: flex;
+  gap: var(--space-xs);
+  align-items: flex-start;
+}
+
+.benefitIcon {
+  width: 1rem;
+  height: 1rem;
+  color: hsl(var(--primary));
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+/* Impact metrics container */
+.impactMetrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-top: var(--space-sm);
+}
+
+/* Responsive adjustments */
+@media (min-width: 1024px) {
+  .contentGrid {
+    grid-template-columns: 7fr 5fr;
+    gap: var(--space-xl);
+  }
+
+  .previewContainer {
+    position: sticky;
+    top: calc(var(--space-lg) + var(--space-md));
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .contentGrid {
+    gap: var(--space-lg);
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 767px) {
+  .previewContainer,
+  .placeholderContainer {
+    aspect-ratio: 16/9; /* Slightly taller on mobile */
+  }
+
+  .iconWrapper {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+
+  .iconTitle {
+    font-size: 0.8125rem;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .contentPanel {
+    animation: none;
+  }
+
+  .previewImage {
+    transition: none;
+  }
+
+  .skeleton {
+    animation: none;
+    background: hsl(var(--muted) / 0.4);
+  }
+
+  .previewContainer {
+    transition: none;
+  }
+
+  .placeholderContainer {
+    transition: none;
+  }
+}
+
+/* Fade in up animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Print styles */
+@media print {
+  .previewContainer,
+  .placeholderContainer {
+    break-inside: avoid;
+  }
+}
