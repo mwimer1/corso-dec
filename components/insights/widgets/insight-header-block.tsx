@@ -52,7 +52,7 @@ export function InsightHeaderBlock({
   return (
     <header className={cn("not-prose space-y-6 sm:space-y-8", className)}>
       {/* Eyebrow row: back + categories */}
-      <div className="space-y-3 sm:space-y-4">
+      <div className="flex flex-wrap items-center gap-3 sm:gap-4">
         <nav aria-label="Back">
           <Link
             href={backHref}
