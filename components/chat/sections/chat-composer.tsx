@@ -25,6 +25,8 @@ type ChatComposerProps = {
   deepResearch?: boolean;
   setDeepResearch?: (enabled: boolean) => void;
   scope?: ChatScope; // Scope for showing presets
+  showPresets?: boolean; // Whether to show preset dropdown
+  onPresetVisibilityChange?: (visible: boolean) => void; // Callback to control preset visibility
   onPresetSelect?: (prompt: string) => void; // Callback when preset is clicked
   hasHistory?: boolean; // Whether chat has message history (active chat mode)
 };
@@ -46,6 +48,8 @@ function ChatComposer(props: ChatComposerProps) {
     deepResearch = false,
     setDeepResearch = () => {},
     scope,
+    showPresets = false,
+    onPresetVisibilityChange,
     onPresetSelect,
     hasHistory = false,
   } = props || {};
@@ -61,9 +65,19 @@ function ChatComposer(props: ChatComposerProps) {
     return getPresetsForScope(scope);
   }, [scope]);
 
-  // Presets are visible in new chat mode (no history) when available and input is empty
+  // Presets are visible in new chat mode (no history) when:
+  // - showPresets is true (set by scope button click)
+  // - presets are available for current scope
+  // - input is empty
   // Hide presets when user starts typing to reduce visual clutter
-  const shouldShowPresets = !hasHistory && presets.length > 0 && value.trim().length === 0;
+  const shouldShowPresets = showPresets && !hasHistory && presets.length > 0 && value.trim().length === 0;
+
+  // Auto-hide presets when user starts typing
+  React.useEffect(() => {
+    if (value.trim().length > 0 && showPresets) {
+      onPresetVisibilityChange?.(false);
+    }
+  }, [value, showPresets, onPresetVisibilityChange]);
 
   // Fetch usage limits when Deep Research is enabled
   React.useEffect(() => {
@@ -110,7 +124,9 @@ function ChatComposer(props: ChatComposerProps) {
     if (onPresetSelect) {
       onPresetSelect(preset.prompt);
     }
-  }, [onPresetSelect]);
+    // Hide presets after selection
+    onPresetVisibilityChange?.(false);
+  }, [onPresetSelect, onPresetVisibilityChange]);
 
   return (
     <div 

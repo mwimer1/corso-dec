@@ -28,6 +28,7 @@ export default function ChatWindow() {
 
   const [deepResearch, setDeepResearch] = useState<boolean>(false);
   const [scope, setScope] = useState<ChatScope>('recommended');
+  const [showPresets, setShowPresets] = useState(false);
   const [usageLimits, setUsageLimits] = useState<{ remaining: number; limit: number; currentUsage: number } | null>(null);
 
   // Calculate preferredTable based on scope (will be refined after we know hasHistory)
@@ -56,12 +57,22 @@ export default function ChatWindow() {
   // Determine if we have chat history (active chat vs new chat)
   const hasHistory = messages.length > 0;
 
-  // Reset scope to 'recommended' when transitioning from active chat to new chat
+  // Reset scope to 'recommended' and hide presets when transitioning from active chat to new chat
   useEffect(() => {
     if (!hasHistory && scope !== 'recommended') {
       setScope('recommended');
     }
+    // Reset preset visibility when transitioning to new chat
+    if (!hasHistory) {
+      setShowPresets(false);
+    }
   }, [hasHistory, scope]);
+
+  // Handle scope change - show presets when scope button is clicked
+  const handleScopeChange = useCallback((newScope: ChatScope) => {
+    setScope(newScope);
+    setShowPresets(true); // Show presets when scope button clicked
+  }, []);
 
   const [draft, setDraft] = useState<string>("");
   const [mode, setMode] = useState<ChatMode>(() => {
@@ -260,6 +271,8 @@ export default function ChatWindow() {
           deepResearch={deepResearch}
           setDeepResearch={setDeepResearch}
           scope={scope}
+          showPresets={showPresets}
+          onPresetVisibilityChange={setShowPresets}
           onPresetSelect={(prompt) => {
             // Automatically send preset prompts
             void sendMessage(applyModePrefix(prompt));
@@ -278,7 +291,7 @@ export default function ChatWindow() {
           <div className="mx-auto w-full max-w-3xl lg:max-w-4xl 2xl:max-w-5xl mt-4 flex flex-col items-center gap-3">
             <ChatScopeButtons
               selectedScope={scope}
-              onScopeChange={setScope}
+              onScopeChange={handleScopeChange}
             />
           </div>
         )}

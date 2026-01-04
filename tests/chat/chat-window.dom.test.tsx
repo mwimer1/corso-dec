@@ -28,7 +28,7 @@ describe('ChatWindow', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders preset buttons in empty state', async () => {
+  it('presets are hidden by default', async () => {
     vi.spyOn(useChatModule, 'useChat').mockReturnValue({
       messages: [],
       isProcessing: false,
@@ -45,13 +45,93 @@ describe('ChatWindow', () => {
 
     render(<ChatWindow />);
     
-    // Wait for composer to hydrate and presets to appear
+    // Wait for composer to hydrate
+    await waitFor(() => {
+      expect(screen.getByLabelText('Chat message input')).toBeInTheDocument();
+    }, { timeout: 3000 });
+    
+    // Presets should NOT be visible by default
+    expect(screen.queryByText('Show permits issued in the last 30 days')).not.toBeInTheDocument();
+    expect(screen.queryByText('Top 10 contractors by total job value YTD')).not.toBeInTheDocument();
+  });
+
+  it('shows presets when scope button is clicked', async () => {
+    vi.spyOn(useChatModule, 'useChat').mockReturnValue({
+      messages: [],
+      isProcessing: false,
+      detectedTable: null,
+      sendMessage: vi.fn().mockResolvedValue(undefined),
+      stop: vi.fn(),
+      clearChat: vi.fn(),
+      saveHistory: vi.fn(),
+      loadHistory: vi.fn(),
+      error: null,
+      clearError: vi.fn(),
+      retryLastMessage: vi.fn(),
+    } as unknown as ReturnType<typeof useChatModule.useChat>);
+
+    render(<ChatWindow />);
+    
+    // Wait for composer to hydrate
+    await waitFor(() => {
+      expect(screen.getByLabelText('Chat message input')).toBeInTheDocument();
+    }, { timeout: 3000 });
+    
+    // Presets should be hidden initially
+    expect(screen.queryByText('Show permits issued in the last 30 days')).not.toBeInTheDocument();
+    
+    // Click a scope button to show presets
+    const recommendedButton = screen.getByText('Recommended');
+    fireEvent.click(recommendedButton);
+    
+    // Wait for presets to appear
     await waitFor(() => {
       expect(screen.getByText('Show permits issued in the last 30 days')).toBeInTheDocument();
     }, { timeout: 3000 });
     
     expect(screen.getByText('Top 10 contractors by total job value YTD')).toBeInTheDocument();
     expect(screen.getByText('Which project types are trending this quarter?')).toBeInTheDocument();
+  });
+
+  it('hides presets when user starts typing', async () => {
+    vi.spyOn(useChatModule, 'useChat').mockReturnValue({
+      messages: [],
+      isProcessing: false,
+      detectedTable: null,
+      sendMessage: vi.fn().mockResolvedValue(undefined),
+      stop: vi.fn(),
+      clearChat: vi.fn(),
+      saveHistory: vi.fn(),
+      loadHistory: vi.fn(),
+      error: null,
+      clearError: vi.fn(),
+      retryLastMessage: vi.fn(),
+    } as unknown as ReturnType<typeof useChatModule.useChat>);
+
+    render(<ChatWindow />);
+    
+    // Wait for composer to hydrate
+    await waitFor(() => {
+      expect(screen.getByLabelText('Chat message input')).toBeInTheDocument();
+    }, { timeout: 3000 });
+    
+    // Click scope button to show presets
+    const recommendedButton = screen.getByText('Recommended');
+    fireEvent.click(recommendedButton);
+    
+    // Wait for presets to appear
+    await waitFor(() => {
+      expect(screen.getByText('Show permits issued in the last 30 days')).toBeInTheDocument();
+    }, { timeout: 3000 });
+    
+    // Type in the input
+    const input = screen.getByLabelText('Chat message input');
+    fireEvent.change(input, { target: { value: 'test' } });
+    
+    // Presets should be hidden after typing
+    await waitFor(() => {
+      expect(screen.queryByText('Show permits issued in the last 30 days')).not.toBeInTheDocument();
+    }, { timeout: 1000 });
   });
 
   it('sends a message when clicking preset buttons', async () => {
@@ -72,7 +152,16 @@ describe('ChatWindow', () => {
 
     render(<ChatWindow />);
     
-    // Wait for composer to hydrate and presets to appear
+    // Wait for composer to hydrate
+    await waitFor(() => {
+      expect(screen.getByLabelText('Chat message input')).toBeInTheDocument();
+    }, { timeout: 3000 });
+    
+    // First click scope button to show presets
+    const recommendedButton = screen.getByText('Recommended');
+    fireEvent.click(recommendedButton);
+    
+    // Wait for presets to appear
     const presetButton = await waitFor(() => {
       return screen.getByText('Show permits issued in the last 30 days');
     }, { timeout: 3000 });
@@ -215,6 +304,10 @@ describe('ChatWindow', () => {
     const composer = screen.getByRole('region', { name: /message composer/i });
     expect(composer).toBeInTheDocument();
     expect(composer).toBeVisible();
+
+    // First click scope button to show presets
+    const recommendedButton = screen.getByText('Recommended');
+    fireEvent.click(recommendedButton);
 
     // Click a preset button - wait for it to appear
     const presetButton = await waitFor(() => {

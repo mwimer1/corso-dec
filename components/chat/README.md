@@ -18,6 +18,19 @@ Components and utilities for the Corso chat interface.
 - **`lib/`** - Chat utilities and types (chat-mode, chat-presets)
 - **`utils/`** - Helper utilities (time-utils)
 
+## Preset Visibility Behavior
+
+Preset prompts (suggested questions) are **hidden by default** in new chat mode. They are shown when:
+- A scope button (Recommended, Projects, Companies, Addresses) is clicked
+- The chat has no message history (`hasHistory === false`)
+- Presets are available for the current scope
+- The input field is empty
+
+Presets are automatically hidden when:
+- The user starts typing in the input field
+- A preset option is selected
+- The chat transitions to active mode (has message history)
+
 ## Design Tokens
 
 Chat-specific design tokens are defined in `styles/tokens/chat.css`:
