@@ -243,7 +243,7 @@ post:
 
 #### Missing OrgIdHeader Parameter
 ```bash
-# Error: POST /api/v1/dashboard/query: bearerAuth route missing OrgIdHeader parameter
+# Error: POST /api/v1/entity/{entity}/query: bearerAuth route missing OrgIdHeader parameter
 # Fix: Include the OrgIdHeader parameter for tenant isolation
 post:
   parameters:
