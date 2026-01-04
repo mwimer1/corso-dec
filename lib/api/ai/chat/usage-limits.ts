@@ -3,9 +3,7 @@
 import 'server-only';
 
 import type { NextRequest } from 'next/server';
-import { getTenantContext } from '@/lib/server';
-import { getUserPricingTier, getDeepResearchLimit } from '@/lib/server/subscription/tier-limits';
-import { withTenantClient } from '@/lib/server';
+import { getTenantContext, getUserPricingTier, getDeepResearchLimit, withTenantClient } from '@/lib/server';
 import { http } from '@/lib/api';
 import { logger } from '@/lib/monitoring';
 

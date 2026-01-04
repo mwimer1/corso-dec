@@ -11,7 +11,8 @@ export type {
 } from './core/entity/types';
 
 export type {
-    NavItemData
+    NavItemData,
+    BreadcrumbItem
 } from './core/ui/types';
 
 // Config types

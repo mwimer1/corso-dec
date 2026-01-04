@@ -130,7 +130,8 @@
     "lib/api/ai/chat/tools.ts -> @/integrations/mockdb",
     "lib/api/ai/chat/tools.ts -> @/integrations/openai/chat-logging",
     "lib/api/ai/chat/tools.ts -> @/server/env",
-    "lib/api/ai/chat/tools.ts -> @/server/utils/timeout"
+    "lib/api/ai/chat/tools.ts -> @/server/utils/timeout",
+    "lib/dashboard/breadcrumbs.ts -> @/types/shared"
   ]
 }
 

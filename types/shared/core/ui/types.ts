@@ -7,4 +7,13 @@ export interface NavItemData {
   external?: boolean;
 }
 
+/**
+ * Breadcrumb item for navigation trails.
+ * Used in dashboard and insights pages.
+ */
+export interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
 

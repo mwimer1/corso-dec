@@ -3,8 +3,7 @@
 import { cn } from "@/styles";
 import Link from "next/link";
 import * as React from "react";
-
-export type BreadcrumbItem = { label: string; href?: string };
+import type { BreadcrumbItem } from '@/types/shared';
 
 interface DashboardTopBarProps {
   /** Optional breadcrumb trail items before current page */

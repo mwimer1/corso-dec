@@ -35,8 +35,6 @@ coverage/
 **/data/**/*.sql
 **/dumps/**/*.sql
 
-# Storybook build
-storybook-static/
 
 # Reports and test outputs
 playwright-report/

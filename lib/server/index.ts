@@ -61,4 +61,8 @@ export * from './feature-flags/resolvers';
 // Env re-exports live only here; avoid duplicate re-exports elsewhere
 export * from './env';
 
+// Subscription tier limits (server-only)
+export { getUserPricingTier, getDeepResearchLimit, DEEP_RESEARCH_LIMITS } from './subscription/tier-limits';
+export type { PricingTier } from './subscription/tier-limits';
+
 

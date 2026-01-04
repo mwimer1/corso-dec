@@ -20,6 +20,14 @@ const alias = {
 };
 
 export default defineConfig({
+  // Root-level path resolution - applies to all projects
+  plugins: [tsconfigPaths()],
+  resolve: {
+    alias: {
+      ...alias,
+      '@': r('./'),
+    },
+  },
   test: {
     // Default timeouts to reduce flaky CI failures
     testTimeout: 20000,
@@ -56,8 +64,7 @@ export default defineConfig({
     // Use projects instead of deprecated workspace
     projects: [
       {
-        plugins: [tsconfigPaths()],
-        resolve: { alias },
+        extends: true,
         test: {
           name: 'node',
           environment: 'node',
@@ -89,8 +96,7 @@ export default defineConfig({
         },
       },
       {
-        plugins: [tsconfigPaths()],
-        resolve: { alias },
+        extends: true,
         test: {
           name: 'dom',
           environment: 'jsdom',

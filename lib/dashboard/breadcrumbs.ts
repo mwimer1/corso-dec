@@ -1,7 +1,7 @@
 // lib/dashboard/breadcrumbs.ts
 // Breadcrumb utilities for dashboard pages
 
-import type { BreadcrumbItem } from '@/components/dashboard/layout/dashboard-top-bar';
+import type { BreadcrumbItem } from '@/types/shared';
 
 /**
  * Get breadcrumb trail for a given dashboard pathname.
