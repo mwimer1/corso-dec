@@ -155,3 +155,25 @@
  * Removed to avoid brittle DOM selector dependencies.
  */
 
+/* --- Badge Cell Styling --- */
+
+/* Badge cell styling - prevents pills from spanning full row height */
+.corso-ag-grid .corso-badge-cell.ag-cell {
+  /* Ensure cell content doesn't stretch to full height */
+  align-items: center;
+}
+
+.corso-ag-grid .corso-badge-cell .ag-cell-value {
+  /* Prevent badge from stretching vertically - allow natural height */
+  height: auto !important;
+  align-items: center;
+  display: flex;
+}
+
+.corso-ag-grid .corso-badge-cell .ag-cell-wrapper {
+  /* Center badge vertically without stretching */
+  align-items: center;
+  height: auto;
+  display: flex;
+}
+

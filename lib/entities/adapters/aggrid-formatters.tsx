@@ -123,6 +123,7 @@ export const linkRenderer = LinkCellRenderer;
 /**
  * Badge cell renderer - renders status and category values as colored badges
  * Uses contextual mapping based on column field name (status, property_type, etc.)
+ * Wrapped in a container to prevent full-height stretching and ensure proper vertical alignment
  */
 const BadgeCellRenderer: React.FC<ICellRendererParams> = ({ value, colDef }) => {
   if (value === null || value === undefined || value === '') {
@@ -147,7 +148,11 @@ const BadgeCellRenderer: React.FC<ICellRendererParams> = ({ value, colDef }) => 
     style = { text: valueStr, variant: 'default' as const };
   }
 
-  return <Badge color={style.variant}>{style.text}</Badge>;
+  return (
+    <div className="flex items-center h-full">
+      <Badge color={style.variant}>{style.text}</Badge>
+    </div>
+  );
 };
 
 export const badgeRenderer = BadgeCellRenderer;

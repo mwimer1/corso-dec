@@ -38,7 +38,7 @@ export function toColDef(cfg: TableColumnConfig): ColDef {
     case 'link':
       return { ...base, cellRenderer: linkRenderer };
     case 'badge':
-      return { ...base, cellRenderer: badgeRenderer };
+      return { ...base, cellRenderer: badgeRenderer, cellClass: 'corso-badge-cell' };
     case 'companyName':
       return { ...base, cellRenderer: companyNameRenderer };
     case 'description':
