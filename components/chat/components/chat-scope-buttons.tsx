@@ -30,7 +30,7 @@ export function ChatScopeButtons({
   className,
 }: ChatScopeButtonsProps) {
   return (
-    <div className={cn("flex items-center justify-center gap-3 relative z-0", className)}>
+    <div className={cn("flex items-center justify-center gap-3 flex-wrap relative z-0", className)}>
       {SCOPE_OPTIONS.map((option) => {
         const isSelected = selectedScope === option.id;
         return (

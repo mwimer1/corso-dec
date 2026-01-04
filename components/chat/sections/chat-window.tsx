@@ -28,6 +28,7 @@ export default function ChatWindow() {
 
   const [deepResearch, setDeepResearch] = useState<boolean>(false);
   const [scope, setScope] = useState<ChatScope>('recommended');
+  const [usageLimits, setUsageLimits] = useState<{ remaining: number; limit: number; currentUsage: number } | null>(null);
 
   // Calculate preferredTable based on scope (will be refined after we know hasHistory)
   const preferredTableFromScope = useMemo<'projects' | 'companies' | 'addresses' | undefined>(() => {
@@ -122,9 +123,42 @@ export default function ChatWindow() {
 
   const canSend = useMemo(() => draft.trim().length > 0 && !isProcessing, [draft, isProcessing]);
 
+  // Fetch usage limits when Deep Research is enabled (for additional safety check)
+  useEffect(() => {
+    if (deepResearch) {
+      const fetchLimits = async () => {
+        try {
+          const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
+          const res = await fetch(`${baseUrl}/api/v1/ai/chat/usage-limits`, {
+            credentials: 'include',
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success && data.data) {
+              setUsageLimits(data.data);
+            }
+          }
+        } catch (err) {
+          // Silently fail - limits are optional UI feedback
+          console.warn('Failed to fetch usage limits:', err);
+        }
+      };
+      void fetchLimits();
+    } else {
+      setUsageLimits(null);
+    }
+  }, [deepResearch]);
+
   const handleSend = useCallback(async () => {
     const text = draft.trim();
     if (!text || isProcessing) return;
+    
+    // Additional safety: prevent sending if Deep Research is enabled but quota exhausted
+    if (deepResearch && usageLimits?.remaining === 0) {
+      // This shouldn't happen if toggle is properly disabled, but defensive check
+      return;
+    }
+    
     setDraft("");
     await sendMessage(applyModePrefix(text));
     
@@ -134,7 +168,7 @@ export default function ChatWindow() {
         scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
       }
     });
-  }, [draft, isProcessing, sendMessage, applyModePrefix]);
+  }, [draft, isProcessing, sendMessage, applyModePrefix, deepResearch, usageLimits]);
 
   // Key handling and IME composition are handled in the client-only composer
 
@@ -249,8 +283,10 @@ export default function ChatWindow() {
           </div>
         )}
         {error && (
-          <div className="pt-2 text-sm text-destructive">
-            Something went wrong.
+          <div className="pt-2 text-sm text-destructive" role="alert">
+            {error instanceof Error && error.message.includes('Deep Research') 
+              ? error.message 
+              : 'Something went wrong.'}
             <button onClick={() => { void retryLastMessage().catch(() => {/* no-op */}); }} className="ml-3 underline">Retry</button>
             <button onClick={clearError} className="ml-3 underline">Dismiss</button>
           </div>

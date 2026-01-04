@@ -61,9 +61,9 @@ function ChatComposer(props: ChatComposerProps) {
     return getPresetsForScope(scope);
   }, [scope]);
 
-  // Presets are always visible in new chat mode (no history) when available
-  // No need for state - compute directly from props
-  const shouldShowPresets = !hasHistory && presets.length > 0;
+  // Presets are visible in new chat mode (no history) when available and input is empty
+  // Hide presets when user starts typing to reduce visual clutter
+  const shouldShowPresets = !hasHistory && presets.length > 0 && value.trim().length === 0;
 
   // Fetch usage limits when Deep Research is enabled
   React.useEffect(() => {
@@ -162,7 +162,8 @@ function ChatComposer(props: ChatComposerProps) {
                 <DropdownMenu.CheckboxItem
                   checked={deepResearch}
                   onCheckedChange={(checked) => setDeepResearch(checked === true)}
-                  className="flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm cursor-pointer hover:bg-black/5 focus:bg-black/5 focus:outline-none"
+                  disabled={usageLimits?.remaining === 0}
+                  className="flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm cursor-pointer hover:bg-black/5 focus:bg-black/5 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <DropdownMenu.ItemIndicator className="inline-flex items-center justify-center">
                     <Check className="h-4 w-4" />
@@ -229,7 +230,7 @@ function ChatComposer(props: ChatComposerProps) {
       {shouldShowPresets && (
         <div className="absolute left-0 right-0 top-full z-10 bg-surface rounded-b-2xl border-x-2 border-b-2 border-border shadow-lg">
           <div className="border-t-2 border-border pt-3 pb-3">
-            <div className="px-3 space-y-0.5">
+            <div className="px-3 space-y-0.5" role="group" aria-label="Suggested questions">
               {presets.map((preset, index) => (
                 <button
                   key={preset.id}

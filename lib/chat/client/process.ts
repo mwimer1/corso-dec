@@ -94,9 +94,25 @@ export async function* processUserMessageStreamClient(
   });
 
   if (!res.ok || !res.body) {
-    const message = `Chat processing failed: ${res.status}`;
-    const error = new Error(message) as Error & { status?: number };
+    // Try to parse error response body for detailed error message and code
+    let errorMessage = `Chat processing failed: ${res.status}`;
+    let errorCode: string | undefined;
+    try {
+      const errorBody = await res.json();
+      if (errorBody?.error?.message) {
+        errorMessage = errorBody.error.message;
+      }
+      if (errorBody?.error?.code) {
+        errorCode = errorBody.error.code;
+      }
+    } catch {
+      // If parsing fails, use default message
+    }
+    const error = new Error(errorMessage) as Error & { status?: number; code?: string };
     error.status = res.status;
+    if (errorCode) {
+      error.code = errorCode;
+    }
     throw error;
   }
 

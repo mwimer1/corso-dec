@@ -25,6 +25,7 @@ function MessageItemImpl({ message, onSelectFollowUp }: Props) {
         message.content && (
           <div className="relative my-2 flex w-full items-start rounded-xl border border-primary bg-primary p-4 text-primary-foreground text-sm max-w-[70%]">
             <p className="whitespace-pre-wrap leading-relaxed w-full">
+              <span className="sr-only">You: </span>
               {message.content}
             </p>
           </div>
@@ -44,6 +45,7 @@ function MessageItemImpl({ message, onSelectFollowUp }: Props) {
             <div className="w-full text-foreground">
               {message.content && (
                 <p className="whitespace-pre-wrap leading-relaxed">
+                  <span className="sr-only">Assistant: </span>
                   {message.content}
                 </p>
               )}

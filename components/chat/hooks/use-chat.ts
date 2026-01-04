@@ -326,12 +326,18 @@ export function useChat(opts: UseChatOptions = {}): UseChatReturn {
           return;
         }
 
+        // Check if this is a Deep Research limit exceeded error
+        const isLimitExceeded = err instanceof Error && 
+          ((err as any).code === 'DEEP_RESEARCH_LIMIT_EXCEEDED' || 
+           err.message.includes('Deep Research usage limit exceeded'));
+
         const appErr =
           err instanceof ApplicationError
             ? err
             : new ApplicationError({
                 message: err instanceof Error ? err.message : 'Processing failed',
-                code: 'CHAT_PROCESSING_ERROR',
+                code: isLimitExceeded ? 'DEEP_RESEARCH_LIMIT_EXCEEDED' : 
+                      (err instanceof Error && (err as any).code ? (err as any).code : 'CHAT_PROCESSING_ERROR'),
                 category: ErrorCategory.API,
                 severity: ErrorSeverity.ERROR,
                 ...(err instanceof Error ? { originalError: err } : {}),
@@ -340,11 +346,16 @@ export function useChat(opts: UseChatOptions = {}): UseChatReturn {
         dispatch({ type: 'set_error', payload: appErr });
         reportError(appErr);
 
+        // Use server's error message if available, otherwise generic fallback
+        const errorMessage = isLimitExceeded && err instanceof Error 
+          ? err.message 
+          : '⚠️ Something went wrong';
+
         dispatch({
           type: 'update_assistant_message',
           payload: {
             id: assistantId,
-            content: '⚠️ Something went wrong',
+            content: errorMessage,
             isError: true,
           },
         });

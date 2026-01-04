@@ -112,6 +112,15 @@ export async function handleChatRequest(req: NextRequest): Promise<Response> {
         },
       });
     }
+    
+    // Increment usage immediately after successful check to reduce race condition window
+    // This ensures concurrent requests see the updated count. If processing fails,
+    // the quota is still consumed (acceptable trade-off for quota integrity).
+    // The UI disables send button during processing, which mitigates most race cases.
+    incrementDeepResearchUsage(req).catch((err) => {
+      logger.error('[Handler] Failed to increment Deep Research usage before processing', { error: err });
+      // If increment fails, we still proceed - better to allow the request than block on tracking error
+    });
   }
 
   // Get OpenAI client and model
@@ -142,7 +151,9 @@ export async function handleChatRequest(req: NextRequest): Promise<Response> {
   });
   
   // Apply overall request timeout (AI_TOTAL_TIMEOUT_MS)
-  const totalTimeout = env.AI_TOTAL_TIMEOUT_MS ?? 60000;
+  // Deep Research requests need more time for comprehensive analysis
+  const baseTimeout = env.AI_TOTAL_TIMEOUT_MS ?? 60000;
+  const totalTimeout = deepResearch ? Math.max(baseTimeout, 120000) : baseTimeout;
   setTimeout(() => {
     abortController.abort();
   }, totalTimeout);
@@ -163,14 +174,7 @@ export async function handleChatRequest(req: NextRequest): Promise<Response> {
         abortController.signal,
       );
       
-      // Increment usage after successful request (if Deep Research)
-      if (deepResearch) {
-        // Don't await - fire and forget to avoid blocking response
-        incrementDeepResearchUsage(req).catch((err) => {
-          logger.error('[Handler] Failed to increment Deep Research usage', { error: err });
-        });
-      }
-      
+      // Usage already incremented before processing (see above)
       return response;
     } catch (error) {
       return createErrorResponse(error);
@@ -192,14 +196,7 @@ export async function handleChatRequest(req: NextRequest): Promise<Response> {
 
     const response = await createStreamResponse(stream, client, model, messages, orgId, req, abortController.signal);
     
-    // Increment usage after successful request (if Deep Research)
-    if (deepResearch) {
-      // Don't await - fire and forget to avoid blocking response
-      incrementDeepResearchUsage(req).catch((err) => {
-        logger.error('[Handler] Failed to increment Deep Research usage', { error: err });
-      });
-    }
-    
+    // Usage already incremented before processing (see above)
     return response;
   } catch (error) {
     return createErrorResponse(error);
