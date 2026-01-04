@@ -2,8 +2,7 @@
 
 // src/components/landing/market-insights/market-insights-section.tsx
 
-import { Button, Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/atoms";
-import { Badge } from "@/components/ui/atoms/badge";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/atoms";
 import { trackEvent } from "@/lib/shared/analytics/track";
 import { cn } from "@/styles";
 import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
@@ -182,22 +181,6 @@ export const MarketInsightsSection: React.FC<Props> = ({
     try { trackEvent("insights_range_changed", { minYear: r[0], maxYear: r[1] }); } catch {}
     updateUrl({ minYear: r[0], maxYear: r[1] });
   }, [updateUrl]);
-  const handleReset = useCallback(() => {
-    const defaultTerritory = territories[0] ?? "Texas";
-    const defaultProperty = propertyTypes[0] ?? "All";
-    setTerritory(defaultTerritory);
-    setPropType(defaultProperty);
-    const defaultLow = Math.max(minYear, maxYear - 9);
-    const defaultHigh = maxYear;
-    setRange([defaultLow, defaultHigh]);
-    try { trackEvent("insights_filters_reset", {}); } catch {}
-    updateUrl({
-      ...(defaultTerritory && { territory: defaultTerritory }),
-      ...(defaultProperty && { property: defaultProperty }),
-      minYear: defaultLow,
-      maxYear: defaultHigh
-    });
-  }, [territories, propertyTypes, minYear, maxYear, updateUrl]);
 
   return (
     <section
@@ -247,80 +230,65 @@ export const MarketInsightsSection: React.FC<Props> = ({
           </CardHeader>
 
           <CardContent className="pt-0">
-            <div className="grid grid-cols-1 gap-8 lg:grid-cols-[320px_1fr]">
-              {/* Filters panel */}
-              <div className="space-y-5">
-                <YearRangeSlider
-                  value={range}
-                  onChange={setRange}
-                  onCommit={onRangeCommit}
-                  minYear={minYear}
-                  maxYear={maxYear}
-                  compact
-                  showSelectedIndicator={true}
-                  {...(!dense ? {} : { showBubbles: false })}
-                />
+            {/* Chart - full width on top */}
+            <div className="mb-8">
+              <Chart data={filtered} loading={loading} variant="bare" heightClassName="h-64 md:h-80 lg:h-96" />
+            </div>
 
-                {controlsVariant === "dropdown" ? (
-                  <div className="space-y-4">
-                    <FilterSelect
-                      title="Territory"
-                      items={territories}
-                      selected={territory}
-                      onSelect={onTerritorySelect}
-                      id="territory-select"
-                      showSelectedIndicator={false}
-                    />
-                    <FilterSelect
-                      title="Property type"
-                      items={propertyTypes}
-                      selected={propType}
-                      onSelect={onPropertySelect}
-                      id="property-select"
-                      showSelectedIndicator={false}
-                    />
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <FilterPills
-                      title="Territory"
-                      items={territories}
-                      selected={territory}
-                      onSelect={onTerritorySelect}
-                      id="territory-pills"
-                      showSelectedIndicator={false}
-                    />
-                    <FilterPills
-                      title="Property type"
-                      items={propertyTypes}
-                      selected={propType}
-                      onSelect={onPropertySelect}
-                      id="property-pills"
-                      showSelectedIndicator={false}
-                    />
-                  </div>
-                )}
+            {/* Filters - full width below chart */}
+            <div className="space-y-5">
+              <YearRangeSlider
+                value={range}
+                onChange={setRange}
+                onCommit={onRangeCommit}
+                minYear={minYear}
+                maxYear={maxYear}
+                compact
+                showSelectedIndicator={true}
+                {...(!dense ? {} : { showBubbles: false })}
+              />
 
-                <Button variant="secondary" size="sm" onClick={handleReset} className="w-full">
-                  Reset
-                </Button>
-              </div>
-
-              {/* Chart */}
-              <div className="min-w-0">
-                <Chart data={filtered} loading={loading} variant="bare" heightClassName="h-64 md:h-80 lg:h-96" />
-              </div>
+              {controlsVariant === "dropdown" ? (
+                <div className="space-y-4">
+                  <FilterSelect
+                    title="Territory"
+                    items={territories}
+                    selected={territory}
+                    onSelect={onTerritorySelect}
+                    id="territory-select"
+                    showSelectedIndicator={false}
+                  />
+                  <FilterSelect
+                    title="Property type"
+                    items={propertyTypes}
+                    selected={propType}
+                    onSelect={onPropertySelect}
+                    id="property-select"
+                    showSelectedIndicator={false}
+                  />
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <FilterPills
+                    title="Territory"
+                    items={territories}
+                    selected={territory}
+                    onSelect={onTerritorySelect}
+                    id="territory-pills"
+                    showSelectedIndicator={false}
+                  />
+                  <FilterPills
+                    title="Property type"
+                    items={propertyTypes}
+                    selected={propType}
+                    onSelect={onPropertySelect}
+                    id="property-pills"
+                    showSelectedIndicator={false}
+                  />
+                </div>
+              )}
             </div>
           </CardContent>
-
-          <CardFooter className="flex-col items-start gap-2 border-t">
-            <p className="text-sm font-semibold text-foreground">Selected filters</p>
-            <div className="flex flex-wrap gap-2" aria-label="Active filters">
-              <Badge color="secondary">{territory}</Badge>
-              <Badge color="secondary">{propType === "All" ? "All Types" : propType}</Badge>
-              <Badge color="secondary">{range[0]}–{range[1]}</Badge>
-            </div>
-          </CardFooter>
         </Card>
       </div>
 
