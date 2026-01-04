@@ -53,8 +53,8 @@ description: "Documentation and resources for documentation functionality. Locat
 | `/api/v1/entity/{entity}/query` | POST | ✅ | ✅ | member | ✅ |
 | `/api/v1/entity/{entity}/export` | GET | ✅ | ✅ (410 Gone) | member | ✅ |
 | `/api/v1/query` | POST | ✅ | ✅ | member,admin,owner | ✅ |
-| `/api/v1/ai/chat` | POST | ✅ | ✅ | member | ✅ |
-| `/api/v1/ai/generate-sql` | POST | ✅ | ✅ | member | ✅ |
+| `/api/v1/ai/chat` | POST | ✅ | ✅ | member,admin,owner | ✅ |
+| `/api/v1/ai/generate-sql` | POST | ✅ | ✅ | member,admin,owner | ✅ |
 | `/api/v1/user` | POST | ✅ | ✅ | member | ✅ |
 
 ### Internal Endpoints (Not in OpenAPI)
@@ -70,8 +70,8 @@ All protected endpoints have `x-corso-rbac` annotations matching implementation:
 - `/api/v1/entity/{entity}`: `[member, admin, owner]` (OpenAPI) → `['org:member', 'org:admin', 'org:owner']` (impl)
 - `/api/v1/entity/{entity}/query`: `[member]` (OpenAPI) → `'member'` (impl via requireAuthWithRBAC)
 - `/api/v1/query`: `[member, admin, owner]` (OpenAPI) → `'member'` (impl, but allows all org roles)
-- `/api/v1/ai/chat`: `[member]` (OpenAPI) → `'member'` (impl)
-- `/api/v1/ai/generate-sql`: `[member]` (OpenAPI) → `'member'` (impl)
+- `/api/v1/ai/chat`: `[member, admin, owner]` (OpenAPI) → `['member', 'org:member', 'admin', 'org:admin', 'owner', 'org:owner']` (impl)
+- `/api/v1/ai/generate-sql`: `[member, admin, owner]` (OpenAPI) → `['member', 'org:member', 'admin', 'org:admin', 'owner', 'org:owner']` (impl)
 - `/api/v1/user`: `[member]` (OpenAPI) → `'member'` (impl)
 
 **Note**: OpenAPI uses `member, admin, owner` while implementation uses `org:member, org:admin, org:owner`. This is intentional - OpenAPI spec uses simplified role names, while implementation uses full Clerk role names. The RBAC guard validates against the simplified names.
