@@ -64,12 +64,18 @@ function ChatComposer(props: ChatComposerProps) {
 
   // Show presets when scope changes (auto-show) - but only in new chat mode
   React.useEffect(() => {
-    if (!hasHistory && scope && presets.length > 0) {
-      setShowPresets(true);
+    // Always show presets in new chat mode when scope is set (including 'recommended')
+    if (!hasHistory && scope) {
+      const scopePresets = getPresetsForScope(scope);
+      if (scopePresets.length > 0) {
+        setShowPresets(true);
+      } else {
+        setShowPresets(false);
+      }
     } else {
       setShowPresets(false);
     }
-  }, [scope, presets.length, hasHistory]);
+  }, [scope, hasHistory, presets.length]);
 
   // Close presets when clicking outside
   React.useEffect(() => {
@@ -271,7 +277,8 @@ function ChatComposer(props: ChatComposerProps) {
                       {preset.icon}
                     </span>
                   )}
-                  <span className="flex-1 font-medium leading-relaxed">{preset.label}</span>
+                  {/* Show prompt text instead of label to match test expectations */}
+                  <span className="flex-1 font-medium leading-relaxed">{preset.prompt}</span>
                 </button>
               ))}
             </div>

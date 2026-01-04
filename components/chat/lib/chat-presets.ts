@@ -17,19 +17,19 @@ export const RECOMMENDED_PRESETS: ChatPreset[] = [
   {
     id: 'recent-activity',
     label: 'Show recent activity',
-    prompt: 'Show me the most recent permits and projects from the last 30 days',
+    prompt: 'Show permits issued in the last 30 days',
     icon: '📅',
   },
   {
     id: 'top-contractors',
     label: 'Top contractors this year',
-    prompt: 'Who are the top 10 contractors by total project value this year?',
+    prompt: 'Top 10 contractors by total job value YTD',
     icon: '🏆',
   },
   {
     id: 'trending-types',
     label: 'Trending project types',
-    prompt: 'What project types are trending this quarter?',
+    prompt: 'Which project types are trending this quarter?',
     icon: '📈',
   },
   {
@@ -53,7 +53,7 @@ export const PROJECTS_PRESETS: ChatPreset[] = [
   {
     id: 'projects-top-contractors',
     label: 'Top contractors YTD',
-    prompt: 'Top 10 contractors by total job value year-to-date',
+    prompt: 'Top 10 contractors by total job value YTD',
     icon: '🏆',
   },
   {
