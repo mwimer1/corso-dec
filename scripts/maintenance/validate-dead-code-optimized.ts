@@ -62,7 +62,7 @@ const ORPHAN_EXCLUDE = [
   '[\\\\/]sitemap\\\\.ts$',
 ].join('|');
 
-const ORPHAN_PATHS = ['app', 'components', 'lib', 'contexts', 'types', 'styles'];
+const ORPHAN_PATHS = ['app', 'components', 'lib', 'types', 'styles'];
 
 // Load allowlist
 function loadAllowlist(): Set<string> {

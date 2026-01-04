@@ -6,7 +6,8 @@
 
 // Note: avoid importing server-only env helper at module top-level to keep this
 // module bundlable in client/edge contexts. Use process.env fallback below.
-import { LRUCache } from '@/lib/shared';
+// Import LRUCache directly to avoid circular dependency with lib/shared barrel
+import { LRUCache } from '../cache/lru-cache';
 import { isProduction } from '@/lib/shared/config/client';
 import { v4 as uuidv4 } from 'uuid';
 

@@ -1,6 +1,7 @@
 // lib/shared/feature-flags/core.ts
 import type { FeatureFlagConfig } from '@/types/shared';
-import { simpleCacheManager } from '@/lib/shared';
+// Import simpleCacheManager directly to avoid circular dependency with lib/shared barrel
+import { simpleCacheManager } from '../cache/simple-cache';
 
 /**
  * Feature flag system core implementation

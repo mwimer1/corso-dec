@@ -4,12 +4,15 @@ last_updated: "2026-01-03"
 category: "automation"
 ---
 
-# Repository Scripts & Docs
+# Marketing Page Components
 
-This README is generated from a single template (`README.scripts.hbs`).
+Components for marketing pages beyond the homepage (Pricing, Contact, Legal sections).
 
-- Directory: `components/marketing`
-- Last updated: `2026-01-03`
+## Purpose
 
-> Edit the template or the generator context to change all READMEs consistently.
+Reusable sections for `/pricing`, `/contact`, `/legal/*` routes and other marketing pages.
+
+## Related
+
+See `components/landing/` for homepage-specific sections (Hero, Product Showcase, ROI Calculator, Market Insights).
 

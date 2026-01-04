@@ -4,12 +4,19 @@ last_updated: "2026-01-03"
 category: "automation"
 ---
 
-# Repository Scripts & Docs
+# Landing Page Components
 
-This README is generated from a single template (`README.scripts.hbs`).
+Components specific to the homepage (`/`) and landing page experience.
 
-- Directory: `components/landing`
-- Last updated: `2026-01-03`
+## Purpose
 
-> Edit the template or the generator context to change all READMEs consistently.
+Homepage sections like Hero, Product Showcase, ROI Calculator, and Market Insights that are used exclusively on the landing page.
+
+## Usage
+
+Import from `@/components/landing` in `app/(marketing)/page.tsx` (the homepage route).
+
+## Related
+
+See `components/marketing/` for other marketing page components (Pricing, Contact, Legal sections).
 

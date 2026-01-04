@@ -91,7 +91,12 @@ summary: Guidelines for when to use CSS modules vs Tailwind utilities, token usa
 ### Class Naming
 - Use camelCase for class names: `.chatWindow`, `.messagesContainer`
 - Be descriptive: `.composerContainer` not `.container`
-- Use component prefix for clarity: `.chat-*`, `.hero-*`, `.roi-*`
+- **Prefixing**: Prefer component-specific prefixes for clarity (e.g., `.chatWindow`, `.roiHeader`, `.roiTitle`)
+- **Generic names**: Generic names like `.title`, `.subtitle`, `.section` are acceptable in component-specific modules due to CSS module scoping, but prefixes are recommended for better readability
+- **Pattern examples**:
+  - ✅ Good: `.chatWindow`, `.messagesContainer`, `.roiInputCard`, `.logoCropped`
+  - ✅ Acceptable: `.hero`, `.title`, `.subtitle` (scoped to hero.module.css)
+  - ❌ Avoid: `.container`, `.wrapper`, `.content` without context (use prefixes or descriptive names)
 
 ### Import Pattern
 ```tsx

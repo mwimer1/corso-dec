@@ -113,6 +113,17 @@ jobs:
               body: report
             });
 
+  css-size:
+    name: CSS Size Check
+    needs: setup
+    uses: ./.github/workflows/_reusable-node-job.yml
+    with:
+      name: css-size
+      fetch_depth: 0
+      install: true
+      run: pnpm a11y:css-size
+    secrets: inherit
+
   duplication-check:
     name: Tests Duplication Guard
     needs: setup

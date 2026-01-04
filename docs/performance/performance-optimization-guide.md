@@ -63,6 +63,30 @@ pnpm bundlesize:ci > bundle-size-report.json
 - Reports Gzip and Brotli compression sizes
 - Fails CI if limits exceeded
 
+**CI Integration**: Bundle size checks run automatically on every PR:
+- Compares PR branch bundle size against main branch
+- Generates comparison report as PR comment
+- Includes JavaScript and CSS files from build output
+
+### CSS Size Analysis
+
+CSS size monitoring prevents Tailwind CSS bundle bloat:
+
+```bash
+# Check generated CSS file size
+pnpm a11y:css-size
+```
+
+**Configuration**: `scripts/lint/css-size-analyzer.ts`
+- Monitors `styles/build/tailwind.css` file
+- Maximum allowed size: 150KB
+- Fails if threshold exceeded
+
+**CI Integration**: CSS size check runs automatically on every PR:
+- Validates generated Tailwind CSS file size
+- Ensures styling changes don't cause CSS bloat
+- Part of PR checks workflow (`.github/workflows/pr-checks.yml`)
+
 ### Bundle Analyzer
 
 Visual bundle analysis using `@next/bundle-analyzer`:
