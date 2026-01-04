@@ -1,0 +1,72 @@
+name: Refresh Materialized Views
+
+on:
+  schedule:
+    # Refresh materialized views every hour
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  refresh-mvs:
+    name: Refresh Materialized Views
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+
+      - name: Setup PostgreSQL Client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Refresh All Materialized Views
+        env:
+          DATABASE_URL: ${{ secrets.SUPABASE_DATABASE_URL }}
+        run: |
+          echo "Refreshing all materialized views..."
+          
+          # Execute refresh function and capture output
+          psql "$DATABASE_URL" -c "
+            SELECT 
+              matview_name,
+              success,
+              duration_ms,
+              error_message
+            FROM public.refresh_all_materialized_views();
+          " || {
+            echo "❌ Failed to refresh materialized views"
+            exit 1
+          }
+          
+          echo "✅ Materialized views refreshed successfully"
+
+      - name: Check Refresh Health
+        if: always()
+        env:
+          DATABASE_URL: ${{ secrets.SUPABASE_DATABASE_URL }}
+        run: |
+          echo "Checking materialized view refresh health..."
+          psql "$DATABASE_URL" -c "
+            SELECT 
+              matview_name,
+              is_healthy,
+              last_refresh_at,
+              last_refresh_status,
+              refresh_age_minutes,
+              is_overdue,
+              error_message
+            FROM public.check_mv_refresh_health();
+          " || echo "⚠️ Could not check refresh health"
+
+      - name: Report Results
+        if: always()
+        run: |
+          echo "## Materialized View Refresh Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Refresh completed at $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "See database logs for detailed refresh information." >> $GITHUB_STEP_SUMMARY

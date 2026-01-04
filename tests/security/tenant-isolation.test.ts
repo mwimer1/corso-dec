@@ -111,5 +111,141 @@ describe('Tenant Isolation', () => {
       await expect(getTenantScopedSupabaseClient(req)).rejects.toThrow('Failed to set RLS context');
     });
   });
+
+  describe('withTenantClient', () => {
+    it('should set RLS context and execute function with tenant-scoped client', async () => {
+      mockClerkAuth.setup({ userId: testUser.userId });
+
+      const mockRpc = vi.fn().mockResolvedValue({ error: null });
+      const mockFrom = vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockResolvedValue({ data: [{ id: '1', org_id: testOrg.orgId }], error: null }),
+        }),
+      });
+
+      const { getSupabaseAdmin } = await import('@/lib/integrations/supabase/server');
+      const mockClient = {
+        rpc: mockRpc,
+        from: mockFrom,
+      };
+      (getSupabaseAdmin as ReturnType<typeof vi.fn>).mockReturnValue(mockClient);
+
+      const req = {
+        headers: new Headers({
+          'x-corso-org-id': testOrg.orgId,
+        }),
+      } as unknown as NextRequest;
+
+      const { withTenantClient } = await import('@/lib/server/db/supabase-tenant-client');
+
+      const result = await withTenantClient(req, async (client) => {
+        const { data } = await client.from('projects').select('*').eq('org_id', testOrg.orgId);
+        return data;
+      });
+
+      expect(mockRpc).toHaveBeenCalledWith('set_rls_context', {
+        org_id: testOrg.orgId,
+        user_id: testUser.userId,
+      });
+      expect(result).toEqual([{ id: '1', org_id: testOrg.orgId }]);
+    });
+
+    it('should fail closed when tenant context is missing', async () => {
+      mockClerkAuth.setup({ userId: testUser.userId });
+
+      const req = {
+        headers: new Headers({}), // Missing org_id header
+      } as unknown as NextRequest;
+
+      const { withTenantClient } = await import('@/lib/server/db/supabase-tenant-client');
+
+      await expect(
+        withTenantClient(req, async (client) => {
+          return await client.from('projects').select('*');
+        }),
+      ).rejects.toThrow('Organization ID required');
+    });
+  });
+
+  describe('Cross-Tenant Data Isolation', () => {
+    it('should enforce tenant isolation - Org A cannot access Org B data', async () => {
+      const orgA = createOrg({ orgId: 'org-a' });
+      const orgB = createOrg({ orgId: 'org-b' });
+      const userA = createUser({ userId: 'user-a' });
+
+      mockClerkAuth.setup({ userId: userA.userId });
+
+      // Mock RLS context setting
+      const mockRpc = vi.fn().mockResolvedValue({ error: null });
+
+      // Mock query results - RLS should filter to only org-a data
+      // Supabase query builder: from().select() returns a promise-like object
+      const mockFrom = vi.fn().mockReturnValue({
+        select: vi.fn().mockResolvedValue({
+          data: [{ id: '1', org_id: orgA.orgId }], // Only org-a data returned
+          error: null,
+        }),
+      });
+
+      const { getSupabaseAdmin } = await import('@/lib/integrations/supabase/server');
+      const mockClient = {
+        rpc: mockRpc,
+        from: mockFrom,
+      };
+      (getSupabaseAdmin as ReturnType<typeof vi.fn>).mockReturnValue(mockClient);
+
+      const req = {
+        headers: new Headers({
+          'x-corso-org-id': orgA.orgId,
+        }),
+      } as unknown as NextRequest;
+
+      const { withTenantClient } = await import('@/lib/server/db/supabase-tenant-client');
+
+      const result = await withTenantClient(req, async (client) => {
+        const { data } = await client.from('projects').select('*');
+        return data;
+      });
+
+      // Verify RLS context was set for org-a
+      expect(mockRpc).toHaveBeenCalledWith('set_rls_context', {
+        org_id: orgA.orgId,
+        user_id: userA.userId,
+      });
+
+      // Verify only org-a data is returned (RLS filtering)
+      expect(result).toEqual([{ id: '1', org_id: orgA.orgId }]);
+      expect(result).not.toContainEqual(expect.objectContaining({ org_id: orgB.orgId }));
+    });
+
+    it('should fail closed when RLS context is not set', async () => {
+      mockClerkAuth.setup({ userId: testUser.userId });
+
+      const mockRpc = vi.fn().mockResolvedValue({
+        error: { message: 'RLS context not set' },
+      });
+
+      const { getSupabaseAdmin } = await import('@/lib/integrations/supabase/server');
+      const mockClient = {
+        rpc: mockRpc,
+        from: vi.fn(),
+      };
+      (getSupabaseAdmin as ReturnType<typeof vi.fn>).mockReturnValue(mockClient);
+
+      const req = {
+        headers: new Headers({
+          'x-corso-org-id': testOrg.orgId,
+        }),
+      } as unknown as NextRequest;
+
+      const { withTenantClient } = await import('@/lib/server/db/supabase-tenant-client');
+
+      await expect(
+        withTenantClient(req, async (client) => {
+          return await client.from('projects').select('*');
+        }),
+      ).rejects.toThrow('Failed to set RLS context');
+    });
+  });
 });
 
