@@ -52,11 +52,23 @@
   // Ignore dependencies that are intentionally kept but not directly imported
   // - stylelint-* packages: Used via config strings in config/.stylelintrc.cjs
   // - sharp: May be needed by Next.js for image optimization (listed in onlyBuiltDependencies)
+  // - @corso/eslint-plugin: Workspace package used via TypeScript path mappings
+  // - @ts-morph/common: Transitive dependency of ts-morph (used in 15+ scripts)
+  // - esbuild: Required by vite, vitest, tsx, and listed in onlyBuiltDependencies
+  // - lint-staged: Used in package.json lint-staged config and .husky/pre-commit hooks
+  // - minimatch: Transitive dependency of 50+ packages (eslint, glob, typescript-eslint, etc.)
+  // - msw: Peer dependency of vitest mocker and listed in onlyBuiltDependencies
   "ignoreDependencies": [
     "stylelint-config-standard",
     "stylelint-config-tailwindcss",
     "stylelint-order",
-    "sharp"
+    "sharp",
+    "@corso/eslint-plugin",
+    "@ts-morph/common",
+    "esbuild",
+    "lint-staged",
+    "minimatch",
+    "msw"
   ]
 
   // reporter intentionally omitted; use CLI --reporter json

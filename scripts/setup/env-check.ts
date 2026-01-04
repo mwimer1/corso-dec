@@ -21,7 +21,7 @@ const tools: Tool[] = [
   { name: 'dependency-cruiser', command: 'pnpm exec depcruise --version', required: false },
   { name: 'tree-sitter', command: 'pnpm exec tree-sitter --version', required: false },
   { name: 'gitleaks', command: 'pnpm exec gitleaks version', required: false },
-  { name: 'ts-prune', command: 'pnpm exec ts-prune --version', required: false },
+  { name: 'ts-prune', command: 'pnpm dlx ts-prune --version', required: false },
   { name: 'typedoc', command: 'pnpm exec typedoc --version', required: false },
   { name: 'Git', command: 'git --version', required: true },
   { name: 'GitHub CLI', command: 'gh --version', required: false },
