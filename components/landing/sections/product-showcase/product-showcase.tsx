@@ -30,6 +30,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
 
   // Detect horizontal scrollbar height and expose as CSS variable
   // This ensures sticky tabs at bottom of viewport are fully visible above the scrollbar
+  // Simplified: only checks on mount and resize (MutationObserver removed for performance)
   React.useEffect(() => {
     const updateScrollbarHeight = () => {
       // Check if there's horizontal overflow that would cause a horizontal scrollbar
@@ -37,16 +38,10 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
       
       if (hasHorizontalScroll) {
         // Calculate horizontal scrollbar height by creating a temporary element
-        // and measuring the difference between offsetWidth and clientWidth
         const scrollbarDiv = document.createElement('div');
-        scrollbarDiv.style.width = '100px';
-        scrollbarDiv.style.height = '100px';
-        scrollbarDiv.style.overflow = 'scroll';
-        scrollbarDiv.style.position = 'absolute';
-        scrollbarDiv.style.top = '-9999px';
+        scrollbarDiv.style.cssText = 'width:100px;height:100px;overflow:scroll;position:absolute;top:-9999px';
         document.body.appendChild(scrollbarDiv);
         
-        // The horizontal scrollbar height is the difference between offsetHeight and clientHeight
         const horizontalScrollbarHeight = scrollbarDiv.offsetHeight - scrollbarDiv.clientHeight;
         document.body.removeChild(scrollbarDiv);
         
@@ -60,16 +55,9 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
 
     updateScrollbarHeight();
     window.addEventListener('resize', updateScrollbarHeight);
-    // Use MutationObserver to detect DOM changes that might cause overflow
-    const observer = new MutationObserver(updateScrollbarHeight);
-    observer.observe(document.body, { childList: true, subtree: true, attributes: true });
-    // Also check after a brief delay to catch dynamic content loading
-    const timeoutId = setTimeout(updateScrollbarHeight, 100);
 
     return () => {
       window.removeEventListener('resize', updateScrollbarHeight);
-      observer.disconnect();
-      clearTimeout(timeoutId);
     };
   }, []);
 
@@ -92,8 +80,8 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
               width={1920}
               height={1080}
               className="block w-full h-auto"
-              priority={false}
-              sizes="(max-width: 1024px) 100vw, 1024px"
+              priority={true}
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 1024px"
             />
           </div>
         </div>
@@ -112,7 +100,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
               height={1080}
               className="block w-full h-auto"
               priority={false}
-              sizes="(max-width: 1024px) 100vw, 1024px"
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 1024px"
             />
           </div>
         </div>
@@ -131,7 +119,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
               height={1080}
               className="block w-full h-auto"
               priority={false}
-              sizes="(max-width: 1024px) 100vw, 1024px"
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 1024px"
             />
           </div>
         </div>
@@ -150,7 +138,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
               height={1080}
               className="block w-full h-auto"
               priority={false}
-              sizes="(max-width: 1024px) 100vw, 1024px"
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 1024px"
             />
           </div>
         </div>
@@ -388,9 +376,9 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
           </div>
         </div>
 
-        {/* Spacer: gap + mt-2xl to reach mock top edge (defines guide height) */}
+        {/* Spacer: gap + responsive spacing to reach mock top edge (defines guide height) */}
         <div className="mt-sm md:mt-md">
-          <div className="mt-2xl" />
+          <div className="mt-lg md:mt-xl" />
         </div>
 
         {/* Content container - moved inside ShowcaseFrame so dashed rails span down to image area */}
@@ -406,7 +394,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
             id={`panel-${current?.id ?? 'active'}`}
             role="tabpanel"
             aria-labelledby={`tab-${current?.id ?? 'active'}`}
-            aria-live="polite"
+            aria-live={isUserInteraction || prefersReducedMotion ? "polite" : "off"}
           >
             {current ? (
               <div
@@ -417,8 +405,8 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
                   'animate-fadeInUp',
                   // Mobile: full-bleed, Desktop: constrained + padded
                   "mx-[calc(50%-50vw)] max-w-screen px-4 sm:px-6",
-                  // lg: keep current desktop behavior
-                  "lg:mx-0 lg:px-20",
+                  // lg: balanced padding for desktop
+                  "lg:mx-0 lg:px-12",
                   // xl+: wider mock/image, slightly wider than tabs for better visual alignment
                   "xl:mx-auto xl:max-w-7xl xl:px-0"
                 )}
@@ -430,7 +418,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
         </div>
 
         {/* Content container bottom margin - inside ShowcaseFrame so rails include this space */}
-        <div className="mb-4xl" />
+        <div className="mb-2xl" />
       </div>
     </section>
   );
