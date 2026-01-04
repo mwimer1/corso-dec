@@ -19,11 +19,12 @@ interface DashboardSidebarProps extends React.HTMLAttributes<HTMLElement> {
   sidebarCollapsed: boolean;
   setSection: (section: string) => void;
   toggleSidebar: () => void;
+  isMobile?: boolean;
 }
 
 export const DashboardSidebar = React.forwardRef<HTMLElement, DashboardSidebarProps>(
   function DashboardSidebar(
-    { sidebarCollapsed, setSection, toggleSidebar },
+    { sidebarCollapsed, setSection, toggleSidebar, isMobile = false },
     _ref,
   ) {
     const pathname = usePathname();
@@ -76,6 +77,7 @@ export const DashboardSidebar = React.forwardRef<HTMLElement, DashboardSidebarPr
         id="dashboard-sidebar"
         collapsed={sidebarCollapsed}
         footer={footerContent}
+        isMobile={isMobile}
       >
         <SidebarTop
           isOpen={!sidebarCollapsed}
