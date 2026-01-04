@@ -61,6 +61,11 @@ jobs:
           echo "Running test suite with coverage..."
           pnpm test:ci || (echo "❌ Test suite failed - check output above for details" && exit 1)
 
+      # Coverage thresholds (must match vitest.config.ts):
+      # - Lines: 80%
+      # - Functions: 75%
+      # - Branches: 70%
+      # - Statements: 80%
       - name: Show Coverage Summary
         if: always()
         run: |
@@ -73,13 +78,13 @@ jobs:
             echo "- Statements: ≥ 80%"
             echo ""
             echo "Actual coverage:"
-            cat coverage/coverage-summary.json | jq -r '.total | "Lines: \(.lines.pct)%\nFunctions: \(.functions.pct)%\nBranches: \(.branches.pct)%\nStatements: \(.statements.pct)%"'
+            jq -r '.total | "Lines: \(.lines.pct)%\nFunctions: \(.functions.pct)%\nBranches: \(.branches.pct)%\nStatements: \(.statements.pct)%"' coverage/coverage-summary.json
             echo ""
             echo "Threshold check:"
-            LINES=$(cat coverage/coverage-summary.json | jq -r '.total.lines.pct | floor')
-            FUNCTIONS=$(cat coverage/coverage-summary.json | jq -r '.total.functions.pct | floor')
-            BRANCHES=$(cat coverage/coverage-summary.json | jq -r '.total.branches.pct | floor')
-            STATEMENTS=$(cat coverage/coverage-summary.json | jq -r '.total.statements.pct | floor')
+            LINES=$(jq -r '.total.lines.pct | floor' coverage/coverage-summary.json)
+            FUNCTIONS=$(jq -r '.total.functions.pct | floor' coverage/coverage-summary.json)
+            BRANCHES=$(jq -r '.total.branches.pct | floor' coverage/coverage-summary.json)
+            STATEMENTS=$(jq -r '.total.statements.pct | floor' coverage/coverage-summary.json)
             
             FAILED=0
             if [ "$LINES" -lt 80 ]; then
@@ -112,7 +117,8 @@ jobs:
             
             if [ $FAILED -eq 1 ]; then
               echo ""
-              echo "⚠️  Coverage thresholds not met. See coverage report for details."
+              echo "❌ Coverage thresholds not met. See coverage report for details."
+              exit 1
             fi
           else
             echo "⚠️  Coverage summary file not found"
@@ -132,7 +138,7 @@ jobs:
       - name: Display Coverage Report Location
         if: always()
         run: |
-          echo "📊 Coverage reports available as artifacts:"
+          echo "📊 Coverage reports available in artifact 'coverage-reports':"
           echo "- HTML report: coverage/index.html"
           echo "- LCOV report: coverage/lcov.info"
           echo "- JSON summary: coverage/coverage-summary.json"

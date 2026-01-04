@@ -54,6 +54,7 @@ export default defineConfig({
         '**/types/**',
         '**/docs/**',
       ],
+      // Coverage thresholds (must be kept in sync with .github/workflows/deploy.yml and .github/workflows/ci.yml)
       thresholds: {
         lines: 80,
         functions: 75,

@@ -3,15 +3,23 @@
 
 # Run Git LFS hook when available; otherwise no-op (silent)
 if command -v git-lfs >/dev/null 2>&1; then
-  git lfs pre-push "$@"
+  if ! git lfs pre-push "$@"; then
+    echo "❌ Git LFS pre-push failed"
+    exit 1
+  fi
 fi
 
 # Style contract checks
-pnpm check:styles
+echo "🔍 Running style checks..."
+if ! pnpm check:styles; then
+  echo "❌ Style checks failed. Run 'pnpm check:styles' to see details."
+  echo "   To bypass: git push --no-verify"
+  exit 1
+fi
 
 # Run lightweight test suite (node + dom tests, fast subset)
 # Can be bypassed with: git push --no-verify
-echo "Running pre-push test checks..."
+echo "🧪 Running pre-push test checks..."
 if ! pnpm test:fast; then
   echo "❌ Pre-push tests failed. Run 'pnpm test' to see full output."
   echo "   To bypass: git push --no-verify"

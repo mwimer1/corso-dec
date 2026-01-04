@@ -244,14 +244,63 @@ jobs:
         with:
           name: coverage-report
           path: coverage/
-      - name: Fail if total line-coverage < 80 %
+      # Coverage thresholds (must match vitest.config.ts):
+      # - Lines: 80%, Functions: 75%, Branches: 70%, Statements: 80%
+      - name: Check Coverage Thresholds
         run: |
-          # Wait for coverage report to be available, since artifact download can be slow
-          while [ ! -f coverage/coverage-summary.json ]; do sleep 1; done
-          pct=$(jq '.total.lines.pct' coverage/coverage-summary.json)
-          echo "Coverage ${pct}%"
-          # Use bc for floating point comparison
-          if (( $(echo "$pct < 80" | bc -l) )); then
-            echo "❌ Coverage below 80 %" && exit 1
+          echo "=== Coverage Threshold Check ==="
+          if [ -f coverage/coverage-summary.json ]; then
+            echo "Coverage thresholds:"
+            echo "- Lines: ≥ 80%"
+            echo "- Functions: ≥ 75%"
+            echo "- Branches: ≥ 70%"
+            echo "- Statements: ≥ 80%"
+            echo ""
+            echo "Actual coverage:"
+            jq -r '.total | "Lines: \(.lines.pct)%\nFunctions: \(.functions.pct)%\nBranches: \(.branches.pct)%\nStatements: \(.statements.pct)%"' coverage/coverage-summary.json
+            echo ""
+            echo "Threshold check:"
+            LINES=$(jq -r '.total.lines.pct | floor' coverage/coverage-summary.json)
+            FUNCTIONS=$(jq -r '.total.functions.pct | floor' coverage/coverage-summary.json)
+            BRANCHES=$(jq -r '.total.branches.pct | floor' coverage/coverage-summary.json)
+            STATEMENTS=$(jq -r '.total.statements.pct | floor' coverage/coverage-summary.json)
+            
+            FAILED=0
+            if [ "$LINES" -lt 80 ]; then
+              echo "❌ Lines coverage: ${LINES}% (threshold: 80%)"
+              FAILED=1
+            else
+              echo "✅ Lines coverage: ${LINES}% (threshold: 80%)"
+            fi
+            
+            if [ "$FUNCTIONS" -lt 75 ]; then
+              echo "❌ Functions coverage: ${FUNCTIONS}% (threshold: 75%)"
+              FAILED=1
+            else
+              echo "✅ Functions coverage: ${FUNCTIONS}% (threshold: 75%)"
+            fi
+            
+            if [ "$BRANCHES" -lt 70 ]; then
+              echo "❌ Branches coverage: ${BRANCHES}% (threshold: 70%)"
+              FAILED=1
+            else
+              echo "✅ Branches coverage: ${BRANCHES}% (threshold: 70%)"
+            fi
+            
+            if [ "$STATEMENTS" -lt 80 ]; then
+              echo "❌ Statements coverage: ${STATEMENTS}% (threshold: 80%)"
+              FAILED=1
+            else
+              echo "✅ Statements coverage: ${STATEMENTS}% (threshold: 80%)"
+            fi
+            
+            if [ $FAILED -eq 1 ]; then
+              echo ""
+              echo "❌ Coverage thresholds not met. See coverage report artifact for details."
+              exit 1
+            fi
+          else
+            echo "❌ Coverage summary file not found"
+            exit 1
           fi
 
