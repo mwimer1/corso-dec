@@ -54,7 +54,6 @@ function ChatComposer(props: ChatComposerProps) {
   const composerRef = React.useRef<HTMLDivElement | null>(null);
   const [isComposing, setIsComposing] = React.useState(false);
   const [usageLimits, setUsageLimits] = React.useState<{ remaining: number; limit: number; currentUsage: number } | null>(null);
-  const [showPresets, setShowPresets] = React.useState(false);
 
   // Get presets for current scope
   const presets = React.useMemo(() => {
@@ -62,34 +61,9 @@ function ChatComposer(props: ChatComposerProps) {
     return getPresetsForScope(scope);
   }, [scope]);
 
-  // Show presets when scope changes (auto-show) - but only in new chat mode
-  React.useEffect(() => {
-    // Always show presets in new chat mode when scope is set (including 'recommended')
-    if (!hasHistory && scope) {
-      const scopePresets = getPresetsForScope(scope);
-      if (scopePresets.length > 0) {
-        setShowPresets(true);
-      } else {
-        setShowPresets(false);
-      }
-    } else {
-      setShowPresets(false);
-    }
-  }, [scope, hasHistory, presets.length]);
-
-  // Close presets when clicking outside
-  React.useEffect(() => {
-    if (!showPresets) return;
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (composerRef.current && !composerRef.current.contains(event.target as Node)) {
-        setShowPresets(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showPresets]);
+  // Presets are always visible in new chat mode (no history) when available
+  // No need for state - compute directly from props
+  const shouldShowPresets = !hasHistory && presets.length > 0;
 
   // Fetch usage limits when Deep Research is enabled
   React.useEffect(() => {
@@ -135,7 +109,6 @@ function ChatComposer(props: ChatComposerProps) {
   const handlePresetClick = React.useCallback((preset: ChatPreset) => {
     if (onPresetSelect) {
       onPresetSelect(preset.prompt);
-      setShowPresets(false);
     }
   }, [onPresetSelect]);
 
@@ -253,7 +226,7 @@ function ChatComposer(props: ChatComposerProps) {
       </div>
 
       {/* Preset prompts - extension from bottom of composer (only in new chat mode) */}
-      {!hasHistory && showPresets && presets.length > 0 && (
+      {shouldShowPresets && (
         <div className="absolute left-0 right-0 top-full z-10 bg-surface rounded-b-2xl border-x-2 border-b-2 border-border shadow-lg">
           <div className="border-t-2 border-border pt-3 pb-3">
             <div className="px-3 space-y-0.5">

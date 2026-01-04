@@ -28,7 +28,7 @@ describe('ChatWindow', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders preset buttons in empty state', () => {
+  it('renders preset buttons in empty state', async () => {
     vi.spyOn(useChatModule, 'useChat').mockReturnValue({
       messages: [],
       isProcessing: false,
@@ -44,7 +44,12 @@ describe('ChatWindow', () => {
     } as unknown as ReturnType<typeof useChatModule.useChat>);
 
     render(<ChatWindow />);
-    expect(screen.getByText('Show permits issued in the last 30 days')).toBeInTheDocument();
+    
+    // Wait for composer to hydrate and presets to appear
+    await waitFor(() => {
+      expect(screen.getByText('Show permits issued in the last 30 days')).toBeInTheDocument();
+    }, { timeout: 3000 });
+    
     expect(screen.getByText('Top 10 contractors by total job value YTD')).toBeInTheDocument();
     expect(screen.getByText('Which project types are trending this quarter?')).toBeInTheDocument();
   });
@@ -66,7 +71,12 @@ describe('ChatWindow', () => {
     } as unknown as ReturnType<typeof useChatModule.useChat>);
 
     render(<ChatWindow />);
-    const presetButton = screen.getByText('Show permits issued in the last 30 days');
+    
+    // Wait for composer to hydrate and presets to appear
+    const presetButton = await waitFor(() => {
+      return screen.getByText('Show permits issued in the last 30 days');
+    }, { timeout: 3000 });
+    
     fireEvent.click(presetButton);
     // With 'auto' as default mode, no prefix is added
     expect(sendMessage).toHaveBeenCalledWith('Show permits issued in the last 30 days');
@@ -206,8 +216,10 @@ describe('ChatWindow', () => {
     expect(composer).toBeInTheDocument();
     expect(composer).toBeVisible();
 
-    // Click a preset button
-    const presetButton = screen.getByText('Show permits issued in the last 30 days');
+    // Click a preset button - wait for it to appear
+    const presetButton = await waitFor(() => {
+      return screen.getByText('Show permits issued in the last 30 days');
+    }, { timeout: 3000 });
     fireEvent.click(presetButton);
 
     // Verify sendMessage was called
