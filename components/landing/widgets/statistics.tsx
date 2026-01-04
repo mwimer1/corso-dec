@@ -17,18 +17,18 @@ type Props = {
 };
 
 const StatBlock: React.FC<{ label: string; value: number; mode?: "currency" | "number"; rightBorder?: boolean; valueClassName?: string | undefined; }> = ({ label, value, mode = "number", rightBorder, valueClassName }) => (
-  <div className={`text-center ${rightBorder ? "md:border-r border-border pr-4" : ""}`}>
-    <p className="text-muted-foreground font-medium mb-2">{label}</p>
-    <p className={`text-3xl md:text-4xl font-bold ${valueClassName ?? "text-foreground"}`}>
+  <div className={`min-w-0 ${rightBorder ? "md:border-r border-border pr-4" : ""}`}>
+    <p className="text-xs text-muted-foreground">{label}</p>
+    <p className={`mt-1 text-3xl font-semibold leading-none truncate tabular-nums ${valueClassName ?? "text-foreground"}`}>
       <AnimatedNumber value={value} mode={mode} durationMs={1000} />
     </p>
   </div>
 );
 
 export const Statistics: React.FC<Props> = ({ totalProjects, totalJobValue, averageJobValue, valueClassName, compact, className }) => (
-  <div className={`grid grid-cols-1 md:grid-cols-3 ${compact ? "gap-6 my-2 py-2" : "gap-8 my-10 py-8"} border-b border-border ${className ?? ""}`.trim()}>
-    <StatBlock label="Job Value" value={totalJobValue} mode="currency" rightBorder valueClassName={valueClassName} />
-    <StatBlock label="Project Count" value={totalProjects} rightBorder valueClassName={valueClassName} />
+  <div className={`grid grid-cols-3 ${compact ? "gap-6" : "gap-8"} ${className ?? ""}`.trim()}>
+    <StatBlock label="Job Value" value={totalJobValue} mode="currency" valueClassName={valueClassName} />
+    <StatBlock label="Project Count" value={totalProjects} valueClassName={valueClassName} />
     <StatBlock label="Avg. Job Value" value={averageJobValue} mode="currency" valueClassName={valueClassName} />
   </div>
 );

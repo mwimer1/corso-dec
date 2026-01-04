@@ -2,6 +2,7 @@
 
 // Year range control using shared Radix Slider atom
 import { Slider } from "@/components/ui/atoms/slider";
+import { Badge } from "@/components/ui/atoms/badge";
 import React, { useMemo, useRef } from "react";
 
 type Props = {
@@ -50,9 +51,9 @@ export const YearRangeSlider: React.FC<Props> = ({
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-base font-medium text-foreground">Year range</h3>
         {showSelectedIndicator && (
-          <span className="rounded border border-border bg-surface px-2 py-1 text-xs text-muted-foreground">
-            {min} — {max}
-          </span>
+          <Badge color="secondary" className="text-xs">
+            {min}–{max}
+          </Badge>
         )}
       </div>
       <div ref={containerRef} className="relative">
@@ -64,9 +65,9 @@ export const YearRangeSlider: React.FC<Props> = ({
           min={minYear}
           max={maxYear}
           step={1}
-          className="w-full shadow-inner shadow-black/5"
+          className="w-full"
           size="sm"
-          thumbSize="lg"
+          thumbSize="md"
           aria-label="Year range"
           showTooltips={showBubbles}
           formatValue={(n) => String(n)}

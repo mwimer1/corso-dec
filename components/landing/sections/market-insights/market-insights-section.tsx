@@ -2,7 +2,7 @@
 
 // src/components/landing/market-insights/market-insights-section.tsx
 
-import { Button, Card, CardContent } from "@/components/ui/atoms";
+import { Button, Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/atoms";
 import { Badge } from "@/components/ui/atoms/badge";
 import { trackEvent } from "@/lib/shared/analytics/track";
 import { cn } from "@/styles";
@@ -207,10 +207,9 @@ export const MarketInsightsSection: React.FC<Props> = ({
       )}
       aria-labelledby="market-insights-title"
     >
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 lg:items-start">
-        {/* LEFT COLUMN: Text + Filters */}
-        <div className="space-y-6 flex flex-col h-full">
-          {/* Text header section */}
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12 lg:items-start">
+        {/* LEFT COLUMN: Text */}
+        <div className="lg:col-span-5">
           <div className="max-w-prose">
             <h2 id="market-insights-title" className="text-4xl font-bold tracking-tight text-foreground">
               Explore Real Data in Action
@@ -224,12 +223,33 @@ export const MarketInsightsSection: React.FC<Props> = ({
               <li>Export-ready insights for GTM teams</li>
             </ul>
           </div>
+        </div>
 
-          {/* Filters Card - positioned below bullet points */}
-          <Card variant="default" className="mt-6 flex-1">
-            <CardContent className="space-y-4 pt-6">
-              {/* Filter controls */}
-              <div className="space-y-4">
+        {/* RIGHT COLUMN: Unified demo card */}
+        <Card variant="highlight" className="lg:col-span-7">
+          <CardHeader className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Permit activity</CardTitle>
+                <CardDescription>Sample view • Updated regularly</CardDescription>
+              </div>
+            </div>
+
+            {/* KPIs */}
+            <Statistics
+              totalProjects={totalProjects}
+              totalJobValue={totalJobValue}
+              averageJobValue={avgJobValue}
+              valueClassName="text-primary"
+              compact
+              className="border-b-0 py-0 mt-0"
+            />
+          </CardHeader>
+
+          <CardContent className="pt-0">
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-[320px_1fr]">
+              {/* Filters panel */}
+              <div className="space-y-5">
                 <YearRangeSlider
                   value={range}
                   onChange={setRange}
@@ -237,14 +257,14 @@ export const MarketInsightsSection: React.FC<Props> = ({
                   minYear={minYear}
                   maxYear={maxYear}
                   compact
-                  showSelectedIndicator={false}
+                  showSelectedIndicator={true}
                   {...(!dense ? {} : { showBubbles: false })}
                 />
 
                 {controlsVariant === "dropdown" ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-4">
                     <FilterSelect
-                      title="Select Territory"
+                      title="Territory"
                       items={territories}
                       selected={territory}
                       onSelect={onTerritorySelect}
@@ -252,7 +272,7 @@ export const MarketInsightsSection: React.FC<Props> = ({
                       showSelectedIndicator={false}
                     />
                     <FilterSelect
-                      title="Select Property Type"
+                      title="Property type"
                       items={propertyTypes}
                       selected={propType}
                       onSelect={onPropertySelect}
@@ -261,9 +281,9 @@ export const MarketInsightsSection: React.FC<Props> = ({
                     />
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-4">
                     <FilterPills
-                      title="Select Territory"
+                      title="Territory"
                       items={territories}
                       selected={territory}
                       onSelect={onTerritorySelect}
@@ -271,7 +291,7 @@ export const MarketInsightsSection: React.FC<Props> = ({
                       showSelectedIndicator={false}
                     />
                     <FilterPills
-                      title="Select Property Type"
+                      title="Property type"
                       items={propertyTypes}
                       selected={propType}
                       onSelect={onPropertySelect}
@@ -281,47 +301,27 @@ export const MarketInsightsSection: React.FC<Props> = ({
                   </div>
                 )}
 
-                <div className="flex items-center justify-between gap-3">
-                  <Button variant="secondary" size="sm" onClick={handleReset}>
-                    Reset
-                  </Button>
-
-                  <p className="text-xs text-muted-foreground whitespace-nowrap">
-                    Sample view • Updated regularly
-                  </p>
-                </div>
+                <Button variant="secondary" size="sm" onClick={handleReset} className="w-full">
+                  Reset
+                </Button>
               </div>
-            </CardContent>
-          </Card>
-        </div>
 
-        {/* RIGHT COLUMN: Chart output with stats */}
-        <div className="lg:sticky lg:top-24 lg:self-start">
-          <Card variant="highlight" className="h-full flex flex-col">
-            <CardContent className="pt-6 flex-1 flex flex-col">
-              {/* Statistics at top */}
-              <Statistics
-                totalProjects={totalProjects}
-                totalJobValue={totalJobValue}
-                averageJobValue={avgJobValue}
-                valueClassName="text-primary"
-                compact
-                className="border-b-0 py-0 mt-0 mb-3"
-              />
               {/* Chart */}
-              <Chart data={filtered} loading={loading} variant="bare" heightClassName="h-64 md:h-80 lg:h-96" />
-              {/* Active filters at bottom */}
-              <div className="mt-4 pt-4 border-t border-border space-y-2">
-                <p className="text-sm font-semibold text-foreground">Selected filters</p>
-                <div className="flex flex-wrap gap-2" aria-label="Active filters">
-                  <Badge color="secondary">{territory}</Badge>
-                  <Badge color="secondary">{propType === "All" ? "All Types" : propType}</Badge>
-                  <Badge color="secondary">{range[0]}–{range[1]}</Badge>
-                </div>
+              <div className="min-w-0">
+                <Chart data={filtered} loading={loading} variant="bare" heightClassName="h-64 md:h-80 lg:h-96" />
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+          </CardContent>
+
+          <CardFooter className="flex-col items-start gap-2 border-t">
+            <p className="text-sm font-semibold text-foreground">Selected filters</p>
+            <div className="flex flex-wrap gap-2" aria-label="Active filters">
+              <Badge color="secondary">{territory}</Badge>
+              <Badge color="secondary">{propType === "All" ? "All Types" : propType}</Badge>
+              <Badge color="secondary">{range[0]}–{range[1]}</Badge>
+            </div>
+          </CardFooter>
+        </Card>
       </div>
 
       <div className={"mt-8 pt-8 " + styles['roiWrap']}>
