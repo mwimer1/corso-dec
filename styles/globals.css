@@ -69,7 +69,7 @@ html, body {
   /* Font rendering optimization */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizelegibility;
+  /* Avoid optimizeLegibility globally—can reduce text crispness on Windows for small UI text. */
 }
 
 /* Global focus styles for accessibility */

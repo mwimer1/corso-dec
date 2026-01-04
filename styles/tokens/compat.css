@@ -28,15 +28,6 @@ html {
   text-size-adjust: 100%;
 }
 
-/* Selection handling utilities (scoped) */
-.u-no-select {
-  user-select: none;
-}
-
-.u-select-text {
-  user-select: text;
-}
-
 /* Appearance reset (prefix first, then standard) */
 button,
 input[type="button"],
@@ -51,13 +42,7 @@ input[type="reset"] {
 }
 
 /* Mask image (prefix first, then standard) */
-.u-mask-fade-vertical {
-  mask-image: linear-gradient(to bottom, rgb(0 0 0 / 0%) 0%, black 10%);
-  mask-image: linear-gradient(to bottom, rgb(0 0 0 / 0%) 0%, black 10%);
-}
-
 .u-mask-fade-bottom {
-  mask-image: linear-gradient(to bottom, black 0%, black 70%, transparent 100%);
   mask-image: linear-gradient(to bottom, black 0%, black 70%, transparent 100%);
 }
 

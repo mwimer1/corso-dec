@@ -11,6 +11,29 @@ description: "Documentation and resources for documentation functionality."
 **Status**: Priority 1, 2, 3 & 4 Complete ✅  
 **Production Ready**: Yes
 
+## Recent Updates
+
+### 2026-01-03: Font Rendering & CSS Cleanup
+
+**Font Rendering Improvements:**
+- Removed global `text-rendering: optimizelegibility` from `styles/globals.css` to improve text crispness on Windows for small UI text
+- Added regression test `tests/styles/font-rendering-regression.test.ts` to prevent reintroduction
+- Updated styling standards documentation (`.cursor/rules/styling-standards.mdc`) with font rendering guidance
+
+**CSS Cleanup:**
+- Removed unused utility classes from `styles/tokens/compat.css`:
+  - `.u-no-select` (0 usage hits)
+  - `.u-select-text` (0 usage hits)
+  - `.u-mask-fade-vertical` (0 usage hits, duplicate lines removed)
+- Fixed duplicate `mask-image` declaration in `.u-mask-fade-bottom` (kept class as it's used in `components/landing/sections/product-showcase/product-showcase.tsx`)
+
+**Component Improvements:**
+- Moved Logo component inline `clip-path` styles to CSS module (`components/ui/atoms/logo.module.css`) for better maintainability
+
+**Tooling:**
+- Updated `audit:styles` script in `package.json` to run standard style health checks: `check:tokens`, `check:route-themes`, `lint`, `typecheck`
+- Preserved comprehensive audit functionality as `audit:styles:comprehensive`
+
 ## Executive Summary
 
 Completed comprehensive audit, optimization, and standardization of the styles and components directories. All critical, high-priority, and medium-priority tasks completed. The styling system is now fully standardized, optimized, validated, and production-ready.
