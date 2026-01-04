@@ -1,7 +1,7 @@
 <!--
   AUTO-GENERATED FILE — DO NOT EDIT BY HAND.
   Source: .cursor/rules/corso-assistant.mdc
-  Generated: 2025-12-30T19:25:00.083Z
+  Generated: 2026-01-04T03:32:06.166Z
 -->
 
 ---
@@ -18,6 +18,7 @@ globs:
   - ".cursor/**"
   - ".agent/**"
   - "scripts/**"
+summary: Canonical source for Cursor rules; edit this file, then run pnpm rules:sync to update generated artifacts.
 ---
 
 # Corso Codebase Assistant — Operating Rules (vNext)

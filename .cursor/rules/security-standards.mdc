@@ -30,7 +30,10 @@ summary: Zero-trust security with Clerk auth, Zod validation, rate limiting, and
 - **Environment**: Use `getEnv()` exclusively, never `process.env` directly
 - **SQL safety**: Always validate AI-generated SQL with tenant scoping
 
-## 🛡️ Core Security Principles
+## Purpose
+Enforce zero-trust security architecture with authentication, authorization, validation, rate limiting, and error handling for all API routes and server actions.
+
+## Core Security Principles
 
 ### Zero-Trust Architecture
 See canonical snippet: [_snippets.mdc#zero-trust-security-principles](_snippets.mdc#zero-trust-security-principles)
@@ -42,338 +45,93 @@ See canonical snippet: [_snippets.mdc#zero-trust-security-principles](_snippets.
 - **Rate limit** all endpoints to prevent abuse
 - **Log** security events for monitoring and auditing
 
-## 🛡️ Authentication & Authorization
+## Authentication & Authorization
 
 ### Clerk Integration (Required)
-```typescript
-import { auth } from "@clerk/nextjs/server";
-import { http } from "@/lib/api";
-
-export async function POST(req: NextRequest): Promise<Response> {
-  const { userId } = await auth();
-  if (!userId) {
-    return http.error(401, "Unauthorized", { code: "HTTP_401" });
-  }
-  return http.ok({ success: true });
-}
-```
-
-### Clerk Onboarding & Session Claims
-
-- Prefer embedding `user.public_metadata` in Clerk session tokens via the Clerk Dashboard (Customize session token claims):
-
-```json
-{
-  "metadata": "{{user.public_metadata}}"
-}
-```
-
-- Server-side guards should read onboarding status from `auth().sessionClaims?.metadata?.onboardingComplete` when present. If the claim is missing, fall back to the existing persistence (e.g., `getOnboardingPrefs()`) until migration completes.
-
-- Ensure `middleware.ts` uses `clerkMiddleware()` so requests are decorated with Clerk session context and can be gated centrally.
-
-- Actions that mark onboarding complete should update Clerk `publicMetadata` (e.g., `clerkClient.users.updateUser(userId, { publicMetadata: { onboardingComplete: true } })`) so the flag becomes authoritative.
-
-### SQL Injection Prevention (Authentication)
-```typescript
-import { auth } from "@clerk/nextjs/server";
-import { validateSQLScope } from "@/lib/security";
-import { http } from "@/lib/api";
-
-const { userId } = await auth();
-
-const sanitizedQuery = validateSQLScope(query);
-```
+Use `auth()` from `@clerk/nextjs/server` for all protected routes. See [extended examples](../../docs/ai/rules/security-standards.md#clerk-authentication---complete-example).
 
 ### Role-Based Access Control
-```typescript
-import { auth } from "@clerk/nextjs/server";
-import { assertRole } from "@/lib/auth/roles";
-import { http } from "@/lib/api";
+Use `assertRole()` for permission checks. See [extended examples](../../docs/ai/rules/security-standards.md#role-based-access-control---complete-example).
 
-const { userId } = await auth();
-if (!userId) {
-  return http.error(401, "Unauthorized", { code: "HTTP_401" });
-}
-
-// Get user role from session/clerk
-const userRole = "admin"; // Replace with actual role retrieval
-try {
-  assertRole(userRole, "admin");
-} catch {
-  return http.error(403, "Insufficient permissions", { code: "FORBIDDEN" });
-}
-```
-
-## 🚦 Rate Limiting & Abuse Prevention
+## Rate Limiting & Abuse Prevention
 
 ### Edge Runtime Rate Limiting
-```typescript
-import { withRateLimitEdge } from "@/lib/middleware/edge/rate-limit";
-import { http } from "@/lib/api";
-
-export const POST = withRateLimitEdge(
-  async (req: NextRequest) => {
-    return http.ok({ success: true });
-  },
-  { maxRequests: 30, windowMs: 60_000 }
-);
-```
-
-### Server-Side Rate Limiting
-```typescript
-import { checkRateLimit } from "@/lib/ratelimiting";
-import { getEnv } from "@/lib/server/env";
-import { http } from "@/lib/api";
-
-const limited = await checkRateLimit(key, {
-  windowMs: 60_000,
-  maxRequests: getEnv().OPENAI_RATE_LIMIT_PER_MIN ?? 30,
-});
-
-if (limited) {
-  return http.error(429, "Too Many Requests", { code: "RATE_LIMITED" });
-}
-```
-
-### Rate Limiting Configuration
-```typescript
-// Standard user endpoints
-{ maxRequests: 30, windowMs: 60_000 }
-
-// AI generation endpoints
-{ maxRequests: 30, windowMs: 60_000 }
-
-// Webhook endpoints
-{ maxRequests: 100, windowMs: 60_000 }
-
-// Database queries
-{ maxRequests: 60, windowMs: 60_000 }
-```
+Apply via `makeEdgeRoute({ rateLimit })` or `withRateLimitEdge`. Standard config: `{ maxRequests: 30, windowMs: 60_000 }`.
 
 ### Exemptions
-- `/api/status/health` — Do NOT apply app-level rate limits. Health checks must remain unthrottled for load balancers/monitors. Handle abuse via WAF/CDN if needed.
+- `/api/status/health` — Do NOT apply app-level rate limits. Health checks must remain unthrottled for load balancers/monitors.
 
-## 🔍 Input Validation & Sanitization
+## Input Validation & Sanitization
 
 ### Zod Schema Validation (Required)
 See canonical snippet: [_snippets.mdc#zod-request-validation-pattern](_snippets.mdc#zod-request-validation-pattern)
 
-### SQL Injection Prevention (Input Validation)
-```typescript
-import { validateAISQLSecurity } from "@/lib/security/assessment/ai-validator";
-
-// Validate AI-generated SQL before execution
-const sanitizedSQL = validateAISQLSecurity(generatedSQL);
-```
-
-### XSS Prevention
-```typescript
-import { sanitizeUserInput } from "@/lib/security/prompt-injection";
-
-// Sanitize user input before processing
-const sanitizedInput = sanitizeUserInput(userInput);
-```
+### SQL Injection Prevention
+Always use parameterized queries. Validate AI-generated SQL with `validateAISQLSecurity()`.
 
 ### AI Prompt Injection Prevention
-```typescript
-import { sanitizeUserInput } from "@/lib/security/prompt-injection";
+Use `sanitizeUserInput()` for all AI endpoints (`/api/v1/ai/chat`, `/api/v1/ai/generate-sql`).
 
-// Shared sanitizer for all AI endpoints (chat and generate-sql)
-// Applies conservative sanitization:
-// - Removes null bytes and control characters (preserves newlines/tabs)
-// - Normalizes line endings (CRLF → LF, CR → LF)
-// - Removes prompt injection patterns (ignore previous instructions, etc.)
-// - Enforces maximum length limit (2000 characters)
-const sanitized = sanitizeUserInput(userInput);
-```
+## Webhook Security
 
-**Applied in:**
-- `/api/v1/ai/chat` - User content sanitized before OpenAI calls
-- `/api/v1/ai/generate-sql` - Prompt/question fields sanitized before OpenAI calls
+### Stripe & Clerk Webhook Verification
+Always verify webhook signatures. See [extended examples](../../docs/ai/rules/security-standards.md#webhook-security---detailed-patterns).
 
-## 🔒 Webhook Security
-
-### Stripe Webhook Verification
-```typescript
-import { stripe } from "@/lib/integrations/stripe";
-import { getEnv } from "@/lib/shared/env";
-import { http } from "@/lib/api";
-
-export async function POST(req: NextRequest): Promise<Response> {
-  const body = await req.text();
-  const signature = req.headers.get("stripe-signature");
-  if (!signature) {
-    return http.badRequest("Missing signature", { code: "MISSING_SIGNATURE" });
-  }
-
-  try {
-    const event = stripe.webhooks.constructEvent(
-      body,
-      signature,
-      getEnv().STRIPE_WEBHOOK_SECRET
-    );
-    // Process verified webhook
-    return http.ok({ received: true });
-  } catch {
-    return http.badRequest("Invalid signature", { code: "INVALID_SIGNATURE" });
-  }
-}
-```
-
-### Clerk Webhook Verification
-```typescript
-import { Webhook } from 'svix';
-import { headers } from 'next/headers';
-import { http } from "@/lib/api";
-
-export async function POST(req: NextRequest): Promise<Response> {
-  // CRITICAL: Read raw body as string (not JSON) to preserve signature integrity
-  // Any re-serialization (JSON.parse/stringify) will invalidate the signature
-  const rawBody = await req.text();
-  const headersList = await headers();
-  const svix_id = headersList.get("svix-id");
-  const svix_timestamp = headersList.get("svix-timestamp");
-  const svix_signature = headersList.get("svix-signature");
-
-  if (!svix_id || !svix_timestamp || !svix_signature) {
-    return http.badRequest("Missing headers", { code: "MISSING_HEADERS" });
-  }
-
-  const wh = new Webhook(getEnv().CLERK_WEBHOOK_SECRET);
-  try {
-    // Verify signature using raw body string - must be exact as received
-    wh.verify(rawBody, {
-      "svix-id": svix_id,
-      "svix-timestamp": svix_timestamp,
-      "svix-signature": svix_signature,
-    });
-    // Process verified webhook
-    return http.ok({ received: true });
-  } catch {
-    return http.badRequest("Invalid signature", { code: "INVALID_SIGNATURE" });
-  }
-}
-```
-
-## 🚨 Error Handling & Information Disclosure
+## Error Handling
 
 ### Structured Error Responses
 See canonical snippet: [_snippets.mdc#error-handling-wrapper--http-helpers](_snippets.mdc#error-handling-wrapper--http-helpers)
 
-### Error Response Format
-```typescript
-// Success Response
-{
-  "success": true,
-  "data": { /* response data */ }
-}
-
-// Error Response (standardized via helpers)
-{
-  "success": false,
-  "error": "Invalid input provided",
-  "code": "VALIDATION_ERROR",
-  "details": { /* structured error details */ }
-}
-```
-
-## 🔧 Environment & Configuration
+## Environment & Configuration
 
 ### Environment Variable Access
-```typescript
-// ✅ CORRECT: Use centralized config (server-only)
-import { getEnv } from "@/lib/server/env";
-const apiKey = getEnv().OPENAI_API_KEY;
-
-// ✅ CORRECT: Use client-safe config (client components)
-import { publicEnv } from "@/lib/shared/config/client";
-const siteUrl = publicEnv.NEXT_PUBLIC_SITE_URL;
-
-// ❌ WRONG: Direct process.env access
-const apiKey = process.env.OPENAI_API_KEY;
-```
+- ✅ Use `getEnv()` from `@/lib/server/env` (server-only)
+- ✅ Use `publicEnv` from `@/lib/shared/config/client` (client components)
+- ❌ Never use `process.env` directly
 
 ### Runtime Selection
-```typescript
-// Edge Runtime (for low-latency operations)
-export const runtime = "edge";
+- Edge Runtime: `export const runtime = "edge"` (low-latency operations)
+- Node.js Runtime: `export const runtime = "nodejs"` (database operations)
 
-// Node.js Runtime (for database operations)
-export const runtime = "nodejs";
-```
+## Rules
 
-### Edge redirects (Request vs NextRequest)
-See canonical snippet: [_snippets.mdc#edge-safe-redirect-request-vs-nextrequest](_snippets.mdc#edge-safe-redirect-request-vs-nextrequest)
+- **MUST** authenticate all protected routes with Clerk `auth()`
+- **MUST** validate all inputs with Zod schemas
+- **MUST** apply rate limiting to all applicable endpoints
+- **MUST** use `getEnv()` for environment access (never `process.env`)
+- **MUST** verify webhook signatures (Stripe, Clerk)
+- **MUST** sanitize AI user input with `sanitizeUserInput()`
+- **MUST** use `makeEdgeRoute` or `withErrorHandlingEdge` for error handling
+- **MUST** maintain Edge compatibility in `@/lib/api` barrel
+- **MUST** maintain client compatibility in `@/lib/shared` barrel
 
-## 📊 Monitoring & Logging
+## API Surface Enforcement
+- Public endpoints must be versioned under `/api/v1/**`
+- Internal/privileged endpoints must live under `/api/internal/**` and are excluded from OpenAPI
+- Legacy unversioned endpoints should be removed or provide a one‑release 308 redirect to the v1 path
 
-### Structured Logging
-```typescript
-import { logger } from "@/lib/monitoring";
+## @/lib/api Edge Safety (Critical)
+The `@/lib/api` barrel **must remain Edge-compatible** at all times:
+- ✅ Exports only Edge-safe utilities (http helpers, redirect helpers, withErrorHandlingEdge)
+- ❌ Never re-exports Node-only utilities (ClickHouse, server-side rate limiting, streaming)
+- ✅ Use subpath imports for server utilities: `@/lib/server/streaming/ndjson` instead of `@/lib/server`
 
-logger.info("API request processed", {
-  userId,
-  operation: "data_query",
-  duration: Date.now() - startTime,
-  success: true,
-});
+**Breaking this rule will cause all Edge routes to fail at runtime.**
 
-logger.warn("Rate limit exceeded", {
-  key,
-  ip,
-  userId,
-  path: req.nextUrl.pathname,
-});
-```
+## @/lib/shared Client Safety (Critical)
+The `@/lib/shared` barrel **must remain client-compatible** at all times:
+- ✅ Exports only client-safe utilities (validation schemas, config helpers, assets)
+- ❌ Never re-exports server-only utilities (environment validation, domain configs, feature flags)
+- ✅ Use `@/lib/shared/client` for client components and `@/lib/shared/server` for server-only code
 
-### Security Event Logging
-```typescript
-logger.error("Security violation detected", {
-  userId,
-  ip,
-  userAgent: req.headers.get("user-agent"),
-  violation: "unauthorized_access",
-  path: req.nextUrl.pathname,
-});
-```
+**Breaking this rule will cause all client components to fail at runtime.**
 
-## 🧪 Testing & Validation
-
-### Security Testing Patterns
-```typescript
-// Test rate limiting
-// (Make multiple requests and verify 429 response)
-```
-
-### Authentication Testing
-```typescript
-// Mock auth and verify 200 vs 401 paths
-```
-
-## 🔍 Enforcement & Validation
+## Enforcement
 
 ### ESLint Rules
 - `@corso/require-auth`: Enforce authentication on protected routes
 - `@corso/require-validation`: Enforce input validation
 - `@corso/require-rate-limit`: Enforce rate limiting
-
-### Pattern Validation Commands (Domain-Specific)
-```bash
-# Check for missing authentication
-sg -p 'export const $METHOD = withErrorHandlingEdge' --lang typescript app/api/
-
-# Check for process.env usage
-rg 'process\.env' --type ts app/api/
-
-# Check for missing error handling wrapper
-sg -p 'export const $METHOD = withErrorHandlingEdge' --lang typescript app/api/
-```
-
-### Quality gates
-
-See the canonical command set in
-[ai-agent-development-environment.mdc](mdc:.cursor/rules/ai-agent-development-environment.mdc#quality-gates-and-validation-commands).
 
 ### Enforcement Criteria
 - **Authentication Coverage**: 100% for protected routes
@@ -387,54 +145,21 @@ See the canonical command set in
 - **CI validation**: `pnpm validate:cursor-rules` runs rule compliance checks
 - **OpenAPI RBAC**: `pnpm openapi:rbac:check` validates security annotations
 
-## API Surface Enforcement
-- Public endpoints must be versioned under `/api/v1/**`.
-- Internal/privileged endpoints must live under `/api/internal/**` and are excluded from OpenAPI.
-- Legacy unversioned endpoints should be removed or provide a one‑release 308 redirect to the v1 path (non‑prod only for internal aliases).
+## Quality gates
 
-## @/lib/api Edge Safety (Critical)
-The `@/lib/api` barrel **must remain Edge-compatible** at all times:
-- ✅ Exports only Edge-safe utilities (http helpers, redirect helpers, withErrorHandlingEdge)
-- ❌ Never re-exports Node-only utilities (ClickHouse, server-side rate limiting, streaming)
-- ✅ Use subpath imports for server utilities: `@/lib/server/streaming/ndjson` instead of `@/lib/server`
-- ✅ Import server utilities directly in Node routes to maintain Edge compatibility
+See the canonical command set in
+[ai-agent-development-environment.mdc](mdc:.cursor/rules/ai-agent-development-environment.mdc#quality-gates-and-validation-commands).
 
-**Breaking this rule will cause all Edge routes to fail at runtime.**
+## Extended Documentation
 
-## @/lib/shared Client Safety (Critical)
-The `@/lib/shared` barrel **must remain client-compatible** at all times:
-- ✅ Exports only client-safe utilities (validation schemas, config helpers, assets)
-- ❌ Never re-exports server-only utilities (environment validation, domain configs, feature flags)
-- ✅ Use `@/lib/shared/client` for client components and `@/lib/shared/server` for server-only code
-- ✅ Import server utilities directly in server routes to maintain client compatibility
-
-**Breaking this rule will cause all client components to fail at runtime.**
+For extended code examples, webhook verification patterns, monitoring examples, and Clerk UI contract details, see [docs/ai/rules/security-standards.md](../../docs/ai/rules/security-standards.md).
 
 ## Windows-first tips
 
 See the canonical guidance in
 [ai-agent-development-environment.mdc](mdc:.cursor/rules/ai-agent-development-environment.mdc#windows-first-tips).
 
-## Clerk UI Contract (Dashboard)
+## Related Rules
 
-- Render `UserButton` only inside `SignedIn` in the dashboard sidebar.
-- **Critical**: `UserButton` must **never** appear on public marketing pages (landing/insights modes). Authenticated users accessing public pages are automatically redirected to `/dashboard/chat` by middleware.
-- Force page routing for account settings: `userProfileMode="navigation"` and `userProfileUrl="/account"`.
-- Configure menu items in order using `UserButton.MenuItems`:
-  1) `manageAccount` (navigates to `/account`)
-  2) Link: label "Manage Subscription" → `/subscription`
-  3) `signOut` (redirects to `/` via `afterSignOutUrl`)
-- Appearance: apply subtle popover elevation via `appearance={{ elements: { userButtonPopoverCard: "shadow-lg" } }}`.
-
-## Authentication Redirect Behavior
-
-### Post-Authentication Redirects
-- **Sign-in/Sign-up**: Default redirect to `/dashboard/chat` (per `next.config.mjs`, `/dashboard` redirects to `/dashboard/chat`)
-- **Environment variables**: `NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL` and `NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL` control redirects, with fallback to `/dashboard/chat`
-- **MVP**: Onboarding disabled, all authenticated users redirect to dashboard
-
-### Authenticated User Redirects (Middleware)
-- **Public marketing pages**: Authenticated users accessing public routes (`/`, `/pricing`, `/insights(.*)`, `/(marketing)(.*)`) are automatically redirected to `/dashboard/chat` by middleware (`middleware.ts`)
-- **Purpose**: Prevents authenticated users from seeing marketing content and ensures auth UI (UserButton) never appears on public pages
-- **Exception**: Auth routes (`/sign-in`, `/sign-up`) are excluded from redirect to allow authenticated users to access these pages if needed
-- **Implementation**: Middleware checks authentication state before allowing access to public marketing routes
+- `cursor/openapi-vendor-extensions` - OpenAPI RBAC enforcement
+- `cursor/runtime-boundaries` - Server/Edge import safety

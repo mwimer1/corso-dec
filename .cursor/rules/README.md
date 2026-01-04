@@ -152,6 +152,32 @@ Each rule must include:
 
 **Note**: Rules must reference canonical Windows-first tips and quality gates sections rather than duplicating content. See [`.cursor/templates/rule-templates.md`](../templates/rule-templates.md) for authoring templates.
 
+## Token Budget & Evergreen Policy
+
+### Policy Overview
+Rules are optimized for token efficiency and long-term maintainability:
+- **Target**: Individual rules < 2,500 tokens (except canonical `ai-agent-development-environment.mdc` < 3,500)
+- **Always-apply rules**: Target < 1,200 tokens each (except canonical)
+- **Total reduction goal**: 20%+ token reduction across all rules
+- **Longform content**: Extended examples, migration guides, and detailed patterns live in `docs/ai/rules/`
+
+### Longform Content Location
+Extended documentation for rules is located in `docs/ai/rules/`:
+- `docs/ai/rules/security-standards.md` - Extended code examples, webhook verification patterns
+- `docs/ai/rules/warehouse-query-hooks.md` - Advanced patterns, migration guides
+- `docs/ai/rules/analytics-tracking.md` - Provider integration, testing patterns
+- `docs/ai/rules/entity-grid-architecture.md` - Future enhancements backlog
+- `docs/ai/rules/component-design-system.md` - Extended import examples, theming patterns
+- `docs/ai/rules/dashboard-components.md` - Chat implementation details
+- `docs/ai/rules/openapi-vendor-extensions.md` - Workflow integration, common issues
+
+Rules link to these docs rather than embedding large content blocks.
+
+### Canonical Sections
+- **Windows-first tips**: Canonical home is [`ai-agent-development-environment.mdc`](ai-agent-development-environment.mdc#windows-first-tips)
+- **Quality gates**: Canonical home is [`ai-agent-development-environment.mdc`](ai-agent-development-environment.mdc#quality-gates-and-validation-commands)
+- Other rules must link to these sections, not duplicate them
+
 ## Enforcement
 
 ### **Automated Enforcement**

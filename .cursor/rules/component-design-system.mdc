@@ -37,79 +37,10 @@ summary: Atomic design patterns, import conventions, design system standards, an
 - Place route-specific components under route `_components/` when applicable
 
 ### Component Organization
-```typescript
-components/
-├── ui/                    # Atomic design system (120+ components)
-│   ├── atoms/            # Basic primitives (29 components)
-│   ├── molecules/        # Composed components (27+ components)
-│   └── organisms/        # Complex sections (24+ components)
-├── auth/                 # Authentication (5 components)
-├── billing/              # Subscription & billing (4 components)
-├── dashboard/            # Business intelligence (19 components)
-├── forms/                # Form handling (5 components)
-├── landing/              # Marketing sections (15+ components)
-├── marketing/            # Lead capture (16 components)
-├── onboarding/           # Multi-step wizard (29 components)
-```
+- **ui/**: Atomic design system (120+ components: 29 atoms, 27+ molecules, 24+ organisms)
+- **Domain modules**: auth/ (5), billing/ (4), dashboard/ (19), forms/ (5), landing/ (15+), marketing/ (16), onboarding/ (29)
 
-## 📦 Import Conventions
-
-### ✅ CORRECT: UI System Imports
-```typescript
-// Use short alias UI barrels
-import { Button } from '@/atoms';
-import { FormField } from '@/molecules';
-import { AnalyticsChart } from '@/organisms';
-
-// Domain-specific imports
-import { useDashboardContext } from '@/components/dashboard';
-import { EnhancedOnboardingFlow } from '@/components/onboarding';
-import { ContactForm } from '@/components/forms';
-import { Hero } from '@/components/landing';
-
-// Auth components
-import { ClerkEventsHandler } from '@/components/auth';
-
-// Billing components
-import { PlanPicker, SubscriptionStatus } from '@/components/billing';
-
-// Marketing components
-import { PricingPage } from '@/components/marketing';
-
-// Type imports
-import type { NavItem } from '@/types/dashboard/table';
-import type { OnboardingStepId } from '@/types/onboarding/flow/types';
-```
-
-### ✅ CORRECT: App Route Imports
-```typescript
-// Import heavy organisms via leaf modules (not the organisms aggregator)
-import { ErrorFallback } from '@/components/ui/organisms/error-fallback';
-```
-
-### ✅ CORRECT: Internal Component Imports
-```typescript
-// Inside components/** - use leaf modules or relative paths
-import { Button } from '@/components/ui/atoms/button';
-import { LinkTrack } from '@/components/ui/molecules/link-track';
-```
-
-### ❌ INCORRECT: Import Violations
-```typescript
-// ❌ Cross-domain imports
-// import { logger } from '@/lib/monitoring';
-// Note: contexts/ directory was removed - providers are now in app/providers/
-
-// ❌ Deep paths when facades exist
-// import { BarChart } from '@/components/ui/organisms/charts/bar-chart';
-
-// ❌ Root barrel imports from within components/**
-// import { Button } from '@/components/ui';
-// import { LinkTrack } from '@/components';
-
-// ❌ Organisms aggregator in app routes
-// import { ErrorFallback } from '@/organisms';
-```
+## Import Conventions
 
 ### Intra-Domain Import Guard (Critical)
 Files under `components/**` must not import the root components barrels (`@/components`, `@/components/ui`). Import leaf modules (`atoms`, `molecules`, `organisms`) or use relative paths.
@@ -118,71 +49,32 @@ Files under `components/**` must not import the root components barrels (`@/comp
 
 **Enforcement**: ESLint (`no-restricted-imports`) and dependency-cruiser rule `no-components-root-barrel-from-components`.
 
-## 🎨 Design System & Variants
+## Design System & Variants
 
 ### Variant Types
-```typescript
-// Use types from @/styles/variants or component-specific variants
-import type { ButtonVariants } from '@/styles/ui/atoms/button-variants';
-import type { VariantProps } from 'class-variance-authority';
-
-// Use design tokens for responsive sizing
-import { responsiveImageSizes } from '@/styles/ui/shared/responsive-image-sizes';
-```
+- Use types from `@/styles/variants` or component-specific variants
+- Use design tokens for responsive sizing
 
 ### Button Variants
-```typescript
-// Allowed button variants
-type ButtonVariant = 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link' | 'waitlist' | 'waitlistBlue';
-
-// Allowed button sizes
-type ButtonSize = 'default' | 'sm' | 'lg' | 'icon';
-
-// Replace hardcoded viewport values with design tokens
-const imageSize = responsiveImageSizes.full; // Instead of "100vw"
-```
+- Allowed variants: `'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link' | 'waitlist' | 'waitlistBlue'`
+- Allowed sizes: `'default' | 'sm' | 'lg' | 'icon'`
+- Replace hardcoded viewport values with design tokens
 
 ### Design Tokens
-```typescript
-// Use design tokens consistently
-import { tokens } from '@/styles/tokens';
+- Use design tokens consistently from `@/styles/tokens`
 
-const styles = {
-  color: tokens.color.primary,
-  spacing: tokens.spacing.md,
-  borderRadius: tokens.radius.lg,
-};
-```
-
-## 🎨 Theming (Route Groups)
+## Theming (Route Groups)
 
 ### Theme Implementation
 - Tokens target `:root[data-route-theme]`
 - Default theme set on `<html data-route-theme="protected">` in `app/layout.tsx`
 - Route groups like `(marketing)` set theme before paint via `next/script` (strategy: `beforeInteractive`)
-- Maintain theme during client navigations with client helpers (e.g., `app/(marketing)/_theme.tsx`)
-- Keep theme logic confined to layout glue; don't move providers or auth for theming
+- Maintain theme during client navigations with client helpers
+- Keep theme logic confined to layout glue
 
-### Theme Structure
-```typescript
-// app/layout.tsx
-<html data-route-theme="protected">
-  {/* Default theme */}
-</html>
+For detailed theming patterns, see [extended documentation](../../docs/ai/rules/component-design-system.md#theming-patterns).
 
-// app/(marketing)/_theme.tsx
-'use client';
-import { useEffect } from 'react';
-
-export function ThemeProvider() {
-  useEffect(() => {
-    document.documentElement.setAttribute('data-route-theme', 'marketing');
-  }, []);
-  return null;
-}
-```
-
-## ♿ Accessibility & Testing
+## Accessibility & Testing
 
 ### Accessibility Requirements
 - Provide ARIA labels where needed
@@ -190,22 +82,9 @@ export function ThemeProvider() {
 - Use semantic HTML elements
 - Ensure keyboard navigation support
 
-### Testing Standards
-```typescript
-// Use Testing Library + Vitest; include behavior and a11y tests
-import { render, screen } from '@testing-library/react';
-import { axe, toHaveNoViolations } from 'jest-axe';
+For testing standards and examples, see [extended documentation](../../docs/ai/rules/component-design-system.md#accessibility--testing).
 
-expect.extend(toHaveNoViolations);
-
-test('component has no accessibility violations', async () => {
-  const { container } = render(<MyComponent />);
-  const results = await axe(container);
-  expect(results).toHaveNoViolations();
-});
-```
-
-## 🎭 Animations
+## Animations
 
 ### Animation Guidelines
 - Use React Spring (`@react-spring/web`) for complex animations
@@ -213,52 +92,24 @@ test('component has no accessibility violations', async () => {
 - Place animation logic in Client Components (`"use client"`)
 - Keep Server Components for static content
 
-```typescript
-import { useSpring, animated } from '@react-spring/web';
+For animation examples, see [extended documentation](../../docs/ai/rules/component-design-system.md#animations).
 
-function AnimatedComponent() {
-  const spring = useSpring({
-    from: { opacity: 0, transform: 'translateY(20px)' },
-    to: { opacity: 1, transform: 'translateY(0px)' },
-    config: { tension: 300, friction: 30 }
-  });
+## Rules
 
-  return (
-    <animated.div style={spring}>
-      Content
-    </animated.div>
-  );
-}
-```
+- **MUST** use atomic design hierarchy: Atoms → Molecules → Organisms → Domain Modules
+- **MUST** use UI barrels (`@/atoms`, `@/molecules`, `@/organisms`) for external imports
+- **MUST NOT** import root barrels (`@/components`, `@/components/ui`) from within `components/**`
+- **MUST** use variant types from `@/styles/variants` or component-specific variants
+- **MUST** use design tokens consistently (never hardcode values)
+- **MUST** provide ARIA labels and include axe checks in component tests
+- **SHOULD** use React Spring for complex animations
 
 ## Enforcement
 
-### AST-Grep Rules
-```yaml
-# Detect root barrel imports from components
-rule: |
-  import $X from '@/components$Y'
-  where:
-    regex: "^components/"
-
-# Detect missing variant types
-rule: |
-  const $COMPONENT = ($PROPS)
-  where:
-    not contains "VariantProps"
-```
-
-### ESLint Integration
-```javascript
-// .eslintrc.mjs
-{
-  rules: {
-    '@corso/component-import-boundaries': 'error',
-    '@corso/design-system-variants': 'error',
-    '@corso/accessibility-required': 'error'
-  }
-}
-```
+### ESLint Rules
+- `@corso/component-import-boundaries`: Enforce import boundaries
+- `@corso/design-system-variants`: Enforce variant types
+- `@corso/accessibility-required`: Enforce accessibility
 
 ### Quality Gates
 - **Development**: `pnpm typecheck`
@@ -266,13 +117,12 @@ rule: |
 - **Accessibility**: `pnpm test:a11y`
 - **Import Validation**: `pnpm audit:barrels --only intradomain`
 
-## Windows-First Tips
+For AST-Grep rules and extended examples, see [extended documentation](../../docs/ai/rules/component-design-system.md).
 
-- Prefer barrel imports to reduce path brittleness across shells
-- Avoid glob-based shell expansions in examples; use explicit paths
-- Keep commands simple and sequential; avoid long `&&` chains in docs
-- Prefer `pnpm vitest run path/to/file.tsx` for single-file tests on Windows
-- Use explicit imports over shell globs in docs examples
+## Windows-first tips
+
+See the canonical guidance in
+[ai-agent-development-environment.mdc](mdc:.cursor/rules/ai-agent-development-environment.mdc#windows-first-tips).
 
 ## Related Rules
 
