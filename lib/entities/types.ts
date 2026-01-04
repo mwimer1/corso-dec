@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const TableColumnFormatEnum = z.enum([
-  'text','number','currency','date','datetime','badge','link'
+  'text','number','currency','date','datetime','badge','link','companyName','description','pillList','loading'
 ]);
 
 export const TableColumnConfigSchema = z.object({

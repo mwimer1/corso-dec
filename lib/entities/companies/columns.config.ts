@@ -12,10 +12,10 @@ import { type TableColumnConfig } from '../types';
  * @remarks Framework-agnostic column definitions for entity grids
  */
 export const COMPANIES_COLUMNS: TableColumnConfig[] = [
-  { id: 'company_name', label: 'Company', accessor: 'company_name', sortable: true, hidden: false, width: 265 },
+  { id: 'company_name', label: 'Company', accessor: 'company_name', sortable: true, hidden: false, width: 265, format: 'companyName' },
   { id: 'headcount', label: 'Headcount', accessor: 'headcount', sortable: true, hidden: false, format: 'number' },
-  { id: 'company_description', label: 'Description', accessor: 'company_description', sortable: true, hidden: false, width: 300 },
-  { id: 'top_cities', label: 'Top Cities', accessor: 'top_cities', sortable: true, hidden: false },
+  { id: 'company_description', label: 'Description', accessor: 'company_description', sortable: true, hidden: false, width: 300, format: 'description' },
+  { id: 'top_cities', label: 'Top Cities', accessor: 'top_cities', sortable: true, hidden: false, format: 'pillList' },
   { id: 'job_value_ttm', label: 'Value (TTM)', accessor: 'job_value_ttm', sortable: true, hidden: false, format: 'currency' },
   { id: 'job_value_growth_ttm', label: 'Value % (TTM)', accessor: 'job_value_growth_ttm', sortable: true, hidden: false, format: 'number' },
   { id: 'project_count_ttm', label: 'Count (TTM)', accessor: 'project_count_ttm', sortable: true, hidden: false, format: 'number' },

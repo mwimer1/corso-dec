@@ -7,6 +7,11 @@ import {
   datetimeFormatter,
   linkRenderer,
   numberGetter,
+  badgeRenderer,
+  companyNameRenderer,
+  descriptionRenderer,
+  pillListRenderer,
+  loadingRenderer,
 } from './aggrid-formatters';
 
 export function toColDef(cfg: TableColumnConfig): ColDef {
@@ -32,6 +37,16 @@ export function toColDef(cfg: TableColumnConfig): ColDef {
       return { ...base, valueFormatter: datetimeFormatter };
     case 'link':
       return { ...base, cellRenderer: linkRenderer };
+    case 'badge':
+      return { ...base, cellRenderer: badgeRenderer };
+    case 'companyName':
+      return { ...base, cellRenderer: companyNameRenderer };
+    case 'description':
+      return { ...base, cellRenderer: descriptionRenderer };
+    case 'pillList':
+      return { ...base, cellRenderer: pillListRenderer };
+    case 'loading':
+      return { ...base, cellRenderer: loadingRenderer };
     default:
       return base;
   }

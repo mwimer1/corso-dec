@@ -65,7 +65,7 @@ describe('TableColumnConfigSchema', () => {
   });
 
   it('validates all supported formats', () => {
-    const formats = ['text', 'number', 'currency', 'date', 'datetime', 'badge', 'link'];
+    const formats = ['text', 'number', 'currency', 'date', 'datetime', 'badge', 'link', 'companyName', 'description', 'pillList', 'loading'];
 
     formats.forEach(format => {
       const config = {
@@ -83,7 +83,7 @@ describe('TableColumnConfigSchema', () => {
 
 describe('TableColumnFormatEnum', () => {
   it('accepts all valid format values', () => {
-    const validFormats = ['text', 'number', 'currency', 'date', 'datetime', 'badge', 'link'];
+    const validFormats = ['text', 'number', 'currency', 'date', 'datetime', 'badge', 'link', 'companyName', 'description', 'pillList', 'loading'];
 
     validFormats.forEach(format => {
       const result = TableColumnFormatEnum.safeParse(format);

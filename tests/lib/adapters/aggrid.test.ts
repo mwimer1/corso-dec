@@ -9,6 +9,11 @@ vi.mock('@/lib/entities/adapters/aggrid-formatters', () => ({
   datetimeFormatter: vi.fn((params) => new Date(params.value).toLocaleString()),
   numberGetter: vi.fn((params) => Number(params.data?.[params.colDef.field || ''])),
   linkRenderer: vi.fn(() => null),
+  badgeRenderer: vi.fn(() => null),
+  companyNameRenderer: vi.fn(() => null),
+  descriptionRenderer: vi.fn(() => null),
+  pillListRenderer: vi.fn(() => null),
+  loadingRenderer: vi.fn(() => null),
 }));
 
 describe('toColDef', () => {
@@ -126,6 +131,71 @@ describe('toColDef', () => {
     const colDef = toColDef(config);
 
     expect(colDef.headerTooltip).toBe('Accessible column header');
+  });
+
+  it('applies badge rendering', async () => {
+    const config: TableColumnConfig = {
+      id: 'status',
+      label: 'Status',
+      accessor: 'status',
+      format: 'badge',
+    };
+
+    const colDef = toColDef(config);
+
+    expect(colDef.cellRenderer).toBeDefined();
+  });
+
+  it('applies company name rendering', async () => {
+    const config: TableColumnConfig = {
+      id: 'company',
+      label: 'Company',
+      accessor: 'company_name',
+      format: 'companyName',
+    };
+
+    const colDef = toColDef(config);
+
+    expect(colDef.cellRenderer).toBeDefined();
+  });
+
+  it('applies description rendering', async () => {
+    const config: TableColumnConfig = {
+      id: 'description',
+      label: 'Description',
+      accessor: 'description',
+      format: 'description',
+    };
+
+    const colDef = toColDef(config);
+
+    expect(colDef.cellRenderer).toBeDefined();
+  });
+
+  it('applies pill list rendering', async () => {
+    const config: TableColumnConfig = {
+      id: 'cities',
+      label: 'Cities',
+      accessor: 'top_cities',
+      format: 'pillList',
+    };
+
+    const colDef = toColDef(config);
+
+    expect(colDef.cellRenderer).toBeDefined();
+  });
+
+  it('applies loading rendering', async () => {
+    const config: TableColumnConfig = {
+      id: 'loading',
+      label: 'Loading',
+      accessor: 'loading',
+      format: 'loading',
+    };
+
+    const colDef = toColDef(config);
+
+    expect(colDef.cellRenderer).toBeDefined();
   });
 });
 
