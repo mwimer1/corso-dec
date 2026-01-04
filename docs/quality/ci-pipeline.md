@@ -3,7 +3,7 @@ status: "draft"
 last_updated: "2026-01-04"
 category: "documentation"
 title: "Cicd Workflow"
-description: "Documentation and resources for documentation functionality. Located in cicd-workflow/."
+description: "CI/CD workflows and quality gates overview. Located in quality/."
 ---
 # CI/CD Pipeline & Quality Gates
 
@@ -260,8 +260,8 @@ pnpm install
 
 ## 📚 Related Documentation
 
-- [Development Tools](../tools-scripts/development-tools.md) - Local development setup
-- [Testing Strategy](../testing-quality/testing-strategy.md) - Test organization and patterns
+- [Development Tools](../development/development-tools.md) - Local development setup
+- [Testing Strategy](testing-strategy.md) - Test organization and patterns
 - [Security Standards](../security/README.md) - Security implementation
 - [Quality Gates](./quality-gates.md) - Detailed validation rules
 

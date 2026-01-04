@@ -3,7 +3,7 @@ status: "draft"
 last_updated: "2026-01-04"
 category: "documentation"
 title: "Dependencies"
-description: "Documentation and resources for documentation functionality. Located in dependencies/."
+description: "Dependency maintenance strategy. Located in maintenance/."
 ---
 # Dependency Maintenance Plan
 

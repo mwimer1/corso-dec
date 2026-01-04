@@ -135,6 +135,9 @@ jobs:
       - name: 'Guard: Deprecated path references'
         run: pnpm validate:deprecated-paths
 
+      - name: 'Check: Documentation duplication (<5% threshold)'
+        run: pnpm jscpd:docs || echo "⚠️ Documentation duplication check completed (non-blocking)"
+
       - name: Validate Commit Messages
         if: github.event_name == 'pull_request'
         env:

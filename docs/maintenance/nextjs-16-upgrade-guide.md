@@ -3,7 +3,7 @@ status: "draft"
 last_updated: "2026-01-04"
 category: "documentation"
 title: "Upgrades"
-description: "Documentation and resources for documentation functionality. Located in upgrades/."
+description: "Migration guide for Next.js 16 upgrade. Located in maintenance/."
 ---
 # Next.js 16 Upgrade Guide
 

@@ -684,7 +684,7 @@ which bash
 
 ### Related Documentation
 
-- Development Tools – `docs/tools-scripts/development-tools.md`
+- Development Tools – `docs/development/development-tools.md`
 - DevContainer Setup – `.devcontainer/README.md`
 - Pattern Library – `docs/pattern-library.md`
 - Database Setup – See Supabase configuration in setup sections above

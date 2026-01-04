@@ -1,6 +1,6 @@
 ---
 title: "References"
-description: "Documentation and resources for documentation functionality. Located in references/."
+description: "Dependency information and management. Located in reference/."
 last_updated: "2026-01-04"
 category: "documentation"
 status: "draft"

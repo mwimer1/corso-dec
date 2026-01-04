@@ -180,7 +180,7 @@ All baseline outputs are stored in `baseline/` directory:
 ## Related Documentation
 
 - [Baseline Capture Instructions](./baseline/README.md) - How to capture baseline
-- [Quality Gates](../../cicd-workflow/quality-gates.md) - Quality gates documentation
+- [Quality Gates](../../quality/quality-gates.md) - Quality gates documentation
 - [Production Readiness Checklist](../../production/production-readiness-checklist.md) - Production readiness checklist
 - [Security Standards](../../../.cursor/rules/security-standards.mdc) - Security implementation guide
 

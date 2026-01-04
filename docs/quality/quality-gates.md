@@ -3,7 +3,7 @@ status: "draft"
 last_updated: "2026-01-04"
 category: "documentation"
 title: "Cicd Workflow"
-description: "Documentation and resources for documentation functionality. Located in cicd-workflow/."
+description: "PR quality gate requirements and validation steps. Located in quality/."
 ---
 # Quality Gates
 
@@ -63,5 +63,10 @@ Notes
 - [CI Pipeline](./ci-pipeline.md) - Detailed CI pipeline documentation
 - [CI Workflows](./ci-workflows.md) - Workflow configuration patterns
 - [CICD Enhancement Guide](./cicd-enhancement-guide.md) - CI/CD enhancement patterns
-- [Testing Guide](../testing-quality/testing-guide.md) - Testing patterns and coverage
+- [Testing Guide](testing-guide.md) - Testing patterns and coverage
 - [Development Setup Guide](../development/setup-guide.md) - Development environment setup
+
+## 📊 Baseline Snapshots
+
+Historical baseline snapshots are archived for reference:
+- [Quality Gates Baseline (Jan 2026)](../audits/baselines/quality-gates-2026-01.md) - *(Archived)* Baseline snapshot from January 2026 with detailed command outputs and test results

@@ -19,25 +19,21 @@ A modern, type-safe Next.js application built with domain-driven architecture, z
 - **pnpm**: >=10.17.1
 - **Git**: Latest version
 
-### Setup (Run Sequentially)
+### Setup
 
+See the [Development Environment Setup Guide](docs/development/setup-guide.md) for complete installation and environment configuration instructions, including:
+- Prerequisites (Node.js, pnpm, Git)
+- Sequential setup commands
+- Environment variable configuration
+- Quality gate validation
+
+**Quick start**: After installing prerequisites, run:
 ```bash
-# 1. Install dependencies
 pnpm install
-
-# 2. Verify required tools are installed
 pnpm run verify:ai-tools
-
-# 3. Setup branch configuration and git hooks
 pnpm run setup:branch
-
-# 4. Validate environment variables
 pnpm validate:env
-
-# 5. Type check
 pnpm typecheck
-
-# 6. Run quality gates
 pnpm quality:local
 ```
 
@@ -122,7 +118,7 @@ corso-app/
 └── styles/                  # Styling and design tokens
 ```
 
-For detailed structure, see [Codebase Structure](docs/codebase-apis/codebase-structure.md).
+For detailed structure, see [Codebase Structure](docs/architecture/codebase-structure.md).
 
 ## 🎯 Key Features
 
@@ -201,7 +197,7 @@ pnpm openapi:rbac:check     # Validate RBAC annotations
 
 - [Architecture Overview](docs/architecture/architecture-overview.md) - System architecture and design patterns
 - [Domain-Driven Architecture](docs/architecture-design/domain-driven-architecture.md) - Domain organization principles
-- [Codebase Structure](docs/codebase-apis/codebase-structure.md) - Directory structure and conventions
+- [Codebase Structure](docs/architecture/codebase-structure.md) - Directory structure and conventions
 
 ### Development Guides
 

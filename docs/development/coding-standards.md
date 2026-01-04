@@ -451,8 +451,8 @@ useEffect(() => {
 - [ESLint Runtime Boundaries](eslint-runtime-boundaries.md) - Custom lint rules
 - [TypeScript Guide](../typescript/typescript-guide.md) - TypeScript setup and configuration
 - [Security Standards](../security/security-implementation.md) - Security patterns
-- [Testing Guide](../testing-quality/testing-guide.md) - Complete testing guide with examples and patterns
-- [Testing Strategy](../testing-quality/testing-strategy.md) - High-level testing approach
+- [Testing Guide](../quality/testing-guide.md) - Complete testing guide with examples and patterns
+- [Testing Strategy](../quality/testing-strategy.md) - High-level testing approach
 
 ## 🔄 Continuous Improvement
 

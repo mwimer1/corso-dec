@@ -3,7 +3,7 @@ status: "active"
 last_updated: "2026-01-04"
 category: "documentation"
 title: "Codebase Apis"
-description: "Documentation and resources for documentation functionality. Located in codebase-apis/."
+description: "Directory layout and module organization. Located in architecture/."
 ---
 # Codebase Structure & Conventions
 

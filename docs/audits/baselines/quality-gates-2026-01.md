@@ -68,7 +68,7 @@ All quality gates are **PASSING** ✅. This document captures the current state 
 
 ### Primary Documentation
 - **README.md** (lines 148-164): Documents quality gates sequence
-- **docs/cicd-workflow/quality-gates.md**: Detailed quality gates documentation
+- **docs/quality/quality-gates.md**: Detailed quality gates documentation
 - **docs/development/setup-guide.md**: Development setup with quality gates
 - **.cursor/rules/ai-agent-development-environment.mdc**: AI agent workflow standards
 

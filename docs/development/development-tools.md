@@ -3,7 +3,7 @@ status: "draft"
 last_updated: "2026-01-04"
 category: "documentation"
 title: "Tools Scripts"
-description: "Documentation and resources for documentation functionality. Located in tools-scripts/."
+description: "Overview of development scripts and tooling. Located in development/."
 ---
 # Development Tools & Scripts
 
@@ -273,10 +273,10 @@ chmod +x scripts/**/*.sh
 
 ## 📚 Related Documentation
 
-- [Codebase Structure](../codebase-apis/codebase-structure.md) - Code organization patterns
-- [Testing Strategy](../testing-quality/testing-strategy.md) - Testing patterns and coverage
-- [CI/CD Pipeline](../cicd-workflow/ci-pipeline.md) - Continuous integration setup
-- [Quality Gates](../cicd-workflow/quality-gates.md) - Validation standards
+- [Codebase Structure](../architecture/codebase-structure.md) - Code organization patterns
+- [Testing Strategy](../quality/testing-strategy.md) - Testing patterns and coverage
+- [CI/CD Pipeline](../quality/ci-pipeline.md) - Continuous integration setup
+- [Quality Gates](../quality/quality-gates.md) - Validation standards
 
 ## 🔄 Tool Updates
 

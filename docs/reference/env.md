@@ -3,7 +3,7 @@ status: "draft"
 last_updated: "2026-01-04"
 category: "documentation"
 title: "References"
-description: "Documentation and resources for documentation functionality. Located in references/."
+description: "Comprehensive list of configuration environment variables. Located in reference/."
 ---
 ## Table of Contents
 

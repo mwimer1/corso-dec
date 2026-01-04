@@ -226,7 +226,7 @@ pnpm exec commitlint --edit "$1"
 
 - **Git Workflow**: See `.cursor/rules/ai-agent-development-environment.mdc` for git workflow and branching strategy
 - **Husky Hooks**: See `.husky/README.md` for git hooks documentation
-- **CI/CD**: See `docs/cicd-workflow/ci-pipeline.md` for CI validation
+- **CI/CD**: See `docs/quality/ci-pipeline.md` for CI validation
 
 ## 🚨 Troubleshooting
 

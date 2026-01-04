@@ -1,6 +1,6 @@
 ---
 title: "Testing Quality"
-description: "Documentation and resources for documentation functionality. Located in testing-quality/."
+description: "Testing patterns, examples, and coverage requirements. Located in quality/."
 last_updated: "2026-01-04"
 category: "documentation"
 status: "active"

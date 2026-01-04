@@ -1,5 +1,5 @@
 ---
-description: "Documentation and resources for documentation functionality. Located in references/."
+description: "API endpoint documentation. Located in reference/."
 last_updated: "2026-01-04"
 category: "documentation"
 status: "draft"

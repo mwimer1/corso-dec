@@ -1,6 +1,6 @@
 ---
 title: "Cicd Workflow"
-description: "Documentation and resources for documentation functionality. Located in cicd-workflow/."
+description: "Guide for enhancing CI/CD processes. Located in quality/."
 last_updated: "2026-01-04"
 category: "documentation"
 status: "draft"

@@ -40,12 +40,13 @@ This document defines what files and directories belong in the repository root v
 ## 📁 Organized Subdirectories
 
 ### Documentation (`docs/`)
-- **QA & Verification**: `docs/qa/` - Manual verification guides, QA checklists
-- **Maintenance**: `docs/maintenance/` - Maintenance summaries, implementation plans
-- **Architecture**: `docs/architecture/` - Architecture explanations, design decisions
-- **Feature Notes**: `docs/feature-notes/` - Feature implementation summaries, design docs
-- **Audits**: `docs/audits/` - Audit reports and analysis
-- **References**: `docs/references/` - Reference documentation, examples
+- **Development**: `docs/development/` - Developer setup, coding standards, workflows, and tools
+- **Quality**: `docs/quality/` - Testing, CI/CD pipelines, quality gates, and QA processes
+- **Architecture**: `docs/architecture/` - Architecture explanations, design decisions, codebase structure
+- **Reference**: `docs/reference/` - Environment variables, API specs, dependencies, and quick references
+- **Audits**: `docs/audits/` - Audit reports, baseline snapshots, and remediation trackers
+- **Feature Notes**: `docs/feature-notes/` - Feature implementation summaries, design docs, and ADRs
+- **Maintenance**: `docs/maintenance/` - Upgrade guides, dependency management, and maintenance procedures
 
 ### Scripts (`scripts/`)
 - **Windows Scripts**: `scripts/windows/` - PowerShell scripts for Windows development

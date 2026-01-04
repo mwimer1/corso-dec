@@ -86,7 +86,7 @@
     "openapi:docs": "pnpm run openapi:gen && pnpm exec redocly preview-docs api/openapi.yml || echo 'Install redocly if you want local docs'",
     "jscpd:lib+types": "pnpm jscpd:report",
     "jscpd:report": "pnpm dlx jscpd --reporters json --output reports/duplication && echo ok",
-    "jscpd:docs": "pnpm dlx jscpd docs --reporters json,console --output reports/jscpd-docs",
+    "jscpd:docs": "pnpm dlx jscpd \"docs/**/*.md\" --config jscpd.docs.json --reporters json,console --output reports/jscpd-docs",
     "diag:build": "cross-env NODE_OPTIONS=\"--trace-uncaught --enable-source-maps --unhandled-rejections=strict\" next build",
     "scan:edge-runtime": "pnpm lint:edge",
     "jscpd:sarif": "pnpm dlx jscpd --reporters sarif",

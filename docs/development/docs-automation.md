@@ -1,6 +1,6 @@
 ---
 title: "Tools Scripts"
-description: "Documentation and resources for documentation functionality. Located in tools-scripts/."
+description: "Automated documentation validation and generation. Located in development/."
 last_updated: "2026-01-04"
 category: "documentation"
 status: "stable"
@@ -44,7 +44,7 @@ pnpm docs:validate:content
 
 **Script**: `scripts/maintenance/generate-env-docs-toc.ts`
 
-Generates or updates the Table of Contents for `docs/references/env.md` based on environment variables found in `lib/server/env.ts`.
+Generates or updates the Table of Contents for `docs/reference/env.md` based on environment variables found in `lib/server/env.ts`.
 
 **Usage**:
 ```bash
@@ -106,7 +106,7 @@ The automation helps ensure:
 When adding new environment variables:
 
 1. Add to `lib/server/env.ts` (ValidatedEnv type)
-2. Document in `docs/references/env.md`
+2. Document in `docs/reference/env.md`
 3. Run `pnpm docs:env:toc` to update TOC
 4. Run `pnpm docs:validate:content` to verify
 
@@ -129,7 +129,7 @@ pnpm docs:validate
 pnpm docs:env:toc
 
 # Verify changes
-git diff docs/references/env.md
+git diff docs/reference/env.md
 ```
 
 ### Testing Validation Rules
@@ -159,7 +159,7 @@ If validation fails because of `process.env` in documentation:
 If TOC generation fails:
 
 1. Check `lib/server/env.ts` exists and is valid
-2. Verify `docs/references/env.md` exists
+2. Verify `docs/reference/env.md` exists
 3. Check file permissions
 
 ### Undocumented Environment Variables
@@ -167,11 +167,20 @@ If TOC generation fails:
 If validation reports undocumented variables:
 
 1. Check if variable is intentionally internal (starts with `_`)
-2. Add documentation to `docs/references/env.md`
+2. Add documentation to `docs/reference/env.md`
 3. Run `pnpm docs:env:toc` to update TOC
+
+## Future Enhancements
+
+Potential improvements (backlog):
+- Parse code blocks and verify they compile
+- Check code snippets match actual codebase patterns
+- Validate API endpoint documentation matches OpenAPI spec
+- Auto-generate API endpoint documentation from code
+- Validate example code in documentation
 
 ## Related Documentation
 
-- [Environment Variables Reference](../references/env.md) - Complete env var documentation
+- [Environment Variables Reference](../reference/env.md) - Complete env var documentation
 - [Development Tools](./development-tools.md) - Other development scripts
 - [Documentation Standards](../development/coding-standards.md) - Documentation conventions

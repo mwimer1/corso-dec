@@ -1,0 +1,38 @@
+{
+  "$schema": "https://raw.githubusercontent.com/kucherenko/jscpd/master/packages/config/schema.json",
+  "threshold": 5,
+  "reporters": ["console", "json"],
+  "output": "reports/jscpd-docs",
+  "ignore": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/.next/**",
+    "**/coverage/**",
+    "**/reports/**",
+    "**/baseline/**",
+    "**baseline*.md",
+    "**/_generated/**",
+    "docs/codebase/_generated/**"
+  ],
+  "absolute": true,
+  "format": ["markdown"],
+  "minLines": 10,
+  "minTokens": 20,
+  "paths": [
+    "docs/"
+  ],
+  "blame": false,
+  "cache": true,
+  "exitCode": 1,
+  "silent": false,
+  "reportersOptions": {
+    "console": {
+      "colors": true,
+      "format": "text"
+    },
+    "json": {
+      "format": "json"
+    }
+  }
+}

@@ -192,4 +192,4 @@ If the direct git command works but scripts fail, the issue is in argument passi
 
 - [Development Setup Guide](./setup-guide.md) - Development environment setup
 - [Coding Standards](./coding-standards.md) - Code quality and style guidelines
-- [Tools & Scripts](../tools-scripts/development-tools.md) - Development tools reference
+- [Development Tools](development-tools.md) - Development tools reference

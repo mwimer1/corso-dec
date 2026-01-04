@@ -1,6 +1,6 @@
 ---
 title: "Codebase Apis"
-description: "Documentation and resources for documentation functionality. Located in codebase-apis/."
+description: "Warehouse query patterns and hooks. Located in architecture/."
 last_updated: "2026-01-04"
 category: "documentation"
 status: "draft"
