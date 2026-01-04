@@ -83,37 +83,43 @@ export function InsightHeaderBlock({
         ) : null}
       </div>
 
-      {/* Title + metadata */}
-      <div className="space-y-4 sm:space-y-5">
-        <h1
-          className={cn(
-            "text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.05] text-foreground",
-            // Use text-balance for better title wrapping (if available in Tailwind config)
-            // Falls back gracefully if not available
-            "[text-wrap:balance]"
-          )}
-        >
-          {title}
-        </h1>
+      {/* Desktop: Side-by-side layout (title/metadata left, image right) */}
+      {/* Mobile: Vertical stack (title/metadata only, image hidden) */}
+      <div className="lg:flex lg:items-start lg:gap-12">
+        {/* Title + metadata column */}
+        <div className="flex-1 space-y-4 sm:space-y-5 lg:min-w-0">
+          <h1
+            className={cn(
+              "text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.05] text-foreground",
+              // Use text-balance for better title wrapping (if available in Tailwind config)
+              // Falls back gracefully if not available
+              "[text-wrap:balance]"
+            )}
+          >
+            {title}
+          </h1>
 
-        <ArticleMetadata
-          {...(publishDate && { publishDate })}
-          {...(updatedDate && { updatedDate })}
-          {...(readingTime && { readingTime })}
-          {...(author && { author })}
-        />
+          <ArticleMetadata
+            {...(publishDate && { publishDate })}
+            {...(updatedDate && { updatedDate })}
+            {...(readingTime && { readingTime })}
+            {...(author && { author })}
+          />
+        </div>
+
+        {/* Hero image - hidden on mobile/tablet, visible on desktop */}
+        {heroImageUrl ? (
+          <div className="hidden lg:block flex-shrink-0">
+            <ArticleImage
+              src={heroImageUrl}
+              alt={title}
+              variant="side"
+              {...(heroCaption && { caption: heroCaption })}
+              priority
+            />
+          </div>
+        ) : null}
       </div>
-
-      {/* Hero image */}
-      {heroImageUrl ? (
-        <ArticleImage
-          src={heroImageUrl}
-          alt={title}
-          variant="hero"
-          {...(heroCaption && { caption: heroCaption })}
-          priority
-        />
-      ) : null}
     </header>
   );
 }

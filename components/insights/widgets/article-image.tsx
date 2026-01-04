@@ -17,8 +17,8 @@ interface ArticleImageProps {
   loading?: "lazy" | "eager";
   /** Image priority for LCP optimization (default: false) */
   priority?: boolean;
-  /** Size variant - 'hero' for full-width, 'thumbnail' for smaller side image */
-  variant?: "hero" | "thumbnail";
+  /** Size variant - 'hero' for full-width, 'thumbnail' for smaller side image, 'side' for right-side header image */
+  variant?: "hero" | "thumbnail" | "side";
 }
 
 /**
@@ -48,6 +48,30 @@ export function ArticleImage({
             fill
             sizes="(max-width: 768px) 200px, (max-width: 1024px) 240px, 280px"
             className="object-cover transition-transform duration-300 hover:scale-105"
+            {...imageProps}
+            placeholder="blur"
+            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+          />
+        </div>
+        {caption && (
+          <figcaption className="mt-2 text-sm text-muted-foreground text-center">
+            {caption}
+          </figcaption>
+        )}
+      </figure>
+    );
+  }
+
+  if (variant === "side") {
+    return (
+      <figure className={cn("not-prose flex-shrink-0", className)}>
+        <div className="relative w-[280px] lg:w-[320px] xl:w-[360px] aspect-[4/3] overflow-hidden rounded-lg bg-muted border border-border shadow-md">
+          <Image
+            src={src}
+            alt={alt}
+            fill
+            sizes="(max-width: 1024px) 280px, (max-width: 1280px) 320px, 360px"
+            className="object-cover"
             {...imageProps}
             placeholder="blur"
             blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
