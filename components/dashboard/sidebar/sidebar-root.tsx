@@ -8,15 +8,17 @@ import { SidebarTooltipProvider } from './sidebar-tooltip-layer';
 type Props = PropsWithChildren<{
   collapsed?: boolean; // controlled by composed layout
   footer?: ReactNode;
+  isMobile?: boolean; // mobile drawer mode
 }> & HTMLAttributes<HTMLElement>;
 
-export function SidebarRoot({ collapsed = false, children, footer, id: idProp, className, ...rest }: Props) {
+export function SidebarRoot({ collapsed = false, children, footer, isMobile = false, id: idProp, className, ...rest }: Props) {
   const id = idProp ?? 'dashboard-sidebar';
   return (
     <SidebarProvider collapsed={collapsed}>
       <aside
         id={id}
         data-collapsed={collapsed ? 'true' : 'false'}
+        data-mobile={isMobile ? 'true' : 'false'}
         className={cn(
           // Full viewport height so footer can pin reliably.
           'flex h-dvh flex-col',
@@ -28,10 +30,12 @@ export function SidebarRoot({ collapsed = false, children, footer, id: idProp, c
           // Ensure sidebar creates a stacking context so footer avatar can't be
           // visually hijacked by overlayed content in the main area.
           'overflow-visible z-20',
-          // Expanded width using token
-          !collapsed && 'w-[var(--sb-width-expanded)] min-w-[var(--sb-width-expanded)]',
-          // Responsive cap for small viewports
-          !collapsed && 'max-[640px]:w-[min(var(--sb-width-expanded),92vw)] max-[640px]:min-w-[min(var(--sb-width-expanded),92vw)]',
+          // Mobile drawer behavior: fixed overlay
+          isMobile && collapsed && 'hidden',
+          isMobile && !collapsed && 'fixed left-0 top-0 z-40 w-[min(var(--sb-width-expanded),92vw)] min-w-[min(var(--sb-width-expanded),92vw)] shadow-lg',
+          // Desktop behavior: inline layout
+          !isMobile && !collapsed && 'w-[var(--sb-width-expanded)] min-w-[var(--sb-width-expanded)]',
+          !isMobile && collapsed && 'w-0 min-w-0',
           className
         )}
         aria-label="Dashboard sidebar"
