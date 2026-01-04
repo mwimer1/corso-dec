@@ -1,9 +1,9 @@
 ---
-description: "Documentation and resources for documentation functionality. Located in development/."
-last_updated: "2026-01-03"
+title: "Development"
+last_updated: "2026-01-04"
 category: "documentation"
 status: "draft"
-title: "Development"
+description: "Documentation and resources for documentation functionality. Located in development/."
 ---
 # 🚀 Development Environment & Workflows
 

@@ -1,9 +1,9 @@
 ---
-status: "active"
-last_updated: "2026-01-03"
-category: "documentation"
-title: "Docs"
 description: "Documentation and resources for documentation functionality."
+last_updated: "2026-01-04"
+category: "documentation"
+status: "draft"
+title: "Docs"
 ---
 # Styles & Components Directory Audit - Complete Summary Report
 

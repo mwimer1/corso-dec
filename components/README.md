@@ -1,9 +1,10 @@
 ---
-title: "components"
-last_updated: "2026-01-03"
-category: "automation"
+title: "Components"
+last_updated: "2026-01-04"
+category: "components"
+status: "draft"
+description: "UI components for the components system, following atomic design principles."
 ---
-
 # Components Directory
 
 Organized component library following atomic design principles combined with domain grouping.

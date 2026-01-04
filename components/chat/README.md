@@ -1,3 +1,10 @@
+---
+last_updated: "2026-01-04"
+category: "components"
+status: "draft"
+title: "Chat"
+description: "UI components for the components system, following atomic design principles. Located in chat/."
+---
 # Chat Components
 
 Components and utilities for the Corso chat interface.

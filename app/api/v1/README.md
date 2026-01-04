@@ -1,6 +1,6 @@
 ---
 status: "draft"
-last_updated: "2026-01-03"
+last_updated: "2026-01-04"
 category: "documentation"
 title: "V1"
 description: "Documentation and resources for documentation functionality. Located in api/v1/."

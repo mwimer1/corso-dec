@@ -1,9 +1,10 @@
 ---
-title: "components/landing"
-last_updated: "2026-01-03"
-category: "automation"
+title: "Landing"
+last_updated: "2026-01-04"
+category: "components"
+status: "draft"
+description: "UI components for the components system, following atomic design principles. Located in landing/."
 ---
-
 # Landing Page Components
 
 Components specific to the homepage (`/`) and landing page experience.

@@ -1,9 +1,10 @@
 ---
-title: "components/ui/molecules"
-last_updated: "2026-01-03"
-category: "automation"
+title: "Molecules"
+last_updated: "2026-01-04"
+category: "components"
+status: "draft"
+description: "UI components for the components system, following atomic design principles. Located in ui/molecules/."
 ---
-
 # Repository Scripts & Docs
 
 This README is generated from a single template (`README.scripts.hbs`).

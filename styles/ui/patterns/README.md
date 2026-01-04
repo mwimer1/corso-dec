@@ -1,9 +1,10 @@
 ---
-title: "styles/ui/patterns"
-last_updated: "2026-01-03"
-category: "automation"
+title: "Patterns"
+last_updated: "2026-01-04"
+category: "styling"
+status: "draft"
+description: "Styling system for styles, using Tailwind CSS and design tokens. Located in ui/patterns/."
 ---
-
 # Repository Scripts & Docs
 
 This README is generated from a single template (`README.scripts.hbs`).

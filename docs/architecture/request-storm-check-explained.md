@@ -1,7 +1,7 @@
 ---
 title: "Architecture"
 description: "Documentation and resources for documentation functionality. Located in architecture/."
-last_updated: "2026-01-03"
+last_updated: "2026-01-04"
 category: "documentation"
 status: "active"
 ---

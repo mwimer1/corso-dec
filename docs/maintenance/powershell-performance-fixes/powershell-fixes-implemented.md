@@ -1,7 +1,7 @@
 ---
 title: "Powershell Performance Fixes"
 description: "Documentation and resources for documentation functionality. Located in maintenance/powershell-performance-fixes/."
-last_updated: "2026-01-03"
+last_updated: "2026-01-04"
 category: "documentation"
 status: "draft"
 ---

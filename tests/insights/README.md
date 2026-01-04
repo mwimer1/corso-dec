@@ -1,6 +1,6 @@
 ---
 status: "draft"
-last_updated: "2026-01-03"
+last_updated: "2026-01-04"
 category: "documentation"
 title: "Insights"
 description: "Documentation and resources for documentation functionality. Located in insights/."

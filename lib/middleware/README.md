@@ -1,9 +1,10 @@
 ---
-title: "lib/middleware"
-last_updated: "2026-01-03"
-category: "automation"
+title: "Middleware"
+last_updated: "2026-01-04"
+category: "library"
+status: "draft"
+description: "Core lib utilities and functionality for the Corso platform. Located in middleware/."
 ---
-
 # Repository Scripts & Docs
 
 This README is generated from a single template (`README.scripts.hbs`).

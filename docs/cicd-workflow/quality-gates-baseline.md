@@ -1,6 +1,6 @@
 ---
 category: "documentation"
-last_updated: "2026-01-03"
+last_updated: "2026-01-04"
 status: "draft"
 title: "Cicd Workflow"
 description: "Documentation and resources for documentation functionality. Located in cicd-workflow/."

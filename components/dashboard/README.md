@@ -1,9 +1,10 @@
 ---
-title: "components/dashboard"
-last_updated: "2026-01-03"
-category: "automation"
+title: "Dashboard"
+last_updated: "2026-01-04"
+category: "components"
+status: "draft"
+description: "UI components for the components system, following atomic design principles. Located in dashboard/."
 ---
-
 # Repository Scripts & Docs
 
 This README is generated from a single template (`README.scripts.hbs`).

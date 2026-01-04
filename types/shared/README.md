@@ -1,7 +1,7 @@
 ---
 title: "Shared"
 description: "TypeScript type definitions for types, ensuring type safety across the platform. Located in shared/."
-last_updated: "2026-01-03"
+last_updated: "2026-01-04"
 category: "types"
 status: "draft"
 ---

@@ -1,9 +1,10 @@
 ---
-title: "components/marketing"
-last_updated: "2026-01-03"
-category: "automation"
+title: "Marketing"
+last_updated: "2026-01-04"
+category: "components"
+status: "draft"
+description: "UI components for the components system, following atomic design principles. Located in marketing/."
 ---
-
 # Marketing Page Components
 
 Components for marketing pages beyond the homepage (Pricing, Contact, Legal sections).
