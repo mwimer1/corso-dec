@@ -155,6 +155,17 @@
  * Removed to avoid brittle DOM selector dependencies.
  */
 
+/* --- Numeric Cell Alignment --- */
+
+/* Right-align numeric columns (currency, number formats) */
+.corso-ag-grid .corso-numeric-cell.ag-cell {
+  text-align: right;
+}
+
+.corso-ag-grid .corso-numeric-cell .ag-cell-value {
+  justify-content: flex-end;
+}
+
 /* --- Badge Cell Styling --- */
 
 /* Badge cell styling - prevents pills from spanning full row height */

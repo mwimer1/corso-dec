@@ -30,7 +30,9 @@ export function toColDef(cfg: TableColumnConfig): ColDef {
 
   switch (cfg.format) {
     case 'currency':
-      return { ...base, valueGetter: numberGetter, valueFormatter: currencyFormatter };
+      return { ...base, valueGetter: numberGetter, valueFormatter: currencyFormatter, cellClass: 'corso-numeric-cell' };
+    case 'number':
+      return { ...base, valueGetter: numberGetter, cellClass: 'corso-numeric-cell' };
     case 'date':
       return { ...base, valueFormatter: dateFormatter };
     case 'datetime':
