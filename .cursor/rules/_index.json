@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-01-07T04:41:50.170Z",
-  "count": 17,
+  "generated_at": "2026-01-08T23:25:43.008Z",
+  "count": 16,
   "rules": [
     {
       "rule_id": "actions-rate-limit-check",
@@ -91,19 +91,11 @@
       "alwaysApply": true
     },
     {
-      "rule_id": "git-hooks-quality-gates",
-      "file": "git-hooks-quality-gates.mdc",
-      "title": "Git Hooks Quality Gates",
-      "status": "active",
-      "last_reviewed": "2026-01-07",
-      "alwaysApply": true
-    },
-    {
       "rule_id": "openapi-vendor-extensions",
       "file": "openapi-vendor-extensions.mdc",
       "title": "OpenAPI Vendor Extensions & RBAC Guard",
       "status": "active",
-      "last_reviewed": "2025-10-13",
+      "last_reviewed": "2026-01-15",
       "alwaysApply": true
     },
     {

@@ -96,7 +96,7 @@ Automated validation on pull requests affecting API or OpenAPI files.
 - run: pnpm openapi:lint
 - run: pnpm openapi:types
 - run: pnpm openapi:rbac:check  # ← RBAC guard
-- run: git diff --exit-code -- api/openapi.json types/api/openapi.d.ts
+- run: git diff --exit-code -- api/openapi.json types/api/generated/openapi.d.ts
 ```
 
 ## Rules

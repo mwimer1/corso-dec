@@ -66,7 +66,7 @@ export const dynamic = 'force-dynamic';
 ```
 
 #### 2. Generated Types
-**Examples**: `types/api/openapi.d.ts`, any `*.d.ts` file
+**Examples**: `types/api/generated/openapi.d.ts`, any `*.d.ts` file
 **Detection**: File extension is `.d.ts` or path matches generated file patterns
 **Action**: Always suppressed, never touched
 **Rationale**: Auto-generated type definitions
