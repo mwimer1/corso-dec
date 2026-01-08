@@ -1072,7 +1072,6 @@ status: "draft"
     │   │   ├── inject-frontmatter.ts
     │   │   ├── kill-orphans.ps1
     │   │   ├── kill-orphans.ts
-    │   │   ├── link-fixes.config.ts
     │   │   ├── list-missing-frontmatter.ts
     │   │   ├── maintenance-common.ts
     │   │   ├── manage-docs.ts

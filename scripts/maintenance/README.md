@@ -35,7 +35,6 @@ This README is generated from a single template (`README.scripts.hbs`).
 - **generate-eslint-plugin-docs.ts** – Generates ESLint plugin documentation from source code.
 - **generate-lint-scripts-docs.ts** – Generates scripts/lint documentation from JSDoc headers.
 - **kill-orphans.ts** – Cross-platform script to kill orphaned Node.js processes
-- **link-fixes.config.ts** – scripts/maintenance/link-fixes.config.ts
 - **maintenance-common.ts** – Tolerant marker replacement. Accepts variants like:
 - **manage-docs.ts** – &#x27;];
 - **normalize-doc-status.ts** – No description available

@@ -39,7 +39,6 @@ This README is generated from a single template (`README.scripts.hbs`).
 - **no-binary-fonts.ts** – Prevents binary font files from being committed to the repository.
 - **no-deprecated-imports.ts** – Thin wrapper around ESLint rule @corso/no-deprecated-lib-imports
 - **no-process-exit-ci-lint.ts** – Regression guard: Prevents reintroducing process.exit() calls in CI/lint scripts
-- **should-skip-check.ts** – Helper functions to determine if validation checks should be skipped.
 - **token-syntax-audit.ts** – Audits CSS token syntax for duplicate token definitions.
 - **typecheck-staged.ts** – Typechecks only staged TypeScript files for faster pre-commit hooks.
 - **validate-commit-scopes.ts** – This script ensures consistency between:
