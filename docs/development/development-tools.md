@@ -30,7 +30,7 @@ This guide covers the development tooling, scripts, and automation patterns used
 pnpm install                    # Install dependencies
 pnpm run verify:ai-tools       # Verify required CLI tools
 pnpm run setup:branch          # Set up git hooks and branch config
-                               # Note: Pre-commit hooks are performance-optimized (1-3 seconds)
+                               # Note: Pre-commit hooks are performance-optimized (0.5-2 seconds)
 pnpm validate:env             # Validate environment variables
 ```
 

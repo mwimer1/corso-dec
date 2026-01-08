@@ -90,11 +90,12 @@ Provide fast, fail-fast, low-noise Git hooks that produce high-context failures 
 
 ### Typecheck Staged
 - Uses temporary tsconfig: `.cache/tsc/tsconfig.staged.json`
-- Extends root `tsconfig.json`
-- Sets `files` to only staged files (absolute paths)
+- Extends root `tsconfig.json` (relative path from temp config location)
+- Sets `files` to only staged files (relative paths from repo root)
 - Sets `compilerOptions.noEmit = true`
 - Sets `compilerOptions.incremental = true`
-- Sets `compilerOptions.tsBuildInfoFile = "staged.tsbuildinfo"`
+- Sets `compilerOptions.tsBuildInfoFile = "staged.tsbuildinfo"` (relative to temp config)
+- Uses `pnpm exec tsc` to find TypeScript compiler
 - Avoids TS5042 error (cannot combine `--project` with explicit files)
 
 ### Binary Font Check

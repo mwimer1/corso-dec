@@ -164,10 +164,11 @@ with:
 
 **Automatic (via git hooks)**:
 - Hooks run automatically on `git commit`
-- **Performance optimized**: 1-3 seconds (varies by change type)
-  - Code commits: 2-3 seconds (staged typecheck + lint)
-  - Docs-only: 1-2 seconds (docs validation only)
-  - Config-only: 0.5-1 second (minimal validation)
+- **Performance optimized**: 0.5-2 seconds (varies by change type)
+  - Code commits: 1-2 seconds (staged typecheck + lint, conditional validations)
+  - Docs-only: 0.5-1 second (lint only, other checks skipped)
+  - Config-only: 0.5-1 second (minimal validation, most checks skipped)
+  - No-op commits: <0.5 second (fast-exit on empty staged files)
 - See `.husky/README.md` for full hook documentation
 
 **Manual validation** (before pushing):
