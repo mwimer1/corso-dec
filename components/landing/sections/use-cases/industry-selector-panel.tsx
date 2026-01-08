@@ -3,56 +3,63 @@
 import { Badge, Card, CardContent } from '@/components/ui/atoms';
 import { trackEvent } from '@/lib/shared/analytics/track';
 import { cn } from '@/styles';
-import { Check } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import type { Industry } from './types';
+import type { Industry, PreviewTab } from './types';
 import { UseCaseCard } from './use-case-card';
-import { UseCasePreviewPane } from './use-case-preview-pane';
 import styles from './use-case-explorer.module.css';
+import { UseCasePreviewPane } from './use-case-preview-pane';
 
 interface IndustrySelectorPanelProps {
   industries: Industry[];
 }
 
 export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps) {
-  const [activeIndex, setActiveIndex] = useState(0);
+  // Default to developers industry (first in desired order)
+  const [activeIndustryId, setActiveIndustryId] = useState<string>('developers');
+  const [activeUseCaseId, setActiveUseCaseId] = useState<string | null>(null);
+  const [previewTab, setPreviewTab] = useState<PreviewTab>('dashboard');
   const [isUserInteraction, setIsUserInteraction] = useState(false);
-  const previousIndexRef = useRef<number>(0);
+  const previousIndustryRef = useRef<string>('');
 
-  // Get valid industries array (default to empty if invalid)
+  // Get valid industries array
   const validIndustries = industries && industries.length > 0 ? industries : [];
-  const activeIndustry = validIndustries[activeIndex] ?? validIndustries[0] ?? null;
+  const activeIndustry = validIndustries.find((ind) => ind.id === activeIndustryId) ?? validIndustries[0] ?? null;
 
-  // Check if we have an odd number of industries (for spanning logic)
-  const isOddCount = validIndustries.length % 2 !== 0;
-
-  const handleCardClick = (index: number) => {
-    setIsUserInteraction(true);
-    setActiveIndex(index);
-  };
-
-  const handleTabClick = (index: number) => {
-    setIsUserInteraction(true);
-    setActiveIndex(index);
-  };
-
-  // Fix invalid index if needed
+  // Set default use case when industry changes
   useEffect(() => {
-    if (validIndustries.length > 0 && activeIndex >= validIndustries.length) {
-      setActiveIndex(0);
+    if (activeIndustry && activeIndustry.useCases.length > 0) {
+      const firstUseCase = activeIndustry.useCases[0];
+      if (firstUseCase && (!activeUseCaseId || !activeIndustry.useCases.find((uc) => uc.id === activeUseCaseId))) {
+        setActiveUseCaseId(firstUseCase.id);
+        setPreviewTab('dashboard'); // Reset to dashboard tab
+      }
     }
-  }, [activeIndex, validIndustries.length]);
+  }, [activeIndustry, activeUseCaseId]);
 
-  // Track analytics when industry changes due to user interaction
+  const activeUseCase = activeIndustry?.useCases.find((uc) => uc.id === activeUseCaseId) ?? activeIndustry?.useCases[0] ?? null;
+
+  const handleIndustryClick = (industryId: string) => {
+    setIsUserInteraction(true);
+    setActiveIndustryId(industryId);
+    setActiveUseCaseId(null); // Will be set by useEffect
+  };
+
+  const handleUseCaseClick = (useCaseId: string) => {
+    setIsUserInteraction(true);
+    setActiveUseCaseId(useCaseId);
+    setPreviewTab('dashboard'); // Reset to dashboard when use case changes
+  };
+
+  // Track analytics when industry changes
   useEffect(() => {
-    if (!activeIndustry || !isUserInteraction || previousIndexRef.current === activeIndex) {
+    if (!activeIndustry || !isUserInteraction || previousIndustryRef.current === activeIndustryId) {
       return;
     }
 
     try {
       trackEvent('industry_tab_selected', {
-        industry: activeIndustry.key,
-        industryTitle: activeIndustry.title,
+        industry: activeIndustry.id,
+        industryTitle: activeIndustry.label,
         section: 'use_cases',
       });
     } catch (error) {
@@ -61,10 +68,10 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
       }
     }
 
-    previousIndexRef.current = activeIndex;
-  }, [activeIndex, activeIndustry, isUserInteraction]);
+    previousIndustryRef.current = activeIndustryId;
+  }, [activeIndustryId, activeIndustry, isUserInteraction]);
 
-  // Production-safe: Validate industries array and render fallback
+  // Production-safe: Validate industries array
   if (validIndustries.length === 0) {
     if (process.env.NODE_ENV !== 'production') {
       console.error('[IndustrySelectorPanel] Invalid industries array:', industries);
@@ -76,130 +83,122 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
     );
   }
 
-  // Production-safe: Validate active industry
-  if (!activeIndustry) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('[IndustrySelectorPanel] Invalid active industry at index:', activeIndex);
-    }
+  if (!activeIndustry || !activeUseCase) {
     return null;
   }
 
   return (
-    <div className={cn(styles['selectorPanel'], 'space-y-8')}>
+    <div className={cn(styles['selectorPanel'], 'space-y-6')}>
       {/* Industry Tabs Row */}
-      <div className="mb-6">
+      <div className="mb-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
           <p className="text-sm text-muted-foreground">
-            Choose your industry · <span className="text-foreground font-medium">{activeIndustry.title}</span>
+            Choose your industry · <span className="text-foreground font-medium">{activeIndustry.label}</span>
           </p>
           <div className="flex items-center gap-2 flex-wrap">
-            <Badge color="secondary" className="text-xs">
-              Texas statewide
-            </Badge>
-            <Badge color="secondary" className="text-xs">
-              Updated regularly
-            </Badge>
-            <Badge color="secondary" className="text-xs">
-              Export-ready
-            </Badge>
+            {activeIndustry.quickProof.map((proof) => (
+              <Badge key={proof} color="default" className="text-xs rounded-full px-3 py-1">
+                {proof}
+              </Badge>
+            ))}
           </div>
         </div>
         {/* Horizontal scrollable tabs */}
         <div className={cn(styles['industryTabs'], 'flex gap-2 overflow-x-auto pb-2 -mx-1 px-1')}>
-          {validIndustries.map((industry, index) => (
+          {validIndustries.map((industry) => (
             <button
-              key={industry.key}
+              key={industry.id}
               type="button"
-              onClick={() => handleTabClick(index)}
+              onClick={() => handleIndustryClick(industry.id)}
               className={cn(
                 'flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                activeIndex === index
-                  ? 'bg-muted text-foreground border-2 border-foreground font-semibold shadow-sm'
-                  : 'bg-background text-foreground border-2 border-border hover:border-foreground/30 hover:bg-muted/60'
+                activeIndustryId === industry.id
+                  ? 'bg-muted/60 border border-foreground/30 text-foreground font-semibold'
+                  : 'bg-background border border-border text-foreground hover:border-foreground/20 hover:bg-muted/60'
               )}
-              aria-pressed={activeIndex === index}
-              aria-label={`Select ${industry.title} industry`}
+              aria-pressed={activeIndustryId === industry.id}
+              aria-label={`Select ${industry.label} industry`}
             >
-              {industry.title}
+              {industry.label}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Left Pane Container - Card Grid with Section Title */}
-      <Card className={cn(styles['cardGridContainer'])}>
-        <CardContent className="p-5 space-y-4">
-          {/* Section Title/Subtitle */}
-          <div className="space-y-2">
-            <h3 className="text-xl sm:text-2xl font-semibold text-foreground">
-              Spot demand early and de-risk site selection with real permit signals.
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              Tap a workflow to see an example preview and the artifacts you can export.
-            </p>
-          </div>
-
-          {/* Use Case Cards Grid */}
-          <div className={cn(styles['cardGrid'], 'grid gap-4 sm:grid-cols-2 lg:grid-cols-2')}>
-            {validIndustries.map((industry, index) => {
-              const isLast = index === validIndustries.length - 1;
-              const isLastInOddGrid = isOddCount && isLast;
-
-              return (
-                <UseCaseCard
-                  key={industry.key}
-                  industry={industry}
-                  isSelected={activeIndex === index}
-                  onClick={() => handleCardClick(index)}
-                  isLastInOddGrid={isLastInOddGrid}
-                />
-              );
-            })}
-          </div>
-
-          {/* Problem and Help Sections - Bottom Left */}
-          <div className={cn(styles['problemHelpSection'], 'space-y-3')}>
-            {/* The Problem */}
-            <div className={cn(styles['problemHelpCard'], 'p-4 rounded-lg bg-muted/50')}>
-              <h4 className="text-sm font-semibold text-foreground mb-2">The problem</h4>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {activeIndustry.description}
+      {/* Main Two-Column Layout */}
+      <div className={cn(styles['mainLayout'], 'lg:grid lg:grid-cols-[1fr_400px] lg:gap-8')}>
+        {/* Left Pane - Industry Card with Workflows */}
+        <Card className={cn(styles['cardGridContainer'], 'flex flex-col')}>
+          <CardContent className="p-5 space-y-4 flex-1 flex flex-col">
+            {/* Section Title/Subtitle */}
+            <div className="space-y-2">
+              <h3 className="text-xl sm:text-2xl font-semibold text-foreground">
+                {activeIndustry.tagline}
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                {activeIndustry.helperLine}
               </p>
             </div>
 
-            {/* How Corso helps */}
-            <div className={cn(styles['problemHelpCard'], 'p-4 rounded-lg bg-muted/50')}>
-              <h4 className="text-sm font-semibold text-foreground mb-2">How Corso helps</h4>
-              <ul className="space-y-2" aria-label="Key benefits">
-                {activeIndustry.benefits.slice(0, 3).map((benefit) => (
-                  <li key={benefit} className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" aria-hidden="true" />
-                    <span className="text-sm text-foreground">{benefit}</span>
-                  </li>
-                ))}
-              </ul>
+            {/* Workflow Cards Grid */}
+            <div className={cn(styles['cardGrid'], 'grid gap-4 sm:grid-cols-2 lg:grid-cols-2')}>
+              {activeIndustry.useCases.map((useCase) => (
+                <UseCaseCard
+                  key={useCase.id}
+                  useCase={useCase}
+                  isSelected={activeUseCaseId === useCase.id}
+                  onClick={() => handleUseCaseClick(useCase.id)}
+                />
+              ))}
             </div>
-          </div>
-        </CardContent>
-      </Card>
 
-      {/* Preview Pane - Right (Desktop) / Accordion (Mobile) */}
+            {/* Problem and Help Sections - Bottom Left (anchored to bottom) */}
+            <div className={cn(styles['problemHelpSection'], 'mt-auto space-y-3 lg:grid lg:grid-cols-2 lg:gap-4')}>
+              {/* The Problem */}
+              <div className={cn(styles['problemHelpCard'], 'p-4 rounded-lg bg-muted/30 lg:h-48')}>
+                <h4 className="text-sm font-semibold text-foreground mb-2">The problem</h4>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {activeUseCase.pain}
+                </p>
+              </div>
+
+              {/* How Corso helps */}
+              <div className={cn(styles['problemHelpCard'], 'p-4 rounded-lg bg-muted/30 lg:h-48')}>
+                <h4 className="text-sm font-semibold text-foreground mb-2">How Corso helps</h4>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {activeUseCase.howCorsoHelps}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Right Pane - Preview (Desktop) */}
+        <div className={cn(styles['previewPaneDesktop'], 'hidden lg:block')}>
+          <UseCasePreviewPane
+            useCase={activeUseCase}
+            previewTab={previewTab}
+            onTabChange={setPreviewTab}
+          />
+        </div>
+      </div>
+
+      {/* Preview Pane - Mobile Accordion */}
       <details className={cn(styles['previewAccordion'], 'lg:hidden')} open={false}>
         <summary className={cn(styles['previewAccordionSummary'], 'cursor-pointer list-none')}>
           <span className="text-sm font-semibold text-foreground">
-            Preview: {activeIndustry.title}
+            Preview: {activeUseCase.title}
           </span>
         </summary>
         <div className={cn(styles['previewAccordionContent'], 'mt-4')}>
-          <UseCasePreviewPane industry={activeIndustry} />
+          <UseCasePreviewPane
+            useCase={activeUseCase}
+            previewTab={previewTab}
+            onTabChange={setPreviewTab}
+          />
         </div>
       </details>
-
-      {/* Desktop Preview Pane - Sticky */}
-      <div className={cn(styles['previewPaneDesktop'], 'hidden lg:block')}>
-        <UseCasePreviewPane industry={activeIndustry} />
-      </div>
     </div>
   );
 }

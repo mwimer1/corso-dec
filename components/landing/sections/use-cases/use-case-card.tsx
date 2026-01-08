@@ -2,29 +2,27 @@
 
 import { Badge } from '@/components/ui/atoms';
 import { cn } from '@/styles';
-import type { Industry } from './types';
+import type { UseCase } from './types';
 
 interface UseCaseCardProps {
-  industry: Industry;
+  useCase: UseCase;
   isSelected: boolean;
   onClick: () => void;
   className?: string;
-  /** Whether this is the last card in an odd-count grid (should span full width on md+) */
-  isLastInOddGrid?: boolean;
 }
 
 const MAX_VISIBLE_TAGS = 2;
 
 export function UseCaseCard({
-  industry,
+  useCase,
   isSelected,
   onClick,
   className,
-  isLastInOddGrid = false,
 }: UseCaseCardProps) {
-  // Get tags from impactMetrics (limit to MAX_VISIBLE_TAGS)
-  const tags = industry.impactMetrics?.slice(0, MAX_VISIBLE_TAGS) ?? [];
-  const remainingTagsCount = (industry.impactMetrics?.length ?? 0) - MAX_VISIBLE_TAGS;
+  // Get tags from outputs (limit to MAX_VISIBLE_TAGS)
+  const tags = useCase.outputs.slice(0, MAX_VISIBLE_TAGS);
+  const remainingTagsCount = useCase.outputs.length - MAX_VISIBLE_TAGS;
+  const Icon = useCase.icon;
 
   return (
     <button
@@ -32,41 +30,47 @@ export function UseCaseCard({
       onClick={onClick}
       className={cn(
         // Base card styles
-        'group relative flex flex-col gap-3 p-4 rounded-xl border-2 transition-all duration-200',
+        'group relative flex flex-col gap-3 p-4 rounded-xl border transition-all duration-200',
         'text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-        // Selected state: bg-muted + ring
+        // Selected state: bg-muted + subtle ring
         isSelected
-          ? 'bg-muted border-foreground/20 ring-2 ring-ring ring-offset-2 shadow-md'
+          ? 'bg-muted border-foreground/20 ring-1 ring-ring/20 shadow-md'
           : 'bg-background border-border hover:border-foreground/30 hover:shadow-md',
-        // Hover elevation
-        'hover:shadow-md hover:-translate-y-0.5',
-        // Odd count spanning on md+
-        isLastInOddGrid && 'md:col-span-2',
+        // Hover elevation (subtle)
+        'hover:shadow-md',
         className
       )}
       aria-pressed={isSelected}
-      aria-label={`Select ${industry.title} use case`}
+      aria-label={`Select ${useCase.title} workflow`}
     >
-      {/* Title */}
-      <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
-        {industry.title}
-      </h3>
+      {/* Icon Container */}
+      <div className="flex items-start gap-3">
+        <div className="flex-shrink-0 w-10 h-10 rounded-lg border border-border bg-background flex items-center justify-center text-muted-foreground">
+          <Icon className="h-5 w-5" />
+        </div>
+        <div className="flex-1 min-w-0">
+          {/* Title */}
+          <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+            {useCase.title}
+          </h3>
+        </div>
+      </div>
 
-      {/* Subtitle */}
+      {/* One-liner */}
       <p className="text-sm text-muted-foreground line-clamp-2">
-        {industry.subtitle}
+        {useCase.oneLiner}
       </p>
 
       {/* Tags */}
       {tags.length > 0 && (
         <div className="flex flex-wrap items-center gap-2 mt-auto">
           {tags.map((tag) => (
-            <Badge key={tag} color="secondary" className="text-xs">
+            <Badge key={tag} color="default" className="text-xs">
               {tag}
             </Badge>
           ))}
           {remainingTagsCount > 0 && (
-            <Badge color="secondary" className="text-xs">
+            <Badge color="default" className="text-xs">
               +{remainingTagsCount}
             </Badge>
           )}

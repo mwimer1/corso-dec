@@ -1,12 +1,12 @@
 ---
-description: "Streamlined card grid layout for showcasing industry use cases with interactive preview pane."
+description: "Nested industry → workflow structure with interactive preview pane showcasing use cases."
 last_updated: "2026-01-07"
 category: "documentation"
 status: "draft"
 ---
 # Use Case Explorer
 
-The Use Case Explorer showcases how Corso serves different industries (Insurance Brokers, Building Materials Suppliers, Contractors & Builders, and Developers & Real Estate) with a modern card grid layout and interactive preview pane.
+The Use Case Explorer showcases how Corso serves different industries (Developers & Real Estate, Contractors & Builders, Insurance Brokers, and Building Materials Suppliers) with a nested structure: each industry contains multiple workflows (use cases) that users can explore.
 
 ## Architecture
 
@@ -14,37 +14,49 @@ The Use Case Explorer showcases how Corso serves different industries (Insurance
 
 ```
 use-case-explorer.tsx (Client Component)
-├── Header
+├── Header (with thick accent underline on "action")
 └── IndustrySelectorPanel (Client Component)
-    ├── Card Grid (Left Pane)
-    │   ├── UseCaseCard[] (Interactive cards)
-    │   └── Problem/Help Sections (Muted surfaces)
-    └── Preview Pane (Right Pane - Desktop / Accordion - Mobile)
-        └── UseCasePreviewPane
-            ├── SegmentedControl (Dashboard / Sample record / Outputs)
-            └── IndustryPreview (Image only, conditionally rendered)
+    ├── Industry Pills Row (horizontal scrollable)
+    ├── quickProof Badges (muted styling)
+    └── Main Two-Column Layout
+        ├── Left Pane: Industry Card
+        │   ├── Industry Tagline + Helper Line
+        │   ├── Workflow Cards Grid (UseCaseCard[])
+        │   └── Problem/Help Sections (Paragraphs, muted surfaces)
+        └── Right Pane: Preview (Desktop) / Accordion (Mobile)
+            └── UseCasePreviewPane
+                ├── Local SegmentedControl (muted styling)
+                ├── Dashboard Tab (KPI card + "What you'll do")
+                ├── Sample Record Tab
+                └── Outputs Tab
 ```
 
 ### Key Components
 
-- **`use-case-explorer.tsx`** - Main component with header and accent underline on "action"
-- **`industry-selector-panel.tsx`** - Manages card selection state and two-pane layout (cards + preview)
-- **`use-case-card.tsx`** - Individual use case card with selected state, hover elevation, and tag display
-- **`use-case-preview-pane.tsx`** - Sticky preview pane with segmented control tabs and animated transitions
-- **`industry-preview.tsx`** - Preview image component (returns null if no image provided)
-- **`use-case-explorer.module.css`** - Styles for card grid, preview pane, and responsive breakpoints
+- **`use-case-explorer.tsx`** - Main component with header and thick accent highlight bar on "action"
+- **`industry-selector-panel.tsx`** - Manages industry/workflow selection state, industry pills, and two-pane layout
+- **`use-case-card.tsx`** - Workflow card with icon, title, one-liner, and output tags (not industry cards)
+- **`use-case-preview-pane.tsx`** - Preview pane with local muted segmented control, KPI cards, and CTA
+- **`use-case-explorer.module.css`** - Styles for card grid, preview pane, height alignment, and responsive breakpoints
 
 ## Features
 
-### Card Grid Layout
+### Industry Selection
+
+- **Industry pills row:** Horizontal scrollable pills with muted active state (`bg-muted/60`)
+- **Default industry:** Developers & Real Estate (first in order)
+- **Order:** Developers & Real Estate → Contractors & Builders → Insurance Brokers → Building Materials Suppliers
+- **quickProof badges:** Muted styling (`color="default"`) showing "Texas statewide", "Updated regularly", "Export-ready"
+
+### Workflow Cards Grid
 
 - **Responsive breakpoints:**
   - Mobile (≤767px): 1 column
   - Tablet/Desktop (≥768px): 2 columns
-- **Odd count handling:** Last card spans full width (`md:col-span-2`) when there's an odd number of cards
-- **Selected state:** `bg-muted` background with `ring-2 ring-ring` for visual feedback
-- **Hover effects:** Elevation with `hover:shadow-lg` and slight translate
-- **Tag display:** Shows up to 2 tags with a "+N" badge for additional tags
+- **Card structure:** Icon container + title + one-liner + output tags (up to 2 visible + "+N")
+- **Selected state:** `bg-muted` background with subtle ring (`ring-1 ring-ring/20`)
+- **Hover effects:** Subtle elevation (`hover:shadow-md`)
+- **Icons:** Lucide React icons stored as component references (not JSX)
 
 ### Preview Pane
 
@@ -52,38 +64,60 @@ use-case-explorer.tsx (Client Component)
   - Sticky positioning with `top-[var(--nav-offset,4rem)]`
   - Always visible on the right side
   - 400px fixed width
+  - CTA card height-aligned with left bottom cards (`lg:h-48`)
 - **Mobile/Tablet (<1024px):**
   - Collapsed in `<details>` accordion by default
   - Expandable with smooth animation
-- **Segmented control:** Three tabs (Dashboard / Sample record / Outputs) with animated transitions
+- **Segmented control:** Local implementation with muted styling (active: `bg-muted`, not bright blue)
+- **Tabs:**
+  - **Dashboard:** Dark KPI card + muted "What you'll do" section with highlights
+  - **Sample record:** Muted surface with label/value rows
+  - **Outputs:** Muted surface with output badges
 
 ### Problem and Help Sections
 
-- **Muted surfaces:** Less boxy than bordered cards (`bg-muted/50`)
-- **Content:** Shows description ("The problem") and benefits list ("How Corso helps")
-- **Positioning:** Below the card grid in the left pane
+- **Muted surfaces:** `bg-muted/30` (less boxy than bordered cards)
+- **Content:** Paragraphs (not bullet lists)
+  - "The problem": Shows `useCase.pain` as paragraph
+  - "How Corso helps": Shows `useCase.howCorsoHelps` as paragraph
+- **Positioning:** Bottom row in left pane, anchored with `mt-auto`
+- **Height alignment:** `lg:h-48` to match right pane CTA card on desktop
 
 ## Data Structure
 
-### Use Case Data
+### Nested Industry → Workflow Model
 
-Data is defined in `use-cases.data.ts` and validated with `zUseCaseMap`:
+Data is defined in `use-cases.data.ts` using `STREAMLINED_INDUSTRIES`:
 
 ```typescript
+interface Industry {
+  id: string;
+  label: string;
+  tagline: string;
+  helperLine: string;
+  quickProof: string[];
+  useCases: UseCase[];
+}
+
 interface UseCase {
+  id: string;
   title: string;
-  subtitle: string;
-  description: string;
-  benefits: string[];
-  impact: string;
-  impactMetrics?: string[];
-  previewImage?: { src: string; alt: string };
+  oneLiner: string;
+  pain: string;              // Paragraph for "The problem"
+  howCorsoHelps: string;     // Paragraph for "How Corso helps"
+  outputs: string[];         // Used for tags in cards
+  icon: LucideIcon;          // Component reference (not JSX)
+  preview: UseCasePreview;
+}
+
+interface UseCasePreview {
+  headline: string;
+  highlights: string[];      // "What you'll do" bullets
+  kpis: { label: string; value: string }[];
+  sampleRecord: { label: string; value: string }[];
 }
 ```
 
-### Preview Tab Content
-
-Preview tab content (Dashboard, Sample record, Outputs) is defined in `use-case-preview-pane.tsx` as a UI-only mapping layer. This keeps the validation schema intact while providing rich preview content.
 
 ## Integration Points
 
@@ -91,19 +125,17 @@ Preview tab content (Dashboard, Sample record, Outputs) is defined in `use-case-
 
 ```tsx
 // app/(marketing)/page.tsx
-<FullWidthSection background="muted" padding="lg">
+<FullWidthSection
+  background="default"
+  padding="lg"
+  containerMaxWidth="7xl"
+  containerPadding="lg"
+>
   <IndustryExplorer />
 </FullWidthSection>
 ```
 
-### Insights Index Page
-
-```tsx
-// app/(marketing)/insights/page.tsx
-<FullWidthSection background="showcase" padding="lg">
-  <IndustryExplorer />
-</FullWidthSection>
-```
+**Note:** `IndustryExplorer` is only used on the homepage. It is not used on `/insights`.
 
 ## Styling
 
@@ -133,9 +165,9 @@ The `use-case-explorer.module.css` file contains:
 
 ## Analytics
 
-Card selection is tracked via `trackEvent('industry_tab_selected', ...)` with:
-- `industry`: Use case key
-- `industryTitle`: Use case title
+Industry selection is tracked via `trackEvent('industry_tab_selected', ...)` with:
+- `industry`: Industry ID (e.g., 'developers')
+- `industryTitle`: Industry label (e.g., 'Developers & Real Estate')
 - `section`: 'use_cases'
 
 CTA buttons use `LinkTrack` for navigation analytics.
@@ -150,9 +182,24 @@ CTA buttons use `LinkTrack` for navigation analytics.
 
 ## Design Decisions
 
-### Cards-Only Selection
+### Nested Industry → Workflow Structure
 
-The Use Case Explorer intentionally uses cards-only selection (no separate industry tabs row). Cards serve as both navigation controls and content preview, providing a cleaner UX that avoids duplicated selection mechanisms. This design is touch-friendly on mobile and eliminates the need for horizontal scrolling tabs.
+The Use Case Explorer uses a two-level selection model:
+1. **Industry selection:** Via horizontal scrollable pills at the top
+2. **Workflow selection:** Via workflow cards within the selected industry
+
+This allows users to explore multiple workflows per industry while maintaining a clear hierarchy.
+
+### Muted Styling Throughout
+
+- Active industry pills: `bg-muted/60` (not dark/black-filled)
+- quickProof badges: `color="default"` (muted, not blue-heavy)
+- Segmented control: Active tab uses `bg-muted` (not bright blue)
+- Problem/Help cards: `bg-muted/30` (subtle, less boxy)
+
+### Height Alignment
+
+On desktop, the right pane CTA card (`lg:h-48`) aligns with the left pane bottom row (Problem + Help cards, also `lg:h-48`) for visual balance.
 
 ## Related
 

@@ -122,6 +122,13 @@
 .selectorPanel {
   display: flex;
   flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Main Two-Column Layout */
+.mainLayout {
+  display: flex;
+  flex-direction: column;
   gap: var(--space-lg);
 }
 
@@ -155,6 +162,14 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
+}
+
+@media (min-width: 1024px) {
+  .problemHelpSection {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+  }
 }
 
 .problemHelpCard {
@@ -244,19 +259,11 @@
 
 /* Desktop Layout: Two Column Grid */
 @media (min-width: 1024px) {
-  .selectorPanel {
+  .mainLayout {
     display: grid;
     grid-template-columns: 1fr 400px;
     gap: var(--space-xl);
     align-items: start;
-  }
-
-  .cardGridContainer {
-    grid-column: 1;
-  }
-
-  .previewPaneDesktop {
-    grid-column: 2;
   }
 
   .previewAccordion {
