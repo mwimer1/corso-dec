@@ -298,7 +298,7 @@ This project follows **zero-trust security principles**:
 - ✅ RBAC for API endpoints
 - ✅ Structured error handling
 
-See [Security Standards](.cursor/rules/security-standards.mdc) for detailed security patterns.
+See [Security Standards](.cursor/rules/security-standards.mdc) for detailed security requirements and patterns.
 
 ## 🧪 Testing
 
