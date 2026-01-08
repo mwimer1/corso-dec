@@ -11,6 +11,12 @@ vi.mock('@/lib/api/edge', async (importOriginal) => {
   };
 });
 
+// Mock getEntityPage for entity route tests
+const mockGetEntityPage = vi.fn();
+vi.mock('@/lib/entities/pages', () => ({
+  getEntityPage: (...args: any[]) => mockGetEntityPage(...args),
+}));
+
 /**
  * Minimal smoke tests for core API endpoints
  * 
@@ -20,6 +26,8 @@ vi.mock('@/lib/api/edge', async (importOriginal) => {
 
 describe('API v1: Smoke Tests', () => {
   beforeEach(() => {
+    vi.clearAllMocks();
+    
     mockClerkAuth.setup({
       userId: null,
       orgId: null,
@@ -154,14 +162,22 @@ describe('API v1: Smoke Tests', () => {
       expect(body.error).toHaveProperty('code', 'HTTP_401');
     });
 
-    it('GET /api/v1/entity/{entity} should return 403 when missing org context', async () => {
+    it('GET /api/v1/entity/{entity} should return 200 when missing org context (personal-scope)', async () => {
       mockClerkAuth.setup({
         userId: 'test-user-123',
         orgId: null,
-        has: () => true,
+        has: () => false, // No org role when no org
       });
       mockClerkAuth.getClerkClient().users.getOrganizationMembershipList.mockResolvedValue({
         data: [],
+      });
+
+      // Mock getEntityPage to return data
+      mockGetEntityPage.mockResolvedValue({
+        data: [{ id: 1, name: 'Test Project' }],
+        total: 1,
+        page: 0,
+        pageSize: 10,
       });
 
       const mod = await import('@/app/api/v1/entity/[entity]/route');
@@ -175,12 +191,14 @@ describe('API v1: Smoke Tests', () => {
       };
 
       const res = await handler(req as any, { params: { entity: 'projects' } });
-      // Should return 403 for missing org context
-      expect(res.status).toBe(403);
+      // Should return 200 for personal-scope access (org optional)
+      expect(res.status).toBe(200);
 
       const body = await res.json();
-      expect(body).toHaveProperty('success', false);
-      expect(['NO_ORG_CONTEXT', 'FORBIDDEN']).toContain(body.error?.code);
+      expect(body).toHaveProperty('success', true);
+      expect(body.data).toHaveProperty('data');
+      // Should not return NO_ORG_CONTEXT error
+      expect(body.error?.code).not.toBe('NO_ORG_CONTEXT');
     });
   });
 
