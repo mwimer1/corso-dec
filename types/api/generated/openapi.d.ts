@@ -112,7 +112,10 @@ export interface paths {
         };
         /**
          * Entity data operations
-         * @description Query and manage entity data (projects, companies, addresses) with authentication
+         * @description Query and manage entity data (projects, companies, addresses) with authentication.
+         *
+         *     **Personal Scope:** This endpoint supports both organization-scoped and personal (user-scoped) access.
+         *     Organization header is optional - if provided, data is scoped to the organization; if omitted, data is scoped to the authenticated user.
          */
         get: operations["entity_operations"];
         put?: never;
@@ -183,7 +186,10 @@ export interface paths {
         put?: never;
         /**
          * Query entity data
-         * @description Query paginated entity data with filtering and sorting
+         * @description Query paginated entity data with filtering and sorting.
+         *
+         *     **Personal Scope:** This endpoint supports both organization-scoped and personal (user-scoped) access.
+         *     Organization header is optional - if provided, data is scoped to the organization; if omitted, data is scoped to the authenticated user.
          */
         post: operations["entity_query"];
         delete?: never;
@@ -587,6 +593,8 @@ export interface components {
     parameters: {
         /** @description Organization identifier header for tenant scoping */
         OrgIdHeader: string;
+        /** @description Optional organization identifier header for tenant scoping (used for personal-scope routes that support both org-scoped and user-scoped access) */
+        OrgIdHeaderOptional: string;
     };
     requestBodies: never;
     headers: never;
@@ -820,9 +828,9 @@ export interface operations {
                 /** @description JSON-encoded filter array */
                 filters?: string;
             };
-            header: {
-                /** @description Organization identifier header for tenant scoping */
-                "X-Corso-Org-Id": components["parameters"]["OrgIdHeader"];
+            header?: {
+                /** @description Optional organization identifier header for tenant scoping (used for personal-scope routes that support both org-scoped and user-scoped access) */
+                "X-Corso-Org-Id"?: components["parameters"]["OrgIdHeaderOptional"];
             };
             path: {
                 entity: "projects" | "companies" | "addresses";
@@ -939,9 +947,9 @@ export interface operations {
     entity_query: {
         parameters: {
             query?: never;
-            header: {
-                /** @description Organization identifier header for tenant scoping */
-                "X-Corso-Org-Id": components["parameters"]["OrgIdHeader"];
+            header?: {
+                /** @description Optional organization identifier header for tenant scoping (used for personal-scope routes that support both org-scoped and user-scoped access) */
+                "X-Corso-Org-Id"?: components["parameters"]["OrgIdHeaderOptional"];
             };
             path: {
                 entity: "projects" | "companies" | "addresses";
@@ -1084,9 +1092,9 @@ export interface operations {
             query?: {
                 format?: "csv" | "xlsx";
             };
-            header: {
-                /** @description Organization identifier header for tenant scoping */
-                "X-Corso-Org-Id": components["parameters"]["OrgIdHeader"];
+            header?: {
+                /** @description Optional organization identifier header for tenant scoping (used for personal-scope routes that support both org-scoped and user-scoped access) */
+                "X-Corso-Org-Id"?: components["parameters"]["OrgIdHeaderOptional"];
             };
             path: {
                 entity: "projects" | "companies" | "addresses";

@@ -21,11 +21,31 @@ function hasBearer(op: any): boolean {
 function isPublic(op: any): boolean {
   return op["x-public"] === true;
 }
+function isPersonalScope(op: any): boolean {
+  return op["x-corso-personal-scope"] === true;
+}
 function hasOrgHeader(op: any, pathItem: any): boolean {
   const allParams = [...(pathItem?.parameters ?? []), ...(op.parameters ?? [])];
   return allParams.some((p: any) => {
-    if (p?.$ref) return String(p.$ref).endsWith("#/components/parameters/OrgIdHeader");
-    return p?.in === "header" && p?.name === "X-Corso-Org-Id";
+    // Check for required OrgIdHeader (not optional)
+    if (p?.$ref) {
+      const isRequired = String(p.$ref).endsWith("#/components/parameters/OrgIdHeader");
+      // Also check if parameter itself is marked as required: true (non-optional)
+      const isParamRequired = p.required === true;
+      return isRequired && (isParamRequired !== false); // Default to true if not specified
+    }
+    return p?.in === "header" && p?.name === "X-Corso-Org-Id" && p?.required !== false;
+  });
+}
+function hasOptionalOrgHeader(op: any, pathItem: any): boolean {
+  const allParams = [...(pathItem?.parameters ?? []), ...(op.parameters ?? [])];
+  return allParams.some((p: any) => {
+    // Check for optional OrgIdHeaderOptional or optional OrgIdHeader
+    if (p?.$ref) {
+      return String(p.$ref).endsWith("#/components/parameters/OrgIdHeaderOptional") ||
+             (String(p.$ref).endsWith("#/components/parameters/OrgIdHeader") && p.required === false);
+    }
+    return p?.in === "header" && p?.name === "X-Corso-Org-Id" && p?.required === false;
   });
 }
 
@@ -46,8 +66,20 @@ for (const p of Object.keys(spec.paths ?? {})) {
           }
         }
       }
-      if (REQUIRE_TENANT_HEADER && !hasOrgHeader(op, pathItem)) {
-        errors.push(`${m.toUpperCase()} ${p}: bearerAuth route missing OrgIdHeader parameter`);
+      // Personal-scope routes can have optional org header (not required)
+      // Non-personal-scope routes require org header (if REQUIRE_TENANT_HEADER is true)
+      if (REQUIRE_TENANT_HEADER && !isPersonalScope(op)) {
+        if (!hasOrgHeader(op, pathItem)) {
+          // Allow optional org header for personal-scope routes
+          const hasOptional = hasOptionalOrgHeader(op, pathItem);
+          if (!hasOptional) {
+            errors.push(`${m.toUpperCase()} ${p}: bearerAuth route missing required OrgIdHeader parameter (use OrgIdHeaderOptional for personal-scope routes)`);
+          }
+        }
+      }
+      // Personal-scope routes should use optional header if they include org header
+      if (isPersonalScope(op) && hasOrgHeader(op, pathItem) && !hasOptionalOrgHeader(op, pathItem)) {
+        errors.push(`${m.toUpperCase()} ${p}: personal-scope route should use OrgIdHeaderOptional (not required OrgIdHeader)`);
       }
     }
   }

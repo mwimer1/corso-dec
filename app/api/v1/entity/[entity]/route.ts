@@ -54,14 +54,14 @@ const handler = async (req: NextRequest, ctx: { params: { entity: string } }): P
   // Define allowed roles (for strict mode only)
   const allowedRoles = ['org:member', 'org:admin', 'org:owner'] as const;
   
-  // Resolve organization context
-  const orgResolutionResult = await resolveOrgContext(req, userId);
+  // Resolve organization context (org is optional for entity routes - personal scope)
+  const orgResolutionResult = await resolveOrgContext(req, userId, { requireOrg: false });
   if (orgResolutionResult instanceof Response) {
     return await toNextResponse(orgResolutionResult);
   }
   const { orgId, source: effectiveOrgIdSource } = orgResolutionResult;
   
-  // Enforce RBAC (skip in relaxed mode)
+  // Enforce RBAC only if org is present (skip in relaxed mode or when orgId is null)
   if (!isRelaxed && orgId) {
     try {
       const effectiveOrgId = orgId;

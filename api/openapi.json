@@ -352,7 +352,7 @@
           "Dashboard"
         ],
         "summary": "Entity data operations",
-        "description": "Query and manage entity data (projects, companies, addresses) with authentication",
+        "description": "Query and manage entity data (projects, companies, addresses) with authentication.\n\n**Personal Scope:** This endpoint supports both organization-scoped and personal (user-scoped) access.\nOrganization header is optional - if provided, data is scoped to the organization; if omitted, data is scoped to the authenticated user.\n",
         "parameters": [
           {
             "name": "entity",
@@ -423,7 +423,7 @@
             }
           },
           {
-            "$ref": "#/components/parameters/OrgIdHeader"
+            "$ref": "#/components/parameters/OrgIdHeaderOptional"
           }
         ],
         "security": [
@@ -436,6 +436,7 @@
           "admin",
           "owner"
         ],
+        "x-corso-personal-scope": true,
         "x-rate-limit": {
           "limit": 60,
           "window": "1m"
@@ -629,7 +630,7 @@
           "Dashboard"
         ],
         "summary": "Query entity data",
-        "description": "Query paginated entity data with filtering and sorting",
+        "description": "Query paginated entity data with filtering and sorting.\n\n**Personal Scope:** This endpoint supports both organization-scoped and personal (user-scoped) access.\nOrganization header is optional - if provided, data is scoped to the organization; if omitted, data is scoped to the authenticated user.\n",
         "parameters": [
           {
             "name": "entity",
@@ -645,7 +646,7 @@
             }
           },
           {
-            "$ref": "#/components/parameters/OrgIdHeader"
+            "$ref": "#/components/parameters/OrgIdHeaderOptional"
           }
         ],
         "security": [
@@ -656,6 +657,7 @@
         "x-corso-rbac": [
           "member"
         ],
+        "x-corso-personal-scope": true,
         "x-rate-limit": {
           "limit": 60,
           "window": "1m"
@@ -945,7 +947,7 @@
             }
           },
           {
-            "$ref": "#/components/parameters/OrgIdHeader"
+            "$ref": "#/components/parameters/OrgIdHeaderOptional"
           }
         ],
         "security": [
@@ -956,6 +958,7 @@
         "x-corso-rbac": [
           "member"
         ],
+        "x-corso-personal-scope": true,
         "x-rate-limit": {
           "limit": 30,
           "window": "1m"
@@ -1186,6 +1189,16 @@
         "in": "header",
         "description": "Organization identifier header for tenant scoping",
         "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "OrgIdHeaderOptional": {
+        "name": "X-Corso-Org-Id",
+        "in": "header",
+        "description": "Optional organization identifier header for tenant scoping (used for personal-scope routes that support both org-scoped and user-scoped access)",
+        "required": false,
         "schema": {
           "type": "string",
           "format": "uuid"

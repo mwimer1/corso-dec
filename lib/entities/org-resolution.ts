@@ -20,6 +20,17 @@ const SHOULD_LOG =
   process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test';
 
 /**
+ * Options for org resolution
+ */
+export interface ResolveOrgContextOptions {
+  /**
+   * Whether org is required. If false, returns { orgId: null } instead of 403 when no org found.
+   * Default: true (maintains backward compatibility)
+   */
+  requireOrg?: boolean;
+}
+
+/**
  * Resolve organization context from request headers and Clerk session.
  * 
  * Priority (strict mode):
@@ -31,12 +42,15 @@ const SHOULD_LOG =
  * 
  * @param req - Next.js request
  * @param userId - Authenticated user ID (must be provided)
+ * @param options - Resolution options (requireOrg: whether org is required, default true)
  * @returns Organization resolution result with orgId and source, or Response for error cases
  */
 export async function resolveOrgContext(
   req: NextRequest,
-  userId: string
+  userId: string,
+  options?: ResolveOrgContextOptions
 ): Promise<OrgResolutionResult | Response> {
+  const requireOrg = options?.requireOrg ?? true;
   const isRelaxed = isRelaxedAuthMode();
 
   // Log auth mode for debugging (dev only)
@@ -91,8 +105,8 @@ export async function resolveOrgContext(
       }
     }
 
-    // Check for organization (required in strict mode)
-    if (!orgId) {
+    // Check for organization (required in strict mode unless requireOrg: false)
+    if (!orgId && requireOrg) {
       return http.error(403, 'No active organization. Please create or join an organization to continue.', {
         code: 'NO_ORG_CONTEXT',
         details: {
@@ -100,6 +114,7 @@ export async function resolveOrgContext(
         },
       });
     }
+    // If requireOrg: false, allow orgId to be null (for personal-scope routes)
   } else {
     // Relaxed mode: try to get orgId from header or active session, but don't require it
     if (req.headers) {

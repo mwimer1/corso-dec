@@ -648,8 +648,8 @@ describe('API v1: GET /entity/[entity]', () => {
       });
     });
 
-    it('should return 403 when orgId is missing', async () => {
-      // Ensure strict mode is enforced (orgId required)
+    it('should return 200 when orgId is missing (personal-scope route)', async () => {
+      // Ensure strict mode is enforced (but orgId is optional for entity routes)
       mockIsRelaxedAuthMode.mockReturnValue(false);
       delete process.env.NEXT_PUBLIC_AUTH_MODE;
       delete process.env.ALLOW_RELAXED_AUTH;
@@ -659,14 +659,15 @@ describe('API v1: GET /entity/[entity]', () => {
       mockClerkAuth.setup({
         userId: testUser.userId,
         orgId: null, // Explicitly null to simulate missing org
+        has: vi.fn().mockReturnValue(false), // No org role since no org
       });
       // Mock clerkClient to return empty organizations list (simulating user with no orgs)
       mockClerkAuth.getClerkClient().users.getOrganizationMembershipList.mockResolvedValue({
         data: [],
       });
       
-      // The route should detect missing orgId and return 403 in strict mode
-      // This happens when orgId cannot be resolved from header, session, or memberships
+      // Entity routes now support personal-scope access (orgId optional)
+      // The route should proceed with orgId: null and return 200
 
       const mod = await import('@/app/api/v1/entity/[entity]/route');
       const handler = mod.GET;
@@ -680,11 +681,15 @@ describe('API v1: GET /entity/[entity]', () => {
       };
 
       const res = await handler(req as any, { params: { entity: 'projects' } });
-      expect(res.status).toBe(403);
+      // Should succeed without org (personal-scope route)
+      expect(res.status).toBe(200);
 
       const body = await res.json();
-      expect(body.success).toBe(false);
-      expect(body.error.code).toBe('NO_ORG_CONTEXT');
+      expect(body.success).toBe(true);
+      expect(body.data).toHaveProperty('data');
+      expect(Array.isArray(body.data.data)).toBe(true);
+      // Should not return NO_ORG_CONTEXT error
+      expect(body.error?.code).not.toBe('NO_ORG_CONTEXT');
     });
   });
 
