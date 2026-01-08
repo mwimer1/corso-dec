@@ -1,0 +1,145 @@
+name: Cleanup Old Workflow Runs
+
+on:
+  schedule:
+    # Run weekly on Sunday at 2 AM UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+    inputs:
+      days_old:
+        description: 'Delete runs older than this many days'
+        required: false
+        default: '90'
+        type: number
+      dry_run:
+        description: 'If true, only list runs (no deletions)'
+        required: false
+        default: 'false'
+        type: boolean
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  cleanup:
+    name: Cleanup Old Workflow Runs
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout (for GitHub CLI)
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+
+      - name: Setup GitHub CLI
+        run: |
+          if ! command -v gh >/dev/null 2>&1; then
+            sudo apt-get update && sudo apt-get install -y gh
+          fi
+          gh --version
+
+      - name: Calculate cutoff date
+        id: cutoff
+        run: |
+          DAYS_OLD="${{ github.event.inputs.days_old || 90 }}"
+          CUTOFF=$(date -u -d "${DAYS_OLD} days ago" +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date -u -v-${DAYS_OLD}d +%Y-%m-%dT%H:%M:%SZ)
+          echo "cutoff=${CUTOFF}" >> $GITHUB_OUTPUT
+          echo "days_old=${DAYS_OLD}" >> $GITHUB_OUTPUT
+          echo "Cutoff date: ${CUTOFF} (runs older than ${DAYS_OLD} days will be deleted)"
+
+      - name: List and delete old workflow runs
+        env:
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+          DAYS_OLD: ${{ steps.cutoff.outputs.days_old }}
+          CUTOFF: ${{ steps.cutoff.outputs.cutoff }}
+        run: |
+          set -euo pipefail
+          
+          REPO="${GITHUB_REPOSITORY}"
+          DRY="${DRY_RUN}"
+          CUTOFF="${CUTOFF}"
+          
+          echo "Repository: ${REPO}"
+          echo "Dry run: ${DRY}"
+          echo "Cutoff: ${CUTOFF}"
+          echo ""
+          
+          total_listed=0
+          total_deleted=0
+          page=1
+          
+          while :; do
+            echo "Fetching page ${page}..."
+            
+            # Fetch workflow runs
+            runs_json=$(gh api --paginate \
+              -H "Accept: application/vnd.github+json" \
+              "repos/${REPO}/actions/runs?per_page=100&page=${page}" || echo '{"workflow_runs":[]}')
+            
+            # Extract run IDs and creation dates
+            runs=$(echo "$runs_json" | jq -r --arg cutoff "$CUTOFF" '
+              .workflow_runs[]? | 
+              select(.created_at < $cutoff and .status == "completed") | 
+              "\(.id)|\(.created_at)|\(.name)"
+            ')
+            
+            if [ -z "$runs" ] || [ "$runs" = "" ]; then
+              echo "No more old runs found."
+              break
+            fi
+            
+            count_on_page=$(echo "$runs" | grep -c '^' || echo "0")
+            total_listed=$((total_listed + count_on_page))
+            echo "Page ${page}: found ${count_on_page} run(s) to delete"
+            
+            if [ "${DRY}" = "true" ]; then
+              echo "$runs" | while IFS='|' read -r id created_at name; do
+                echo "  Would delete: ${id} (${name}) from ${created_at}"
+              done
+            else
+              # Delete runs one by one with rate limit awareness
+              echo "$runs" | while IFS='|' read -r id created_at name; do
+                if gh api -X DELETE "repos/${REPO}/actions/runs/${id}" >/dev/null 2>&1; then
+                  echo "  ✅ Deleted run ${id} (${name}) from ${created_at}"
+                  total_deleted=$((total_deleted + 1))
+                else
+                  echo "  ❌ Failed to delete run ${id}"
+                fi
+                # Small delay to avoid rate limits
+                sleep 0.5
+              done
+            fi
+            
+            # Check if we got a full page (if not, we're done)
+            if [ "$count_on_page" -lt 100 ]; then
+              echo "Reached the last page."
+              break
+            fi
+            
+            page=$((page + 1))
+            
+            # Rate limit protection: check remaining API calls
+            remaining=$(gh api /rate_limit -q '.resources.core.remaining' 2>/dev/null || echo "5000")
+            if [ "$remaining" -lt 100 ]; then
+              echo "Rate limit low (${remaining} remaining). Waiting 60 seconds..."
+              sleep 60
+            fi
+          done
+          
+          echo ""
+          echo "Summary:"
+          echo "  Listed: ${total_listed} old runs"
+          if [ "${DRY}" != "true" ]; then
+            echo "  Deleted: ${total_deleted} runs"
+          else
+            echo "  (Dry run - no deletions performed)"
+          fi
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Cleanup Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Cleanup completed successfully" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "This workflow automatically deletes completed workflow runs older than 90 days" >> $GITHUB_STEP_SUMMARY
+          echo "to reduce GitHub Actions storage usage while maintaining recent history." >> $GITHUB_STEP_SUMMARY
