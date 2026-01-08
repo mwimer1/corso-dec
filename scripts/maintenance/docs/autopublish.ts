@@ -88,11 +88,13 @@ type StatusEntry = { x: string; y: string; path: string };
 
 function getStatusPorcelain(quiet: boolean): StatusEntry[] {
   const { stdout } = run("git", ["status", "--porcelain=v1", "-z"], { quiet });
-  const parts = stdout.split("\0").filter(Boolean);
+  const rawParts = stdout.split("\0");
+  const parts = rawParts.filter((p): p is string => typeof p === "string" && p.length > 0);
 
   const out: StatusEntry[] = [];
   for (let i = 0; i < parts.length; i++) {
     const part = parts[i];
+    if (!part) continue; // satisfies TS (and is logically unreachable)
 
     if (part.startsWith("?? ")) {
       out.push({ x: "?", y: "?", path: part.slice(3) });
