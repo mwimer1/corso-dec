@@ -209,29 +209,86 @@ The duplication check is non-blocking on first implementation to allow for gradu
 Before committing documentation changes:
 
 - [ ] Filename uses kebab-case
-- [ ] Frontmatter is complete and accurate
+- [ ] Frontmatter is complete and accurate (except root README.md which doesn't require frontmatter)
 - [ ] Content follows single-source-of-truth principle (links instead of duplicating)
 - [ ] Document is added to appropriate section in `docs/README.md`
 - [ ] Internal links are updated to reflect new structure (if files moved)
 - [ ] No sensitive information (API keys, passwords, etc.)
+- [ ] Run `pnpm lint:md` to check markdown formatting (CI will also check this)
+- [ ] Verify links are accessible (CI will check links automatically)
 
 ## 🛠️ Validation Commands
 
 Before pushing, run:
 
 ```bash
+# Markdown linting (required - runs in CI)
+pnpm lint:md
+
 # Full documentation validation
 pnpm docs:validate
 
-# Check for broken links
+# Check for broken links (CI also checks automatically)
 pnpm docs:links
 
-# Check for duplicate content
+# Check for duplicate content (CI also checks automatically)
 pnpm jscpd:docs
+
+# Spell checking (CI runs this non-blocking)
+pnpm docs:spellcheck
 
 # Validate content patterns
 pnpm docs:validate:content
 ```
+
+**Note**: CI automatically runs markdownlint, link checking, duplication detection, and spell checking on every PR. Run these locally before pushing to catch issues early.
+
+## 🤖 CI Automation
+
+Documentation quality is automatically enforced via CI workflows on every pull request:
+
+### Automatic Checks (Every PR)
+
+- **Markdownlint**: Validates markdown structure and formatting
+  - Runs: `pnpm lint:md`
+  - Blocks PR if formatting issues are found
+  - Catches broken code fences, inconsistent formatting
+
+- **Link Checking**: Validates all internal and external links
+  - Uses Lychee to check link accessibility
+  - Retries flaky external links automatically
+  - Blocks PR if broken links are found
+
+- **Duplication Detection**: Prevents copy-pasted content
+  - Uses jscpd to detect duplicated sections
+  - Threshold: 5% (allows small quotes and common phrasing)
+  - Blocks PR if duplication exceeds threshold
+
+- **Spell Checking**: Catches typos (non-blocking)
+  - Uses cspell to check spelling
+  - Runs but doesn't block PRs (allows for review)
+
+### Scheduled Checks
+
+- **Freshness Check**: Monthly automated check for stale docs
+  - Runs on 1st of each month via `.github/workflows/docs-freshness.yml`
+  - Flags files older than 90 days
+  - Creates GitHub issues for maintainers to review
+  - Command: `pnpm docs:stale:check --maxAgeDays=90`
+
+### Local Development
+
+To get immediate feedback before pushing:
+
+```bash
+# Run all documentation checks locally
+pnpm lint:md              # Markdown linting
+pnpm docs:links           # Link checking
+pnpm jscpd:docs           # Duplication detection
+pnpm docs:spellcheck      # Spell checking (optional)
+```
+
+All checks that run in CI can be run locally using these commands. CI will run the same checks automatically when you open a PR.
 
 ## 📖 Related Documentation
 
