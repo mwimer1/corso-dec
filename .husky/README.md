@@ -7,18 +7,22 @@ title: ".husky"
 ---
 # 🤖 Husky Git Hooks Configuration
 
-> **AI-Optimized Git hooks ecosystem** providing automated quality gates, documentation maintenance, and conventional commit validation for the Corso platform.
+> **Fast, fail-fast, low-noise Git hooks** with high-context failures and post-commit receipts for the Corso platform.
 
 ## 📋 Quick Reference
 
 **Active Hooks** (4/4 enabled):
-- ✅ **pre-commit**: Documentation maintenance and validation
+- ✅ **pre-commit**: Fail-fast quality gates with staged-only checks
 - ✅ **commit-msg**: Conventional commit message validation
 - ✅ **pre-rebase**: Lockfile refresh during rebases
-- ✅ **pre-push**: Style checks and fast test suite
+- ✅ **pre-push**: Conditional style checks and fast test suite
+- ✅ **post-commit**: Receipt generation for docs/tooling changes
 
 **Key Features:**
-- 🔄 **Documentation-first**: Automated README updates and freshness validation
+- ⚡ **Fast execution**: Staged-only checks, conditional gates, fast-exit on no-op
+- 🎯 **Fail-fast**: Stops on first error with actionable context
+- 🔇 **Low-noise**: Minimal output on success, detailed only on failure
+- 📄 **Receipts**: Post-commit file lists for troubleshooting
 - 📝 **Conventional commits**: Strict commit message standards enforcement
 - 🔒 **Git LFS integration**: Large file storage hooks for media assets
 - 🚀 **CI/CD complement**: Fast local feedback before comprehensive CI validation
@@ -29,13 +33,13 @@ title: ".husky"
 
 | Hook | Status | Purpose | Execution |
 |------|--------|---------|-----------|
-| `pre-commit` | ✅ **Active** | Documentation maintenance | Multi-line script execution |
+| `pre-commit` | ✅ **Active** | Fail-fast quality gates | Staged-only checks with conditional execution |
 | `commit-msg` | ✅ **Active** | Commit message validation | `pnpm exec commitlint --edit "$1"` |
 | `pre-rebase` | ✅ **Active** | Lockfile refresh | Conditional CI-aware execution |
 | `post-merge` | ⚪ **Git LFS** | Large file checkout | `git lfs post-merge` |
-| `post-commit` | ⚪ **Git LFS** | Large file commit | `git lfs post-commit` |
+| `post-commit` | ✅ **Active** | Receipt generation | Auto-generates receipts for docs/tooling changes |
 | `post-checkout` | ⚪ **Git LFS** | Large file checkout | `git lfs post-checkout` |
-| `pre-push` | ✅ **Active** | Style checks and fast test suite | Style contract checks + `pnpm test:fast` |
+| `pre-push` | ✅ **Active** | Conditional style/tests | Fast-exit on no commits, change-based execution |
 
 ---
 
@@ -43,42 +47,44 @@ title: ".husky"
 
 ### ✅ Pre-commit Hook (`pre-commit`)
 
-**Purpose**: Automated documentation maintenance and validation before commits.
+**Purpose**: Fail-fast quality gates with staged-only checks and high-context failures.
 
-**Execution Flow**:
+**Execution Flow** (gates run in order, fail-fast on first error):
 ```bash
-# 1. Validate package.json (prevents duplicate scripts)
+# 1. Validate package.json (only if package.json staged)
 pnpm validate:package
 
-# 2. Validate environment (prevents broken deployments)
+# 2. Validate environment (only if env/config files staged)
 NODE_ENV=development pnpm validate:env
 
-# 3. Typecheck staged files only (performance optimization)
-pnpm typecheck:staged
-
-# 4. Lint staged files (ESLint --fix on .ts/.tsx and binary font validation)
+# 3. Lint staged files (always runs - fast and scoped)
 pnpm lint-staged
 
-# 5. Validate documentation freshness (skips if no docs changed)
-pnpm tsx scripts/maintenance/validate-docs-on-commit.ts
+# 4. Typecheck staged files (only if TS/TSX or tsconfig staged)
+pnpm typecheck:staged
+
+# 5. Leak guard (only if types/shared/** staged)
+git grep -nE "export .*Database" -- types/shared
 ```
 
 **Key Scripts**:
-- **`validate:package`**: Validates package.json structure and prevents duplicate scripts
-- **`validate:env`**: Validates environment variables are properly configured
-- **`typecheck:staged`**: Typechecks only staged TypeScript files (fast incremental typecheck)
-- **`lint-staged`**: Runs ESLint --fix on staged .ts/.tsx files and validates binary fonts
-- **`validate-docs-on-commit.ts`**: Regenerates docs index only if docs files changed (performance optimization)
+- **`validate:package`**: Validates package.json structure (skipped if package.json not staged)
+- **`validate:env`**: Validates environment variables (skipped if no env/config files changed)
+- **`lint-staged`**: Runs ESLint with cache on staged .ts/.tsx files, binary font check on font files only
+- **`typecheck:staged`**: Typechecks only staged TypeScript files using temporary tsconfig (avoids TS5042)
+- **Leak guard**: Prevents critical types from being re-exported from `types/shared/`
 
-**Performance Optimizations** (Phases 1-3):
-- ✅ **Staged-only typecheck**: Only checks staged TypeScript files instead of full project
-- ✅ **Conditional docs validation**: Skips docs index regeneration when no docs files changed
-- ✅ **Removed double linting**: Removed full project lint (`pnpm lint`) - `lint-staged` already lints staged files
-- ✅ **File change detection**: Skips validation checks when relevant files haven't changed:
-  - `validate:package` skipped if `package.json` not staged
-  - `validate:env` skipped if no env-related config files changed
-- ✅ **Caching**: `validate:package` uses file hash-based caching to skip re-validation when `package.json` unchanged
-- ✅ **Parallelization**: Independent checks (package/env validation) run concurrently using background jobs
+**Performance Optimizations**:
+- ✅ **Staged-only checks**: All checks operate on staged files only
+- ✅ **Conditional execution**: Gates skip when relevant files unchanged
+- ✅ **Fast lint-staged**: ESLint cache enabled, binary font check only on font files
+- ✅ **Temp tsconfig**: Typecheck uses `.cache/tsc/tsconfig.staged.json` to avoid TS5042 error
+- ✅ **Low-noise output**: Minimal output on success (✅ lines only)
+- ✅ **High-context failures**: On failure, shows gate name, re-run command, log path, action items, and log tail
+
+**Logging**:
+- Logs written to `.git/husky-logs/pre-commit-<timestamp>.log`
+- Set `HUSKY_VERBOSE=1` to stream output instead of logging
 
 ### ✅ Commit Message Hook (`commit-msg`)
 
@@ -98,6 +104,56 @@ pnpm exec commitlint --edit "$1"
 - Breaking change indicators and scope validation
 
 **See**: `docs/development/commit-conventions.md` for complete commit message guidelines and scope usage.
+
+### ✅ Pre-push Hook (`pre-push`)
+
+**Purpose**: Conditional style checks and fast test suite with fast-exit on no-op.
+
+**Execution Flow**:
+```bash
+# 1. Fast-exit if no commits to push
+# 2. Run Git LFS pre-push (if available)
+# 3. Determine changed files since base
+# 4. Run style checks (only if style/token/theme files changed)
+pnpm check:styles
+
+# 5. Run fast tests (only if code/test/config files changed)
+pnpm test:fast
+```
+
+**Behavior**:
+- **Fast-exit**: Immediately skips if no commits to push (checks `@{u}` or remote branch)
+- **Change-based execution**: Only runs checks relevant to changed files
+- **Fallback safety**: If base cannot be determined, runs both checks
+- **Logging**: Logs written to `.git/husky-logs/pre-push-<timestamp>.log`
+
+**Environment Variables**:
+- `HUSKY_FORCE=1`: Run all checks regardless of changed files
+- `HUSKY_SKIP_TESTS=1`: Skip test suite
+- `HUSKY_SKIP_STYLES=1`: Skip style checks
+- `HUSKY_VERBOSE=1`: Stream output instead of logging
+
+### ✅ Post-commit Hook (`post-commit`)
+
+**Purpose**: Generate receipts for troubleshooting "docs didn't update" / "pushed nothing" scenarios.
+
+**Execution**:
+- Automatically generates receipts when commit includes changes under:
+  - `.husky/`, `.cursor/`, `docs/`, `README.md`, `package.json`, `pnpm-lock.yaml`
+- Can be forced for any commit: `HUSKY_RECEIPT=1`
+
+**Receipt Contents**:
+- SHA (full + short)
+- Branch name
+- Commit subject
+- Timestamp
+- Total files changed
+- Insertions/deletions (from `git show --numstat`)
+- Changed file list (from `git show --name-status`)
+
+**Output**:
+- Receipts saved to `.git/husky-logs/post-commit-<timestamp>-<sha>.txt`
+- Terminal output: one line with receipt path
 
 ### ✅ Pre-rebase Hook (`pre-rebase`)
 
@@ -159,6 +215,29 @@ pnpm install  # Runs prepare script which installs Husky hooks
 git commit --no-verify  # Skip all pre-commit hooks
 git push --no-verify    # Skip pre-push hooks (tests, style checks)
 ```
+
+### Environment Variables
+
+**Pre-commit**:
+- `HUSKY_VERBOSE=1`: Stream command output instead of logging to file
+
+**Pre-push**:
+- `HUSKY_FORCE=1`: Run all checks regardless of changed files
+- `HUSKY_SKIP_TESTS=1`: Skip test suite
+- `HUSKY_SKIP_STYLES=1`: Skip style checks
+- `HUSKY_VERBOSE=1`: Stream output instead of logging
+
+**Post-commit**:
+- `HUSKY_RECEIPT=1`: Force receipt generation for any commit
+
+### Log Locations
+
+All hook logs are stored in `.git/husky-logs/`:
+- `pre-commit-<timestamp>.log`: Pre-commit gate execution logs
+- `pre-push-<timestamp>.log`: Pre-push check execution logs
+- `post-commit-<timestamp>-<sha>.txt`: Commit receipts
+
+**Note**: `.git/husky-logs/` is automatically created by hooks and is gitignored.
 
 ### CI/CD Integration
 
@@ -250,36 +329,45 @@ pnpm install
 
 | Hook | Typical Runtime | Frequency |
 |------|-----------------|-----------|
-| `pre-commit` | 1-3 seconds* | Every commit |
+| `pre-commit` | 0.5-2 seconds* | Every commit |
 | `commit-msg` | <1 second | Every commit |
 | `pre-rebase` | 2-3 seconds | During rebases |
-| `pre-push` | 10-30 seconds | Before push |
+| `pre-push` | 5-30 seconds** | Before push |
+| `post-commit` | <0.1 second | After commits (conditional) |
 
-\* **Performance optimized** (4 phases of optimization):
-- **Code commits** (with TS changes): 1.5-2.5 seconds (staged typecheck + lint in parallel, parallel validations)
-- **Code commits** (no TS/config changes): 1-2 seconds (lint only, validations skipped/cached)
-- **Docs-only commits**: 1-2 seconds (docs validation only, other checks skipped)
+\* **Performance optimized** (fail-fast, staged-only):
+- **Code commits** (with TS changes): 1-2 seconds (staged typecheck + lint, conditional validations)
+- **Code commits** (no TS/config changes): 0.5-1 second (lint only, validations skipped)
+- **Docs-only commits**: 0.5-1 second (lint only, other checks skipped)
 - **Config-only commits**: 0.5-1 second (minimal validation, most checks skipped)
-- **Cached commits**: <1 second (when package.json unchanged and cached)
+- **No-op commits**: <0.5 second (fast-exit on empty staged files)
+
+\** **Pre-push performance**:
+- **No commits to push**: <0.1 second (fast-exit)
+- **Style-only changes**: 5-10 seconds (style checks only)
+- **Code changes**: 10-30 seconds (style + tests)
+- **Force mode**: 10-30 seconds (all checks)
 
 **Optimization phases implemented**:
-- Phase 1: Removed double linting, staged-only typecheck, conditional docs validation
-- Phase 2: File change detection, hash-based caching for package validation
-- Phase 3: Parallel execution of independent checks (package/env validations)
-- Phase 4: Parallel execution of typecheck and lint when both are needed (20-30% faster on code commits)
+- ✅ **Staged-only checks**: All checks operate on staged files only
+- ✅ **Conditional execution**: Gates skip when relevant files unchanged
+- ✅ **Fast lint-staged**: ESLint cache enabled, binary font check only on font files
+- ✅ **Temp tsconfig**: Typecheck uses temporary config to avoid TS5042 error
+- ✅ **Fast-exit**: Pre-push immediately exits if no commits to push
+- ✅ **Change-based execution**: Pre-push only runs relevant checks based on changed files
 
 ### Quality Impact
 
-**Documentation Maintenance**:
-- ✅ Automated timestamp updates
-- ✅ Index regeneration
-- ✅ Link validation
-- ✅ Freshness monitoring
-
 **Code Quality**:
 - ✅ Conventional commit enforcement
-- ✅ Pre-commit validation (when enabled)
-- ✅ Leak detection guards
+- ✅ Fail-fast pre-commit gates (package, env, lint, typecheck, leak guard)
+- ✅ Conditional pre-push checks (style, tests)
+- ✅ Staged-only execution (fast feedback)
+
+**Troubleshooting**:
+- ✅ Post-commit receipts for docs/tooling changes
+- ✅ Detailed failure context (gate name, re-run command, log path, action items)
+- ✅ Log files for debugging failed hooks
 
 ---
 

@@ -1,7 +1,53 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/husky.sh"
 
-# Run Git LFS hook when available; otherwise no-op (silent)
+# Conditional pre-push hook with fast-exit and change-based execution
+
+# Get git directory for log storage
+GIT_DIR=$(git rev-parse --git-dir 2>/dev/null || echo ".git")
+LOG_DIR="$GIT_DIR/husky-logs"
+mkdir -p "$LOG_DIR"
+
+# Generate log file name with timestamp
+TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+LOG_FILE="$LOG_DIR/pre-push-$TIMESTAMP.log"
+
+# Verbose mode: stream output instead of logging
+if [ "$HUSKY_VERBOSE" = "1" ]; then
+  LOG_CMD=""
+  LOG_SUFFIX=""
+else
+  LOG_CMD=">> \"$LOG_FILE\" 2>&1"
+  LOG_SUFFIX=" (see $LOG_FILE)"
+fi
+
+# Fast-exit: check if there are commits to push
+# Try to get upstream branch
+UPSTREAM=$(git rev-parse --abbrev-ref @{u} 2>/dev/null || echo "")
+
+if [ -n "$UPSTREAM" ]; then
+  # Count commits ahead of upstream
+  COMMITS_AHEAD=$(git rev-list --count @{u}..HEAD 2>/dev/null || echo "0")
+  if [ "$COMMITS_AHEAD" = "0" ]; then
+    echo "⏭️  No commits to push, skipping pre-push checks"
+    exit 0
+  fi
+else
+  # No upstream set, check if we're pushing to a remote
+  REMOTE_NAME="${1:-origin}"
+  REMOTE_BRANCH="${2:-$(git rev-parse --abbrev-ref HEAD)}"
+  
+  # Try to determine if there are commits to push
+  if git rev-parse --verify "$REMOTE_NAME/$REMOTE_BRANCH" >/dev/null 2>&1; then
+    COMMITS_AHEAD=$(git rev-list --count "$REMOTE_NAME/$REMOTE_BRANCH"..HEAD 2>/dev/null || echo "0")
+    if [ "$COMMITS_AHEAD" = "0" ]; then
+      echo "⏭️  No commits to push, skipping pre-push checks"
+      exit 0
+    fi
+  fi
+fi
+
+# Run Git LFS pre-push hook when available
 if command -v git-lfs >/dev/null 2>&1; then
   if ! git lfs pre-push "$@"; then
     echo "❌ Git LFS pre-push failed"
@@ -9,22 +55,99 @@ if command -v git-lfs >/dev/null 2>&1; then
   fi
 fi
 
-# Style contract checks
-echo "🔍 Running style checks..."
-if ! pnpm check:styles; then
-  echo "❌ Style checks failed. Run 'pnpm check:styles' to see details."
-  echo "   To bypass: git push --no-verify"
-  exit 1
+# Determine base for change detection
+if [ -n "$UPSTREAM" ]; then
+  BASE="$UPSTREAM"
+else
+  # Try to find merge base with remote
+  REMOTE_NAME="${1:-origin}"
+  REMOTE_BRANCH="${2:-$(git rev-parse --abbrev-ref HEAD)}"
+  if git rev-parse --verify "$REMOTE_NAME/$REMOTE_BRANCH" >/dev/null 2>&1; then
+    BASE=$(git merge-base HEAD "$REMOTE_NAME/$REMOTE_BRANCH" 2>/dev/null || echo "")
+  else
+    BASE=""
+  fi
 fi
 
-# Run lightweight test suite (node + dom tests, fast subset)
-# Can be bypassed with: git push --no-verify
-echo "🧪 Running pre-push test checks..."
-if ! pnpm test:fast; then
-  echo "❌ Pre-push tests failed. Run 'pnpm test' to see full output."
-  echo "   To bypass: git push --no-verify"
-  exit 1
+# Determine which checks to run based on changed files
+NEEDS_STYLES=false
+NEEDS_TESTS=false
+
+if [ "$HUSKY_FORCE" = "1" ]; then
+  # Force mode: run all checks
+  NEEDS_STYLES=true
+  NEEDS_TESTS=true
+else
+  if [ -n "$BASE" ]; then
+    # Check changed files since base
+    CHANGED_FILES=$(git diff --name-only "$BASE"..HEAD 2>/dev/null || echo "")
+    
+    # Check for style/token/theme-related files
+    if echo "$CHANGED_FILES" | grep -qE '(styles/|tokens/|theme|\.css|\.scss|tailwind\.config)'; then
+      NEEDS_STYLES=true
+    fi
+    
+    # Check for code/test/config changes
+    if echo "$CHANGED_FILES" | grep -qE '\.(ts|tsx|js|jsx)$|tests/|test/|config/|\.config\.'; then
+      NEEDS_TESTS=true
+    fi
+  else
+    # Base cannot be determined, run both for safety
+    NEEDS_STYLES=true
+    NEEDS_TESTS=true
+  fi
 fi
 
-# Explicitly exit successfully to ensure git knows the hook completed
-exit 0
+# Helper to run a check
+run_check() {
+  local check_name="$1"
+  local command="$2"
+  local skip_env="$3"
+  
+  if [ "$skip_env" = "1" ]; then
+    echo "⏭️  $check_name... (skipped via $skip_env)"
+    return 0
+  fi
+  
+  echo "🔍 $check_name..."
+  
+  if [ "$HUSKY_VERBOSE" = "1" ]; then
+    eval "$command"
+    local exit_code=$?
+  else
+    eval "$command >> \"$LOG_FILE\" 2>&1"
+    local exit_code=$?
+  fi
+  
+  if [ $exit_code -ne 0 ]; then
+    echo "❌ $check_name failed"
+    if [ "$HUSKY_VERBOSE" != "1" ] && [ -f "$LOG_FILE" ]; then
+      echo "📄 View full log: $LOG_FILE"
+    fi
+    exit $exit_code
+  fi
+  
+  echo "✅ $check_name"
+  return 0
+}
+
+# Initialize log file
+if [ "$HUSKY_VERBOSE" != "1" ]; then
+  echo "Pre-push hook started at $(date)" > "$LOG_FILE"
+fi
+
+# Run style checks
+if [ "$NEEDS_STYLES" = "true" ]; then
+  if ! run_check "Style checks" "pnpm check:styles" "$HUSKY_SKIP_STYLES"; then
+    exit 1
+  fi
+fi
+
+# Run tests
+if [ "$NEEDS_TESTS" = "true" ]; then
+  if ! run_check "Fast test suite" "pnpm test:fast" "$HUSKY_SKIP_TESTS"; then
+    exit 1
+  fi
+fi
+
+echo "✅ All pre-push checks passed!"

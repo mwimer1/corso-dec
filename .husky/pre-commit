@@ -1,185 +1,126 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/husky.sh"
 
-# husky.sh already changes to the git repository root
-# Verify we're in a git repository (use --show-toplevel which is more reliable)
-if ! git rev-parse --show-toplevel >/dev/null 2>&1; then
-  # Fallback: ensure we're in repo root using relative path (Windows compatibility)
-  cd "$(dirname -- "$0")/../.." || exit 1
-  if ! git rev-parse --show-toplevel >/dev/null 2>&1; then
-    echo "✖ Error: Could not find git repository root"
+# Fail-fast pre-commit hook with low-noise output and high-context failures
+
+# Get git directory for log storage
+GIT_DIR=$(git rev-parse --git-dir 2>/dev/null || echo ".git")
+LOG_DIR="$GIT_DIR/husky-logs"
+mkdir -p "$LOG_DIR"
+
+# Generate log file name with timestamp
+TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+LOG_FILE="$LOG_DIR/pre-commit-$TIMESTAMP.log"
+
+# Verbose mode: stream output instead of logging
+if [ "$HUSKY_VERBOSE" = "1" ]; then
+  LOG_CMD=""
+  LOG_SUFFIX=""
+else
+  LOG_CMD=">> \"$LOG_FILE\" 2>&1"
+  LOG_SUFFIX=" (see $LOG_FILE)"
+fi
+
+# Helper to run a gate and capture exit code
+run_gate() {
+  local gate_name="$1"
+  local command="$2"
+  local condition="$3"
+  
+  if [ -n "$condition" ] && ! eval "$condition"; then
+    echo "⏭️  $gate_name... (skipped)"
+    return 0
+  fi
+  
+  echo "🔍 $gate_name..."
+  
+  if [ "$HUSKY_VERBOSE" = "1" ]; then
+    eval "$command"
+    local exit_code=$?
+  else
+    eval "$command >> \"$LOG_FILE\" 2>&1"
+    local exit_code=$?
+  fi
+  
+  if [ $exit_code -ne 0 ]; then
+    return $exit_code
+  fi
+  
+  echo "✅ $gate_name"
+  return 0
+}
+
+# Helper to check if file pattern is staged
+has_staged_file() {
+  git diff --cached --name-only --diff-filter=ACMR | grep -qE "$1"
+}
+
+# Helper to show failure context
+show_failure() {
+  local gate_name="$1"
+  local command="$2"
+  
+  echo ""
+  echo "❌ Pre-commit failed: $gate_name"
+  echo ""
+  echo "📋 Action items:"
+  echo "  1. Fix the errors shown above"
+  echo "  2. Re-run: $command"
+  echo "  3. View full log: $LOG_FILE"
+  echo ""
+  
+  if [ "$HUSKY_VERBOSE" != "1" ] && [ -f "$LOG_FILE" ]; then
+    echo "📄 Last 200 lines of log:"
+    echo "---"
+    tail -n 200 "$LOG_FILE" 2>/dev/null || echo "(log file not readable)"
+    echo "---"
+  fi
+  
+  exit 1
+}
+
+# Initialize log file
+if [ "$HUSKY_VERBOSE" != "1" ]; then
+  echo "Pre-commit hook started at $(date)" > "$LOG_FILE"
+fi
+
+# Gate 1: Package validation (only if package.json staged)
+if ! run_gate "Validating package.json" "pnpm validate:package" "has_staged_file '^package.json$'"; then
+  show_failure "package.json validation" "pnpm validate:package"
+fi
+
+# Gate 2: Environment validation (only if env/config files staged)
+ENV_PATTERNS="package.json|next.config|tsconfig.json|\.env\.example|\.env\.test|config/.*env"
+if ! run_gate "Validating environment" "NODE_ENV=development pnpm validate:env" "git diff --cached --name-only | grep -qE '$ENV_PATTERNS'"; then
+  show_failure "environment validation" "NODE_ENV=development pnpm validate:env"
+fi
+
+# Gate 3: Lint staged files (always run - fast and scoped)
+if ! run_gate "Linting staged files" "pnpm lint-staged" ""; then
+  show_failure "lint-staged" "pnpm lint-staged"
+fi
+
+# Gate 4: Typecheck staged files (only if TS/TSX or tsconfig staged)
+TYPECHECK_CONDITION="has_staged_file '\.(ts|tsx)$' || has_staged_file '^tsconfig'"
+if ! run_gate "Typechecking staged files" "pnpm typecheck:staged" "$TYPECHECK_CONDITION"; then
+  show_failure "typecheck:staged" "pnpm typecheck:staged"
+fi
+
+# Gate 5: Leak guard (only if types/shared/** staged)
+if has_staged_file '^types/shared/'; then
+  echo "🔍 Checking for type leaks..."
+  LEAK_OUTPUT=$(git grep -nE "export .*Database" -- types/shared 2>/dev/null || true)
+  if [ -n "$LEAK_OUTPUT" ]; then
+    echo "❌ FATAL: Critical type 'Database' is being re-exported from types/shared."
+    echo "  This violates architectural boundaries. Please import it from its source."
+    echo ""
+    echo "📋 Matching lines:"
+    echo "$LEAK_OUTPUT" | while IFS= read -r line; do
+      echo "  $line"
+    done
     exit 1
   fi
+  echo "✅ Leak guard passed"
 fi
 
-echo "🔍 Running local quality gates..."
-
-# Helper function to check if file is staged (cross-platform compatible)
-has_staged_file() {
-  git diff --cached --name-only --diff-filter=ACMR | grep -q "$1"
-}
-
-# Track which checks we need to run
-NEEDS_PACKAGE_CHECK=false
-NEEDS_ENV_CHECK=false
-NEEDS_TYPECHECK=false
-NEEDS_LINT=false
-NEEDS_DOCS_CHECK=false
-
-# Determine which checks are needed
-if has_staged_file "^package.json$"; then
-  NEEDS_PACKAGE_CHECK=true
-fi
-
-# Check for env-related config files
-for pattern in "package.json" "next.config" "tsconfig.json" ".env.example" ".env.test" "config/.*env"; do
-  if git diff --cached --name-only | grep -qE "$pattern"; then
-    NEEDS_ENV_CHECK=true
-    break
-  fi
-done
-
-# Check if TypeScript files are staged
-if git diff --cached --name-only | grep -qE '\.(ts|tsx)$'; then
-  NEEDS_TYPECHECK=true
-  NEEDS_LINT=true
-fi
-
-# Check if docs files are staged
-if git diff --cached --name-only | grep -qE '(^docs/|README\.md|\.husky/.*\.md|\.cursor/.*\.md)'; then
-  NEEDS_DOCS_CHECK=true
-fi
-
-# Count total checks for progress display
-TOTAL_CHECKS=0
-[ "$NEEDS_PACKAGE_CHECK" = "true" ] && TOTAL_CHECKS=$((TOTAL_CHECKS + 1))
-[ "$NEEDS_ENV_CHECK" = "true" ] && TOTAL_CHECKS=$((TOTAL_CHECKS + 1))
-[ "$NEEDS_TYPECHECK" = "true" ] && TOTAL_CHECKS=$((TOTAL_CHECKS + 1))
-[ "$NEEDS_LINT" = "true" ] && TOTAL_CHECKS=$((TOTAL_CHECKS + 1))
-[ "$NEEDS_DOCS_CHECK" = "true" ] && TOTAL_CHECKS=$((TOTAL_CHECKS + 1))
-
-# Add leak guard check
-TOTAL_CHECKS=$((TOTAL_CHECKS + 1))
-
-CHECK_NUM=0
-EXIT_CODE=0
-
-# Parallel execution: Run independent checks concurrently
-# Package and Env validation can run in parallel (both check config, no dependencies)
-# Typecheck and lint can run in parallel (both work on staged TS files)
-# Docs validation can run in parallel with everything
-
-# Run package validation (if needed)
-if [ "$NEEDS_PACKAGE_CHECK" = "true" ]; then
-  CHECK_NUM=$((CHECK_NUM + 1))
-  echo "[$CHECK_NUM/$TOTAL_CHECKS] Validating package.json..."
-  pnpm validate:package &
-  PACKAGE_PID=$!
-else
-  echo "⏭️  Validating package.json... (skipped - package.json not changed)"
-fi
-
-# Run env validation (if needed) - in parallel with package check
-if [ "$NEEDS_ENV_CHECK" = "true" ]; then
-  CHECK_NUM=$((CHECK_NUM + 1))
-  echo "[$CHECK_NUM/$TOTAL_CHECKS] Validating environment..."
-  NODE_ENV=development pnpm validate:env &
-  ENV_PID=$!
-else
-  echo "⏭️  Validating environment... (skipped - no env-related files changed)"
-fi
-
-# Wait for package/env validations to complete
-if [ "$NEEDS_PACKAGE_CHECK" = "true" ]; then
-  wait $PACKAGE_PID || EXIT_CODE=$?
-fi
-if [ "$NEEDS_ENV_CHECK" = "true" ]; then
-  wait $ENV_PID || EXIT_CODE=$?
-fi
-
-# Exit early if validations failed
-if [ $EXIT_CODE -ne 0 ]; then
-  exit $EXIT_CODE
-fi
-
-# Run typecheck and lint in parallel (both work on staged TS files)
-# Parallel execution enabled by default; set HUSKY_PARALLEL=0 to disable
-HUSKY_PARALLEL=${HUSKY_PARALLEL:-1}
-
-# Determine execution strategy
-RUN_PARALLEL=false
-if [ "$NEEDS_TYPECHECK" = "true" ] && [ "$NEEDS_LINT" = "true" ] && [ "$HUSKY_PARALLEL" = "1" ]; then
-  RUN_PARALLEL=true
-fi
-
-if [ "$RUN_PARALLEL" = "true" ]; then
-  # Run both in parallel for faster execution
-  CHECK_NUM=$((CHECK_NUM + 1))
-  echo "[$CHECK_NUM/$TOTAL_CHECKS] Type checking staged files..."
-  pnpm typecheck:staged &
-  TYPECHECK_PID=$!
-  
-  CHECK_NUM=$((CHECK_NUM + 1))
-  echo "[$CHECK_NUM/$TOTAL_CHECKS] Linting staged files..."
-  pnpm lint-staged &
-  LINT_PID=$!
-  
-  # Wait for both and capture exit codes
-  TYPECHECK_EXIT=0
-  LINT_EXIT=0
-  wait $TYPECHECK_PID || TYPECHECK_EXIT=$?
-  wait $LINT_PID || LINT_EXIT=$?
-  
-  # Fail if either failed
-  if [ $TYPECHECK_EXIT -ne 0 ] || [ $LINT_EXIT -ne 0 ]; then
-    if [ $TYPECHECK_EXIT -ne 0 ]; then
-      EXIT_CODE=$TYPECHECK_EXIT
-    fi
-    if [ $LINT_EXIT -ne 0 ]; then
-      EXIT_CODE=$LINT_EXIT
-    fi
-    exit $EXIT_CODE
-  fi
-else
-  # Sequential execution (when only one needed, or parallel disabled)
-  if [ "$NEEDS_TYPECHECK" = "true" ]; then
-    CHECK_NUM=$((CHECK_NUM + 1))
-    echo "[$CHECK_NUM/$TOTAL_CHECKS] Type checking staged files..."
-    pnpm typecheck:staged || EXIT_CODE=$?
-    if [ $EXIT_CODE -ne 0 ]; then
-      exit $EXIT_CODE
-    fi
-  else
-    echo "⏭️  Type checking staged files... (skipped - no TypeScript files changed)"
-  fi
-
-  if [ "$NEEDS_LINT" = "true" ]; then
-    CHECK_NUM=$((CHECK_NUM + 1))
-    echo "[$CHECK_NUM/$TOTAL_CHECKS] Linting staged files..."
-    pnpm lint-staged || EXIT_CODE=$?
-    if [ $EXIT_CODE -ne 0 ]; then
-      exit $EXIT_CODE
-    fi
-  else
-    echo "⏭️  Linting staged files... (skipped - no code files changed)"
-  fi
-fi
-
-# Run docs validation (can run in parallel with others, but keeping sequential for cleaner output)
-# Note: validate-docs-on-commit.ts was removed - docs validation is now handled by CI
-if [ "$NEEDS_DOCS_CHECK" = "true" ]; then
-  echo "⏭️  Validating documentation freshness... (skipped - validation moved to CI)"
-else
-  echo "⏭️  Validating documentation freshness... (skipped - no docs files changed)"
-fi
-
-# --- Leak Guard ---
-# Fast-fail if critical types are re-exported from shared barrels.
-grep -R "export .*Database" types/shared >/dev/null 2>&1 && {
-  echo "✖ FATAL: Critical type 'Database' is being re-exported from types/shared."
-  echo "  This violates architectural boundaries. Please import it from its source."
-  exit 1;
-}
-# --- End Leak Guard ---
-
-echo "✅ All local quality gates passed! Ready for CI."
+echo "✅ All pre-commit gates passed!"

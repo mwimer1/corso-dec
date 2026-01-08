@@ -1,6 +1,86 @@
 #!/usr/bin/env sh
-# Run Git LFS hook when available; otherwise no-op (silent)
-if command -v git-lfs >/dev/null 2>&1; then
-  git lfs post-commit "$@"
+# Post-commit receipt generator
+
+# Get git directory for log storage
+GIT_DIR=$(git rev-parse --git-dir 2>/dev/null || echo ".git")
+LOG_DIR="$GIT_DIR/husky-logs"
+mkdir -p "$LOG_DIR"
+
+# Get commit info
+COMMIT_SHA=$(git rev-parse HEAD)
+SHORT_SHA=$(git rev-parse --short HEAD)
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+SUBJECT=$(git log -1 --format=%s HEAD)
+
+# Determine if receipt should be generated
+SHOULD_GENERATE=false
+
+# Force receipt generation
+if [ "$HUSKY_RECEIPT" = "1" ]; then
+  SHOULD_GENERATE=true
 fi
-exit 0
+
+# Auto-generate for docs/tooling changes
+if ! $SHOULD_GENERATE; then
+  CHANGED_FILES=$(git show --name-only --format="" HEAD 2>/dev/null || echo "")
+  if echo "$CHANGED_FILES" | grep -qE '(^\.husky/|^\.cursor/|^docs/|^README\.md|^package\.json|^pnpm-lock\.yaml)'; then
+    SHOULD_GENERATE=true
+  fi
+fi
+
+if [ "$SHOULD_GENERATE" != "true" ]; then
+  exit 0
+fi
+
+# Generate receipt
+TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+RECEIPT_FILE="$LOG_DIR/post-commit-$TIMESTAMP-$SHORT_SHA.txt"
+
+{
+  echo "=== Commit Receipt ==="
+  echo ""
+  echo "SHA: $COMMIT_SHA"
+  echo "Short SHA: $SHORT_SHA"
+  echo "Branch: $BRANCH"
+  echo "Subject: $SUBJECT"
+  echo "Timestamp: $(date -Iseconds)"
+  echo ""
+  echo "=== File Changes ==="
+  echo ""
+  
+  # Get file statistics
+  git show --numstat --format="" HEAD | while IFS=$'\t' read -r additions deletions filename; do
+    if [ -n "$filename" ]; then
+      echo "$filename"
+    fi
+  done
+  
+  echo ""
+  echo "=== Statistics ==="
+  echo ""
+  
+  # Count files and get insertions/deletions
+  STATS=$(git show --numstat --format="" HEAD | awk '
+    {
+      if (NF >= 3) {
+        files++
+        ins += $1
+        del += $2
+      }
+    }
+    END {
+      printf "Total files changed: %d\n", files
+      printf "Insertions: %d\n", ins
+      printf "Deletions: %d\n", del
+    }
+  ')
+  echo "$STATS"
+  
+  echo ""
+  echo "=== File List (git show --name-status) ==="
+  echo ""
+  git show --name-status --format="" HEAD
+  
+} > "$RECEIPT_FILE"
+
+echo "📄 Receipt saved: $RECEIPT_FILE"
