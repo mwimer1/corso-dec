@@ -664,6 +664,7 @@ async function main(): Promise<void> {
     const allFindings: Finding[] = [];
     const toolStats: Record<string, number> = {};
     const toolArtifacts: Record<string, Artifact[]> = {};
+    const ranTools: CssAuditTool[] = []; // Track tools that actually ran successfully
 
     logger.info(`Running ${enabledTools.length} tool(s)...`);
 
@@ -683,6 +684,7 @@ async function main(): Promise<void> {
           if (result.artifacts) {
             toolArtifacts[tool.id] = result.artifacts;
           }
+          ranTools.push(tool); // Track successful execution
           continue;
         }
 
@@ -700,6 +702,7 @@ async function main(): Promise<void> {
           if (result.artifacts) {
             toolArtifacts[tool.id] = result.artifacts;
           }
+          ranTools.push(tool); // Track successful execution
           continue;
         }
 
@@ -729,8 +732,10 @@ async function main(): Promise<void> {
         if (result.artifacts) {
           toolArtifacts[tool.id] = result.artifacts;
         }
+        ranTools.push(tool); // Track successful execution
       } catch (error) {
         ctx.warn(`Tool ${tool.id} failed: ${error instanceof Error ? error.message : String(error)}`);
+        // Tool failed - don't add to ranTools (baseline entries will be preserved)
       }
     }
 
@@ -754,7 +759,8 @@ async function main(): Promise<void> {
       // Pass ALL findings (normalized) to updateBaseline, not just newFindings
       // This ensures baseline refresh correctly includes already-baselined findings
       // and properly prunes fixed findings
-      baseline = updateBaseline(baseline, normalizedFindings, enabledTools, ctx);
+      // Pass only tools that actually ran successfully (not just enabled)
+      baseline = updateBaseline(baseline, normalizedFindings, ranTools, ctx);
       writeBaseline(cli.baselinePath, baseline);
       logger.info(`Baseline updated: ${cli.baselinePath}`);
     }

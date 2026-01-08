@@ -47,6 +47,12 @@ pnpm audit:css --changed --since origin/main
 
 The `--since` option accepts any git ref (commit hash, branch name, etc.).
 
+**Merge-Base Semantics**: Changed file detection uses git's triple-dot syntax (`since...HEAD`) which automatically computes the merge-base for branch comparisons. This ensures that only files changed on your branch are detected, even if the target branch (e.g., `origin/main`) has diverged with new commits.
+
+- **Preferred method**: `git diff --name-only --diff-filter=ACMR ${since}...HEAD` (uses merge-base automatically)
+- **Fallback method**: If triple-dot fails (e.g., invalid ref), falls back to direct diff: `git diff --name-only --diff-filter=ACMR ${since} HEAD`
+- **Failure handling**: If changed file detection fails in `--changed` mode, the tool automatically falls back to full scan mode with a warning, ensuring it never silently produces an empty audit result.
+
 ### Exit Codes
 
 The tool exits with:
@@ -408,16 +414,18 @@ The baseline should be updated when:
 
 ### Baseline Refresh Semantics
 
-When using `--update-baseline`, the baseline is refreshed for tools that ran:
+When using `--update-baseline`, the baseline is refreshed for tools that **actually ran successfully**:
 
 - **For tools that ran**: Baseline reflects the current set of baseline-eligible findings
-  - New baseline-eligible findings are added
-  - Existing findings that still exist are preserved
+  - New baseline-eligible findings are added (based on tool's `baselineInclude` or default filter)
+  - Existing findings that still exist are preserved (with `addedAt` and `note` preserved)
   - Findings that are no longer present (fixed) are automatically pruned
+  - Entries are sorted deterministically (by tool, ruleId, fingerprint)
 - **For tools that did NOT run**: Baseline entries are preserved unchanged
 - **Tool-specific refresh**: If running a subset of tools (via `--tools` or `--skip-tools`), only those tools' baseline entries are refreshed; other tools' entries remain untouched
+- **Tool failures**: If a tool is enabled but fails to execute, its baseline entries are preserved (not pruned), ensuring baseline stability even when tools encounter errors
 
-This ensures the baseline accurately reflects the current state while preserving entries for tools that weren't executed in this run.
+This ensures the baseline accurately reflects the current state while preserving entries for tools that weren't executed in this run. The baseline update is deterministic and preserves metadata (`addedAt`, `note`) from existing entries to minimize churn.
 
 ## Suppression vs Baseline
 

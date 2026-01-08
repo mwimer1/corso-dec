@@ -226,6 +226,7 @@ export async function runCssAudit(
   // Run tools
   const allFindings: Finding[] = [];
   const toolStats: Record<string, number> = {};
+  const ranTools: CssAuditTool[] = []; // Track tools that actually ran successfully
 
   for (const tool of enabledTools) {
     try {
@@ -271,10 +272,12 @@ export async function runCssAudit(
       // Collect findings
       allFindings.push(...result.findings);
       toolStats[tool.id] = result.findings.length;
+      ranTools.push(tool); // Track successful execution
 
       ctx.log(`  Found ${result.findings.length} findings`);
     } catch (error) {
       ctx.warn(`Tool ${tool.id} failed: ${error instanceof Error ? error.message : String(error)}`);
+      // Tool failed - don't add to ranTools (baseline entries will be preserved)
     }
   }
 
@@ -298,7 +301,8 @@ export async function runCssAudit(
     // Pass ALL findings (normalized) to updateBaseline, not just newFindings
     // This ensures baseline refresh correctly includes already-baselined findings
     // and properly prunes fixed findings
-    baseline = updateBaseline(baseline, normalizedFindings, enabledTools, ctx);
+    // Pass only tools that actually ran successfully (not just enabled)
+    baseline = updateBaseline(baseline, normalizedFindings, ranTools, ctx);
     writeBaseline(cli.baselinePath, baseline);
     ctx.log(`Baseline updated: ${cli.baselinePath}`);
   }

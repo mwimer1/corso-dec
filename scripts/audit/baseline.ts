@@ -184,7 +184,7 @@ export function updateBaseline(
 
   // Then, process findings from tools that ran:
   // - Add new findings that should be included
-  // - Update existing entries for tools that ran (preserving addedAt when unchanged)
+  // - Update existing entries for tools that ran (preserving addedAt and note when unchanged)
   for (const finding of findings) {
     const tool = toolMap.get(finding.tool);
     const shouldInclude = tool?.baselineInclude
@@ -192,18 +192,24 @@ export function updateBaseline(
       : defaultBaselineInclude(finding, ctx);
 
     if (shouldInclude) {
-      // Preserve addedAt if entry already exists (reduces baseline churn)
+      // Preserve addedAt and note if entry already exists (reduces baseline churn)
       const existingEntry = existingEntriesByFingerprint.get(finding.fingerprint);
       const addedAt = existingEntry?.addedAt ?? now;
+      const note = existingEntry?.note;
       
       // Add or update entry for this finding
-      entryMap.set(finding.fingerprint, {
+      const newEntry: BaselineEntry = {
         fingerprint: finding.fingerprint,
         tool: finding.tool,
         ruleId: finding.ruleId,
         severity: finding.severity,
         addedAt,
-      });
+      };
+      // Only include note if it exists (preserve existing notes)
+      if (note !== undefined) {
+        newEntry.note = note;
+      }
+      entryMap.set(finding.fingerprint, newEntry);
     } else {
       // Remove from baseline if tool says it shouldn't be included
       entryMap.delete(finding.fingerprint);
@@ -223,10 +229,13 @@ export function updateBaseline(
     }
   }
 
+  // Return sorted entries for deterministic output
+  const sortedEntries = Array.from(entryMap.values()).sort(compareBaselineEntry);
+
   return {
     version: baseline.version,
     generatedAt: now,
-    entries: Array.from(entryMap.values()),
+    entries: sortedEntries,
   };
 }
 

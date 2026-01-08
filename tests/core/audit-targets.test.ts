@@ -5,13 +5,15 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { execFileSync } from 'child_process';
+import { spawnSync } from 'child_process';
 import { getChangedFiles, buildTargetSet } from '../../scripts/audit/targets';
 
 // Mock child_process
-vi.mock('child_process', () => {
+vi.mock('child_process', async () => {
+  const actual = await vi.importActual<typeof import('child_process')>('child_process');
   return {
-    execFileSync: vi.fn(),
+    ...actual,
+    spawnSync: vi.fn(),
   };
 });
 
@@ -25,7 +27,7 @@ vi.mock('glob', async () => {
 });
 
 describe('CSS Audit Targets', () => {
-  const mockExecFileSync = execFileSync as ReturnType<typeof vi.fn>;
+  const mockSpawnSync = spawnSync as ReturnType<typeof vi.fn>;
   const mockRootDir = '/fake/repo';
 
   beforeEach(() => {
@@ -38,100 +40,140 @@ describe('CSS Audit Targets', () => {
 
   describe('getChangedFiles - merge-base behavior', () => {
     it('should use merge-base when comparing against a branch', () => {
-      // Setup: merge-base returns a commit hash
-      mockExecFileSync.mockImplementation((cmd: string, args: string[]) => {
-        if (args[0] === 'merge-base') {
-          return 'abc123'; // Merge-base commit
+      // Setup: triple-dot syntax succeeds (uses merge-base automatically)
+      mockSpawnSync.mockImplementation((cmd: string, args: string[]) => {
+        // Check if any arg contains triple-dot syntax
+        if (args && args.some((arg: string) => typeof arg === 'string' && arg.includes('...'))) {
+          // Triple-dot syntax - should succeed
+          return {
+            status: 0,
+            stdout: 'file1.css\nfile2.ts',
+            stderr: '',
+          };
         }
-        if (args[0] === 'diff') {
-          // Should be called with merge-base commit, not the branch name
-          expect(args[args.length - 2]).toBe('abc123');
-          expect(args[args.length - 1]).toBe('HEAD');
-          return 'file1.css\nfile2.ts';
-        }
-        return '';
+        return {
+          status: 1,
+          stdout: '',
+          stderr: 'error',
+        };
       });
 
       const result = getChangedFiles(mockRootDir, 'main');
 
-      expect(mockExecFileSync).toHaveBeenCalledWith('git', ['merge-base', 'main', 'HEAD'], expect.any(Object));
-      expect(mockExecFileSync).toHaveBeenCalledWith(
+      expect(mockSpawnSync).toHaveBeenCalledWith(
         'git',
-        ['diff', '--name-only', '--diff-filter=ACMR', 'abc123', 'HEAD'],
-        expect.any(Object)
+        ['diff', '--name-only', '--diff-filter=ACMR', 'main...HEAD'],
+        expect.objectContaining({ cwd: mockRootDir, encoding: 'utf8' })
       );
-      expect(result).toEqual(['file1.css', 'file2.ts']);
+      expect(result.ok).toBe(true);
+      expect(result.method).toBe('triple-dot');
+      expect(result.files).toEqual(['file1.css', 'file2.ts']);
     });
 
     it('should fall back to direct diff when merge-base fails', () => {
-      // Setup: merge-base fails (e.g., not a branch, invalid ref)
-      mockExecFileSync.mockImplementation((cmd: string, args: string[]) => {
-        if (args[0] === 'merge-base') {
-          throw new Error('Not a valid object');
+      // Setup: triple-dot fails, direct diff succeeds
+      let callCount = 0;
+      mockSpawnSync.mockImplementation((cmd: string, args: string[]) => {
+        callCount++;
+        // Check if any arg contains triple-dot syntax
+        if (args && args.some((arg: string) => typeof arg === 'string' && arg.includes('...'))) {
+          // Triple-dot syntax fails
+          return {
+            status: 1,
+            stdout: '',
+            stderr: 'fatal: ambiguous argument',
+          };
         }
-        if (args[0] === 'diff') {
-          // Should fall back to using the since ref directly
-          expect(args[args.length - 2]).toBe('HEAD~1');
-          expect(args[args.length - 1]).toBe('HEAD');
-          return 'file1.css';
-        }
-        return '';
+        // Direct diff succeeds (no triple-dot)
+        return {
+          status: 0,
+          stdout: 'file1.css',
+          stderr: '',
+        };
       });
 
       const result = getChangedFiles(mockRootDir, 'HEAD~1');
 
-      expect(mockExecFileSync).toHaveBeenCalledWith('git', ['merge-base', 'HEAD~1', 'HEAD'], expect.any(Object));
-      expect(mockExecFileSync).toHaveBeenCalledWith(
+      expect(mockSpawnSync).toHaveBeenCalledWith(
+        'git',
+        ['diff', '--name-only', '--diff-filter=ACMR', 'HEAD~1...HEAD'],
+        expect.any(Object)
+      );
+      expect(mockSpawnSync).toHaveBeenCalledWith(
         'git',
         ['diff', '--name-only', '--diff-filter=ACMR', 'HEAD~1', 'HEAD'],
         expect.any(Object)
       );
-      expect(result).toEqual(['file1.css']);
+      expect(result.ok).toBe(true);
+      expect(result.method).toBe('direct');
+      expect(result.files).toEqual(['file1.css']);
     });
 
     it('should handle empty output gracefully', () => {
-      mockExecFileSync.mockImplementation((cmd: string, args: string[]) => {
-        if (args[0] === 'merge-base') {
-          return 'abc123';
+      mockSpawnSync.mockImplementation((cmd: string, args: string[]) => {
+        // Check if any arg contains triple-dot syntax
+        if (args && args.some((arg: string) => typeof arg === 'string' && arg.includes('...'))) {
+          return {
+            status: 0,
+            stdout: '', // No changes
+            stderr: '',
+          };
         }
-        if (args[0] === 'diff') {
-          return ''; // No changes
-        }
-        return '';
+        return {
+          status: 1,
+          stdout: '',
+          stderr: '',
+        };
       });
 
       const result = getChangedFiles(mockRootDir, 'main');
 
-      expect(result).toEqual([]);
+      expect(result.ok).toBe(true);
+      expect(result.method).toBe('triple-dot');
+      expect(result.files).toEqual([]);
     });
 
     it('should handle git command failures gracefully', () => {
-      mockExecFileSync.mockImplementation(() => {
-        throw new Error('Not a git repository');
+      mockSpawnSync.mockImplementation(() => {
+        // Both triple-dot and direct diff fail
+        return {
+          status: 128,
+          stdout: '',
+          stderr: 'fatal: not a git repository',
+        };
       });
 
       const result = getChangedFiles(mockRootDir, 'main');
 
-      expect(result).toEqual([]);
+      expect(result.ok).toBe(false);
+      expect(result.files).toEqual([]);
+      expect(result.method).toBeUndefined();
     });
 
     it('should normalize file paths correctly', () => {
-      mockExecFileSync.mockImplementation((cmd: string, args: string[]) => {
-        if (args[0] === 'merge-base') {
-          return 'abc123';
-        }
-        if (args[0] === 'diff') {
+      mockSpawnSync.mockImplementation((cmd: string, args: string[]) => {
+        // Check if any arg contains triple-dot syntax
+        if (args && args.some((arg: string) => typeof arg === 'string' && arg.includes('...'))) {
           // Test with Windows-style paths and various whitespace
           // Note: normalizePath will convert backslashes and filter(Boolean) removes empty strings
-          return 'styles\\file1.css\n  styles/file2.ts  \nstyles/file3.css\n';
+          return {
+            status: 0,
+            stdout: 'styles\\file1.css\n  styles/file2.ts  \nstyles/file3.css\n',
+            stderr: '',
+          };
         }
-        return '';
+        return {
+          status: 1,
+          stdout: '',
+          stderr: '',
+        };
       });
 
       const result = getChangedFiles(mockRootDir, 'main');
 
       // All paths should be normalized (forward slashes, trimmed, empty lines filtered)
-      expect(result).toEqual(['styles/file1.css', 'styles/file2.ts', 'styles/file3.css']);
+      expect(result.ok).toBe(true);
+      expect(result.files).toEqual(['styles/file1.css', 'styles/file2.ts', 'styles/file3.css']);
     });
   });
 
@@ -140,14 +182,20 @@ describe('CSS Audit Targets', () => {
       const { glob } = await import('glob');
       const mockGlob = glob as ReturnType<typeof vi.fn>;
 
-      mockExecFileSync.mockImplementation((cmd: string, args: string[]) => {
-        if (args[0] === 'merge-base') {
-          return 'abc123';
+      mockSpawnSync.mockImplementation((cmd: string, args: string[]) => {
+        // Check if any arg contains triple-dot syntax
+        if (args && args.some((arg: string) => typeof arg === 'string' && arg.includes('...'))) {
+          return {
+            status: 0,
+            stdout: 'styles/file1.css\nstyles/module.module.css\nstyles/file2.ts',
+            stderr: '',
+          };
         }
-        if (args[0] === 'diff') {
-          return 'styles/file1.css\nstyles/module.module.css\nstyles/file2.ts';
-        }
-        return '';
+        return {
+          status: 1,
+          stdout: '',
+          stderr: '',
+        };
       });
 
       // Mock glob for CSS modules (called in changed mode to get all modules for index)
@@ -177,14 +225,20 @@ describe('CSS Audit Targets', () => {
       const { glob } = await import('glob');
       const mockGlob = glob as ReturnType<typeof vi.fn>;
 
-      mockExecFileSync.mockImplementation((cmd: string, args: string[]) => {
-        if (args[0] === 'merge-base') {
-          return 'abc123';
+      mockSpawnSync.mockImplementation((cmd: string, args: string[]) => {
+        // Check if any arg contains triple-dot syntax
+        if (args && args.some((arg: string) => typeof arg === 'string' && arg.includes('...'))) {
+          return {
+            status: 0,
+            stdout: 'styles/file1.css\nlib/file2.css\ntests/file3.css',
+            stderr: '',
+          };
         }
-        if (args[0] === 'diff') {
-          return 'styles/file1.css\nlib/file2.css\ntests/file3.css';
-        }
-        return '';
+        return {
+          status: 1,
+          stdout: '',
+          stderr: '',
+        };
       });
 
       mockGlob.mockResolvedValue([]);

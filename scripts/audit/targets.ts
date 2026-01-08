@@ -6,7 +6,7 @@
  * Handles changed file detection and filtering.
  */
 
-import { execFileSync } from 'child_process';
+import { spawnSync } from 'child_process';
 import { glob } from 'glob';
 import { normalize } from 'node:path';
 import type { TargetSet } from './types';
@@ -21,69 +21,68 @@ export interface TargetBuilderOptions {
 }
 
 /**
- * Execute git command using execFileSync for security (avoids shell injection)
- */
-function git(rootDir: string, args: string[]): string {
-  try {
-    return execFileSync('git', args, {
-      cwd: rootDir,
-      encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'ignore'],
-    }).trim();
-  } catch {
-    return '';
-  }
-}
-
-/**
- * Try to get merge-base commit between since and HEAD
- * Returns null if merge-base cannot be computed (e.g., not a branch, invalid ref)
- */
-function tryMergeBase(rootDir: string, since: string): string | null {
-  try {
-    const mb = git(rootDir, ['merge-base', since, 'HEAD']);
-    return mb || null;
-  } catch {
-    return null;
-  }
-}
-
-/**
- * Get changed files from git
+ * Get changed files from git using merge-base semantics
  * 
- * For branch comparisons (e.g., --since main), computes the merge-base
- * to correctly identify files changed only on the current branch.
+ * Uses triple-dot syntax (since...HEAD) which automatically computes merge-base
+ * for branch comparisons. Falls back to direct diff if triple-dot fails.
  * 
- * This prevents false positives when comparing against a branch that has
- * diverged (e.g., main has new commits after your branch was cut).
+ * Returns an object that distinguishes between:
+ * - Success with no changes: { ok: true, files: [], method: 'triple-dot' }
+ * - Success with changes: { ok: true, files: [...], method: 'triple-dot' }
+ * - Failure: { ok: false, files: [], method?: undefined }
  * 
  * @internal Exported for testing only
  */
-export function getChangedFiles(rootDir: string, since: string): string[] {
-  try {
-    // Try to find merge-base first (works for branch comparisons)
-    const baseRef = tryMergeBase(rootDir, since) ?? since;
-
-    const output = git(rootDir, [
-      'diff',
-      '--name-only',
-      '--diff-filter=ACMR',
-      baseRef,
-      'HEAD',
-    ]);
-
-    if (!output) {
-      return [];
+export function getChangedFiles(
+  rootDir: string,
+  since: string
+): { ok: boolean; files: string[]; method?: 'triple-dot' | 'direct' } {
+  // Attempt A: Use triple-dot syntax (preferred - uses merge-base automatically)
+  const tripleDotResult = spawnSync(
+    'git',
+    ['diff', '--name-only', '--diff-filter=ACMR', `${since}...HEAD`],
+    {
+      cwd: rootDir,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'pipe'],
     }
+  );
 
-    return output
-      .split('\n')
-      .map(file => normalizePath(file.trim()))
-      .filter(Boolean);
-  } catch {
-    // If git command fails (e.g., not a git repo), return empty
-    return [];
+  if (tripleDotResult.status === 0) {
+    const output = tripleDotResult.stdout.trim();
+    const files = output
+      ? output
+          .split('\n')
+          .map(file => normalizePath(file.trim()))
+          .filter(Boolean)
+      : [];
+    return { ok: true, files, method: 'triple-dot' };
   }
+
+  // Attempt B: Fallback to direct diff (if triple-dot fails, e.g., invalid ref)
+  const directResult = spawnSync(
+    'git',
+    ['diff', '--name-only', '--diff-filter=ACMR', since, 'HEAD'],
+    {
+      cwd: rootDir,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'pipe'],
+    }
+  );
+
+  if (directResult.status === 0) {
+    const output = directResult.stdout.trim();
+    const files = output
+      ? output
+          .split('\n')
+          .map(file => normalizePath(file.trim()))
+          .filter(Boolean)
+      : [];
+    return { ok: true, files, method: 'direct' };
+  }
+
+  // Both attempts failed
+  return { ok: false, files: [] };
 }
 
 /**
@@ -140,6 +139,7 @@ async function getAllFiles(
       const matches = await glob(pattern, {
         cwd: rootDir,
         absolute: false,
+        nodir: true,
         ignore: [
           '**/node_modules/**',
           '**/.next/**',
@@ -167,35 +167,54 @@ export async function buildTargetSet(
 ): Promise<TargetSet> {
   const { rootDir, changed, since = 'HEAD~1', include, exclude } = options;
 
+  // Get changed files (always computed for index building, but critical in changed mode)
+  const changedResult = getChangedFiles(rootDir, since);
+  
+  // Determine effective mode: if changed mode requested but detection failed, fall back to full
+  let effectiveChanged = changed;
   let allChangedFiles: string[] = [];
 
   if (changed) {
-    allChangedFiles = getChangedFiles(rootDir, since);
+    if (!changedResult.ok) {
+      // Changed detection failed - warn and fall back to full mode
+      console.warn(
+        `⚠️  Warning: Changed file detection failed (git diff ${since}...HEAD). Falling back to full scan.`
+      );
+      effectiveChanged = false;
+    } else {
+      allChangedFiles = changedResult.files;
+    }
   } else {
-    // In full mode, we still need to know what changed for index building
-    allChangedFiles = getChangedFiles(rootDir, since);
+    // In full mode, failure is non-fatal - proceed with empty changed files list
+    if (changedResult.ok) {
+      allChangedFiles = changedResult.files;
+    }
+    // If it failed, allChangedFiles remains [] which is fine for full mode
   }
 
   // Filter changed files
   const changedFiles = filterFiles(allChangedFiles, include, exclude);
 
   // Get all files by type (in full mode) or only changed files (in changed mode)
-  const filePatterns = changed
+  const filePatterns = effectiveChanged
     ? changedFiles
     : await getAllFiles(rootDir, ['**/*'], include, exclude);
 
   const cssFiles = filePatterns.filter(f => f.endsWith('.css') && !f.endsWith('.module.css'));
   const cssModuleFiles = filePatterns.filter(f => f.endsWith('.module.css'));
   const tsFiles = filePatterns.filter(f => f.endsWith('.ts') && !f.endsWith('.tsx') && !f.endsWith('.d.ts'));
-  const tsxFiles = filePatterns.filter(f => f.endsWith('.tsx') || f.endsWith('.ts'));
+  // Fix: exclude .d.ts files from tsxFiles (they match .ts but shouldn't be included)
+  const tsxFiles = filePatterns.filter(
+    f => (f.endsWith('.tsx') || f.endsWith('.ts')) && !f.endsWith('.d.ts')
+  );
 
   // In changed mode, we still want all CSS modules available for index building
-  const allCssModuleFiles = changed
+  const allCssModuleFiles = effectiveChanged
     ? await getAllFiles(rootDir, ['**/*.module.css'], include, exclude)
     : cssModuleFiles;
 
   const result: TargetSet = {
-    mode: changed ? 'changed' : 'full',
+    mode: effectiveChanged ? 'changed' : 'full',
     changedFiles,
     cssFiles,
     cssModuleFiles: allCssModuleFiles,
@@ -204,7 +223,7 @@ export async function buildTargetSet(
     allFiles: filePatterns,
   };
 
-  if (changed && since) {
+  if (effectiveChanged && since) {
     result.sinceRef = since;
   }
 
