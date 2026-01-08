@@ -36,7 +36,7 @@ pnpm openapi:sdk
 ### Production Approach
 The primary OpenAPI specification (`api/openapi.yml`) is manually maintained and includes:
 - Comprehensive API documentation with examples
-- Proper security annotations (`x-corso-rbac`, `x-public`)
+- Proper security annotations (`x-corso-rbac`, `x-public`) – *See the [OpenAPI RBAC policy](../../.cursor/rules/openapi-vendor-extensions.mdc) for required usage of these vendor extensions.*
 - Detailed parameter and response schemas
 - Server configurations for different environments
 
