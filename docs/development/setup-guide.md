@@ -77,7 +77,32 @@ After pulling the repository, complete this checklist to ensure full compliance 
 
 ## 🎮 Workflow Accessibility
 
-### VS Code Tasks (Recommended)
+### VS Code Task Buttons (Status Bar) ⭐ Recommended
+
+This workspace provides clickable task buttons in the VS Code status bar for quick access to common workflows.
+
+**Installation:**
+- Install the recommended extension: **VSCode Task Buttons** (`spencerwmiles.vscode-task-buttons`)
+- If buttons don't appear: Command Palette → **Developer: Reload Window**
+
+**Hot Buttons (Left Side - Single Click):**
+- ⚡ **Dev** → Quick Dev Start
+- 🔍 **Quality** → Quality Gates
+- 🧪 **Tests** → Run All Tests
+- 🔧 **Build** → Build Project
+
+**Category Menus (Right Side - Dropdown):**
+- 🚀 **Setup⋯** — Install, verify, env checks, branch setup, cleanup
+- ⚡ **Dev⋯** — Development server + watch
+- 🔍 **Quality⋯** — Typecheck, lint, gates, scans
+- 🧪 **Testing⋯** — Tests (full suite, file, domains, security)
+- 🔧 **Build⋯** — Build / compile
+- 📚 **Docs⋯** — OpenAPI + docs generation
+
+**⚠️ Maintenance Note for Agents:** When modifying `.vscode/tasks.json` (adding, removing, or renaming tasks), you **must update** `.vscode/settings.json` under `VsCodeTaskButtons.tasks` to keep task button configuration in sync. Task labels must match exactly (emoji, punctuation, spacing). Broken references will cause "task not found" errors. See `.vscode/README.md` for complete configuration details.
+
+### VS Code Tasks (Command Palette)
+
 Press `Ctrl+Shift+P` → "Tasks: Run Task" → Browse emoji-labeled tasks
 
 ### Keyboard Shortcuts

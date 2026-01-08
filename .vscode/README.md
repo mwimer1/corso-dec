@@ -10,6 +10,38 @@ status: "draft"
 
 This VS Code workspace is configured with enhanced accessibility for repetitive development tasks.
 
+## 🎨 VS Code Task Buttons
+
+This repo provides clickable task buttons in the VS Code status bar for quick access to common workflows.
+
+### Install
+
+Install the recommended extension when prompted:
+- **VSCode Task Buttons** (`spencerwmiles.vscode-task-buttons`)
+
+If buttons don't appear after install:
+- Command Palette → **Developer: Reload Window**
+
+### Hot Buttons (Compact Mode)
+
+Single-click buttons on the left side of the status bar:
+- ⚡ **Dev** → Quick Dev Start
+- 🔍 **Quality** → Quality Gates
+- 🧪 **Tests** → Run All Tests
+- 🔧 **Build** → Build Project
+
+### Full Task Menus
+
+Right-side dropdown menus for all tasks:
+- 🚀 **Setup⋯** — Install, verify, env checks, branch setup, cleanup
+- ⚡ **Dev⋯** — Development server + watch
+- 🔍 **Quality⋯** — Typecheck, lint, gates, scans
+- 🧪 **Testing⋯** — Tests (full suite, file, domains, security)
+- 🔧 **Build⋯** — Build / compile
+- 📚 **Docs⋯** — OpenAPI + docs generation
+
+**Note:** All tasks come from `.vscode/tasks.json` and must match labels exactly.
+
 ## 🚀 Getting Started
 
 ### Method 1: Keyboard Shortcuts (Fastest)

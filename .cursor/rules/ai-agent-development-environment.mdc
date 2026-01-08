@@ -44,6 +44,28 @@ pnpm quality:local
 (Run each command one-by-one; ensure each passes before moving on.)
 ```
 
+### VS Code Task Buttons (Status Bar)
+
+This workspace provides clickable task buttons in the VS Code status bar via the **VSCode Task Buttons** extension (`spencerwmiles.vscode-task-buttons`).
+
+**Hot Buttons (Left Side):**
+- ⚡ **Dev** → Quick Dev Start
+- 🔍 **Quality** → Quality Gates (TypeCheck + Lint + Test)
+- 🧪 **Tests** → Run All Tests
+- 🔧 **Build** → Build Project
+
+**Category Menus (Right Side):**
+- 🚀 **Setup⋯** — Installation, verification, environment checks
+- ⚡ **Dev⋯** — Development server and watch modes
+- 🔍 **Quality⋯** — Typecheck, lint, quality gates, scans
+- 🧪 **Testing⋯** — Test suites, domain tests, security tests
+- 🔧 **Build⋯** — Production builds
+- 📚 **Docs⋯** — OpenAPI generation, documentation
+
+**Configuration:** Task buttons are configured in `.vscode/settings.json` under `VsCodeTaskButtons.tasks`. All tasks reference task labels from `.vscode/tasks.json` and **must match exactly** (emoji, punctuation, spacing).
+
+**Maintenance Warning:** When adding, removing, or renaming tasks in `.vscode/tasks.json`, **agents must update** `.vscode/settings.json` task button configuration to keep them in sync. Broken task references will show "task not found" errors when clicked. See `.vscode/README.md` for full documentation.
+
 ### Verifier Checklist
 - **Tools installed**: `pnpm run verify:ai-tools` (checks for required CLI tools like gh, rg, etc.).
 - **Branch config**: `pnpm run setup:branch` (sets up git hooks, branch naming, etc.).

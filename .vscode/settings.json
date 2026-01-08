@@ -215,6 +215,243 @@
   "git.autorefresh": false,
   "gitlens.currentLine.enabled": false,
   "gitlens.hovers.currentLine.enabled": false,
-  "gitlens.statusBar.enabled": false
+  "gitlens.statusBar.enabled": false,
+
+  // ===== TASK BUTTONS CONFIGURATION =====
+  "VsCodeTaskButtons.showCounter": false,
+  "VsCodeTaskButtons.tasks": [
+    // =========================================================
+    // 🔥 COMPACT MODE: HOT BUTTONS (single-click, left aligned)
+    // =========================================================
+    {
+      "label": "⚡ Dev",
+      "alignment": "left",
+      "task": "⚡ Quick Dev Start",
+      "tooltip": "Start dev server (pnpm dev)"
+    },
+    {
+      "label": "🔍 Quality",
+      "alignment": "left",
+      "task": "🔍 Quality Gates (TypeCheck + Lint + Test)",
+      "tooltip": "Run: Fast TypeCheck → Lint All → Run All Tests"
+    },
+    {
+      "label": "🧪 Tests",
+      "alignment": "left",
+      "task": "🧪 Run All Tests",
+      "tooltip": "Run full test suite (pnpm test)"
+    },
+    {
+      "label": "🔧 Build",
+      "alignment": "left",
+      "task": "🔧 Build Project",
+      "tooltip": "Build production output (pnpm build)"
+    },
+
+    // =========================================================
+    // 📂 FULL MODE: CATEGORY MENUS (fully populated, right side)
+    // =========================================================
+
+    // ----------------------------
+    // 🚀 SETUP
+    // ----------------------------
+    {
+      "label": "🚀 Setup⋯",
+      "alignment": "right",
+      "tooltip": "Install, verify, env checks, branch setup, cleanup",
+      "tasks": [
+        {
+          "label": "🚀 Full Setup (Install + Verify + Setup Branch)",
+          "task": "🚀 Full Setup (Install + Verify + Setup Branch)",
+          "description": "Runs: Install Dependencies → Verify AI Tools → Setup Branch"
+        },
+        {
+          "label": "📦 Install Dependencies",
+          "task": "📦 Install Dependencies",
+          "description": "pnpm install"
+        },
+        {
+          "label": "🔎 Verify AI Tools",
+          "task": "🔎 Verify AI Tools",
+          "description": "pnpm run verify:ai-tools"
+        },
+        {
+          "label": "🔧 Setup Branch",
+          "task": "🔧 Setup Branch",
+          "description": "pnpm run setup:branch"
+        },
+        {
+          "label": "🔧 Environment Check",
+          "task": "🔧 Environment Check",
+          "description": "pnpm validate:env"
+        },
+        {
+          "label": "🔍 Validate Cursor Rules",
+          "task": "🔍 Validate Cursor Rules",
+          "description": "pnpm validate:cursor-rules"
+        },
+        {
+          "label": "🧹 Clean Cache",
+          "task": "🧹 Clean Cache",
+          "description": "pnpm typecheck:clean"
+        },
+        {
+          "label": "🧹 Clean All Caches",
+          "task": "🧹 Clean All Caches",
+          "description": "pnpm cleanup:all"
+        }
+      ]
+    },
+
+    // ----------------------------
+    // ⚡ DEV
+    // ----------------------------
+    {
+      "label": "⚡ Dev⋯",
+      "alignment": "right",
+      "tooltip": "Development server + watch",
+      "tasks": [
+        {
+          "label": "⚡ Quick Dev Start",
+          "task": "⚡ Quick Dev Start",
+          "description": "pnpm dev (background)"
+        },
+        {
+          "label": "TypeScript: watch",
+          "task": "TypeScript: watch",
+          "description": "pnpm tsc --noEmit --watch (background)"
+        }
+      ]
+    },
+
+    // ----------------------------
+    // 🔍 QUALITY
+    // ----------------------------
+    {
+      "label": "🔍 Quality⋯",
+      "alignment": "right",
+      "tooltip": "Typecheck, lint, gates, scans",
+      "tasks": [
+        {
+          "label": "🔍 Quality Gates (TypeCheck + Lint + Test)",
+          "task": "🔍 Quality Gates (TypeCheck + Lint + Test)",
+          "description": "Runs: Fast TypeCheck → Lint All → Run All Tests"
+        },
+        {
+          "label": "🔍 Quality Local Check",
+          "task": "🔍 Quality Local Check",
+          "description": "pnpm quality:local"
+        },
+        {
+          "label": "⚡ Fast TypeCheck",
+          "task": "⚡ Fast TypeCheck",
+          "description": "pnpm typecheck:fast"
+        },
+        {
+          "label": "🔧 Full TypeCheck",
+          "task": "🔧 Full TypeCheck",
+          "description": "pnpm typecheck"
+        },
+        {
+          "label": "🧹 Lint All",
+          "task": "🧹 Lint All",
+          "description": "pnpm lint"
+        },
+        {
+          "label": "🧹 Lint Current File",
+          "task": "🧹 Lint Current File",
+          "description": "pnpm eslint ${file}"
+        },
+        {
+          "label": "🔍 AST-Grep Scan",
+          "task": "🔍 AST-Grep Scan",
+          "description": "pnpm ast-grep:scan"
+        }
+      ]
+    },
+
+    // ----------------------------
+    // 🧪 TESTING
+    // ----------------------------
+    {
+      "label": "🧪 Testing⋯",
+      "alignment": "right",
+      "tooltip": "Tests (full suite, file, domains, security)",
+      "tasks": [
+        {
+          "label": "🧪 Run All Tests",
+          "task": "🧪 Run All Tests",
+          "description": "pnpm test"
+        },
+        {
+          "label": "🧪 Test Current File",
+          "task": "🧪 Test Current File",
+          "description": "pnpm vitest run ${file}"
+        },
+        {
+          "label": "🎯 Test Analytics Domain",
+          "task": "🎯 Test Analytics Domain",
+          "description": "pnpm test:domain:analytics"
+        },
+        {
+          "label": "🎯 Test Billing Domain",
+          "task": "🎯 Test Billing Domain",
+          "description": "pnpm test:domain:billing"
+        },
+        {
+          "label": "🎯 Test Chat Domain",
+          "task": "🎯 Test Chat Domain",
+          "description": "pnpm test:domain:chat"
+        },
+        {
+          "label": "🛡️ Test Security",
+          "task": "🛡️ Test Security",
+          "description": "pnpm test:security"
+        }
+      ]
+    },
+
+    // ----------------------------
+    // 🔧 BUILD
+    // ----------------------------
+    {
+      "label": "🔧 Build⋯",
+      "alignment": "right",
+      "tooltip": "Build / compile",
+      "tasks": [
+        {
+          "label": "🔧 Build Project",
+          "task": "🔧 Build Project",
+          "description": "pnpm build"
+        }
+      ]
+    },
+
+    // ----------------------------
+    // 📚 DOCS
+    // ----------------------------
+    {
+      "label": "📚 Docs⋯",
+      "alignment": "right",
+      "tooltip": "OpenAPI + docs generation",
+      "tasks": [
+        {
+          "label": "📊 OpenAPI Generate",
+          "task": "📊 OpenAPI Generate",
+          "description": "pnpm openapi:gen"
+        },
+        {
+          "label": "📋 OpenAPI Validate",
+          "task": "📋 OpenAPI Validate",
+          "description": "pnpm openapi:rbac:check"
+        },
+        {
+          "label": "📚 Generate Docs",
+          "task": "📚 Generate Docs",
+          "description": "pnpm docs:index"
+        }
+      ]
+    }
+  ]
 }
 

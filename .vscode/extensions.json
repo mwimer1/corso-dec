@@ -6,7 +6,8 @@
     "dbaeumer.vscode-eslint",
     "ms-vscode.vscode-typescript-next",
     "esbenp.prettier-vscode",
-    "formulahendry.auto-rename-tag"
+    "formulahendry.auto-rename-tag",
+    "spencerwmiles.vscode-task-buttons"
   ],
   "unwantedRecommendations": [
     "stylelint.vscode-stylelint",
