@@ -48,19 +48,13 @@ pnpm quality:local
 
 This workspace provides clickable task buttons in the VS Code status bar via the **VSCode Task Buttons** extension (`spencerwmiles.vscode-task-buttons`).
 
-**Hot Buttons (Left Side):**
-- ⚡ **Dev** → Quick Dev Start
-- 🔍 **Quality** → Quality Gates (TypeCheck + Lint + Test)
-- 🧪 **Tests** → Run All Tests
-- 🔧 **Build** → Build Project
-
-**Category Menus (Right Side):**
-- 🚀 **Setup⋯** — Installation, verification, environment checks
-- ⚡ **Dev⋯** — Development server and watch modes
-- 🔍 **Quality⋯** — Typecheck, lint, quality gates, scans
-- 🧪 **Testing⋯** — Test suites, domain tests, security tests
-- 🔧 **Build⋯** — Production builds
-- 📚 **Docs⋯** — OpenAPI generation, documentation
+**Six Left-Aligned Menus:**
+- **🚀 Setup** — Installation, verification, environment checks, branch setup, cleanup
+- **⚡ Dev** — Development server and TypeScript watch modes
+- **🔍 Quality** — Typecheck, lint, quality gates, scans
+- **🧪 Tests** — Test suites, file tests, domain tests, security tests
+- **🔧 Build** — Production builds
+- **📚 Docs** — OpenAPI generation, documentation
 
 **Configuration:** Task buttons are configured in `.vscode/settings.json` under `VsCodeTaskButtons.tasks`. All tasks reference task labels from `.vscode/tasks.json` and **must match exactly** (emoji, punctuation, spacing).
 
