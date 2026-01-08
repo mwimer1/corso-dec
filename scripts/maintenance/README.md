@@ -1,6 +1,6 @@
 ---
 title: "scripts/maintenance"
-last_updated: "2026-01-07"
+last_updated: "2026-01-08"
 category: "automation"
 ---
 
@@ -9,7 +9,7 @@ category: "automation"
 This README is generated from a single template (`README.scripts.hbs`).
 
 - Directory: `scripts/maintenance`
-- Last updated: `2026-01-07`
+- Last updated: `2026-01-08`
 
 > Edit the template or the generator context to change all READMEs consistently.
 
@@ -18,6 +18,7 @@ This README is generated from a single template (`README.scripts.hbs`).
 - **audit-barrels.ts** – Unified Barrel Audit
 - **audit-unused-tokens.ts** – Skip build directories
 - **barrel.config.ts** – &#x27;,
+- **build-chatgpt-docs-context-pack-v2.ts** – Build ChatGPT Docs Deep Research Context Pack (v2)
 - **check-barrels.ts** – Also checks for intradomain root barrel circular dependencies.
 - **check-readme-freshness.ts** – Check README freshness - validates that README files with frontmatter
 - **clean-next-build.ts** – Cross-platform script to clean .next directory before build

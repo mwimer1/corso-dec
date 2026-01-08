@@ -358,7 +358,7 @@ export const docs = [
   },
   {
     "path": "readme.md",
-    "title": "README.md"
+    "title": "Corso"
   },
   {
     "path": "scripts/analysis/readme.md",

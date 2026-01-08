@@ -1,6 +1,6 @@
 ---
 title: "scripts/utils"
-last_updated: "2026-01-07"
+last_updated: "2026-01-08"
 category: "automation"
 ---
 
@@ -9,7 +9,7 @@ category: "automation"
 This README is generated from a single template (`README.scripts.hbs`).
 
 - Directory: `scripts/utils`
-- Last updated: `2026-01-07`
+- Last updated: `2026-01-08`
 
 > Edit the template or the generator context to change all READMEs consistently.
 
