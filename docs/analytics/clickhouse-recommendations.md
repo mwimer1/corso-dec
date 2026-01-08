@@ -53,7 +53,6 @@ ENGINE = MergeTree
 PARTITION BY toYYYYMM(event_date)
 ORDER BY (org_id, event_date, project_type)
 SETTINGS index_granularity = 8192;
-```bash
 
 ## Data skipping indexes
 
@@ -66,14 +65,12 @@ Common patterns:
 ```sql
 ALTER TABLE events
 ADD INDEX idx_project_type_bloom project_type TYPE bloom_filter GRANULARITY 64;
-```bash
 
 - Token bloom for substring/contains searches:
 
 ```sql
 ALTER TABLE events
 ADD INDEX idx_notes_tokenbf notes TYPE tokenbf_v1(1024, 3, 0) GRANULARITY 64;
-```bash
 
 Indexes help only if queries routinely filter on those columns. Validate with real workload before adding many.
 
@@ -98,7 +95,6 @@ WHERE org_id = {org_id:String}
   AND day BETWEEN {start:Date} AND {end:Date}
 GROUP BY day, project_type
 ORDER BY day;
-```bash
 
 Notes:
 
@@ -126,7 +122,6 @@ Example (conceptual; via client settings):
 ```sql
 SET max_execution_time = 2000;
 SELECT ... FROM events PREWHERE org_id = 'org_123' AND event_date BETWEEN '2025-08-01' AND '2025-08-13' LIMIT 1000;
-```bash
 
 ## Retention and storage
 
@@ -135,7 +130,6 @@ SELECT ... FROM events PREWHERE org_id = 'org_123' AND event_date BETWEEN '2025-
 ```sql
 ALTER TABLE events
 MODIFY TTL event_date + INTERVAL 365 DAY DELETE;
-```bash
 
 - For very large tables, consider S3-backed `MergeTree` or tiered storage policies.
 
@@ -162,7 +156,6 @@ WHERE type = 'QueryFinish'
   AND event_time >= now() - INTERVAL 1 HOUR
 ORDER BY seconds DESC
 LIMIT 50;
-```bash
 
 What to watch:
 
