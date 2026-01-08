@@ -477,7 +477,7 @@
           "Chat"
         ],
         "summary": "Stream chat processing (NDJSON)",
-        "description": "Process user chat messages and stream AI responses in NDJSON format",
+        "description": "Process user chat messages and stream AI responses in NDJSON format.\n\n**Personal Scope:** This endpoint supports both organization-scoped and personal (user-scoped) access.\nOrganization header is optional - if provided, data is scoped to the organization; if omitted, data is scoped to the authenticated user.\n",
         "security": [
           {
             "bearerAuth": []
@@ -488,6 +488,7 @@
           "admin",
           "owner"
         ],
+        "x-corso-personal-scope": true,
         "x-rate-limit": {
           "limit": 30,
           "window": "1m"
@@ -531,7 +532,7 @@
         },
         "parameters": [
           {
-            "$ref": "#/components/parameters/OrgIdHeader"
+            "$ref": "#/components/parameters/OrgIdHeaderOptional"
           }
         ]
       }
@@ -543,7 +544,7 @@
           "Chat"
         ],
         "summary": "Get Deep Research usage limits",
-        "description": "Returns current Deep Research usage limits for the authenticated user.\n\n**Response Format:**\n- `remaining`: Number of Deep Research requests remaining in the current period\n- `limit`: Total limit for the current period\n- `currentUsage`: Current usage count in the period\n\n**Rate Limits:**\n- Endpoint: 30 requests per minute\n- Deep Research feature: Configurable per user/org (check response for limits)\n",
+        "description": "Returns current Deep Research usage limits for the authenticated user.\n\n**Personal Scope:** This endpoint supports both organization-scoped and personal (user-scoped) access.\nOrganization header is optional - if provided, limits are scoped to the organization; if omitted, limits are scoped to the authenticated user.\n\n**Response Format:**\n- `remaining`: Number of Deep Research requests remaining in the current period\n- `limit`: Total limit for the current period\n- `currentUsage`: Current usage count in the period\n\n**Rate Limits:**\n- Endpoint: 30 requests per minute\n- Deep Research feature: Configurable per user/org (check response for limits)\n",
         "security": [
           {
             "bearerAuth": []
@@ -554,13 +555,14 @@
           "admin",
           "owner"
         ],
+        "x-corso-personal-scope": true,
         "x-rate-limit": {
           "limit": 30,
           "window": "1m"
         },
         "parameters": [
           {
-            "$ref": "#/components/parameters/OrgIdHeader"
+            "$ref": "#/components/parameters/OrgIdHeaderOptional"
           }
         ],
         "responses": {
@@ -806,7 +808,7 @@
           "Dashboard"
         ],
         "summary": "Execute SQL query",
-        "description": "Generic SQL query endpoint for client-side ClickHouse queries with tenant isolation",
+        "description": "Generic SQL query endpoint for client-side ClickHouse queries.\n\n**Personal Scope:** This endpoint supports both organization-scoped and personal (user-scoped) access.\nOrganization header is optional - if provided, queries are scoped to the organization; if omitted, queries are scoped to the authenticated user.\n",
         "security": [
           {
             "bearerAuth": []
@@ -817,13 +819,14 @@
           "admin",
           "owner"
         ],
+        "x-corso-personal-scope": true,
         "x-rate-limit": {
           "limit": 60,
           "window": "1m"
         },
         "parameters": [
           {
-            "$ref": "#/components/parameters/OrgIdHeader"
+            "$ref": "#/components/parameters/OrgIdHeaderOptional"
           }
         ],
         "requestBody": {
@@ -1042,7 +1045,7 @@
           "Chat"
         ],
         "summary": "AI SQL generation",
-        "description": "Generate SQL from a natural-language question using AI",
+        "description": "Generate SQL from a natural-language question using AI.\n\n**Personal Scope:** This endpoint supports both organization-scoped and personal (user-scoped) access.\nOrganization header is optional - if provided, SQL validation is scoped to the organization; if omitted, SQL validation is scoped to the authenticated user.\n",
         "security": [
           {
             "bearerAuth": []
@@ -1053,10 +1056,16 @@
           "admin",
           "owner"
         ],
+        "x-corso-personal-scope": true,
         "x-rate-limit": {
           "limit": 30,
           "window": "1m"
         },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrgIdHeaderOptional"
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1093,12 +1102,7 @@
           "500": {
             "$ref": "#/components/responses/InternalError"
           }
-        },
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          }
-        ]
+        }
       }
     },
     "/api/v1/user": {
@@ -1108,7 +1112,7 @@
           "Users"
         ],
         "summary": "Validate user payload",
-        "description": "Validate user profile data and return validation results",
+        "description": "Validate user profile data and return validation results.\n\n**Personal Scope:** This endpoint supports both organization-scoped and personal (user-scoped) access.\nOrganization header is optional - user profile operations work for all authenticated users.\n",
         "security": [
           {
             "bearerAuth": []
@@ -1117,10 +1121,16 @@
         "x-corso-rbac": [
           "member"
         ],
+        "x-corso-personal-scope": true,
         "x-rate-limit": {
           "limit": 30,
           "window": "1m"
         },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrgIdHeaderOptional"
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1166,12 +1176,7 @@
           "500": {
             "$ref": "#/components/responses/InternalError"
           }
-        },
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          }
-        ]
+        }
       }
     }
   },

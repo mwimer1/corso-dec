@@ -337,13 +337,18 @@ paths:
       tags:
         - Chat
       summary: Stream chat processing (NDJSON)
-      description: Process user chat messages and stream AI responses in NDJSON format
+      description: |
+        Process user chat messages and stream AI responses in NDJSON format.
+        
+        **Personal Scope:** This endpoint supports both organization-scoped and personal (user-scoped) access.
+        Organization header is optional - if provided, data is scoped to the organization; if omitted, data is scoped to the authenticated user.
       security:
         - bearerAuth: []
       x-corso-rbac:
         - member
         - admin
         - owner
+      x-corso-personal-scope: true
       x-rate-limit:
         limit: 30
         window: 1m
@@ -371,7 +376,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalError"
       parameters:
-        - $ref: "#/components/parameters/OrgIdHeader"
+        - $ref: "#/components/parameters/OrgIdHeaderOptional"
   /api/v1/ai/chat/usage-limits:
     get:
       operationId: ai_chat_usageLimits
@@ -380,6 +385,9 @@ paths:
       summary: Get Deep Research usage limits
       description: |
         Returns current Deep Research usage limits for the authenticated user.
+        
+        **Personal Scope:** This endpoint supports both organization-scoped and personal (user-scoped) access.
+        Organization header is optional - if provided, limits are scoped to the organization; if omitted, limits are scoped to the authenticated user.
         
         **Response Format:**
         - `remaining`: Number of Deep Research requests remaining in the current period
@@ -395,11 +403,12 @@ paths:
         - member
         - admin
         - owner
+      x-corso-personal-scope: true
       x-rate-limit:
         limit: 30
         window: 1m
       parameters:
-        - $ref: "#/components/parameters/OrgIdHeader"
+        - $ref: "#/components/parameters/OrgIdHeaderOptional"
       responses:
         "200":
           description: Usage limits retrieved successfully
@@ -567,18 +576,23 @@ paths:
       tags:
         - Dashboard
       summary: Execute SQL query
-      description: Generic SQL query endpoint for client-side ClickHouse queries with tenant isolation
+      description: |
+        Generic SQL query endpoint for client-side ClickHouse queries.
+        
+        **Personal Scope:** This endpoint supports both organization-scoped and personal (user-scoped) access.
+        Organization header is optional - if provided, queries are scoped to the organization; if omitted, queries are scoped to the authenticated user.
       security:
         - bearerAuth: []
       x-corso-rbac:
         - member
         - admin
         - owner
+      x-corso-personal-scope: true
       x-rate-limit:
         limit: 60
         window: 1m
       parameters:
-        - $ref: "#/components/parameters/OrgIdHeader"
+        - $ref: "#/components/parameters/OrgIdHeaderOptional"
       requestBody:
         required: true
         content:
@@ -727,16 +741,23 @@ paths:
       tags:
         - Chat
       summary: AI SQL generation
-      description: Generate SQL from a natural-language question using AI
+      description: |
+        Generate SQL from a natural-language question using AI.
+        
+        **Personal Scope:** This endpoint supports both organization-scoped and personal (user-scoped) access.
+        Organization header is optional - if provided, SQL validation is scoped to the organization; if omitted, SQL validation is scoped to the authenticated user.
       security:
         - bearerAuth: []
       x-corso-rbac:
         - member
         - admin
         - owner
+      x-corso-personal-scope: true
       x-rate-limit:
         limit: 30
         window: 1m
+      parameters:
+        - $ref: "#/components/parameters/OrgIdHeaderOptional"
       requestBody:
         required: true
         content:
@@ -760,22 +781,27 @@ paths:
           $ref: "#/components/responses/RateLimited"
         "500":
           $ref: "#/components/responses/InternalError"
-      parameters:
-        - $ref: "#/components/parameters/OrgIdHeader"
   /api/v1/user:
     post:
       operationId: users_validate
       tags:
         - Users
       summary: Validate user payload
-      description: Validate user profile data and return validation results
+      description: |
+        Validate user profile data and return validation results.
+        
+        **Personal Scope:** This endpoint supports both organization-scoped and personal (user-scoped) access.
+        Organization header is optional - user profile operations work for all authenticated users.
       security:
         - bearerAuth: []
       x-corso-rbac:
         - member
+      x-corso-personal-scope: true
       x-rate-limit:
         limit: 30
         window: 1m
+      parameters:
+        - $ref: "#/components/parameters/OrgIdHeaderOptional"
       requestBody:
         required: true
         content:
@@ -805,8 +831,6 @@ paths:
           $ref: "#/components/responses/RateLimited"
         "500":
           $ref: "#/components/responses/InternalError"
-      parameters:
-        - $ref: "#/components/parameters/OrgIdHeader"
 components:
   securitySchemes:
     bearerAuth:

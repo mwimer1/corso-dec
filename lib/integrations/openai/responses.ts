@@ -69,10 +69,10 @@ export interface StreamResponseEventsOptions {
 /**
  * Function to execute SQL (provided by caller)
  * @param sql - SQL query to execute
- * @param orgId - Organization ID for tenant isolation
+ * @param orgId - Organization ID for tenant isolation (nullable for personal-scope users)
  * @param req - Optional request object for logging context
  */
-export type ExecuteSqlFunction = (sql: string, orgId: string, req?: NextRequest) => Promise<string>;
+export type ExecuteSqlFunction = (sql: string, orgId: string | null, req?: NextRequest) => Promise<string>;
 
 import type { ColumnDef } from '@/types/chat';
 import type { Row } from '@/types/shared';
@@ -110,7 +110,7 @@ export type StreamChunkHandler = (chunk: {
 export async function streamResponseEvents(
   options: StreamResponseEventsOptions,
   executeSql: ExecuteSqlFunction,
-  orgId: string,
+  orgId: string | null,
   onChunk: StreamChunkHandler,
 ): Promise<void> {
   const {
@@ -139,7 +139,7 @@ export async function streamResponseEvents(
   let lastDetectedTableIntent: { table: string; confidence: number } | null = null;
   
   // Wrapper that uses structured execution and tracks tabular results
-  const executeSqlWithTracking = async (sql: string, orgId: string, req?: NextRequest): Promise<string> => {
+  const executeSqlWithTracking = async (sql: string, orgId: string | null, req?: NextRequest): Promise<string> => {
     const result = await executeSqlWithStructure(sql, orgId, req);
     lastDetectedTableIntent = createDetectedTableIntent(result.detectedTables);
     
@@ -172,7 +172,7 @@ export async function streamResponseEvents(
     if (signal?.aborted) {
       const durationMs = performance.now() - loopStartTime;
       const logOptions: Parameters<typeof logToolLoopTermination>[0] = {
-        orgId,
+        orgId: orgId ?? 'personal', // Use 'personal' as placeholder for logging when orgId is null
         reason: 'aborted',
         toolCallCount,
         maxToolCalls,
@@ -187,7 +187,7 @@ export async function streamResponseEvents(
     if (toolCallCount >= maxToolCalls) {
       const durationMs = performance.now() - loopStartTime;
       const logOptions: Parameters<typeof logToolLoopTermination>[0] = {
-        orgId,
+        orgId: orgId ?? 'personal', // Use 'personal' as placeholder for logging when orgId is null
         reason: 'max_tool_calls',
         toolCallCount,
         maxToolCalls,
@@ -458,7 +458,7 @@ export async function streamResponseEvents(
       
       const durationMs = performance.now() - loopStartTime;
       const logOptions: Parameters<typeof logToolLoopTermination>[0] = {
-        orgId,
+        orgId: orgId ?? 'personal', // Use 'personal' as placeholder for logging when orgId is null
         reason: 'completed',
         toolCallCount,
         maxToolCalls,
@@ -477,7 +477,7 @@ export async function streamResponseEvents(
         : 'openai_error';
       
       const logOptions: Parameters<typeof logToolLoopTermination>[0] = {
-        orgId,
+        orgId: orgId ?? 'personal', // Use 'personal' as placeholder for logging when orgId is null
         reason: errorType as 'timeout' | 'openai_error',
         toolCallCount,
         maxToolCalls,

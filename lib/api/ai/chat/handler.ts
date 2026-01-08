@@ -5,8 +5,7 @@ import 'server-only';
 
 import type { NextRequest } from 'next/server';
 import { requireAnyRoleForAI } from '@/lib/api/auth-helpers';
-import { mapTenantContextError } from '@/lib/api/tenant-context-helpers';
-import { getTenantContext } from '@/lib/server';
+import { getAccountContext } from '@/lib/api/account-context';
 import { createOpenAIClient } from '@/lib/integrations/openai/server';
 import { getEnv } from '@/lib/server/env';
 import { logger } from '@/lib/monitoring';
@@ -76,14 +75,10 @@ export async function handleChatRequest(req: NextRequest): Promise<Response> {
   }
   const { userId: _userId } = authResult;
 
-  // Get tenant context for org isolation
-  let tenantContext;
-  try {
-    tenantContext = await getTenantContext(req);
-  } catch (error) {
-    return mapTenantContextError(error);
-  }
-  const { orgId } = tenantContext;
+  // Get account context (supports both org-scoped and personal-scope)
+  // Org is optional - personal users can use chat without org
+  const accountContext = await getAccountContext(req, { requireOrg: false });
+  const { orgId } = accountContext;
 
   // Parse request body
   const parseResult = await parseChatRequest(req);

@@ -171,10 +171,10 @@ function formatResultsForModel(results: Array<Record<string, unknown>>, rowCount
 /**
  * Execute SQL and return structured result
  * @param sql - SQL query to execute
- * @param orgId - Organization ID for tenant isolation validation
+ * @param orgId - Organization ID for tenant isolation validation (nullable for personal-scope users)
  * @param req - Optional request object for logging context
  */
-export async function executeSqlWithStructure(sql: string, orgId: string, req?: NextRequest): Promise<SqlExecutionResult> {
+export async function executeSqlWithStructure(sql: string, orgId: string | null, req?: NextRequest): Promise<SqlExecutionResult> {
   const startTime = performance.now();
   const normalizedSQL = normalizeSQLForLogging(sql);
   
@@ -186,17 +186,23 @@ export async function executeSqlWithStructure(sql: string, orgId: string, req?: 
                     (env.NODE_ENV !== 'production' && env.CORSO_USE_MOCK_DB !== 'false');
     
     // In mock mode, use mockOrgId from env for validation
-    const expectedOrgId = useMock ? (env.CORSO_MOCK_ORG_ID ?? 'demo-org') : orgId;
+    // For personal-scope users (orgId is null), expectedOrgId is undefined (no org filter enforcement)
+    const effectiveOrgId = useMock ? (env.CORSO_MOCK_ORG_ID ?? 'demo-org') : orgId;
     
     // Security: Use SQL Guard for AST-based validation, org filter injection, and LIMIT enforcement
     // This is a critical security check - all AI-generated SQL must pass guardSQL validation
     // before execution. guardSQL performs AST parsing and blocks dangerous operations.
+    // When orgId is null (personal-scope), org filter injection is skipped (expectedOrgId omitted)
     let guarded;
     try {
-      guarded = guardSQL(sql, {
-        expectedOrgId,
+      const guardOptions: { maxRows: number; expectedOrgId?: string } = {
         maxRows: 100, // Limit results to 100 rows for chat display
-      });
+      };
+      // Only include expectedOrgId if orgId is present (for exactOptionalPropertyTypes compatibility)
+      if (effectiveOrgId) {
+        guardOptions.expectedOrgId = effectiveOrgId;
+      }
+      guarded = guardSQL(sql, guardOptions);
     } catch (guardError) {
       // SQL Guard validation failed
       const durationMs = performance.now() - startTime;
@@ -206,7 +212,7 @@ export async function executeSqlWithStructure(sql: string, orgId: string, req?: 
       
       logToolCall({
         ...(req && { req }),
-        orgId,
+        orgId: orgId ?? 'personal', // Use 'personal' as placeholder for logging when orgId is null
         toolName: 'execute_sql',
         normalizedSQL,
         allowDenyReason: reason,
@@ -246,7 +252,7 @@ export async function executeSqlWithStructure(sql: string, orgId: string, req?: 
       // Log successful execution
       logToolCall({
         ...(req && { req }),
-        orgId,
+        orgId: orgId ?? 'personal', // Use 'personal' as placeholder for logging when orgId is null
         toolName: 'execute_sql',
         normalizedSQL,
         allowDenyReason: 'allowed',
@@ -277,7 +283,7 @@ export async function executeSqlWithStructure(sql: string, orgId: string, req?: 
       // Log database error (sanitized)
       logToolCall({
         ...(req && { req }),
-        orgId,
+        orgId: orgId ?? 'personal', // Use 'personal' as placeholder for logging when orgId is null
         toolName: 'execute_sql',
         normalizedSQL,
         allowDenyReason: 'allowed', // Validation passed, but execution failed
@@ -323,7 +329,7 @@ export async function executeSqlWithStructure(sql: string, orgId: string, req?: 
     // Log unexpected errors
     logToolCall({
       ...(req && { req }),
-      orgId,
+      orgId: orgId ?? 'personal', // Use 'personal' as placeholder for logging when orgId is null
       toolName: 'execute_sql',
       normalizedSQL,
       allowDenyReason: 'error',
@@ -347,10 +353,10 @@ export async function executeSqlWithStructure(sql: string, orgId: string, req?: 
 /**
  * Executes SQL query and formats results (backwards compatible wrapper)
  * @param sql - SQL query to execute
- * @param orgId - Organization ID for tenant isolation validation
+ * @param orgId - Organization ID for tenant isolation validation (nullable for personal-scope users)
  * @param req - Optional request object for logging context
  */
-export async function executeSqlAndFormat(sql: string, orgId: string, req?: NextRequest): Promise<string> {
+export async function executeSqlAndFormat(sql: string, orgId: string | null, req?: NextRequest): Promise<string> {
   const result = await executeSqlWithStructure(sql, orgId, req);
   return result.formattedForModel;
 }

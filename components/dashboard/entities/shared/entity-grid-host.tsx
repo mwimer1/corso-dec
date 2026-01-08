@@ -116,12 +116,11 @@ export default function EntityGridHost({ config }: { config: EntityGridConfig })
           errorMessage = 'Please sign in again.';
         } else if (status === 403) {
           // Show specific message based on error code
-          if (errorCode === 'NO_ORG_CONTEXT') {
-            errorMessage = 'No organization selected. (Strict mode.)';
-          } else if (errorCode === 'FORBIDDEN') {
+          if (errorCode === 'FORBIDDEN') {
             errorMessage = 'Insufficient permissions.';
           } else {
             // Use API error message if available, otherwise fallback
+            // Note: NO_ORG_CONTEXT should not occur for entity routes (they support personal-scope)
             errorMessage = loadError.message || 'You do not have permission to access this resource.';
           }
         } else if (status === 429) {

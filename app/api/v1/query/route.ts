@@ -30,8 +30,7 @@ export const revalidate = 0;
 
 import { http, validateJson } from '@/lib/api';
 import { requireAuthWithRBAC } from '@/lib/api/auth-helpers';
-import { mapTenantContextError } from '@/lib/api/tenant-context-helpers';
-import { getTenantContext } from '@/lib/server';
+import { getAccountContext } from '@/lib/api/account-context';
 import { clickhouseQuery } from '@/lib/integrations/clickhouse/server';
 import { validateSQLScope } from '@/lib/integrations/database/scope';
 import { withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_60_PER_MIN, handleOptions } from '@/lib/middleware';
@@ -60,14 +59,10 @@ const handler = async (req: NextRequest): Promise<Response> => {
   }
   const { userId: _userId } = authResult;
 
-  // 2. Get tenant context for org isolation
-  let tenantContext;
-  try {
-    tenantContext = await getTenantContext(req);
-  } catch (error) {
-    return mapTenantContextError(error);
-  }
-  const { orgId } = tenantContext;
+  // 2. Get account context (supports both org-scoped and personal-scope)
+  // Org is optional - personal users can execute queries without org
+  const accountContext = await getAccountContext(req, { requireOrg: false });
+  const { orgId } = accountContext;
 
   // 4. Request body validation
   const parsed = await validateJson(req, QueryRequestSchema);
@@ -80,9 +75,10 @@ const handler = async (req: NextRequest): Promise<Response> => {
 
   const { sql, params = {} } = parsed.data;
 
-  // 5. Validate SQL with tenant isolation
+  // 5. Validate SQL with tenant isolation (when orgId present)
+  // When orgId is null (personal-scope), org_id filtering is not enforced (validateSQLScope accepts undefined)
   try {
-    validateSQLScope(sql, orgId);
+    validateSQLScope(sql, orgId ?? undefined);
   } catch (error: any) {
     return http.badRequest(
       error.message || 'SQL validation failed',

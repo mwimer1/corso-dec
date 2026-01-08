@@ -137,7 +137,10 @@ export interface paths {
         put?: never;
         /**
          * Stream chat processing (NDJSON)
-         * @description Process user chat messages and stream AI responses in NDJSON format
+         * @description Process user chat messages and stream AI responses in NDJSON format.
+         *
+         *     **Personal Scope:** This endpoint supports both organization-scoped and personal (user-scoped) access.
+         *     Organization header is optional - if provided, data is scoped to the organization; if omitted, data is scoped to the authenticated user.
          */
         post: operations["ai_chat_processStream"];
         delete?: never;
@@ -156,6 +159,9 @@ export interface paths {
         /**
          * Get Deep Research usage limits
          * @description Returns current Deep Research usage limits for the authenticated user.
+         *
+         *     **Personal Scope:** This endpoint supports both organization-scoped and personal (user-scoped) access.
+         *     Organization header is optional - if provided, limits are scoped to the organization; if omitted, limits are scoped to the authenticated user.
          *
          *     **Response Format:**
          *     - `remaining`: Number of Deep Research requests remaining in the current period
@@ -209,7 +215,10 @@ export interface paths {
         put?: never;
         /**
          * Execute SQL query
-         * @description Generic SQL query endpoint for client-side ClickHouse queries with tenant isolation
+         * @description Generic SQL query endpoint for client-side ClickHouse queries.
+         *
+         *     **Personal Scope:** This endpoint supports both organization-scoped and personal (user-scoped) access.
+         *     Organization header is optional - if provided, queries are scoped to the organization; if omitted, queries are scoped to the authenticated user.
          */
         post: operations["query_execute"];
         delete?: never;
@@ -254,7 +263,10 @@ export interface paths {
         put?: never;
         /**
          * AI SQL generation
-         * @description Generate SQL from a natural-language question using AI
+         * @description Generate SQL from a natural-language question using AI.
+         *
+         *     **Personal Scope:** This endpoint supports both organization-scoped and personal (user-scoped) access.
+         *     Organization header is optional - if provided, SQL validation is scoped to the organization; if omitted, SQL validation is scoped to the authenticated user.
          */
         post: operations["ai_generateSql"];
         delete?: never;
@@ -274,7 +286,10 @@ export interface paths {
         put?: never;
         /**
          * Validate user payload
-         * @description Validate user profile data and return validation results
+         * @description Validate user profile data and return validation results.
+         *
+         *     **Personal Scope:** This endpoint supports both organization-scoped and personal (user-scoped) access.
+         *     Organization header is optional - user profile operations work for all authenticated users.
          */
         post: operations["users_validate"];
         delete?: never;
@@ -858,9 +873,9 @@ export interface operations {
     ai_chat_processStream: {
         parameters: {
             query?: never;
-            header: {
-                /** @description Organization identifier header for tenant scoping */
-                "X-Corso-Org-Id": components["parameters"]["OrgIdHeader"];
+            header?: {
+                /** @description Optional organization identifier header for tenant scoping (used for personal-scope routes that support both org-scoped and user-scoped access) */
+                "X-Corso-Org-Id"?: components["parameters"]["OrgIdHeaderOptional"];
             };
             path?: never;
             cookie?: never;
@@ -890,9 +905,9 @@ export interface operations {
     ai_chat_usageLimits: {
         parameters: {
             query?: never;
-            header: {
-                /** @description Organization identifier header for tenant scoping */
-                "X-Corso-Org-Id": components["parameters"]["OrgIdHeader"];
+            header?: {
+                /** @description Optional organization identifier header for tenant scoping (used for personal-scope routes that support both org-scoped and user-scoped access) */
+                "X-Corso-Org-Id"?: components["parameters"]["OrgIdHeaderOptional"];
             };
             path?: never;
             cookie?: never;
@@ -1026,9 +1041,9 @@ export interface operations {
     query_execute: {
         parameters: {
             query?: never;
-            header: {
-                /** @description Organization identifier header for tenant scoping */
-                "X-Corso-Org-Id": components["parameters"]["OrgIdHeader"];
+            header?: {
+                /** @description Optional organization identifier header for tenant scoping (used for personal-scope routes that support both org-scoped and user-scoped access) */
+                "X-Corso-Org-Id"?: components["parameters"]["OrgIdHeaderOptional"];
             };
             path?: never;
             cookie?: never;
@@ -1149,9 +1164,9 @@ export interface operations {
     ai_generateSql: {
         parameters: {
             query?: never;
-            header: {
-                /** @description Organization identifier header for tenant scoping */
-                "X-Corso-Org-Id": components["parameters"]["OrgIdHeader"];
+            header?: {
+                /** @description Optional organization identifier header for tenant scoping (used for personal-scope routes that support both org-scoped and user-scoped access) */
+                "X-Corso-Org-Id"?: components["parameters"]["OrgIdHeaderOptional"];
             };
             path?: never;
             cookie?: never;
@@ -1181,9 +1196,9 @@ export interface operations {
     users_validate: {
         parameters: {
             query?: never;
-            header: {
-                /** @description Organization identifier header for tenant scoping */
-                "X-Corso-Org-Id": components["parameters"]["OrgIdHeader"];
+            header?: {
+                /** @description Optional organization identifier header for tenant scoping (used for personal-scope routes that support both org-scoped and user-scoped access) */
+                "X-Corso-Org-Id"?: components["parameters"]["OrgIdHeaderOptional"];
             };
             path?: never;
             cookie?: never;

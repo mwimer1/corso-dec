@@ -27,8 +27,7 @@ export const revalidate = 0;
 
 import { http } from '@/lib/api';
 import { requireAnyRoleForAI } from '@/lib/api/auth-helpers';
-import { mapTenantContextError } from '@/lib/api/tenant-context-helpers';
-import { getTenantContext } from '@/lib/server';
+import { getAccountContext } from '@/lib/api/account-context';
 import { handleOptions, withErrorHandlingNode as withErrorHandling, withRateLimitNode as withRateLimit, RATE_LIMIT_30_PER_MIN } from '@/lib/middleware';
 import { validateSQLScope } from '@/lib/integrations/database/scope';
 import { createOpenAIClient } from '@/lib/integrations/openai/server';
@@ -74,14 +73,10 @@ const handler = async (req: NextRequest): Promise<Response> => {
   }
   const { userId: _userId } = authResult;
 
-  // Get tenant context for org isolation
-  let tenantContext;
-  try {
-    tenantContext = await getTenantContext(req);
-  } catch (error) {
-    return mapTenantContextError(error);
-  }
-  const { orgId } = tenantContext;
+  // Get account context (supports both org-scoped and personal-scope)
+  // Org is optional - personal users can generate SQL without org
+  const accountContext = await getAccountContext(req, { requireOrg: false });
+  const { orgId } = accountContext;
 
   const json = (await req.json().catch(() => ({}))) as unknown;
   const parsed = BodySchema.safeParse(json);
@@ -162,8 +157,9 @@ SQL: SELECT COUNT(*) FROM companies WHERE headcount > 100`;
     // Security: Validate AI-generated SQL to prevent injection
     // This is a critical security check - all AI-generated SQL must pass validation
     // before execution. validateSQLScope checks for dangerous patterns and tenant isolation.
+    // When orgId is null (personal-scope), org_id filtering is not enforced (validateSQLScope accepts undefined)
     try {
-      validateSQLScope(generatedSQL, orgId);
+      validateSQLScope(generatedSQL, orgId ?? undefined);
     } catch (validationError) {
       // SecurityError from validateSQLScope
       const errorMessage = validationError instanceof Error ? validationError.message : 'Invalid SQL generated';

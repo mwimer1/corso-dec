@@ -136,6 +136,7 @@
     "lib/api/ai/chat/streaming.ts -> @/types/shared",
     "lib/api/ai/chat/tools.ts -> @/types/chat",
     "lib/api/ai/chat/tools.ts -> @/types/shared",
+    "lib/api/ai/chat/usage-limits.ts -> @/integrations/supabase/server",
     "lib/chat/client/process.ts -> @/types/chat",
     "lib/chat/client/process.ts -> @/types/shared",
     "lib/chat/client/types.ts -> @/types/chat",

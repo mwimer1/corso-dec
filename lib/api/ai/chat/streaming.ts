@@ -38,14 +38,14 @@ export type AIChunk = {
  * @param instructions - System instructions/prompt
  * @param input - Input items for Responses API
  * @param model - Model name
- * @param orgId - Organization ID for tenant isolation
+ * @param orgId - Organization ID for tenant isolation (nullable for personal-scope users)
  * @param signal - Abort signal for cancellation
  */
 export function createResponsesStreamResponse(
   instructions: string,
   input: any[], // ResponseInputItem[] - using any due to pnpm multiple package version resolution
   model: string,
-  orgId: string,
+  orgId: string | null,
   req: NextRequest,
   signal?: AbortSignal,
 ): Response {
@@ -105,7 +105,7 @@ export function createResponsesStreamResponse(
  * @param client - OpenAI client for continuation requests
  * @param model - Model name
  * @param messages - Conversation messages
- * @param orgId - Organization ID for tenant isolation
+ * @param orgId - Organization ID for tenant isolation (nullable for personal-scope users)
  * @param signal - Abort signal for cancellation
  */
 export function createStreamResponse(
@@ -113,7 +113,7 @@ export function createStreamResponse(
   client: OpenAI,
   model: string,
   messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[],
-  orgId: string,
+  orgId: string | null,
   req: NextRequest,
   signal?: AbortSignal
 ): Response {
