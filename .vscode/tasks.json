@@ -419,6 +419,46 @@
       "problemMatcher": []
     },
     {
+      "label": "🚀 Docs: Auto-Publish to main (no-verify)",
+      "type": "shell",
+      "command": "pnpm",
+      "args": ["exec", "tsx", "scripts/maintenance/docs/autopublish.ts", "--yes", "--quiet"],
+      "group": "build",
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🧪 Docs: Auto-Publish (dry-run)",
+      "type": "shell",
+      "command": "pnpm",
+      "args": ["exec", "tsx", "scripts/maintenance/docs/autopublish.ts", "--dry-run"],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "showReuseMessage": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🧪 Docs: Auto-Publish (dry-run, no pull)",
+      "type": "shell",
+      "command": "pnpm",
+      "args": ["exec", "tsx", "scripts/maintenance/docs/autopublish.ts", "--dry-run", "--no-pull"],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "showReuseMessage": false
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "TypeScript: watch",
       "type": "shell",
       "command": "pnpm tsc --noEmit --watch",

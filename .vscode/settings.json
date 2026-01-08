@@ -381,6 +381,16 @@
       "tooltip": "OpenAPI + docs generation + validation + maintenance",
       "tasks": [
         {
+          "label": "🚀 Auto-publish docs (ff pull + commit + push)",
+          "task": "🚀 Docs: Auto-Publish to main (no-verify)",
+          "description": "FF pull main → refresh docs/READMEs → commit (no-verify) → push (no-verify)"
+        },
+        {
+          "label": "🧪 Auto-publish (dry-run)",
+          "task": "🧪 Docs: Auto-Publish (dry-run)",
+          "description": "FF pull main → refresh → show changes (no commit/push)"
+        },
+        {
           "label": "🧰 Maintenance suite (refresh + verify)",
           "task": "🧰 Docs: Maintenance Suite (Refresh + Verify)",
           "description": "Refresh docs artifacts, then run full verification checks"
