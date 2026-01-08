@@ -91,7 +91,32 @@ This workspace provides clickable task buttons in the VS Code status bar for qui
 - **🔍 Quality** — Typecheck, lint, gates, scans
 - **🧪 Tests** — Test suite + file + domain/security
 - **🔧 Build** — Production build
-- **📚 Docs** — OpenAPI + docs generation
+- **📚 Docs** — OpenAPI + docs generation + validation + maintenance
+
+#### 📚 Docs Menu Details
+
+The Docs menu provides comprehensive documentation maintenance tools:
+
+**Maintenance Suites:**
+- **🧰 Maintenance suite (refresh + verify)**: Complete workflow — refreshes docs artifacts, then runs full verification checks
+- **🧾 Refresh suite (index + READMEs)**: Regenerates docs index + README artifacts (writes files)
+- **✅ Verify suite (lint + validate + spell + stale)**: Runs all docs checks without generation
+
+**Individual Validation Tasks:**
+- **✅ Lint markdown**: Validate markdown formatting (`pnpm docs:lint`)
+- **🔗 Validate links & structure**: Check links, structure, and templates (`pnpm docs:validate`)
+- **🔤 Spellcheck**: Check spelling across documentation (`pnpm docs:spellcheck`)
+- **⏰ Stale docs check**: Identify outdated documentation (`pnpm docs:stale:check`)
+
+**Individual Generation Tasks:**
+- **🧾 Generate READMEs**: Generate README artifacts (`pnpm docs:generate:readme`)
+- **📁 Generate directory READMEs**: Generate directory-level READMEs (`pnpm docs:generate:directory-readmes`)
+- **📚 Generate docs index**: Generate main docs index (`pnpm docs:index`)
+- **📊 Generate API docs (TypeDoc)**: Generate TypeDoc API documentation (`pnpm docs:api`)
+- **📊 OpenAPI generate**: Generate OpenAPI specification (`pnpm openapi:gen`)
+- **📋 OpenAPI validate**: Validate RBAC annotations (`pnpm openapi:rbac:check`)
+
+> **⚠️ Warning**: Refresh suite and Maintenance suite tasks can modify files (README/index artifacts). Review diffs before committing changes.
 
 **⚠️ Maintenance Note for Agents:** When modifying `.vscode/tasks.json` (adding, removing, or renaming tasks), you **must update** `.vscode/settings.json` under `VsCodeTaskButtons.tasks` to keep task button configuration in sync. Task labels must match exactly (emoji, punctuation, spacing). Broken references will cause "task not found" errors. See `.vscode/README.md` for complete configuration details.
 

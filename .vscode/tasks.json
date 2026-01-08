@@ -287,6 +287,138 @@
       }
     },
     {
+      "label": "✅ Docs: Lint Markdown",
+      "type": "shell",
+      "command": "pnpm docs:lint",
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "scrollToBottom": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🔗 Docs: Validate (Links + Structure + Templates)",
+      "type": "shell",
+      "command": "pnpm docs:validate",
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "scrollToBottom": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🔤 Docs: Spellcheck",
+      "type": "shell",
+      "command": "pnpm docs:spellcheck",
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "scrollToBottom": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "⏰ Docs: Check Stale",
+      "type": "shell",
+      "command": "pnpm docs:stale:check",
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "scrollToBottom": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🧾 Docs: Generate READMEs",
+      "type": "shell",
+      "command": "pnpm docs:generate:readme",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "scrollToBottom": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "📁 Docs: Generate Directory READMEs",
+      "type": "shell",
+      "command": "pnpm docs:generate:directory-readmes",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "scrollToBottom": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "📊 Docs: Generate API Docs",
+      "type": "shell",
+      "command": "pnpm docs:api",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "scrollToBottom": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "✅ Docs: Verify Suite (Lint + Validate + Spell + Stale)",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "✅ Docs: Lint Markdown",
+        "🔗 Docs: Validate (Links + Structure + Templates)",
+        "🔤 Docs: Spellcheck",
+        "⏰ Docs: Check Stale"
+      ],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "scrollToBottom": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🧾 Docs: Refresh Suite (Index + READMEs)",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "📚 Generate Docs",
+        "🧾 Docs: Generate READMEs",
+        "📁 Docs: Generate Directory READMEs"
+      ],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "scrollToBottom": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🧰 Docs: Maintenance Suite (Refresh + Verify)",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "🧾 Docs: Refresh Suite (Index + READMEs)",
+        "✅ Docs: Verify Suite (Lint + Validate + Spell + Stale)"
+      ],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "scrollToBottom": true
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "TypeScript: watch",
       "type": "shell",
       "command": "pnpm tsc --noEmit --watch",

@@ -378,8 +378,66 @@
     {
       "label": "📚 Docs",
       "alignment": "left",
-      "tooltip": "OpenAPI + docs generation",
+      "tooltip": "OpenAPI + docs generation + validation + maintenance",
       "tasks": [
+        {
+          "label": "🧰 Maintenance suite (refresh + verify)",
+          "task": "🧰 Docs: Maintenance Suite (Refresh + Verify)",
+          "description": "Refresh docs artifacts, then run full verification checks"
+        },
+        {
+          "label": "🧾 Refresh suite (index + READMEs)",
+          "task": "🧾 Docs: Refresh Suite (Index + READMEs)",
+          "description": "Regenerate docs index + README artifacts (writes files)"
+        },
+        {
+          "label": "✅ Verify suite (lint + validate + spell + stale)",
+          "task": "✅ Docs: Verify Suite (Lint + Validate + Spell + Stale)",
+          "description": "Run docs checks (no generation)"
+        },
+
+        {
+          "label": "✅ Lint markdown",
+          "task": "✅ Docs: Lint Markdown",
+          "description": "pnpm docs:lint"
+        },
+        {
+          "label": "🔗 Validate links & structure",
+          "task": "🔗 Docs: Validate (Links + Structure + Templates)",
+          "description": "pnpm docs:validate"
+        },
+        {
+          "label": "🔤 Spellcheck",
+          "task": "🔤 Docs: Spellcheck",
+          "description": "pnpm docs:spellcheck"
+        },
+        {
+          "label": "⏰ Stale docs check",
+          "task": "⏰ Docs: Check Stale",
+          "description": "pnpm docs:stale:check"
+        },
+
+        {
+          "label": "🧾 Generate READMEs",
+          "task": "🧾 Docs: Generate READMEs",
+          "description": "pnpm docs:generate:readme"
+        },
+        {
+          "label": "📁 Generate directory READMEs",
+          "task": "📁 Docs: Generate Directory READMEs",
+          "description": "pnpm docs:generate:directory-readmes"
+        },
+        {
+          "label": "📚 Generate docs index",
+          "task": "📚 Generate Docs",
+          "description": "pnpm docs:index"
+        },
+        {
+          "label": "📊 Generate API docs (TypeDoc)",
+          "task": "📊 Docs: Generate API Docs",
+          "description": "pnpm docs:api"
+        },
+
         {
           "label": "📊 OpenAPI generate",
           "task": "📊 OpenAPI Generate",
@@ -389,11 +447,6 @@
           "label": "📋 OpenAPI validate",
           "task": "📋 OpenAPI Validate",
           "description": "pnpm openapi:rbac:check"
-        },
-        {
-          "label": "📚 Generate docs index",
-          "task": "📚 Generate Docs",
-          "description": "pnpm docs:index"
         }
       ]
     }
