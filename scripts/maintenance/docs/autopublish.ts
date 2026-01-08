@@ -47,6 +47,7 @@ function run(cmd: string, cmdArgs: string[], opts: { quiet: boolean; check?: boo
   const res = spawnSync(cmd, cmdArgs, {
     encoding: "utf8",
     stdio: ["ignore", "pipe", "pipe"],
+    shell: process.platform === "win32",
   });
 
   const stdout = (res.stdout ?? "").toString();
