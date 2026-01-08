@@ -71,6 +71,18 @@ jobs:
           retry: 2
           args: "--verbose"
 
+  docs-duplication-check:
+    name: Docs Duplication Check
+    uses: ./.github/workflows/_reusable-node-job.yml
+    permissions:
+      contents: read
+    with:
+      name: docs-duplication-check
+      fetch_depth: 0
+      install: true
+      run: pnpm jscpd:docs
+    secrets: inherit
+
   lighthouse:
     name: Performance Audit
     needs: setup
