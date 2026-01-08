@@ -1,6 +1,6 @@
 {
   "generated_at": "2026-01-07T04:41:50.170Z",
-  "count": 16,
+  "count": 17,
   "rules": [
     {
       "rule_id": "actions-rate-limit-check",
@@ -88,6 +88,14 @@
       "title": "File Organization & Placement",
       "status": "active",
       "last_reviewed": "2025-10-13",
+      "alwaysApply": true
+    },
+    {
+      "rule_id": "git-hooks-quality-gates",
+      "file": "git-hooks-quality-gates.mdc",
+      "title": "Git Hooks Quality Gates",
+      "status": "active",
+      "last_reviewed": "2026-01-07",
       "alwaysApply": true
     },
     {

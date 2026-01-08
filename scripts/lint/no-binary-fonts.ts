@@ -7,11 +7,19 @@
  * 
  * Intent: Prevent binary font files in repository
  * Files: Binary font files (woff, woff2, ttf, otf, eot)
- * Invocation: pnpm validate:fonts (via lint-staged)
+ * Invocation: 
+ *   - pnpm validate:fonts (full repo scan)
+ *   - lint-staged (checks only provided files)
+ * 
+ * CLI Args:
+ *   --all: Enable repo-wide glob scans (default when no file args)
+ *   --check-imports: Enable local font import scan (opt-in for hooks)
+ *   <files...>: Check only these files (lint-staged mode)
  */
+import { existsSync } from 'fs';
 import { findFiles } from './_utils';
 import { readTextSync } from '../utils/fs/read';
-import { logger, createLintResult, getRepoRoot } from './_utils';
+import { logger, createLintResult } from './_utils';
 
 const BINARY_FONT_PATTERNS: string[] = [
   '**/*.woff',
@@ -30,12 +38,27 @@ const IGNORE_PATTERNS: string[] = [
   'scripts/lint/no-binary-fonts.ts', // Don't check our own validation script
 ];
 
-async function checkForBinaryFonts(): Promise<boolean> {
+const FONT_EXTENSIONS = /\.(woff|woff2|ttf|otf|eot)$/i;
+
+function checkForBinaryFonts(filesToCheck: string[] | null): boolean {
   logger.info('🔍 Checking for binary font files...');
   const result = createLintResult();
 
   try {
-    const offenders = findFiles(BINARY_FONT_PATTERNS, { ignore: IGNORE_PATTERNS });
+    let offenders: string[];
+
+    if (filesToCheck !== null) {
+      // Lint-staged mode: only check provided files
+      offenders = filesToCheck.filter((file) => {
+        if (!existsSync(file)) {
+          return false;
+        }
+        return FONT_EXTENSIONS.test(file);
+      });
+    } else {
+      // Repo-wide scan mode
+      offenders = findFiles(BINARY_FONT_PATTERNS, { ignore: IGNORE_PATTERNS });
+    }
 
     if (offenders.length > 0) {
       for (const file of offenders) {
@@ -69,31 +92,49 @@ async function checkForBinaryFonts(): Promise<boolean> {
   }
 }
 
-function checkForLocalFontImports(): boolean {
+function checkForLocalFontImports(filesToCheck: string[] | null): boolean {
   logger.info('🔍 Checking for local font imports...');
 
   try {
-    const jsFiles = findFiles(['**/*.{js,jsx,ts,tsx}'], { ignore: IGNORE_PATTERNS });
+    let jsFiles: string[];
+
+    if (filesToCheck !== null) {
+      // Lint-staged mode: only check provided files
+      jsFiles = filesToCheck.filter((file) => {
+        if (!existsSync(file)) {
+          return false;
+        }
+        return /\.(js|jsx|ts|tsx)$/i.test(file);
+      });
+    } else {
+      // Repo-wide scan mode
+      jsFiles = findFiles(['**/*.{js,jsx,ts,tsx}'], { ignore: IGNORE_PATTERNS });
+    }
 
     const problematicFiles: { file: string; issue: string }[] = [];
 
     for (const file of jsFiles) {
-      const content = readTextSync(file);
+      try {
+        const content = readTextSync(file);
 
-      const localFontImports: RegExp[] = [
-        /import.*from.*['"]\.\/(public\/)?fonts?.*['"]/g,
-        /import.*localFont.*from.*['"]next\/font\/local['"]/g,
-        /url\(['"]\.\.?\/.*\.(woff2?|ttf|otf|eot)['"]?\)/g,
-      ];
+        const localFontImports: RegExp[] = [
+          /import.*from.*['"]\.\/(public\/)?fonts?.*['"]/g,
+          /import.*localFont.*from.*['"]next\/font\/local['"]/g,
+          /url\(['"]\.\.?\/.*\.(woff2?|ttf|otf|eot)['"]?\)/g,
+        ];
 
-      for (const pattern of localFontImports) {
-        if (pattern.test(content)) {
-          problematicFiles.push({
-            file,
-            issue: 'Local font import detected',
-          });
-          break;
+        for (const pattern of localFontImports) {
+          if (pattern.test(content)) {
+            problematicFiles.push({
+              file,
+              issue: 'Local font import detected',
+            });
+            break;
+          }
         }
+      } catch {
+        // Skip files that can't be read
+        continue;
       }
     }
 
@@ -113,16 +154,36 @@ function checkForLocalFontImports(): boolean {
 }
 
 async function main() {
-  const fontCheck = await checkForBinaryFonts();
-  const importCheck = checkForLocalFontImports();
+  const args = process.argv.slice(2);
+  const hasAllFlag = args.includes('--all');
+  const hasCheckImportsFlag = args.includes('--check-imports');
+  
+  // Extract file arguments (non-flag args)
+  const fileArgs = args.filter((arg) => !arg.startsWith('--'));
+
+  // Determine mode:
+  // - If file args exist: lint-staged mode (check only those files)
+  // - If --all flag: repo-wide scan mode
+  // - Otherwise: default to repo-wide scan (backward compatibility)
+  const filesToCheck = fileArgs.length > 0 ? fileArgs : (hasAllFlag ? null : null);
+
+  const fontCheck = checkForBinaryFonts(filesToCheck);
+  
+  // Only check imports if explicitly requested (opt-in for hooks)
+  let importCheck = true;
+  if (hasCheckImportsFlag) {
+    importCheck = checkForLocalFontImports(filesToCheck);
+  }
 
   if (fontCheck && importCheck) {
     logger.success('✅ Font guardrails passed!');
+  } else {
+    process.exitCode = 1;
   }
 }
 
 main().catch((error) => {
-    logger.error('❌ Font guardrail check failed:', error);
-    process.exitCode = 1;
+  logger.error('❌ Font guardrail check failed:', error);
+  process.exitCode = 1;
 });
 

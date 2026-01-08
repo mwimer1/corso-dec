@@ -172,6 +172,9 @@ styles/build/*
 # Git hooks - prevent duplicate .githooks directory
 .githooks/dependency-graph.svg
 
+# Husky hook logs (auto-generated in .git/husky-logs/)
+.git/husky-logs/
+
 # CI / debug outputs
 debug-*.txt
 knip-baseline-*.json
