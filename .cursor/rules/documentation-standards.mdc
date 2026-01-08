@@ -160,18 +160,30 @@ streaming: https://nextjs.org/docs/app/building-your-application/routing/loading
 ## 🛠️ Documentation Maintenance
 
 ### Verification Commands
+
+These commands can be run locally before pushing. CI automatically runs these checks on every PR:
+
 ```bash
 # Comprehensive documentation validation
 pnpm docs:validate
 
-# Documentation linting
+# Markdown linting (runs in CI)
+pnpm lint:md
+
+# Documentation linting (alias for lint:md)
 pnpm docs:lint
 
-# Spell checking
+# Spell checking (runs in CI, non-blocking)
 pnpm docs:spellcheck
 
 # README freshness checks
 pnpm docs:readmes:check
+
+# Documentation freshness check (runs monthly in CI)
+pnpm docs:stale:check --maxAgeDays=90
+
+# Duplication detection (runs in CI)
+pnpm jscpd:docs
 
 # Link validation
 pnpm docs:check
@@ -179,6 +191,8 @@ pnpm docs:check
 # URL accessibility validation
 pnpm docs:urls:validate
 ```
+
+**CI Integration**: All checks marked "runs in CI" are automatically executed by `.github/workflows/pr-checks.yml` when documentation files change.
 
 ### File-Scoped Validation
 For single-file iterations, prefer file-scoped checks:
@@ -246,6 +260,44 @@ pnpm docs:index
 
 ## Enforcement
 
+### CI Automation
+
+Documentation quality is automatically enforced via CI workflows:
+
+- **Markdownlint**: Runs on every PR via `.github/workflows/pr-checks.yml`
+  - Validates markdown structure, formatting, and consistency
+  - Catches issues like broken code fences, inconsistent formatting
+  - Command: `pnpm lint:md`
+
+- **Link Checking**: Validates all links in documentation via Lychee
+  - Checks both internal and external links
+  - Retries flaky external links automatically
+  - Runs on every PR when docs files change
+
+- **Duplication Detection**: Prevents copy-pasted content via jscpd
+  - Threshold: 5% duplication (allows small quotes and common phrasing)
+  - Blocks PRs if duplication exceeds threshold
+  - Command: `pnpm jscpd:docs`
+
+- **Freshness Checks**: Scheduled monthly workflow flags stale docs
+  - Runs on 1st of each month via `.github/workflows/docs-freshness.yml`
+  - Flags files older than 90 days
+  - Creates GitHub issues for maintainers to review
+  - Command: `pnpm docs:stale:check --maxAgeDays=90`
+
+- **Spell Checking**: Non-blocking spell check via cspell
+  - Runs on every PR but doesn't block merges
+  - Surfaces typos for review without being overly strict
+  - Command: `pnpm docs:spellcheck`
+
+All checks are configured in `.github/workflows/pr-checks.yml` and run automatically on pull requests.
+
+### Frontmatter Requirements
+
+- **`docs/` directory**: All markdown files must include frontmatter with `title`, `description`, `last_updated`, `category`, and `status` fields
+- **Root README.md**: Does NOT require frontmatter (exception to docs/ directory requirement)
+- **CHANGELOG.md**: Does NOT require frontmatter (follows Keep a Changelog format)
+
 ### AST-Grep Rules
 ```yaml
 # Detect stale documentation links
@@ -262,7 +314,7 @@ The following ESLint rules are planned for future implementation:
 - `@corso/docs-freshness`: Check documentation freshness
 - `@corso/docs-links`: Validate documentation links
 
-**Note**: These rules are not yet implemented in `eslint-plugin-corso`. Enforcement is currently handled via CI validation scripts (`docs:validate`, `docs:check:sync`) and code review.
+**Note**: These rules are not yet implemented in `eslint-plugin-corso`. Enforcement is currently handled via CI automation (markdownlint, link checking, duplication detection, freshness checks) and code review.
 
 ```javascript
 // Future .eslintrc.mjs configuration (when rules are implemented)
