@@ -24,14 +24,14 @@ import type { SourceFile } from 'ts-morph';
 import { Project } from 'ts-morph';
 import { z } from 'zod';
 import {
-    findDynamicImports,
-    isBarrelFile,
-    isNextJsRoute,
-    isStyleFile,
-    normalizePosix,
-    resolvePathAlias,
-    toAbsPosix,
-    toProjectRelativePosix,
+  findDynamicImports,
+  isBarrelFile,
+  isNextJsRoute,
+  isStyleFile,
+  normalizePosix,
+  resolvePathAlias,
+  toAbsPosix,
+  toProjectRelativePosix,
 } from '../audit-lib/orphan-utils';
 import { COMMON_IGNORE_PATTERNS } from '../utils/constants';
 import { walkDirectorySync } from '../utils/fs/walker';
@@ -114,8 +114,8 @@ function findTextReferences(filePath: string, searchDirs: string[]): { found: bo
 
 // Re-export for testing
 export {
-    findDynamicImports, findTextReferences, isBarrelFile, isNextJsRoute,
-    isStyleFile, normalizePosix, resolvePathAlias, toAbsPosix, toProjectRelativePosix
+  findDynamicImports, findTextReferences, isBarrelFile, isNextJsRoute,
+  isStyleFile, normalizePosix, resolvePathAlias, toAbsPosix, toProjectRelativePosix
 };
 
 // Robust resolver for module specifiers (with tiny cache)
@@ -227,13 +227,9 @@ export async function analyzeFile(
     result.reasons.push('KEEP_ROUTES_IMPLICIT');
   }
 
-  // Check for dynamic imports in the file content
-  const content = sf.getFullText();
-  const dynamicImports = findDynamicImports(content);
-  if (dynamicImports.length > 0) {
-    result.status = 'KEEP';
-    result.reasons.push('KEEP_DYNAMIC_IMPORT');
-  }
+  // Note: Dynamic import detection is now handled in buildImporterMap
+  // This checks if the file CONTAINS dynamic imports (less useful than checking if it's imported dynamically)
+  // Keeping for backward compatibility but the real check is in importerMap
 
   const isBarrel = isBarrelFile(fileAbs);
 
@@ -355,6 +351,7 @@ function loadAllowlist(): { files: Set<string>; notes: Record<string, string> } 
 /**
  * Build a map of file paths to their importers (files that import them).
  * This is the core of "real" orphan detection: if a file has importers, it's used.
+ * Includes both static imports and dynamic imports.
  */
 function buildImporterMap(project: Project): Map<string, string[]> {
   const importerMap = new Map<string, string[]>();
@@ -365,7 +362,7 @@ function buildImporterMap(project: Project): Map<string, string[]> {
     const importerPath = toProjectRelativePosix(toAbsPosix(sourceFilePath));
     const importerRel = normalizePosix(nodePath.relative(process.cwd(), sourceFilePath));
     
-    // Check all import declarations
+    // Check all import declarations (static imports)
     const imports = sourceFile.getImportDeclarations();
     for (const imp of imports) {
       const moduleSpec = imp.getModuleSpecifierValue();
@@ -396,6 +393,49 @@ function buildImporterMap(project: Project): Map<string, string[]> {
         }
         if (!importerMap.get(importTargetPathNoIndex)!.includes(importerRel)) {
           importerMap.get(importTargetPathNoIndex)!.push(importerRel);
+        }
+      }
+    }
+
+    // Check for dynamic imports (import(), require(), next/dynamic)
+    const content = sourceFile.getFullText();
+    const dynamicImports = findDynamicImports(content);
+    
+    // Also check for next/dynamic pattern: dynamic(() => import("..."))
+    const nextDynamicRegex = /dynamic\s*\(\s*\(\)\s*=>\s*import\s*\(\s*['"`]([^'"`]+)['"`]\s*\)/g;
+    let match;
+    while ((match = nextDynamicRegex.exec(content)) !== null) {
+      if (match[1]) dynamicImports.push(match[1]);
+    }
+    
+    // Also check for .then(m => m.ExportName) pattern after import()
+    const thenPatternRegex = /import\s*\(\s*['"`]([^'"`]+)['"`]\s*\)\s*\.\s*then\s*\(/g;
+    while ((match = thenPatternRegex.exec(content)) !== null) {
+      if (match[1]) dynamicImports.push(match[1]);
+    }
+    
+    for (const moduleSpec of dynamicImports) {
+      const resolvedAbs = resolveModuleSpecifierToAbs(moduleSpec, sourceFile, project);
+      if (!resolvedAbs) continue;
+      
+      const targetAbs = toAbsPosix(resolvedAbs);
+      const targetPath = normalizePosix(nodePath.relative(process.cwd(), targetAbs));
+      const targetPathNoIndex = targetPath.replace(/\/index\.(ts|tsx|js|jsx)$/, '');
+      
+      // Record dynamic import
+      if (!importerMap.has(targetPath)) {
+        importerMap.set(targetPath, []);
+      }
+      if (!importerMap.get(targetPath)!.includes(importerRel)) {
+        importerMap.get(targetPath)!.push(importerRel);
+      }
+      
+      if (targetPathNoIndex !== targetPath) {
+        if (!importerMap.has(targetPathNoIndex)) {
+          importerMap.set(targetPathNoIndex, []);
+        }
+        if (!importerMap.get(targetPathNoIndex)!.includes(importerRel)) {
+          importerMap.get(targetPathNoIndex)!.push(importerRel);
         }
       }
     }
@@ -540,6 +580,11 @@ console.log('🔍 Building package.json entrypoint map...');
 const packageEntrypoints = buildPackageScriptEntrypointMap();
 console.log(`   Found ${packageEntrypoints.size} files referenced by package.json scripts\n`);
 
+// ---- Build workflow entrypoint map (optional, low-maintenance) ---------------
+console.log('🔍 Building workflow entrypoint map...');
+const workflowEntrypoints = buildWorkflowEntrypointMap();
+console.log(`   Found ${workflowEntrypoints.size} files referenced by workflows\n`);
+
 // ---- Discover candidates -----------------------------------------------------
 const candidates = await globby(
   ['**/*.{ts,tsx,js,jsx}'],
@@ -577,7 +622,10 @@ type KeepReason =
   | 'KEEP_ROUTES_IMPLICIT'    // Next.js route convention file
   | 'KEEP_BARREL_USED'        // Barrel file that is imported
   | 'KEEP_ALLOWLIST'          // Explicitly allowlisted
-  | 'KEEP_ENTRYPOINT_PACKAGE_SCRIPT'  // File is invoked via package.json script
+  | 'KEEP_ENTRYPOINT_PACKAGE_JSON'  // File is invoked via package.json script
+  | 'KEEP_TEST_VITEST'        // Test file executed by vitest
+  | 'KEEP_DYNAMIC_IMPORT'     // File is dynamically imported by other files
+  | 'KEEP_ENTRYPOINT_WORKFLOW' // File is directly invoked in GitHub workflows
   | 'REVIEW_TEXT_REF';         // Referenced in docs/tests/scripts (not code import)
 
 const results: Array<{
@@ -772,6 +820,75 @@ function buildPackageScriptEntrypointMap(): Map<string, string[]> {
   return map;
 }
 
+/**
+ * Build a map of file paths directly invoked in GitHub workflows.
+ * Only scans for direct file invocations (tsx scripts/..., node scripts/...).
+ * Does NOT resolve pnpm run <script> (package.json already covers that).
+ */
+function buildWorkflowEntrypointMap(): Map<string, string[]> {
+  const map = new Map<string, string[]>();
+  try {
+    const workflowsDir = nodePath.resolve(process.cwd(), '.github', 'workflows');
+    if (!nodeFs.existsSync(workflowsDir)) {
+      return map;
+    }
+
+    // Find all YAML files in workflows directory (synchronous for simplicity)
+    const workflowFiles: string[] = [];
+    function findYamlFiles(dir: string, baseDir: string = workflowsDir): void {
+      try {
+        const entries = nodeFs.readdirSync(dir, { withFileTypes: true });
+        for (const entry of entries) {
+          const fullPath = nodePath.join(dir, entry.name);
+          const relPath = nodePath.relative(baseDir, fullPath);
+          if (entry.isDirectory()) {
+            findYamlFiles(fullPath, baseDir);
+          } else if (/\.(yml|yaml)$/.test(entry.name)) {
+            workflowFiles.push(relPath.replace(/\\/g, '/'));
+          }
+        }
+      } catch {
+        // Skip directories that can't be read
+      }
+    }
+    findYamlFiles(workflowsDir);
+
+    for (const workflowFile of workflowFiles) {
+      const workflowPath = nodePath.join(workflowsDir, workflowFile);
+      try {
+        const content = nodeFs.readFileSync(workflowPath, 'utf8');
+        
+        // Look for direct file invocations: tsx scripts/..., node scripts/...
+        // Pattern: tsx scripts/... or node scripts/... (may be in run: lines)
+        const directInvocationRegex = /(?:^|\s)(?:tsx|node)\s+(scripts\/[^\s"'`]+|\.github\/[^\s"'`]+|docs\/_scripts\/[^\s"'`]+)/gm;
+        let match;
+        while ((match = directInvocationRegex.exec(content)) !== null) {
+          const filePath = normalizeRelPath(match[1] || '');
+          if (filePath && isRunnableExt(filePath)) {
+            const arr = map.get(filePath) ?? [];
+            if (!arr.includes(workflowFile)) {
+              arr.push(workflowFile);
+            }
+            map.set(filePath, arr);
+          }
+        }
+      } catch {
+        // Skip workflows that can't be read
+        continue;
+      }
+    }
+  } catch (error) {
+    // If workflows can't be scanned, treat as no entrypoints
+    console.warn(`⚠️  Warning: Could not scan workflows for entrypoints: ${error}`);
+  }
+
+  // Dedup + stable order
+  for (const [k, v] of map.entries()) {
+    map.set(k, Array.from(new Set(v)).sort());
+  }
+  return map;
+}
+
 // ---- Analyze candidates ------------------------------------------------------
 console.log(`📋 Analyzing ${filteredCandidates.length} candidate file(s)...\n`);
 
@@ -802,7 +919,7 @@ for (const rel of filteredCandidates) {
     continue;
   }
 
-  // Check if file has importers (real usage)
+  // Check if file has importers (real usage - static + dynamic)
   // Use normalized relative path (matching what's in importerMap)
   const fileImporters = importerMap.get(relNormalized) || [];
   
@@ -824,12 +941,53 @@ for (const rel of filteredCandidates) {
     if (record.status !== 'KEEP') {
       record.status = 'KEEP';
     }
-    record.reasons.push('KEEP_ENTRYPOINT_PACKAGE_SCRIPT');
+    record.reasons.push('KEEP_ENTRYPOINT_PACKAGE_JSON');
     record.notes = (record.notes ? `${record.notes}; ` : '') + `Entrypoint scripts: ${entryScripts.join(', ')}`;
+  }
+
+  // Check if file is a vitest test entrypoint
+  // Pattern: scripts/**/__tests__/**/*.test.ts (and variants)
+  if (/^scripts\/.*\/__tests__\/.*\.test\.(ts|tsx|js|jsx)$/.test(relNormalized)) {
+    // Special case: git.test.ts is standalone (excluded from vitest)
+    if (relNormalized.includes('__tests__/git.test.ts')) {
+      // Check if it's referenced by package.json scripts or docs
+      const hasScriptRef = entryScripts.length > 0;
+      const textRefs = findTextReferences(rel, [...CONFIG.REFERENCE_DIRS]);
+      if (hasScriptRef || textRefs.found) {
+        if (record.status !== 'KEEP') {
+          record.status = 'KEEP';
+        }
+        record.reasons.push('KEEP_TEST_VITEST'); // Marked as test even though standalone
+      }
+    } else {
+      // Regular vitest test - mark as KEEP
+      if (record.status !== 'KEEP') {
+        record.status = 'KEEP';
+      }
+      record.reasons.push('KEEP_TEST_VITEST');
+    }
+  }
+
+  // Check if file is a workflow entrypoint
+  const workflowRefs = workflowEntrypoints.get(relNormalized) ?? [];
+  if (workflowRefs.length > 0) {
+    if (record.status !== 'KEEP') {
+      record.status = 'KEEP';
+    }
+    record.reasons.push('KEEP_ENTRYPOINT_WORKFLOW');
+    record.notes = (record.notes ? `${record.notes}; ` : '') + `Workflow entrypoints: ${workflowRefs.join(', ')}`;
   }
 
   // Implicit Next.js route files → keep
   if (/(^|[\\/])app[\\/].*\b(page|layout|loading|error|not-found|route|opengraph-image|icon|sitemap)\.(t|j)sx?$/.test(rel)) {
+    if (record.status === 'DROP') {
+      record.status = 'KEEP';
+    }
+    record.reasons.push('KEEP_ROUTES_IMPLICIT');
+  }
+
+  // Next.js proxy.ts (replaces middleware.ts in Next.js 16+)
+  if (relNormalized === 'proxy.ts') {
     if (record.status === 'DROP') {
       record.status = 'KEEP';
     }
@@ -857,25 +1015,56 @@ for (const rel of filteredCandidates) {
     }
   }
 
-  // docs/tests textual ref → review (not keep, since not code-referenced)
+  // Check for script-to-script invocations (execSync, execa, spawn with scripts/ paths)
+  // This catches files invoked by other scripts but not imported
   const textRefs = findTextReferences(rel, [...CONFIG.REFERENCE_DIRS]);
   if (textRefs.found) {
-    // Only set REVIEW if no other KEEP reasons exist
-    if (record.status === 'DROP') {
-      record.status = 'REVIEW';
-      record.reasons.push('REVIEW_TEXT_REF');
-    } else {
-      // If already KEEP for other reasons, just add the reason
-      record.reasons.push('REVIEW_TEXT_REF');
-    }
-    
-    // Add classification note for faster future reviews
-    if (textRefs.docsOnly) {
+    // Check if referenced in script execution patterns (execSync, execa, spawn)
+    const scriptExecutionPatterns = textRefs.refs.filter(ref => {
+      if (!ref.startsWith('scripts/')) return false;
+      try {
+        const refContent = nodeFs.readFileSync(nodePath.resolve(process.cwd(), ref), 'utf8');
+        // Check for execSync/execa/spawn patterns that invoke this file
+        const fileName = nodePath.basename(rel);
+        const relPath = relNormalized;
+        // Patterns: execSync('tsx', ['scripts/...']), execa('tsx', ['scripts/...']), spawn('tsx', ['scripts/...'])
+        const execPatterns = [
+          new RegExp(`(execSync|execa|spawn)\\s*\\(\\s*['"]tsx['"]\\s*,\\s*\\[\\s*['"]${relPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}['"]`, 'g'),
+          new RegExp(`(execSync|execa|spawn)\\s*\\(\\s*['"]tsx['"]\\s*,\\s*\\[\\s*['"].*${fileName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}['"]`, 'g'),
+        ];
+        return execPatterns.some(pattern => pattern.test(refContent));
+      } catch {
+        return false;
+      }
+    });
+
+    if (scriptExecutionPatterns.length > 0) {
+      // File is invoked by other scripts via execSync/execa/spawn
+      if (record.status !== 'KEEP') {
+        record.status = 'KEEP';
+      }
+      record.reasons.push('KEEP_ENTRYPOINT_PACKAGE_JSON'); // Treat as entrypoint
       record.notes = (record.notes ? `${record.notes}; ` : '') + 
-        `docs-only reference (${textRefs.refs.length} file(s): ${textRefs.refs.slice(0, 3).join(', ')}${textRefs.refs.length > 3 ? '...' : ''})`;
+        `Invoked by scripts: ${scriptExecutionPatterns.join(', ')}`;
     } else {
-      record.notes = (record.notes ? `${record.notes}; ` : '') + 
-        `text reference in ${textRefs.refs.length} file(s): ${textRefs.refs.slice(0, 3).join(', ')}${textRefs.refs.length > 3 ? '...' : ''}`;
+      // Regular text reference (docs/tests) → review (not keep, since not code-referenced)
+      // Only set REVIEW if no other KEEP reasons exist
+      if (record.status === 'DROP') {
+        record.status = 'REVIEW';
+        record.reasons.push('REVIEW_TEXT_REF');
+      } else {
+        // If already KEEP for other reasons, just add the reason
+        record.reasons.push('REVIEW_TEXT_REF');
+      }
+      
+      // Add classification note for faster future reviews
+      if (textRefs.docsOnly) {
+        record.notes = (record.notes ? `${record.notes}; ` : '') + 
+          `docs-only reference (${textRefs.refs.length} file(s): ${textRefs.refs.slice(0, 3).join(', ')}${textRefs.refs.length > 3 ? '...' : ''})`;
+      } else {
+        record.notes = (record.notes ? `${record.notes}; ` : '') + 
+          `text reference in ${textRefs.refs.length} file(s): ${textRefs.refs.slice(0, 3).join(', ')}${textRefs.refs.length > 3 ? '...' : ''}`;
+      }
     }
   }
 
