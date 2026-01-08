@@ -24,13 +24,13 @@ The automated cleanup workflow is now active and will run weekly. Follow these s
 1. Go to Actions → "Cleanup Old Workflow Runs"
 2. Click "Run workflow" dropdown
 3. Set parameters:
-   - **days_old**: `90` (default)
+   - **days_old**: `30` (default)
    - **dry_run**: `true` ✅ (IMPORTANT: Enable this first!)
 4. Click "Run workflow"
 5. Wait for completion and review the output
 
 **Expected Output**:
-- Lists all workflow runs older than 90 days
+- Lists all workflow runs older than 30 days
 - Shows run IDs, names, and creation dates
 - **No deletions performed** (dry run mode)
 
@@ -48,7 +48,7 @@ Once you've verified the dry run looks correct:
 1. Go to Actions → "Cleanup Old Workflow Runs"
 2. Click "Run workflow" dropdown
 3. Set parameters:
-   - **days_old**: `90` (or your preferred retention period)
+   - **days_old**: `30` (or your preferred retention period)
    - **dry_run**: `false` (or leave default)
 4. Click "Run workflow"
 5. Monitor the run for completion
@@ -66,10 +66,10 @@ Once you've verified the dry run looks correct:
 gh run list --limit 1000 --json id,createdAt,status,name | jq 'length'
 ```
 
-### List Old Runs (90+ days)
+### List Old Runs (30+ days)
 
 ```bash
-CUTOFF=$(date -u -d "90 days ago" +%Y-%m-%dT%H:%M:%SZ)
+CUTOFF=$(date -u -d "30 days ago" +%Y-%m-%dT%H:%M:%SZ)
 gh run list --limit 1000 --json id,createdAt,status,name | \
   jq --arg cutoff "$CUTOFF" '[.[] | select(.createdAt < $cutoff and .status == "completed")] | length'
 ```
@@ -84,7 +84,7 @@ gh run list --workflow="Cleanup Old Workflow Runs" --limit 10
 
 The workflow runs automatically:
 - **Schedule**: Every Sunday at 2 AM UTC
-- **Retention**: Deletes runs older than 90 days
+- **Retention**: Deletes runs older than 30 days
 - **Status**: Only completed runs are deleted
 
 ## Monitoring
@@ -93,7 +93,7 @@ The workflow runs automatically:
 
 1. Check GitHub Actions storage usage (Settings → Actions → Usage)
 2. Verify old runs are being cleaned up
-3. Confirm recent runs (within 90 days) are preserved
+3. Confirm recent runs (within 30 days) are preserved
 
 ### Weekly Check
 
@@ -133,8 +133,8 @@ If you see rate limit errors:
 ### Change Retention Period
 
 Edit the workflow or use manual trigger:
-- Default: 90 days
-- Recommended range: 30-180 days
+- Default: 30 days
+- Recommended range: 7-60 days
 - Balance between storage savings and history needs
 
 ### Change Schedule

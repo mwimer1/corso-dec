@@ -59,7 +59,7 @@ jobs:
   cleanup:
     runs-on: ubuntu-latest
     steps:
-      - name: Delete workflow runs older than 90 days
+      - name: Delete workflow runs older than 30 days
         uses: actions/github-script@v7
         with:
           script: |
@@ -70,7 +70,7 @@ jobs:
             });
             
             const cutoff = new Date();
-            cutoff.setDate(cutoff.getDate() - 90);
+            cutoff.setDate(cutoff.getDate() - 30);
             
             for (const run of runs.workflow_runs) {
               const createdAt = new Date(run.created_at);
@@ -88,7 +88,7 @@ jobs:
 **Benefits**:
 - Automatic cleanup of old runs
 - Reduces GitHub storage usage
-- Maintains recent history (90 days)
+- Maintains recent history (30 days)
 - No manual intervention required
 
 ### Option 2: Reduce Artifact Retention
@@ -120,8 +120,8 @@ Use existing cleanup tools when needed:
 **Via PowerShell Script**:
 ```powershell
 $env:GITHUB_TOKEN = 'ghp_xxx'
-.\github\scripts\delete-workflow-runs.ps1 -Owner mwimer1 -Repo corso-dec -Days 90
-.\github\scripts\delete-workflow-runs.ps1 -Owner mwimer1 -Repo corso-dec -Days 90 -Execute
+.\github\scripts\delete-workflow-runs.ps1 -Owner mwimer1 -Repo corso-dec -Days 30
+.\github\scripts\delete-workflow-runs.ps1 -Owner mwimer1 -Repo corso-dec -Days 30 -Execute
 ```
 
 ### Option 4: Prevent Future CI Tracking (Already Configured)
@@ -195,4 +195,4 @@ gh run list --limit 1000 --json id,createdAt,status | jq 'length'
 
 **Your local repository is NOT tracking CI history** - the memory concern is about GitHub's server-side storage, not local git.
 
-**Recommended Action**: Implement automated workflow run cleanup (Option 1) to prevent accumulation of old CI runs on GitHub's servers while maintaining recent history for debugging and auditing.
+**Recommended Action**: Implement automated workflow run cleanup (Option 1) to prevent accumulation of old CI runs on GitHub's servers while maintaining 30 days of recent history for debugging and auditing.
