@@ -422,7 +422,7 @@
       "label": "🚀 Docs: Auto-Publish to main (no-verify)",
       "type": "shell",
       "command": "pnpm",
-      "args": ["exec", "tsx", "scripts/maintenance/docs/autopublish.ts", "--yes", "--quiet"],
+      "args": ["docs:auto-publish"],
       "group": "build",
       "presentation": {
         "reveal": "silent",

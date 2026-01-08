@@ -1,268 +1,295 @@
-/* scripts/maintenance/docs/autopublish.ts
+#!/usr/bin/env tsx
+/**
+ * Docs Auto-Publish Script
  *
- * One-click docs refresh -> commit -> push to main (no-verify), with guardrails.
- * Default: auto fast-forward pull when behind (ff-only).
+ * Safely regenerates and publishes documentation changes to main branch.
+ * Only stages/commits allowlisted doc output files.
+ *
+ * Usage:
+ *   pnpm docs:auto-publish              # Interactive mode
+ *   pnpm docs:auto-publish --dry-run    # Preview changes without committing
+ *   pnpm docs:auto-publish --yes        # Skip confirmation prompt
+ *   pnpm docs:auto-publish --quiet      # Minimal output
  */
 
-import { spawnSync } from "node:child_process";
+import { execa } from 'execa';
+import * as nodeFs from 'node:fs';
+import * as nodePath from 'node:path';
 
-type Args = {
-  quiet: boolean;
-  yes: boolean;
+interface Options {
   dryRun: boolean;
-  pull: boolean; // default true
-  message: string;
-};
-
-const DEFAULT_MESSAGE = "chore(docs): refresh generated docs";
-
-function parseArgs(argv: string[]): Args {
-  const args: Args = {
-    quiet: false,
-    yes: false,
-    dryRun: false,
-    pull: true, // DEFAULT ON
-    message: DEFAULT_MESSAGE,
-  };
-
-  for (let i = 0; i < argv.length; i++) {
-    const a = argv[i];
-    if (a === "--quiet") args.quiet = true;
-    else if (a === "--yes") args.yes = true;
-    else if (a === "--dry-run") args.dryRun = true;
-    else if (a === "--pull") args.pull = true;
-    else if (a === "--no-pull") args.pull = false;
-    else if (a === "--message") {
-      const v = argv[i + 1];
-      if (!v) throw new Error("Missing value for --message");
-      args.message = v;
-      i++;
-    }
-  }
-
-  return args;
+  yes: boolean;
+  quiet: boolean;
 }
 
-function run(cmd: string, cmdArgs: string[], opts: { quiet: boolean; check?: boolean }) {
-  const res = spawnSync(cmd, cmdArgs, {
-    encoding: "utf8",
-    stdio: ["ignore", "pipe", "pipe"],
-    shell: process.platform === "win32",
+// Allowlist of files that MAY be staged/committed
+const DOC_ALLOWLIST = [
+  'docs/index.ts',
+  'docs/README.md',
+  'scripts/**/README.md',
+  'lib/**/README.md',
+  'types/**/README.md',
+  'components/**/README.md',
+  'styles/**/README.md',
+  'app/**/README.md',
+] as const;
+
+function matchesAllowlist(filePath: string): boolean {
+  const normalized = filePath.replace(/\\/g, '/');
+  return DOC_ALLOWLIST.some(pattern => {
+    // Convert glob pattern to regex
+    const regex = new RegExp('^' + pattern.replace(/\*\*/g, '.*').replace(/\*/g, '[^/]*') + '$');
+    return regex.test(normalized);
   });
+}
 
-  const stdout = (res.stdout ?? "").toString();
-  const stderr = (res.stderr ?? "").toString();
-
-  const check = opts.check ?? true;
-  if (check && res.status !== 0) {
-    const msg =
-      `Command failed: ${cmd} ${cmdArgs.join(" ")}\n` +
-      (stdout ? `\nSTDOUT:\n${stdout}\n` : "") +
-      (stderr ? `\nSTDERR:\n${stderr}\n` : "");
-    throw new Error(msg.trim());
+async function runCommand(cmd: string, args: string[], options: Options): Promise<string> {
+  if (!options.quiet) {
+    console.log(`▶ ${cmd} ${args.join(' ')}`);
   }
-
-  if (!opts.quiet) {
-    if (stdout.trim()) process.stdout.write(stdout);
-    if (stderr.trim()) process.stderr.write(stderr);
-  }
-
-  return { stdout, stderr, code: res.status ?? 0 };
-}
-
-function assert(condition: unknown, message: string): asserts condition {
-  if (!condition) throw new Error(message);
-}
-
-function isAllowedPath(p: string): boolean {
-  if (p === "docs/index.ts") return true;
-  if (p === "docs/README.md") return true;
-
-  if (!p.endsWith("/README.md")) return false;
-
-  const allowedRoots = ["scripts/", "lib/", "types/", "components/", "styles/", "app/"];
-  return allowedRoots.some((root) => p.startsWith(root));
-}
-
-type StatusEntry = { x: string; y: string; path: string };
-
-function getStatusPorcelain(quiet: boolean): StatusEntry[] {
-  const { stdout } = run("git", ["status", "--porcelain=v1", "-z"], { quiet });
-  const rawParts = stdout.split("\0");
-  const parts = rawParts.filter((p): p is string => typeof p === "string" && p.length > 0);
-
-  const out: StatusEntry[] = [];
-  for (let i = 0; i < parts.length; i++) {
-    const part = parts[i];
-    if (!part) continue; // satisfies TS (and is logically unreachable)
-
-    if (part.startsWith("?? ")) {
-      out.push({ x: "?", y: "?", path: part.slice(3) });
-      continue;
-    }
-
-    const x = part[0] ?? " ";
-    const y = part[1] ?? " ";
-    const rest = part.slice(3);
-
-    const isRenameOrCopy = x === "R" || y === "R" || x === "C" || y === "C";
-    if (isRenameOrCopy) {
-      const newPath = parts[i + 1];
-      assert(newPath, "Unexpected rename/copy status format from git status -z");
-      out.push({ x, y, path: newPath });
-      i++;
-    } else {
-      out.push({ x, y, path: rest });
-    }
-  }
-
-  return out;
-}
-
-function getBranchName(quiet: boolean): string {
-  const { stdout } = run("git", ["rev-parse", "--abbrev-ref", "HEAD"], { quiet });
-  return stdout.trim();
-}
-
-function ensureOnMainAndNotDetached() {
-  const branch = getBranchName(true);
-  assert(branch !== "HEAD", "Detached HEAD. Abort. (Checkout main and try again.)");
-  assert(branch === "main", `Current branch is "${branch}". Abort. (Checkout main and try again.)`);
-}
-
-function ensureNoStagedChanges() {
-  const { stdout } = run("git", ["diff", "--cached", "--name-only"], { quiet: true });
-  assert(stdout.trim().length === 0, "You have staged changes. Abort to avoid mixing commits.");
-}
-
-function ensureNoNonDocChanges() {
-  const status = getStatusPorcelain(true);
-  const disallowed = status.filter((e) => !isAllowedPath(e.path));
-  assert(
-    disallowed.length === 0,
-    `Found non-doc changes. Abort.\nDisallowed paths:\n` +
-      disallowed.map((d) => `- ${d.path}`).join("\n")
-  );
-}
-
-function ensureOriginConfigured(args: Args) {
-  run("git", ["remote", "get-url", "origin"], { quiet: args.quiet });
-}
-
-function fetchOriginMain(args: Args) {
-  run("git", ["fetch", "origin", "main", "--quiet"], { quiet: args.quiet });
-}
-
-function getBehindAhead(): { behind: number; ahead: number } {
-  const { stdout } = run("git", ["rev-list", "--left-right", "--count", "origin/main...main"], { quiet: true });
-  const parts = stdout.trim().split(/\s+/);
-  return {
-    behind: Number(parts[0] ?? "0"),
-    ahead: Number(parts[1] ?? "0"),
-  };
-}
-
-function maybeFastForwardPull(args: Args) {
-  fetchOriginMain(args);
-
-  const { behind, ahead } = getBehindAhead();
-
-  // If ahead, we'd push unrelated commits — refuse.
-  assert(ahead === 0, `Local main is ahead of origin/main by ${ahead} commit(s). Abort to avoid pushing unrelated commits.`);
-
-  if (behind > 0) {
-    if (!args.pull) {
-      throw new Error(`Local main is behind origin/main by ${behind} commit(s). Abort. (Re-run without --no-pull to auto fast-forward.)`);
-    }
-
-    // Safe sync: fast-forward only.
-    run("git", ["pull", "--ff-only", "origin", "main", "--quiet"], { quiet: args.quiet });
-
-    // Re-check after pull
-    fetchOriginMain(args);
-    const after = getBehindAhead();
-    assert(after.behind === 0 && after.ahead === 0, "Unable to fast-forward cleanly to origin/main. Abort.");
-  }
-}
-
-function runRefreshPipeline(args: Args) {
-  run("pnpm", ["docs:index"], { quiet: args.quiet });
-  run("pnpm", ["docs:generate:readme"], { quiet: args.quiet });
-  run("pnpm", ["docs:generate:directory-readmes"], { quiet: args.quiet });
-}
-
-function stageAllowedChanges(args: Args): string[] {
-  const status = getStatusPorcelain(true);
-
-  const disallowed = status.filter((e) => !isAllowedPath(e.path));
-  assert(
-    disallowed.length === 0,
-    `Refresh produced non-doc changes. Abort.\nDisallowed paths:\n` +
-      disallowed.map((d) => `- ${d.path}`).join("\n")
-  );
-
-  const changed = status.map((e) => e.path).filter((p) => p && isAllowedPath(p));
-  const unique = Array.from(new Set(changed));
-  if (unique.length === 0) return [];
-
-  const chunkSize = 100;
-  for (let i = 0; i < unique.length; i += chunkSize) {
-    const chunk = unique.slice(i, i + chunkSize);
-    run("git", ["add", "--", ...chunk], { quiet: args.quiet });
-  }
-
-  return unique;
-}
-
-function commitAndPush(args: Args, stagedPaths: string[]) {
-  assert(stagedPaths.length > 0, "No staged docs changes. Nothing to commit.");
-
-  run("git", ["commit", "-m", args.message, "--no-verify", "--quiet"], { quiet: args.quiet });
-  run("git", ["push", "origin", "main", "--no-verify", "--quiet"], { quiet: args.quiet });
-}
-
-async function main() {
-  const args = parseArgs(process.argv.slice(2));
-
   try {
-    if (!args.dryRun) {
-      assert(args.yes, "Refusing to auto-publish without --yes. (Use --dry-run to preview.)");
-    }
+    const result = await execa(cmd, args, {
+      cwd: process.cwd(),
+      stdio: options.quiet ? 'pipe' : 'inherit',
+    });
+    return result.stdout || '';
+  } catch (error: any) {
+    if (error.stdout) console.error(error.stdout);
+    if (error.stderr) console.error(error.stderr);
+    throw error;
+  }
+}
 
-    run("git", ["rev-parse", "--is-inside-work-tree"], { quiet: true });
+async function checkBranch(): Promise<void> {
+  const { stdout: currentBranch } = await execa('git', ['rev-parse', '--abbrev-ref', 'HEAD'], {
+    cwd: process.cwd(),
+  });
+  
+  if (currentBranch.trim() !== 'main') {
+    throw new Error(`Must be on branch 'main' (currently on '${currentBranch.trim()}')`);
+  }
+}
 
-    ensureOnMainAndNotDetached();
-    ensureNoStagedChanges();
-    ensureNoNonDocChanges();
+async function checkCleanWorkingTree(options: Options): Promise<void> {
+  const { stdout: status } = await execa('git', ['status', '--porcelain'], {
+    cwd: process.cwd(),
+  });
+  
+  if (!status.trim()) {
+    // Working tree is clean
+    return;
+  }
+  
+  // Check if all changes are allowlisted
+  const lines = status.trim().split('\n');
+  const changedFiles = lines
+    .map(line => line.substring(3).trim()) // Remove status prefix (e.g., " M ")
+    .filter(Boolean);
+  
+  const nonAllowlisted = changedFiles.filter(file => !matchesAllowlist(file));
+  
+  if (nonAllowlisted.length > 0) {
+    throw new Error(
+      `Working tree contains non-doc files:\n${nonAllowlisted.map(f => `  - ${f}`).join('\n')}\n` +
+      `Only doc files may be modified. Please commit or stash other changes first.`
+    );
+  }
+  
+  if (!options.quiet) {
+    console.log(`✓ Working tree has only doc changes (${changedFiles.length} file(s))`);
+  }
+}
 
-    ensureOriginConfigured(args);
+async function checkStagedChanges(): Promise<void> {
+  const { stdout: diff } = await execa('git', ['diff', '--cached', '--name-only'], {
+    cwd: process.cwd(),
+  });
+  
+  if (diff.trim()) {
+    throw new Error(
+      `Pre-existing staged changes detected:\n${diff.trim().split('\n').map(f => `  - ${f}`).join('\n')}\n` +
+      `Please commit or unstage these changes first.`
+    );
+  }
+}
 
-    // Default behavior: if behind, fast-forward pull safely.
-    maybeFastForwardPull(args);
+async function checkUpToDate(options: Options): Promise<void> {
+  if (!options.quiet) {
+    console.log('🔍 Checking if local main is up-to-date with origin/main...');
+  }
+  
+  await runCommand('git', ['fetch', 'origin'], options);
+  
+  const { stdout: counts } = await execa(
+    'git',
+    ['rev-list', '--left-right', '--count', 'origin/main...main'],
+    { cwd: process.cwd() }
+  );
+  
+  const parts = counts.trim().split('\t');
+  const behind = parts[0] ? Number(parts[0]) : 0;
+  const ahead = parts[1] ? Number(parts[1]) : 0;
+  
+  if (behind > 0) {
+    throw new Error(
+      `Local main is ${behind} commit(s) behind origin/main. ` +
+      `Please pull first to avoid overwriting remote changes.`
+    );
+  }
+  
+  if (!options.quiet && ahead > 0) {
+    console.log(`⚠ Local main is ${ahead} commit(s) ahead of origin/main`);
+  }
+}
 
-    // Refresh docs
-    runRefreshPipeline(args);
+async function generateDocs(options: Options): Promise<void> {
+  if (!options.quiet) {
+    console.log('\n📚 Generating documentation...');
+  }
+  
+  await runCommand('pnpm', ['docs:index'], options);
+  await runCommand('pnpm', ['docs:generate:readme'], options);
+  await runCommand('pnpm', ['docs:generate:directory-readmes'], options);
+  
+  if (!options.quiet) {
+    console.log('✓ Documentation generated\n');
+  }
+}
 
-    // Stage allowlisted changes
-    const staged = stageAllowedChanges(args);
+async function getChangedFiles(): Promise<string[]> {
+  const { stdout: status } = await execa('git', ['status', '--porcelain'], {
+    cwd: process.cwd(),
+  });
+  
+  if (!status.trim()) {
+    return [];
+  }
+  
+  const lines = status.trim().split('\n');
+  return lines
+    .map(line => line.substring(3).trim()) // Remove status prefix
+    .filter(Boolean);
+}
 
-    if (staged.length === 0) process.exit(0);
-
-    if (args.dryRun) {
-      if (!args.quiet) {
-        console.log("Dry run: docs changes detected (not committed/pushed):");
-        staged.forEach((p) => console.log(`- ${p}`));
+async function main(): Promise<void> {
+  const args = process.argv.slice(2);
+  const options: Options = {
+    dryRun: args.includes('--dry-run'),
+    yes: args.includes('--yes'),
+    quiet: args.includes('--quiet'),
+  };
+  
+  if (!options.quiet) {
+    console.log('🚀 Docs Auto-Publish\n');
+  }
+  
+  try {
+    // Preflight checks
+    await checkBranch();
+    await checkStagedChanges();
+    await checkCleanWorkingTree(options);
+    await checkUpToDate(options);
+    
+    // Generate docs
+    await generateDocs(options);
+    
+    // Check for changes
+    const changedFiles = await getChangedFiles();
+    
+    if (changedFiles.length === 0) {
+      if (!options.quiet) {
+        console.log('✓ No changes to publish');
       }
       process.exit(0);
     }
-
-    commitAndPush(args, staged);
-    process.exit(0);
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    process.stderr.write(`\n[docs autopublish] ERROR:\n${msg}\n`);
+    
+    // Validate all changes are allowlisted
+    const nonAllowlisted = changedFiles.filter(file => !matchesAllowlist(file));
+    if (nonAllowlisted.length > 0) {
+      throw new Error(
+        `Non-doc files would be committed:\n${nonAllowlisted.map(f => `  - ${f}`).join('\n')}\n` +
+        `Only doc files may be committed. Aborting.`
+      );
+    }
+    
+    if (!options.quiet) {
+      console.log(`📝 Changed files (${changedFiles.length}):`);
+      changedFiles.forEach(file => console.log(`   ${file}`));
+      console.log();
+    }
+    
+    if (options.dryRun) {
+      if (!options.quiet) {
+        console.log('🔍 Dry-run mode: No changes will be committed or pushed\n');
+      }
+      process.exit(0);
+    }
+    
+    // Confirm (unless --yes)
+    if (!options.yes) {
+      const readline = require('readline').createInterface({
+        input: process.stdin,
+        output: process.stdout,
+      });
+      
+      const answer = await new Promise<string>(resolve => {
+        readline.question('Commit and push these changes to main? (y/N): ', resolve);
+      });
+      readline.close();
+      
+      if (answer.toLowerCase() !== 'y' && answer.toLowerCase() !== 'yes') {
+        if (!options.quiet) {
+          console.log('Aborted');
+        }
+        process.exit(0);
+      }
+    }
+    
+    // Stage allowlisted files
+    if (!options.quiet) {
+      console.log('📦 Staging changes...');
+    }
+    await runCommand('git', ['add', ...changedFiles], options);
+    
+    // Verify staged set
+    const { stdout: staged } = await execa('git', ['diff', '--cached', '--name-only'], {
+      cwd: process.cwd(),
+    });
+    const stagedFiles = staged.trim().split('\n').filter(Boolean);
+    const stagedNonAllowlisted = stagedFiles.filter(file => !matchesAllowlist(file));
+    
+    if (stagedNonAllowlisted.length > 0) {
+      throw new Error(
+        `Non-doc files were staged:\n${stagedNonAllowlisted.map(f => `  - ${f}`).join('\n')}\n` +
+        `This should not happen. Aborting.`
+      );
+    }
+    
+    // Commit
+    if (!options.quiet) {
+      console.log('💾 Committing changes...');
+    }
+    await runCommand(
+      'git',
+      ['commit', '-m', 'chore(docs): refresh generated docs', '--no-verify'],
+      options
+    );
+    
+    // Push
+    if (!options.quiet) {
+      console.log('📤 Pushing to origin/main...');
+    }
+    await runCommand('git', ['push', 'origin', 'main', '--no-verify'], options);
+    
+    if (!options.quiet) {
+      console.log('\n✅ Docs published successfully!');
+    }
+  } catch (error: any) {
+    if (!options.quiet) {
+      console.error('\n❌ Error:', error.message || String(error));
+    }
     process.exit(1);
   }
 }
 
-main();
+void main();

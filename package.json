@@ -287,6 +287,7 @@
     "docs:fresh": "tsx docs/_scripts/freshen.ts --mode=write",
     "docs:hints": "tsx scripts/utils/add-barrel-docs-hints.ts",
     "docs:index": "pnpm exec tsx scripts/maintenance/manage-docs.ts index",
+    "docs:auto-publish": "tsx scripts/maintenance/docs/autopublish.ts --quiet",
     "docs:idempotent:check": "node docs/_scripts/check-docs-idempotent.mjs",
     "docs:setup": "tsx scripts/setup/recommend-docs-environment.ts",
     "docs:spellcheck": "cspell --config config/.cspell.json 'docs/**/*.md' 'README.md'",

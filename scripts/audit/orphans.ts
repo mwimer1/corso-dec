@@ -151,14 +151,18 @@ function resolveModuleSpecifierToAbs(
     }
   } else if (moduleSpec.startsWith('.')) {
     if (importerSf) {
-      base = normalizePosix(nodePath.resolve(nodePath.dirname(importerSf.getFilePath()), moduleSpec));
+      // Resolve relative to importer's directory
+      const importerDir = nodePath.dirname(importerSf.getFilePath());
+      const resolved = nodePath.resolve(importerDir, moduleSpec);
+      base = normalizePosix(resolved);
     }
   } else {
     // bare path like "components/Button"
     base = base.replace(/^\.\//, '');
   }
 
-  const absCore = toAbsPosix(base);
+  // If base is already absolute, use it directly; otherwise make it absolute
+  const absCore = nodePath.isAbsolute(base) ? toAbsPosix(base) : toAbsPosix(nodePath.resolve(process.cwd(), base));
   
   // Handle ESM-style .js/.mjs/.cjs specifiers pointing to .ts source files
   // Example: ../maintenance/scan-roots.js should resolve to scan-roots.ts

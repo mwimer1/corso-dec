@@ -381,9 +381,9 @@
       "tooltip": "OpenAPI + docs generation + validation + maintenance",
       "tasks": [
         {
-          "label": "🚀 Auto-publish docs (ff pull + commit + push)",
+          "label": "🚀 Auto-publish docs (commit + push)",
           "task": "🚀 Docs: Auto-Publish to main (no-verify)",
-          "description": "FF pull main → refresh docs/READMEs → commit (no-verify) → push (no-verify)"
+          "description": "Refresh docs → commit (no-verify) → push (no-verify) to main"
         },
         {
           "label": "🧪 Auto-publish (dry-run)",
