@@ -123,6 +123,22 @@ function getToolTargets(
 }
 
 /**
+ * Normalize and dedupe findings by fingerprint
+ */
+function normalizeFindings(findings: Finding[]): Finding[] {
+  const seen = new Map<string, Finding>();
+  
+  for (const finding of findings) {
+    const existing = seen.get(finding.fingerprint);
+    if (!existing) {
+      seen.set(finding.fingerprint, finding);
+    }
+  }
+  
+  return Array.from(seen.values());
+}
+
+/**
  * Load config from file
  */
 function loadConfig(rootDir: string, cli: ResolvedCliOptions): CssAuditConfig {
@@ -262,21 +278,27 @@ export async function runCssAudit(
     }
   }
 
+  // Normalize findings (dedupe by fingerprint) before filtering
+  const normalizedFindings = normalizeFindings(allFindings);
+
   // Filter against baseline
   let suppressed: Finding[] = [];
   let newFindings: Finding[] = [];
 
   if (!cli.noBaseline) {
-    const filtered = filterAgainstBaseline(allFindings, baseline);
+    const filtered = filterAgainstBaseline(normalizedFindings, baseline);
     suppressed = filtered.suppressed;
     newFindings = filtered.new;
   } else {
-    newFindings = allFindings;
+    newFindings = normalizedFindings;
   }
 
   // Update baseline if requested
   if (cli.updateBaseline) {
-    baseline = updateBaseline(baseline, newFindings, enabledTools, ctx);
+    // Pass ALL findings (normalized) to updateBaseline, not just newFindings
+    // This ensures baseline refresh correctly includes already-baselined findings
+    // and properly prunes fixed findings
+    baseline = updateBaseline(baseline, normalizedFindings, enabledTools, ctx);
     writeBaseline(cli.baselinePath, baseline);
     ctx.log(`Baseline updated: ${cli.baselinePath}`);
   }

@@ -751,7 +751,10 @@ async function main(): Promise<void> {
 
     // Update baseline if requested
     if (cli.updateBaseline) {
-      baseline = updateBaseline(baseline, newFindings, enabledTools, ctx);
+      // Pass ALL findings (normalized) to updateBaseline, not just newFindings
+      // This ensures baseline refresh correctly includes already-baselined findings
+      // and properly prunes fixed findings
+      baseline = updateBaseline(baseline, normalizedFindings, enabledTools, ctx);
       writeBaseline(cli.baselinePath, baseline);
       logger.info(`Baseline updated: ${cli.baselinePath}`);
     }
