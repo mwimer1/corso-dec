@@ -163,4 +163,4 @@ runs=$(echo "$runs_json" | jq -r --arg cutoff "$CUTOFF" '
 ## Related Documentation
 
 - [CI History Tracking Audit](./ci-history-tracking-audit.md) - Full audit and recommendations
-- [GitHub Actions Cleanup Scripts](../.github/scripts/README.md) - Manual cleanup tools
+- [GitHub Actions Cleanup Scripts](../../.github/scripts/README.md) - Manual cleanup tools

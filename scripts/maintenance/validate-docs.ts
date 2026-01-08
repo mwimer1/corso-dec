@@ -404,11 +404,26 @@ async function validateReadmeMetrics(): Promise<void> {
  */
 async function runMarkdownLinting(): Promise<void> {
   logger.info('Running markdown linting...');
-  const res = await runLocalBin('markdownlint', ['docs/**/*.md', 'README.md', '--config', '.markdownlint.jsonc']).catch((err) => ({ 
+  
+  // Use glob to find files first (Windows-safe)
+  const docFiles = await glob('docs/**/*.md', { ignore: ['**/node_modules/**'] });
+  const readmeFiles = await glob('README.md', { ignore: ['**/node_modules/**'] });
+  const allFiles = [...docFiles, ...readmeFiles];
+  
+  if (allFiles.length === 0) {
+    logger.error('❌ No markdown files found. This likely indicates a glob expansion issue.');
+    throw new Error('No markdown files found for linting');
+  }
+  
+  // Pass files as individual arguments to markdownlint (Windows-safe)
+  const args = [...allFiles, '--config', '.markdownlint.jsonc'];
+  
+  const res = await runLocalBin('markdownlint', args).catch((err) => ({ 
     exitCode: 1, 
     stdout: err?.message || '', 
     stderr: String(err) || '' 
   }));
+  
   if (res.exitCode !== 0) {
     if (res.stdout) {
       logger.error('Markdown lint errors (stdout):');

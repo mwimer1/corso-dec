@@ -165,7 +165,7 @@
     "lint:fix": "pnpm exec eslint . --fix",
     "guard:no-colocated-tests": "node scripts/assert-no-colocated-tests.cjs",
     "lint:jsdoc": "pnpm exec eslint '**/*.ts' --rule 'jsdoc/require-jsdoc: error'",
-    "lint:md": "pnpm exec markdownlint 'docs/**/*.md' 'README.md' --config .markdownlint.jsonc",
+    "lint:md": "tsx scripts/lint/lint-markdown.ts",
     "lint:types": "pnpm exec eslint \"types/**/*.{ts,tsx}\" --max-warnings=0",
     "lint:lib": "pnpm exec eslint \"lib/**/*.{ts,tsx}\" --max-warnings=0",
     "lint:app": "pnpm exec eslint \"app/**/*.{ts,tsx}\" --max-warnings=0",

@@ -366,11 +366,11 @@ export const docs = [
   },
   {
     "path": "scripts/audit/css/readme.md",
-    "title": "CSS Audit System"
+    "title": "scripts/audit/css"
   },
   {
     "path": "scripts/audit/readme.md",
-    "title": "CSS Audit System"
+    "title": "scripts/audit"
   },
   {
     "path": "scripts/ci/readme.md",

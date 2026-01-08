@@ -36,6 +36,7 @@ This README is generated from a single template (`README.scripts.hbs`).
 - **css-size-analyzer.ts** – Analyzes the size of the generated CSS file and fails if it exceeds a threshold.
 - **fix-eslint-plugin-dts.ts** – Post-build fixer for eslint-plugin-corso TypeScript declaration files.
 - **forbid-scripts-barrels.ts** – Prevents barrel index files (index.ts, index.tsx, index.js) in the scripts/ directory.
+- **lint-markdown.ts** – Windows-safe markdownlint wrapper that expands globs before passing to markdownlint.
 - **no-binary-fonts.ts** – Prevents binary font files from being committed to the repository.
 - **no-deprecated-imports.ts** – Thin wrapper around ESLint rule @corso/no-deprecated-lib-imports
 - **no-process-exit-ci-lint.ts** – Regression guard: Prevents reintroducing process.exit() calls in CI/lint scripts

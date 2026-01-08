@@ -29,7 +29,7 @@ status: "draft"
 
 ### GitHub Actions CI Storage
 - **Location**: GitHub's servers only (not in local git)
-- **Artifact retention**: 
+- **Artifact retention**:
   - Coverage reports: 7 days (`.github/workflows/deploy.yml`)
   - Dead code audit: 30 days (`.github/workflows/dead-code-audit.yml`)
   - Build artifacts: Default (90 days GitHub limit)
@@ -187,9 +187,9 @@ gh run list --limit 1000 --json id,createdAt,status | jq 'length'
 
 ## Related Documentation
 
-- [Git History Flattening](../scripts/git/flatten-history.sh) - Reduces git history size
-- [GitHub Actions Cleanup Scripts](../.github/scripts/README.md) - Manual cleanup tools
-- [Workflow Run Deletion Workflow](../.github/workflows/force-delete-workflow-runs.yml) - Manual deletion workflow
+- [Git History Flattening](../../scripts/git/flatten-history.sh) - Reduces git history size
+- [GitHub Actions Cleanup Scripts](../../.github/scripts/README.md) - Manual cleanup tools
+- [Workflow Run Deletion Workflow](../../.github/workflows/cleanup-old-runs.yml) - Manual deletion workflow
 
 ## Conclusion
 
