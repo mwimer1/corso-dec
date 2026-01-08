@@ -30,16 +30,16 @@ export function RoiOutputPanel({ revenueGrowth, newDeals, workdaysSaved }: Props
           "
           aria-label="Revenue Growth"
         >
-          {/* Left 1/3: Icon container */}
-          <div className="flex-[0_0_33.333%] flex items-center justify-center pr-2 md:pr-4">
+          {/* Left 1/5: Icon container */}
+          <div className="flex-[0_0_20%] flex items-center justify-center pr-2 md:pr-4">
             <TrendingUp 
               className="w-12 h-12 md:w-16 md:h-16 text-[hsl(var(--ring))]" 
               aria-hidden="true"
             />
           </div>
           
-          {/* Right 2/3: Content container */}
-          <div className="flex-1 flex flex-col justify-center items-center pl-2 md:pl-4">
+          {/* Right 4/5: Content container */}
+          <div className="flex-[0_0_80%] flex flex-col justify-center items-center pl-2 md:pl-4">
             {/* Title */}
             <h3 className="text-sm md:text-base font-semibold tracking-tight text-[hsl(var(--foreground))] text-center mb-1.5 md:mb-2">
               Revenue Growth
