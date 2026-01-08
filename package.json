@@ -9,12 +9,11 @@
     "pnpm": ">=10"
   },
   "lint-staged": {
-    "*.{ts,tsx}": "eslint --fix --no-error-on-unmatched-pattern",
-    "*": [
-      "tsx ./scripts/lint/no-binary-fonts.ts"
+    "*.{ts,tsx}": [
+      "eslint --fix --cache --cache-location node_modules/.cache/eslint/.eslintcache --cache-strategy content --no-error-on-unmatched-pattern"
     ],
-    "ignore": [
-      "eslint-plugin-corso/dist/**"
+    "**/*.{ttf,otf,woff,woff2,eot}": [
+      "tsx ./scripts/lint/no-binary-fonts.ts"
     ]
   },
   "scripts": {
@@ -228,7 +227,7 @@
     "ci:validate": "pnpm lint:types && pnpm lint:circular && pnpm lint:jsdoc && pnpm lint:edge && pnpm lint:filenames",
     "validate:dependencies": "pnpm exec dependency-cruiser --config .dependency-cruiser.cjs .",
     "validate:commits": "commitlint --from=HEAD~1 --to=HEAD --verbose",
-    "validate:fonts": "pnpm exec tsx scripts/lint/no-binary-fonts.ts",
+    "validate:fonts": "pnpm exec tsx scripts/lint/no-binary-fonts.ts --all --check-imports",
     "validate:package": "pnpm exec tsx scripts/lint/validate-package-json.ts",
     "validate:dead-code": "pnpm exec knip",
     "knip:prod": "knip --production --no-progress",

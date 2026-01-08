@@ -1,0 +1,139 @@
+# Git Hooks Quality Gates
+
+**Fast, fail-fast, low-noise Git hooks with high-context failures and post-commit receipts.**
+
+## TL;DR
+- **Pre-commit**: Fail-fast gates with staged-only checks (0.5-2s typical)
+- **Pre-push**: Conditional checks with fast-exit on no-op (<0.1s when no commits)
+- **Post-commit**: Receipt generation for docs/tooling changes
+- **Logging**: All logs in `.git/husky-logs/` (gitignored)
+- **Env toggles**: `HUSKY_VERBOSE`, `HUSKY_FORCE`, `HUSKY_SKIP_TESTS`, `HUSKY_SKIP_STYLES`, `HUSKY_RECEIPT`
+
+## Purpose
+Provide fast, fail-fast, low-noise Git hooks that produce high-context failures and post-commit receipts for troubleshooting.
+
+## Hook Goals
+
+### Performance
+- **Fast execution**: Staged-only checks, conditional gates, fast-exit on no-op
+- **Low overhead**: Minimal output on success, detailed only on failure
+- **Caching**: ESLint cache enabled, TypeScript incremental builds
+
+### Failure Handling
+- **Fail-fast**: Stops on first error with actionable context
+- **High-context failures**: Shows gate name, re-run command, log path, action items, log tail
+- **Logging**: All execution logged to `.git/husky-logs/` for debugging
+
+### Troubleshooting
+- **Receipts**: Post-commit file lists for "docs didn't update" / "pushed nothing" scenarios
+- **Receipt contents**: SHA, branch, subject, file counts, insertions/deletions, file list
+
+## Pre-commit Hook
+
+### Gates (in order, fail-fast)
+1. **Package validation**: `pnpm validate:package` (only if `package.json` staged)
+2. **Environment validation**: `NODE_ENV=development pnpm validate:env` (only if env/config files staged)
+3. **Lint staged**: `pnpm lint-staged` (always runs - fast and scoped)
+4. **Typecheck staged**: `pnpm typecheck:staged` (only if TS/TSX or tsconfig staged)
+5. **Leak guard**: `git grep -nE "export .*Database" -- types/shared` (only if `types/shared/**` staged)
+
+### Output
+- **Success**: Minimal output (✅ lines only)
+- **Failure**: Gate name, re-run command, log path, action items, last 200 lines of log
+
+### Environment Variables
+- `HUSKY_VERBOSE=1`: Stream command output instead of logging to file
+
+## Pre-push Hook
+
+### Behavior
+- **Fast-exit**: Immediately skips if no commits to push (checks `@{u}` or remote branch)
+- **Change-based execution**: Only runs checks relevant to changed files
+- **Fallback safety**: If base cannot be determined, runs both checks
+
+### Checks
+- **Style checks**: `pnpm check:styles` (only if style/token/theme files changed)
+- **Fast tests**: `pnpm test:fast` (only if code/test/config files changed)
+
+### Environment Variables
+- `HUSKY_FORCE=1`: Run all checks regardless of changed files
+- `HUSKY_SKIP_TESTS=1`: Skip test suite
+- `HUSKY_SKIP_STYLES=1`: Skip style checks
+- `HUSKY_VERBOSE=1`: Stream output instead of logging
+
+## Post-commit Hook
+
+### Receipt Generation
+- **Auto-generate** when commit includes changes under:
+  - `.husky/`, `.cursor/`, `docs/`, `README.md`, `package.json`, `pnpm-lock.yaml`
+- **Force generation**: `HUSKY_RECEIPT=1` for any commit
+
+### Receipt Contents
+- SHA (full + short)
+- Branch name
+- Commit subject
+- Timestamp
+- Total files changed
+- Insertions/deletions (from `git show --numstat`)
+- Changed file list (from `git show --name-status`)
+
+### Output
+- Receipts saved to `.git/husky-logs/post-commit-<timestamp>-<sha>.txt`
+- Terminal output: one line with receipt path
+
+## Implementation Details
+
+### Lint-staged Configuration
+- ESLint runs on `*.{ts,tsx}` with cache enabled
+- Binary font check runs only on `**/*.{ttf,otf,woff,woff2,eot}`
+- No `ignore` key (handled by ESLint config)
+
+### Typecheck Staged
+- Uses temporary tsconfig: `.cache/tsc/tsconfig.staged.json`
+- Extends root `tsconfig.json`
+- Sets `files` to only staged files (absolute paths)
+- Sets `compilerOptions.noEmit = true`
+- Sets `compilerOptions.incremental = true`
+- Sets `compilerOptions.tsBuildInfoFile = "staged.tsbuildinfo"`
+- Avoids TS5042 error (cannot combine `--project` with explicit files)
+
+### Binary Font Check
+- **Lint-staged mode**: Only checks provided file arguments (no repo scans)
+- **Full scan mode**: Use `--all` flag for repo-wide behavior
+- **Import check**: Use `--check-imports` flag (opt-in for hooks)
+- **Fast execution**: No repo scans when file args provided
+
+## Log Locations
+
+All hook logs stored in `.git/husky-logs/`:
+- `pre-commit-<timestamp>.log`: Pre-commit gate execution logs
+- `pre-push-<timestamp>.log`: Pre-push check execution logs
+- `post-commit-<timestamp>-<sha>.txt`: Commit receipts
+
+**Note**: `.git/husky-logs/` is automatically created by hooks and is gitignored.
+
+## Rules
+
+- **MUST** keep hooks fast (staged-only checks, conditional execution)
+- **MUST** fail-fast on first error with actionable context
+- **MUST** produce minimal output on success
+- **MUST** log all execution to `.git/husky-logs/`
+- **MUST** generate receipts for docs/tooling changes
+- **MUST** update `.husky/README.md` when hooks change
+- **MUST** update this rule file when hooks change
+
+## What Must Be Updated When Hooks Change
+
+1. **Hook scripts** (`.husky/pre-commit`, `.husky/pre-push`, `.husky/post-commit`)
+2. **Documentation** (`.husky/README.md`)
+3. **This rule file** (`.cursor/rules/git-hooks-quality-gates.mdc`)
+
+## Windows-first tips
+
+See the canonical guidance in
+[ai-agent-development-environment.mdc](mdc:.cursor/rules/ai-agent-development-environment.mdc#windows-first-tips).
+
+## Related Rules
+
+- `cursor/ai-agent-development-environment` - Development workflow and quality gates
+- `cursor/security-standards` - Security patterns enforced by hooks
