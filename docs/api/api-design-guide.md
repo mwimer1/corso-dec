@@ -210,8 +210,9 @@ paths:
       security:
         - bearerAuth: []
       x-corso-rbac: [member]
+      x-corso-personal-scope: true
       parameters:
-        - $ref: '#/components/parameters/OrgIdHeader'
+        - $ref: '#/components/parameters/OrgIdHeaderOptional'  # Optional for personal-scope routes
       requestBody:
         content:
           application/json:
@@ -402,7 +403,7 @@ pnpm typecheck
 **`pnpm openapi:rbac:check`**:
 - Validates RBAC annotations
 - Ensures all `bearerAuth` routes have `x-corso-rbac`
-- Ensures all `bearerAuth` routes include `OrgIdHeader`
+- Ensures all `bearerAuth` routes include organization header (`OrgIdHeaderOptional` for personal-scope, `OrgIdHeader` for non-personal-scope)
 - Checks role values against allowed roles
 
 **Individual Commands (if needed):**
@@ -673,7 +674,7 @@ Before committing your OpenAPI changes:
 - [ ] `operationId` follows naming convention (`{domain}_{action}`)
 - [ ] Appropriate tag selected (Status, Security, Content, Users, Dashboard, Chat)
 - [ ] Security configured (`x-public: true` or `bearerAuth` + `x-corso-rbac`)
-- [ ] `OrgIdHeader` parameter included for protected routes
+- [ ] Organization header parameter included (`OrgIdHeaderOptional` for personal-scope, `OrgIdHeader` for non-personal-scope)
 - [ ] Request/response schemas defined in `components/schemas`
 - [ ] All error responses documented (400, 401, 403, 429, 500)
 - [ ] Rate limit documented (`x-rate-limit` extension)
@@ -780,8 +781,14 @@ x-corso-rbac: [member]  # Required role(s)
 
 **Tenant Isolation:**
 ```yaml
+# Personal-scope routes (all current routes)
+x-corso-personal-scope: true
 parameters:
-  - $ref: '#/components/parameters/OrgIdHeader'
+  - $ref: '#/components/parameters/OrgIdHeaderOptional'  # Optional
+
+# Non-personal-scope routes (future enterprise routes)
+parameters:
+  - $ref: '#/components/parameters/OrgIdHeader'  # Required
 ```
 
 ### RBAC Validation
@@ -823,7 +830,7 @@ pnpm openapi:rbac:check
 
 **Requirements:**
 - All `bearerAuth` routes must have `x-corso-rbac`
-- All `bearerAuth` routes must include `OrgIdHeader`
+- All `bearerAuth` routes must include organization header (`OrgIdHeaderOptional` for personal-scope, `OrgIdHeader` for non-personal-scope)
 - Role values must match allowed roles
 
 ## ✅ Input Validation
@@ -1453,20 +1460,29 @@ security:
 x-corso-rbac: [member]
 ```
 
-**Pitfall 2: Missing OrgIdHeader for Protected Routes**
+**Pitfall 2: Missing Organization Header for Protected Routes**
 ```yaml
-# ❌ WRONG: Protected route without OrgIdHeader
+# ❌ WRONG: Protected route without organization header
 security:
   - bearerAuth: []
 x-corso-rbac: [member]
-# Missing: parameters with OrgIdHeader
+x-corso-personal-scope: true
+# Missing: parameters with OrgIdHeaderOptional
 
-# ✅ CORRECT: OrgIdHeader included
+# ✅ CORRECT: OrgIdHeaderOptional included for personal-scope route
 security:
   - bearerAuth: []
 x-corso-rbac: [member]
+x-corso-personal-scope: true
 parameters:
-  - $ref: '#/components/parameters/OrgIdHeader'
+  - $ref: '#/components/parameters/OrgIdHeaderOptional'  # Optional for personal-scope
+
+# ✅ CORRECT: OrgIdHeader included for non-personal-scope route (future)
+security:
+  - bearerAuth: []
+x-corso-rbac: [admin]
+parameters:
+  - $ref: '#/components/parameters/OrgIdHeader'  # Required for non-personal-scope
 ```
 
 **Pitfall 3: Editing Generated Files**

@@ -75,7 +75,7 @@ The RBAC guard (`scripts/openapi/openapi-guard-rbac.ts`) performs comprehensive 
 
 **Automated Checks:**
 - ✅ All `bearerAuth` operations have `x-corso-rbac` or `x-public`
-- ✅ All `bearerAuth` operations include `OrgIdHeader` parameter
+- ✅ All `bearerAuth` operations include organization header (`OrgIdHeaderOptional` for personal-scope, `OrgIdHeader` for non-personal-scope)
 - ✅ Role values match allowed roles from `config/security/rbac-roles.json`
 - ✅ Public endpoints properly marked with `x-public` (no security required)
 - ✅ Tenant isolation enforced for all authenticated operations
@@ -97,7 +97,7 @@ paths:
           schema:
             type: string
             enum: [projects, companies, addresses]
-        - $ref: '#/components/parameters/OrgIdHeader'  # Required for tenant isolation
+        - $ref: '#/components/parameters/OrgIdHeaderOptional'  # Optional for personal-scope routes
       security:
         - bearerAuth: []
       x-corso-rbac: [member]  # Required RBAC annotation
@@ -241,13 +241,14 @@ post:
   x-corso-rbac: [member]  # ← Required for all bearer-authenticated operations
 ```
 
-#### Missing OrgIdHeader Parameter
+#### Missing Organization Header Parameter
 ```bash
-# Error: POST /api/v1/entity/{entity}/query: bearerAuth route missing OrgIdHeader parameter
-# Fix: Include the OrgIdHeader parameter for tenant isolation
+# Error: POST /api/v1/entity/{entity}/query: bearerAuth route missing organization header parameter
+# Fix: Include OrgIdHeaderOptional for personal-scope routes
 post:
+  x-corso-personal-scope: true
   parameters:
-    - $ref: '#/components/parameters/OrgIdHeader'  # ← Required for tenant isolation
+    - $ref: '#/components/parameters/OrgIdHeaderOptional'  # ← Optional for personal-scope routes
   security:
     - bearerAuth: []
   x-corso-rbac: [member]

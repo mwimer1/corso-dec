@@ -776,7 +776,7 @@ After modifying API routes:
 1. Run `pnpm openapi:gen` - bundles YAML → JSON → TypeScript types
 2. Run `pnpm openapi:rbac:check` - validates RBAC security annotations
 3. All bearer-authenticated operations require `x-corso-rbac` or `x-public` extension
-4. All bearer operations must include `OrgIdHeader` parameter for tenant isolation
+4. All bearer operations must include organization header parameter (`OrgIdHeaderOptional` for personal-scope, `OrgIdHeader` for non-personal-scope) for tenant isolation
 
 ## 🔍 Dead Code & Unused Exports Audits
 

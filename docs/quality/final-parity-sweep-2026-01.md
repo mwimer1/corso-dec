@@ -54,11 +54,11 @@ All reference sweeps completed ✅. OpenAPI parity verified ✅. Smoke tests cov
 #### AI Endpoints
 - **`/api/v1/ai/chat`** (lines 330-370):
   - `x-corso-rbac: [member, admin, owner]` ✓
-  - `OrgIdHeader` parameter ✓
+  - `OrgIdHeaderOptional` parameter (personal-scope) ✓
   - 401/403 responses ✓
 - **`/api/v1/ai/generate-sql`** (lines 646-686):
   - `x-corso-rbac: [member, admin, owner]` ✓
-  - `OrgIdHeader` parameter ✓
+  - `OrgIdHeaderOptional` parameter (personal-scope) ✓
   - 401/403 responses ✓
 
 **Status**: ✅ OpenAPI spec matches implementation

@@ -28,7 +28,9 @@ pnpm openapi:gen && pnpm openapi:rbac:check
 ### Adding New Operations
 
 1. Add operation to `api/openapi.yml`
-2. Include `OrgIdHeader` parameter reference
+2. Include organization header parameter:
+   - Personal-scope routes (`x-corso-personal-scope: true`) → `OrgIdHeaderOptional`
+   - Non-personal-scope routes → `OrgIdHeader` (required, currently unused)
 3. Set appropriate `x-corso-rbac` role
 4. Run validation: `pnpm openapi:rbac:check`
 
@@ -53,7 +55,7 @@ x-corso-rbac: [service]
 
 ## Common Issues & Fixes
 
-### Missing OrgIdHeader
+### Missing Organization Header
 
 ```yaml
 # ❌ INCORRECT
@@ -61,15 +63,25 @@ post:
   security:
     - bearerAuth: []
   x-corso-rbac: [member]
-  # Missing OrgIdHeader!
+  x-corso-personal-scope: true
+  # Missing OrgIdHeaderOptional!
 
-# ✅ CORRECT
+# ✅ CORRECT - Personal-scope route (all current routes)
 post:
-  parameters:
-    - $ref: '#/components/parameters/OrgIdHeader'
   security:
     - bearerAuth: []
   x-corso-rbac: [member]
+  x-corso-personal-scope: true
+  parameters:
+    - $ref: '#/components/parameters/OrgIdHeaderOptional'  # Optional for personal-scope
+
+# ✅ CORRECT - Non-personal-scope route (future enterprise routes)
+post:
+  security:
+    - bearerAuth: []
+  x-corso-rbac: [admin]
+  parameters:
+    - $ref: '#/components/parameters/OrgIdHeader'  # Required for non-personal-scope
 ```
 
 ### Invalid Role
@@ -139,7 +151,7 @@ Automated validation on pull requests affecting API or OpenAPI files.
 
 ### OpenAPI Validation
 - ✅ All bearer operations have `x-corso-rbac` or `x-public`
-- ✅ All bearer operations include `OrgIdHeader`
+- ✅ All bearer operations include organization header (`OrgIdHeaderOptional` for personal-scope, `OrgIdHeader` for non-personal-scope)
 - ✅ Role values match `config/security/rbac-roles.json`
 - ✅ Generated types are up-to-date
 

@@ -4,7 +4,7 @@ title: OpenAPI Vendor Extensions & RBAC Guard
 owners:
   - security@corso.io
   - platform@corso.io
-last_reviewed: "2025-10-13"
+last_reviewed: "2026-01-15"
 status: active
 domains: [api, security, documentation]
 enforcement: warn
@@ -24,7 +24,7 @@ summary: Enforce RBAC and tenant isolation in OpenAPI specs via vendor extension
 
 ## TL;DR
 - **RBAC annotations**: All bearer-authenticated operations must have `x-corso-rbac` or `x-public`
-- **OrgIdHeader**: All bearer operations must include `OrgIdHeader` parameter
+- **OrgIdHeader**: Personal-scope routes use `OrgIdHeaderOptional`; non-personal-scope routes use `OrgIdHeader` (required)
 - **Validation**: Run `pnpm openapi:rbac:check` to validate compliance
 - **Role hierarchy**: owner > admin > member > viewer > service
 - **CI enforcement**: Automated validation in PR pipeline
@@ -44,8 +44,9 @@ paths:
       security:
         - bearerAuth: []
       x-corso-rbac: [member, admin, owner]  # Available: owner, admin, member, viewer, service
+      x-corso-personal-scope: true  # Supports both org-scoped and user-scoped access
       parameters:
-        - $ref: '#/components/parameters/OrgIdHeader'
+        - $ref: '#/components/parameters/OrgIdHeaderOptional'  # Optional for personal-scope routes
 ```
 
 **Role Hierarchy:**
@@ -73,7 +74,9 @@ Validates OpenAPI spec compliance with RBAC and tenant isolation requirements.
 
 **Checks Performed:**
 1. All `bearerAuth` operations have `x-corso-rbac` or `x-public`
-2. All `bearerAuth` operations include `OrgIdHeader` parameter
+2. All `bearerAuth` operations include organization header parameter:
+   - Personal-scope routes (`x-corso-personal-scope: true`) → `OrgIdHeaderOptional`
+   - Non-personal-scope routes → `OrgIdHeader` (required)
 3. Role values match allowed roles defined in the OpenAPI RBAC config (see `api/openapi.yml` and `pnpm openapi:rbac:check`)
 
 **Usage:**
@@ -99,7 +102,9 @@ Automated validation on pull requests affecting API or OpenAPI files.
 ## Rules
 
 - **MUST** include `x-corso-rbac` or `x-public` for all bearer-authenticated operations
-- **MUST** include `OrgIdHeader` parameter for all bearer operations
+- **MUST** include organization header parameter for all bearer operations:
+  - Personal-scope routes (`x-corso-personal-scope: true`) → `OrgIdHeaderOptional`
+  - Non-personal-scope routes → `OrgIdHeader` (required, currently unused - all routes are personal-scope)
 - **MUST** use valid roles from allowed roles (owner, admin, member, viewer, service)
 - **MUST** run `pnpm openapi:rbac:check` to validate compliance
 
@@ -115,7 +120,7 @@ For missing OrgIdHeader, invalid roles, and public endpoint patterns, see [exten
 
 ### OpenAPI Validation
 - ✅ All bearer operations have `x-corso-rbac` or `x-public`
-- ✅ All bearer operations include `OrgIdHeader`
+- ✅ All bearer operations include organization header (`OrgIdHeaderOptional` for personal-scope, `OrgIdHeader` for non-personal-scope)
 - ✅ Role values match `config/security/rbac-roles.json`
 - ✅ Generated types are up-to-date
 
