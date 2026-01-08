@@ -13,7 +13,7 @@ scripts/audit/css/
 ├── target-builder.ts           # Target calculation (changed files, filtering)
 ├── baseline.ts                 # Baseline management (read/write/filter)
 ├── orchestrator.ts             # Main orchestrator (coordinates all tools)
-├── reporter.ts                 # Reporting (pretty, JSON, JUnit formats)
+├── report.ts                   # Reporting (pretty, JSON, JUnit formats)
 ├── cli.ts                      # CLI entry point with argument parsing
 ├── tools/
 │   ├── index.ts               # Tool registry
@@ -69,7 +69,7 @@ scripts/audit/css/
   - Hardcoded spacing (px, rem)
   - Token usage compliance
 
-### 4. Reporting (`reporter.ts`)
+### 4. Reporting (`report.ts`)
 - **Pretty**: Human-readable console output with colors
 - **JSON**: Machine-readable format for tooling
 - **JUnit**: CI-friendly XML format
