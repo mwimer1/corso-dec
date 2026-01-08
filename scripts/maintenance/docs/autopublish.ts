@@ -206,7 +206,7 @@ function stageAllowedChanges(args: Args): string[] {
   const chunkSize = 100;
   for (let i = 0; i < unique.length; i += chunkSize) {
     const chunk = unique.slice(i, i + chunkSize);
-    run("git", ["add", "--quiet", "--", ...chunk], { quiet: args.quiet });
+    run("git", ["add", "--", ...chunk], { quiet: args.quiet });
   }
 
   return unique;
