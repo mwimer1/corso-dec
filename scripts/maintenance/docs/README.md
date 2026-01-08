@@ -15,6 +15,7 @@ This README is generated from a single template (`README.scripts.hbs`).
 
 ## Scripts in `scripts/maintenance/docs`
 
+- **autopublish.ts** – default true
 - **cli.ts** – Command-line interface for documentation generation, enhancement, and normalization
 - **constants.ts** – Shared constants and configuration defaults
 - **generate-readmes.ts** – or
