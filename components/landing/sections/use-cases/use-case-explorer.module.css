@@ -182,9 +182,10 @@
 .previewPaneDesktop {
   position: sticky;
   top: calc(var(--nav-offset, 4rem));
-  align-self: start;
   width: 100%;
   max-width: 100%;
+  align-self: stretch;
+  height: 100%;
 }
 
 /* Preview Pane Container */
@@ -263,7 +264,7 @@
     display: grid;
     grid-template-columns: 1fr 400px;
     gap: var(--space-xl);
-    align-items: start;
+    align-items: stretch;
   }
 
   .previewAccordion {

@@ -127,10 +127,10 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
       </div>
 
       {/* Main Two-Column Layout */}
-      <div className={cn(styles['mainLayout'], 'lg:grid lg:grid-cols-[1fr_400px] lg:gap-8')}>
+      <div className={cn(styles['mainLayout'])}>
         {/* Left Pane - Industry Card with Workflows */}
-        <Card className={cn(styles['cardGridContainer'], 'flex flex-col')}>
-          <CardContent className="p-5 space-y-4 flex-1 flex flex-col">
+        <Card className={cn(styles['cardGridContainer'], 'flex flex-col h-full')}>
+          <CardContent className="p-5 space-y-4 flex-1 flex flex-col min-h-0">
             {/* Section Title/Subtitle */}
             <div className="space-y-2">
               <h3 className="text-xl sm:text-2xl font-semibold text-foreground">
@@ -154,32 +154,36 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
             </div>
 
             {/* Problem and Help Sections - Bottom Left (anchored to bottom) */}
-            <div className={cn(styles['problemHelpSection'], 'mt-auto space-y-3 lg:grid lg:grid-cols-2 lg:gap-4')}>
-              {/* The Problem */}
-              <div className={cn(styles['problemHelpCard'], 'p-4 rounded-lg bg-muted/30 lg:h-48')}>
-                <h4 className="text-sm font-semibold text-foreground mb-2">The problem</h4>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {activeUseCase.pain}
-                </p>
-              </div>
+            <div className="mt-auto">
+              <div className="border-t border-border my-6 opacity-70" aria-hidden="true" />
+              <div className={cn(styles['problemHelpSection'], 'space-y-3 lg:grid lg:grid-cols-2 lg:gap-4')}>
+                {/* The Problem */}
+                <div className={cn(styles['problemHelpCard'], 'p-4 rounded-lg bg-muted/30 lg:h-48')}>
+                  <h4 className="text-sm font-semibold text-foreground mb-2">The problem</h4>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {activeUseCase.pain}
+                  </p>
+                </div>
 
-              {/* How Corso helps */}
-              <div className={cn(styles['problemHelpCard'], 'p-4 rounded-lg bg-muted/30 lg:h-48')}>
-                <h4 className="text-sm font-semibold text-foreground mb-2">How Corso helps</h4>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {activeUseCase.howCorsoHelps}
-                </p>
+                {/* How Corso helps */}
+                <div className={cn(styles['problemHelpCard'], 'p-4 rounded-lg bg-muted/30 lg:h-48')}>
+                  <h4 className="text-sm font-semibold text-foreground mb-2">How Corso helps</h4>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {activeUseCase.howCorsoHelps}
+                  </p>
+                </div>
               </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Right Pane - Preview (Desktop) */}
-        <div className={cn(styles['previewPaneDesktop'], 'hidden lg:block')}>
+        <div className={cn(styles['previewPaneDesktop'], 'hidden lg:flex')}>
           <UseCasePreviewPane
             useCase={activeUseCase}
             previewTab={previewTab}
             onTabChange={setPreviewTab}
+            className="h-full"
           />
         </div>
       </div>

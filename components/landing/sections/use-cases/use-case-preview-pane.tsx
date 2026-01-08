@@ -30,8 +30,8 @@ export function UseCasePreviewPane({
   const preview = useCase.preview;
 
   return (
-    <Card className={cn(styles['previewPane'], className)}>
-      <CardContent className="p-6 flex flex-col">
+    <Card className={cn(styles['previewPane'], 'h-full w-full flex flex-col', className)}>
+      <CardContent className="p-6 flex flex-col flex-1 min-h-0">
         {/* Header with labels */}
         <div className="mb-4 space-y-2">
           <div className="flex items-center justify-between">
@@ -75,124 +75,130 @@ export function UseCasePreviewPane({
           </div>
         </div>
 
-        {/* Tab Content */}
-        <div className={cn(styles['previewContent'], 'relative min-h-[200px] flex-1')}>
-          <div key={previewTab} className={cn(styles['previewTabContent'], 'space-y-4')}>
-            {/* Dashboard Tab */}
-            {previewTab === 'dashboard' && (
-              <>
-                {/* Dark KPI Card */}
-                <Card className="bg-foreground text-background border-0">
-                  <CardContent className="p-4">
-                    <p className="text-xs text-background/70 mb-3 uppercase tracking-wide">
-                      {preview.headline}
-                    </p>
-                    <div className="grid grid-cols-3 gap-4">
-                      {preview.kpis.map((kpi, idx) => (
-                        <div key={idx}>
-                          <p className="text-xs text-background/70 mb-1">{kpi.label}</p>
-                          <p className="text-xl font-semibold text-background">{kpi.value}</p>
-                        </div>
-                      ))}
+        {/* TOP REGION: header + tabs + tab content */}
+        <div className="flex-1 min-h-0 flex flex-col">
+          {/* Tab Content */}
+          <div className={cn(styles['previewContent'], 'relative flex-1 min-h-0')}>
+            <div key={previewTab} className={cn(styles['previewTabContent'], 'space-y-4')}>
+              {/* Dashboard Tab */}
+              {previewTab === 'dashboard' && (
+                <>
+                  {/* Dark KPI Card */}
+                  <Card className="bg-foreground text-background border-0">
+                    <CardContent className="p-4">
+                      <p className="text-xs text-background/70 mb-3 uppercase tracking-wide">
+                        {preview.headline}
+                      </p>
+                      <div className="grid grid-cols-3 gap-4">
+                        {preview.kpis.map((kpi, idx) => (
+                          <div key={idx}>
+                            <p className="text-xs text-background/70 mb-1">{kpi.label}</p>
+                            <p className="text-xl font-semibold text-background">{kpi.value}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* What you'll do - Muted Surface */}
+                  <div className="bg-muted/40 p-4 rounded-xl">
+                    <div className="flex items-center gap-2 mb-3">
+                      <h4 className="text-sm font-semibold text-foreground">What you'll do</h4>
+                      <Badge color="default" className="text-xs">
+                        Updated regularly
+                      </Badge>
                     </div>
-                  </CardContent>
-                </Card>
-
-                {/* What you'll do - Muted Surface */}
-                <div className="bg-muted/40 p-4 rounded-xl">
-                  <div className="flex items-center gap-2 mb-3">
-                    <h4 className="text-sm font-semibold text-foreground">What you'll do</h4>
-                    <Badge color="default" className="text-xs">
-                      Updated regularly
-                    </Badge>
+                    <ul className="space-y-2">
+                      {preview.highlights.map((highlight, idx) => (
+                        <li key={idx} className="flex items-start gap-2 text-sm text-muted-foreground">
+                          <span className="text-primary mt-1">•</span>
+                          <span>{highlight}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <ul className="space-y-2">
-                    {preview.highlights.map((highlight, idx) => (
-                      <li key={idx} className="flex items-start gap-2 text-sm text-muted-foreground">
-                        <span className="text-primary mt-1">•</span>
-                        <span>{highlight}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </>
-            )}
+                </>
+              )}
 
-            {/* Sample Record Tab */}
-            {previewTab === 'sample' && (
-              <div className="bg-muted/40 p-4 rounded-xl space-y-3">
-                {preview.sampleRecord.map((field, idx) => (
-                  <div key={idx} className="flex justify-between items-start gap-4">
-                    <p className="text-xs text-muted-foreground font-medium flex-shrink-0">
-                      {field.label}
-                    </p>
-                    <p className="text-sm text-foreground text-right truncate flex-1">
-                      {field.value}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Outputs Tab */}
-            {previewTab === 'outputs' && (
-              <div className="bg-muted/40 p-4 rounded-xl">
-                <h4 className="text-sm font-semibold text-foreground mb-3">Export outputs</h4>
-                <div className="flex flex-wrap gap-2">
-                  {useCase.outputs.map((output) => (
-                    <Badge key={output} color="default" className="text-xs">
-                      {output}
-                    </Badge>
+              {/* Sample Record Tab */}
+              {previewTab === 'sample' && (
+                <div className="bg-muted/40 p-4 rounded-xl space-y-3">
+                  {preview.sampleRecord.map((field, idx) => (
+                    <div key={idx} className="flex justify-between items-start gap-4">
+                      <p className="text-xs text-muted-foreground font-medium flex-shrink-0">
+                        {field.label}
+                      </p>
+                      <p className="text-sm text-foreground text-right truncate flex-1">
+                        {field.value}
+                      </p>
+                    </div>
                   ))}
                 </div>
-              </div>
-            )}
+              )}
+
+              {/* Outputs Tab */}
+              {previewTab === 'outputs' && (
+                <div className="bg-muted/40 p-4 rounded-xl">
+                  <h4 className="text-sm font-semibold text-foreground mb-3">Export outputs</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {useCase.outputs.map((output) => (
+                      <Badge key={output} color="default" className="text-xs">
+                        {output}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* CTA Card - Height aligned with left bottom cards */}
-        <Card className="mt-6 bg-foreground text-background border-0 lg:h-48 flex flex-col">
-          <CardContent className="p-5 flex-1 flex flex-col justify-between">
-            <div>
-              <h4 className="text-base font-semibold text-background mb-2">
-                Want to see this in your territory?
-              </h4>
-              <p className="text-sm text-background/80">
-                Start with sample data, then apply filters for your market and asset class.
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-2 mt-4">
-              <Button
-                asChild
-                variant="secondary"
-                size="sm"
-                className="bg-background text-foreground hover:bg-background/90"
-              >
-                <LinkTrack
-                  href={APP_LINKS.NAV.SIGNUP}
-                  label="use-case-preview:start-free"
-                  target="_blank"
+        {/* BOTTOM REGION: divider + CTA pinned to bottom */}
+        <div className="mt-auto">
+          <div className="border-t border-border my-6 opacity-70" aria-hidden="true" />
+          <Card className="bg-foreground text-background border-0 lg:h-48 flex flex-col">
+            <CardContent className="p-5 flex-1 flex flex-col justify-between">
+              <div>
+                <h4 className="text-base font-semibold text-background mb-2">
+                  Want to see this in your territory?
+                </h4>
+                <p className="text-sm text-background/80">
+                  Start with sample data, then apply filters for your market and asset class.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-2 mt-4">
+                <Button
+                  asChild
+                  variant="secondary"
+                  size="sm"
+                  className="bg-background text-foreground hover:bg-background/90"
                 >
-                  Start free
-                </LinkTrack>
-              </Button>
-              <Button
-                asChild
-                variant="outline"
-                size="sm"
-                className="border-background/30 text-background hover:bg-background/10"
-              >
-                <LinkTrack
-                  href={APP_LINKS.NAV.BOOK_DEMO}
-                  label="use-case-preview:talk-to-sales"
-                  target="_blank"
+                  <LinkTrack
+                    href={APP_LINKS.NAV.SIGNUP}
+                    label="use-case-preview:start-free"
+                    target="_blank"
+                  >
+                    Start free
+                  </LinkTrack>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  className="border-background/30 text-background hover:bg-background/10"
                 >
-                  Talk to sales
-                </LinkTrack>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+                  <LinkTrack
+                    href={APP_LINKS.NAV.BOOK_DEMO}
+                    label="use-case-preview:talk-to-sales"
+                    target="_blank"
+                  >
+                    Talk to sales
+                  </LinkTrack>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </CardContent>
     </Card>
   );
