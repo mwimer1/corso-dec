@@ -132,8 +132,23 @@ function resolveModuleSpecifierToAbs(
   const addIndex = (p: string) => tryExts.map(ext => `${p}/index${ext}`);
 
   let base = moduleSpec.replace(/\\/g, '/');
+  let resolvedViaAlias = false;
+  
   if (moduleSpec.startsWith('@/')) {
+    // Try existing alias resolution first
     base = resolvePathAlias(moduleSpec, project);
+    resolvedViaAlias = true;
+    
+    // Fallback: if alias resolution didn't find a file, try direct repo root mapping
+    const absFromAlias = toAbsPosix(base);
+    const existsFromAlias = project.getSourceFile(absFromAlias) || 
+                            (nodeFs.existsSync(absFromAlias) && nodeFs.statSync(absFromAlias).isFile());
+    
+    if (!existsFromAlias) {
+      // Fallback: @/scripts/... → scripts/...
+      const repoRelative = moduleSpec.slice(2); // remove "@/"
+      base = normalizePosix(nodePath.resolve(process.cwd(), repoRelative));
+    }
   } else if (moduleSpec.startsWith('.')) {
     if (importerSf) {
       base = normalizePosix(nodePath.resolve(nodePath.dirname(importerSf.getFilePath()), moduleSpec));
@@ -144,8 +159,21 @@ function resolveModuleSpecifierToAbs(
   }
 
   const absCore = toAbsPosix(base);
-  const core = absCore.replace(/\/+$/, ''); // trim trailing '/'
-  const candidates = new Set<string>([core, ...tryExts.map(ext => `${core}${ext}`), ...addIndex(core)]);
+  
+  // Handle ESM-style .js/.mjs/.cjs specifiers pointing to .ts source files
+  // Example: ../maintenance/scan-roots.js should resolve to scan-roots.ts
+  const jsExtMatch = absCore.match(/\.(m?js|cjs|jsx)$/);
+  let core = absCore.replace(/\/+$/, ''); // trim trailing '/'
+  let candidates = new Set<string>([core]);
+  
+  if (jsExtMatch && !nodeFs.existsSync(core)) {
+    // Remove .js/.mjs/.cjs/.jsx extension and try .ts/.tsx variants
+    const noExt = core.replace(/\.(m?js|cjs|jsx)$/, '');
+    candidates = new Set<string>([noExt, ...tryExts.map(ext => `${noExt}${ext}`), ...addIndex(noExt)]);
+  } else {
+    // Normal path: try with extensions
+    candidates = new Set<string>([core, ...tryExts.map(ext => `${core}${ext}`), ...addIndex(core)]);
+  }
 
   for (const cand of candidates) {
     const abs = toAbsPosix(cand);
@@ -567,6 +595,26 @@ const project = new Project({
   tsConfigFilePath: 'tsconfig.json',
 });
 
+// ---- Ensure all source files are in project before building importerMap ----
+// This fixes cases where script/test files aren't in ts-morph scope
+console.log('🔍 Adding all source files to project...');
+const allSourceFiles = await globby(
+  ['**/*.{ts,tsx,js,jsx}'],
+  { ignore: [...CONFIG.EXCLUDE_PATTERNS] }
+);
+for (const relPath of allSourceFiles) {
+  const absPath = nodePath.resolve(process.cwd(), relPath);
+  if (!project.getSourceFile(absPath)) {
+    try {
+      project.addSourceFileAtPath(absPath);
+    } catch {
+      // Skip files that can't be added (e.g., invalid syntax, missing deps)
+      continue;
+    }
+  }
+}
+console.log(`   Added ${allSourceFiles.length} source files to project\n`);
+
 // ---- Load allowlist ----------------------------------------------------------
 const { files: allowlist, notes: allowlistNotes } = loadAllowlist();
 
@@ -584,6 +632,11 @@ console.log(`   Found ${packageEntrypoints.size} files referenced by package.jso
 console.log('🔍 Building workflow entrypoint map...');
 const workflowEntrypoints = buildWorkflowEntrypointMap();
 console.log(`   Found ${workflowEntrypoints.size} files referenced by workflows\n`);
+
+// ---- Build script-to-script execution entrypoint map -------------------------
+console.log('🔍 Building script execution entrypoint map...');
+const scriptExecEntrypoints = buildScriptExecEntrypointMap(project);
+console.log(`   Found ${scriptExecEntrypoints.size} files invoked by scripts\n`);
 
 // ---- Discover candidates -----------------------------------------------------
 const candidates = await globby(
@@ -626,6 +679,7 @@ type KeepReason =
   | 'KEEP_TEST_VITEST'        // Test file executed by vitest
   | 'KEEP_DYNAMIC_IMPORT'     // File is dynamically imported by other files
   | 'KEEP_ENTRYPOINT_WORKFLOW' // File is directly invoked in GitHub workflows
+  | 'KEEP_ENTRYPOINT_SCRIPT_EXEC' // File is invoked by script-to-script execution
   | 'REVIEW_TEXT_REF';         // Referenced in docs/tests/scripts (not code import)
 
 const results: Array<{
@@ -889,6 +943,124 @@ function buildWorkflowEntrypointMap(): Map<string, string[]> {
   return map;
 }
 
+/**
+ * Build a map of file paths invoked by script-to-script execution.
+ * Detects patterns like:
+ * - execSync('pnpm tsx scripts/...')
+ * - execa('pnpm', ['exec', 'tsx', 'scripts/...'])
+ * - execa('tsx', ['scripts/...'])
+ * - spawn(...) equivalents
+ */
+function buildScriptExecEntrypointMap(project: Project): Map<string, string[]> {
+  const map = new Map<string, string[]>();
+  
+  try {
+    // Only scan script files (those in scripts/ directory)
+    const scriptFiles = project.getSourceFiles().filter(sf => {
+      const relPath = normalizePosix(nodePath.relative(process.cwd(), sf.getFilePath()));
+      return relPath.startsWith('scripts/');
+    });
+
+    for (const scriptFile of scriptFiles) {
+      const callerRel = normalizePosix(nodePath.relative(process.cwd(), scriptFile.getFilePath()));
+      const content = scriptFile.getFullText();
+
+      // Pattern 1: execSync('pnpm tsx scripts/...') or execSync(`pnpm tsx scripts/...`)
+      const execSyncPattern = /execSync\s*\(\s*['"`](pnpm\s+tsx\s+scripts\/[^'"`]+|pnpm\s+exec\s+tsx\s+scripts\/[^'"`]+)['"`]/g;
+      let match;
+      while ((match = execSyncPattern.exec(content)) !== null) {
+        const cmdStr = match[1];
+        if (!cmdStr) continue;
+        const paths = extractEntrypointPathsFromScriptValue(cmdStr);
+        for (const p of paths) {
+          const arr = map.get(p) ?? [];
+          if (!arr.includes(callerRel)) {
+            arr.push(callerRel);
+          }
+          map.set(p, arr);
+        }
+      }
+
+      // Pattern 2: execa('pnpm', ['exec', 'tsx', 'scripts/...']) or execa('tsx', ['scripts/...'])
+      // Also handle: args: ['exec', 'tsx', 'scripts/...'] in object literals
+      // Match: execa('cmd', ['arg1', 'arg2', 'scripts/...'])
+      const execaArrayPattern = /(execa|spawn|spawnSync)\s*\(\s*['"`]([^'"`]+)['"`]\s*,\s*\[([^\]]+)\]/g;
+      while ((match = execaArrayPattern.exec(content)) !== null) {
+        const cmd = match[2];
+        const argsStr = match[3];
+        
+        if (!cmd || !argsStr) continue;
+        
+        // Extract quoted strings from array (ignore variables)
+        const quotedArgs = argsStr.match(/['"`]([^'"`]+)['"`]/g) || [];
+        const args = quotedArgs.map(q => q.slice(1, -1)); // Remove quotes
+        
+        // Synthesize command string for extractEntrypointPathsFromScriptValue
+        if (args.length > 0 && (cmd === 'pnpm' || cmd === 'tsx' || cmd.endsWith('/tsx'))) {
+          const synthesized = `${cmd} ${args.join(' ')}`;
+          const paths = extractEntrypointPathsFromScriptValue(synthesized);
+          for (const p of paths) {
+            const arr = map.get(p) ?? [];
+            if (!arr.includes(callerRel)) {
+              arr.push(callerRel);
+            }
+            map.set(p, arr);
+          }
+        }
+      }
+
+      // Pattern 2b: Object literal with args array (e.g., { command: 'pnpm', args: ['exec', 'tsx', 'scripts/...'] })
+      // This catches cases where execa is called with variables but the args are defined as literals
+      const objectLiteralArgsPattern = /args:\s*\[([^\]]+)\]/g;
+      while ((match = objectLiteralArgsPattern.exec(content)) !== null) {
+        const argsStr = match[1];
+        if (!argsStr) continue;
+        
+        // Extract quoted strings from array
+        const quotedArgs = argsStr.match(/['"`]([^'"`]+)['"`]/g) || [];
+        const args = quotedArgs.map(q => q.slice(1, -1));
+        
+        // Check if this looks like a pnpm exec tsx pattern
+        if (args.length >= 3 && args[0] === 'exec' && args[1] === 'tsx' && args[2]?.startsWith('scripts/')) {
+          const synthesized = `pnpm exec tsx ${args[2]}`;
+          const paths = extractEntrypointPathsFromScriptValue(synthesized);
+          for (const p of paths) {
+            const arr = map.get(p) ?? [];
+            if (!arr.includes(callerRel)) {
+              arr.push(callerRel);
+            }
+            map.set(p, arr);
+          }
+        }
+      }
+
+      // Pattern 3: execSync with template literals containing scripts/ paths
+      const execSyncTemplatePattern = /execSync\s*\(\s*`([^`]*scripts\/[^`]+)`/g;
+      while ((match = execSyncTemplatePattern.exec(content)) !== null) {
+        const cmdStr = match[1];
+        if (!cmdStr) continue;
+        
+        const paths = extractEntrypointPathsFromScriptValue(cmdStr);
+        for (const p of paths) {
+          const arr = map.get(p) ?? [];
+          if (!arr.includes(callerRel)) {
+            arr.push(callerRel);
+          }
+          map.set(p, arr);
+        }
+      }
+    }
+  } catch (error) {
+    console.warn(`⚠️  Warning: Could not scan scripts for execution patterns: ${error}`);
+  }
+
+  // Dedup + stable order
+  for (const [k, v] of map.entries()) {
+    map.set(k, Array.from(new Set(v)).sort());
+  }
+  return map;
+}
+
 // ---- Analyze candidates ------------------------------------------------------
 console.log(`📋 Analyzing ${filteredCandidates.length} candidate file(s)...\n`);
 
@@ -978,6 +1150,16 @@ for (const rel of filteredCandidates) {
     record.notes = (record.notes ? `${record.notes}; ` : '') + `Workflow entrypoints: ${workflowRefs.join(', ')}`;
   }
 
+  // Check if file is invoked by script-to-script execution
+  const execCallers = scriptExecEntrypoints.get(relNormalized) ?? [];
+  if (execCallers.length > 0) {
+    if (record.status !== 'KEEP') {
+      record.status = 'KEEP';
+    }
+    record.reasons.push('KEEP_ENTRYPOINT_SCRIPT_EXEC');
+    record.notes = (record.notes ? `${record.notes}; ` : '') + `Invoked by scripts: ${execCallers.join(', ')}`;
+  }
+
   // Implicit Next.js route files → keep
   if (/(^|[\\/])app[\\/].*\b(page|layout|loading|error|not-found|route|opengraph-image|icon|sitemap)\.(t|j)sx?$/.test(rel)) {
     if (record.status === 'DROP') {
@@ -1015,57 +1197,24 @@ for (const rel of filteredCandidates) {
     }
   }
 
-  // Check for script-to-script invocations (execSync, execa, spawn with scripts/ paths)
-  // This catches files invoked by other scripts but not imported
+  // Check for text references (docs/tests) - only if not already KEEP for other reasons
+  // Note: Script execution is now handled by scriptExecEntrypoints map above
   const textRefs = findTextReferences(rel, [...CONFIG.REFERENCE_DIRS]);
-  if (textRefs.found) {
-    // Check if referenced in script execution patterns (execSync, execa, spawn)
-    const scriptExecutionPatterns = textRefs.refs.filter(ref => {
-      if (!ref.startsWith('scripts/')) return false;
-      try {
-        const refContent = nodeFs.readFileSync(nodePath.resolve(process.cwd(), ref), 'utf8');
-        // Check for execSync/execa/spawn patterns that invoke this file
-        const fileName = nodePath.basename(rel);
-        const relPath = relNormalized;
-        // Patterns: execSync('tsx', ['scripts/...']), execa('tsx', ['scripts/...']), spawn('tsx', ['scripts/...'])
-        const execPatterns = [
-          new RegExp(`(execSync|execa|spawn)\\s*\\(\\s*['"]tsx['"]\\s*,\\s*\\[\\s*['"]${relPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}['"]`, 'g'),
-          new RegExp(`(execSync|execa|spawn)\\s*\\(\\s*['"]tsx['"]\\s*,\\s*\\[\\s*['"].*${fileName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}['"]`, 'g'),
-        ];
-        return execPatterns.some(pattern => pattern.test(refContent));
-      } catch {
-        return false;
-      }
-    });
+  if (textRefs.found && record.status === 'DROP') {
+    // Only set REVIEW if no other KEEP reasons exist (script execution is handled above)
+    record.status = 'REVIEW';
+    record.reasons.push('REVIEW_TEXT_REF');
 
-    if (scriptExecutionPatterns.length > 0) {
-      // File is invoked by other scripts via execSync/execa/spawn
-      if (record.status !== 'KEEP') {
-        record.status = 'KEEP';
-      }
-      record.reasons.push('KEEP_ENTRYPOINT_PACKAGE_JSON'); // Treat as entrypoint
-      record.notes = (record.notes ? `${record.notes}; ` : '') + 
-        `Invoked by scripts: ${scriptExecutionPatterns.join(', ')}`;
+    if (textRefs.docsOnly) {
+      record.notes = (record.notes ? `${record.notes}; ` : '') +
+        `docs-only reference (${textRefs.refs.length} file(s): ${textRefs.refs.slice(0, 3).join(', ')}${textRefs.refs.length > 3 ? '...' : ''})`;
     } else {
-      // Regular text reference (docs/tests) → review (not keep, since not code-referenced)
-      // Only set REVIEW if no other KEEP reasons exist
-      if (record.status === 'DROP') {
-        record.status = 'REVIEW';
-        record.reasons.push('REVIEW_TEXT_REF');
-      } else {
-        // If already KEEP for other reasons, just add the reason
-        record.reasons.push('REVIEW_TEXT_REF');
-      }
-      
-      // Add classification note for faster future reviews
-      if (textRefs.docsOnly) {
-        record.notes = (record.notes ? `${record.notes}; ` : '') + 
-          `docs-only reference (${textRefs.refs.length} file(s): ${textRefs.refs.slice(0, 3).join(', ')}${textRefs.refs.length > 3 ? '...' : ''})`;
-      } else {
-        record.notes = (record.notes ? `${record.notes}; ` : '') + 
-          `text reference in ${textRefs.refs.length} file(s): ${textRefs.refs.slice(0, 3).join(', ')}${textRefs.refs.length > 3 ? '...' : ''}`;
-      }
+      record.notes = (record.notes ? `${record.notes}; ` : '') +
+        `text reference in ${textRefs.refs.length} file(s): ${textRefs.refs.slice(0, 3).join(', ')}${textRefs.refs.length > 3 ? '...' : ''}`;
     }
+  } else if (textRefs.found && record.status === 'KEEP') {
+    // If already KEEP, just add the text ref reason for completeness
+    record.reasons.push('REVIEW_TEXT_REF');
   }
 
   results.push(record);
