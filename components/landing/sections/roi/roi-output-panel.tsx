@@ -23,23 +23,24 @@ export function RoiOutputPanel({ revenueGrowth, newDeals, workdaysSaved }: Props
             rounded-2xl border border-[hsl(var(--ring))] 
             bg-[hsl(var(--surface-selected))]/15 
             shadow-sm
-            flex flex-row items-center
+            grid items-center
+            grid-cols-[56px_1fr_56px] md:grid-cols-[72px_1fr_72px]
             min-h-[168px]
             p-4 md:p-6
             h-full
           "
           aria-label="Revenue Growth"
         >
-          {/* Left 1/5: Icon container */}
-          <div className="flex-[0_0_20%] flex items-center justify-center pr-2 md:pr-4">
+          {/* Left gutter: Icon */}
+          <div className="flex items-center justify-center">
             <TrendingUp 
-              className="w-12 h-12 md:w-16 md:h-16 text-[hsl(var(--ring))]" 
+              className="block w-12 h-12 md:w-16 md:h-16 text-[hsl(var(--ring))]" 
               aria-hidden="true"
             />
           </div>
           
-          {/* Right 4/5: Content container */}
-          <div className="flex-[0_0_80%] flex flex-col justify-center items-center pl-2 md:pl-4">
+          {/* Center column: KPI stack (true centered) */}
+          <div className="flex flex-col items-center justify-center text-center">
             {/* Title */}
             <h3 className="text-sm md:text-base font-semibold tracking-tight text-[hsl(var(--foreground))] text-center mb-1.5 md:mb-2">
               Revenue Growth
@@ -57,6 +58,9 @@ export function RoiOutputPanel({ revenueGrowth, newDeals, workdaysSaved }: Props
               Estimated annual lift with your current settings.
             </p>
           </div>
+
+          {/* Right gutter: Spacer to balance icon column */}
+          <div aria-hidden="true" />
         </section>
       </div>
 
