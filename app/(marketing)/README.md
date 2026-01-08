@@ -1,6 +1,6 @@
 ---
 status: "active"
-last_updated: "2025-11-03"
+last_updated: "2026-01-07"
 category: "documentation"
 ---
 ## 🚀 Quick Reference
@@ -13,7 +13,7 @@ category: "documentation"
 | `/privacy` | Privacy Policy | `privacy/page.tsx` | Node.js |
 | `/cookies` | Cookie Notice | `cookies/page.tsx` | Node.js |
 | `/contact` | Contact form and information | `contact/page.tsx` | Node.js |
-| `/insights` | Blog/insights index with categories | `insights/page.tsx` | Node.js |
+| `/insights` | Blog/insights index with search, sort, and category filtering | `insights/page.tsx` | Node.js |
 | `/insights/[slug]` | Article detail pages | `insights/[slug]/page.tsx` | Node.js |
 | `/insights/categories/[category]` | Category-specific insights | `insights/categories/[category]/page.tsx` | Node.js |
 | `/pricing` | Pricing plans with billing toggle | `pricing/page.tsx` | Node.js |
@@ -29,7 +29,6 @@ app/(marketing)/
 ├── page.tsx                     # Landing page (static generation, 1hr revalidate)
 ├── loading.tsx                  # Marketing-specific loading state
 ├── error.tsx                    # Marketing error boundary
-├── route.config.ts              # Public access, force-cache, SEO indexing enabled
 ├── legal/                       # Legal pages index (navigation hub)
 │   └── page.tsx                 # Legal index page (noindex)
 ├── terms/                       # Terms of Service
@@ -76,15 +75,26 @@ app/(marketing)/
 - **SEO**: Base metadata with canonical `https://getcorso.com/`
 
 ### Route Configuration
+
+Route configuration is handled via inline exports in layout and page files:
+
 ```ts
-export const route = {
-  access: 'public',
-  cache: 'force-cache',
-  revalidate: 60,
-  seo: { index: true },
-  owners: ['marketing'],
-} as const;
+// app/(marketing)/layout.tsx
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+// app/(marketing)/page.tsx (landing page - static generation)
+export const runtime = 'nodejs';
+export const dynamic = 'force-static';
+export const revalidate = 3600; // 1 hour
 ```
+
+**Configuration details:**
+- **Runtime**: Node.js (required for Clerk telemetry compatibility)
+- **Dynamic**: Most routes use `force-dynamic`; landing page uses `force-static` for performance
+- **Revalidate**: Landing page uses 1 hour ISR; other routes are always dynamic
+- **SEO**: Marketing pages are indexed (configured via metadata exports)
 
 ## Page Implementations
 
@@ -93,8 +103,9 @@ export const route = {
 ```tsx
 // FILE: app/(marketing)/page.tsx
 // Runtime: kept on nodejs due to Clerk keyless telemetry (see README)
-import { Hero, LandingLayout, LazyMarketInsightsSection, ProductShowcase, UseCaseExplorer } from '@/components/landing';
-import { FullWidthSection } from '@/components/ui';
+import { FullWidthSection, PublicLayout } from '@/components';
+import { Hero, IndustryExplorer, LazyMarketInsightsSection, ProductShowcase } from '@/components/landing';
+import { landingNavItems } from '@/components/landing/layout/nav.config';
 
 export const dynamic = "force-static";
 export const revalidate = 3600; // 1 hour
@@ -102,53 +113,49 @@ export const runtime = "nodejs";
 
 export default function MarketingHomePage() {
   return (
-    <LandingLayout>
+    <PublicLayout navMode="landing" navItems={landingNavItems}>
       <FullWidthSection
-        padding="sm"
+        padding="hero"
         containerMaxWidth="7xl"
         containerPadding="lg"
-        showVerticalGuidelines
-        guidesVisibility="always"
-        opacity="none"
-        guidelineColor="bg-border"
       >
         <Hero />
       </FullWidthSection>
 
       <FullWidthSection
+        padding="section-sm"
         containerMaxWidth="7xl"
         containerPadding="lg"
-        showVerticalGuidelines
-        guidesVisibility="always"
-        opacity="none"
-        guidelineColor="bg-border"
+        background="showcase"
+        className="border-t border-border pt-0 sm:pt-0"
       >
         <ProductShowcase />
       </FullWidthSection>
 
       <FullWidthSection
+        background="muted"
+        padding="lg"
         containerMaxWidth="7xl"
         containerPadding="lg"
-        showVerticalGuidelines
         guidesVisibility="always"
         opacity="none"
         guidelineColor="bg-border"
+        className="border-t border-border"
       >
-        <UseCaseExplorer />
+        <IndustryExplorer />
       </FullWidthSection>
 
-      {/* Market Insights Section - Consolidated market intelligence dashboard */}
       <FullWidthSection
+        padding="lg"
         containerMaxWidth="7xl"
         containerPadding="lg"
-        showVerticalGuidelines
         guidesVisibility="always"
         opacity="none"
         guidelineColor="bg-border"
       >
         <LazyMarketInsightsSection controlsVariant="dropdown" dense stickyMetrics />
       </FullWidthSection>
-    </LandingLayout>
+    </PublicLayout>
   );
 }
 ```
@@ -166,18 +173,21 @@ export const dynamic = "force-dynamic";
 
 import { PricingPage } from "@/components/marketing";
 import { PublicLayout } from "@/components/ui/organisms";
-import { PRICING_UI, formatPriceUSD } from "@/lib/marketing/pricing/plan-ui";
+import { PRICING_UI, formatPriceUSD } from "@/components";
 import { useRouter } from "next/navigation";
 import ScrollToFAQ from "./scroll-to-faq";
+import { landingNavItems } from "@/components/landing/layout/nav.config";
 
-// Transform PRICING_UI data into PricingPlan format (monthly only)
+// Transform PRICING_UI data into PricingPlan format (monthly pricing only)
 const pricingPlans = Object.entries(PRICING_UI).map(([key, plan]) => ({
   slug: key,
   title: plan.label,
   priceText: formatPriceUSD(plan.monthlyUsd) + '/mo',
+  priceNote: 'billed monthly',
   description: plan.tagline,
   features: plan.features,
-  ctaText: "Sign up",
+  ctaText: "Start free",
+  popular: plan.popular,
 }));
 
 // FAQ data
@@ -218,13 +228,13 @@ export default function PublicPricingPage() {
   };
 
   return (
-    <PublicLayout navMode="minimal">
+    <PublicLayout navMode="landing" navItems={landingNavItems}>
       <ScrollToFAQ />
       <PricingPage
         plans={pricingPlans}
         faqs={faqItems}
         headerTitle="Choose Your Plan"
-        headerSubtitle="Unlock real-time project, company, and address insights."
+        headerSubtitle="Start with a 7-day free trial."
         onPlanSelect={handlePlanSelect}
       />
     </PublicLayout>
@@ -280,7 +290,7 @@ import {
     ContactFormWrapper,
     LegalPageSection,
 } from "@/components/marketing";
-import { submitContactForm } from "@/actions";
+import { submitContactForm } from "./contact/actions";
 import type { ContactFormSubmitData } from "@/types/forms";
 import type { Metadata } from "next";
 
@@ -328,19 +338,34 @@ export default function ContactPage() {
 ### Insights Pages (`/insights/*`)
 
 #### Index Page (`insights/page.tsx`)
+
+**Key Features:**
+- **Use Case Explorer Section**: Includes the Industry Explorer section between hero and category filter (wrapped in `FullWidthSection` with `background="showcase"`)
+- **URL Query Param Sync**: Category filter state syncs with URL (`?category=technology`) for shareable filtered views
+- **Suspense Boundary**: Category filter wrapped in Suspense for proper Next.js App Router compatibility
+- **Consistent Container Width**: Uses `max-w-7xl` with responsive padding (`px-4 sm:px-6 lg:px-8`) for alignment
+- **ARIA Tablist Pattern**: Complete ARIA implementation for category filter tabs with proper tabpanel association
+- **URL Parameters**: Supports `?category=slug`, `?q=search`, and `?sort=newest|oldest|title` for shareable filtered views
+- **Search & Sort**: Client-side search (title + description) and sort (newest/oldest/title) with URL sync
+- **Responsive Category Filter**: Mobile dropdown select, desktop horizontal scrollable chips
+- **ISR Caching**: Uses `revalidate=300` (5 minutes) for performance while supporting URL query params
 ```tsx
 // Runtime: kept on nodejs due to Clerk keyless telemetry (see README)
 // app/(marketing)/insights/page.tsx
 // This is a server component page. Keep server exports and render client components inside.
-import { InsightsHero } from "@/components/insights";
-import { CategoryFilterClient } from "@/components/insights/clients";
-import { InsightsLayout } from "@/components/insights/layout/insights-layout";
-import { getAllInsights } from "@/lib/marketing";
+import { FullWidthSection, PublicLayout } from "@/components";
+import { CategoryFilterClient, InsightsHero } from "@/components/insights";
+import { IndustryExplorer } from "@/components/landing";
+import { CATEGORIES_UI } from "@/components/insights/constants";
+import { getInsightsNavItems } from "@/components/insights/layout/nav.config";
+import { getAllInsights, getCategories } from "@/lib/marketing/server";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
 export const runtime = "nodejs";
-export const dynamic = "force-static";
-export const revalidate = 0;
+// Use ISR for static content - revalidate every 5 minutes
+// This allows URL query params (category, q, sort) while still benefiting from caching
+export const revalidate = 300; // 5 minutes
 
 export const metadata: Metadata = {
   title: "Insights | Corso",
@@ -357,55 +382,72 @@ export const metadata: Metadata = {
   },
 };
 
-const CATEGORIES = [
-  { key: 'all', label: 'All' },
-  { key: 'technology', label: 'Technology' },
-  { key: 'market-analysis', label: 'Market Analysis' },
-  { key: 'sustainability', label: 'Sustainability' },
-  { key: 'cost-management', label: 'Cost Management' },
-  { key: 'safety', label: 'Safety' },
-];
-
 export default async function InsightsPage() {
   const rawItems = await getAllInsights();
-  const items = rawItems.map((insight: any) => ({
-    slug: insight.slug,
-    title: insight.title,
-    excerpt: insight.description || '',
-    date: insight.publishDate ? new Date(insight.publishDate).toLocaleDateString() : '',
-    category: insight.categories?.[0]?.name || 'General',
-    imageUrl: insight.imageUrl,
-    readingTime: insight.readingTime ? `${insight.readingTime} min read` : undefined,
-  }));
+  const dynamicCategories = await getCategories();
 
-  // counts for chips
+  // Build counts map from actual content - count ALL categories per item, not just first
   const categoryCounts = new Map<string, number>();
-  for (const item of items) {
-    const count = categoryCounts.get(item.category) ?? 0;
-    categoryCounts.set(item.category, count + 1);
+  for (const item of rawItems) {
+    // Iterate through all categories for each item
+    for (const cat of item.categories || []) {
+      const slug = cat.slug || 'general';
+      const count = categoryCounts.get(slug) ?? 0;
+      categoryCounts.set(slug, count + 1);
+    }
   }
 
-  const counts = Object.fromEntries([
-    ['all', items.length] as const,
-    ...Array.from(categoryCounts.entries()).map(([cat, count]) => [cat, count] as const)
-  ]);
-
-  const categoriesWithCounts = CATEGORIES.map(c => ({
+  // Start with curated categories (in UI order) with their counts
+  const curatedWithCounts = CATEGORIES_UI.map(c => ({
     key: c.key,
     label: c.label,
-    count: counts[c.key] ?? 0
+    count: categoryCounts.get(c.key) ?? 0
   }));
 
+  // Find categories from content/CMS that aren't in the curated list
+  const newCategories = dynamicCategories
+    .filter(cat => !CATEGORIES_UI.some(curated => curated.key === cat.slug))
+    .map(cat => ({
+      key: cat.slug,
+      label: cat.name,
+      count: categoryCounts.get(cat.slug) ?? 0
+    }));
+
+  // Combine: "All" first, then curated (in order), then new categories
+  // Filter out categories with 0 counts
+  const categoriesWithCounts = [
+    { key: 'all', label: 'All', count: rawItems.length },
+    ...curatedWithCounts.filter(c => c.count > 0),
+    ...newCategories.filter(c => c.count > 0)
+  ];
+
   return (
-    <InsightsLayout>
-      <div className="mx-auto max-w-6xl px-4 md:px-6">
+    <PublicLayout navMode="insights" navItems={getInsightsNavItems()}>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <InsightsHero
+          className="mt-8"
           title="Construction industry trends, market intel, and practical playbooks."
           description="Stay ahead with curated analysis of construction markets, technology, sustainability, and safety—written for busy teams."
         />
-        <CategoryFilterClient items={items} categories={categoriesWithCounts} />
       </div>
-    </InsightsLayout>
+
+      {/* Use Case Explorer Section */}
+      <FullWidthSection
+        background="showcase"
+        padding="lg"
+        containerMaxWidth="7xl"
+        containerPadding="lg"
+        className="border-t border-border"
+      >
+        <IndustryExplorer />
+      </FullWidthSection>
+
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Suspense fallback={<div className="mt-6 h-12" />}>
+          <CategoryFilterClient items={rawItems} categories={categoriesWithCounts} />
+        </Suspense>
+      </div>
+    </PublicLayout>
   );
 }
 ```
@@ -417,7 +459,7 @@ Category-specific insights pages that filter and display insights by category.
 ```tsx
 // FILE: app/(marketing)/insights/categories/[category]/page.tsx
 import { InsightsLayout, InsightsList } from '@/components/insights';
-import { getAllInsights } from '@/lib/marketing';
+import { getAllInsights } from '@/lib/marketing/server';
 import { trackEvent } from '@/lib/shared/analytics/track';
 import type { Metadata } from 'next';
 
@@ -456,7 +498,20 @@ export default async function CategoryPage({ params }: { params: { category: str
 **Route**: `/insights/[slug]`
 **Runtime**: Node.js
 
-Dynamic article pages with SEO metadata generation:
+Dynamic article pages with SEO metadata generation, reading progress indicator, and breadcrumb navigation:
+
+**Key Features:**
+- **Reading Progress Bar**: Visual progress indicator at the top of the page (enabled via `showReadingProgress={true}` on `PublicLayout`)
+- **Breadcrumb Navigation**: Visible breadcrumb trail (Home > Insights > Article Title) for improved UX
+- **H1 Semantic Structure**: Article title renders as H1 for proper SEO and accessibility
+- **Structured Data**: JSON-LD breadcrumbs and article metadata for search engines (includes `updatedDate` support)
+- **Optimized Layout**: Content width set to `max-w-3xl` (768px) for optimal readability
+- **Unified Metadata Bar**: Date, reading time, and author displayed in a responsive horizontal layout with icons
+- **Enhanced Typography**: Comprehensive prose styling for headings, paragraphs, lists, blockquotes, code blocks, and images
+- **Image Optimization**: Hero images with blur placeholders, lazy loading, and hover effects via `ArticleImage` component
+- **Component Architecture**: Consolidated `InsightHeaderBlock` component with `ArticleMetadata` and `ArticleImage` sub-components
+- **Accessibility**: Full ARIA labels, semantic HTML (`<section>`, `<aside>`, `<figure>`), and microdata support
+- **Responsive Design**: Mobile-first spacing and layout adjustments throughout
 
 ```typescript
 // Runtime: kept on nodejs due to Clerk keyless telemetry (see README)
@@ -467,8 +522,10 @@ Dynamic article pages with SEO metadata generation:
    • Generates SEO metadata from fetched article
    • Uses safe, local interface to avoid mismatch with auto-generated types
 ------------------------------------------------------------------- */
+import { PublicLayout } from "@/components";
 import { InsightDetail } from "@/components/insights";
-import { getInsightBySlug } from "@/lib/marketing";
+import { getInsightsNavItems } from "@/components/insights/layout/nav.config";
+import { getInsightBySlug, getRelatedInsights } from "@/lib/marketing/server";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -526,14 +583,42 @@ export async function generateMetadata({
 
 export default async function InsightPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const item = getInsightBySlug(slug);
+  const item = await getInsightBySlug(slug);
 
   if (!item) notFound();
 
+  // Get related articles using the content service's unified logic
+  const relatedInsights = await getRelatedInsights(item, { limit: 3 });
+  const relatedArticles = relatedInsights.map(insight => ({
+    slug: insight.slug,
+    title: insight.title,
+    ...(insight.description && { excerpt: insight.description }),
+    ...(insight.imageUrl && { imageUrl: insight.imageUrl }),
+    ...(insight.categories && { categories: insight.categories.map(cat => ({ name: cat.name })) }),
+    ...(insight.publishDate && { publishDate: insight.publishDate }),
+    ...(insight.author && { author: { name: insight.author.name, slug: insight.author.name.toLowerCase().replace(/\s+/g, '-') } }),
+    ...(insight.readingTime !== undefined && { readingTime: insight.readingTime }),
+  }));
+
   return (
-    <main>
-      <InsightDetail initialData={item} />
-    </main>
+    <PublicLayout
+      navMode="insights"
+      navItems={getInsightsNavItems()}
+      showReadingProgress={true}
+      showVerticalGuidelines
+    >
+      <div className="px-4 sm:px-6 lg:px-8 py-8">
+        <InsightDetail
+          initialData={item}
+          relatedArticles={relatedArticles}
+          breadcrumbs={[
+            { label: 'Home', href: '/' },
+            { label: 'Insights', href: '/insights' },
+            { label: item.title, href: `/insights/${slug}` },
+          ]}
+        />
+      </div>
+    </PublicLayout>
   );
 }
 ```
@@ -660,12 +745,12 @@ export default function NotFound() {
 |-----------|----------|---------|
 | `Hero` | `components/landing/sections/hero/hero.tsx` | Main hero section |
 | `ProductShowcase` | `components/landing/sections/product-showcase/product-showcase.tsx` | Features showcase |
-| `PricingPage` | `components/marketing/pricing/pricing-page.tsx` | Pricing with plans/FAQ |
+| `PricingPage` | `components/marketing/sections/pricing/pricing-page.tsx` | Pricing with plans/FAQ |
 | `ContactFormWrapper` | `components/marketing/contact/contact-form-wrapper.tsx` | Secure contact form |
 | `InsightsList` | `components/insights/sections/insights-list.tsx` | Blog articles list (3×2 grid) |
-| `PRICING_UI` | `lib/marketing/pricing/plan-ui.ts` | Plan configuration |
+| `PRICING_UI` | `components/marketing/sections/pricing/plan-ui.ts` | Plan configuration |
 | `staticInsights` | `lib/marketing/insights/static-data.ts` | Blog data (6 mock articles) |
-| `submitContactForm` | `actions/marketing/contact-form.ts` | Contact server action |
+| `submitContactForm` | `app/(marketing)/contact/actions.ts` | Contact server action (feature-colocated) |
 
 ## 🧪 Development
 
@@ -687,7 +772,15 @@ pnpm vitest run            # Test components
 - Insights: `http://localhost:3000/insights`
 - Article: `http://localhost:3000/insights/[slug]`
 
+## Related Documentation
+
+- [Marketing Components](../../components/marketing/README.md) - Marketing component documentation
+- [Landing Components](../../components/landing/README.md) - Landing page components
+- [App Directory](../../README.md) - Next.js App Router architecture
+- [Security Standards](../../.cursor/rules/security-standards.mdc) - Security patterns
+
 ---
 
-**Last updated:** 2025-09-10
-
+**Last Updated**: 2026-01-07  
+**Maintained By**: Platform Team  
+**Status**: Active

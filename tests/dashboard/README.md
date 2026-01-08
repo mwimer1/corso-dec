@@ -1,7 +1,9 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+title: "Dashboard"
+description: "Documentation and resources for documentation functionality. Located in dashboard/."
+last_updated: "2026-01-07"
 category: "documentation"
+status: "active"
 ---
 ## Public Exports
 | Test File | Type | Description |
@@ -41,7 +43,8 @@ Dashboard integration tests validate complex user workflows, data synchronizatio
 ### Shallow URL Sync
 ```typescript
 import { renderHook } from '@testing-library/react';
-import { useShallowSyncTableUrlState } from '@/hooks/shared/use-grid-performance';
+// Hooks are now domain-colocated, e.g.:
+// import { useShallowSyncTableUrlState } from '@/components/dashboard/entities/shared/grid/hooks/use-grid-performance';
 
 describe('URL state synchronization', () => {
   it('updates URL when table state changes', () => {
@@ -322,4 +325,3 @@ describe('Dashboard memory management', () => {
 ---
 
 _Last updated: 2025-01-16_
-

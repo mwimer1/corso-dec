@@ -648,7 +648,46 @@ export default {
         const file = context.getFilename().replace(/\\/g, '/');
         const isIgnored = /lib\/.*\/api(-client)?\.ts$/.test(file) || /lib\/.*\/api\//.test(file) || /scripts\//.test(file) || /tests?\//.test(file);
         if (isIgnored) return {};
+        
+        // Track imports to determine if http/https come from Node.js modules
+        const importedIdentifiers = new Map(); // identifier name -> import source
+        
         return {
+          ImportDeclaration(node) {
+            const importPath = node.source.value;
+            if (typeof importPath !== 'string') return;
+            
+            // Track identifiers imported from Node.js http/https modules
+            const isNodeHttpModule = importPath === 'http' || importPath === 'https' || importPath === 'node:http' || importPath === 'node:https';
+            
+            for (const spec of node.specifiers || []) {
+              if (spec.type === 'ImportDefaultSpecifier' && spec.local) {
+                const localName = spec.local.name;
+                if (isNodeHttpModule) {
+                  importedIdentifiers.set(localName, importPath);
+                } else {
+                  // Track non-Node imports too, so we can allow them (e.g., @/lib/api)
+                  importedIdentifiers.set(localName, importPath);
+                }
+              } else if (spec.type === 'ImportSpecifier' && spec.local && spec.imported) {
+                const localName = spec.local.name;
+                // For named imports like "import { http } from '@/lib/api'"
+                // Track if the imported or local name is http/https
+                if (localName === 'http' || localName === 'https') {
+                  importedIdentifiers.set(localName, importPath);
+                } else if (spec.imported.type === 'Identifier' && (spec.imported.name === 'http' || spec.imported.name === 'https')) {
+                  importedIdentifiers.set(localName, importPath);
+                }
+              } else if (spec.type === 'ImportNamespaceSpecifier' && spec.local) {
+                const localName = spec.local.name;
+                if (isNodeHttpModule) {
+                  importedIdentifiers.set(localName, importPath);
+                } else {
+                  importedIdentifiers.set(localName, importPath);
+                }
+              }
+            }
+          },
           CallExpression(node) {
             const callee = node.callee;
             if (callee.type === 'Identifier' && callee.name === 'axios') {
@@ -657,7 +696,13 @@ export default {
             if (callee.type === 'MemberExpression' && callee.object && callee.object.type === 'Identifier') {
               const obj = callee.object.name;
               if (obj === 'http' || obj === 'https') {
-                context.report({ node: callee, message: 'Use internal API wrappers instead of http/https in app code.' });
+                // Check if this identifier comes from a Node.js module
+                const importSource = importedIdentifiers.get(obj);
+                if (importSource && (importSource === 'http' || importSource === 'https' || importSource === 'node:http' || importSource === 'node:https')) {
+                  context.report({ node: callee, message: 'Use internal API wrappers instead of http/https in app code.' });
+                }
+                // If importSource is undefined, it might be a global (less common but possible)
+                // If importSource exists but is not a Node module (e.g., '@/lib/api'), allow it
               }
             }
           }
@@ -682,6 +727,21 @@ export default {
               if (/^''$/.test(src) || /(\?|\|\|)\s*''\s*\}?$/.test(src)) {
                 context.report({ node: attr, message: 'Avoid empty/constant nonce on <Script>; use conditional spread instead.' });
               }
+            }
+          }
+        };
+      }
+    },
+    'no-edge-runtime-on-pages': {
+      meta: { type: 'problem', docs: { description: 'Disallow Edge runtime in pages/layouts (use default runtime for SSG/ISR)' } },
+      create(context) {
+        const filename = context.getFilename().replace(/\\/g, '/');
+        if (!/app\/.*\/(page|layout)\.tsx$/.test(filename)) return {};
+        return {
+          Program(node) {
+            const source = context.getSourceCode();
+            if (/export\s+const\s+runtime\s*=\s*['"]edge['"]/.test(source.text)) {
+              context.report({ node, message: 'Pages/layouts must not specify runtime="edge". Use default (node) runtime.' });
             }
           }
         };
@@ -962,7 +1022,7 @@ export default {
           recommended: true,
         },
         messages: {
-          serverOnlyInClient: 'Server-only import "{{importPath}}" detected in client code. Use client-safe alternatives like @/lib/shared/config/client or @/lib/shared/server for server-only code.',
+          serverOnlyInClient: 'Server-only import "{{importPath}}" detected in client code. Use client-safe alternatives like @/lib/shared/config/client or @/lib/server/shared/server for server-only code.',
           serverOnlyInEdge: 'Server-only import "{{importPath}}" detected in edge route. Use edge-safe alternatives or move to Node.js runtime.',
         },
       },
@@ -1311,29 +1371,103 @@ export default {
       }
     },
     'no-deprecated-lib-imports': {
-      meta: { type: 'problem', docs: { description: 'Use domain barrels instead of deprecated lib paths' } },
+      meta: {
+        type: 'problem',
+        docs: { description: 'Use domain barrels instead of deprecated lib paths' },
+        schema: [
+          {
+            type: 'object',
+            properties: {
+              configPath: { type: 'string' }
+            },
+            additionalProperties: false
+          }
+        ]
+      },
       create(context) {
-        const deprecatedPaths = [
-          '@/lib/actions/rate-limiting',
-          '@/lib/api/response/handlers',
-          '@/lib/api/env',
-          '@/lib/shared/assets.ts',
-          '@/lib/shared/env.ts',
-          '@/lib/shared/validation.ts',
-          '@/lib/validators/chat.ts',
-          '@/lib/validators/marketing.ts'
-        ];
+        const options = context.options?.[0] ?? {};
+        const configPath = options.configPath || 'eslint-plugin-corso/rules/deprecated-imports.json';
+
+        // Load deprecated imports config
+        let deprecatedConfig = { deprecatedImports: [] };
+        try {
+          const absPath = path.isAbsolute(configPath) ? configPath : path.join(process.cwd(), configPath);
+          const raw = fs.readFileSync(absPath, 'utf8');
+          deprecatedConfig = JSON.parse(raw);
+        } catch {
+          // If config cannot be read, do not crash ESLint – use empty config
+          deprecatedConfig = { deprecatedImports: [] };
+        }
+
+        const filename = context.getFilename().replace(/\\/g, '/');
+        const repoRoot = process.cwd().replace(/\\/g, '/');
+        const relativeFilename = filename.startsWith(repoRoot) ? filename.slice(repoRoot.length + 1) : filename;
+
+        // Helper function to check if import is deprecated
+        function checkDeprecatedImport(importPath, reportNode) {
+          if (typeof importPath !== 'string') return;
+
+          for (const rule of deprecatedConfig.deprecatedImports || []) {
+            // Check allowlist first
+            if (rule.allowlist && Array.isArray(rule.allowlist)) {
+              if (rule.allowlist.some(allowed => relativeFilename === allowed || relativeFilename.endsWith('/' + allowed))) {
+                continue; // File is allowlisted, skip this rule
+              }
+            }
+
+            // Check exact path match
+            if (rule.path && importPath === rule.path) {
+              const message = rule.message || `Import path '${importPath}' is deprecated.${rule.replacement ? ` Use '${rule.replacement}' instead.` : ''}`;
+              context.report({
+                node: reportNode,
+                message
+              });
+              return; // Only report once per import
+            }
+
+            // Check pattern match
+            if (rule.pattern) {
+              try {
+                const patternRegex = new RegExp(rule.pattern);
+                if (patternRegex.test(importPath)) {
+                  const message = rule.message || `Import path '${importPath}' matches deprecated pattern '${rule.pattern}'.${rule.replacement ? ` Use '${rule.replacement}' instead.` : ''}`;
+                  context.report({
+                    node: reportNode,
+                    message
+                  });
+                  return; // Only report once per import
+                }
+              } catch {
+                // Invalid regex pattern, skip
+                continue;
+              }
+            }
+          }
+        }
 
         return {
           ImportDeclaration(node) {
             const importPath = node.source.value;
-            if (typeof importPath !== 'string') return;
-
-            if (deprecatedPaths.includes(importPath)) {
-              context.report({
-                node: node.source,
-                message: `Import path '${importPath}' is deprecated. Use the domain barrel instead (see README).`
-              });
+            checkDeprecatedImport(importPath, node.source);
+          },
+          // Also check dynamic imports
+          CallExpression(node) {
+            if (node.callee.type === 'Import') {
+              // Dynamic import: import('path')
+              const importPath = node.arguments[0]?.type === 'Literal' ? node.arguments[0].value : null;
+              if (typeof importPath === 'string') {
+                checkDeprecatedImport(importPath, node.arguments[0]);
+              }
+            } else if (
+              node.callee.type === 'Identifier' &&
+              node.callee.name === 'require' &&
+              node.arguments[0]?.type === 'Literal'
+            ) {
+              // require('path')
+              const importPath = node.arguments[0].value;
+              if (typeof importPath === 'string') {
+                checkDeprecatedImport(importPath, node.arguments[0]);
+              }
             }
           }
         };
@@ -1410,17 +1544,7 @@ export default {
             const importPath = node.source.value;
             if (typeof importPath !== 'string') return;
 
-            // Check for deep context imports
-            if (importPath.startsWith('@/contexts/') && importPath.includes('/') && !importPath.endsWith('/')) {
-              // Split the path to check if it has more than one level
-              const pathParts = importPath.replace('@/contexts/', '').split('/');
-              if (pathParts.length > 1) {
-                context.report({
-                  node: node.source,
-                  message: "Import contexts via '@/contexts' barrel; avoid deep subpath imports."
-                });
-              }
-            }
+            // Note: contexts/ directory was removed - providers are now in app/providers/
           }
         };
       }
@@ -1475,11 +1599,11 @@ export default {
       }
     },
     'no-clerkprovider-outside-root': {
-      meta: { type: 'problem', docs: { description: 'Use centralized ClerkProvider in contexts/providers.tsx only' } },
+      meta: { type: 'problem', docs: { description: 'Use centralized ClerkProvider in app/providers.tsx only' } },
       create(context) {
         const filename = context.getFilename().replace(/\\/g, '/');
-        // Allow in providers.tsx file
-        if (filename.includes('contexts/providers.tsx')) return {};
+        // Allow in app/providers.tsx file
+        if (filename.includes('app/providers.tsx')) return {};
 
         return {
           ImportDeclaration(node) {
@@ -1494,7 +1618,7 @@ export default {
                   if (spec.imported.name === 'ClerkProvider') {
                     context.report({
                       node: spec,
-                      message: "Use the centralized ClerkProvider in contexts/providers.tsx only. Do not import ClerkProvider directly elsewhere."
+                      message: "Use the centralized ClerkProvider in app/providers.tsx only. Do not import ClerkProvider directly elsewhere."
                     });
                   }
                 }
@@ -1709,6 +1833,74 @@ export default {
                   node,
                   messageId: 'invalidRuntimeValue',
                 });
+              }
+            }
+          }
+        };
+      }
+    },
+    'no-direct-supabase-admin': {
+      meta: {
+        type: 'problem',
+        docs: {
+          description: 'Prevent direct usage of getSupabaseAdmin. Use tenant-scoped client wrapper instead.',
+          recommended: true,
+        },
+        messages: {
+          directUsage: 'Direct usage of getSupabaseAdmin() is forbidden. Use getTenantScopedSupabaseClient() or withTenantClient() from @/lib/server/db/supabase-tenant-client to ensure RLS context is set.',
+        },
+      },
+      create(context) {
+        const filename = context.getFilename().replace(/\\/g, '/');
+        
+        // Allow in the tenant client wrapper itself and the server module that defines it
+        if (filename.includes('lib/server/db/supabase-tenant-client.ts') ||
+            filename.includes('lib/integrations/supabase/server.ts') ||
+            filename.includes('lib/integrations/supabase/api.ts')) {
+          return {};
+        }
+
+        // Allow in tests
+        if (/(tests?|__tests__|\.(spec|test)\.)/.test(filename)) {
+          return {};
+        }
+
+        return {
+          CallExpression(node) {
+            // Check for getSupabaseAdmin() calls
+            if (node.callee && node.callee.type === 'Identifier' && node.callee.name === 'getSupabaseAdmin') {
+              context.report({
+                node,
+                messageId: 'directUsage',
+              });
+            }
+            // Check for getSupabaseAdmin imported and called
+            if (node.callee && node.callee.type === 'MemberExpression' &&
+                node.callee.property && node.callee.property.type === 'Identifier' &&
+                node.callee.property.name === 'getSupabaseAdmin') {
+              context.report({
+                node,
+                messageId: 'directUsage',
+              });
+            }
+          },
+          ImportDeclaration(node) {
+            const importPath = node.source.value;
+            if (typeof importPath !== 'string') return;
+
+            // Check if importing getSupabaseAdmin from integrations
+            if (importPath === '@/lib/integrations' || importPath === '@/lib/integrations/supabase/server') {
+              for (const spec of node.specifiers || []) {
+                if (spec.type === 'ImportSpecifier' && spec.imported && spec.imported.name === 'getSupabaseAdmin') {
+                  context.report({
+                    node: spec,
+                    messageId: 'directUsage',
+                  });
+                }
+                if (spec.type === 'ImportDefaultSpecifier' || spec.type === 'ImportNamespaceSpecifier') {
+                  // Check if default/namespace import might contain getSupabaseAdmin
+                  // This is a best-effort check
+                }
               }
             }
           }

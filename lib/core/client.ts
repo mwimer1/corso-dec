@@ -8,24 +8,18 @@
  * `@/lib/core/server` instead.
  */
 
-/* ── Configuration Types (Client-Safe) ─────────────────────────────────── */
-/**
- * Exports client-safe configuration types.
- */
-export type { SecurityConfig } from '@/types/config/security/types';
-export type { ValidationResult } from '@/types/shared';
-
 // ValidatorResult alias removed - was unused per audit
+// SecurityConfig and ValidationResult removed - unused exports per dead code audit
 
 /* ── Errors (Client-Safe) ─────────────────────────────────────────────────── */
 /**
  * Exports the ApplicationError class for client-safe error handling.
  */
-export { ApplicationError } from '../shared/errors/application-error';
+export { ApplicationError } from '@/lib/shared/errors/application-error';
 /**
  * Exports error category and severity enums for client-safe error classification.
  */
-export { ErrorCategory, ErrorSeverity } from '../shared/errors/types';
+export { ErrorCategory, ErrorSeverity } from '@/lib/shared/errors/types';
 /* ── Validation (Client-Safe) ─────────────────────────────────────────────── */
 /**
  * Exports assertZodSchema for client-side Zod validation assertion.
@@ -38,7 +32,7 @@ export { ErrorCategory, ErrorSeverity } from '../shared/errors/types';
 /**
  * Exports the clientLogger and publicEnv for client-safe logging and environment access.
  */
-export { logger as clientLogger } from '../shared/config/client';
+export { logger as clientLogger } from '@/lib/shared/config/client';
 
 /* ── Billing Types (Client-Safe) ──────────────────────────────────────────── */
 /**

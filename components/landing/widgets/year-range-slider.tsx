@@ -2,7 +2,8 @@
 
 // Year range control using shared Radix Slider atom
 import { Slider } from "@/components/ui/atoms/slider";
-import React, { useMemo, useRef } from "react";
+import { Badge } from "@/components/ui/atoms/badge";
+import React, { useMemo, useRef, useCallback } from "react";
 
 type Props = {
   value: [number, number];
@@ -16,6 +17,11 @@ type Props = {
   compact?: boolean;
   /** Optional class on outer wrapper */
   className?: string;
+  /**
+   * Whether to show the current range as a badge next to the label.
+   * Default: true (backwards compatible).
+   */
+  showSelectedIndicator?: boolean;
 };
 
 /** Controlled range slider with optional inline value "bubbles" (no custom Slider props required). */
@@ -28,6 +34,7 @@ export const YearRangeSlider: React.FC<Props> = ({
   showBubbles = true,
   compact = false,
   className,
+  showSelectedIndicator = true,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -39,26 +46,41 @@ export const YearRangeSlider: React.FC<Props> = ({
     return null;
   }, []);
 
+  // Memoize handlers to prevent recreation on every render
+  // This ensures Radix UI maintains stable references during drag operations
+  const handleValueChange = useCallback((vals: number[]) => {
+    onChange([vals[0] as number, vals[1] as number]);
+  }, [onChange]);
+
+  const handleValueCommit = useCallback((vals: number[]) => {
+    onCommit?.([vals[0] as number, vals[1] as number]);
+  }, [onCommit]);
+
+  // Memoize value array to prevent unnecessary prop changes
+  const sliderValue = useMemo(() => [min, max] as [number, number], [min, max]);
+
   return (
     <div className={`${compact ? "mb-2" : "mb-6"} px-1 ${className ?? ""}`.trim()}>
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-base font-medium text-foreground">Year range</h3>
-        <span className="rounded border border-border bg-surface px-2 py-1 text-xs text-muted-foreground">
-          {min} — {max}
-        </span>
+        <h3 className="text-sm font-medium text-foreground">Year range</h3>
+        {showSelectedIndicator && (
+          <Badge color="secondary" className="text-xs">
+            {min}–{max}
+          </Badge>
+        )}
       </div>
       <div ref={containerRef} className="relative">
         {bubbles}
         <Slider
-          value={[min, max]}
-          onValueChange={(vals) => onChange([vals[0] as number, vals[1] as number])}
-          {...(onCommit && { onValueCommit: (vals) => onCommit([vals[0] as number, vals[1] as number]) })}
+          value={sliderValue}
+          onValueChange={handleValueChange}
+          {...(onCommit && { onValueCommit: handleValueCommit })}
           min={minYear}
           max={maxYear}
           step={1}
-          className="w-full shadow-inner shadow-black/5"
+          className="w-full"
           size="sm"
-          thumbSize="lg"
+          thumbSize="xl"
           aria-label="Year range"
           showTooltips={showBubbles}
           formatValue={(n) => String(n)}
@@ -67,10 +89,6 @@ export const YearRangeSlider: React.FC<Props> = ({
         <div className="flex justify-between text-xs text-muted-foreground mt-1 px-1">
           <span className="font-medium">{minYear}</span>
           <span className="font-medium">{maxYear}</span>
-        </div>
-        <div className="relative h-2 mt-1">
-          <div className="absolute left-0 top-0 h-2 w-px bg-border" />
-          <div className="absolute right-0 top-0 h-2 w-px bg-border" />
         </div>
       </div>
     </div>

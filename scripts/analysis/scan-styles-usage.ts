@@ -70,7 +70,7 @@ function main() {
   }
 
   // Validate allowlist file
-  const allowlistPath = resolve(ROOT, 'scripts/analysis/data/styles-keep-allowlist.json');
+  const allowlistPath = resolve(ROOT, 'scripts/analysis/styles-keep-allowlist.json');
   const allowlistResult = validateAllowlistFile(allowlistPath);
 
   if (!allowlistResult.success) {

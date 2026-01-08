@@ -1,3 +1,14 @@
+#!/usr/bin/env tsx
+/**
+ * Audits GitHub Actions workflows for secrets usage and generates security report.
+ * 
+ * Runs gitleaks to detect secrets in the repository, then audits workflow files
+ * to ensure secrets are properly referenced (not hardcoded) and generates a report.
+ * 
+ * Intent: Ensure secrets are properly managed in CI/CD workflows
+ * Files: YAML files in .github/workflows directory
+ * Invocation: pnpm audit:secrets
+ */
 import { spawnSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import path, { basename, dirname, extname, resolve } from "node:path";
@@ -15,7 +26,8 @@ if (run.error || run.status !== 0) {
   console.error(
     "gitleaks not found or scan failed. Install it via `pnpm tools:gitleaks:install` and re-run."
   );
-  process.exit(run.status ?? 1);
+  process.exitCode = run.status ?? 1;
+  // Continue to workflow audit even if gitleaks fails
 }
 
 const WORKFLOWS_DIR = '.github/workflows';
@@ -145,8 +157,8 @@ console.log(`📄 Full report generated: ${REPORT_FILE}`);
 
 if (secretWorkflows > protectedWorkflows) {
   console.log(`⚠️  Warning: ${secretWorkflows - protectedWorkflows} workflows use secrets without fork protection`);
-  process.exit(1);
-}
-
-console.log('✅ Security audit completed successfully'); 
+  process.exitCode = 1;
+} else {
+  console.log('✅ Security audit completed successfully');
+} 
 

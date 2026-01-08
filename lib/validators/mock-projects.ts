@@ -28,7 +28,7 @@ const toISODateOrNull = (v: unknown) => {
 };
 
 /**
- * Raw row coming from mock JSON/CSV (loose, coercive via preprocess)
+ * Raw row coming from mock JSON fixtures (loose, coercive via preprocess)
  * @public
  * Note: Used indirectly through @/lib/validators/testing barrel
  */

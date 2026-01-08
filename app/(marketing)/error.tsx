@@ -1,8 +1,10 @@
 'use client';
 
-import { ErrorFallback } from "@/components/ui/organisms";
+import { createErrorBoundary } from '@/app/shared/create-error-boundary';
 
-export default function MarketingError({ error, reset }: { error: Error; reset: () => void }) {
-  return <ErrorFallback error={error} resetErrorBoundary={reset} />;
-}
+/**
+ * Error boundary for marketing routes.
+ * Catches errors within the marketing section and provides recovery UI.
+ */
+export default createErrorBoundary({ context: 'Marketing' });
 

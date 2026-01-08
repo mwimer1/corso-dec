@@ -1,0 +1,124 @@
+name: Scheduled Maintenance
+
+on:
+  schedule:
+    # Weekly maintenance on Mondays at 6 AM UTC
+    - cron: '0 6 * * 1'
+    # Monthly dependency review on first Monday at 9 AM UTC
+    - cron: '0 9 1-7 * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  pull-requests: write
+
+jobs:
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup-node-pnpm
+        with:
+          run-install: 'true'
+
+      - name: Audit Dependencies
+        run: |
+          echo "## Dependency Audit Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          pnpm audit --audit-level=moderate >> $GITHUB_STEP_SUMMARY || true
+
+      - name: Check for Outdated Dependencies
+        run: |
+          echo "## Outdated Dependencies" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          pnpm outdated >> $GITHUB_STEP_SUMMARY || true
+
+  documentation-review:
+    name: Documentation Review
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup-node-pnpm
+        with:
+          run-install: 'true'
+
+      - name: Check Documentation Freshness
+        run: pnpm docs:stale:check
+
+      - name: Validate Documentation Links
+        run: pnpm docs:links
+
+      - name: Validate Documentation Structure
+        run: pnpm docs:validate
+
+  security-scan:
+    name: Comprehensive Security Scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup-node-pnpm
+        with:
+          run-install: 'true'
+
+      - name: Run Security Audit
+        run: |
+          echo "## Security Audit Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          pnpm audit:ai >> $GITHUB_STEP_SUMMARY || true
+          pnpm audit:ci >> $GITHUB_STEP_SUMMARY || true
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@ad2a4837011b42f6947b78d6417e7c253b1c504b # v3
+        with:
+          languages: javascript
+          config-file: ./.github/codeql/codeql-config.yml
+
+      - name: Build for CodeQL
+        run: pnpm build:offline
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@ad2a4837011b42f6947b78d6417e7c253b1c504b # v3
+
+  code-quality-metrics:
+    name: Code Quality Metrics
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup-node-pnpm
+        with:
+          run-install: 'true'
+
+      - name: Generate Quality Report
+        run: |
+          echo "## Code Quality Metrics" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          echo "### Test Coverage" >> $GITHUB_STEP_SUMMARY
+          pnpm test:coverage --reporter=json > coverage.json || true
+          
+          echo "### Circular Dependencies" >> $GITHUB_STEP_SUMMARY
+          pnpm madge:ci >> $GITHUB_STEP_SUMMARY || echo "No circular dependencies found" >> $GITHUB_STEP_SUMMARY
+          
+          echo "### Code Duplication" >> $GITHUB_STEP_SUMMARY
+          pnpm jscpd:ci >> $GITHUB_STEP_SUMMARY || true
+

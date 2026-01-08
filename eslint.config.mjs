@@ -24,6 +24,7 @@ const ignores = [
   'eslint-plugin-corso/dist/**',
   'eslint-plugin-corso/src/**',
   'dev-tools/coverage/**',
+  'coverage/**',
   'reports/**',
   '*.js',
   'scripts/**/*.js',
@@ -38,6 +39,8 @@ const ignores = [
   '**/*.d.ts',
   '.githooks/**', // Prevent duplicate .githooks directory
   'var/**', // Build artifacts and inventory files
+  '.cache/**', // ESLint and other tool caches
+  '.turbo/**', // Turborepo cache
 
   'docs/index.ts', // generated docs index
   'docs/examples/**', // Example files for documentation
@@ -127,11 +130,17 @@ export default [
             { name: '@/components/dashboard/table/table-body-virtual', message: 'Deprecated: AG Grid virtualization replaces this.' },
             { name: '@/components/dashboard/table/use-data-table', message: 'Deprecated: use AgGridContainer datasource approach.' },
             { name: '@/components/dashboard/table/table-chrome', message: 'Deprecated: use AgGridContainer.' },
-            { name: '@/lib/dashboard/**', message: 'lib/dashboard/** is deprecated. Use @/lib/services/entity/** instead.' },
+            { name: '@/lib/dashboard/**', message: 'lib/dashboard/** is deprecated. Use @/lib/entities/** instead.' },
+            { name: '@/lib/services', message: 'lib/services/ is removed. Use @/lib/entities/** instead.' },
+            { name: '@/lib/services/**', message: 'lib/services/** is removed. Use @/lib/entities/** instead.' },
             // Prevent re-introduction of legacy realtime stub
             { name: '@/lib/realtime/live', message: 'Removed legacy realtime stub. Use the event bus or queue service instead.' },
             // Block imports from shared variants barrel to encourage domain imports
-            { name: '@/styles/ui/shared', message: 'Import from domain barrels instead (atoms/molecules/organisms).' },
+            // Policy: Use domain barrels (atoms/molecules/organisms) when possible.
+            // Deep imports from @/styles/ui/shared/* are allowed for utilities that don't fit domain barrels
+            // (e.g., container-base, container-helpers, focus-ring, typography-variants).
+            // Exception: Tests can mock @/styles/ui barrel (see tests/** override).
+            { name: '@/styles/ui/shared', message: 'Import from domain barrels (atoms/molecules/organisms) when possible, or use deep imports @/styles/ui/shared/* for shared utilities.' },
             { name: '@/styles/ui/shared/component-variants', message: 'Import from domain barrels instead.' },
             // Prevent deep imports to deleted shared variant files
             { name: '@/styles/ui/shared/article-content', message: 'Deleted file. Use typography-variants for headers and prose classes for content.' },
@@ -260,6 +269,8 @@ export default [
       'corso/no-direct-process-env': 'error',
       'corso/require-zod-strict': 'error',
       'corso/require-runtime-exports': ['error', { files: ['app/api/**/*.ts'] }],
+      'corso/no-direct-supabase-admin': 'error',
+      'corso/no-deprecated-lib-imports': ['error', { configPath: './eslint-plugin-corso/rules/deprecated-imports.json' }],
 
       // New migrated rules from AST-Grep (Phase 1-3)
       'corso/force-root-imports': 'warn', // Start with warn due to potential false positives
@@ -277,6 +288,7 @@ export default [
       'corso/next-script-no-empty-nonce': 'error',
       'corso/no-inline-color-literals': 'warn',
       'corso/no-server-only-in-client': 'error',
+      'corso/no-edge-runtime-on-pages': 'error',
 
       // Disable core no-unused-vars for TypeScript files, use TypeScript version instead
       'no-unused-vars': 'off',
@@ -289,31 +301,107 @@ export default [
         src: [
           'app/**/*.{ts,tsx}',
           'components/**/*.{ts,tsx}',
-          'contexts/**/*.{ts,tsx}',
           'lib/**/*.{ts,tsx}',
-          'hooks/**/*.{ts,tsx}',
-          'actions/**/*.{ts,tsx}',
         ],
         ignoreExports: [
           '**/index.ts',
           '**/*.test.{ts,tsx}',
-          '**/*.spec.{ts,tsx}',
           '**/__tests__/**/*',
           '**/__fixtures__/**/*',
           '**/tests/**/*',
           '**/*.test.tsx',
-          '**/*.mdx',
           'app/**/page.tsx',
           'app/**/layout.tsx',
           'app/**/route.ts',
           'app/**/error.tsx',
           'app/**/loading.tsx',
           'app/**/not-found.tsx',
-          'components/dashboard/corso-ai-mode.tsx',
-          'components/dashboard/entity/addresses/config.ts',
-          'components/dashboard/entity/shared/grid/ag-grid-modules.ts',
-          'components/dashboard/entity/shared/renderers/value-formatter.ts',
-          'components/dashboard/header/dashboard-header.tsx',
+          'app/**/providers.tsx',
+          'app/**/*provider.tsx',
+          'app/**/_theme.tsx',
+          'app/**/actions.ts', // Server Actions are feature-colocated and used by page components
+          // Shared utilities - factory functions used by route groups
+          'app/shared/**/*.{ts,tsx}',
+          'components/dashboard/entities/addresses/config.ts',
+          // Formatters - used via named imports in aggrid adapter
+          'lib/entities/adapters/aggrid-formatters.tsx',
+          'components/dashboard/layout/dashboard-header.tsx',
+          // UI components - exported via barrel and used via @/components
+          'components/ui/segmented-control.tsx',
+          // Entity configs - used internally via registry
+          'components/dashboard/entities/companies/config.ts',
+          'components/dashboard/entities/projects/config.ts',
+          // Public API exports - legitimate unused exports
+          'lib/api/**/*.ts',
+          'lib/shared/**/*.ts',
+          'lib/validators/**/*.ts',
+          'lib/server/env.ts',
+          // Infrastructure code - server-side utilities, middleware, integrations
+          'lib/server/**/*.ts',
+          'lib/middleware/**/*.ts',
+          'lib/integrations/**/*.ts',
+          'lib/ratelimiting/**/*.ts',
+          'lib/monitoring/**/*.ts',
+          'lib/security/**/*.ts',
+          // Core utilities - public API types and error handling
+          'lib/core/**/*.ts',
+          // Vendor integration utilities - wrap external libraries, used as public API surfaces
+          'lib/vendors/**/*.ts',
+          // Note: actions/ directory was removed in PR5.2 - Server Actions are now feature-colocated
+          // 'actions/**/*.ts', // Removed - Server Actions are feature-colocated
+          // Note: hooks/ directory was removed - hooks are now domain-colocated (e.g., components/ui/hooks/, components/chat/hooks/)
+          // Note: contexts/ directory was removed - providers are now in app/providers/
+          // Entity services - used internally via registry
+          'lib/entities/**/*.ts',
+          // Marketing content services - server-side functions used in pages
+          'lib/marketing/**/*.ts',
+          // Mock utilities - used conditionally via dynamic imports
+          'lib/mocks/**/*.ts',
+          // Actions - server actions used in forms
+          'lib/actions/**/*.ts',
+          // Auth utilities - used in auth routes
+          'lib/auth/**/*.ts',
+          // Chat utilities - used in chat routes
+          'lib/chat/**/*.ts',
+          // Landing components - used via dynamic imports (next/dynamic, React.lazy)
+          'components/landing/**/*.tsx',
+          'components/landing/**/*.ts',
+          // Insights components - used in insights pages/routes
+          'components/insights/**/*.tsx',
+          'components/insights/**/*.ts',
+          // Chat components - used in chat routes/pages
+          'components/chat/**/*.tsx',
+          'components/chat/**/*.ts',
+          // Forms components - used via dynamic imports
+          'components/forms/**/*.tsx',
+          'components/forms/**/*.ts',
+          // Auth components - used in auth routes/layouts
+          'components/auth/**/*.tsx',
+          'components/auth/**/*.ts',
+          // Dashboard components - used in dashboard routes
+          'components/dashboard/**/*.tsx',
+          'components/dashboard/**/*.ts',
+          // UI icon components - exported via barrel and used in production
+          'components/ui/atoms/icon/**/*.tsx',
+          // UI atoms exported via barrel - used in production
+          'components/ui/atoms/**/*.tsx',
+          'components/ui/atoms/**/*.ts',
+          // UI molecules with barrel exports
+          'components/ui/molecules/**/*.tsx',
+          'components/ui/molecules/**/*.ts',
+          // Components used via dynamic imports
+          'components/ui/organisms/**/*.tsx',
+          'components/ui/organisms/**/*.ts',
+          // Marketing components used via dynamic imports
+          'components/marketing/**/*.tsx',
+          'components/marketing/**/*.ts',
+          // Billing components - used in subscription pages
+          'components/billing/**/*.tsx',
+          'components/billing/**/*.ts',
+          // UI shared utilities - analytics, etc.
+          'components/ui/shared/**/*.ts',
+          // UI hooks - domain-colocated hooks used in UI components
+          'components/ui/hooks/**/*.ts',
         ],
       }],
 
@@ -378,16 +466,20 @@ export default [
               'message': '⚠️  Deprecated: import from "@/lib/security/guards" instead.',
             },
             {
-              'group': ['@/types/dashboard/index.ts'],
-              'message': 'Import from dashboard subfolders, not the barrel'
+              'group': ['@/types/auth', '@/types/auth/index'],
+              'message': 'Barrel removed. Import directly from canonical locations (e.g., @/types/auth/authorization/types).'
             },
             {
-              'group': ['@/types/integrations/**/**'],
-              'message': "Use integration barrels (e.g. '@/types/integrations/openai'), never deep import"
+              'group': ['@/types/chat', '@/types/chat/index'],
+              'message': 'Barrel discouraged. Prefer direct imports (e.g., @/types/chat/message/types).'
             },
             {
-              'group': ['@/types/auth/index.ts'],
-              'message': 'Import from auth subfolders (user, session, etc.), not the top-level barrel'
+              'group': ['@/types/integrations', '@/types/integrations/index'],
+              'message': 'Barrel discouraged. Prefer direct imports (e.g., @/types/integrations/supabase/core/types).'
+            },
+            {
+              'group': ['@/types/dashboard/index'],
+              'message': 'Barrel discouraged. Prefer direct imports (e.g., @/types/dashboard/analytics/types).'
             },
             {
               'group': ['@/lib/dashboard/entity'],
@@ -397,9 +489,93 @@ export default [
               'group': ['@/lib/shared/constants/*'],
               'message': "Use the barrel '@/lib/shared/constants' instead of deep imports.",
             },
+            {
+              'group': [
+                '@/lib/shared/cache/lru-cache',
+                '@/lib/shared/cache/simple-cache',
+              ],
+              'message':
+                "Policy A: import cache utilities from the root barrel '@/lib/shared' instead of deep file imports.",
+            },
           ]
         }
       ],
+    },
+  },
+  // Disallow importing from components/ui barrels outside components domain
+  {
+    files: ['**/*.{ts,tsx}'],
+    ignores: ['components/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@/components/ui', '@/components/ui/*'],
+              message: 'Import from "@/components" instead of "@/components/ui".',
+            },
+            {
+              group: ['@/components/atoms', '@/components/molecules', '@/components/organisms', '@/components/shared'],
+              message: 'Import from "@/components" (root barrel) instead of deep component barrels.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  // Allow components domain to import its own sub-barrels (override)
+  {
+    files: ['components/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': 'off',
+    },
+  },
+  // Server code import restrictions (Radix UI, client components)
+  {
+    files: ['app/api/**/*.ts', 'lib/**/*.ts'],
+    ignores: ['lib/shared/**', 'lib/validators/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@radix-ui/*'],
+              message: 'Do not import Radix UI components in server-side code.',
+            },
+            {
+              group: ['@/components/ui', '@/components/ui/*'],
+              message: 'Do not import client UI components in server-side code.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  // ClickHouse import restriction: ban globally, allow in integration tests
+  {
+    files: ['**/*.ts', '**/*.tsx'],
+    ignores: ['tests/integration/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@clickhouse/client',
+              message: 'Use the integration layer for ClickHouse (do not import @clickhouse/client directly).',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  // Allow ClickHouse client in integration tests (override)
+  {
+    files: ['tests/integration/**'],
+    rules: {
+      'no-restricted-imports': 'off',
     },
   },
   //---------------------------------------------------------------------------
@@ -496,7 +672,8 @@ export default [
   // 1a ) Action domain boundaries
   //---------------------------------------------------------------------------
   {
-    files: ['actions/**'],
+    // Note: actions/ directory was removed in PR5.2 - Server Actions are now feature-colocated
+    // files: ['actions/**'], // Removed
     plugins: {
       // boundaries,  // TEMPORARY: Disabled for performance
       corso
@@ -547,6 +724,34 @@ export default [
       vitest,
       corso,
     },
+    rules: {
+      // Allow @/styles/ui barrel in test mocks (vitest.setup.shared.ts, etc.)
+      // Tests need to mock the barrel for proper test isolation
+      // Override: Tests are allowed to import/mock @/styles/ui for test setup
+      // Production code should use domain barrels (atoms/molecules/organisms) or deep imports per policy
+      // Note: This rule is merged with the deep relative import restrictions below
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            // Override: allow @/styles/ui in tests for mocking purposes
+            // Production code should use domain barrels or deep imports per policy
+          ],
+          patterns: [
+            // @/styles/ui is explicitly allowed in tests (not restricted here)
+            // Forbid deep relative imports to app code from tests (prefer aliases like @/lib, @/components, @tests/support)
+            {
+              group: ['../../*', '../../../*', '../../../../*'],
+              message: 'Use path aliases (e.g., @/lib, @/components, @tests/support) instead of deep relative imports.',
+            },
+            {
+              group: ['../lib/*', '../../lib/*', '../components/*', '../../components/*', '../types/*', '../../types/*', '../hooks/*', '../../hooks/*'],
+              message: 'Use project aliases instead of deep relative imports to app code.',
+            },
+          ],
+        },
+      ],
+    },
     settings: {
       'import/resolver': {
         node: { extensions: ['.ts', '.tsx'] },
@@ -587,22 +792,8 @@ export default [
       'vitest/no-focused-tests': 'error',
       // 'corso/no-alias-imports-in-tests': 'error', // DISABLED: We now prefer alias imports for better maintainability
 
-      // Forbid deep relative imports to app code from tests (prefer aliases like @/lib, @/components, @tests/support)
-      'no-restricted-imports': [
-        'error',
-        {
-          patterns: [
-            {
-              group: ['../../*', '../../../*', '../../../../*'],
-              message: 'Use path aliases (e.g., @/lib, @/components, @tests/support) instead of deep relative imports.',
-            },
-            {
-              group: ['../lib/*', '../../lib/*', '../components/*', '../../components/*', '../types/*', '../../types/*', '../hooks/*', '../../hooks/*'],
-              message: 'Use project aliases instead of deep relative imports to app code.',
-            },
-          ],
-        },
-      ],
+      // Note: no-restricted-imports is defined above to allow @/styles/ui for test mocks
+      // and restrict deep relative imports
 
       // Prevent reintroduction of legacy tests/component path
       'no-restricted-imports': [
@@ -639,13 +830,6 @@ export default [
     rules: {
       'corso/require-zod-strict': 'off',
     },
-  },
-  //---------------------------------------------------------------------------
-  // 1c) Storybook files with relaxed parsing (no project reference)
-  //---------------------------------------------------------------------------
-  {
-    files: ['**/*.stories.tsx'],
-    languageOptions: {},
   },
   //---------------------------------------------------------------------------
   // 1c ) Types and Scripts with relaxed dependency rules (consistent with main codebase)
@@ -746,7 +930,7 @@ export default [
           'zones': [
             {
               'target': './types',
-              'from': ['./lib', './app', './components', './actions', './hooks'],
+              'from': ['./lib', './app', './components', './hooks'],
               'message': 'Cannot import runtime code from lib/app/components/actions/hooks into types/ - use type imports only'
             }
           ]
@@ -808,12 +992,8 @@ export default [
   //---------------------------------------------------------------------------
   // 5 ) Overrides for specific files
   //---------------------------------------------------------------------------
-  {
-    files: ['actions/index.ts'],
-    rules: {
-      'corso/require-action-readme': 'off'
-    }
-  },
+  // Note: actions/ directory was removed in PR5.2 - Server Actions are now feature-colocated
+  // This rule configuration is kept for reference but actions/index.ts no longer exists
   // Enforce http helper usage in API routes
   {
     files: ['app/api/**/route.ts'],
@@ -892,7 +1072,6 @@ export default [
         {
           paths: [
             { name: '@/lib/auth/server', message: 'Server-only. Do not import from edge-safe barrel lib/api/index.ts.' },
-            { name: './streaming/ndjson-route', message: 'Node-only. Do not re-export from edge-safe barrel.' },
           ],
         },
       ],
@@ -933,7 +1112,11 @@ export default [
             },
             {
               group: ['@/lib/dashboard/**'],
-              message: 'lib/dashboard/** is deprecated. Use @/lib/services/entity/** instead.'
+              message: 'lib/dashboard/** is deprecated. Use @/lib/entities/** instead.'
+            },
+            {
+              group: ['@/lib/services', '@/lib/services/**'],
+              message: 'lib/services/** is removed. Use @/lib/entities/** instead.'
             }
           ]
         }

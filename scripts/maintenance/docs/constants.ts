@@ -10,9 +10,7 @@ export const DEFAULT_GLOB_PATTERNS = [
   'app/**/README.md',
   'lib/**/README.md',
   'types/**/README.md',
-  'hooks/**/README.md',
   'components/**/README.md',
-  'contexts/**/README.md',
   'styles/**/README.md',
   'scripts/**/README.md',
   'tests/**/README.md',
@@ -20,13 +18,10 @@ export const DEFAULT_GLOB_PATTERNS = [
   'supabase/**/README.md',
   'config/**/README.md',
   'public/**/README.md',
-  'stories/**/README.md',
   'eslint-plugin-corso/**/README.md',
   '.husky/**/README.md',
   '.github/**/README.md',
   '.vscode/**/README.md',
-  '.storybook/**/README.md',
-  '.husky/**/README.md',
   '.cursor/**/README.md',
 ] as const;
 
@@ -37,7 +32,6 @@ export const EXCLUDE_PATTERNS = [
   '**/coverage/**',
   '**/reports/**',
   '**/.next/**',
-  '**/storybook-static/**',
 ] as const;
 
 export const FRONTMATTER_DEFAULTS = {

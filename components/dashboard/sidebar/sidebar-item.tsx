@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation';
 import type { AnchorHTMLAttributes, ReactNode } from 'react';
 import { useSidebar } from './sidebar-context';
 import { SidebarTooltip } from './sidebar-tooltip';
-import styles from './sidebar.module.css';
 
 type SidebarItemProps = {
   href?: string;
@@ -24,8 +23,19 @@ export function SidebarItem({ href, label, icon, isActive, className, onClick, .
   const content = (
     <>
       {icon && (
-        <span className={cn(styles['icon'], 'flex items-center justify-center flex-shrink-0', collapsed && 'mx-auto')}>
-          {/* icon sizing controlled by CSS module tokens */}
+        <span className={cn(
+          'icon', // Add class for targeting
+          'inline-flex items-center justify-center flex-shrink-0',
+          'w-[var(--sb-icon-size,1.25rem)] h-[var(--sb-icon-size,1.25rem)]',
+          '[&_svg]:w-full [&_svg]:h-full',
+          collapsed && 'mx-auto',
+          // Active icon styling
+          active && 'text-[var(--sb-icon-active)]',
+          active && '[&_svg]:stroke-[var(--sb-icon-active)]',
+          active && '[&_svg]:fill-none',
+          active && '[&_path]:stroke-[var(--sb-icon-active)]',
+          active && '[&_path]:fill-none'
+        )}>
           {icon}
         </span>
       )}
@@ -38,12 +48,25 @@ export function SidebarItem({ href, label, icon, isActive, className, onClick, .
   );
 
   const itemClasses = cn(
-    styles['item'],
-    active && styles['itemActive'],
+    // Base item styles using tokens
+    'h-[var(--sb-item-h)] rounded-[var(--sb-radius)]',
+    'text-[var(--sb-ink)]',
     'flex items-center',
-    collapsed ? 'justify-center px-0' : undefined,
-    'h-12 rounded-lg transition-all duration-150',
+    'mb-1', // margin-bottom: 0.25rem
+    'transition-all duration-150',
+    // Padding: collapsed vs expanded (consistent 12px horizontal padding)
+    collapsed ? 'justify-center px-3' : 'px-3', // 0.75rem = 3 (12px)
+    // Hover state
     'hover:bg-black/5',
+    // Active state - use primary color at 10% opacity
+    active && 'bg-[hsl(var(--primary,221_86%_54%)/0.1)]',
+    active && 'text-[var(--sb-ink-active)]',
+    active && 'border-l-[3px] border-[var(--sb-ink-active)]',
+    active && (collapsed ? 'pl-3' : 'pl-[calc(0.75rem-3px)]'), // Adjust for border (not used in collapsed state)
+    // Remove border in collapsed state
+    collapsed && active && 'border-l-0',
+    // Focus states
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
     className
   );
 

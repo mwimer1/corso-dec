@@ -1,0 +1,5 @@
+/* Logo component styles */
+.logoCropped {
+  object-position: left center;
+  clip-path: inset(0 70% 0 0); /* Show only the left 30% of the logo */
+}

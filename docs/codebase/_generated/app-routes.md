@@ -1,6 +1,7 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+title: "Documentation"
+description: "<!-- AUTO-GENERATED: do not edit directly. Run `pnpm docs:routes`. -->\r\n```txt\r\n/\r\n└─ api\r\n  └─ health\r\n    └─ clickhouse\r\n  └─ internal\r\n    └─ auth\r\n  └─ v1\r\n    └─ ai\r\n      └─ chat\r\n        └─ moc..."
+last_updated: "2026-01-07"
 category: "documentation"
 ---
 <!-- AUTO-GENERATED: do not edit directly. Run `pnpm docs:routes`. -->
@@ -11,15 +12,20 @@ category: "documentation"
     └─ clickhouse
   └─ internal
     └─ auth
-  └─ test
   └─ v1
     └─ ai
+      └─ chat
+        └─ mockdb-health
+        └─ usage-limits
       └─ generate-sql
     └─ csp-report
     └─ entity
       └─ [entity]
         └─ export
         └─ query
+    └─ insights
+      └─ search
+    └─ query
     └─ user
 └─ contact
 └─ cookies
@@ -34,12 +40,15 @@ category: "documentation"
     └─ [category]
   └─ rss
 └─ legal
+  └─ privacy
+  └─ terms
 └─ pricing
 └─ privacy
+└─ security
 └─ sign-in
   └─ [[...sign-in]]
 └─ sign-up
   └─ [[...sign-up]]
+└─ status
 └─ terms
 ```
-

@@ -1,8 +1,7 @@
-import { LinkTrack } from "@/components/ui/molecules/link-track";
-import { BrandAssets } from "@/lib/shared";
-import { APP_LINKS  } from '@/lib/shared';
+import { LinkTrack } from "@/components/ui/molecules";
+import { APP_LINKS, BrandAssets } from "@/lib/shared";
 import { cn } from "@/styles";
-import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
+import { containerWithPaddingVariants } from "@/styles/ui/shared";
 import Image from "next/image";
 // import Link from "next/link";
 import React from "react";
@@ -40,7 +39,7 @@ const SocialLinkedIn = ({ className }: { className?: string }) => (
     rel="noopener noreferrer"
     target="_blank"
     className={cn(
-      "inline-flex h-9 w-9 items-center justify-center rounded-md border border-white/20 hover:border-white/40 hover:bg-white/5 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+      "inline-flex items-center justify-center rounded-md p-1 hover:bg-white/5 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
       className
     )}
   >
@@ -91,11 +90,11 @@ export const FooterMain: React.FC = () => {
         Footer
       </h2>
 
-      <div className={cn(containerMaxWidthVariants({ maxWidth: "7xl", centered: true, responsive: true }), "py-8 lg:py-10")}>
+      <div className={cn(containerWithPaddingVariants({ maxWidth: "7xl", padding: "lg" }), "py-6 sm:py-8 lg:py-10")}>
         {/* Top-align. Desktop: four equal tracks so each section gets the same width. */}
-        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-4 lg:gap-14">
+        <div className="grid grid-cols-2 items-start gap-6 sm:gap-8 lg:grid-cols-4 lg:gap-14">
           {/* Brand / Social */}
-          <div className="flex flex-col gap-2 self-start min-w-0">
+          <div className="col-span-2 flex flex-col gap-3 self-start min-w-0 lg:col-span-1">
             <a
               href="https://www.getcorso.com/"
               className="inline-flex items-center hover:opacity-90 transition-opacity focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring rounded-sm"
@@ -111,11 +110,11 @@ export const FooterMain: React.FC = () => {
               />
             </a>
 
-            <p className="mt-1 text-sm text-background/75 max-w-sm">
+            <p className="text-sm text-background/75 max-w-sm">
               Intelligence for the built world.
             </p>
 
-            <div className="mt-0">
+            <div className="self-start">
               <SocialLinkedIn className="text-background/70" />
             </div>
           </div>
@@ -126,19 +125,22 @@ export const FooterMain: React.FC = () => {
               key={group.heading}
               aria-label={group.heading}
               className={cn(
-                "flex flex-col gap-4 self-start min-w-0",
-                // Middle two: centered; last: right; all equal column widths via grid
+                "flex flex-col gap-2 sm:gap-3 self-start min-w-0",
+                // Mobile layout: Contact spans full width for long email
+                index === groups.length - 1 ? "col-span-2 lg:col-span-1" : "col-span-1",
+                // Consistent mobile alignment - all sections align left on mobile
+                // Desktop alignment behavior stays the same
                 index === 0 || index === 1
-                  ? "lg:items-center lg:text-center"
+                  ? "items-start lg:items-center lg:text-center"
                   : index === groups.length - 1
-                  ? "lg:items-end lg:text-right"
-                  : "lg:items-start"
+                  ? "items-start lg:items-end lg:text-right"
+                  : "items-start"
               )}
             >
-              <span className="text-sm font-semibold text-background/80 mb-2">
+              <span className="text-sm font-semibold text-background/80">
                 {group.heading}
               </span>
-              <ul className="space-y-3">
+              <ul className="space-y-2 sm:space-y-3">
                 {group.links.map((item) => (
                   <li key={item.label}>
                     <SmartLink item={item} />

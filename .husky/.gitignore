@@ -1,0 +1,12 @@
+# Husky internal files that should be tracked
+# Note: husky.sh should be tracked (not ignored)
+
+# Ignore any temporary files
+*.tmp
+*.log
+
+# Ignore Husky's generated internal directory (if it reappears)
+_/
+
+# Keep husky.sh tracked
+!husky.sh

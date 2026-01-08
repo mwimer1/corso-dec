@@ -6,3 +6,14 @@ node-linker=hoisted
 
 # Allow hoisting of dependencies to root node_modules
 shamefully-hoist=true
+
+# Sentry OTel integration: ensure hooks are resolvable when externals are used
+public-hoist-pattern[]=*import-in-the-middle*
+public-hoist-pattern[]=*require-in-the-middle*
+
+# Performance: prefer offline installs when possible and enable side-effects cache
+prefer-offline=true
+side-effects-cache=true
+
+# Use a fast local pnpm store; override per-developer if needed
+# store-dir=C:\\pnpm-store

@@ -1,0 +1,96 @@
+name: CSS Audit
+
+on:
+  pull_request:
+    paths:
+      - 'styles/**'
+      - 'components/**/*.css'
+      - 'components/**/*.module.css'
+      - 'app/**/*.css'
+      - 'app/**/*.module.css'
+      - 'scripts/audit/css/**'
+  workflow_dispatch:
+
+jobs:
+  css-audit:
+    runs-on: ubuntu-latest
+    name: CSS Audit
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # Needed for --changed mode
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run CSS Audit
+        id: audit
+        run: |
+          pnpm css:audit:ci || true
+        continue-on-error: true
+
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: css-audit-report
+          path: |
+            reports/css-audit/*.xml
+            reports/css-audit/*.json
+          if-no-files-found: ignore
+
+      - name: Comment PR with results
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            try {
+              const reportPath = path.join(process.cwd(), 'reports/css-audit/report.json');
+              if (fs.existsSync(reportPath)) {
+                const report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
+                
+                const comment = `## CSS Audit Results
+                
+                **Total findings:** ${report.summary?.totalFindings || 0}
+                **New findings:** ${report.summary?.newCount || 0}
+                **Suppressed (baseline):** ${report.summary?.suppressedCount || 0}
+                
+                ### By Severity
+                - Errors: ${report.summary?.bySeverity?.error || 0}
+                - Warnings: ${report.summary?.bySeverity?.warn || 0}
+                - Info: ${report.summary?.bySeverity?.info || 0}
+                
+                <details>
+                <summary>View all findings</summary>
+                
+                ${report.findings?.map(f => `- **${f.severity}** ${f.file}${f.line ? `:${f.line}` : ''}: ${f.message}`).join('\n') || 'No findings'}
+                
+                </details>
+                `;
+                
+                github.rest.issues.createComment({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: comment
+                });
+              }
+            } catch (error) {
+              console.error('Failed to comment PR:', error);
+            }

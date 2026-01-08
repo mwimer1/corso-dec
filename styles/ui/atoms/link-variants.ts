@@ -1,4 +1,4 @@
-import { tv } from '@/styles/utils';
+import { tv } from '@/styles';
 
 export const linkVariants = tv({
   base: 'transition-colors underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',

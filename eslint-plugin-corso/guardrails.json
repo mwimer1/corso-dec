@@ -3,13 +3,13 @@
     "rule": "Rate Limiting Required",
     "why": "Security requirement",
     "enforcement": "Automatic validation",
-    "eslintMessage": "All API endpoints must implement rate limiting"
+    "eslintMessage": "Rate Limiting Required: Security requirement"
   },
   "ai_prompt_security": {
-    "rule": "Ai Prompt Security",
+    "rule": "AI Prompt Security",
     "why": "Security requirement",
     "enforcement": "Automatic validation",
-    "eslintMessage": "AI prompts must be validated for injection attacks"
+    "eslintMessage": "AI Prompt Security: Security requirement"
   },
   "zod_validation": {
     "rule": "Zod Validation",
@@ -54,7 +54,7 @@
     "eslintMessage": "Ensure query safety - all database queries must be parameterized"
   },
   "metadata": {
-    "generated": "2025-10-23T03:10:21.583Z",
+    "generated": "2025-12-31T00:49:08.932Z",
     "source": "docs/best-practices.md, lib/security/README.md",
     "version": "1.0.0"
   }

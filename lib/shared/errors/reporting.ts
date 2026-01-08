@@ -6,9 +6,10 @@
 
 // Note: avoid importing server-only env helper at module top-level to keep this
 // module bundlable in client/edge contexts. Use process.env fallback below.
-import { v4 as uuidv4 } from 'uuid';
+// Import LRUCache directly to avoid circular dependency with lib/shared barrel
 import { LRUCache } from '../cache/lru-cache';
-import { isProduction } from '../config/client';
+import { isProduction } from '@/lib/shared/config/client';
+import { v4 as uuidv4 } from 'uuid';
 
 interface LoggerLike {
   error(...args: unknown[]): void;
@@ -66,6 +67,9 @@ declare global {
 
 /**
  * Report an error or message and receive a stable error‑ID.
+ * 
+ * If the error is an ApplicationError, its category and severity are automatically
+ * extracted and used. Options parameter values override ApplicationError values if provided.
  */
 export function reportError(
   errOrMsg: Error | string,
@@ -82,6 +86,15 @@ export function reportError(
   const errorId = uuidv4();
   const timestamp = new Date().toISOString();
 
+  // Extract category and severity from ApplicationError if present
+  // Options parameter values take precedence if explicitly provided
+  const effectiveCategory = originalErr instanceof ApplicationError
+    ? originalErr.category
+    : category;
+  const effectiveSeverity = originalErr instanceof ApplicationError
+    ? originalErr.severity
+    : severity;
+
   const appError: AppError = {
     id: errorId,
     message: originalErr.message || 'Unknown error',
@@ -89,8 +102,8 @@ export function reportError(
       originalErr instanceof ApplicationError
         ? originalErr.code
         : 'UNKNOWN_ERROR',
-    category,
-    severity,
+    category: effectiveCategory,
+    severity: effectiveSeverity,
     context: { timestamp, ...context },
     originalError: originalErr,
     stack: originalErr.stack ?? '',
@@ -99,16 +112,16 @@ export function reportError(
   /* -------- local log -------- */
   if (!silent) {
     const log =
-      severity === ErrorSeverity.CRITICAL || severity === ErrorSeverity.ERROR
+      effectiveSeverity === ErrorSeverity.CRITICAL || effectiveSeverity === ErrorSeverity.ERROR
         ? logger.error
-        : severity === ErrorSeverity.WARNING
+        : effectiveSeverity === ErrorSeverity.WARNING
           ? logger.warn
           : logger.info;
 
-    log(`[${category}] ${appError.message}`, {
+    log(`[${effectiveCategory}] ${appError.message}`, {
       errorId,
-      category,
-      severity,
+      category: effectiveCategory,
+      severity: effectiveSeverity,
       context: appError.context,
       stack: appError.stack,
     });

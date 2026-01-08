@@ -1,14 +1,18 @@
 ---
-status: "stable"
-last_updated: "2025-11-03"
+title: "Security"
+description: "Documentation and resources for documentation functionality. Located in security/."
+last_updated: "2026-01-07"
 category: "documentation"
+status: "draft"
 ---
+# Security Policy
+
 ## 🚨 Reporting Security Vulnerabilities
 
 **Do NOT file public issues for security vulnerabilities.** Instead, please follow our responsible disclosure policy:
 
 ### 📋 How to Report
-1. Go to our [Security Advisories](https://github.com/Corso222/corso-app/security/advisories/new) page
+1. Go to our [Security Advisories](https://github.com/mwimer1/corso-dec/security/advisories/new) page
 2. Click "Report a vulnerability"
 3. Fill out the security advisory form with details about the issue
 4. Our security team will respond within 48 hours
@@ -49,13 +53,14 @@ category: "documentation"
 - Use parameterized queries for database operations
 - Implement proper authentication and authorization
 - Keep dependencies updated
+- See [Security Implementation Guide](security-implementation.md) for detailed implementation guidelines
 
 ## 📞 Contact Information
 
 For security-related questions or concerns:
-- **Security Issues**: Use the [Security Advisories](https://github.com/Corso222/corso-app/security/advisories/new) form
-- **General Support**: Visit our [Discussions](https://github.com/Corso222/corso-app/discussions) page
-- **Customer Support**: Contact our support team at [support@corso.dev](mailto:support@corso.dev)
+- **Security Issues**: Use the [Security Advisories](https://github.com/mwimer1/corso-dec/security/advisories/new) form
+- **General Support**: Contact our support team
+- **Customer Support**: Contact our support team at [support@getcorso.com](mailto:support@getcorso.com)
 
 ## 📜 Responsible Disclosure Policy
 
@@ -66,4 +71,3 @@ We kindly ask that you:
 - Don't spam our systems or users
 
 We appreciate your help in keeping Corso and our users secure!
-

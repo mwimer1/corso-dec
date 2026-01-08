@@ -6,16 +6,19 @@
  */
 
 // Edge-safe logger (no server dependencies)
-import { runWithRequestContext as runWithEdgeRequestContext } from '@/lib/monitoring/core/logger-edge';
+import { runWithRequestContext as runWithEdgeRequestContext } from '@/lib/monitoring/logger-edge';
+// Edge-safe env access (import from edge-env to avoid circular dependency with edge.ts)
+import { getEnvEdge } from '@/lib/api/edge-env';
 // Use consolidated rate limiting domain
+import type { ResponseLike } from '../shared/response-types';
+import { exposeHeader } from '@/lib/middleware/shared/headers';
+import { addRequestIdHeader, getRequestId } from '@/lib/middleware/shared/request-id';
 import type { RateLimitOptions as RateLimitEdgeOptions } from '@/lib/ratelimiting';
 import { checkRateLimit } from '@/lib/ratelimiting';
-import { createMemoryStore } from '@/lib/ratelimiting/adapters/memory';
+import { createMemoryStore } from '@/lib/ratelimiting/memory';
 import { buildCompositeKey } from '@/lib/ratelimiting/key';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { exposeHeader } from '../http/headers';
-import { addRequestIdHeader, getRequestId } from '../http/request-id';
 
 // Edge-safe in-memory store (no server dependencies)
 const edgeMemoryStore = createMemoryStore();
@@ -34,11 +37,25 @@ function createRateLimitResponse(): NextResponse {
   );
 }
 
-export function withRateLimitEdge<R extends NextResponse | Response = NextResponse>(
-  _handler: (_req: NextRequest) => Promise<R> | R,
+export function withRateLimitEdge(
+  _handler: (_req: NextRequest) => Promise<ResponseLike> | ResponseLike,
   opts: RateLimitEdgeOptions & { onKey?: (_key: string) => void },
 ) {
-  return async function rateLimited(req: NextRequest): Promise<R> {
+  return async function rateLimited(req: NextRequest): Promise<NextResponse> {
+    // Disable rate limiting in development (not test) or when explicitly disabled
+    const { NODE_ENV, DISABLE_RATE_LIMIT } = getEnvEdge();
+    const disableRateLimit = DISABLE_RATE_LIMIT === 'true';
+    
+    // Only bypass in development mode (not test or production)
+    if (NODE_ENV === 'development' || disableRateLimit) {
+      // Bypass rate limiting and call handler directly
+      const response = await _handler(req);
+      // addRequestIdHeader normalizes Response to NextResponse
+      const requestId = getRequestId(req);
+      const nextRes = addRequestIdHeader(response, requestId);
+      return exposeHeader(nextRes, 'X-Request-ID');
+    }
+    
     // Fallback for routes that invoke without a request object (rare but present)
     const safeReq = req ?? ({ headers: new Headers(), url: 'http://internal/unknown' } as unknown as NextRequest);
     const requestId = getRequestId(safeReq);
@@ -55,19 +72,24 @@ export function withRateLimitEdge<R extends NextResponse | Response = NextRespon
       /* Check quota - use Edge-safe in-memory store */
       const limited = await checkRateLimit(edgeMemoryStore, key, opts);
       if (limited) {
-        console.warn('RateLimitExceeded', { key, ip, userId: uid, path, requestId });
+        if (process.env.NODE_ENV !== 'test') {
+          console.warn('RateLimitExceeded', { key, ip, userId: uid, path, requestId });
+        }
         if (opts.onKey) {
           opts.onKey(key);
         }
 
-        // Return Edge-safe response
-        const resp = createRateLimitResponse() as R;
-        return exposeHeader(addRequestIdHeader(resp, requestId), 'X-Request-ID') as R;
+        // createRateLimitResponse returns NextResponse, so normalize is already NextResponse
+        const resp = createRateLimitResponse();
+        const nextResp = addRequestIdHeader(resp, requestId);
+        return exposeHeader(nextResp, 'X-Request-ID');
       }
 
       /* Pass through */
       const res = await _handler(safeReq);
-      return exposeHeader(addRequestIdHeader(res, requestId), 'X-Request-ID') as R;
+      // addRequestIdHeader normalizes Response to NextResponse
+      const nextRes = addRequestIdHeader(res, requestId);
+      return exposeHeader(nextRes, 'X-Request-ID');
     });
   };
 }

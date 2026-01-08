@@ -1,0 +1,302 @@
+/* Use Case Explorer Section - Enhanced Styling */
+
+/* Component-scoped CSS variables for theming and transitions */
+.useCaseExplorer {
+  --preview-transition-duration: 300ms;
+  --preview-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --content-transition-duration: 400ms;
+  --content-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --preview-aspect-ratio: 16/10;
+  --preview-border-radius: var(--radius-xl);
+}
+
+/* Enhanced preview container with better visual treatment */
+.previewContainer {
+  display: block;
+  position: relative;
+  border-radius: var(--preview-border-radius);
+  overflow: hidden;
+  aspect-ratio: var(--preview-aspect-ratio);
+  background: hsl(var(--muted));
+  /* Subtle border and shadow for depth */
+  border: 1px solid hsl(var(--border));
+  box-shadow: 
+    0 1px 3px hsl(var(--foreground) / 0.05),
+    0 1px 2px hsl(var(--foreground) / 0.1);
+  transition: 
+    box-shadow var(--preview-transition-duration) var(--preview-transition-easing),
+    border-color var(--preview-transition-duration) var(--preview-transition-easing);
+}
+
+.previewContainer:hover {
+  box-shadow: 
+    0 4px 6px hsl(var(--foreground) / 0.07),
+    0 2px 4px hsl(var(--foreground) / 0.12);
+  border-color: hsl(var(--border) / 0.8);
+}
+
+/* Image loading skeleton */
+.skeleton {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    hsl(var(--muted) / 0.6) 0%,
+    hsl(var(--muted) / 0.4) 50%,
+    hsl(var(--muted) / 0.6) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Image with smooth fade-in */
+.previewImage {
+  object-fit: cover;
+  transition: opacity var(--preview-transition-duration) var(--preview-transition-easing);
+}
+
+.previewImage[data-loading="true"] {
+  opacity: 0;
+}
+
+.previewImage[data-loading="false"] {
+  opacity: 1;
+}
+
+/* Responsive adjustments */
+
+/* Mobile optimizations */
+@media (max-width: 767px) {
+  /* Preview already hidden via base rule above */
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .previewImage {
+    transition: none;
+  }
+
+  .skeleton {
+    animation: none;
+    background: hsl(var(--muted) / 0.4);
+  }
+
+  .previewContainer {
+    transition: none;
+  }
+}
+
+/* Fade in up animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Print styles */
+@media print {
+  .previewContainer {
+    break-inside: avoid;
+  }
+}
+
+/* ============================================
+   New Streamlined Cleanup Styles
+   ============================================ */
+
+/* Selector Panel Container */
+.selectorPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* Card Grid Container - Left Pane */
+.cardGridContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Card Grid */
+.cardGrid {
+  display: grid;
+  gap: var(--space-md);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .cardGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .cardGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Problem and Help Section */
+.problemHelpSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.problemHelpCard {
+  /* Muted surface - less boxy than bordered cards */
+  border: none;
+  box-shadow: none;
+}
+
+/* Preview Pane - Desktop (Sticky) */
+.previewPaneDesktop {
+  position: sticky;
+  top: calc(var(--nav-offset, 4rem));
+  align-self: start;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Preview Pane Container */
+.previewPane {
+  width: 100%;
+  /* Container styling handled by Card component */
+}
+
+/* Industry Tabs Row */
+.industryTabs {
+  /* Hide scrollbar on mobile while maintaining scroll functionality */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.industryTabs::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Preview Content with Tab Transitions */
+.previewContent {
+  position: relative;
+  overflow: hidden;
+}
+
+.previewTabContent {
+  animation: fadeInUp var(--content-transition-duration) var(--content-transition-easing);
+}
+
+/* Preview Accordion - Mobile */
+.previewAccordion {
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  background: hsl(var(--background));
+}
+
+.previewAccordionSummary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-sm) 0;
+  user-select: none;
+}
+
+.previewAccordionSummary::-webkit-details-marker {
+  display: none;
+}
+
+.previewAccordionSummary::marker {
+  display: none;
+}
+
+.previewAccordionSummary::after {
+  content: '▼';
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  transition: transform 200ms ease;
+  margin-left: auto;
+  padding-left: var(--space-sm);
+}
+
+.previewAccordion[open] .previewAccordionSummary::after {
+  transform: rotate(180deg);
+}
+
+.previewAccordionContent {
+  padding-top: var(--space-md);
+  border-top: 1px solid hsl(var(--border));
+  margin-top: var(--space-md);
+}
+
+/* Desktop Layout: Two Column Grid */
+@media (min-width: 1024px) {
+  .selectorPanel {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: var(--space-xl);
+    align-items: start;
+  }
+
+  .cardGridContainer {
+    grid-column: 1;
+  }
+
+  .previewPaneDesktop {
+    grid-column: 2;
+  }
+
+  .previewAccordion {
+    display: none;
+  }
+}
+
+/* Tablet: Hide desktop preview, show accordion */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .previewPaneDesktop {
+    display: none;
+  }
+
+  .previewAccordion {
+    display: block;
+  }
+}
+
+/* Mobile: Single column, accordion only */
+@media (max-width: 767px) {
+  .previewPaneDesktop {
+    display: none;
+  }
+
+  .previewAccordion {
+    display: block;
+  }
+
+  .cardGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Reduced motion support for new animations */
+@media (prefers-reduced-motion: reduce) {
+  .previewTabContent {
+    animation: none;
+  }
+
+  .previewAccordionSummary::after {
+    transition: none;
+  }
+}

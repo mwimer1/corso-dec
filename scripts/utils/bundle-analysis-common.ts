@@ -2,6 +2,7 @@
 /**
  * Common utilities for bundle analysis
  * Consolidates patterns used across check-bundle-size.ts and generate-bundle-report.ts
+ * Note: generate-bundle-report.ts is located at scripts/ci/generate-bundle-report.ts
  */
 
 import fs from 'node:fs';

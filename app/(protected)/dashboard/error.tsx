@@ -1,14 +1,10 @@
 // app/(protected)/dashboard/error.tsx
-"use client";
+'use client';
 
-import { ErrorFallback } from "@/components";
+import { createErrorBoundary } from '@/app/shared/create-error-boundary';
 
-export default function ErrorBoundary({
-  error,
-  reset,
-}: {
-  error: Error;
-  reset: () => void;
-}) {
-  return <ErrorFallback error={error} resetErrorBoundary={reset} />;
-}
+/**
+ * Error boundary for dashboard routes.
+ * Catches errors within the dashboard section and provides recovery UI.
+ */
+export default createErrorBoundary({ context: 'Dashboard' });

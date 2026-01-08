@@ -1,9 +1,11 @@
 #!/usr/bin/env tsx
 // scripts/setup/validate-atomic-design.ts
+// Cross-platform atomic design validation (Windows-first, no shell tool dependencies)
 
 import { execSync } from 'child_process';
 import { existsSync, readFileSync, readdirSync, statSync } from 'fs';
-import { join } from 'path';
+import { join, relative } from 'path';
+import { globby } from 'globby';
 
 const log = console.log;
 const componentPath = 'components/ui';
@@ -49,16 +51,64 @@ function checkBarrelExports() {
   });
 }
 
-function checkDesignTokenUsage() {
+/**
+ * Cross-platform file search helper
+ * Replaces grep -r with Node.js file scanning
+ */
+async function searchFilesForPattern(
+  searchPath: string,
+  pattern: RegExp,
+  fileExtensions: string[] = ['.ts', '.tsx', '.js', '.jsx', '.css', '.scss', '.mdx']
+): Promise<Array<{ file: string; matches: string[] }>> {
+  const results: Array<{ file: string; matches: string[] }> = [];
+  
+  try {
+    const files = await globby([`${searchPath}/**/*.{${fileExtensions.map(ext => ext.slice(1)).join(',')}}`], {
+      gitignore: true,
+      absolute: true,
+    });
+
+    for (const file of files) {
+      try {
+        const content = readFileSync(file, 'utf8');
+        const lines = content.split('\n');
+        const matches: string[] = [];
+        
+        lines.forEach((line, index) => {
+          if (pattern.test(line)) {
+            matches.push(`${relative(process.cwd(), file)}:${index + 1}:${line.trim()}`);
+          }
+        });
+        
+        if (matches.length > 0) {
+          results.push({ file: relative(process.cwd(), file), matches });
+        }
+      } catch {
+        // Skip files we can't read
+        continue;
+      }
+    }
+  } catch (error) {
+    // Return empty results on error
+  }
+  
+  return results;
+}
+
+async function checkDesignTokenUsage() {
     log('\n🔍 3. Checking design token usage...');
     try {
-      const hardcodedStyles = execSync(
-        `grep -r "bg-blue-\\|text-gray-\\|border-red-\\|bg-\\[\\#" ${componentPath}/ 2>/dev/null || echo "No hardcoded styles found"`,
-        { encoding: 'utf8' }
-      );
-      if (!hardcodedStyles.includes('No hardcoded styles found')) {
+      // Pattern matches: bg-blue-*, text-gray-*, border-red-*, bg-[#...]
+      const pattern = /bg-blue-|text-gray-|border-red-|bg-\[#/;
+      const matches = await searchFilesForPattern(componentPath, pattern);
+      
+      if (matches.length > 0) {
         log('❌ Hardcoded Tailwind classes found (should use design tokens):');
-        log(hardcodedStyles.slice(0, 500) + '...');
+        const output = matches
+          .slice(0, 10) // Limit to first 10 files
+          .flatMap(m => m.matches.slice(0, 3)) // Limit to first 3 matches per file
+          .join('\n');
+        log(output + (matches.length > 10 ? '\n...' : ''));
         atomicIssues.push('Hardcoded styles detected - should use design tokens');
       } else {
         log('✅ No hardcoded styles detected');
@@ -70,38 +120,6 @@ function checkDesignTokenUsage() {
     }
 }
 
-function checkStorybookCoverage() {
-    log('\n🔍 4. Checking Storybook coverage...');
-    try {
-      const storybookDir = '.storybook/stories';
-      if (existsSync(storybookDir)) {
-        const storyFiles = execSync(`find ${storybookDir} -name "*.stories.tsx" | wc -l`, {
-          encoding: 'utf8',
-        }).trim();
-        log(`✅ Found ${storyFiles} Storybook stories`);
-        atomicDirs.forEach((dir) => {
-          const dirPath = join(componentPath, dir);
-          if (existsSync(dirPath)) {
-            readdirSync(dirPath)
-              .filter((file) => file.endsWith('.tsx') && !file.includes('.stories.'))
-              .forEach((component) => {
-                const storyPath = join(storybookDir, dir, component.replace('.tsx', '.stories.tsx'));
-                if (!existsSync(storyPath)) {
-                  log(`⚠️  Missing story for ${dir}/${component}`);
-                }
-              });
-          }
-        });
-      } else {
-        log('⚠️  No Storybook stories directory found');
-        atomicIssues.push('Missing Storybook stories directory');
-      }
-    } catch (error) {
-        if (error instanceof Error) {
-            log('❌ Error checking Storybook coverage:', error.message);
-        }
-    }
-}
 
 function checkComponentNaming() {
     log('\n🔍 5. Checking component naming conventions...');
@@ -127,16 +145,26 @@ function checkComponentNaming() {
     });
 }
 
-function checkCrossAtomicImports() {
+async function checkCrossAtomicImports() {
     log('\n🔍 6. Checking for cross-atomic import violations...');
     try {
-      const atomsImportViolations = execSync(
-        `grep -r "from.*molecules\\|from.*organisms" ${componentPath}/components/ui/atoms/ 2>/dev/null || echo "No violations found"`,
-        { encoding: 'utf8' }
-      );
-      if (!atomsImportViolations.includes('No violations found')) {
+      const atomsPath = join(componentPath, 'atoms');
+      if (!existsSync(atomsPath)) {
+        log('⚠️  Atoms directory not found, skipping import check');
+        return;
+      }
+      
+      // Pattern matches: from .../molecules or from .../organisms
+      const pattern = /from\s+['"].*\/molecules|from\s+['"].*\/organisms/;
+      const matches = await searchFilesForPattern(atomsPath, pattern, ['.ts', '.tsx', '.js', '.jsx']);
+      
+      if (matches.length > 0) {
         log('❌ Atoms importing from higher-level components:');
-        log(atomsImportViolations.slice(0, 300) + '...');
+        const output = matches
+          .slice(0, 5) // Limit to first 5 files
+          .flatMap(m => m.matches.slice(0, 2)) // Limit to first 2 matches per file
+          .join('\n');
+        log(output + (matches.length > 5 ? '\n...' : ''));
         atomicIssues.push('Atoms violating import hierarchy');
       } else {
         log('✅ No atomic import violations detected');
@@ -148,16 +176,17 @@ function checkCrossAtomicImports() {
     }
 }
 
-function checkTailwindVariants() {
+async function checkTailwindVariants() {
     log('\n🔍 7. Checking for tailwind-variants usage...');
     try {
-      const variantUsage = execSync(
-        `grep -r "tailwind-variants\\|tv\\|cva" ${componentPath}/ 2>/dev/null || echo "No variants found"`,
-        { encoding: 'utf8' }
-      );
-      if (!variantUsage.includes('No variants found')) {
-        const variantCount = (variantUsage.match(/tv\\|cva/g) || []).length;
-        log(`✅ Found ${variantCount} components using tailwind-variants`);
+      // Pattern matches: tailwind-variants, tv, or cva imports/usage
+      const pattern = /tailwind-variants|['"]tv['"]|['"]cva['"]|from\s+['"].*tailwind-variants/;
+      const matches = await searchFilesForPattern(componentPath, pattern, ['.ts', '.tsx']);
+      
+      if (matches.length > 0) {
+        // Count unique files using variants
+        const uniqueFiles = new Set(matches.map(m => m.file));
+        log(`✅ Found ${uniqueFiles.size} components using tailwind-variants`);
       } else {
         log('⚠️  No tailwind-variants usage detected - consider using for consistency');
       }
@@ -171,18 +200,41 @@ function checkTailwindVariants() {
 function validateTypeScriptExports() {
     log('\n🔍 8. Checking TypeScript exports...');
     try {
-      const tsErrors = execSync('pnpm typecheck 2>&1 | grep -E "TS[0-9]+" || echo "No TS errors"', {
+      // Run typecheck and capture output
+      const output = execSync('pnpm typecheck', {
         encoding: 'utf8',
+        stdio: ['pipe', 'pipe', 'pipe'],
       });
-      if (tsErrors.includes('No TS errors')) {
+      
+      // Filter for TypeScript error codes (TS#### pattern)
+      const tsErrorPattern = /TS\d+/;
+      const lines = output.split('\n');
+      const errorLines = lines.filter(line => tsErrorPattern.test(line));
+      
+      if (errorLines.length === 0) {
         log('✅ No TypeScript errors in component exports');
       } else {
         log('❌ TypeScript errors detected:');
-        log(tsErrors.slice(0, 500) + '...');
+        log(errorLines.slice(0, 10).join('\n') + (errorLines.length > 10 ? '\n...' : ''));
         atomicIssues.push('TypeScript errors in component system');
       }
-    } catch (error) {
-      log('⚠️  Could not run TypeScript check');
+    } catch (error: any) {
+      // execSync throws on non-zero exit, so check stderr for errors
+      if (error.stderr) {
+        const stderr = error.stderr.toString('utf8');
+        const tsErrorPattern = /TS\d+/;
+        const errorLines = stderr.split('\n').filter((line: string) => tsErrorPattern.test(line));
+        
+        if (errorLines.length > 0) {
+          log('❌ TypeScript errors detected:');
+          log(errorLines.slice(0, 10).join('\n') + (errorLines.length > 10 ? '\n...' : ''));
+          atomicIssues.push('TypeScript errors in component system');
+        } else {
+          log('⚠️  Could not run TypeScript check');
+        }
+      } else {
+        log('⚠️  Could not run TypeScript check');
+      }
     }
 }
 
@@ -202,7 +254,6 @@ function printSummary() {
     log('   • Fix component naming to use kebab-case');
     log('   • Add missing barrel exports for all atomic levels');
     log('   • Replace hardcoded styles with design tokens');
-    log('   • Add Storybook stories for all components');
     log('   • Fix import hierarchy violations');
     log('   • Consider using tailwind-variants for consistency');
   }
@@ -219,20 +270,22 @@ function printSummary() {
   process.exit(atomicIssues.length > 0 ? 1 : 0);
 }
 
-function main() {
+async function main() {
   log('⚛️  ATOMIC DESIGN SYSTEM AUDIT\n');
   log('='.repeat(50));
 
   validateStructure();
   checkBarrelExports();
-  checkDesignTokenUsage();
-  checkStorybookCoverage();
+  await checkDesignTokenUsage();
   checkComponentNaming();
-  checkCrossAtomicImports();
-  checkTailwindVariants();
+  await checkCrossAtomicImports();
+  await checkTailwindVariants();
   validateTypeScriptExports();
   printSummary();
 }
 
-main();
+main().catch((error) => {
+  console.error('❌ Unexpected error during atomic design validation:', error);
+  process.exitCode = 1;
+});
 

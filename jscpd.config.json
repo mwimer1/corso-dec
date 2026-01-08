@@ -21,7 +21,7 @@
   "absolute": true,
   "format": ["typescript", "javascript"],
   "minLines": 10,
-  "minTokens": 50,
+  "minTokens": 20,
   "paths": [
     "scripts/",
     "lib/",
@@ -51,14 +51,14 @@
       "pattern": "scripts/",
       "threshold": 10,
       "minLines": 5,
-      "minTokens": 25,
+      "minTokens": 20,
       "description": "Scripts directory - higher threshold due to shared utilities and patterns"
     },
     {
       "pattern": "tests/",
       "threshold": 20,
       "minLines": 5,
-      "minTokens": 25,
+      "minTokens": 20,
       "description": "Tests directory - higher threshold for test utilities and fixtures"
     }
   ]

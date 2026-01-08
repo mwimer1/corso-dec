@@ -28,6 +28,34 @@ const dataPath = path.join(
 const cacheDir = path.join(repoRoot, "scripts", ".cache");
 const cacheOut = path.join(cacheDir, "shared-types-trim.json");
 
+// Check for help flag first
+if (process.argv.includes('--help') || process.argv.includes('-h')) {
+  console.log(`
+Trim Shared Types Barrel
+
+Trims unused named exports from types/shared/index.ts based on a JSON map,
+and (optionally) deletes now-unreferenced modules when safe.
+
+Usage:
+  pnpm cleanup:shared:trim [options]
+
+Options:
+  --write                   Apply changes to types/shared/index.ts
+  --delete                  Delete fully orphaned module files (requires --write)
+
+Examples:
+  pnpm cleanup:shared:trim                    # Dry-run: show what would change
+  pnpm cleanup:shared:trim --write           # Apply changes to index.ts
+  pnpm cleanup:shared:trim --write --delete  # Apply changes + delete orphaned files
+
+Safety:
+  - Default mode is dry-run (no changes)
+  - --write required to modify files
+  - --delete only works with --write
+`);
+  process.exit(0);
+}
+
 const args = new Set(process.argv.slice(2));
 const WRITE = args.has("--write");
 const DELETE = args.has("--delete");

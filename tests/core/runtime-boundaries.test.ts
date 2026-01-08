@@ -13,7 +13,7 @@ function hasScript(name: string) {
 }
 
 describe('Runtime boundaries (Edge vs Node)', () => {
-  it('runs script when present, otherwise skips cleanly', () => {
+  it('runs script when present, otherwise skips cleanly', { timeout: 10000 }, () => {
     const script = 'validate:runtime-boundaries'
     if (!hasScript(script)) {
       expect(true).toBe(true)

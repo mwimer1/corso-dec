@@ -1,14 +1,31 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+title: "Footer System"
+last_updated: "2026-01-07"
 category: "components"
+status: "active"
+description: "UI components for the components system, following atomic design principles. Located in ui/organisms/footer-system/."
 ---
-# Repository Scripts & Docs
+# Footer System
 
-This README is generated from a single template (`README.scripts.hbs`).
+The footer-system directory contains UI components for the Corso platform.
 
-- Directory: `components/ui/organisms/footer-system`
-- Last updated: `2025-10-29`
+UI components for the components system, following atomic design principles. Located in ui/organisms/footer-system/.
 
-> Edit the template or the generator context to change all READMEs consistently.
+## Directory Structure
+
+```
+components/ui/organisms/footer-system/
+footer-cta.tsx
+footer-legal.tsx
+footer-main.tsx
+footer.tsx
+```
+
+## Usage
+
+Import components from the appropriate subdirectory:
+
+```typescript
+import { ComponentName } from '@/components/ui/organisms/footer-system/subdirectory';
+```
 

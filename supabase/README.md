@@ -1,7 +1,9 @@
 ---
-status: "complete"
-last_updated: "2025-11-03"
+title: "Supabase"
+description: "Documentation and resources for documentation functionality."
+last_updated: "2026-01-07"
 category: "documentation"
+status: "active"
 ---
 # 🗄️ Supabase Database Configuration
 
@@ -45,10 +47,10 @@ supabase/
 │   ├── 20250813121000_mv_projects_daily_counts.sql
 │   └── 20250814090000_presence_v2.sql
 ├── ast-greprc.yml           # SQL linting rules for migrations
-├── .temp/                   # Temporary files and CLI version tracking
-│   └── cli-latest           # Latest Supabase CLI version (v2.39.2)
 └── README.md                # This documentation
 ```
+
+**Note:** The `.temp/` directory (Supabase CLI temporary files) is gitignored and should not be committed.
 
 ## 🔄 Database Migrations
 
@@ -407,4 +409,3 @@ pnpm lint:sql
 **Migrations:** 21 total
 **Tables:** 18 core + 1 materialized view
 **RLS Policies:** 100% coverage
-

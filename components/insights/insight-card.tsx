@@ -50,7 +50,7 @@ export function InsightCard({
       <div className="flex-1 flex flex-col p-5">
         {category && (
           <div className="mb-3 flex items-center gap-2 text-xs text-muted-foreground">
-            <Badge color="secondary" className="rounded-full px-2 py-0 text-[11px]">
+            <Badge color="secondary" className="rounded-full px-2 py-0 text-xs">
               {category}
             </Badge>
             {displayDate && (
@@ -72,8 +72,8 @@ export function InsightCard({
           <Link
             href={href}
             className={cn(
-              'block h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm',
-              variant === 'overlay' ? 'text-white hover:text-white/90' : 'hover:text-primary'
+              'block h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm no-underline',
+              variant === 'overlay' ? 'text-white hover:text-white/90' : 'text-foreground hover:text-primary'
             )}
             aria-label={`Read article: ${title}`}
           >
@@ -87,12 +87,20 @@ export function InsightCard({
         </h3>
 
         {excerpt && (
-          <p className={cn(
-            'mt-2 line-clamp-3 text-sm flex-1',
-            variant === 'overlay' ? 'text-white/90' : 'text-muted-foreground'
-          )}>
-            {excerpt}
-          </p>
+          <>
+            {/*
+              Excerpt is intentionally NOT flex-1.
+              These cards are equal-height in the grid, and the title can be 1–2 lines.
+              If excerpt also flexes, it can end up shorter than its clamp height and get clipped mid-line.
+              Clamp to 2 lines for consistent, clean ellipsis across cards.
+            */}
+            <p className={cn(
+              'mt-2 line-clamp-2 text-sm',
+              variant === 'overlay' ? 'text-white/90' : 'text-muted-foreground'
+            )}>
+              {excerpt}
+            </p>
+          </>
         )}
 
         <div className={cn(
@@ -109,7 +117,7 @@ export function InsightCard({
             <span className="ml-auto text-xs text-muted-foreground">
               by <Link
                 href={author.href || '#'}
-                className="underline hover:no-underline"
+                className="underline hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 {author.name}
               </Link>

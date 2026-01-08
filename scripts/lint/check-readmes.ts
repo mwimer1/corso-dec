@@ -1,7 +1,18 @@
 #!/usr/bin/env tsx
+/**
+ * Validates that required directories have README.md files.
+ * 
+ * Checks that top-level route groups (e.g., (marketing)) and UI component directories
+ * (atoms, molecules, organisms) have README.md files for documentation.
+ * 
+ * Intent: Ensure documentation exists for key directories
+ * Files: README.md files in route groups and UI component directories
+ * Invocation: pnpm docs:readmes:check
+ */
 import { globby } from 'globby';
 import fs from 'node:fs/promises';
-import path from 'node:path';
+import { join } from 'node:path';
+import { createLintResult, isJsonOutput } from './_utils';
 
 const STRICT = process.argv.includes('--strict');
 
@@ -10,12 +21,14 @@ async function exists(p: string): Promise<boolean> {
 }
 
 async function main() {
+  const result = createLintResult();
   const routeGroups = await globby(['app/*/'], { onlyDirectories: true });
   const missing: string[] = [];
+  
   for (const dir of routeGroups) {
-    const name = path.basename(dir.slice(0, -1));
+    const name = dir.split('/').pop()?.replace(/\/$/, '') || '';
     if (!name.startsWith('(')) continue; // only top-level route groups like (marketing)
-    const readme = path.join(dir, 'README.md');
+    const readme = join(dir, 'README.md');
     if (!(await exists(readme))) missing.push(readme);
   }
 
@@ -31,15 +44,24 @@ async function main() {
   for (const base of uiTargets) {
     const dirs = await globby([`${base}/*/`], { onlyDirectories: true });
     for (const d of dirs) {
-      const readme = path.join(d, 'README.md');
+      const readme = join(d, 'README.md');
       if (!(await exists(readme))) missing.push(readme);
     }
   }
 
   if (missing.length) {
+    for (const m of missing) {
+      result.addWarning(m);
+    }
+  }
+
+  // Preserve original output format
+  if (result.hasWarnings()) {
     console.log('README coverage warnings for:');
-    for (const m of missing) console.log(' -', m);
-    if (STRICT) process.exit(1);
+    for (const warning of result.getWarnings()) {
+      console.log(' -', warning);
+    }
+    if (STRICT) process.exitCode = 1;
   } else {
     console.log('✅ README coverage looks good');
   }
@@ -47,7 +69,7 @@ async function main() {
 
 main().catch((err) => {
   console.error(err);
-  process.exit(1);
+  process.exitCode = 1;
 });
 
 

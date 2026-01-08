@@ -1,0 +1,25 @@
+{
+  "id": "managing-change-orders-agile-project-controls",
+  "slug": "managing-change-orders-agile-project-controls",
+  "title": "Managing Change Orders: Minimizing Impact with Agile Project Controls",
+  "description": "An agile approach to change orders in construction. Emphasizes fast response, clear workflows, and quick integration of changes to minimize project impacts.",
+  "publishDate": "2025-05-19T09:00:00Z",
+  "imageUrl": "/demos/projects-interface.png",
+  "categories": [
+    {
+      "slug": "operations",
+      "name": "Operations"
+    },
+    {
+      "slug": "cost-management",
+      "name": "Cost Management"
+    }
+  ],
+  "readingTime": 5,
+  "author": {
+    "name": "Field Ops Analyst",
+    "avatar": null
+  },
+  "content": "<p>Change orders are inevitable in construction, but how they're managed can make the difference between a minor adjustment and a major disruption. An agile approach to change management emphasizes speed, clear communication, and systematic workflows to minimize impact.</p>\n<p>This article explores how construction teams are adopting agile project controls to handle change orders more effectively, reducing delays and cost overruns while maintaining project momentum.</p>"
+}
+

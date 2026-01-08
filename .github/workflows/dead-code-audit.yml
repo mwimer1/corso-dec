@@ -1,0 +1,136 @@
+name: Dead Code Audit
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "components/**"
+      - "lib/**"
+      - "hooks/**"
+      - "actions/**"
+      - "types/**"
+      - "scripts/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    # Run weekly on Monday at 2 AM UTC
+    - cron: '0 2 * * 1'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    name: Dead Code & Unused Exports Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup-node-pnpm
+        with:
+          run-install: 'true'
+
+      - name: Create reports directories
+        run: |
+          mkdir -p reports/orphan reports/exports
+
+      - name: Dead Code Check (Optimized - Cross-platform)
+        id: deadcode
+        continue-on-error: true
+        run: |
+          echo "🔍 Running optimized dead code check (orphans + cycles)..."
+          pnpm validate:dead-code:optimized || echo "exit_code=1" >> $GITHUB_OUTPUT
+          echo "exit_code=0" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Orphan Audit (Detailed - ts-morph)
+        id: orphans
+        continue-on-error: true
+        run: |
+          echo "🔍 Running detailed orphan audit..."
+          pnpm audit:orphans --out reports/orphan/orphan-report.json || echo "exit_code=1" >> $GITHUB_OUTPUT
+          echo "exit_code=0" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: High-Signal Orphans
+        id: orphans-high-signal
+        continue-on-error: true
+        run: |
+          echo "🔍 Filtering high-signal orphan candidates..."
+          pnpm audit:orphans:high-signal || echo "exit_code=1" >> $GITHUB_OUTPUT
+          echo "exit_code=0" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Unused Exports Check (Knip - Linux only)
+        id: exports
+        continue-on-error: true
+        run: |
+          echo "🔍 Running unused exports check (Knip)..."
+          pnpm quality:exports:check || echo "exit_code=1" >> $GITHUB_OUTPUT
+          echo "exit_code=0" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Test-Only Exports Check (ts-prune - Linux only)
+        id: test-only
+        continue-on-error: true
+        run: |
+          echo "🔍 Running test-only exports check..."
+          pnpm deadcode:test-only:ci || echo "exit_code=1" >> $GITHUB_OUTPUT
+          echo "exit_code=0" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Upload Audit Artifacts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: dead-code-audit-reports-${{ github.sha }}
+          path: |
+            reports/orphan/orphan-report.json
+            reports/exports/unused-exports.report.json
+            reports/exports/unused-exports.summary.md
+          retention-days: 30
+          if-no-files-found: ignore
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## 📊 Dead Code Audit Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f reports/orphan/orphan-report.json ]; then
+            echo "✅ Orphan report generated" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ Orphan report not generated" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ -f reports/exports/unused-exports.report.json ]; then
+            echo "✅ Unused exports report generated" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ Unused exports report not generated" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Download audit reports from the workflow artifacts." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Note:** These audits run on Linux (canonical source of truth)." >> $GITHUB_STEP_SUMMARY
+          echo "On Windows, use \`pnpm validate:dead-code:optimized\` and \`pnpm audit:orphans\` for local checks." >> $GITHUB_STEP_SUMMARY
+        shell: bash
+

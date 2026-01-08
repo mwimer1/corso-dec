@@ -1,6 +1,6 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+status: "active"
+last_updated: "2026-01-07"
 category: "documentation"
 ---
 # 🎨 Style Pattern Library
@@ -445,7 +445,7 @@ const newButtonVariants = tv({
 ## 🔗 Related Documentation
 
 - [Shared Variants](../styles/ui/shared/README.md) - Shared variant reference
-- [Animation Patterns](../styles/ui/shared/animation-patterns.ts) - Motion design
+- [Shared Styles](../styles/ui/shared/README.md) - Shared styles and patterns
 - [Atoms Reference](../styles/ui/atoms/README.md) - Atomic components
 - [Molecules Reference](../styles/ui/molecules/README.md) - Molecule components
 
@@ -454,4 +454,3 @@ const newButtonVariants = tv({
 **Pattern Library Status:** ✅ Complete and verified
 **Last Updated:** 2025-09-11
 **Coverage:** 100% of identified patterns documented
-

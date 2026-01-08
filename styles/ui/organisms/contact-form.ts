@@ -1,5 +1,5 @@
-import type { VariantProps } from '@/styles/utils';
-import { tv } from '@/styles/utils';
+import type { VariantProps } from '@/styles';
+import { tv } from '@/styles';
 
 /**
  * contactFormVariants

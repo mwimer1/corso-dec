@@ -197,7 +197,8 @@ function inferDomainFromPath(filePath: string): string {
   // Find the domain (e.g., 'lib', 'components', 'types', etc.)
   for (let i = 0; i < parts.length - 1; i++) {
     const part = parts[i];
-    if (part && ['lib', 'components', 'types', 'hooks', 'contexts', 'styles', 'actions'].includes(part)) {
+    // Note: hooks/ and contexts/ directories no longer exist at root level
+    if (part && ['lib', 'components', 'types', 'styles', 'actions'].includes(part)) {
       return part;
     }
   }
@@ -213,8 +214,6 @@ function inferCategoryFromDomain(domain: string): string {
     lib: 'library',
     components: 'components',
     types: 'types',
-    hooks: 'hooks',
-    contexts: 'contexts',
     styles: 'styling',
     actions: 'actions',
   };

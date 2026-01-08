@@ -1,0 +1,52 @@
+{
+  "deprecatedImports": [
+    {
+      "path": "@/lib/actions/rate-limiting",
+      "replacement": "@/lib/security/rate-limiting",
+      "message": "Import path '@/lib/actions/rate-limiting' is deprecated. Use '@/lib/security/rate-limiting' instead."
+    },
+    {
+      "path": "@/lib/api/response/handlers",
+      "replacement": "@/lib/api",
+      "message": "Import path '@/lib/api/response/handlers' is deprecated. Use '@/lib/api' instead."
+    },
+    {
+      "path": "@/lib/api/env",
+      "replacement": "@/lib/server/env",
+      "message": "Import path '@/lib/api/env' is deprecated. Use '@/lib/server/env' instead."
+    },
+    {
+      "path": "@/lib/shared/assets.ts",
+      "replacement": "@/lib/shared/assets",
+      "message": "Import path '@/lib/shared/assets.ts' is deprecated. Use '@/lib/shared/assets' instead (without .ts extension)."
+    },
+    {
+      "path": "@/lib/shared/env.ts",
+      "replacement": "@/lib/shared/env",
+      "message": "Import path '@/lib/shared/env.ts' is deprecated. Use '@/lib/shared/env' instead (without .ts extension)."
+    },
+    {
+      "path": "@/lib/shared/validation.ts",
+      "replacement": "@/lib/shared/validation",
+      "message": "Import path '@/lib/shared/validation.ts' is deprecated. Use '@/lib/shared/validation' instead (without .ts extension)."
+    },
+    {
+      "path": "@/lib/validators/chat.ts",
+      "replacement": "@/lib/validators/chat",
+      "message": "Import path '@/lib/validators/chat.ts' is deprecated. Use '@/lib/validators/chat' instead (without .ts extension)."
+    },
+    {
+      "path": "@/lib/validators/marketing.ts",
+      "replacement": "@/lib/validators/marketing",
+      "message": "Import path '@/lib/validators/marketing.ts' is deprecated. Use '@/lib/validators/marketing' instead (without .ts extension)."
+    },
+    {
+      "pattern": "/security/rate-limiting/guards",
+      "replacement": "@/lib/security/rate-limiting",
+      "message": "Import path containing '/security/rate-limiting/guards' is deprecated. Use '@/lib/security/rate-limiting' instead.",
+      "allowlist": [
+        "lib/security/rate-limiting/guards.ts"
+      ]
+    }
+  ]
+}

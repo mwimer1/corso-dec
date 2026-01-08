@@ -1,0 +1,25 @@
+{
+  "id": "data-driven-culture-best-practices",
+  "slug": "data-driven-culture-best-practices",
+  "title": "Building a Data-Driven Culture in Construction Firms: Best Practices",
+  "description": "Tips for building a data-driven culture in construction. Focuses on leadership, training, and tools to encourage employees to rely on data in decision-making.",
+  "publishDate": "2025-11-05T09:00:00Z",
+  "imageUrl": "/demos/companies-interface.png",
+  "categories": [
+    {
+      "slug": "data",
+      "name": "Data"
+    },
+    {
+      "slug": "operations",
+      "name": "Operations"
+    }
+  ],
+  "readingTime": 6,
+  "author": {
+    "name": "Corso Research",
+    "avatar": null
+  },
+  "content": "<p>Becoming a data-driven organization requires more than just implementing analytics tools—it demands a cultural shift where data becomes central to decision-making at all levels. In construction, this means moving from experience-based intuition to evidence-based choices.</p>\n<p>This article provides best practices for building a data-driven culture in construction firms, covering leadership strategies, training approaches, and organizational changes needed to make data a core part of how work gets done.</p>"
+}
+

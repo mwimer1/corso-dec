@@ -1,20 +1,21 @@
 "use client";
 
 import { Button, SkipNavLink } from "@/components/ui/atoms";
+import { LinkTrack, ReadingProgress } from "@/components/ui/molecules";
 import { APP_LINKS } from '@/lib/shared';
 import { cn } from "@/styles";
-import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
+import { containerMaxWidthVariants, containerWithPaddingVariants } from "@/styles/ui/shared";
 import type { NavItemData } from "@/types/shared";
-import Link from "next/link";
+import { useAuth } from "@clerk/nextjs";
 import type { HTMLAttributes, ReactNode } from "react";
 import { useEffect, useState } from "react";
-import FooterSystem from "./footer-system/footer";
+import Footer from "./footer-system/footer";
 import { Navbar } from "./navbar/navbar";
 
 interface PublicLayoutProps extends HTMLAttributes<HTMLElement> {
   children: ReactNode;
   /** Navigation mode - determines what nav items and buttons to show */
-  navMode?: "landing" | "minimal";
+  navMode?: "landing" | "minimal" | "insights";
   /** Custom navigation items (optional override) */
   navItems?: NavItemData[];
   /** Enable sticky header with blur and border (no JS scroll state) */
@@ -25,6 +26,10 @@ interface PublicLayoutProps extends HTMLAttributes<HTMLElement> {
   showFooterCTA?: boolean;
   /** Show mobile sticky CTA ribbon */
   showMobileCTA?: boolean;
+  /** Whether to show reading progress indicator (for insights article pages) */
+  showReadingProgress?: boolean;
+  /** Whether to show vertical guidelines overlay */
+  showVerticalGuidelines?: boolean;
 }
 
 /**
@@ -40,8 +45,11 @@ export function PublicLayout({
   headerClassName,
   showFooterCTA = true,
   showMobileCTA = true,
+  showReadingProgress = false,
+  showVerticalGuidelines = false,
   ...props
-}: PublicLayoutProps): JSX.Element {
+}: PublicLayoutProps): React.ReactElement {
+  const { isSignedIn } = useAuth();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -55,52 +63,78 @@ export function PublicLayout({
   }, []);
 
   return (
-    <div className="min-h-[100svh] flex flex-col">
+    <div className="flex min-h-screen flex-col">
       <SkipNavLink />
       <header
         role="banner"
         data-sticky-nav
         data-scrolled={scrolled ? 'true' : 'false'}
         className={cn(
-          stickyHeader &&
-            "sticky top-0 z-50 border-b border-border bg-surface transition-shadow data-[scrolled=true]:shadow-sm",
           headerClassName,
+          // IMPORTANT:
+          // Do not combine Tailwind position utilities on this element.
+          // With tailwind-merge (or similar), later position utilities win.
+          // - stickyHeader=true => use `sticky` (also provides positioning context for absolute children)
+          // - stickyHeader=false => use `relative` (for absolute children positioning)
+          stickyHeader
+            ? "sticky top-0 z-50 border-b border-border bg-surface transition-shadow data-[scrolled=true]:shadow-sm"
+            : "relative",
         )}
       >
-        <div
-          className={cn(
-            containerMaxWidthVariants({ maxWidth: "7xl", centered: true })
-          )}
-        >
-          <Navbar mode={navMode} {...(navItems && { items: navItems })} />
+        <div className={cn(containerWithPaddingVariants({ maxWidth: "7xl", padding: "lg" }))}>
+          <Navbar 
+            mode={navMode} 
+            {...(navItems && { items: navItems })}
+            {...(navMode === "insights" || navMode === "landing" ? { forceShowCTAs: true } : {})}
+          />
         </div>
+        {showReadingProgress && <ReadingProgress />}
       </header>
       <main
         id="main-content"
-        className={`bg-background text-foreground flex-1 ${className ?? ""}`}
+        className={cn(
+          "flex-1 relative bg-background text-foreground overflow-x-hidden",
+          !isSignedIn && showMobileCTA && "pb-20", // Prevent footer overlap with mobile CTA
+          className,
+        )}
         {...props}
       >
+        {/* Page-level continuous vertical guidelines overlay (scoped to main; excludes footer) */}
+        {showVerticalGuidelines && (
+          <div className={cn('pointer-events-none absolute inset-0 z-[39]')} aria-hidden="true">
+            <div className={cn(
+              containerMaxWidthVariants({ maxWidth: '7xl', centered: true }),
+              'relative h-full mx-auto'
+            )}>
+              {/* Left guideline positioned at inner edge of padding (px-4 sm:px-6 lg:px-8) */}
+              <div className="absolute inset-y-0 left-4 sm:left-6 lg:left-8 w-px bg-border" />
+              {/* Right guideline positioned at inner edge of padding (px-4 sm:px-6 lg:px-8) */}
+              <div className="absolute inset-y-0 right-4 sm:right-6 lg:right-8 w-px bg-border" />
+            </div>
+          </div>
+        )}
+
         {children}
       </main>
 
       {/* Sticky mobile CTA ribbon */}
-      {showMobileCTA && (
+      {showMobileCTA && !isSignedIn && (
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface/95 backdrop-blur supports-[backdrop-filter]:bg-surface/80 md:hidden">
-          <div className={cn(containerMaxWidthVariants({ maxWidth: "7xl", centered: true }), "px-4 py-3 flex items-center justify-between gap-3")}>
+          <div className={cn(containerWithPaddingVariants({ maxWidth: "7xl", padding: "lg" }), "py-3 flex items-center justify-between gap-3")}>
             <span className="text-sm text-muted-foreground">Ready to explore Corso?</span>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <Button asChild size="sm" variant="secondary">
-                <Link href={APP_LINKS.NAV.SIGNIN}>Sign in</Link>
+                <LinkTrack href={APP_LINKS.NAV.SIGNIN} label="landing:mobile:signin">Sign in</LinkTrack>
               </Button>
-              <Button asChild size="sm">
-                <Link href={APP_LINKS.NAV.SIGNUP}>Start for free</Link>
+              <Button asChild size="sm" variant="default">
+                <LinkTrack href={APP_LINKS.NAV.SIGNUP} label="landing:mobile:signup">Start for free</LinkTrack>
               </Button>
             </div>
           </div>
         </div>
       )}
 
-      <FooterSystem showCTA={showFooterCTA} />
+      <Footer showCTA={showFooterCTA} variant={showFooterCTA ? 'hero' : 'content'} />
     </div>
   );
 }

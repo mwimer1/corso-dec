@@ -1,6 +1,6 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+status: "active"
+last_updated: "2026-01-07"
 category: "documentation"
 ---
 # Test Suite
@@ -106,7 +106,7 @@ Tests automatically run in the appropriate environment based on file naming conv
 - Validate accessibility attributes in component tests
 
 ### ❌ **Don't**
-- Create co-located test files (e.g., `Button.spec.tsx`)
+- Create co-located test files (e.g., `Button.test.tsx`)
 - Import server code in client-side tests
 - Leave unused mocks or test utilities
 - Skip edge cases or error handling tests
@@ -117,7 +117,7 @@ Tests automatically run in the appropriate environment based on file naming conv
 |---------|-------------|---------|
 | Component Mock | Mock child components for isolation | `vi.mock('@/components/ui/molecules')` |
 | API Route Test | Test route handlers directly | `import { GET } from '@/app/api/health/route'` |
-| Runtime Boundary | Validate server/client separation | `tests/runtime-boundary/**/*.spec.ts` |
+| Runtime Boundary | Validate server/client separation | `tests/runtime-boundary/**/*.test.ts` |
 | Render Harness | Consistent component rendering with providers | `renderWithProviders(<Component />)` |
 | API Harness | Simplified API route testing | `testApiRoute({ handler, method: 'POST', body: {...} })` |
 
@@ -141,6 +141,97 @@ Tests automatically run in the appropriate environment based on file naming conv
 - Mock external APIs and services
 - Avoid over-mocking internal business logic
 
+## Pattern Enforcement
+
+The test suite includes automated pattern enforcement to maintain consistency. These rules are checked automatically via `pnpm test:patterns` and in the pre-push hook.
+
+**Note**: E2E smoke tests (`tests/e2e/**`) are excluded from pattern enforcement as they use Playwright and have their own naming conventions (e.g., `*.smoke.test.ts`).
+
+### Enforced Rules
+
+#### 1. DOM Test Naming (`*.dom.test.tsx`)
+**Rule**: React component tests that use DOM APIs or `@testing-library/react` must be named `*.dom.test.tsx`.
+
+**Why**: Ensures proper environment selection (jsdom) and clear test categorization.
+
+**Exclusions**: E2E tests (`tests/e2e/**`) are excluded as they use Playwright's `document.` API in `page.evaluate()` which is different from actual DOM component tests.
+
+**Example**:
+```typescript
+// ✅ CORRECT
+// File: tests/ui/button.dom.test.tsx
+import { render, screen } from '@testing-library/react';
+import { Button } from '@/components/ui/button';
+
+// ❌ INCORRECT
+// File: tests/ui/button.test.tsx (should be button.dom.test.tsx)
+```
+
+#### 2. API Route Request Pattern
+**Rule**: API route tests must use `new Request(...)` with `JSON.stringify(body)` for request bodies.
+
+**Why**: Ensures consistent request construction and proper serialization.
+
+**Exclusions**: E2E tests (`tests/e2e/**`) are excluded as they use Playwright's request API.
+
+**Example**:
+```typescript
+// ✅ CORRECT
+const req = new Request('http://localhost/api/v1/endpoint', {
+  method: 'POST',
+  headers: { 'content-type': 'application/json' },
+  body: JSON.stringify({ key: 'value' }),
+});
+
+// ❌ INCORRECT
+const req = { json: async () => ({ key: 'value' }) };
+```
+
+#### 3. Centralized Clerk Mock Usage
+**Rule**: Use the centralized `mockClerkAuth` helper instead of direct `vi.mock('@clerk/nextjs/server')`.
+
+**Why**: Reduces boilerplate and ensures consistent auth mocking across tests.
+
+**Exclusions**: E2E tests (`tests/e2e/**`) are excluded as they use Playwright and don't use Vitest mocks.
+
+**Example**:
+```typescript
+// ✅ CORRECT
+import { mockClerkAuth } from '@/tests/support/mocks';
+
+beforeEach(() => {
+  mockClerkAuth.setup({ userId: 'test-user-123' });
+});
+
+// ❌ INCORRECT
+const mockAuth = vi.fn();
+vi.mock('@clerk/nextjs/server', () => ({
+  auth: () => mockAuth(),
+}));
+```
+
+### Running Pattern Checks
+
+```bash
+# Check patterns manually
+pnpm test:patterns
+
+# Pattern checks run automatically in:
+# - Pre-push hook (via pnpm test:fast)
+# - CI pipeline (explicit step before test:ci)
+```
+
+**CI Enforcement**: Pattern enforcement runs as an explicit step in CI workflows (`.github/workflows/ci.yml` and `.github/workflows/deploy.yml`) before the test suite, ensuring patterns cannot be bypassed even if pre-push hooks are skipped.
+
+### Bypassing Checks
+
+Pattern checks can be bypassed in the pre-push hook using:
+```bash
+git push --no-verify
+```
+
+**Note**: Only bypass when absolutely necessary (e.g., emergency hotfixes). Pattern violations should be fixed, not bypassed.
+
 ---
 
 ## 🎯 Key Takeaways
@@ -157,11 +248,15 @@ Tests automatically run in the appropriate environment based on file naming conv
 - [Testing Strategy](../../docs/testing-strategy.md) - High-level testing approach
 - [Component Guidelines](../../docs/component-testing.md) - React component testing patterns
 
-## 🏷️ Tags
+## Related Documentation
 
-`#testing` `#vitest` `#corso-platform` `#quality-assurance`
+- [Testing Guide](../../docs/quality/testing-guide.md) - How to write and run tests
+- [Testing Strategy](../../docs/quality/testing-strategy.md) - Testing approach and coverage
+- [Quality Standards](../../.cursor/rules/code-quality-standards.mdc) - Code quality standards
+- [Vitest Configuration](../../vitest.config.ts) - Test runner setup
 
 ---
 
-_Last updated: 2025-10-23 (Restructured to domain-first organization)_
-
+**Last Updated**: 2026-01-07  
+**Maintained By**: Platform Team  
+**Status**: Active

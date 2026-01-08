@@ -1,14 +1,29 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+title: "Forms"
+last_updated: "2026-01-07"
 category: "types"
+status: "active"
+description: "TypeScript type definitions for types, ensuring type safety across the platform. Located in forms/."
 ---
-# Repository Scripts & Docs
+# Forms
 
-This README is generated from a single template (`README.scripts.hbs`).
+The forms directory contains TypeScript type definitions for the Corso platform.
 
-- Directory: `types/forms`
-- Last updated: `2025-10-29`
+TypeScript type definitions for types, ensuring type safety across the platform. Located in forms/.
 
-> Edit the template or the generator context to change all READMEs consistently.
+## Directory Structure
+
+```
+types/forms/
+index.ts
+types.ts
+```
+
+## Usage
+
+Import types from the appropriate subdirectory:
+
+```typescript
+import type { TypeName } from '@/types/forms/subdirectory';
+```
 

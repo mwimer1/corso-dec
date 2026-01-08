@@ -1,15 +1,17 @@
 ---
-status: "stable"
-last_updated: "2025-11-03"
+status: "draft"
+last_updated: "2026-01-07"
 category: "documentation"
+title: "Security"
+description: "Documentation and resources for documentation functionality. Located in security/."
 ---
-## Authentication Patterns
+# Authentication Patterns
 
 This guide covers authentication patterns using Clerk, including server/client boundaries, security practices, and single-tenant considerations.
 
-### Clerk Integration
+## Clerk Integration
 
-#### Server-Side Authentication
+### Server-Side Authentication
 ```typescript
 import { auth } from '@clerk/nextjs/server';
 
@@ -86,20 +88,30 @@ export async function getUserData(userId: string) {
 }
 ```
 
-#### Role-Based Access Control
+#### Role-Based Access Control (RBAC)
+
+**Important**: Use Clerk's `has({ role })` method for role checks. This is the canonical pattern for all RBAC enforcement.
+
 ```typescript
-import { hasRole } from '@/lib/auth/roles';
+import { auth } from '@clerk/nextjs/server';
 
 export async function adminOnlyAction() {
-  const { userId } = await auth();
-
-  if (!hasRole(userId, 'admin')) {
+  const { userId, has } = await auth();
+  
+  if (!userId) {
+    throw new Error('Authentication required');
+  }
+  
+  // ✅ CORRECT: Use Clerk's has({ role }) method
+  if (!has({ role: 'admin' })) {
     throw new Error('Admin access required');
   }
 
   return performAdminAction();
 }
 ```
+
+**Available Roles**: `'member'`, `'admin'`, `'owner'`, `'viewer'`, `'service'` (see OpenAPI RBAC configuration for complete list)
 
 ### Route Protection
 
@@ -140,13 +152,18 @@ export default authMiddleware({
 ```typescript
 import { Webhook } from 'svix';
 import { headers } from 'next/headers';
+// ✅ CORRECT: Use getEnv() for server-side environment access
+import { getEnv } from '@/lib/server/env';
 
 export async function POST(req: Request) {
-  const body = await req.text();
+  // CRITICAL: Read raw body as string (not JSON) to preserve signature integrity
+  // Any re-serialization (JSON.parse/stringify) will invalidate the signature
+  const rawBody = await req.text();
   const headersList = await headers();
 
-  const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET!);
-  const payload = wh.verify(body, {
+  const wh = new Webhook(getEnv().CLERK_WEBHOOK_SECRET!);
+  // Verify signature using raw body string - must be exact as received
+  const payload = wh.verify(rawBody, {
     'svix-id': headersList.get('svix-id')!,
     'svix-timestamp': headersList.get('svix-timestamp')!,
     'svix-signature': headersList.get('svix-signature')!,
@@ -222,22 +239,41 @@ export async function POST(req: Request) {
 ```
 
 #### Rate Limiting
+
+**Important**: Always declare the runtime and use the matching wrapper.
+
+**Edge Runtime Example:**
 ```typescript
-import { checkRateLimit } from '@/lib/security/rate-limit';
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
-export async function POST(req: Request) {
-  const ip = req.headers.get('x-forwarded-for');
-  const limited = await checkRateLimit(`auth:${ip}`, {
-    maxRequests: 5,
-    windowMs: 15 * 60 * 1000, // 15 minutes
-  });
+import { withRateLimitEdge } from '@/lib/api';
 
-  if (limited) {
-    throw new Error('Too many requests');
-  }
+export const POST = withRateLimitEdge(
+  async (req: NextRequest) => {
+    // Process authentication
+    return http.ok({ success: true });
+  },
+  { maxRequests: 5, windowMs: 15 * 60 * 1000 } // 15 minutes
+);
+```
 
-  // Process authentication
-}
+**Node.js Runtime Example** (for Clerk auth routes):
+```typescript
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+import { withRateLimitNode } from '@/lib/middleware';
+
+export const POST = withRateLimitNode(
+  async (req: NextRequest) => {
+    // Process authentication
+    return http.ok({ success: true });
+  },
+  { maxRequests: 5, windowMs: 15 * 60 * 1000 } // 15 minutes
+);
 ```
 
 ### Error Handling
@@ -343,7 +379,6 @@ function AuthAwareComponent() {
 ---
 
 **Related Documentation:**
-- [API Patterns & Data Fetching](../api-data/api-patterns.md)
+- [API Design Guide](../api/api-design-guide.md) - API patterns and data fetching
 - [Development Setup Guide](../development/setup-guide.md)
 - [Security Policy](security-policy.md)
-

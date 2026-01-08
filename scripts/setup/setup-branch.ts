@@ -53,6 +53,15 @@ function main() {
   // Configure no pager for logs by default
   process.env['GIT_PAGER'] = '';
 
+  // Ensure automatic pruning is enabled for repository hygiene
+  const pruneCheck = spawnSync('git', ['config', '--get', 'fetch.prune'], {
+    encoding: 'utf-8',
+    shell: process.platform === 'win32',
+  });
+  if (!pruneCheck.stdout?.trim()) {
+    tryRun('git', ['config', 'fetch.prune', 'true']);
+  }
+
   // Detect current branch
   const branch = spawnSync('git', ['rev-parse', '--abbrev-ref', 'HEAD'], { encoding: 'utf-8', shell: process.platform === 'win32' });
   const current = (branch.stdout || '').trim();

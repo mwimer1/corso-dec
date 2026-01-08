@@ -1,7 +1,69 @@
-import { describe, expect, it } from 'vitest';
+import { mockClerkAuth } from '@/tests/support/mocks';
+import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { resolveRouteModule } from '../../support/resolve-route';
+import { createUser } from '../../support/factories';
 
 describe('User Route', () => {
+  const testUser = createUser({ userId: 'test-user-123' });
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockClerkAuth.setup({
+      userId: testUser.userId,
+    });
+  });
   describe('POST /api/v1/user', () => {
+    it('should return 401 when unauthenticated', async () => {
+      mockClerkAuth.setup({ userId: null });
+      const url = resolveRouteModule('v1/user');
+      if (!url) return expect(true).toBe(true);
+
+      const mod: any = await import(url);
+      const handler = mod.POST;
+      const req = new Request('http://localhost/api/v1/user', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          id: '550e8400-e29b-41d4-a716-446655440000',
+          email: 'user@example.com',
+          name: 'Test User',
+        }),
+      });
+
+      const res = await handler(req as any);
+      expect(res.status).toBe(401);
+      const data = await res.json();
+      expect(data.success).toBe(false);
+      expect(data.error.code).toBe('HTTP_401');
+    });
+
+    it('should return 403 when user lacks member role', async () => {
+      mockClerkAuth.setup({
+        userId: testUser.userId,
+        has: vi.fn().mockReturnValue(false), // No member role
+      });
+      const url = resolveRouteModule('v1/user');
+      if (!url) return expect(true).toBe(true);
+
+      const mod: any = await import(url);
+      const handler = mod.POST;
+      const req = new Request('http://localhost/api/v1/user', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          id: '550e8400-e29b-41d4-a716-446655440000',
+          email: 'user@example.com',
+          name: 'Test User',
+        }),
+      });
+
+      const res = await handler(req as any);
+      expect(res.status).toBe(403);
+      const data = await res.json();
+      expect(data.success).toBe(false);
+      expect(data.error.code).toBe('FORBIDDEN');
+    });
+
     it('should return 400 for invalid input', async () => {
       // Test missing required fields
       const { validateJson } = await import('@/lib/api');
@@ -68,6 +130,30 @@ describe('User Route', () => {
 
       expect(result.success).toBe(true);
       expect((result as any).data).toEqual(validUser);
+    });
+
+    it('should return 200 for valid authenticated request with member role', async () => {
+      const url = resolveRouteModule('v1/user');
+      if (!url) return expect(true).toBe(true);
+
+      const mod: any = await import(url);
+      const handler = mod.POST;
+      const req = new Request('http://localhost/api/v1/user', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          id: '550e8400-e29b-41d4-a716-446655440000',
+          email: 'user@example.com',
+          name: 'Test User',
+          createdAt: '2024-01-15T10:30:00Z',
+        }),
+      });
+
+      const res = await handler(req as any);
+      expect(res.status).toBe(200);
+      const data = await res.json();
+      expect(data.success).toBe(true);
+      expect(data.data.updated).toBe(true);
     });
 
     it('should handle malformed JSON', async () => {

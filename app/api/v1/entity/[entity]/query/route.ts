@@ -1,0 +1,118 @@
+/**
+ * API Route: POST /api/v1/entity/[entity]/query
+ * 
+ * Query entity data with filtering, sorting, and pagination.
+ * 
+ * @requires Node.js runtime for ClickHouse database operations
+ * @requires Authentication via Clerk (userId required)
+ * @requires RBAC: 'member' role minimum
+ * @requires Rate limiting: 60 requests per minute
+ * 
+ * @example
+ * ```typescript
+ * POST /api/v1/entity/projects/query
+ * Body: { 
+ *   filter: { status: "active" },
+ *   sort: [{ field: "name", dir: "asc" }],
+ *   page: { index: 0, size: 10 }
+ * }
+ * Response: { success: true, data: { rows: [...], columns: [...], total: 100, page: 0, pageSize: 10 } }
+ * ```
+ */
+
+// Node.js required: ClickHouse database operations
+/** @knipignore */
+export const runtime = 'nodejs';
+/** @knipignore */
+export const dynamic = 'force-dynamic';
+/** @knipignore */
+export const revalidate = 0;
+
+import { http, validateJson } from '@/lib/api';
+import { requireAuthWithRBAC } from '@/lib/api/auth-helpers';
+import { createDynamicRouteHandler } from '@/lib/api/dynamic-route';
+import { handleOptions, RATE_LIMIT_60_PER_MIN } from '@/lib/middleware';
+import { getEntityConfig } from '@/lib/entities/config';
+import { getEntityPage } from '@/lib/entities/pages';
+import { EntityParamSchema, type EntityParam } from '@/lib/validators';
+import { EntityQueryRequestSchema } from '@/lib/validators/entityQuery';
+import type { NextRequest } from 'next/server';
+
+export async function OPTIONS(req: Request) {
+  return handleOptions(req);
+}
+
+const handler = async (req: NextRequest, ctx: { params: { entity: string } }): Promise<Response> => {
+  // 1. Authentication and RBAC enforcement (member role required per OpenAPI spec)
+  const authResult = await requireAuthWithRBAC('member');
+  if (authResult instanceof Response) {
+    return authResult;
+  }
+  const { userId: _userId } = authResult;
+
+  // 3. Entity param validation
+  const entityParsed = EntityParamSchema.safeParse((ctx.params?.entity ?? '').toLowerCase());
+  if (!entityParsed.success) {
+    return http.badRequest('Invalid entity type', { code: 'INVALID_ENTITY' });
+  }
+  const entity = entityParsed.data as EntityParam;
+
+  // 4. Request body validation
+  const parsed = await validateJson(req, EntityQueryRequestSchema);
+  if (!parsed.success) {
+    return http.badRequest('Invalid request body', {
+      code: 'VALIDATION_ERROR',
+      details: parsed.error,
+    });
+  }
+
+  const { filter, sort, page } = parsed.data;
+
+  // 5. Transform OpenAPI format to service format
+  // OpenAPI: { filter: object, sort: [{ field, dir }], page: { index, size } }
+  // Service: { page: number, pageSize: number, sort: { column, direction }, filters?: array }
+  
+  // Transform filters from object to array format
+  const filters = filter ? Object.entries(filter).map(([field, value]) => ({
+    field,
+    op: 'eq' as const, // Default to equality, could be enhanced
+    value,
+  })) : undefined;
+
+  // Transform sort from array to single object (use first sort if multiple)
+  const sortConfig = sort && sort.length > 0 && sort[0]
+    ? { column: sort[0].field, direction: sort[0].dir }
+    : { column: '', direction: 'asc' as const };
+
+  // 6. Fetch entity data
+  const result = await getEntityPage(entity, {
+    page: page.index,
+    pageSize: page.size,
+    sort: sortConfig,
+    ...(filters ? { filters } : {}),
+  });
+
+  // 7. Fetch column configuration
+  const columns = await getEntityConfig(entity);
+
+  // 8. Return response matching OpenAPI spec format
+  return http.ok({
+    rows: result.data,
+    columns,
+    total: result.total,
+    page: page.index,
+    pageSize: page.size,
+  }, {
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
+  });
+};
+
+// Rate limit: 60/min per OpenAPI spec
+// Next.js dynamic route signature: (req, { params }) => Response
+/** @knipignore */
+export const POST = createDynamicRouteHandler(handler, {
+  rateLimit: RATE_LIMIT_60_PER_MIN,
+});
+

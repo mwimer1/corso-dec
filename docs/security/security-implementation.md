@@ -1,0 +1,442 @@
+---
+title: "Security Implementation"
+last_updated: "2026-01-07"
+category: "documentation"
+status: "draft"
+---
+# Security Implementation Guide
+
+This document provides a comprehensive guide to security implementation in the Corso codebase, covering authentication, authorization, security headers, and best practices.
+
+## 🛡️ Security Architecture
+
+### Zero-Trust Principles
+
+Corso follows a zero-trust security model:
+- **Authenticate** all requests to protected resources
+- **Authorize** based on user identity and role-based access control (RBAC)
+- **Validate** all inputs using strict schemas
+- **Rate limit** all endpoints to prevent abuse
+- **Log** security events for monitoring and auditing
+
+## 🔐 Authentication & Authorization
+
+### Clerk Integration
+
+All authentication is handled via Clerk v6:
+
+```typescript
+import { auth } from '@clerk/nextjs/server';
+
+// Check authentication
+const { userId } = await auth();
+if (!userId) {
+  return http.error(401, 'Unauthorized', { code: 'HTTP_401' });
+}
+
+// Check role-based authorization using Clerk's has({ role }) method
+const { has } = await auth();
+if (!has({ role: 'member' })) {
+  return http.error(403, 'Insufficient permissions', { code: 'FORBIDDEN' });
+}
+```
+
+### Relaxed Auth Mode (Development Only)
+
+**⚠️ CRITICAL SECURITY**: Relaxed auth mode is **development-only** and **cannot be enabled in production**.
+
+Relaxed auth mode bypasses organization membership and RBAC checks, allowing any signed-in user to access protected resources. This is useful for local development but creates a critical security vulnerability if enabled in production.
+
+**Production Guard:**
+- The application **will fail to start** if relaxed auth mode is enabled in production
+- `isRelaxedAuthMode()` throws an error when called in production
+- `getEnv()` validates and throws during startup if production + relaxed auth detected
+- `pnpm validate:env` script checks for this configuration and fails CI
+
+**Configuration:**
+```bash
+# Development only (.env.development.local - recommended)
+# ⚠️  This file is ONLY loaded in `next dev` (not during `next build`)
+# This prevents production builds from failing due to relaxed auth mode
+NEXT_PUBLIC_AUTH_MODE=relaxed
+ALLOW_RELAXED_AUTH=true
+```
+
+**Guard Implementation:**
+- Runtime check: `isRelaxedAuthMode()` throws error in production
+- Startup check: `getEnv()` validates during application initialization
+- CI check: `validate-env.ts` script validates before deployment
+
+**Never enable in production:**
+- Build will fail if `NODE_ENV=production` and relaxed auth is enabled
+- Deployment will be blocked by environment validation
+- Application startup will throw error if guard is bypassed
+
+### Middleware Protection
+
+The `middleware.ts` file protects all routes:
+- Public routes are explicitly whitelisted
+- Protected routes require authentication
+- Unauthenticated users are redirected to sign-in
+
+### API Route Protection
+
+All protected API routes must:
+1. Check authentication using `auth()` from Clerk
+2. Verify authorization using RBAC (`has({ role: '...' })`)
+3. Return proper error codes (401 for unauthorized, 403 for forbidden)
+
+**Example:**
+```typescript
+export async function POST(req: Request) {
+  const { userId } = await auth();
+  if (!userId) {
+    return http.error(401, 'Unauthorized', { code: 'HTTP_401' });
+  }
+  
+  // Route-specific logic...
+}
+```
+
+## 🔒 Security Headers
+
+### Global Security Headers
+
+The following security headers are configured globally in `config/next.config.mjs`:
+
+- **Strict-Transport-Security**: Enforces HTTPS connections
+- **X-Frame-Options**: Prevents clickjacking attacks
+- **X-Content-Type-Options**: Prevents MIME type sniffing
+- **X-XSS-Protection**: Enables XSS filtering
+- **Referrer-Policy**: Controls referrer information
+- **Permissions-Policy**: Restricts browser features
+
+### Content Security Policy (CSP)
+
+CSP is configured for SVG images:
+```javascript
+contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
+```
+
+For full CSP implementation, consider adding a CSP header in middleware or via Next.js headers configuration.
+
+## 🚦 Rate Limiting
+
+### Implementation
+
+Rate limiting is applied to all API endpoints. **Always declare the runtime** and use the matching wrapper.
+
+⚠️ **CRITICAL**: Mismatching runtime and wrapper will cause runtime errors. Next.js defaults to Edge if `runtime` is not declared, which can fail if Node.js code is used.
+
+**Edge Runtime** (for fast, stateless endpoints):
+```typescript
+// ⚠️ Always declare runtime for Edge routes
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+// Note: Use Edge wrappers from @/lib/api for Edge routes
+import { withRateLimitEdge, withErrorHandlingEdge } from '@/lib/api';
+
+export const POST = withErrorHandlingEdge(
+  withRateLimitEdge(
+    async (req: NextRequest) => {
+      // Handler implementation
+    },
+    { windowMs: 60_000, maxRequests: 30 }
+  )
+);
+```
+
+**Node.js Runtime** (for database operations, Clerk auth):
+```typescript
+// ⚠️ Always declare runtime for Node.js routes
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+// Note: Use Node wrappers from @/lib/middleware for Node.js routes
+import { withRateLimitNode, withErrorHandlingNode } from '@/lib/middleware';
+
+export const POST = withErrorHandlingNode(
+  withRateLimitNode(
+    async (req: NextRequest) => {
+      // Handler implementation
+    },
+    { windowMs: 60_000, maxRequests: 30 }
+  )
+);
+```
+
+**Runtime Selection:**
+
+- **Edge Runtime**:
+  - Use `withRateLimitEdge` and `withErrorHandlingEdge` from `@/lib/api`
+  - For fast, stateless endpoints (health checks, CSP reports, public APIs)
+  - Cannot use Node.js-only features
+
+- **Node.js Runtime**:
+  - Use `withRateLimitNode` and `withErrorHandlingNode` from `@/lib/middleware`
+  - For routes requiring database access, Clerk authentication, or other Node.js-only features
+
+**Import Locations:**
+- Edge wrappers: `@/lib/api` or `@/lib/middleware`
+- Node wrappers: `@/lib/middleware` only
+
+### Rate Limit Configuration
+
+| Endpoint Type | Limit | Window |
+|--------------|-------|--------|
+| AI endpoints | 30/min | 60s |
+| Entity queries | 60/min | 60s |
+| User operations | 30/min | 60s |
+| Webhooks | 100/min | 60s |
+| Health checks | N/A | N/A |
+
+## 🔍 Input Validation
+
+### Zod Schema Validation
+
+All API inputs must be validated using Zod schemas:
+
+```typescript
+import { z } from 'zod';
+
+const BodySchema = z.object({
+  field: z.string().min(1).max(100),
+}).strict();
+
+const parsed = BodySchema.safeParse(json);
+if (!parsed.success) {
+  return http.badRequest('Invalid input', {
+    code: 'VALIDATION_ERROR',
+    details: parsed.error.flatten(),
+  });
+}
+```
+
+### SQL Injection Prevention
+
+AI-generated SQL is validated before execution:
+
+```typescript
+import { validateSQLScope } from '@/lib/integrations/database/scope';
+
+try {
+  validateSQLScope(generatedSQL, orgId);
+  // SQL is valid and tenant-scoped - proceed with execution
+} catch (validationError) {
+  // SecurityError thrown if validation fails
+  const errorMessage = validationError instanceof Error 
+    ? validationError.message 
+    : 'Invalid SQL generated';
+  return http.badRequest(errorMessage, { code: 'INVALID_SQL' });
+}
+```
+
+## 🔐 Webhook Security
+
+### Clerk Webhook Verification
+
+Clerk webhooks are verified using Svix:
+
+```typescript
+import { Webhook } from 'svix';
+
+const wh = new Webhook(getEnv().CLERK_WEBHOOK_SECRET || '');
+const evt = wh.verify(payload, headers);
+```
+
+### Stripe Webhook Verification
+
+Stripe webhooks are verified using signature verification:
+
+```typescript
+import { stripe } from '@/lib/integrations/stripe';
+
+const event = stripe.webhooks.constructEvent(
+  body,
+  signature,
+  getEnv().STRIPE_WEBHOOK_SECRET
+);
+```
+
+## 🔑 Secret Management
+
+### Environment Variables
+
+- **Never commit secrets**: `.env.local` is in `.gitignore`
+- **Use `getEnv()`**: Server-side environment access via `@/lib/server/env`
+- **Use `getEnvEdge()`**: Edge runtime environment access
+- **Never use `process.env` directly**: Always use centralized helpers
+
+### Secret Scanning
+
+Gitleaks is configured to scan for secrets:
+- Configuration: `config/.gitleaks.toml`
+- CI integration: `pnpm ci:gitleaks`
+- Pre-commit hook: `pnpm scan:secrets`
+
+## 🌐 CORS Configuration
+
+### CORS Headers
+
+CORS is handled via `handleCors()` middleware:
+
+```typescript
+import { handleCors } from '@/lib/middleware';
+
+export async function OPTIONS(req: Request) {
+  const response = handleCors(req);
+  if (response) return response;
+  return http.noContent();
+}
+```
+
+**Note**: Some routes use `'Access-Control-Allow-Origin': '*'` for development. In production, this should be restricted to specific origins.
+
+## 📊 Security Monitoring
+
+### Error Logging
+
+Security events are logged using structured logging:
+
+```typescript
+import { logger } from '@/lib/monitoring';
+
+logger.error('Security violation detected', {
+  userId,
+  ip,
+  violation: 'unauthorized_access',
+  path: req.nextUrl.pathname,
+});
+```
+
+### Security Event Tracking
+
+Track security events for:
+- Authentication failures
+- Authorization violations
+- Rate limit exceeded
+- Input validation failures
+- SQL injection attempts
+- Prompt injection attempts (logged in development mode)
+
+## 🤖 AI Prompt Sanitization
+
+### Shared Sanitization Utility
+
+All AI endpoints use a shared sanitization utility (`lib/security/prompt-injection.ts`) to prevent prompt injection attacks:
+
+**Sanitization Steps:**
+1. **Control Character Removal**: Removes null bytes and control characters (preserves newlines `\n` and tabs `\t`)
+2. **Line Ending Normalization**: Normalizes CRLF (`\r\n`) and CR (`\r`) to LF (`\n`)
+3. **Prompt Injection Pattern Removal**: Removes common injection patterns:
+   - "ignore previous instructions"
+   - "forget previous instructions"
+   - "disregard previous instructions"
+   - "you are now a different assistant/AI/model"
+   - "system: ignore previous"
+   - OpenAI tokens (`<|im_end|>`, `<|im_start|>`)
+4. **Whitespace Trimming**: Removes leading/trailing whitespace
+5. **Length Limiting**: Enforces maximum length of 2000 characters
+
+**Usage:**
+```typescript
+import { sanitizeUserInput } from '@/lib/security/prompt-injection';
+
+// Applied in both AI endpoints:
+// - /api/v1/ai/chat: sanitizes user content before OpenAI calls
+// - /api/v1/ai/generate-sql: sanitizes prompt/question fields before OpenAI calls
+
+const sanitized = sanitizeUserInput(userInput);
+if (!sanitized) {
+  return http.badRequest('Invalid input: content cannot be empty after sanitization', {
+    code: 'VALIDATION_ERROR',
+  });
+}
+```
+
+**Applied Consistently:**
+- ✅ `/api/v1/ai/chat` - User content sanitized in `processUserInput()` function
+- ✅ `/api/v1/ai/generate-sql` - Prompt/question fields sanitized before OpenAI API calls
+- ✅ No double-sanitization (applied once per endpoint)
+
+## ✅ Security Checklist
+
+### For New API Routes
+
+- [ ] Authentication check (`auth()`)
+- [ ] Authorization check (RBAC if needed)
+- [ ] Input validation (Zod schema)
+- [ ] Rate limiting applied
+- [ ] Error handling with proper status codes
+- [ ] CORS headers configured
+- [ ] Security logging implemented
+
+### For New Features
+
+- [ ] No hardcoded secrets
+- [ ] Environment variables used correctly
+- [ ] Input validation on all user inputs
+- [ ] Output sanitization for XSS prevention
+- [ ] SQL queries use parameterization
+- [ ] Security headers configured
+- [ ] Tests for security scenarios
+
+## 🚨 Security Best Practices
+
+### Do's
+
+✅ Always validate user input with Zod schemas  
+✅ Use parameterized queries for database operations  
+✅ Implement rate limiting on all endpoints  
+✅ Log security events for monitoring  
+✅ Use environment variables for secrets  
+✅ Verify webhook signatures  
+✅ Implement proper error handling  
+✅ Use HTTPS in production  
+
+### Don'ts
+
+❌ Never commit secrets to version control  
+❌ Never use `process.env` directly  
+❌ Never trust user input without validation  
+❌ Never expose sensitive data in error messages  
+❌ Never use wildcard CORS in production  
+❌ Never skip authentication checks  
+❌ Never log sensitive information  
+
+## 📚 Related Documentation
+
+- [Operational Guide](../operations/operational-guide.md) - Security operations and incident response
+- [Testing Strategy](../quality/testing-strategy.md) - Security testing patterns
+- [API Documentation](../../app/api/README.md) - API security patterns and rate limiting
+- [Security Policy](security-policy.md) - Vulnerability reporting
+- [Authentication Patterns](auth-patterns.md) - Auth implementation details
+- [API Security Standards](../../.cursor/rules/security-standards.mdc) - API security rules
+- [OpenAPI RBAC](../../.cursor/rules/openapi-vendor-extensions.mdc) - RBAC configuration
+
+## 🔄 Security Updates
+
+### Regular Security Tasks
+
+1. **Dependency Updates**: Run `pnpm audit` regularly
+2. **Secret Scanning**: Run `pnpm ci:gitleaks` in CI
+3. **Security Headers**: Verify headers are applied
+4. **Authentication**: Test auth flows regularly
+5. **Rate Limiting**: Monitor rate limit effectiveness
+
+### Security Incident Response
+
+1. **Identify**: Detect security issue
+2. **Contain**: Limit impact of the issue
+3. **Remediate**: Fix the security vulnerability
+4. **Document**: Update security documentation
+5. **Notify**: Inform affected users if necessary
+
+---
+
+**Last Updated**: 2025-12-15  
+**Maintained By**: Security Team  
+**Status**: Active

@@ -3,11 +3,10 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 describe('runtime boundaries - shared barrels must be client-safe', () => {
-  it('lib/auth/index.ts should not re-export server modules or contain server-only', () => {
+  it('lib/auth/index.ts should not exist (removed as unused)', () => {
+    // lib/auth/index.ts was removed - production code uses /client and /server directly
     const p = path.resolve(__dirname, '../../lib/auth/index.ts');
-    const src = fs.readFileSync(p, 'utf8');
-    expect(src).not.toMatch(/export\s+\*\s+from\s+['"].*\/server['"]/);
-    expect(src).not.toMatch(/server-only/);
+    expect(() => fs.readFileSync(p)).toThrow('ENOENT');
   });
 
   it('lib/core/index.ts should not re-export ./server or contain server-only', () => {

@@ -1,5 +1,6 @@
 import { getAllInsights } from '@/lib/marketing/server';
 
+/** @knipignore */
 export async function GET() {
   const insights = await getAllInsights() as any[]; // Cast to avoid type issues with author property
 

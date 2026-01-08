@@ -1,7 +1,9 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+title: "Development"
+description: "Documentation and resources for documentation functionality. Located in development/."
+last_updated: "2026-01-07"
 category: "documentation"
+status: "draft"
 ---
 # Custom Lint Rules & Cursor AI Standards
 
@@ -54,8 +56,8 @@ import { getEnvEdge } from '@/lib/api';
 
 // ✅ Server Routes - Use server-only imports
 export const runtime = 'nodejs';
-import { getEnv } from '@/lib/shared/server';
-import { auth } from '@/lib/auth';
+import { getEnv } from '@/lib/server/env';
+import { auth } from '@clerk/nextjs/server';
 ```
 
 ### Import Pattern Enforcement
@@ -299,4 +301,3 @@ All rules run automatically in:
 - [Runtime Boundaries](../../.cursor/rules/runtime-boundaries.mdc) - Runtime separation guidelines
 - [Code Quality Standards](../../.cursor/rules/code-quality-standards.mdc) - Import and error handling patterns
 - [ESLint Plugin](../../eslint-plugin-corso/README.md) - Plugin implementation details
-

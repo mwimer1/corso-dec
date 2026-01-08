@@ -1,14 +1,68 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+title: "Lib"
+last_updated: "2026-01-07"
 category: "library"
+status: "active"
+description: "Core library utilities and business logic for the Corso platform."
 ---
-# Repository Scripts & Docs
 
-This README is generated from a single template (`README.scripts.hbs`).
+# Lib
 
-- Directory: `lib`
-- Last updated: `2025-10-29`
+Core library utilities and business logic for the Corso platform.
 
-> Edit the template or the generator context to change all READMEs consistently.
+## Runtime
+
+**Runtime**: server ✅
+
+*server-only import detected*
+
+**Signals detected:**
+- import 'server-only'
+
+## Directory Structure
+
+```
+lib/
+├── actions/
+│   ├── error-handling.ts
+│   ├── index.ts
+│   └── validation.ts
+├── api/
+│   ├── ai/
+│   ├── api-error.ts
+│   ├── auth-helpers.ts
+│   ├── client.ts
+│   ├── data.ts
+│   ├── dynamic-route.ts
+│   ├── edge-env.ts
+│   ├── edge-route.ts
+│   ├── edge.ts
+│   ├── http.ts
+│   ├── index.ts
+│   ├── mock-normalizers.ts
+│   └── tenant-context-helpers.ts
+├── auth/
+│   ├── clerk-appearance.ts
+│   ├── client.ts
+│   ├── roles.ts
+│   └── server.ts
+├── chat/
+│   ├── client/
+│   ├── query/
+│   ├── rag-context/
+│   ├── types/
+│   ├── index.ts
+├── core/
+│   ├── client.ts
+│   ├── index.ts
+├── dashboard/
+│   └── breadcrumbs.ts
+├── entities/
+│   ├── actions.ts
+│   ├── config.ts
+│   ├── contracts.ts
+│   ├── org-resolution.ts
+│   ├── pages.ts
+... (89 more items)
+```
 

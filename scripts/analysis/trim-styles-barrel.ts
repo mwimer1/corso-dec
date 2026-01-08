@@ -4,17 +4,34 @@
  *  - Dry-run by default. Pass --write to persist and create .bak files.
  * Uses scripts/.cache/styles-usage.json (created by scan:styles).
  */
-import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { Project } from "ts-morph";
+import yargs from "yargs";
+import { hideBin } from "yargs/helpers";
+import { createProject, loadJson, trimBarrelExportsByModule, type TrimOptions } from "../utils/barrel-trim";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, "../..");
 const usagePath = path.join(repoRoot, "scripts/.cache/styles-usage.json");
-const allowlistPath = path.join(repoRoot, "scripts/analysis/data/styles-keep-allowlist.json");
-const write = process.argv.includes("--write");
+const allowlistPath = path.join(repoRoot, "scripts/analysis/styles-keep-allowlist.json");
+
+const argv = yargs(hideBin(process.argv))
+  .scriptName('trim-styles-barrel')
+  .usage('Trim Styles Barrel\n\nTrims named exports in styles barrels down to only used (+ allowlisted) names.\nUses scripts/.cache/styles-usage.json (created by scan:styles).')
+  .option('write', {
+    type: 'boolean',
+    default: false,
+    description: 'Apply changes to style barrel files',
+  })
+  .help()
+  .alias('help', 'h')
+  .example('$0', 'Dry-run: show what would change')
+  .example('$0 --write', 'Apply changes to barrel files')
+  .epilogue('Safety:\n  - Default mode is dry-run (no changes)\n  - --write required to modify files\n  - Creates .bak backup files before modifying')
+  .parseSync();
+
+const write = argv.write;
 
 type Usage = {
   barrels: string[];
@@ -22,14 +39,9 @@ type Usage = {
   mappingByBarrel: Record<string, { module: string; names: string[] }[]>;
 };
 
-function loadJson<T>(p: string): T {
-  if (!fs.existsSync(p)) throw new Error(`Missing file: ${path.relative(repoRoot, p)}`);
-  return JSON.parse(fs.readFileSync(p, "utf8")) as T;
-}
-
 function main() {
-  const usage = loadJson<Usage>(usagePath);
-  const allowlist = loadJson<Record<string, string[]>>(allowlistPath);
+  const usage = loadJson<Usage>(usagePath, repoRoot);
+  const allowlist = loadJson<Record<string, string[]>>(allowlistPath, repoRoot);
   const used = new Set([
     ...usage.usedNames,
     ...((allowlist["global"]) ?? []),
@@ -38,17 +50,23 @@ function main() {
     ...((allowlist["organisms"]) ?? []),
   ]);
 
-  const project = new Project({ tsConfigFilePath: path.join(repoRoot, "tsconfig.json") });
+  const project = createProject(path.join(repoRoot, "tsconfig.json"));
+  const trimOptions: TrimOptions = {
+    write,
+    dryRun: !write,
+    backup: true,
+  };
   const changed: Array<{ barrel: string; removed: Record<string, string[]> }> = [];
 
   for (const rel of usage.barrels) {
     const barrelPath = path.join(repoRoot, rel);
+    
+    // Build removals map by module
+    const removalsByModule = new Map<string, Set<string>>();
     const sf = project.getSourceFile(barrelPath);
     if (!sf) continue;
 
-    const before = sf.getFullText();
-    const removedByModule: Record<string, string[]> = {};
-
+    // Collect removals by module
     for (const ed of sf.getExportDeclarations()) {
       const mod = ed.getModuleSpecifierValue() ?? "";
       const named = ed.getNamedExports();
@@ -57,29 +75,24 @@ function main() {
         continue;
       }
       const names = named.map((ne) => ne.getName());
-      const keep = names.filter((name) => used.has(name));
       const remove = names.filter((n) => !used.has(n));
 
-      if (remove.length) removedByModule[mod] = remove;
-
-      if (keep.length === 0) {
-        ed.remove();
-      } else if (keep.length !== names.length) {
-        // Rebuild the export declaration with the kept names, preserving type-only status
-        const modText = mod ? ` from "${mod}"` : "";
-        const isTypeOnly = (typeof (ed as any).isTypeOnly === "function") ? (ed as any).isTypeOnly() : false;
-        const newDecl = `export ${isTypeOnly ? "type " : ""}{ ${keep.join(", ")} }${modText};`;
-        ed.replaceWithText(newDecl);
+      if (remove.length > 0) {
+        removalsByModule.set(mod, new Set(remove));
       }
     }
 
-    const afterText = sf.getFullText();
-    if (before !== afterText) {
+    if (removalsByModule.size === 0) continue;
+
+    // Use shared utility to trim
+    const result = trimBarrelExportsByModule(project, barrelPath, removalsByModule, trimOptions);
+
+    if (result.changed) {
+      const removedByModule: Record<string, string[]> = {};
+      removalsByModule.forEach((names, mod) => {
+        removedByModule[mod] = Array.from(names);
+      });
       changed.push({ barrel: rel, removed: removedByModule });
-      if (write) {
-        const bak = barrelPath + ".bak";
-        fs.writeFileSync(bak, before, "utf8");
-      }
     }
   }
 
@@ -94,7 +107,6 @@ function main() {
       }
     }
     if (write) {
-      project.saveSync();
       console.log("Saved changes. Backups written as *.bak next to each barrel.");
     } else {
       console.log("Dry-run only. Re-run with --write to persist.");

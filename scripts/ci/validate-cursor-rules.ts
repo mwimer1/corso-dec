@@ -1,4 +1,4 @@
-// scripts/validate-cursor-rules.ts
+// scripts/ci/validate-cursor-rules.ts
 import matter from "gray-matter";
 import fs from "node:fs";
 import path from "node:path";
@@ -55,6 +55,11 @@ for (const entry of fs.readdirSync(RULES_DIR)) {
   const raw = fs.readFileSync(full, "utf8");
   const parsed = matter(raw);
 
+  // Check for deprecated lib/services/entities references
+  if (raw.includes('lib/services/entities') || raw.includes('@/lib/services/entities')) {
+    problems.push(`${entry}: Contains deprecated 'lib/services/entities' reference. Use 'lib/entities' instead.`);
+  }
+
   try {
     const fm = cursorRuleFrontmatterSchema.parse(parsed.data);
 
@@ -99,7 +104,7 @@ for (const r of rules) {
 if (problems.length) {
   console.error("❌ Cursor rules validation failed:");
   for (const p of problems) console.error(" -", p);
-  process.exit(1);
+  process.exitCode = 1;
 } else {
   console.log("✅ Cursor rules validation passed.");
 }

@@ -1,7 +1,9 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+status: "active"
+last_updated: "2026-01-07"
 category: "documentation"
+title: "Config"
+description: "Documentation and resources for documentation functionality."
 ---
 # Global Project Configuration (`config/`)
 
@@ -13,10 +15,10 @@ This directory contains global configuration files for the Corso app. These file
 |----------|-----------|---------|
 | **Build** | `next.config.mjs`, `postcss.config.js` | Next.js and CSS processing |
 | **TypeScript** | `typescript/` | Comprehensive type checking system |
-| **Quality** | `.prettierrc.js`, `.stylelintrc.cjs`, `.yamllint.yml` | Code formatting and linting |
+| **Quality** | `.prettierrc.js`, `.stylelintrc.cjs` | Code formatting and linting |
 | **Security** | `security-policy.json`, `.gitleaks.toml` | Security scanning and policies |
 | **Testing** | | E2E testing configuration |
-| **Workflow** | `commitlint.config.js`, `codemod-imports.toml` | Development workflow |
+| **Workflow** | `commitlint.config.js` | Development workflow |
 
 ## 🎯 Purpose
 
@@ -30,8 +32,6 @@ This directory contains global configuration files for the Corso app. These file
 
 ```
 config/
-├── marketing/
-│   └── links.ts              # Marketing-specific link configuration
 ├── security/
 │   └── rbac-roles.json       # Role-based access control definitions
 ├── typescript/
@@ -46,19 +46,14 @@ config/
 │   ├── tsconfig.tooling.json # Build tools and scripts
 │   ├── tsconfig.types.json   # Type definitions
 │   ├── tsconfig.eslint.json  # ESLint comprehensive coverage
-│   ├── tsconfig.stories.json # Storybook stories
 │   ├── *.tsbuildinfo         # Incremental compilation caches
 │   └── tsconfig.lib.tsbuildinfo
 ├── .prettierrc.js           # Code formatting rules
 ├── .stylelintrc.cjs         # CSS linting configuration
-├── .yamllint.yml            # YAML linting rules
 ├── .cspell.json             # Spell checking dictionary
-├── .bundlesizerc            # Bundle size limits
 ├── .dependency-cruiser.cjs  # Dependency analysis rules
 ├── .gitleaks.toml           # Secret scanning configuration
 ├── .markdown-link-check.json # Link validation rules
-├── .npmrc                   # npm-specific configuration
-├── codemod-imports.toml     # Deprecated import mappings (historical reference)
 ├── commitlint.config.cjs    # Commit message validation (in project root)
 ├── domain-map.ts            # Domain boundaries & facades
 ├── edge-compat.config.json  # Edge runtime compatibility
@@ -92,7 +87,6 @@ config/
 | `typescript/tsconfig.tooling.json` | Build scripts | Scripts, config files, tooling utilities |
 | `typescript/tsconfig.types.json` | Type definitions | Isolated type compilation and generation |
 | `typescript/tsconfig.eslint.json` | Linting coverage | Comprehensive file inclusion for ESLint |
-| `typescript/tsconfig.stories.json` | Storybook integration | Story files with proper type resolution |
 
 ### 🎨 Code Quality & Formatting
 
@@ -100,23 +94,69 @@ config/
 |------|---------|--------------|
 | `.prettierrc.js` | Code formatting standards | Semi-colons, single quotes, 100 char width |
 | `.stylelintrc.cjs` | CSS/stylesheet linting | Tailwind integration, custom rules, token enforcement |
-| `.yamllint.yml` | YAML file validation | 2-space indentation, document start handling |
 | `.cspell.json` | Spell checking | Project-specific technical terms |
 
 ### 🔒 Security & Compliance
 
 | File | Purpose | Key Rules |
 |------|---------|--------------|
-| `security-policy.json` | Application security baseline | SQL injection, prompt injection, DDoS protection |
+| `security-policy.json` | Application security baseline (documentation-only) | SQL injection, prompt injection, DDoS protection |
 | `.gitleaks.toml` | Secret scanning patterns | API keys, tokens, credentials detection |
 | `edge-compat.config.json` | Edge runtime validation | Node.js API restrictions, package allowlists |
+
+**Note**: `security-policy.json` is documentation-only and not enforced by runtime or CI. It serves as a reference for security policies and best practices.
+
+#### Gitleaks Configuration (`.gitleaks.toml`)
+
+**Important**: Gitleaks v8 requires **Go regex patterns** (RE2-based) in the `paths` allowlist, **NOT glob patterns**. This is a common source of CI failures.
+
+**Pattern Conversion Reference:**
+
+| Glob Pattern (❌ Invalid) | Regex Pattern (✅ Valid) | Description |
+|---------------------------|--------------------------|-------------|
+| `**/*.md` | `.*\.md$` | Any .md file at any depth |
+| `**/*.test.ts` | `.*\.test\.ts$` | Any .test.ts file at any depth |
+| `**/*.test.tsx` | `.*\.test\.tsx$` | Any .test.tsx file at any depth |
+| `**/*.stories.tsx` | `.*\.stories\.tsx$` | Any .stories.tsx file at any depth |
+| `.env.example` | `^\.env\.example$` | Exact match (root level) |
+| `docs/` | `^docs/` | Files in docs directory |
+| `README.md` | `^README\.md$` | Exact match (root level) |
+| `lib/security/utils/masking.ts` | `^lib/security/utils/masking\.ts$` | Exact match with full path |
+
+**Key Regex Rules:**
+- Use `.*` instead of `**` for "match any characters"
+- Use `^` for start of string (exact path matches)
+- Use `$` for end of string (file extension matches)
+- Escape special characters: `.` → `\.`, `*` → `\*`, etc.
+- Use triple quotes `'''` for multi-line or complex patterns
+
+**Validation:**
+```bash
+# Validate gitleaks config syntax
+pnpm tools:gitleaks:validate
+
+# Run secret scanning locally
+pnpm ci:gitleaks
+```
+
+**Troubleshooting:**
+
+**Error**: `error parsing regexp: missing argument to repetition operator: *`
+- **Cause**: Glob pattern `**/*.md` used instead of regex
+- **Fix**: Convert to `.*\.md$`
+
+**Error**: `File results.sarif does not exist`
+- **Cause**: Gitleaks crashed before generating report (usually due to invalid config)
+- **Fix**: Run `pnpm tools:gitleaks:validate` to check config syntax
+
+**Error**: `gitleaks not found`
+- **Fix**: Run `pnpm tools:gitleaks:install` to install gitleaks
 
 ### 🔄 Development Workflow
 
 | File | Purpose | Configuration |
 |------|---------|--------------|
 | `commitlint.config.cjs` | Commit message standards | Conventional commits, scoped messages (in project root) |
-| `codemod-imports.toml` | Automated refactoring | Deprecated import mappings (historical reference) |
 | `domain-map.ts` | Architecture boundaries | Domain mapping, facade definitions |
 
 ### 📊 Documentation & Analysis
@@ -126,18 +166,14 @@ config/
 | `typedoc.json` | API documentation generation | HTML docs in `docs/api/` |
 | `.markdown-link-check.json` | Link validation | Broken link detection with retries |
 | `.dependency-cruiser.cjs` | Dependency analysis | Circular dependency detection |
-| `.bundlesizerc` | Bundle size monitoring | 250KB limit enforcement |
 
 ### 📦 Package Management
 
 | File | Purpose | Configuration |
 |------|---------|--------------|
-| `.npmrc` | npm-specific settings | Separated from pnpm configuration |
+| *(No npm-specific config in config/ - see root `.npmrc` for cross-tool npm settings)* |
 
 ### 🏷️ Subdirectories
-
-#### `marketing/`
-- **`links.ts`** - Marketing-specific link constants (separated from shared config)
 
 #### `security/`
 - **`rbac-roles.json`** - Role-based access control role definitions
@@ -166,6 +202,7 @@ tsconfig.json (solution)
   - Vitest (via `vite-tsconfig-paths`)
   - IDEs (via TypeScript language server)
 - **ESLint configuration** at project root (`eslint.config.mjs`)
+  - **Note**: We use ESLint flat config (`eslint.config.mjs`), but `eslint-plugin-import`'s `import/no-unused-modules` rule currently requires a legacy `.eslintrc.json` (containing only `ignorePatterns`) to resolve file ignores. The `.eslintrc.json` file at the project root serves this purpose and should not be removed.
 - **Vitest configuration** at project root (moved from `config/` for discoverability)
 
 ## ⚙️ Key Configuration Highlights
@@ -176,7 +213,7 @@ tsconfig.json (solution)
 - **Performance-optimized config** for fast development feedback
 
 ### Code Quality Gates
-- **Multi-layer linting**: ESLint, Stylelint, YAML linting
+- **Multi-layer linting**: ESLint, Stylelint
 - **Automated formatting**: Prettier with consistent rules
 - **Spell checking**: Custom dictionary for technical terms
 
@@ -290,4 +327,3 @@ pnpm quality:local
 - **Category**: Development tooling
 - **Priority**: High
 - **Scope**: Project-wide configuration
-

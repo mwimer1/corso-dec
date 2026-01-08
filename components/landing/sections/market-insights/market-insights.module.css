@@ -4,7 +4,7 @@
 /* Sticky stats shrink-on-scroll styles */
 .stickyStatsWrapper{
   transition: padding 200ms ease, transform 200ms ease, box-shadow 200ms ease;
-  padding: 0.5rem; /* default small padding inside wrapper */
+  padding: var(--space-sm); /* default small padding inside wrapper */
 }
 
 .stickyStatsWrapper .statsInner{
@@ -14,7 +14,7 @@
 
 /* Reduced size when scrolled */
 .stickyStatsWrapper.scrolled{
-  padding: 0.125rem;
+  padding: var(--space-xxs);
 }
 
 .stickyStatsWrapper.scrolled .statsInner{

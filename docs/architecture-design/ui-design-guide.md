@@ -1,7 +1,9 @@
 ---
-status: "stable"
-last_updated: "2025-11-03"
+title: "Architecture Design"
+last_updated: "2026-01-07"
 category: "documentation"
+status: "draft"
+description: "Documentation and resources for documentation functionality. Located in architecture-design/."
 ---
 # UI Design Guide
 
@@ -12,9 +14,58 @@ This guide consolidates design principles, component patterns, and styling guide
 ### Token Usage
 - **Always use design tokens**: No hardcoded colors (`text-[#1C1D1F]` ❌ → `text-foreground` ✅)
 - **Token categories**:
-  - Colors: `text-foreground`, `text-muted-foreground`, `bg-primary`, `border-border`
+  - Colors: `text-foreground`, `text-muted-foreground`, `text-medium`, `bg-primary`, `border-border`
   - Spacing: Use Tailwind utilities or custom tokens
   - Typography: Consistent font scales and weights
+
+### Typography & Breadcrumb Styling
+
+#### Dashboard Top Bar Typography
+The dashboard top bar uses consistent typography patterns across all pages:
+
+**Font Size & Weight:**
+- All breadcrumb text and page titles: `text-lg` (18px) with `font-medium` weight
+- Ensures clear readability and visual consistency
+
+**Color Hierarchy:**
+- **Breadcrumb links and page titles**: `text-muted-foreground` (light gray, HSL: `215.4 16.3% 46.9%`)
+  - Used for: "Corso" breadcrumb link, page titles ("Projects", "Companies", "Addresses")
+- **Separator**: `text-medium` (darker gray, HSL: `240 5% 25%`)
+  - Used for: `>` separator between breadcrumb items
+- **Hover states**: `text-foreground` (dark, HSL: `222.2 47.4% 11.2%`)
+  - Applied on hover for interactive elements
+
+**Entity Pages Pattern:**
+```
+[Corso > Projects]
+```
+- "Corso" = `text-muted-foreground` (light gray, clickable link)
+- `>` = `text-medium` (darker gray)
+- "Projects" = `text-muted-foreground` (light gray, same as "Corso")
+
+**Chat Page Pattern:**
+```
+[Corso Chat ▼]
+```
+- "Corso" = `text-muted-foreground` (light gray)
+- "Chat"/"Thinking"/"Pro" = `text-medium` (darker gray, same as separator)
+- Dropdown chevron = `text-muted-foreground` (light gray)
+
+**Implementation:**
+```tsx
+// Entity pages breadcrumb
+<nav className="text-lg text-muted-foreground">
+  <Link href="/dashboard/chat?new=true" className="hover:text-foreground">
+    Corso
+  </Link>
+  <span className="text-medium"> &gt; </span>
+</nav>
+<h1 className="text-lg font-medium text-muted-foreground">Projects</h1>
+
+// Chat page dropdown
+<span className="text-muted-foreground">Corso </span>
+<span className="text-medium">Chat</span>
+```
 
 ### Responsive Design
 - **Typography scaling**: Use `clamp()` for responsive headings
@@ -42,6 +93,16 @@ This guide consolidates design principles, component patterns, and styling guide
 - **Animations**: Pure CSS animations with `prefers-reduced-motion` support
 - **Images**: Use `loading="eager"`, `decoding="async"`, and proper alt text
 
+### Pricing Page Components
+- **Typography**: Matches landing hero typography for consistency
+  - **H1**: Uses CSS module with `clamp(1.7rem, 8vw, 4rem)`, `line-height: 1.1`, `letter-spacing: -0.5px`, animated blue underline accent
+  - **H2/Subtitle**: Uses CSS module with `clamp(1.125rem, 2.5vw, 2rem)`, `line-height: 1.4`, `letter-spacing: -0.2px`, color `hsl(var(--text-medium))`
+  - **Implementation**: `components/marketing/sections/pricing/pricing-header.module.css` + `pricing-header.tsx`
+- **Layout**: Grid-based (`grid-cols-1 lg:grid-cols-3`) to prevent 2-on-top layout, ensures 3 horizontal on desktop, 3 vertical on mobile
+  - **Design System Utility**: `pricingGridVariants` provides `tripleNoWrap` variant for 3-card layouts that skip the `sm:grid-cols-2` breakpoint
+  - **Implementation**: `styles/ui/molecules/pricing-grid.ts` - Use `tripleNoWrap` variant to avoid 2+1 card layout at medium breakpoints
+- **Spacing**: Directional padding (`pt-16 pb-8` for header, `pb-12` for cards) for precise vertical rhythm
+
 ## 🎭 Animation & Motion
 
 ### CSS-Only Animations
@@ -65,6 +126,7 @@ This guide consolidates design principles, component patterns, and styling guide
 - **Grid systems**: Flexible layouts that adapt to content and screen size
 - **Navigation**: Clear information hierarchy with consistent patterns
 - **Data density**: Balance whitespace with information density
+- **See**: [Dashboard UI Standards](./dashboard-ui-standards.md) for detailed dashboard-specific guidelines
 
 ## 🛠️ Development Guidelines
 
@@ -89,5 +151,4 @@ This guide consolidates design principles, component patterns, and styling guide
 ## 📚 Related Resources
 
 - [Pattern Library](../../styles/README.md) - Detailed style system implementation
-- [Codebase Structure](../codebase-apis/codebase-structure.md) - Component organization patterns
-
+- [Codebase Structure](../architecture/codebase-structure.md) - Component organization patterns

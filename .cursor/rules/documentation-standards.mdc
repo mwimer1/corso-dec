@@ -4,13 +4,15 @@ title: Documentation Standards & References (Consolidated)
 owners:
   - docs@corso.io
   - platform@corso.io
-last_reviewed: "2025-10-13"
+last_reviewed: "2025-12-15"
 status: active
 domains: [docs]
 enforcement: warn
 related_rules: []
 alwaysApply: false
 globs: ["docs/**", "**/README.md"]
+summary: Documentation consistency standards with canonical references, consolidation, and maintenance guidelines.
+# Reviewed in Dec 2025 - Updated to reflect current documentation consolidation and standards
 ---
 
 # Documentation Standards & References (Consolidated)
@@ -31,7 +33,7 @@ globs: ["docs/**", "**/README.md"]
 - **Marketing Theming**: Primary details in `app/(marketing)/README.md` and `app/README.md`
 - **API**: `app/api/README.md` is the primary API reference (consolidates `v1`, `user`, `test`)
 - **Dashboard Entities**: Authoritative docs live in `app/(protected)/dashboard/(entities)/README.md` and reflect a single dynamic route `[entity]` covering `addresses`, `companies`, and `projects` (Projects: fully implemented; Companies/Addresses: server-configured, client-side pending)
-- **Dashboard Chat**: Consolidated under dashboard domain with API at `/api/v1/dashboard/chat/process` and components in `components/dashboard/chat/`
+- **Dashboard Chat**: Consolidated under dashboard domain with API at `/api/v1/ai/chat` and components in `components/dashboard/chat/`
 
 ### README Templates
 
@@ -64,6 +66,64 @@ Links to related documentation and resources.
 This documentation is consolidated in the parent domain README.
 See: ../../README.md
 ```
+
+#### Docs Directory README Template
+For READMEs in the `docs/` directory, use this standardized template:
+
+```markdown
+---
+title: "[Section Name]"
+last_updated: "YYYY-MM-DD"
+category: "documentation"
+status: "active"
+description: "Brief description of the section's purpose and contents."
+---
+
+# [Section Name]
+
+Last updated: YYYY-MM-DD
+
+[Overview paragraph describing the section's purpose and scope]
+
+## 📚 Documentation
+
+- [Document Title](filename.md) - Brief description
+- [Another Document](another.md) - Brief description
+
+## 🔗 Related Documentation
+
+- [Related Section](../related-section/) - Description
+- [Architecture Overview](../architecture/architecture-overview.md) - Description
+
+---
+
+**See Also**: [Documentation Index](../README.md)
+```
+
+### README Requirements for `docs/` Directory
+
+#### When README is Required
+- **Directory has 2+ documentation files**: Must have a README indexing all files
+- **Directory has subdirectories with content**: Must have a README explaining structure
+- **Directory serves as navigation hub**: Must have a README for discoverability
+
+#### When README is NOT Required
+- **Single-file directory**: Directories with only one `.md` file don't need a README
+- **Leaf node with no organizational purpose**: If the directory doesn't organize multiple files, no README needed
+
+#### README Quality Standards
+All READMEs in `docs/` must:
+- ✅ Include frontmatter with `title`, `description`, `last_updated`, `category`, `status`
+- ✅ Include overview/purpose section explaining the directory's contents
+- ✅ List and link to all documentation files in the directory
+- ✅ Link back to parent index (`../README.md` or `../../README.md` as appropriate)
+- ✅ Include "Related Documentation" section linking to related sections
+- ❌ Never be placeholder-only (must have actual content)
+- ❌ Never be the only file in a directory (violates policy)
+
+#### Policy Violations
+- **Single-file README**: A directory containing only a README.md with no other files violates policy
+  - **Resolution**: Either add actual documentation files, remove the README, or consolidate with parent directory
 
 ## 🔗 Canonical References
 
@@ -196,9 +256,16 @@ rule: |
     not inside: "<!-- skip-link-check -->"
 ```
 
-### ESLint Integration
+### ESLint Integration (Planned)
+The following ESLint rules are planned for future implementation:
+- `@corso/docs-consistency`: Enforce documentation consistency
+- `@corso/docs-freshness`: Check documentation freshness
+- `@corso/docs-links`: Validate documentation links
+
+**Note**: These rules are not yet implemented in `eslint-plugin-corso`. Enforcement is currently handled via CI validation scripts (`docs:validate`, `docs:check:sync`) and code review.
+
 ```javascript
-// .eslintrc.mjs
+// Future .eslintrc.mjs configuration (when rules are implemented)
 {
   rules: {
     '@corso/docs-consistency': 'error',
@@ -208,19 +275,21 @@ rule: |
 }
 ```
 
-### Quality Gates
+### Quality gates
+
+See the canonical command set in
+[ai-agent-development-environment.mdc](mdc:.cursor/rules/ai-agent-development-environment.mdc#quality-gates-and-validation-commands).
+
+### Domain-Specific Documentation Commands
 - **Development**: `pnpm docs:validate`
 - **CI**: `pnpm docs:check && pnpm docs:urls:validate`
 - **Freshness**: `pnpm docs:stale-check`
 - **Structure**: `pnpm docs:structure-check`
 
-## Windows-First Tips
+## Windows-first tips
 
-- Avoid Unix-only pagers/pipes in examples; show plain commands
-- Keep sequences linear (one command per line) for copy-paste friendliness
-- Access Next.js docs via browser from Windows development environment
-- Use canonical Next.js URLs (or a local index if present) for consistent documentation references
-- Prefer explicit file paths over glob patterns in documentation examples
+See the canonical guidance in
+[ai-agent-development-environment.mdc](mdc:.cursor/rules/ai-agent-development-environment.mdc#windows-first-tips).
 
 ## Related Resources
 

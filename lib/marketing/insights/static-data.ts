@@ -1,3 +1,20 @@
+// lib/marketing/insights/static-data.ts
+// Static fallback content for insights/blog
+// 
+// This file contains hardcoded article content used as a fallback when:
+// - No markdown files are found in content/insights/articles/
+// - Mock CMS is disabled and no other content source is available
+//
+// ⚠️ NOTE: This is fallback-only content. For production, prefer:
+// - Markdown files in content/insights/articles/
+// - Mock CMS fixtures in public/__mockcms__/
+// - Directus CMS (when implemented)
+//
+// To add new articles, either:
+// 1. Add markdown files to content/insights/articles/
+// 2. Add JSON files to public/__mockcms__/insights/
+// 3. Update this file (not recommended for production)
+
 // Simple asset URL constructor
 // Use the `getPublicEnv` helper at call time so build-time collection isn't affected.
 import { publicEnv } from '@/lib/shared';
@@ -9,6 +26,12 @@ const asset = (path: string) => {
   return `${base}${path}`;
 };
 
+/**
+ * Static fallback insights content.
+ * Used when no markdown files or mock CMS data is available.
+ * 
+ * @internal - This is fallback-only content. Prefer markdown files or CMS for production.
+ */
 export const staticInsights: InsightItem[] = [
   {
     id: 'welcome',

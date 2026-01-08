@@ -1,4 +1,4 @@
-import ChatComposer from '@/components/chat/sections/chat-composer.client';
+import ChatComposer from '@/components/chat/sections/chat-composer';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 

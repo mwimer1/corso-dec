@@ -3,23 +3,16 @@
 // Client component to handle plan selection redirects
 "use client";
 
+/** @knipignore */
 export const runtime = "nodejs";
+/** @knipignore */
 export const dynamic = "force-dynamic";
 
 import { formatPriceUSD, PRICING_UI, PublicLayout } from "@/components";
+import { landingNavItems } from "@/components/landing/layout/nav.config";
 import { PricingPage } from "@/components/marketing";
 import { useRouter } from "next/navigation";
 import ScrollToFAQ from "./scroll-to-faq";
-
-// Transform PRICING_UI data into PricingPlan format (monthly only)
-const pricingPlans = Object.entries(PRICING_UI).map(([key, plan]) => ({
-  slug: key,
-  title: plan.label,
-  priceText: formatPriceUSD(plan.monthlyUsd) + '/mo',
-  description: plan.tagline,
-  features: plan.features,
-  ctaText: "Sign up",
-}));
 
 // FAQ data
 const faqItems = [
@@ -52,6 +45,18 @@ const faqItems = [
 export default function PublicPricingPage() {
   const router = useRouter();
 
+  // Transform PRICING_UI data into PricingPlan format (monthly pricing only)
+  const pricingPlans = Object.entries(PRICING_UI).map(([key, plan]) => ({
+    slug: key,
+    title: plan.label,
+    priceText: formatPriceUSD(plan.monthlyUsd) + '/mo',
+    priceNote: 'billed monthly',
+    description: plan.tagline,
+    features: plan.features,
+    ctaText: "Start free",
+    popular: plan.popular,
+  }));
+
   const handlePlanSelect = (planSlug: string) => {
     // Persist selected plan (already handled by PricingPage component)
     // Redirect to sign-in route with plan parameter for post-auth redirect to pricing
@@ -59,13 +64,13 @@ export default function PublicPricingPage() {
   };
 
   return (
-    <PublicLayout navMode="minimal">
+    <PublicLayout navMode="landing" navItems={landingNavItems}>
       <ScrollToFAQ />
       <PricingPage
         plans={pricingPlans}
         faqs={faqItems}
         headerTitle="Choose Your Plan"
-        headerSubtitle="Unlock real-time project, company, and address insights."
+        headerSubtitle="Start with a 7-day free trial."
         onPlanSelect={handlePlanSelect}
       />
     </PublicLayout>

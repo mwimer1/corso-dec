@@ -1,5 +1,5 @@
 import { textTri } from '@/styles/shared-variants';
-import { tv } from '@/styles/utils';
+import { tv } from '@/styles';
 
 const faqVariants = tv({
   base: '',
@@ -22,7 +22,7 @@ const faqVariants = tv({
     spacing: 'normal',
   },
 });
-export type { VariantProps } from '@/styles/utils';
+export type { VariantProps } from '@/styles';
 export { faqVariants };
 
 

@@ -10,7 +10,6 @@ export * from './label';
 export * from './link-variants';
 export * from './progress';
 export * from './select';
-// export * from './separator'; // TODO: Implement separator component
 export * from './skeleton';
 export * from './skip-nav-link';
 export * from './slider';

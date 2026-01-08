@@ -9,6 +9,11 @@ scripts/** text eol=lf
 *.{json,md,mdx,yml,yaml} text eol=lf
 *.{css,scss,html} text eol=lf
 *.{sh,bash,ps1} text eol=lf
+# Reports (generated) — mark as generated to reduce GitHub diff noise
+# Files are still tracked and reviewable by AI agents, but GitHub will collapse diffs
+reports/**/*.json linguist-generated=true
+reports/**/*.xml linguist-generated=true
+reports/**/*.md linguist-generated=true
 # Treat images as binary
 *.jpg filter=lfs diff=lfs merge=lfs -text
 *.jpeg filter=lfs diff=lfs merge=lfs -text

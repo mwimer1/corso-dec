@@ -1,13 +1,15 @@
 // FILE: app/(marketing)/contact/page.tsx
 // Runtime: kept on nodejs due to Clerk keyless telemetry (see app/(marketing)/README.md)
-import { submitContactForm } from "@/actions";
+import { submitContactForm } from "./actions";
 import { MarketingContainer } from "@/components/marketing";
 import { ContactFormWrapper, ContactInfo, ContactLayout } from "@/components/marketing";
 import type { ContactFormSubmitData } from "@/types/forms";
 import type { Metadata } from "next";
 
+/** @knipignore */
 export const runtime = "nodejs";
 
+/** @knipignore */
 export const metadata: Metadata = {
   title: "Contact | Corso",
   description: "Get in touch with the Corso team.",
@@ -20,7 +22,7 @@ export const metadata: Metadata = {
 } satisfies Metadata;
 
 export default function ContactPage() {
-  // Server action for contact form submissions
+  // Server action for contact form submissions (colocated with feature)
   const handleFormSubmit = async (data: ContactFormSubmitData): Promise<void> => {
     "use server";
     await submitContactForm(data);

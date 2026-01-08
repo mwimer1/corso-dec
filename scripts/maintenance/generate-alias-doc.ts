@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env tsx
 // scripts/maintenance/generate-alias-doc.ts
 
 import { readFileSync, writeFileSync } from "node:fs";

@@ -1,0 +1,172 @@
+// server-capable action utilities (no 'use server' directive to allow dynamic import)
+
+// getEnv already imported below
+import type { BaseRow } from '@/types/dashboard';
+import type { EntityFetchParams, EntityFetchResult, EntityKind } from './contracts';
+
+import { getEntityPage } from '@/lib/api';
+import { queryEntityCount, queryEntityData } from '@/lib/integrations/clickhouse';
+import { getEnv } from '@/lib/server/env';
+import { publicEnv } from '@/lib/shared/config/client';
+import { loadGridConfig } from './config';
+import { getSearchFields } from './search-fields';
+
+export async function fetchEntityData<T extends BaseRow = BaseRow>(
+  slug: string,
+  _id: string | undefined,
+  params: EntityFetchParams,
+): Promise<EntityFetchResult<T>> {
+  const entity = slug as EntityKind;
+
+  // Check if mock mode should be used (default to mock in dev/test unless explicitly disabled)
+  const env = getEnv();
+  const useMock = env.CORSO_USE_MOCK_DB === 'true' || (env.NODE_ENV !== 'production' && env.CORSO_USE_MOCK_DB !== 'false');
+  
+  // Try mock path first (development); if mock fails or not enabled, fall through to real DB query
+  if (useMock && (entity === 'projects' || entity === 'companies' || entity === 'addresses')) {
+    try {
+      const base = new URL(publicEnv.NEXT_PUBLIC_SITE_URL || publicEnv.NEXT_PUBLIC_APP_URL || 'http://localhost:3000');
+      const result = await getEntityPage(
+        {
+          entity,
+          page: params.page,
+          pageSize: params.pageSize,
+          sort: params.sort,
+          ...(params.search ? { search: params.search } : {}),
+          ...(params.filters ? { filters: params.filters } : {}),
+        },
+        { baseUrl: base },
+      );
+      return result as unknown as { data: T[]; total: number; page: number; pageSize: number };
+    } catch (error) {
+      // If mock path failed, fall through to attempt real DB query
+      // Log error in development for debugging
+      if (env.NODE_ENV !== 'production') {
+        console.warn('[fetchEntityData] Mock path failed, falling back to real DB:', error);
+      }
+    }
+  }
+
+  // Real database query path — build query via integration and ensure errors propagate
+  try {
+    // Load grid metadata to know table/PK
+    const gridConfig = await loadGridConfig(entity);
+    const tableName = gridConfig.tableName ?? entity;
+    const defaultSort = gridConfig.primaryKey ?? 'id';
+
+    // Build SQL with WHERE, ORDER BY, LIMIT/OFFSET
+    const whereConditions: string[] = [];
+    const paramsObj: Record<string, unknown> = {};
+    let paramCounter = 1;
+
+    // Build WHERE conditions from filters
+    if (params.filters && params.filters.length > 0) {
+      for (const filter of params.filters) {
+        const paramKey = `p${paramCounter++}`;
+
+        switch (filter.op) {
+          case 'eq': {
+            whereConditions.push(`${filter.field} = {${paramKey}:String}`);
+            paramsObj[paramKey] = String(filter.value);
+            break;
+          }
+          case 'contains': {
+            whereConditions.push(`position(${filter.field}, {${paramKey}:String}) > 0`);
+            paramsObj[paramKey] = String(filter.value);
+            break;
+          }
+          case 'gt': {
+            whereConditions.push(`${filter.field} > {${paramKey}:Float64}`);
+            paramsObj[paramKey] = Number(filter.value);
+            break;
+          }
+          case 'gte': {
+            whereConditions.push(`${filter.field} >= {${paramKey}:Float64}`);
+            paramsObj[paramKey] = Number(filter.value);
+            break;
+          }
+          case 'lt': {
+            whereConditions.push(`${filter.field} < {${paramKey}:Float64}`);
+            paramsObj[paramKey] = Number(filter.value);
+            break;
+          }
+          case 'lte': {
+            whereConditions.push(`${filter.field} <= {${paramKey}:Float64}`);
+            paramsObj[paramKey] = Number(filter.value);
+            break;
+          }
+          case 'in': {
+            const values = Array.isArray(filter.value) ? filter.value : [filter.value];
+            whereConditions.push(`${filter.field} IN {${paramKey}:Array(String)}`);
+            paramsObj[paramKey] = values.map(String);
+            break;
+          }
+          case 'bool': {
+            whereConditions.push(`${filter.field} = {${paramKey}:UInt8}`);
+            paramsObj[paramKey] = filter.value ? 1 : 0;
+            break;
+          }
+          default: {
+            whereConditions.push(`${filter.field} = {${paramKey}:String}`);
+            paramsObj[paramKey] = String(filter.value);
+          }
+        }
+      }
+    }
+
+    // Build search condition using entity-specific searchable fields
+    if (params.search && params.search.trim()) {
+      const searchFields = getSearchFields(entity);
+      
+      // Only add search condition if entity has configured searchable fields
+      if (searchFields.length > 0) {
+        const searchParamKey = `p${paramCounter++}`;
+        // Build OR condition: (field1 LIKE ... OR field2 LIKE ...)
+        const searchConditions = searchFields.map(field => 
+          `${field} LIKE {${searchParamKey}:String}`
+        ).join(' OR ');
+        whereConditions.push(`(${searchConditions})`);
+        paramsObj[searchParamKey] = `%${params.search}%`;
+      }
+      // If no search fields configured, silently ignore search (no error)
+    }
+
+    // Build ORDER BY clause
+    const orderBy = params.sort && params.sort.column
+      ? `${params.sort.column} ${params.sort.direction === 'desc' ? 'DESC' : 'ASC'}`
+      : `${defaultSort} ASC`;
+
+    // Build final SQL with pagination
+    const offset = params.page * params.pageSize;
+    let sql = `SELECT * FROM ${tableName}`;
+    if (whereConditions.length > 0) {
+      sql += ` WHERE ${whereConditions.join(' AND ')}`;
+    }
+    sql += ` ORDER BY ${orderBy}`;
+    sql += ` LIMIT ${params.pageSize} OFFSET ${offset}`;
+
+    // Execute data query
+    const data = await queryEntityData(sql, paramsObj) as T[];
+
+    // Build count query (same filters, no pagination)
+    let countSql = `SELECT COUNT(*) AS count FROM ${tableName}`;
+    if (whereConditions.length > 0) {
+      countSql += ` WHERE ${whereConditions.join(' AND ')}`;
+    }
+
+    let total: number;
+    try {
+      total = await queryEntityCount(countSql, paramsObj);
+    } catch {
+      // Fallback to data length if count fails
+      total = Array.isArray(data) ? data.length : 0;
+    }
+
+    return { data, total, page: params.page, pageSize: params.pageSize };
+  } catch (err) {
+    // Surface structured error for callers/tests
+    throw new Error('Failed to fetch entity data');
+  }
+}
+
+

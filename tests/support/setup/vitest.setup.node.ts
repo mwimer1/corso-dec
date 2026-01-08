@@ -1,32 +1,55 @@
 // Node.js specific test setup - server-side mocks
 
+import { NextResponse } from 'next/server';
 import { vi } from 'vitest';
 import { ApplicationError, ErrorCategory, ErrorSeverity } from '../../../lib/shared';
 
 // Mock minimal lib/api barrel used by API routes in tests
+// Returns real NextResponse objects so Node wrappers can properly handle them
 vi.mock('@/lib/api', async (importOriginal) => {
   const actual = await importOriginal<any>();
 
   const http = {
-    ok: (data: any) => ({
-      status: 200,
-      headers: new Headers(),
-      json: async () => ({ success: true, data }),
-    }),
-    badRequest: (message: string, meta?: any) => ({
-      status: 400,
-      headers: new Headers(),
-      json: async () => ({ success: false, error: { code: meta?.code ?? 'VALIDATION_ERROR', message } }),
-    }),
-    error: (status: number, message: string, meta?: any) => ({
-      status,
-      headers: new Headers(),
-      json: async () => ({ success: false, error: { code: meta?.code ?? `ERROR_${status}`, message, details: meta?.details } }),
-    }),
-    noContent: () => ({
-      status: 204,
-      headers: new Headers(),
-    }),
+    ok: (data: any, init: ResponseInit = {}) => {
+      const headers = new Headers(init.headers);
+      headers.set('content-type', 'application/json; charset=utf-8');
+      return NextResponse.json({ success: true, data }, { status: 200, headers });
+    },
+    
+    badRequest: (message: string, opts: { code?: string; details?: unknown; headers?: HeadersInit } = {}, init: ResponseInit = {}) => {
+      const allHeaders = new Headers({ 'content-type': 'application/json; charset=utf-8', ...(opts.headers ?? {}), ...(init.headers ?? {}) });
+      return NextResponse.json(
+        { success: false, error: { code: opts.code ?? 'VALIDATION_ERROR', message, details: opts.details } },
+        { status: 400, headers: allHeaders }
+      );
+    },
+    
+    error: (status: number, message: string, opts: { code?: string; details?: unknown; headers?: HeadersInit } = {}, init: ResponseInit = {}) => {
+      const allHeaders = new Headers({ 'content-type': 'application/json; charset=utf-8', ...(opts.headers ?? {}), ...(init.headers ?? {}) });
+      return NextResponse.json(
+        { success: false, error: { code: opts.code ?? `ERROR_${status}`, message, details: opts.details } },
+        { status, headers: allHeaders }
+      );
+    },
+    
+    forbidden: (message = 'Forbidden', opts: { code?: string; details?: unknown; headers?: HeadersInit } = {}, init: ResponseInit = {}) => {
+      const allHeaders = new Headers({ 'content-type': 'application/json; charset=utf-8', ...(opts.headers ?? {}), ...(init.headers ?? {}) });
+      return NextResponse.json(
+        { success: false, error: { code: opts.code ?? 'FORBIDDEN', message, details: opts.details } },
+        { status: 403, headers: allHeaders }
+      );
+    },
+    
+    notFound: (message = 'Not Found', opts: { code?: string; details?: unknown; headers?: HeadersInit } = {}, init: ResponseInit = {}) => {
+      const allHeaders = new Headers({ 'content-type': 'application/json; charset=utf-8', ...(opts.headers ?? {}), ...(init.headers ?? {}) });
+      return NextResponse.json(
+        { success: false, error: { code: opts.code ?? 'NOT_FOUND', message, details: opts.details } },
+        { status: 404, headers: allHeaders }
+      );
+    },
+    
+    noContent: (init: ResponseInit = {}) =>
+      new NextResponse(null, { status: 204, ...init }),
   };
 
   function withErrorHandlingEdge(fn: any) {
@@ -105,7 +128,7 @@ vi.mock('@/lib/integrations/clickhouse/client', () => ({
 }));
 
 // Mock auth RBAC module used by API routes
-vi.mock('@/lib/auth/authorization/roles', () => ({
+vi.mock('@/lib/auth/roles', () => ({
   assertRole: (currentRole: string | null | undefined, required: string | string[]) => {
     const allowed = Array.isArray(required) ? required : [required];
     if (!allowed.includes(currentRole ?? '')) {
@@ -130,16 +153,6 @@ vi.mock('@/lib/auth/server', () => ({
     userId: 'test-user',
     has: (q: { role?: string }) => (q?.role ? ['member', 'admin', 'owner'].includes(q.role) : true)
   })
-}));
-
-// Mock entity CSV data helper used by API routes when CORSO_USE_MOCK_DB is enabled
-vi.mock('@/lib/mocks/entity-data.server', () => ({
-  queryEntityFromCsv: async (_entity: string, opts: any) => ({
-    data: [],
-    total: 0,
-    page: opts?.page ?? 0,
-    pageSize: opts?.pageSize ?? 0,
-  }),
 }));
 
 // Mock server env access used by routes

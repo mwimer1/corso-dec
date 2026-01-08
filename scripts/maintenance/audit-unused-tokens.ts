@@ -5,7 +5,21 @@
  * Finds CSS custom properties defined in styles directory (excluding build folder)
  * that are not referenced anywhere via var(--token-name).
  *
+ * IMPORTANT LIMITATION:
+ * This script only detects direct var(--token-name) usage. It does NOT detect tokens
+ * that are consumed via Tailwind classes (e.g., text-2xl, rounded-lg, bg-primary).
+ * Many tokens appear "unused" but are actually used via tailwind.config.ts mappings.
+ *
+ * To suppress false positives for Tailwind-integrated tokens, add them to the allowlist
+ * in styles/tokens/UNUSED.allowlist.json. The allowlist should contain specific token names
+ * (not wildcards) that are mapped in tailwind.config.ts.
+ *
  * Uses allowlist in styles/tokens/UNUSED.allowlist.json for intentional exceptions.
+ *
+ * FUTURE IMPROVEMENTS (optional):
+ * - Cross-check allowlisted tokens against tailwind.config.ts to verify they're actually mapped
+ * - Search codebase for Tailwind class usage (e.g., "text-2xl" for --text-2xl token)
+ * - Output a report showing which tokens are allowlisted vs truly unused
  */
 
 import { readFileSync, readdirSync, statSync } from 'node:fs';

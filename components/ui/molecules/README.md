@@ -1,14 +1,39 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+title: "Molecules"
+last_updated: "2026-01-07"
 category: "components"
+status: "active"
+description: "UI components for the components system, following atomic design principles. Located in ui/molecules/."
 ---
-# Repository Scripts & Docs
+# Molecules
 
-This README is generated from a single template (`README.scripts.hbs`).
+The molecules directory contains UI components for the Corso platform.
 
-- Directory: `components/ui/molecules`
-- Last updated: `2025-10-29`
+UI components for the components system, following atomic design principles. Located in ui/molecules/.
 
-> Edit the template or the generator context to change all READMEs consistently.
+## Directory Structure
+
+```
+components/ui/molecules/
+auth-card.tsx
+index.ts
+link-track.tsx
+loading-states.tsx
+metric-card.tsx
+nav-item.tsx
+page-header.tsx
+pricing-card.tsx
+reading-progress.tsx
+select.tsx
+skeleton-suite.tsx
+text-area.tsx
+```
+
+## Usage
+
+Import components from the appropriate subdirectory:
+
+```typescript
+import { ComponentName } from '@/components/ui/molecules/subdirectory';
+```
 

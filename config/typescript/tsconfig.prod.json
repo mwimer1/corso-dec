@@ -19,18 +19,15 @@
 		"../../contexts/**/*.tsx",
 		"../../styles/**/*.ts",
 		"../../types/**/*.ts",
-		"../../middleware.ts"
+		"../../proxy.ts",
+		"../../tailwind.config.ts"
 	],
 	"exclude": [
 		"../../tests/**",
-		"../../stories/**",
 		"../../**/*.spec.ts",
 		"../../**/*.spec.tsx",
 		"../../**/*.test.ts",
 		"../../**/*.test.tsx",
-		"../../**/*.stories.ts",
-		"../../**/*.stories.tsx",
-		"../../**/*.stories.mdx",
 		"../../.next/**",
 		"../../node_modules/**",
 		"../../eslint-plugin-corso/**",

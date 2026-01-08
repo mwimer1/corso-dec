@@ -5,8 +5,7 @@ import { logger } from "@/lib/shared/config/client";
 import type { ContactFormData, ContactFormSubmitData, UseContactFormProps } from "@/types/forms";
 import * as React from "react";
 
-// Re-export types for external usage
-export type { ContactFormData, ContactFormSubmitData, UseContactFormProps } from "@/types/forms";
+// Types are available from @/types/forms - no need to re-export
 
 const INITIAL_FORM_DATA: ContactFormData = {
   name: "",

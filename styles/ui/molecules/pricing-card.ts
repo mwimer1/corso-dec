@@ -1,5 +1,5 @@
-import type { VariantProps } from '@/styles/utils';
-import { tv } from '@/styles/utils';
+import type { VariantProps } from '@/styles';
+import { tv } from '@/styles';
 
 /**
  * pricingCardVariants
@@ -10,11 +10,14 @@ import { tv } from '@/styles/utils';
 const pricingCardVariants = tv({
   slots: {
     container: [
-      'flex flex-col rounded-2xl border-2 bg-surface shadow-card',
+      'relative flex flex-col rounded-2xl border-2 bg-surface shadow-card',
       'transition-all duration-200',
     ],
+    header: [
+      'flex items-start justify-between gap-3',
+    ],
     popularBadge: [
-      'mb-3 self-start rounded-[10px] bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground',
+      'inline-flex items-center rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground shadow-sm whitespace-nowrap',
     ],
     title: ['text-xl font-semibold text-foreground'],
     // Price styling: remove large vertical margins so priceNote sits directly below

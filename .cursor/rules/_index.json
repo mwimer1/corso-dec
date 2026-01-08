@@ -1,6 +1,6 @@
 {
-  "generated_at": "2025-10-30T00:53:44.395Z",
-  "count": 15,
+  "generated_at": "2026-01-07T04:41:50.170Z",
+  "count": 16,
   "rules": [
     {
       "rule_id": "actions-rate-limit-check",
@@ -15,7 +15,7 @@
       "file": "ai-agent-development-environment.mdc",
       "title": "AI Agent Development Environment",
       "status": "active",
-      "last_reviewed": "2025-10-13",
+      "last_reviewed": "2025-12-15",
       "alwaysApply": true
     },
     {
@@ -31,7 +31,7 @@
       "file": "code-quality-standards.mdc",
       "title": "Quality Assurance & Testing Standards (Consolidated)",
       "status": "active",
-      "last_reviewed": "2025-10-13",
+      "last_reviewed": "2025-12-15",
       "alwaysApply": false
     },
     {
@@ -55,7 +55,7 @@
       "file": "dashboard-components.mdc",
       "title": "Dashboard Components — Chat & Tables (Consolidated)",
       "status": "active",
-      "last_reviewed": "2025-10-13",
+      "last_reviewed": "2026-01-07",
       "alwaysApply": false
     },
     {
@@ -63,7 +63,7 @@
       "file": "documentation-standards.mdc",
       "title": "Documentation Standards & References (Consolidated)",
       "status": "active",
-      "last_reviewed": "2025-10-13",
+      "last_reviewed": "2025-12-15",
       "alwaysApply": false
     },
     {
@@ -79,7 +79,7 @@
       "file": "entity-grid-architecture.mdc",
       "title": "Entity Grid Architecture (AG Grid)",
       "status": "active",
-      "last_reviewed": "2025-10-13",
+      "last_reviewed": "2026-01-07",
       "alwaysApply": true
     },
     {
@@ -111,8 +111,16 @@
       "file": "security-standards.mdc",
       "title": "Security Standards & API Patterns (Consolidated)",
       "status": "active",
-      "last_reviewed": "2025-10-13",
+      "last_reviewed": "2025-12-15",
       "alwaysApply": true
+    },
+    {
+      "rule_id": "styling-standards",
+      "file": "styling-standards.mdc",
+      "title": "Styling Standards & CSS Module Guidelines",
+      "status": "active",
+      "last_reviewed": "2026-01-03",
+      "alwaysApply": false
     },
     {
       "rule_id": "warehouse-query-hooks",

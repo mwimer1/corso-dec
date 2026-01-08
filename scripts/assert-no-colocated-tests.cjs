@@ -1,27 +1,32 @@
 #!/usr/bin/env node
 // Fails the run if any test files live outside /tests.
-const { execSync } = require("node:child_process");
+const { execFileSync } = require("node:child_process");
 
 const ROOT = process.cwd();
-const GLOB = [
+// Use array of patterns instead of space-delimited string to avoid shell interpolation
+const GLOB_PATTERNS = [
   "app/**/__tests__/*.?(c|m)[jt]s?(x)",
   "components/**/__tests__/*.?(c|m)[jt]s?(x)",
   "components/**/*.spec.*",
   "components/**/*.test.*",
   "lib/**/*.spec.*",
   "lib/**/*.test.*",
-].join(" ");
-
-function sh(cmd) {
-  return execSync(cmd, { stdio: ["ignore", "pipe", "ignore"], cwd: ROOT })
-    .toString()
-    .trim();
-}
+];
 
 // Use git ls-files to limit to tracked and untracked (cached) files
+// Fix: Use execFileSync with argument array to prevent shell escaping of brackets
+// The -- separator ensures patterns are treated as pathspecs, not shell globs
 let output = '';
 try {
-  output = sh(`git ls-files -co --exclude-standard -- ${GLOB}`);
+  output = execFileSync(
+    'git',
+    ['ls-files', '-co', '--exclude-standard', '--', ...GLOB_PATTERNS],
+    { 
+      stdio: ["ignore", "pipe", "ignore"], 
+      cwd: ROOT,
+      encoding: 'utf8'
+    }
+  ).trim();
 } catch {
   output = '';
 }

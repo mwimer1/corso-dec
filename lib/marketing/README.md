@@ -1,14 +1,39 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+title: "Marketing"
+last_updated: "2026-01-07"
 category: "library"
+status: "active"
+description: "Marketing utilities for insights, content management, and ROI calculations."
 ---
-# Repository Scripts & Docs
 
-This README is generated from a single template (`README.scripts.hbs`).
+# Marketing
 
-- Directory: `lib/marketing`
-- Last updated: `2025-10-29`
+Marketing utilities for insights, content management, and ROI calculations.
 
-> Edit the template or the generator context to change all READMEs consistently.
+## Runtime
+
+**Runtime**: universal ⚠️
+
+*No runtime-specific signals detected (likely universal/isomorphic)*
+
+**Signals detected:**
+- No runtime signals detected
+
+## Directory Structure
+
+```
+lib/marketing/
+├── insights/
+│   ├── content-loader.ts
+│   ├── content-service.ts
+│   ├── directus-adapter.ts
+│   ├── legacy-adapter.ts
+│   ├── mockcms-adapter.ts
+│   ├── source.ts
+│   └── static-data.ts
+├── permit-data/
+├── client.ts
+├── roi.ts
+└── server.ts
+```
 

@@ -1,14 +1,42 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+title: "Widgets"
+last_updated: "2026-01-07"
 category: "components"
+status: "active"
+description: "UI components for the components system, following atomic design principles. Located in landing/widgets/."
 ---
-# Repository Scripts & Docs
+# Widgets
 
-This README is generated from a single template (`README.scripts.hbs`).
+The widgets directory contains UI components for the Corso platform.
 
-- Directory: `components/landing/widgets`
-- Last updated: `2025-10-29`
+UI components for the components system, following atomic design principles. Located in landing/widgets/.
 
-> Edit the template or the generator context to change all READMEs consistently.
+## Directory Structure
+
+```
+components/landing/widgets/
+animated-number.tsx
+animated-pill.tsx
+animated-pill.module.css
+chart.tsx
+filter-pills.tsx
+filter-select.tsx
+number-input-with-steppers.tsx
+pill-group.tsx
+statistics.tsx
+use-number-input.ts
+year-range-slider.tsx
+```
+
+## Components
+
+- **AnimatedPill** - Animated pill component with width clamping and spinning border effect (uses `animated-pill.module.css`)
+
+## Usage
+
+Import components from the appropriate subdirectory:
+
+```typescript
+import { ComponentName } from '@/components/landing/widgets/subdirectory';
+```
 

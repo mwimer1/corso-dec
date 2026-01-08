@@ -1,3 +1,12 @@
+/**
+ * This is the only Tailwind config; fallbacks must match token defaults exactly.
+ * 
+ * Token contract: CSS tokens in styles/tokens/*.css are canonical.
+ * Tailwind config fallbacks (var(--token, fallback)) must match token defaults
+ * to prevent "two sources of truth" configuration drift.
+ * 
+ * Validation: Run `pnpm check:tokens` to enforce this contract.
+ */
 import typography from '@tailwindcss/typography';
 import type { Config } from 'tailwindcss';
 import animate from 'tailwindcss-animate';
@@ -8,10 +17,10 @@ const config: Config = {
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './styles/**/*.{js,ts,jsx,tsx}',
-    './contexts/**/*.{js,ts,jsx,tsx}',
     './hooks/**/*.{js,ts,jsx,tsx}',
     './lib/**/*.{js,ts,jsx,tsx}',
-    './stories/**/*.{js,ts,jsx,tsx}',
+    // Exclude removed permit-data directory to prevent stale cache errors
+    '!./app/**/permit-data/**',
   ],
   darkMode: ['class'],
   theme: {
@@ -31,13 +40,15 @@ const config: Config = {
         // Design token mapping - unified primary as brand blue
         primary: {
           DEFAULT: 'hsl(var(--primary, 221 86% 54%))',
-          foreground: 'hsl(var(--primary-foreground, 210 40% 98%))',
+          foreground: 'hsl(var(--primary-foreground, 0 0% 98%))',
+          'overlay-light': 'hsl(var(--primary-overlay-light, 0 0% 98%))', /* Light overlay color, lighter than primary blue */
         },
         secondary: {
           DEFAULT: 'hsl(var(--secondary, 221 86% 90%))',
           foreground: 'hsl(var(--secondary-foreground, 222.2 47.4% 11.2%))',
         },
         background: 'hsl(var(--background, 0 0% 100%))',
+        showcase: 'hsl(var(--showcase-background, 0 0% 99.2%))',
         foreground: 'hsl(var(--foreground, 222.2 47.4% 11.2%))',
         surface: {
           DEFAULT: 'hsl(var(--surface, 0 0% 100%))',
@@ -45,7 +56,7 @@ const config: Config = {
           hover: 'hsl(var(--surface-hover, 0 0% 93%))',
           selected: 'hsl(var(--surface-selected, 221.2 83.2% 95%))',
         },
-        border: 'hsl(var(--border, 214.3 31.8% 91.4%))',
+        border: 'hsl(var(--border, 214.3 31.8% 89%))',
         'border-subtle': 'hsl(var(--border-subtle, 214.3 31.8% 96%))',
         input: 'hsl(var(--input, 214.3 31.8% 91.4%))',
         ring: 'hsl(var(--ring, 221.2 83.2% 53.3%))',
@@ -94,8 +105,8 @@ const config: Config = {
           foreground: 'hsl(var(--foreground, 222.2 47.4% 11.2%))',
         },
         accent: {
-          DEFAULT: 'hsl(var(--secondary, 217.2 91.2% 59.8%))',
-          foreground: 'hsl(var(--secondary-foreground, 210 40% 98%))',
+          DEFAULT: 'hsl(var(--secondary, 221 86% 90%))',
+          foreground: 'hsl(var(--secondary-foreground, 222.2 47.4% 11.2%))',
         },
       },
       borderRadius: {
@@ -109,12 +120,15 @@ const config: Config = {
         '2xl': 'var(--radius-2xl, 1rem)',
         '3xl': 'var(--radius-3xl, 1.5rem)',
         'full': 'var(--radius-full, 9999px)',
+        'button': 'var(--radius-button, 0.625rem)',
         // Legacy mapping
         DEFAULT: 'var(--radius-md, 0.375rem)',
       },
       fontFamily: {
-        sans: ['var(--font-sans, ui-sans-serif, system-ui)'],
-        mono: ['var(--font-mono, ui-monospace, SFMono-Regular)'],
+        sans: [
+          'var(--font-sans, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif)',
+        ],
+        mono: ['var(--font-mono, ui-monospace, sfmono-regular, "SF Mono", consolas, "Liberation Mono", menlo, monospace)'],
       },
       fontSize: {
         // Design token mapping for typography
@@ -159,14 +173,14 @@ const config: Config = {
       },
       boxShadow: {
         // Design token mapping for shadows
-        'xs': 'var(--shadow-xs, 0 1px 2px 0 rgba(0,0,0,.05))',
-        'sm': 'var(--shadow-sm, 0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px -1px rgba(0,0,0,.1))',
-        'md': 'var(--shadow-md, 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06))',
-        'lg': 'var(--shadow-lg, 0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -2px rgba(0,0,0,.05))',
-        'xl': 'var(--shadow-xl, 0 20px 25px -5px rgba(0,0,0,.1), 0 8px 10px -5px rgba(0,0,0,.04))',
+        'xs': 'var(--shadow-xs, 0 1px 2px 0 rgb(0 0 0 / 5%))',
+        'sm': 'var(--shadow-sm, 0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px -1px rgb(0 0 0 / 10%))',
+        'md': 'var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -1px rgb(0 0 0 / 6%))',
+        'lg': 'var(--shadow-lg, 0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -2px rgb(0 0 0 / 5%))',
+        'xl': 'var(--shadow-xl, 0 20px 25px -5px rgb(0 0 0 / 10%), 0 8px 10px -5px rgb(0 0 0 / 4%))',
         // Additive tokenized shadows
-        'card': 'var(--shadow-card, 0 8px 24px hsl(var(--foreground) / 0.06))',
-        'elevated': 'var(--shadow-elevated, 0 12px 32px hsl(var(--foreground) / 0.08))',
+        'card': 'var(--shadow-card, 0 8px 24px hsl(var(--foreground) / 6%))',
+        'elevated': 'var(--shadow-elevated, 0 12px 32px hsl(var(--foreground) / 8%))',
       },
       transitionDuration: {
         // Design token mapping for animation
@@ -219,6 +233,7 @@ const config: Config = {
         'accordion-up': 'accordion-up 0.2s ease-out',
         'fade-in': 'fade-in var(--duration-md, 300ms) ease-out both',
         'fade-up': 'fade-up var(--duration-md, 300ms) ease-out both',
+        'fadeIn': 'fade-in 200ms ease-out',
       },
       animationDuration: {
         '75': 'var(--duration-75, 75ms)',

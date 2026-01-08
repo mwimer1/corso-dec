@@ -1,7 +1,9 @@
 ---
-status: "complete"
-last_updated: "2025-11-03"
+title: "Public"
+description: "Documentation and resources for documentation functionality."
+last_updated: "2026-01-07"
 category: "documentation"
+status: "active"
 ---
 # 🗂️ Public Static Assets
 
@@ -235,7 +237,7 @@ export async function GET(req: Request) {
 
 ## 📚 Related Documentation
 
-- [Next.js Static Files](https://nextjs.org/docs/basic-features/static-file-serving)
+- [Next.js Static Files](https://nextjs.org/docs/app/building-your-application/routing/route-handlers)
 - [MSW Documentation](https://mswjs.io/docs/)
 
 ## 🏷️ Tags
@@ -245,4 +247,3 @@ export async function GET(req: Request) {
 ---
 
 _Last updated: 2025-09-10_
-

@@ -1,7 +1,9 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+title: "Setup"
+description: "Documentation and resources for documentation functionality. Located in support/setup/."
+last_updated: "2026-01-07"
 category: "documentation"
+status: "active"
 ---
 ## Public Exports
 | Support File | Type | Description |
@@ -203,4 +205,3 @@ if (typeof window !== 'undefined') {
 ---
 
 _Last updated: 2025-01-16_
-

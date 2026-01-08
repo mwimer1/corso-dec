@@ -3,22 +3,17 @@
 ------------------------------------------------------------------- */
 "use client";
 
-import {
-    INSIGHT_HERO_HEIGHT,
-    INSIGHT_HERO_SIZES,
-    INSIGHT_HERO_WIDTH,
-} from "@/components/insights/constants";
 import { useArticleAnalytics } from "@/components/insights/hooks/use-article-analytics";
+import { InsightHeaderBlock } from "@/components/insights/widgets/insight-header-block";
+import { BackToTopButton } from "@/components/insights/widgets/article-utilities";
 import { RelatedArticles } from "@/components/insights/widgets/related-articles";
-import { SectionHeader } from "@/components/ui/patterns/section-header";
+import { TableOfContents } from "@/components/insights/widgets/table-of-contents";
+import { resolveInsightImageUrl } from "@/components/insights/utils/image-resolver";
 import { cn } from "@/styles";
-import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
-import { headingVariants } from "@/styles/ui/shared/typography-variants";
+import { containerMaxWidthVariants, containerWithPaddingVariants } from "@/styles/ui/shared";
 import type { InsightItem } from "@/types/marketing";
-import { format } from "date-fns";
 import DOMPurify from "dompurify";
 import type { Metadata } from "next";
-import Image from "next/image";
 import * as React from "react";
 
 interface InsightDetailProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -35,19 +30,29 @@ interface InsightDetailProps extends React.HTMLAttributes<HTMLDivElement> {
     author?: { name: string; slug: string };
     readingTime?: number;
   }>;
+  /** Optional breadcrumb items for navigation */
+  breadcrumbs?: Array<{ label: string; href: string }>;
 }
+
+// NOTE: Do not add page-level CTAs to InsightDetail.
+// The canonical marketing CTA is FooterCTA, rendered via:
+// PublicLayout → FooterSystem → FooterCTA
+// See: components/ui/organisms/footer-system/footer-cta.tsx
 
 export const InsightDetail = React.forwardRef<
   HTMLDivElement,
   InsightDetailProps
->(({ initialData, relatedArticles = [], className, ...rest }, ref) => {
+>(({ initialData, relatedArticles = [], breadcrumbs, className, ...rest }, ref) => {
   const {
     title,
     content, // already rendered HTML from MD-rich-text
     categories,
     publishDate,
+    updatedDate,
     author,
     imageUrl,
+    readingTime,
+    keyTakeaways,
   } = initialData;
 
   const sanitizedContent = React.useMemo(() => {
@@ -63,20 +68,62 @@ export const InsightDetail = React.forwardRef<
         }
       });
 
-      return DOMPurify.sanitize(content, {
+      let sanitized = DOMPurify.sanitize(content, {
         ALLOWED_TAGS: [
           "p","h1","h2","h3","h4","h5","h6","ul","ol","li","a","strong","em","code","pre","blockquote","br","hr","div","span","img",
         ],
-        ALLOWED_ATTR: ["href", "target", "rel", "class", "src", "alt", "title"],
+        ALLOWED_ATTR: ["href", "target", "rel", "class", "src", "alt", "title", "id"],
         ADD_ATTR: ["target"],
         ALLOW_DATA_ATTR: false,
         ALLOWED_URI_REGEXP: /^(?:https?:|mailto:|\/(?!\/)|#)/,
         FORBID_TAGS: ["script", "style"],
       });
+
+      // De-dupe: Remove "Key takeaways" section from HTML if keyTakeaways exists
+      if (keyTakeaways && keyTakeaways.length > 0) {
+        try {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(sanitized, "text/html");
+          const headings = doc.querySelectorAll("h2");
+          
+          for (const heading of headings) {
+            const text = heading.textContent?.trim() || "";
+            // Case-insensitive match for "Key takeaways" or similar variations
+            if (/key\s+takeaways?/i.test(text)) {
+              // Collect elements to remove: heading + all siblings until next H2
+              const elementsToRemove: Element[] = [heading];
+              let current: Element | null = heading.nextElementSibling;
+              
+              while (current && current.tagName !== "H2") {
+                const next = current.nextElementSibling;
+                elementsToRemove.push(current);
+                current = next;
+              }
+              
+              // Remove all collected elements
+              const parent = heading.parentElement;
+              if (parent) {
+                elementsToRemove.forEach((el) => {
+                  parent.removeChild(el);
+                });
+              }
+              
+              break; // Only process first match
+            }
+          }
+          
+          sanitized = doc.body.innerHTML;
+        } catch {
+          // If DOM parsing fails, fall back to original sanitized content
+          // This ensures we don't break rendering if something goes wrong
+        }
+      }
+
+      return sanitized;
     } catch {
       return content;
     }
-  }, [content]);
+  }, [content, keyTakeaways]);
 
   // Analytics: track view, scroll depth, and time-on-page
   useArticleAnalytics({
@@ -87,85 +134,156 @@ export const InsightDetail = React.forwardRef<
     publishDate: initialData.publishDate ?? null,
   });
 
+  // Resolve image URL using shared resolver for consistency with list page
+  const resolvedImageUrl = React.useMemo(
+    () => resolveInsightImageUrl({ 
+      ...(imageUrl && { imageUrl }), 
+      ...(categories && { categories }) 
+    }),
+    [imageUrl, categories]
+  );
+
+  // Generate article URL for copy link button
+  const articleUrl = React.useMemo(() => {
+    if (typeof window !== "undefined") {
+      return window.location.href;
+    }
+    return `https://getcorso.com/insights/${initialData.slug}`;
+  }, [initialData.slug]);
+
   return (
-    <article
+    <div
       ref={ref}
       className={cn(
-        containerMaxWidthVariants({ maxWidth: '4xl', centered: true }),
-        "prose prose-gray max-w-none prose-lg prose-headings:font-bold prose-headings:tracking-tight prose-p:text-foreground/90 prose-p:leading-relaxed prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-foreground prose-strong:font-semibold prose-code:bg-muted prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-pre:bg-muted prose-pre:border",
+        // Outer container: matches navbar/footer margins (7xl with lg padding)
+        containerWithPaddingVariants({ maxWidth: "7xl", padding: "lg" }),
         className,
       )}
       {...rest}
     >
-      {/* Note: Structured data is now handled server-side in the page component for better SEO */}
+      {/* Desktop: Flex layout with article and TOC side by side */}
+      <div className="lg:flex lg:items-start lg:gap-8">
+        <article
+          className={cn(
+            // Inner container: max-w-3xl for optimal article readability
+            containerMaxWidthVariants({ maxWidth: '3xl', centered: false }),
+            "lg:flex-1 lg:min-w-0 lg:max-w-3xl",
+          // Base prose styles
+          "prose prose-gray max-w-none prose-lg",
+          // Headings
+          "prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground",
+          "prose-h1:text-4xl prose-h1:mt-8 prose-h1:mb-4",
+          "prose-h2:text-3xl prose-h2:mt-6 prose-h2:mb-4",
+          "prose-h3:text-2xl prose-h3:mt-6 prose-h3:mb-3",
+          "prose-h4:text-xl prose-h4:mt-4 prose-h4:mb-2",
+          // Paragraphs
+          "prose-p:text-foreground/90 prose-p:leading-relaxed prose-p:mb-4",
+          // Links
+          "prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-medium prose-a:transition-colors",
+          // Strong and emphasis
+          "prose-strong:text-foreground prose-strong:font-semibold",
+          "prose-em:text-foreground prose-em:italic",
+          // Lists
+          "prose-ul:my-6 prose-ul:space-y-2 prose-ul:list-disc prose-ul:pl-6",
+          "prose-ol:my-6 prose-ol:space-y-2 prose-ol:list-decimal prose-ol:pl-6",
+          "prose-li:text-foreground/90 prose-li:leading-relaxed prose-li:marker:text-primary",
+          // Blockquotes
+          "prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-6 prose-blockquote:pr-4 prose-blockquote:py-2 prose-blockquote:my-6 prose-blockquote:bg-muted/50 prose-blockquote:rounded-r-md prose-blockquote:not-italic",
+          "prose-blockquote>p:text-foreground/80 prose-blockquote>p:mb-0",
+          // Code
+          "prose-code:bg-muted prose-code:text-foreground prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:font-mono prose-code:before:content-none prose-code:after:content-none",
+          "prose-pre:bg-muted prose-pre:border prose-pre:border-border prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto prose-pre:my-6",
+          "prose-pre>code:bg-transparent prose-pre>code:p-0 prose-pre>code:text-sm",
+          // Images
+          "prose-img:rounded-lg prose-img:shadow-md prose-img:my-8 prose-img:border prose-img:border-border",
+          // Horizontal rules
+          "prose-hr:border-border prose-hr:my-8",
+          // Ensure anchored headings aren't hidden behind sticky nav
+          "prose-headings:scroll-mt-20",
+          // Spacing - responsive vertical spacing
+          "space-y-6 sm:space-y-8",
+        )}
+      >
+        {/* Note: Structured data is now handled server-side in the page component for better SEO */}
+        {/* Breadcrumbs UI intentionally removed for a cleaner editorial detail page.
+            SEO breadcrumbs (JSON-LD) are handled in the route and should remain unchanged. */}
 
-      <header className={cn(headingVariants({ size: 'h1', align: 'center' }), "mb-8")}>
-        {/* Article Header */}
-        <div className="space-y-4">
-          <SectionHeader
-            title={title}
-            subtitle={publishDate ? format(new Date(publishDate), "MMM d, yyyy") : undefined}
-            align="left"
-          />
+        {/* Consolidated header block: back navigation, categories, title, metadata, and hero image */}
+        <InsightHeaderBlock
+          title={title}
+          {...(publishDate && { publishDate })}
+          {...(updatedDate && { updatedDate })}
+          {...(readingTime && { readingTime })}
+          {...(author && { author })}
+          {...(categories && { categories })}
+          {...(resolvedImageUrl && { heroImageUrl: resolvedImageUrl })}
+          {...(initialData.heroCaption && { heroCaption: initialData.heroCaption })}
+          {...(articleUrl && { articleUrl })}
+          backHref="/insights"
+        />
 
-          {author && (
-            <div className="flex items-center gap-3">
-              {author.avatar && (
-                <Image
-                  src={author.avatar}
-                  alt={author.name}
-                  width={48}
-                  height={48}
-                  className="rounded-full ring-2 ring-border"
-                />
-              )}
-              <div className="space-y-1">
-                <span className="text-sm font-medium text-foreground">Written by</span>
-                <p className="text-sm text-muted-foreground">{author.name}</p>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Categories */}
-        {categories && categories.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {categories.map((category: { slug: string; name: string }) => (
-              <span
-                key={category.slug}
-                className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20"
-              >
-                {category.name}
-              </span>
-            ))}
+        {/* Structured Key Takeaways Block */}
+        {keyTakeaways && keyTakeaways.length > 0 && (
+          <div
+            className={cn(
+              "border-l-4 border-primary bg-primary/5 rounded-r-lg p-6 sm:p-8 my-8 not-prose",
+              "key-takeaways-block"
+            )}
+          >
+            <h2 className="text-2xl font-bold text-foreground mb-4 mt-0">
+              Key takeaways
+            </h2>
+            <ul className="space-y-3 text-foreground/90 list-none pl-0">
+              {keyTakeaways.map((takeaway) => (
+                <li key={takeaway} className="flex items-start gap-3">
+                  <span className="text-primary mt-1.5 flex-shrink-0" aria-hidden="true">
+                    •
+                  </span>
+                  <span className="leading-relaxed">{takeaway}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
-      </header>
 
-      {imageUrl && (
-        <div className="relative mb-8 overflow-hidden rounded-lg">
-          <Image
-            src={imageUrl}
-            alt={title}
-            width={INSIGHT_HERO_WIDTH}
-            height={INSIGHT_HERO_HEIGHT}
-            sizes={INSIGHT_HERO_SIZES}
-            className="w-full h-auto object-cover"
-          />
-        </div>
-      )}
+        {/* Table of Contents - Mobile: above content (inside article) */}
+        <TableOfContents content={sanitizedContent} variant="mobile" />
 
-      <section
-        dangerouslySetInnerHTML={{ __html: sanitizedContent }}
-        className="mx-auto"
-      />
+        <section
+          dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+          className={cn(
+            "prose-content",
+            // Allow full-width elements to break out of 3xl article container to outer 7xl container
+            // Elements with .prose-full-width or data-full-width extend to outer container edges
+            // Uses viewport-relative positioning to break out while respecting outer container padding
+            "[&_.prose-full-width]:relative [&_.prose-full-width]:left-[calc(-50vw+50%)] [&_.prose-full-width]:w-screen [&_.prose-full-width]:max-w-[calc(80rem+2rem)] [&_.prose-full-width]:sm:max-w-[calc(80rem+3rem)] [&_.prose-full-width]:lg:max-w-[calc(80rem+4rem)]",
+            "[&_[data-full-width]]:relative [&_[data-full-width]]:left-[calc(-50vw+50%)] [&_[data-full-width]]:w-screen [&_[data-full-width]]:max-w-[calc(80rem+2rem)] [&_[data-full-width]]:sm:max-w-[calc(80rem+3rem)] [&_[data-full-width]]:lg:max-w-[calc(80rem+4rem)]",
+            // Key takeaways callout styling
+            "[&_.key-takeaways-callout]:border-l-4 [&_.key-takeaways-callout]:border-primary [&_.key-takeaways-callout]:bg-primary/5 [&_.key-takeaways-callout]:rounded-r-lg [&_.key-takeaways-callout]:p-6 [&_.key-takeaways-callout]:sm:p-8 [&_.key-takeaways-callout]:my-8 [&_.key-takeaways-callout]:not-prose",
+            "[&_.key-takeaways-callout_h2]:!mt-0 [&_.key-takeaways-callout_h2]:mb-4 [&_.key-takeaways-callout_h2]:text-foreground",
+            "[&_.key-takeaways-callout_p]:text-foreground/90 [&_.key-takeaways-callout_ul]:text-foreground/90 [&_.key-takeaways-callout_ol]:text-foreground/90",
+          )}
+          aria-label="Article content"
+          itemProp="articleBody"
+        />
 
-      {relatedArticles.length > 0 && (
-        <div className="mt-12 pt-8 border-t border-border">
-          <RelatedArticles articles={relatedArticles} />
-        </div>
-      )}
-    </article>
+        {relatedArticles.length > 0 && (
+          <aside 
+            className={cn("mt-8 sm:mt-12")}
+            aria-label="Related content"
+          >
+            <RelatedArticles articles={relatedArticles} />
+          </aside>
+        )}
+        </article>
+
+        {/* Desktop Table of Contents - Sticky sidebar outside article column */}
+        <TableOfContents content={sanitizedContent} variant="desktop" />
+      </div>
+
+      {/* Back to top button - fixed position, appears after scrolling */}
+      <BackToTopButton />
+    </div>
   );
 });
 
@@ -175,16 +293,16 @@ InsightDetail.displayName = "InsightDetail";
  * Generate metadata for article pages - use in page components
  */
 export function generateArticleMetadata(article: InsightItem): Metadata {
-  const { title, publishDate, author, imageUrl, categories } = article;
+  const { title, publishDate, author, imageUrl, categories, description } = article;
 
   return {
     title,
-    description: (article as any).description ?? `Read ${title} on Corso Insights`,
+    description: description ?? `Read ${title} on Corso Insights`,
     authors: author?.name ? [{ name: author.name }] : undefined,
     other: publishDate ? { publishedTime: publishDate } : {},
     openGraph: {
       title,
-      description: (article as any).description ?? `Read ${title} on Corso Insights`,
+      description: description ?? `Read ${title} on Corso Insights`,
       images: imageUrl ? [{ url: imageUrl, alt: title }] : [{ url: '/logo.svg', alt: 'Corso Logo' }],
       type: 'article',
       publishedTime: publishDate,
@@ -195,7 +313,7 @@ export function generateArticleMetadata(article: InsightItem): Metadata {
     twitter: {
       card: 'summary_large_image',
       title,
-      description: (article as any).description ?? `Read ${title} on Corso Insights`,
+      description: description ?? `Read ${title} on Corso Insights`,
       images: imageUrl ? [imageUrl] : ['/logo.svg'],
     },
     alternates: {
@@ -203,7 +321,5 @@ export function generateArticleMetadata(article: InsightItem): Metadata {
     },
   };
 }
-
-export default InsightDetail;
 
 

@@ -1,5 +1,3 @@
-import { RouteLoading } from "@/components";
+import { createLoading } from '@/app/shared/create-loading';
 
-export default function AuthLoading() {
-  return <RouteLoading message="Loading authentication..." />;
-}
+export default createLoading('Loading authentication...');

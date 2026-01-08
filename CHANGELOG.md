@@ -1,5 +1,34 @@
 ## Unreleased
 
+### Fixed
+- **Security**: Enforced RBAC on GET entity data route - now requires 'member' role minimum (viewers receive 403)
+- **API**: Fixed grid filtering - filters from query parameters are now properly parsed and applied to data queries
+- **API**: Updated `getEntityConfig()` to return actual column configurations instead of placeholder stub
+
+### Removed
+- **Deprecated Code**: Removed legacy mock data loader (`lib/services/entity/loader.ts` and `lib/mocks/entity-data.server.ts`)
+- **Deprecated Code**: Removed associated test file for deprecated CSV loader (`tests/mocks/entity-data.server.test.ts`)
+- **Deprecated Code**: Removed `createEntityFetchData` export from `lib/services/index.ts`
+
+### Changed
+- **Documentation**: Updated dashboard README to reflect dynamic routing (removed incorrect `generateStaticParams()` reference)
+- **Documentation**: Added note in table docs that Excel export requires AG Grid Enterprise license
+- **Tests**: Added comprehensive tests for RBAC enforcement and filter parameter parsing on GET entity route
+- **Tests**: Updated vitest setup to remove mock for deprecated entity-data.server module
+
+### Removed
+- **Maintenance Scripts**: Removed deprecated script aliases from package.json:
+  - `docs:check` (use `docs:validate` instead)
+  - `cleanup:atoms:trim:batch01` (one-time batch script no longer needed)
+
+### Changed
+- **Maintenance Scripts**: Enhanced README generation to include script metadata and descriptions
+- **Maintenance Scripts**: Standardized CLI interfaces across all maintenance scripts (consistent --help flags, tsx shebangs)
+- **Maintenance Scripts**: Refactored `audit:orphans` script by extracting utility functions into `scripts/audit-lib/orphan-utils.ts` for better maintainability
+- **Documentation**: Updated references to deprecated commands:
+  - `barrels:policy:check` → `audit:barrels --only policy`
+  - `verify:no-intradomain-root-barrels` → `audit:barrels --only intradomain`
+
 ### Removed
 - **components/forms**: Removed deprecated `FieldBase` alias export. Use `FormFieldBase` directly instead.
 - **components/ui/molecules**: Removed deprecated `error` prop from `TextArea` component. Use `state="error"` instead.
@@ -74,7 +103,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added `getSSRSecurityNonce()` for Server Components/layouts to retrieve the nonce via `next/headers`
   - Updated `app/(marketing)/layout.tsx` and `app/(auth)/layout.tsx` to pass `{ nonce }` to Next.js `<Script>` (beforeInteractive)
   - Resolves hydration error caused by `<Script>` rendering with `nonce={undefined}` on server vs empty on client
-  - Files: `middleware.ts`, `lib/middleware/http/security-headers.ts`, `lib/middleware/index.ts`, `app/(marketing)/layout.tsx`, `app/(auth)/layout.tsx`
+  - Files: `middleware.ts`, `lib/middleware/http/headers.ts`, `lib/middleware/index.ts`, `app/(marketing)/layout.tsx`, `app/(auth)/layout.tsx`
 
   - `pnpm docs:aliases` - Updates README.md with current alias table from tsconfig
   - `pnpm docs:aliases:check` - CI-safe check mode that fails if documentation is out of date

@@ -3,11 +3,11 @@
  * @description Edge-safe API utilities with clear runtime boundaries.
  * @runtime Mixed (Edge-safe + Server-only exports)
  */
-export * from './auth';
+// NOTE: ./auth.ts was removed - import from @/lib/auth/server instead
 export * from './client';
 export * from './edge';
-export * from './response/http';
-export * from './shared/edge-route';
+export * from './http';
+export * from './edge-route';
 // Export entity data function (re-export directly to keep barrel edge-safe)
 export { getEntityPage } from './data';
 
@@ -50,6 +50,6 @@ export async function validateJson<T>(
 export { withErrorHandlingEdge as withErrorHandling } from '@/lib/middleware';
 
 // Convenience re-export for HTTP helpers
-export { http } from './response/http';
+export { http } from './http';
 
 

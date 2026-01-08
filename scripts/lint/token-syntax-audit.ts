@@ -1,5 +1,15 @@
 #!/usr/bin/env tsx
-// scripts/token-syntax-audit.ts
+/**
+ * Audits CSS token syntax for duplicate token definitions.
+ * 
+ * Scans all token files in styles/tokens directory and checks for duplicate token
+ * names within the same CSS rule selector. Ensures each token is defined only once
+ * per scope to prevent conflicts.
+ * 
+ * Intent: Prevent duplicate token definitions
+ * Files: CSS files in styles/tokens directory
+ * Invocation: pnpm audit:tokens
+ */
 import { readFileSync } from 'fs';
 import { globby } from 'globby';
 import { fileURLToPath } from 'node:url';
@@ -35,7 +45,7 @@ async function main() {
 
   if (hasDuplicates) {
     console.log('🔥 Token audit failed.');
-    process.exit(1);
+    process.exitCode = 1;
   } else {
     console.log('✅ No duplicate tokens found.');
   }
@@ -43,6 +53,6 @@ async function main() {
 
 main().catch(err => {
     console.error(err);
-    process.exit(1);
+    process.exitCode = 1;
 }); 
 

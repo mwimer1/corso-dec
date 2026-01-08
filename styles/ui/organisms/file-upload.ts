@@ -1,6 +1,6 @@
 // styles/organisms/file-upload.ts
 import { roundedVariants } from '@/styles/shared-variants';
-import { tv } from '@/styles/utils';
+import { tv } from '@/styles';
 
 const fileUploadVariants = tv({
   base: 'relative flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-border bg-surface p-8 transition-colors duration-200 ease-in-out hover:border-primary/50',
@@ -23,7 +23,7 @@ const fileUploadVariants = tv({
     rounded: 'lg',
   },
 });
-export type { VariantProps } from '@/styles/utils';
+export type { VariantProps } from '@/styles';
 export { fileUploadVariants };
 
 

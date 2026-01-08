@@ -1,38 +1,133 @@
 // Node.js required: ClickHouse database operations via getEntityPage()
+/** @knipignore */
 export const runtime = 'nodejs';
+/** @knipignore */
 export const dynamic = 'force-dynamic';
+/** @knipignore */
 export const revalidate = 0;
 
-import { badRequest, error, noContent } from '@/lib/api/response/http';
-import { handleCors } from '@/lib/middleware';
-import { auth } from '@clerk/nextjs/server';
-import type { NextRequest } from 'next/server';
-// If your repo exposes a CORS helper, prefer it here:
-// import { handleCors } from '@/lib/middleware';
-import { getEntityPage } from '@/lib/services/entity/pages';
+import { http } from '@/lib/api';
+import { createDynamicRouteHandler } from '@/lib/api/dynamic-route';
+import type { EntityFetchParams } from '@/lib/entities/contracts';
+import { getEntityPage } from '@/lib/entities/pages';
+import { resolveOrgContext } from '@/lib/entities/org-resolution';
 import {
-    EntityListQuerySchema,
-    EntityParamSchema,
-    type EntityParam,
+  type EntityFilter,
+  type EntityFilterOp,
+  validateEntityQueryParams,
+} from '@/lib/entities/validation';
+import { handleOptions, RATE_LIMIT_60_PER_MIN } from '@/lib/middleware';
+import { isRelaxedAuthMode } from '@/lib/shared/config/auth-mode';
+import {
+  EntityListQuerySchema,
+  EntityParamSchema,
+  type EntityParam,
 } from '@/lib/validators';
+import { auth, clerkClient } from '@clerk/nextjs/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 
-export async function OPTIONS(req: Request) {
-  const response = handleCors(req);
-  if (response) return response;
-  return noContent();
+const SHOULD_LOG =
+  process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test';
+
+// Helper to convert Response to NextResponse for type compatibility
+async function toNextResponse(response: Response): Promise<NextResponse> {
+  const body = await response.json();
+  return NextResponse.json(body, { status: response.status, headers: response.headers });
 }
 
-export async function GET(req: NextRequest, ctx: { params: { entity: string } }) {
-  // AuthN
-  const { userId } = await auth();
+/** @knipignore */
+export async function OPTIONS(req: Request) {
+  return handleOptions(req);
+}
+
+const handler = async (req: NextRequest, ctx: { params: { entity: string } }): Promise<NextResponse> => {
+  // Authentication (always required)
+  const { userId, has, orgId: activeOrgId } = await auth();
   if (!userId) {
-    return error(401, 'Unauthorized', { code: 'HTTP_401' });
+    return await toNextResponse(http.error(401, 'Unauthorized', { code: 'HTTP_401' }));
   }
+  
+  // Check auth mode
+  const isRelaxed = isRelaxedAuthMode();
+  
+  // Define allowed roles (for strict mode only)
+  const allowedRoles = ['org:member', 'org:admin', 'org:owner'] as const;
+  
+  // Resolve organization context
+  const orgResolutionResult = await resolveOrgContext(req, userId);
+  if (orgResolutionResult instanceof Response) {
+    return await toNextResponse(orgResolutionResult);
+  }
+  const { orgId, source: effectiveOrgIdSource } = orgResolutionResult;
+  
+  // Enforce RBAC (skip in relaxed mode)
+  if (!isRelaxed && orgId) {
+    try {
+      const effectiveOrgId = orgId;
+      const isActiveOrg = effectiveOrgId === activeOrgId && effectiveOrgIdSource === 'active';
+      
+      if (isActiveOrg) {
+        // When using active org, use the standard has() check for each allowed role
+        const hasAllowedRole = allowedRoles.some((role) => has({ role }));
+        
+        if (!hasAllowedRole) {
+          if (SHOULD_LOG) {
+            console.debug('[entity route] RBAC check failed for userId:', userId, 'orgId:', effectiveOrgId, 'allowedRoles:', allowedRoles);
+          }
+          return await toNextResponse(http.error(403, 'Insufficient permissions', { 
+            code: 'FORBIDDEN',
+            details: {
+              requiredRoles: allowedRoles,
+            }
+          }));
+        }
+      } else {
+        // When using fallback org or header-specified org, verify membership directly
+        const client = typeof clerkClient === 'function' ? await clerkClient() : clerkClient;
+        const membership = await client.users.getOrganizationMembershipList({
+          userId,
+          limit: 100,
+        });
+        const hasMembership = membership.data?.some(
+          (m: { organization: { id: string }; role: string }) => {
+            const role = m.role as string;
+            return m.organization.id === effectiveOrgId && allowedRoles.includes(role as typeof allowedRoles[number]);
+          }
+        );
+        
+        if (!hasMembership) {
+          if (SHOULD_LOG) {
+            console.debug('[entity route] User does not have allowed role in organization:', effectiveOrgId, 'allowedRoles:', allowedRoles);
+          }
+          return await toNextResponse(http.error(403, 'Insufficient permissions', { 
+            code: 'FORBIDDEN',
+            details: {
+              requiredRoles: allowedRoles,
+            }
+          }));
+        }
+      }
+    } catch (error) {
+      if (SHOULD_LOG) {
+        console.debug('[entity route] Failed to verify organization membership:', error);
+      }
+      return await toNextResponse(http.error(403, 'Insufficient permissions', { 
+        code: 'FORBIDDEN',
+        details: {
+          requiredRoles: allowedRoles,
+        }
+      }));
+    }
+  }
+  
+  // Note: Tenant scoping is handled at the data layer via getEntityPage()
+  // orgId is used directly in the query, no need for separate tenantId variable
 
   // Entity param validation
   const entityParsed = EntityParamSchema.safeParse((ctx.params?.entity ?? '').toLowerCase());
   if (!entityParsed.success) {
-    return badRequest('Invalid entity type', { code: 'INVALID_ENTITY' });
+    return await toNextResponse(http.badRequest('Invalid entity type', { code: 'INVALID_ENTITY' }));
   }
   const entity = entityParsed.data as EntityParam;
 
@@ -41,41 +136,66 @@ export async function GET(req: NextRequest, ctx: { params: { entity: string } })
   const queryObj = Object.fromEntries(sp.entries());
   const qpParsed = EntityListQuerySchema.safeParse(queryObj);
   if (!qpParsed.success) {
-    return badRequest('Invalid query parameters', {
+    // All query parameter validation errors (including filters) return INVALID_QUERY
+    // Schema validation handles all parameter validation uniformly
+    const errorDetails = qpParsed.error.flatten();
+    
+    return await toNextResponse(http.badRequest('Invalid query parameters', {
       code: 'INVALID_QUERY',
-      details: qpParsed.error.flatten(),
-    });
+      details: errorDetails,
+    }));
   }
-  const { page, pageSize, sortBy, sortDir, search } = qpParsed.data;
+  const { page, pageSize, sortDir, filters: schemaValidatedFilters } = qpParsed.data;
 
-  try {
-    const result = await getEntityPage(entity, {
-      page,
-      pageSize,
-      sort: sortBy ? { column: sortBy, direction: sortDir } : { column: '', direction: 'asc' },
-      ...(search ? { search } : {}),
-      // TODO: Transform filters from Record<string, any> to Filter[] array format if needed
-      // For now, filters are not passed through to avoid type mismatch
-    });
+  // Prefer reading these directly from URLSearchParams to avoid any defaulting surprises.
+  const sortByRaw = (sp.get('sortBy') ?? '').trim();
+  const searchRaw = (sp.get('search') ?? '').trim();
+  
+  // Convert schema-validated filters to EntityFilter format for entity-specific validation
+  // Schema validates structure (JSON format, array shape, operator types, value types, max filters)
+  // Entity-specific validation (validateEntityQueryParams) will validate field names against column config
+  const parsedFilters: EntityFilter[] | undefined = schemaValidatedFilters?.map((f) => ({
+    field: f.field,
+    op: f.op as EntityFilterOp,
+    value: f.value ?? null, // Convert undefined to null for EntityFilter (schema ensures values for current operators)
+  }));
+  
+  // Validate sort and filter parameters against entity column config
+  const { sortBy: validatedSortBy, filters: validatedFilters } = await validateEntityQueryParams(
+    entity,
+    sortByRaw || undefined,
+    parsedFilters
+  );
 
-    // Return flat response shape: { data, total, page, pageSize }
-    const payload = {
-      data: result?.data ?? [],
-      total: result?.total ?? 0,
-      page,
-      pageSize,
-    };
-    return new Response(JSON.stringify(payload), {
-      status: 200,
-      headers: {
-        'content-type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      }
-    });
-  } catch (e) {
-    return error(500, 'Failed to fetch entity data', {
-      code: 'INTERNAL_ERROR',
-      details: process.env.NODE_ENV !== 'production' ? String(e) : undefined,
-    });
-  }
-}
+  // Build params object - tests expect search/filters keys to exist even when undefined
+  // Use type assertion to work around exactOptionalPropertyTypes while satisfying test expectations
+  const params = {
+    page,
+    pageSize,
+    sort: validatedSortBy
+      ? { column: validatedSortBy, direction: sortDir }
+      : { column: '', direction: 'asc' },
+    // Tests expect these keys to exist, even when undefined
+    search: searchRaw ? searchRaw : undefined,
+    filters: validatedFilters ?? undefined,
+  } as EntityFetchParams;
+
+  const result = await getEntityPage(entity, params);
+
+  // Return standardized response shape: { success: true, data: { data, total, page, pageSize } }
+  // The client fetcher handles both wrapped and flat formats for backward compatibility
+  const payload = {
+    data: result?.data ?? [],
+    total: result?.total ?? 0,
+    page,
+    pageSize,
+  };
+  return await toNextResponse(http.ok(payload));
+};
+
+// Rate limit: 60/min per OpenAPI spec
+// Next.js dynamic route signature: (req, { params }) => Response
+/** @knipignore */
+export const GET = createDynamicRouteHandler(handler, {
+  rateLimit: RATE_LIMIT_60_PER_MIN,
+});

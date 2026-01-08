@@ -10,10 +10,14 @@ export interface InsightPreview {
   title: string;
   description?: string;
   publishDate?: ISODateString;
+  /** Last updated date (optional, defaults to publishDate if not provided) */
+  updatedDate?: ISODateString;
   imageUrl?: string;
   categories?: Array<{ slug: string; name: string }>;
   /** Estimated reading time in minutes */
   readingTime?: number;
+  /** Author information (optional for previews) */
+  author?: { name: string; avatar?: string };
 }
 
 /**
@@ -21,6 +25,11 @@ export interface InsightPreview {
  */
 export interface InsightItem extends InsightPreview {
   content: string;
+  /** Author information (more commonly present in full items) */
   author?: { name: string; avatar?: string };
+  /** Optional hero image caption */
+  heroCaption?: string;
+  /** Structured key takeaways array (1-8 items). If present, the HTML 'Key takeaways' section will be removed at render-time. */
+  keyTakeaways?: string[];
 }
 

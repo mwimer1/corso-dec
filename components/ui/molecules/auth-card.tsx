@@ -1,6 +1,6 @@
 // components/ui/molecules/auth-card.tsx\n'use client';
 
-import { Card } from '@/components/ui/atoms/card';
+import { Card } from '@/components/ui/atoms';
 import { cn } from "@/styles";
 import { authCardVariants } from "@/styles/ui/molecules";
 import React from "react";

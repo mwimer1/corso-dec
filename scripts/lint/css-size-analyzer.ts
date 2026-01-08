@@ -1,17 +1,18 @@
 #!/usr/bin/env tsx
-/*
- * FILE: scripts/css-size-analyzer.ts
- *
- * Description: Analyzes the size of the generated CSS file and fails if it exceeds a threshold.
- *
- * Usage:
- *
- * pnpm run a11y:css-size
+/**
+ * Analyzes the size of the generated CSS file and fails if it exceeds a threshold.
+ * 
+ * Monitors the built Tailwind CSS file size to prevent bundle bloat. Currently
+ * enforces a maximum size of 150KB for the generated CSS.
+ * 
+ * Intent: Prevent CSS bundle size bloat
+ * Files: styles/build/tailwind.css
+ * Invocation: pnpm a11y:css-size
  */
 
 import { fileURLToPath } from 'node:url';
 import path from 'path';
-import { readTextSync } from '../utils/fs';
+import { readTextSync } from '../utils/fs/read';
 
 const MAX_CSS_SIZE_KB = 150;
 
@@ -29,7 +30,7 @@ function analyzeCssSize() {
     console.error(
       `❌ CSS size exceeds the maximum allowed size of ${MAX_CSS_SIZE_KB} KB.`,
     );
-    process.exit(1);
+    process.exitCode = 1;
   } else {
     console.log(`✅ CSS size is within the allowed limit.`);
   }

@@ -3,7 +3,7 @@ rule_id: dashboard-components
 title: Dashboard Components — Chat & Tables (Consolidated)
 owners:
   - platform@corso.io
-last_reviewed: "2025-10-13"
+last_reviewed: "2026-01-07"
 status: active
 domains: [components, dashboard, chat, tables]
 enforcement: warn
@@ -11,12 +11,16 @@ related_rules:
   - component-design-system
   - runtime-boundaries
 alwaysApply: false
-globs: ["components/dashboard/**/*.tsx", "lib/dashboard/entity/*.ts*"]
+globs: ["components/dashboard/**/*.tsx"]
+summary: Dashboard component development patterns for chat interfaces and data tables with proper runtime boundaries.
 ---
 
 # Dashboard Components — Chat & Tables (Consolidated)
 
 **Comprehensive guide to dashboard component development, including chat interfaces and data tables with proper boundaries and guardrails.**
+
+## Purpose
+Define dashboard component development patterns for chat interfaces and data tables with proper runtime boundaries, client/server separation, and accessibility requirements.
 
 ## TL;DR
 - **Client/Server Boundaries**: Respect runtime boundaries; no server-only imports in client components
@@ -26,233 +30,97 @@ globs: ["components/dashboard/**/*.tsx", "lib/dashboard/entity/*.ts*"]
 - **Accessibility**: ARIA labels and semantic roles required
 - **Validation**: Type-safe filters and SQL parameterization
 
-## 🎯 Component Scope
+## Component Scope
 
 ### Chat Components
-- `components/dashboard/chat/chat-dock.tsx`
-- `components/dashboard/chat/chat-window.tsx`
-- **API Endpoint**: `POST /api/v1/dashboard/chat/process` (streaming NDJSON chat processing)
+- `components/dashboard/chat/chat-dock.tsx`, `components/dashboard/chat/chat-window.tsx`
+- **API Endpoint**: `POST /api/v1/ai/chat` (streaming NDJSON chat processing)
 
 ### Table Components
-- `components/dashboard/table/*.tsx`
-- `lib/dashboard/entity/*.ts*`
+- `components/dashboard/entities/**/*.tsx` - Entity grid components
+- `lib/entities/**/*.ts` - Entity service layer
 
-## 🛡️ Guardrails & Boundaries
+## Guardrails & Boundaries
 
 ### Client/Server Separation
-```typescript
-// ✅ CORRECT: Client components use public barrels
-import { DashboardTable } from '@/components/dashboard';
-import { useDashboardData } from '@/lib/dashboard';
-
-// ✅ CORRECT: Server components use server barrels
-import { EntityListPage } from '@/components/dashboard/server';
-import { getEntityData } from '@/lib/dashboard/entity/server';
-
-// ❌ INCORRECT: Server-only imports in client components
-// import { getClickhouse } from '@/lib/integrations/clickhouse/server';
-```
+- ✅ Client components use public barrels: `@/components/dashboard`, `@/lib/dashboard`
+- ✅ Server components use service layer: `@/components/dashboard/entities`, `@/lib/entities`
+- ❌ Server-only imports forbidden in client components
 
 ### Import Boundaries
 - **Client**: `@/components/dashboard`, `@/lib/dashboard`
-- **Server**: `@/components/dashboard/server`, `@/lib/dashboard/entity/*`
-- **No self-barrels**: Within `components/dashboard/**`, prefer relative/leaf imports rather than importing back through the dashboard barrel
+- **Server**: `@/components/dashboard/entities`, `@/lib/entities`
+- **No self-barrels**: Within `components/dashboard/**`, prefer relative/leaf imports
 
 ### Styling Requirements
 - Use only token/variant-based styling; no raw colors
 - Follow design system variant patterns
 - Maintain consistent theming with route groups
 
-## 💬 Chat Components
+## Chat Components
 
-### ChatWindow Props (Additive)
-```typescript
-interface ChatWindowProps {
-  // Optional props for backward compatibility
-  showHeader?: boolean;           // Shows compact header bar
-  headerTitle?: string;           // Header title text
-  onToggleContext?: () => void;   // Callback for context toggle
-  onSuggestionClick?: (label: string) => void; // Fired when suggestion chip clicked
-  showTypingLine?: boolean;       // Subtle typing line below the list
-}
-```
+### Chat Navigation & State Management
+- Sidebar "Chat" link adds `?new=true` query parameter to `/dashboard/chat`
+- `ChatWindow` detects `?new=true` and calls `clearChat()` from `useChat` hook
+- `clearChat()` clears both React state and localStorage
 
-### ChatDock Props (Additive)
-```typescript
-interface ChatDockProps {
-  // Same optional props as ChatWindow
-  showHeader?: boolean;
-  headerTitle?: string;
-  onToggleContext?: () => void;
-  onSuggestionClick?: (label: string) => void;
-  showTypingLine?: boolean;
-}
-```
+For detailed chat implementation patterns, props, and accessibility, see [extended documentation](../../docs/ai/rules/dashboard-components.md#chat-implementation-details).
 
-### Chat Accessibility
-```typescript
-// ✅ CORRECT: Proper ARIA implementation
-<ChatDock 
-  role="complementary" 
-  aria-label="Data assistant"
->
-  <input 
-    aria-label="Chat message input"
-    placeholder="Ask about your data..."
-  />
-  <button aria-label="Send message">Send</button>
-</ChatDock>
-```
-
-## 📊 Table Components
+## Table Components
 
 ### Filter Mapping
-```typescript
-// ✅ CORRECT: Type-safe filter mapping
-interface FilterMapping {
-  numberRange: { op: 'between', value: [number, number] };
-  dateRange: { op: 'between', value: [Date, Date] };
-  boolean: { op: 'bool', value: boolean };
-  // Others default to 'eq'
-  [key: string]: { op: string, value: any };
-}
-
-// ❌ INCORRECT: SQL string interpolation
-// const sql = `SELECT * FROM table WHERE status = '${status}'`;
-
-// ✅ CORRECT: Parameterized queries
-const sql = 'SELECT * FROM table WHERE status = ?';
-const params = [status];
-```
+- **MUST** use type-safe filter mapping
+- **MUST** use parameterized queries (never SQL string interpolation)
 
 ### Column Renderers
-```typescript
-// ✅ CORRECT: Client-side renderer attachment
-const columns = [
-  {
-    key: 'status',
-    title: 'Status',
-    meta: {
-      renderer: (value: string) => <StatusBadge status={value} />
-    }
-  }
-];
+- **MUST** attach renderers client-side
+- **MUST NOT** pass functions from server to client
 
-// ❌ INCORRECT: Passing functions from server to client
-// const serverFunction = () => { /* server logic */ };
-```
+For detailed table component patterns, see [extended documentation](../../docs/ai/rules/dashboard-components.md#table-components---extended-patterns).
 
-### Entity Data Helpers
-```typescript
-// ✅ CORRECT: Server-side entity helpers
-import { getEntityData } from '@/lib/dashboard/entity/server';
+## Testing & Validation
 
-export async function EntityPage({ entity }: { entity: string }) {
-  const data = await getEntityData(entity);
-  return <EntityListPage data={data} />;
-}
-```
+For component testing examples and validation commands, see [extended documentation](../../docs/ai/rules/dashboard-components.md#testing--validation).
 
-## 🧪 Testing & Validation
+## Documentation Requirements
 
-### Component Testing
-```typescript
-// Test chat components
-import { render, screen } from '@testing-library/react';
-import { ChatWindow } from '@/components/dashboard/chat/chat-window';
+For component and API documentation requirements, see [extended documentation](../../docs/ai/rules/dashboard-components.md#documentation-requirements).
 
-test('chat window renders with optional props', () => {
-  render(
-    <ChatWindow 
-      showHeader={true}
-      headerTitle="Test Chat"
-      onToggleContext={jest.fn()}
-    />
-  );
-  
-  expect(screen.getByText('Test Chat')).toBeInTheDocument();
-});
-```
+## Rules
 
-### Table Testing
-```typescript
-// Test table components
-import { DashboardTable } from '@/components/dashboard';
-
-test('table respects filter boundaries', () => {
-  const filters = {
-    status: { op: 'eq', value: 'active' },
-    dateRange: { op: 'between', value: [new Date(), new Date()] }
-  };
-  
-  render(<DashboardTable filters={filters} />);
-  // Test filter application
-});
-```
-
-### Validation Commands
-```bash
-# Before commit validation
-pnpm typecheck
-pnpm lint
-pnpm vitest run tests/components --run
-pnpm validate:cursor-rules
-```
-
-## 📚 Documentation Requirements
-
-### Component Documentation
-- Update `components/README.md` entries for ChatDock and ChatWindow to reflect props
-- Keep a brief style guide in `docs/design/chat-style-guide.md`
-- Document filter mapping patterns for tables
-- Include accessibility guidelines
-
-### API Documentation
-- Document chat processing endpoint: `POST /api/v1/dashboard/chat/process`
-- Include streaming NDJSON format specifications
-- Document entity data helper functions
+- **MUST** respect runtime boundaries (no server-only imports in client components)
+- **MUST** use public barrels: `@/components/dashboard` (client), `@/components/dashboard/server` (server)
+- **MUST** use token/variant-based styling (no raw colors)
+- **MUST** keep props additive and optional (backward compatible)
+- **MUST** provide ARIA labels and semantic roles
+- **MUST** use type-safe filters and SQL parameterization
 
 ## Enforcement
 
-### AST-Grep Rules
-```yaml
-# Detect server imports in client components
-rule: |
-  import $X from '@/lib/integrations/clickhouse/server$Y'
-  where:
-    regex: "^components/dashboard/"
+### ESLint Rules (Planned)
+The following ESLint rules are planned for future implementation:
+- `@corso/dashboard-boundaries`: Enforce client/server boundaries
+- `@corso/no-sql-interpolation`: Prevent SQL injection
+- `@corso/dashboard-accessibility`: Enforce accessibility
 
-# Detect SQL string interpolation
-rule: |
-  const $SQL = `SELECT.*\$\{.*\}`
-  where:
-    regex: "^components/dashboard/|^lib/dashboard/"
-```
+**Note**: These rules are not yet implemented in `eslint-plugin-corso`. Enforcement is currently handled via existing ESLint rules (e.g., `no-server-in-client`, `dashboard-import-guard`) and code review.
 
-### ESLint Integration
-```javascript
-// .eslintrc.mjs
-{
-  rules: {
-    '@corso/dashboard-boundaries': 'error',
-    '@corso/no-sql-interpolation': 'error',
-    '@corso/dashboard-accessibility': 'error'
-  }
-}
-```
+For AST-Grep rules, see [extended documentation](../../docs/ai/rules/dashboard-components.md).
 
-### Quality Gates
-- **Development**: `pnpm typecheck`
+### Quality gates
+
+See the canonical command set in
+[ai-agent-development-environment.mdc](mdc:.cursor/rules/ai-agent-development-environment.mdc#quality-gates-and-validation-commands).
+
+### Domain-Specific Dashboard Commands
 - **Component Tests**: `pnpm test:components`
 - **Boundary Validation**: `pnpm validate:runtime-boundaries`
 - **Dashboard Specific**: `pnpm validate:dashboard-components`
 
-## Windows-First Tips
+## Windows-first tips
 
-- Use `pnpm vitest run tests/components --run` for dashboard component tests
-- Prefer explicit import paths over barrel imports within dashboard components
-- Test chat and table components separately for faster feedback
-- Use `git --no-pager log --oneline --grep="dashboard"` to track dashboard changes
+See the canonical guidance in
+[ai-agent-development-environment.mdc](mdc:.cursor/rules/ai-agent-development-environment.mdc#windows-first-tips).
 
 ## Related Rules
 

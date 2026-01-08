@@ -3,7 +3,7 @@ rule_id: code-quality-standards
 title: Quality Assurance & Testing Standards (Consolidated)
 owners:
   - platform@corso.io
-last_reviewed: "2025-10-13"
+last_reviewed: "2025-12-15"
 status: active
 domains: [quality, testing, tools]
 enforcement: advise
@@ -11,6 +11,8 @@ related_rules:
   - ai-agent-development-environment
 alwaysApply: false
 globs: ["**/*.{ts,tsx,js,jsx}"]
+summary: Strict TypeScript, comprehensive testing (85%+ coverage), ESLint-based quality gates, and clean code standards.
+# Reviewed in Dec 2025 - Vitest confirmed, no Jest references, testing standards current
 ---
 
 # 🔍 Quality Assurance & Testing Standards (Consolidated)
@@ -165,17 +167,10 @@ pnpm validate:dedupe          # Code duplication analysis
 pnpm validate:cursor-rules    # Cursor rule validation
 ```
 
-## ✅ Quality Gates
-```bash
-# Development (fast feedback)
-pnpm typecheck
+## Quality gates
 
-# Full validation (local) - 98% ESLint-based
-pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm quality:local
-
-# CI validation
-pnpm typecheck && pnpm lint && pnpm test && pnpm validate:cursor-rules
-```
+See the canonical command set in
+[ai-agent-development-environment.mdc](mdc:.cursor/rules/ai-agent-development-environment.mdc#quality-gates-and-validation-commands).
 
 ## Tooling & Automation
 - Keep generated artifacts out of source analysis and transforms.
@@ -184,12 +179,12 @@ pnpm typecheck && pnpm lint && pnpm test && pnpm validate:cursor-rules
 
 ## Windows-first tips
 
-- Use `git --no-pager` in examples to avoid pagers.
-- Prefer file-scoped lint/format while iterating to keep output manageable on Windows terminals.
+See the canonical guidance in
+[ai-agent-development-environment.mdc](mdc:.cursor/rules/ai-agent-development-environment.mdc#windows-first-tips).
 
 ### Fast single-file fixes
 
-- Prefer file-scoped commands when only one file is affected:
+Prefer file-scoped commands when only one file is affected:
 - Lint (check one file): `pnpm exec eslint path/to/file.{ts,tsx}`
 - Lint (auto-fix one file): `pnpm exec eslint --fix path/to/file.{ts,tsx}`
 - Format one file: `pnpm exec prettier --write path/to/file`

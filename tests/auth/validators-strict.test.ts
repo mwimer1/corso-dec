@@ -1,3 +1,4 @@
+import { EntityQueryRequestSchema } from "@/lib/validators/entityQuery";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
@@ -6,13 +7,6 @@ const passwordResetSchema = z.object({
   email: z.string().email(),
   new_password: z.string().min(1),
   confirm_password: z.string().min(1),
-}).strict();
-
-const ContactSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(100, 'Name is too long'),
-  email: z.string().email('Invalid email format'),
-  company: z.string().optional(),
-  message: z.string().min(10, 'Message must be at least 10 characters').max(2000, 'Message is too long'),
 }).strict();
 
 describe("strict validation", () => {
@@ -35,39 +29,29 @@ describe("strict validation", () => {
     expect(extraFieldResult.error?.issues[0]?.code).toBe("unrecognized_keys");
   });
 
-  it("rejects extra fields in Contact schema", () => {
+
+  it("rejects extra fields in EntityQueryRequestSchema (API request body)", () => {
     const validInput = {
-      name: "Test User",
-      email: "test@example.com",
-      company: "Test Company",
-      message: "This is a test message",
+      page: { index: 0, size: 50 },
+      filter: { status: "active" },
+      sort: [{ field: "name", dir: "asc" as const }],
     };
     const extraFieldInput = {
       ...validInput,
       extraField: "should not be allowed",
+      page: {
+        ...validInput.page,
+        extraPageField: "also not allowed",
+      },
     };
 
-    const validResult = ContactSchema.safeParse(validInput);
-    const extraFieldResult = ContactSchema.safeParse(extraFieldInput);
+    const validResult = EntityQueryRequestSchema.safeParse(validInput);
+    const extraFieldResult = EntityQueryRequestSchema.safeParse(extraFieldInput);
 
     expect(validResult.success).toBe(true);
     expect(extraFieldResult.success).toBe(false);
-    expect(extraFieldResult.error?.issues[0]?.code).toBe("unrecognized_keys");
-  });
-
-  it("accepts valid inputs without extra fields", () => {
-    const validInput = {
-      name: "Test User",
-      email: "test@example.com",
-      company: "Test Company",
-      message: "This is a test message",
-    };
-
-    const result = ContactSchema.safeParse(validInput);
-    expect(result.success).toBe(true);
-    if (result.success) {
-      expect(result.data.name).toBe("Test User");
-      expect(result.data.email).toBe("test@example.com");
+    if (!extraFieldResult.success) {
+      expect(extraFieldResult.error.issues.some(issue => issue.code === "unrecognized_keys")).toBe(true);
     }
   });
 });

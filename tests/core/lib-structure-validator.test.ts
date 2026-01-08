@@ -3,39 +3,32 @@
  * Ensures domain-driven architecture rules are enforced
  */
 
-import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
-import { join, resolve } from 'path';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'fs';
+import { tmpdir } from 'os';
+import { join } from 'path';
+import type { MockInstance } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { LibStructureValidator } from '../../scripts/validation/lib-structure';
 
 describe('LibStructureValidator', () => {
   let validator: LibStructureValidator;
   let testLibPath: string;
-  let originalCwd: string;
+  let cwdSpy: MockInstance<() => string>;
 
   beforeEach(() => {
-    // Create a temporary lib directory for testing
-    testLibPath = resolve('__test_lib_structure__');
-    if (!existsSync(testLibPath)) {
-      mkdirSync(testLibPath, { recursive: true });
-    }
+    // Create a temp directory outside the repo so tests never leave artifacts behind
+    testLibPath = mkdtempSync(join(tmpdir(), 'corso-lib-structure-'));
+    mkdirSync(testLibPath, { recursive: true });
 
-    // Mock process.cwd to return our test directory
-    originalCwd = process.cwd();
-    Object.defineProperty(process, 'cwd', {
-      value: () => originalCwd,
-      writable: true
-    });
+    // Mock process.cwd() to return our temp test root
+    cwdSpy = vi.spyOn(process, 'cwd').mockReturnValue(testLibPath);
 
     validator = new LibStructureValidator(false);
   });
 
   afterEach(() => {
-    // Restore original cwd
-    Object.defineProperty(process, 'cwd', {
-      value: () => originalCwd,
-      writable: true
-    });
+    // Restore original cwd implementation
+    cwdSpy?.mockRestore();
 
     // Clean up test directory
     if (existsSync(testLibPath)) {

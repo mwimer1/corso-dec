@@ -1,0 +1,22 @@
+---
+title: "{{directory}}"
+last_updated: "{{last_updated}}"
+category: "automation"
+---
+
+# Repository Scripts & Docs
+
+This README is generated from a single template (`README.scripts.hbs`).
+
+- Directory: `{{directory}}`
+- Last updated: `{{last_updated}}`
+
+> Edit the template or the generator context to change all READMEs consistently.
+
+{{#if scripts}}
+## Scripts in `{{directory}}`
+
+{{#each scripts}}
+- **{{this.name}}** – {{this.description}}
+{{/each}}
+{{/if}}

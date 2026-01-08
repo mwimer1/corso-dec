@@ -5,7 +5,7 @@
  */
 
 import type { Row } from '../../shared/core/entity/types';
-import type { ISODateString } from '../../shared/utils/dates/types';
+import type { ISODateString } from '../../shared/dates/types';
 
 /* ──────────────────────────────────────────────────────────────────── */
 /* Chat message types                                                  */

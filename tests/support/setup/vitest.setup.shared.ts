@@ -1,3 +1,9 @@
+// Set environment variable for Enterprise features (tests require SSRM)
+// MUST be set at the very top before any imports that might trigger publicEnv initialization
+if (!process.env.NEXT_PUBLIC_AGGRID_ENTERPRISE) {
+  process.env.NEXT_PUBLIC_AGGRID_ENTERPRISE = '1';
+}
+
 import { afterAll, beforeAll, vi } from "vitest";
 
 // Ensure deterministic test env
@@ -18,7 +24,7 @@ if (typeof fetch === "undefined") {
 }
 
 // Register AG Grid modules for tests (required for AG Grid v34+)
-import { ensureAgGridRegistered } from '../../../lib/vendors/ag-grid';
+import { ensureAgGridRegistered } from '../../../lib/vendors/ag-grid.client';
 ensureAgGridRegistered();
 
 // Stub server-only side-effect module
@@ -37,11 +43,15 @@ vi.mock('next/navigation', () => {
   };
 });
 
-// next/headers minimal stub
-vi.mock('next/headers', () => ({
-  headers: () => new Headers(),
-  cookies: () => ({ get: (_: string) => undefined, set: () => {}, delete: () => {}, getAll: () => [] }),
-}));
+// next/headers mock - imported from centralized mock utility
+// This ensures the mock is registered early and consistently
+// Use relative import for reliability in setup files (avoids path alias resolution issues)
+import '../mocks/next-headers';
+
+// Clerk auth mock - imported from centralized mock utility
+// This ensures the mock is registered early and consistently
+// Use relative import for reliability in setup files (avoids path alias resolution issues)
+import '../mocks/clerk';
 
 // Sentry minimal stub
 vi.mock('@sentry/nextjs', () => ({ init: vi.fn(), captureException: vi.fn(), captureMessage: vi.fn() }));
@@ -75,6 +85,7 @@ vi.mock('@/lib/shared/constants/links', () => ({
 vi.mock('@/styles', () => ({
   cn: (...args: any[]) => args.filter(Boolean).join(' '),
   iconVariants: (_opts: any) => '',
+  tv: (_opts?: any) => () => '', // Mock tv (tailwind-variants factory) - returns a function that returns empty string
 }));
 
 vi.mock('@/styles/ui', async (importOriginal) => {

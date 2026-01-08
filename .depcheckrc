@@ -1,7 +1,0 @@
-{
-  "ignores": [
-    "@shared/*",
-    "types",
-    "@supabase/postgrest-js"
-  ]
-} 

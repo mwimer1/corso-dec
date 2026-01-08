@@ -1,0 +1,111 @@
+﻿{
+  "version": 1,
+  "description": "Project-specific commands for Corso development workflows",
+  "commands": [
+    {
+      "name": "Quality Gates (Full)",
+      "command": "pnpm typecheck && pnpm lint && pnpm test && pnpm validate:cursor-rules",
+      "description": "Run all quality gates: typecheck, lint, test, and cursor rules validation",
+      "category": "Quality",
+      "priority": "high"
+    },
+    {
+      "name": "Quick TypeCheck",
+      "command": "pnpm typecheck",
+      "description": "Fast TypeScript validation for quick feedback",
+      "category": "Development",
+      "priority": "high"
+    },
+    {
+      "name": "Full Setup",
+      "command": "pnpm install && pnpm run verify:ai-tools && pnpm run setup:branch && pnpm validate:env",
+      "description": "Complete project setup: install, verify tools, setup branch, validate env",
+      "category": "Setup",
+      "priority": "high"
+    },
+    {
+      "name": "OpenAPI Generate & Validate",
+      "command": "pnpm openapi:gen && pnpm openapi:rbac:check",
+      "description": "Generate OpenAPI spec and validate RBAC compliance",
+      "category": "API",
+      "priority": "high"
+    },
+    {
+      "name": "Start Dev Server",
+      "command": "pnpm dev",
+      "description": "Start Next.js development server (predev hook cleans ports automatically)",
+      "category": "Development",
+      "priority": "high"
+    },
+    {
+      "name": "Pre-Commit Checks",
+      "command": "pnpm validate:package && pnpm validate:env && pnpm typecheck && pnpm lint",
+      "description": "Run pre-commit validation checks (mirrors husky pre-commit hook)",
+      "category": "Quality",
+      "priority": "high"
+    },
+    {
+      "name": "Quality: Local (Full)",
+      "command": "pnpm quality:local",
+      "description": "Comprehensive local quality gates including bundle size and AST-Grep",
+      "category": "Quality",
+      "priority": "high"
+    },
+    {
+      "name": "Validate Runtime Boundaries",
+      "command": "pnpm validate:runtime-boundaries",
+      "description": "Validate server/Edge import boundaries",
+      "category": "Quality",
+      "priority": "high"
+    },
+    {
+      "name": "Validate Cursor Rules",
+      "command": "pnpm validate:cursor-rules",
+      "description": "Validate Cursor AI rules compliance",
+      "category": "Quality",
+      "priority": "high"
+    },
+    {
+      "name": "Clean & Rebuild",
+      "command": "pnpm typecheck:clean && pnpm build",
+      "description": "Clean TypeScript cache and rebuild project",
+      "category": "Build",
+      "priority": "high"
+    },
+    {
+      "name": "Lint & Auto-Fix",
+      "command": "pnpm lint:fix",
+      "description": "Run ESLint with auto-fix enabled",
+      "category": "Development",
+      "priority": "medium"
+    },
+    {
+      "name": "Run Tests",
+      "command": "pnpm test",
+      "description": "Run Vitest test suite",
+      "category": "Testing",
+      "priority": "medium"
+    },
+    {
+      "name": "Security Tests",
+      "command": "pnpm test:security",
+      "description": "Run security test suite",
+      "category": "Testing",
+      "priority": "medium"
+    },
+    {
+      "name": "Validate Documentation",
+      "command": "pnpm docs:validate",
+      "description": "Validate documentation links and structure",
+      "category": "Documentation",
+      "priority": "medium"
+    },
+    {
+      "name": "AST-Grep Scan",
+      "command": "pnpm ast-grep:scan",
+      "description": "Run AST-Grep pattern validation",
+      "category": "Quality",
+      "priority": "medium"
+    }
+  ]
+}

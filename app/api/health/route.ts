@@ -1,29 +1,35 @@
 // Canonical health endpoint - Edge runtime for fast responses
+/** @knipignore */
 export const runtime = 'edge';
+/** @knipignore */
 export const dynamic = 'force-dynamic';
+/** @knipignore */
 export const revalidate = 0;
 
-import { getEnvEdge, http } from '@/lib/api';
+import { getEnvEdge, http } from '@/lib/api/edge';
 
+/** @knipignore */
 export async function GET(_req: Request) {
   const env = getEnvEdge();
 
   return http.ok({
     status: 'ok',
     timestamp: new Date().toISOString(),
-    uptime: typeof process !== 'undefined' && process.uptime ? Math.floor(process.uptime()) : null,
+    uptime: null, // Not available in Edge runtime
     version: '1.0.0', // Use hardcoded version for Edge runtime
-    nodeVersion: typeof process !== 'undefined' && process.version || 'unknown',
+    nodeVersion: null, // Not available in Edge runtime
     environment: env.NODE_ENV || 'development',
-    platform: typeof process !== 'undefined' && process.platform || 'unknown',
-    arch: typeof process !== 'undefined' && process.arch || 'unknown',
+    platform: null, // Not available in Edge runtime
+    arch: null, // Not available in Edge runtime
   });
 }
 
+/** @knipignore */
 export async function HEAD() {
   return http.noContent();
 }
 
+/** @knipignore */
 export async function OPTIONS() {
   return http.noContent();
 }

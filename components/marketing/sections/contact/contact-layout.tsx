@@ -1,6 +1,6 @@
-import { SectionHeader } from "@/components/ui/patterns";
+import { SectionHeader } from "@/components/ui/molecules/section-header";
 import { cn } from "@/styles";
-import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
+import { containerMaxWidthVariants } from "@/styles/ui/shared";
 import * as React from "react";
 
 interface ContactLayoutProps extends React.HTMLAttributes<HTMLDivElement> {

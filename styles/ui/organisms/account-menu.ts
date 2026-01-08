@@ -1,5 +1,5 @@
 // styles/organisms/account-menu.ts
-import { tv, type VariantProps } from '@/styles/utils';
+import { tv, type VariantProps } from '@/styles';
 
 const accountMenuVariants = tv({
   base: 'flex items-center',

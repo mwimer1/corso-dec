@@ -16,6 +16,35 @@ import { Project } from "ts-morph";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, "../..");
+
+// Check for help flag first
+if (process.argv.includes('--help') || process.argv.includes('-h')) {
+  console.log(`
+Purge Unused Styles
+
+Purges now-unreferenced style source files after trimming barrels.
+Strategy:
+- Compare *.bak vs current barrels to find module specifiers removed entirely
+- Resolve to source file paths and delete if no direct imports exist
+
+Usage:
+  pnpm cleanup:styles:purge [options]
+
+Options:
+  --write                   Delete unused style files
+
+Examples:
+  pnpm cleanup:styles:purge           # Dry-run: show what would be deleted
+  pnpm cleanup:styles:purge --write    # Delete unused style files
+
+Safety:
+  - Default mode is dry-run (no deletions)
+  - --write required to delete files
+  - Only deletes files that are fully unreferenced
+`);
+  process.exit(0);
+}
+
 const write = process.argv.includes("--write");
 
 const TARGET_BARRELS = [
@@ -43,7 +72,7 @@ function resolveModuleToFile(barrelAbs: string, moduleSpecifier: string) {
 
 function anyDirectImports(moduleRelFromStylesUi: string) {
   const importNeedle = `@/styles/ui/${moduleRelFromStylesUi.replace(/^\.\\\//, "")}`;
-  const files = fg.sync(["{app,components,lib,hooks,actions,contexts,tools,scripts}/**/*.{ts,tsx}"], {
+  const files = fg.sync(["{app,components,lib,actions,tools,scripts}/**/*.{ts,tsx}"], {
     cwd: repoRoot,
     dot: false,
     ignore: ["**/node_modules/**", "**/.next/**", "**/dist/**", "**/build/**"],

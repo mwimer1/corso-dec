@@ -22,7 +22,7 @@ export function InsightsNavbar({
   showBreadcrumbs: _showBreadcrumbs = false,
   className,
   ...props
-}: InsightsNavbarProps): JSX.Element {
+}: InsightsNavbarProps): React.ReactElement {
   const navItems = getInsightsNavItems(items);
 
   return (
@@ -36,5 +36,3 @@ export function InsightsNavbar({
     />
   );
 }
-
-export default InsightsNavbar;

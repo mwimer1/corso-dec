@@ -2,7 +2,8 @@
 // scripts/quality-gates-local.ts
 // Local simulation of critical CI checks for fast feedback.
 
-import { spawnSync } from 'node:child_process';
+import { execa } from 'execa';
+import pLimit from 'p-limit';
 import { logger } from '../utils/logger';
 
 interface QualityCheck {
@@ -44,35 +45,8 @@ const checks: QualityCheck[] = [
   },
   {
     name: 'README Freshness Check',
-    command: 'node',
-    args: ['-e', `
-      const fs = require('fs');
-      const path = require('path');
-      const glob = require('glob');
-
-      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-      const readmes = glob.sync('**/README.md', { ignore: 'node_modules/**' });
-      let staleCount = 0;
-
-      readmes.forEach(file => {
-        const content = fs.readFileSync(file, 'utf8');
-        const lastUpdatedMatch = content.match(/last_updated:\\s*['"]?(\\d{4}-\\d{2}-\\d{2})['"]?/);
-        if (lastUpdatedMatch) {
-          const lastUpdated = new Date(lastUpdatedMatch[1]);
-          if (lastUpdated < thirtyDaysAgo) {
-            console.log('⚠️  Stale README:', file, 'last updated:', lastUpdatedMatch[1]);
-            staleCount++;
-          }
-        }
-      });
-
-      if (staleCount > 0) {
-        console.error('Found', staleCount, 'stale README files (>30 days old)');
-        process.exit(1);
-      } else {
-        console.log('✅ All READMEs are fresh');
-      }
-    `],
+    command: 'pnpm',
+    args: ['exec', 'tsx', 'scripts/maintenance/check-readme-freshness.ts'],
     required: false,
     description: 'Checks for READMEs older than 30 days.',
   },
@@ -99,25 +73,39 @@ const checks: QualityCheck[] = [
   },
 ];
 
-function runCheck(check: QualityCheck): { status: 'passed' | 'failed'; duration: number } {
+async function runCheck(check: QualityCheck): Promise<{ status: 'passed' | 'failed'; duration: number }> {
   const startTime = Date.now();
   logger.info(`Running: ${check.name}...`);
 
   try {
-    const result = spawnSync(check.command, check.args, {
-      stdio: 'pipe',
-      encoding: 'utf8'
+    const result = await execa(check.command, check.args, {
+      cwd: process.cwd(),
+      preferLocal: true, // Find repo-local bins (pnpm, tsx, etc.)
+      stdio: 'pipe', // Capture output for error reporting
+      reject: false, // Don't throw on non-zero exit
     });
 
     const duration = Date.now() - startTime;
 
-    if (result.status === 0) {
+    if (result.exitCode === 0) {
       logger.info(`✅ Passed: ${check.name} (${duration}ms)`);
       return { status: 'passed', duration };
     } else {
       logger.error(`❌ Failed: ${check.name} (${duration}ms)`);
+      if (result.stdout) {
+        // Show last 50 lines of output for context
+        const lines = result.stdout.split('\n');
+        const relevant = lines.slice(-50).join('\n');
+        console.error('STDOUT (last 50 lines):', relevant);
+      }
       if (result.stderr) {
-        console.error(result.stderr);
+        // Show last 50 lines of stderr
+        const lines = result.stderr.split('\n');
+        const relevant = lines.slice(-50).join('\n');
+        console.error('STDERR (last 50 lines):', relevant);
+      }
+      if (!result.stdout && !result.stderr) {
+        console.error(`Command failed with exit code ${result.exitCode ?? 'unknown'}`);
       }
       return { status: 'failed', duration };
     }
@@ -131,17 +119,41 @@ function runCheck(check: QualityCheck): { status: 'passed' | 'failed'; duration:
   }
 }
 
-function main() {
+async function main() {
   logger.info('Running Local Quality Gates (CI Simulation)...');
-  const results = [];
+  const results: Array<QualityCheck & { status: 'passed' | 'failed'; duration: number }> = [];
   let failedRequiredChecks = 0;
 
-  for (const check of checks) {
-    const result = runCheck(check);
+  // Separate required and optional checks
+  const requiredChecks = checks.filter(c => c.required);
+  const optionalChecks = checks.filter(c => !c.required);
+
+  // Run required checks sequentially (fail fast)
+  logger.info(`Running ${requiredChecks.length} required check(s) sequentially...`);
+  for (const check of requiredChecks) {
+    const result = await runCheck(check);
     results.push({ ...check, ...result });
-    if (result.status === 'failed' && check.required) {
+    if (result.status === 'failed') {
       failedRequiredChecks++;
+      // Continue running to collect all failures, but we'll exit with error at end
     }
+  }
+
+  // Run optional checks in parallel (with concurrency limit)
+  if (optionalChecks.length > 0) {
+    logger.info(`Running ${optionalChecks.length} optional check(s) in parallel (max 4 concurrent)...`);
+    const limit = pLimit(4); // Max 4 concurrent checks
+    
+    const optionalResults = await Promise.all(
+      optionalChecks.map(check => 
+        limit(async () => {
+          const result = await runCheck(check);
+          return { ...check, ...result };
+        })
+      )
+    );
+    
+    results.push(...optionalResults);
   }
 
   logger.info('--- Quality Gates Summary ---');
@@ -150,7 +162,7 @@ function main() {
 
   if (failedRequiredChecks > 0) {
     logger.error(`🔥 ${failedRequiredChecks} required check(s) failed.`);
-    process.exit(1);
+    process.exitCode = 1;
   } else {
     logger.info('✅ All required quality gates passed!');
   }

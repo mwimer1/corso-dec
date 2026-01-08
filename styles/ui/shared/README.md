@@ -1,14 +1,36 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+title: "Shared"
+last_updated: "2026-01-07"
 category: "styling"
+status: "active"
+description: "Styling system for styles, using Tailwind CSS and design tokens. Located in ui/shared/."
 ---
-# Repository Scripts & Docs
+# Shared
 
-This README is generated from a single template (`README.scripts.hbs`).
+The shared directory contains TypeScript styling utilities and variant definitions for the Corso platform.
 
-- Directory: `styles/ui/shared`
-- Last updated: `2025-10-29`
+All files in this directory are TypeScript variant utilities that can be imported and used across components. For component-specific CSS patterns, use CSS modules colocated with components.
 
-> Edit the template or the generator context to change all READMEs consistently.
+## Directory Structure
+
+```
+styles/ui/shared/
+container-base.ts
+container-helpers.ts
+focus-ring.ts
+index.ts
+navbar-sizes.ts
+surface-interactive.ts
+typography-variants.ts
+underline-accent.ts
+```
+
+## Usage
+
+Import shared variants and utilities:
+
+```typescript
+import { containerVariants } from '@/styles/ui/shared/container-base';
+import { headingVariants } from '@/styles/ui/shared/typography-variants';
+```
 

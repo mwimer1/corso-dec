@@ -1,20 +1,22 @@
 "use client";
 
 import { Button } from "@/components/ui/atoms";
-import { LinkTrack } from "@/components/ui/molecules/link-track";
+import { LinkTrack } from "@/components/ui/molecules";
 import { APP_LINKS } from '@/lib/shared';
 import { cn } from "@/styles";
 import { footerCTA } from "@/styles/ui/organisms";
 import { navbarStyleVariants } from "@/styles/ui/organisms/navbar-variants";
-import { containerMaxWidthVariants } from "@/styles/ui/shared/container-base";
+import { containerMaxWidthVariants, containerWithPaddingVariants } from "@/styles/ui/shared";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
 type Tone = 'dark' | 'blue';
 type Layout = 'center' | 'split';
+type Size = 'default' | 'tall';
 
 type FooterCTAProps = ComponentPropsWithoutRef<"section"> & {
   tone?: Tone;
   layout?: Layout;
+  size?: Size;
   fullBleed?: boolean;
   illustrationSlot?: ReactNode;
   /** Optional slot to fully override the default CTA buttons */
@@ -30,6 +32,7 @@ export const FooterCTA: React.FC<FooterCTAProps> = (props) => {
     ctaSlot,
     tone = 'blue',
     layout = 'center',
+    size = 'default',
     fullBleed = true,
     title = 'Ready to start unlocking hidden insights?',
     description = 'Discover why leading builders, suppliers, and investors rely on Corso for permit-driven intelligence.',
@@ -38,6 +41,7 @@ export const FooterCTA: React.FC<FooterCTAProps> = (props) => {
 
   const isBlue = tone === 'blue';
   const isCenter = layout === 'center';
+  const isTall = size === 'tall';
 
   const variants = footerCTA({
     tone,
@@ -50,18 +54,28 @@ export const FooterCTA: React.FC<FooterCTAProps> = (props) => {
     className
   );
 
+  const blueInner = isTall
+    ? // Tall mode: scales smoothly on large screens (no weird "xl gets smaller" effect)
+      "py-[2.625rem] sm:py-[3.625rem] lg:py-[clamp(3.25rem,6.5vh,4.75rem)] text-center"
+    : // Default mode: clamp-based desktop padding (no xl shrink)
+      "py-[2.625rem] sm:py-[3.625rem] lg:py-[clamp(3.25rem,7vh,5.5rem)] text-center";
+
   const inner = cn(
-    containerMaxWidthVariants({ maxWidth: '7xl', centered: true, responsive: true }),
-    // Formatting-only change: reduce top/bottom padding and keep content vertically centered
-    isBlue
-      ? "py-[2.625rem] sm:py-[3.625rem] lg:py-[4.625rem] text-center"
-      : ""
+    containerWithPaddingVariants({ maxWidth: '7xl', padding: 'lg', centered: true }),
+    isBlue ? blueInner : ""
   );
+
+  const blueHeight = isBlue && isTall
+    ? "lg:min-h-[clamp(320px,34vh,420px)]"
+    : "";
 
   return (
     <section
       {...rest}
-      className={cn(sectionBase, isBlue ? 'flex-1 flex flex-col justify-center' : '')}
+      className={cn(
+        sectionBase,
+        isBlue ? cn('flex-1 flex flex-col justify-center', blueHeight) : ''
+      )}
       role="region"
       aria-labelledby="footer-cta-title"
     >
@@ -71,13 +85,13 @@ export const FooterCTA: React.FC<FooterCTAProps> = (props) => {
         <div className={cn(variants.glow())} aria-hidden />
       )}
 
-      <div className={cn("relative z-10 mx-auto max-w-6xl", inner)}>
+      <div className={cn("relative z-10", inner)}>
         <h2
           id="footer-cta-title"
           className={cn(
             "text-balance font-bold tracking-tight",
             // Slightly larger on wide screens
-            isBlue ? "text-white text-4xl sm:text-5xl lg:text-6xl leading-tight" : "text-background text-3xl sm:text-4xl"
+            isBlue ? "text-white text-4xl sm:text-5xl lg:text-5xl xl:text-6xl leading-tight" : "text-background text-3xl sm:text-4xl"
           )}
         >
           {title}

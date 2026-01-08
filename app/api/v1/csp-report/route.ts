@@ -1,12 +1,14 @@
 // app/api/v1/csp-report/route.ts
+/** @knipignore */
 export const runtime = 'edge';
+/** @knipignore */
 export const dynamic = 'force-dynamic';
+/** @knipignore */
 export const revalidate = 0;
 
-import { http, readJsonOnce, withErrorHandlingEdge as withErrorHandling, withRateLimitEdge as withRateLimit } from "@/lib/api";
-import { getEnvEdge } from '@/lib/api/edge';
-import * as httpHelpers from '@/lib/api/response/http';
-import { handleCors } from '@/lib/middleware/http/cors';
+import { getEnvEdge, http, readJsonOnce, withErrorHandlingEdge as withErrorHandling, withRateLimitEdge as withRateLimit } from "@/lib/api/edge";
+import { RATE_LIMIT_30_PER_MIN } from "@/lib/middleware";
+import { handleCors } from '@/lib/middleware/shared/cors';
 import {
     cspViolationBodySchema,
     legacyCspReportSchema,
@@ -15,7 +17,7 @@ import {
 } from "@/lib/validators/security/csp";
 
 const post = withErrorHandling(
-  withRateLimit((async (req: Request) => {
+  withRateLimit(async (req) => {
     const ct = (req.headers.get("content-type") ?? "").toLowerCase();
     let reports: CspViolation[] = [];
 
@@ -51,7 +53,7 @@ const post = withErrorHandling(
         .map((res) => res.data);
     }
     // Legacy (application/csp-report): { "csp-report": { ... } }
-    else if (ct.includes("application/csp-report") || (json && typeof json === "object" && "csp-report" in (json as any))) {
+    else if (ct.includes("application/csp-report") || (json && typeof json === "object" && json !== null && "csp-report" in json)) {
       const parsed = legacyCspReportSchema.safeParse(json);
       if (!parsed.success) return http.badRequest("Invalid CSP report", { code: "INVALID_CSP_REPORT" });
       reports = [parsed.data["csp-report"]];
@@ -119,7 +121,7 @@ const post = withErrorHandling(
     return http.noContent({
       headers: { 'Access-Control-Allow-Origin': '*' },
     });
-  }) as any, { windowMs: 60_000, maxRequests: 30 })
+  }, RATE_LIMIT_30_PER_MIN)
 );
 
 export const POST = post;
@@ -127,6 +129,6 @@ export const POST = post;
 // CORS preflight handler (Edge)
 export const OPTIONS = (req: Request) => {
   const res = handleCors(req);
-  return res ?? httpHelpers.noContent();
+  return res ?? http.noContent();
 };
 

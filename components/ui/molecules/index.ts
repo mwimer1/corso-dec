@@ -5,14 +5,10 @@
 export * from './auth-card';
 
 // ===== DATA DISPLAY =====
-// ===== DATA TABLE COMPONENTS =====
-// Core table UI components moved to dashboard/table directory
-// Import from @/components/dashboard/table instead
 
 
 // Removed unused component: basic-card
 // Removed unused component: EmptyState (main component)
-export * from './empty-state';
 // Removed unused component: info-panel
 
 // ===== DIALOGS & OVERLAYS =====
@@ -25,8 +21,7 @@ export * from './text-area';
 
 // ===== LAYOUT & STRUCTURE =====
 export * from './page-header';
-// Unified SectionHeader from patterns (supports both description and subtitle props)
-export { } from '../patterns/section-header';
+export * from './section-header';
 
 // ===== LOADING & SKELETONS =====
 export * from './loading-states';
@@ -46,24 +41,16 @@ export * from './pricing-card';
 // Removed: LottieAnimation component
 
 // ===== TABS =====
-// Tab switcher components (individual exports)
-export { TabSwitcher, type TabItem } from './tab-switcher/tab-switcher';
-// ===== TABS SYSTEM COMPONENTS =====
-// Advanced tab system with context management and accessibility
-
-// Legacy Tabs API pruned; TabSwitcher internals not exported
-
-// ===== USAGE NOTES =====
-// 1. Use TabsProvider + TabList + Tab + TabPanel for complex tab systems
-// 2. Use simple Tabs component for basic tab functionality
-// 3. All components include design system variants and full accessibility support
-
-
+// TabSwitcher has been moved to components/landing/sections/product-showcase/
+// (component-specific to ProductShowcase section)
 
 // ===== NAV ANALYTICS =====
 export * from './link-track';
 
 // ===== METRICS =====
 export * from './metric-card';
+
+// ===== READING PROGRESS =====
+export * from './reading-progress';
 
 

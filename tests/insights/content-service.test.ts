@@ -1,7 +1,20 @@
 import { getCategories, staticInsights } from '@/lib/marketing/server';
-import { describe, expect, it } from 'vitest';
+import { __resetContentSourceForTests } from '@/lib/marketing/insights/source';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 describe('content-service getCategories', () => {
+  beforeEach(() => {
+    // Disable mock CMS to use legacy adapter (which uses staticInsights)
+    process.env.CORSO_USE_MOCK_CMS = 'false';
+    // Reset cached source so environment change takes effect
+    __resetContentSourceForTests();
+  });
+
+  afterEach(() => {
+    delete process.env.CORSO_USE_MOCK_CMS;
+    __resetContentSourceForTests();
+  });
+
   it('returns categories from static fallback when no content dir present', async () => {
     const cats = await getCategories();
     // Collect expected slugs from staticInsights

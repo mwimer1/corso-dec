@@ -1,7 +1,9 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+title: "Architecture"
+description: "Documentation and resources for documentation functionality. Located in architecture/."
+last_updated: "2026-01-07"
 category: "documentation"
+status: "draft"
 ---
 # Runtime Boundaries
 
@@ -11,4 +13,3 @@ category: "documentation"
 - `@/lib/server/env` is the only allowed entry for server env. Never import `lib/shared/env/*`.
 - ESLint rules (migrated from AST-Grep) enforce these patterns via `@/eslint-plugin-corso`.
 - Remaining AST-Grep rules (~4 files) handle specialized patterns in `scripts/rules/ast-grep/`.
-

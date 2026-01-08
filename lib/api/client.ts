@@ -1,22 +1,55 @@
 // lib/api/client.ts
 
+/**
+ * Type guard to check if a value has a specific method.
+ */
+function hasMethod<T extends string>(
+  obj: unknown,
+  method: T
+): obj is Record<T, (...args: unknown[]) => unknown> {
+  return (
+    obj !== null &&
+    obj !== undefined &&
+    typeof obj === 'object' &&
+    method in obj &&
+    typeof (obj as Record<string, unknown>)[method] === 'function'
+  );
+}
+
+/**
+ * Type guard to check if a value has a headers property with a get method.
+ */
+function hasHeadersWithGet(obj: unknown): obj is { headers: { get: (name: string) => string | null } } {
+  return (
+    obj !== null &&
+    obj !== undefined &&
+    typeof obj === 'object' &&
+    'headers' in obj &&
+    obj.headers !== null &&
+    typeof obj.headers === 'object' &&
+    'get' in obj.headers &&
+    typeof (obj.headers as { get: unknown }).get === 'function'
+  );
+}
 
 async function parseJsonSafe(res: Response): Promise<unknown> {
-  const headersObj: any = (res as any)?.headers;
-  const contentType = typeof headersObj?.get === 'function' ? headersObj.get('content-type') || '' : '';
+  // Safely check for headers.get method
+  const contentType = hasHeadersWithGet(res) 
+    ? (res.headers.get('content-type') || '')
+    : '';
+    
   if (contentType.includes('application/json')) {
     try {
-      if (typeof (res as any)?.json === 'function') {
-        return await (res as any).json();
+      if (hasMethod(res, 'json')) {
+        return await res.json();
       }
     } catch {
       // fall through to text
     }
   }
   try {
-    if (typeof (res as any)?.text === 'function') {
-      const text = await (res as any).text();
-      return text;
+    if (hasMethod(res, 'text')) {
+      return await res.text();
     }
   } catch {
     // ignore
@@ -27,27 +60,68 @@ async function parseJsonSafe(res: Response): Promise<unknown> {
 // ApiHttpError removed - was unused per audit
 // Internal error handling kept for fetchJSON functions
 
+/**
+ * Type guard to check if an object has an 'error' property with code and message.
+ */
+function isErrorResponse(obj: unknown): obj is { error: { code?: unknown; message?: unknown } } {
+  return (
+    obj !== null &&
+    typeof obj === 'object' &&
+    'error' in obj &&
+    obj.error !== null &&
+    typeof obj.error === 'object'
+  );
+}
+
+/**
+ * Type guard to check if an object has a 'message' property.
+ */
+function hasMessage(obj: unknown): obj is { message: unknown } {
+  return (
+    obj !== null &&
+    typeof obj === 'object' &&
+    'message' in obj
+  );
+}
+
 async function handleApiError(res: Response): Promise<never> {
   const parsed = await parseJsonSafe(res);
-  const code = typeof parsed === 'object' && parsed && 'error' in (parsed as any) && (parsed as any).error?.code
-    ? String((parsed as any).error.code)
-    : ('HTTP_' + res.status);
-  const message =
-    (typeof parsed === 'object' && parsed && 'error' in (parsed as any) && (parsed as any).error?.message
-      ? String((parsed as any).error.message)
-      : typeof parsed === 'object' && parsed && (parsed as any).message
-        ? String((parsed as any).message)
-        : typeof parsed === 'string' && parsed
-          ? `${res.status} ${res.statusText || ''}: ${parsed.slice(0, 200)}`.trim()
-          : `Query failed with status ${res.status}`);
-  const requestId = (res as any)?.headers?.get?.('x-request-id') ?? undefined;
+  
+  // Extract error code
+  const code = isErrorResponse(parsed) && typeof parsed.error.code === 'string'
+    ? parsed.error.code
+    : `HTTP_${res.status}`;
+  
+  // Extract error message with multiple fallbacks
+  let message: string;
+  if (isErrorResponse(parsed) && typeof parsed.error.message === 'string') {
+    message = parsed.error.message;
+  } else if (hasMessage(parsed) && typeof parsed.message === 'string') {
+    message = parsed.message;
+  } else if (typeof parsed === 'string' && parsed) {
+    message = `${res.status} ${res.statusText || ''}: ${parsed.slice(0, 200)}`.trim();
+  } else {
+    message = `Query failed with status ${res.status}`;
+  }
+  
+  // Safely extract request ID from headers
+  const requestId = hasHeadersWithGet(res)
+    ? (res.headers.get('x-request-id') ?? undefined)
+    : undefined;
 
-  // Create error object inline since ApiHttpError was removed
-  const error = new Error(message) as any;
+  // Create error object with proper typing
+  const error = new Error(message);
   error.name = 'ApiHttpError';
-  error.status = res.status;
-  if (code) error.code = code;
-  if (requestId) error.requestId = requestId;
+  
+  // Use type-safe property assignment
+  (error as Error & { status: number; code?: string; requestId?: string }).status = res.status;
+  if (code) {
+    (error as Error & { code: string }).code = code;
+  }
+  if (requestId) {
+    (error as Error & { requestId: string }).requestId = requestId;
+  }
+  
   throw error;
 }
 

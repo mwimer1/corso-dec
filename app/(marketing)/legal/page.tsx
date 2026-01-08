@@ -4,8 +4,10 @@ import { LegalPageSection } from "@/components/marketing";
 import type { Metadata } from "next";
 import Link from "next/link";
 
+/** @knipignore */
 export const runtime = "nodejs";
 
+/** @knipignore */
 export const metadata: Metadata = {
   title: "Legal | Corso",
   robots: "noindex",

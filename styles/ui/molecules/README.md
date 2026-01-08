@@ -1,14 +1,28 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+title: "Molecules"
+last_updated: "2026-01-07"
 category: "styling"
+status: "active"
+description: "Styling system for styles, using Tailwind CSS and design tokens. Located in ui/molecules/."
 ---
-# Repository Scripts & Docs
+# Molecules
 
-This README is generated from a single template (`README.scripts.hbs`).
+The molecules directory contains styling utilities and design tokens for the Corso platform.
 
-- Directory: `styles/ui/molecules`
-- Last updated: `2025-10-29`
+Styling system for styles, using Tailwind CSS and design tokens. Located in ui/molecules/.
 
-> Edit the template or the generator context to change all READMEs consistently.
+## Directory Structure
+
+```
+styles/ui/molecules/
+auth-card.ts
+empty-state.ts
+index.ts
+loading-states-variants.ts
+nav-item.ts
+page-header.ts
+pricing-card.ts
+pricing-grid.ts
+skeleton-suite-variants.ts
+```
 

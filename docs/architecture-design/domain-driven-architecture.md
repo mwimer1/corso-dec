@@ -1,7 +1,8 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+title: "Architecture Design"
+last_updated: "2026-01-07"
 category: "documentation"
+status: "draft"
 ---
 # Domain-Driven Architecture Guidelines
 
@@ -35,9 +36,11 @@ These guidelines ensure consistency, scalability, and maintainability as the cod
 
 ### 📁 **Domain Organization**
 
+**Domains MUST live directly under `lib/`** (no intermediate "services" layer):
+
 ```text
 lib/
-├── {domain}/                    # Business domain (e.g., auth, dashboard)
+├── {domain}/                    # Business domain (e.g., auth, entities, integrations)
 │   ├── index.ts                 # Client-safe barrel exports
 │   ├── server.ts                # Server-only barrel (if mixed domain)
 │   ├── README.md                # Domain documentation
@@ -45,6 +48,16 @@ lib/
 │       ├── index.ts            # Sub-domain barrel
 │       └── *.ts                # Implementation files
 ```
+
+**Forbidden Patterns:**
+- ❌ `lib/services/{domain}/` - Use `lib/{domain}/` instead
+- ❌ `lib/layers/{domain}/` - Domains are not organized by technical layers
+
+**Examples:**
+- ✅ `lib/entities/` - Entity management domain
+- ✅ `lib/auth/` - Authentication domain
+- ✅ `lib/integrations/` - External integrations domain
+- ❌ `lib/services/entities/` - Removed in favor of `lib/entities/`
 
 ### 🏷️ **Naming Conventions**
 
@@ -128,7 +141,7 @@ export * from './node-operations';
 #### Barrel Imports (Preferred)
 ```typescript
 // Domain barrels
-import { validateAuth } from '@/lib/auth';
+import { auth } from '@clerk/nextjs/server';
 import { createOpenAIClient } from '@/lib/integrations';
 
 // Sub-domain barrels
@@ -274,7 +287,7 @@ import { serverExport } from '@/lib/{domain}/server';
 #### Zod Schema Requirements
 - **MUST** validate all external inputs with Zod schemas
 - **MUST** place schemas in `@/lib/validators/{domain}/`
-- **MUST** export inferred types to `@/types/validators/{domain}/`
+- **MUST** export inferred types to `@/types/shared/validation/types.ts` or domain-specific type files
 - **MUST** use descriptive error messages
 
 #### Validation Pattern
@@ -289,14 +302,15 @@ export const validateInput = (input: unknown) => {
   return assertZodSchema(inputSchema, input);
 };
 
-// types/validators/{domain}/index.ts
+// types/shared/validation/types.ts (for cross-cutting validation types)
+// or domain-specific type files for domain-specific types
 export type InputType = z.infer<typeof inputSchema>;
 ```
 
 ### 🛡️ **Security Validation**
 
 #### Authentication Guards
-- **MUST** use `requireUserId()` or `requireAuthContext()` for protected operations
+- **MUST** use `auth()` from `@clerk/nextjs/server` for protected operations
 - **MUST** validate user permissions with role-based access control
 - **MUST** implement rate limiting for all user-facing endpoints
 
@@ -440,7 +454,7 @@ describe('workflow integration', () => {
 #### Server-Only Code in Shared Barrels
 ```typescript
 // ❌ WRONG: Server-only utilities in shared barrel (breaks Edge runtime)
-export { getEnv } from '@/lib/server/env'; // FAILS in Edge functions
+export { getEnv } from '@/lib/server/env'; // FAILS in Edge runtime routes
 
 // ✅ CORRECT: Keep server-only utilities in server-specific exports
 // lib/shared/server.ts (server-only)
@@ -498,7 +512,7 @@ import { someUtil } from '@/lib/shared';        // Shared utility
 - **Impact**: Prevents Edge runtime failures and provides consistent configuration
 
 #### Runtime Boundary Enforcement
-- **Problem**: Server-only code leaking into Edge functions and client bundles
+- **Problem**: Server-only code leaking into Edge runtime routes and client bundles
 - **Solution**: Strict runtime boundaries with automated validation
 - **Impact**: Eliminates runtime errors and improves performance
 
@@ -564,10 +578,10 @@ import { someUtil } from '@/lib/shared';        // Shared utility
 
 ## Related Documentation
 
-- [Import Patterns & Boundaries](../codebase-apis/import-patterns.md)
-- [Testing Strategy](../testing-quality/testing-strategy.md)
+- [Import Patterns & Boundaries](../architecture/import-patterns.md)
+- [Testing Strategy](../quality/testing-strategy.md)
 - [Security Patterns](../security/README.md)
-- [API Patterns](../api-data/api-patterns.md)
+- [API Design Guide](../api/api-design-guide.md)
 
 ---
 
@@ -576,4 +590,3 @@ All team members must follow these rules when creating new domains or modifying 
 
 **Last updated:** 2025-09-12
 **Owner:** platform-team@corso
-

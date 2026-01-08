@@ -5,7 +5,6 @@ import fs from 'node:fs';
 const CLIENT_GLOBS = [
   'app/**/*.{ts,tsx}',
   'components/**/*.{ts,tsx}',
-  'contexts/**/*.{ts,tsx}',
   'lib/**/client/**/*.{ts,tsx}',
 ];
 const DISALLOWED = /from\s+['"]@\/lib\/server\//;

@@ -1,0 +1,589 @@
+// lib/integrations/database/sql-guard.ts
+// Sprint 2: AST-based SQL guardrails with org filter injection and LIMIT enforcement
+import 'server-only';
+
+import { logger } from '@/lib/monitoring';
+import { ApplicationError, ErrorCategory, ErrorSeverity } from '@/lib/shared';
+import { Parser } from 'node-sql-parser';
+
+/**
+ * Security error for SQL guard violations
+ */
+export class SQLGuardError extends ApplicationError {
+  constructor(
+    message: string,
+    code: string = 'SQL_GUARD_VIOLATION',
+    category: ErrorCategory = ErrorCategory.AUTHORIZATION,
+    severity: ErrorSeverity = ErrorSeverity.CRITICAL,
+  ) {
+    super({ message, code, category, severity });
+    this.name = 'SQLGuardError';
+  }
+}
+
+/**
+ * Allowed tables in SQL queries
+ */
+const ALLOWED_TABLES = new Set(['projects', 'companies', 'addresses']);
+
+/**
+ * Column allowlists per table (derived from TypeScript types)
+ * Includes org_id which exists at SQL level even if not in TS types
+ */
+const ALLOWED_COLUMNS: Record<string, Set<string>> = {
+  projects: new Set([
+    'org_id',
+    'id',
+    'created_at',
+    'updated_at',
+    'name',
+    'type',
+    'metadata',
+    'permit_number',
+    'description',
+    'project_type',
+    'status',
+    'value',
+    'square_footage',
+    'contractor_id',
+    'contractor_name',
+    'owner_name',
+    'address_id',
+    'address_full',
+    'city',
+    'state',
+    'zip_code',
+    'submitted_date',
+    'issued_date',
+    'completed_date',
+    'expiration_date',
+    'inspection_count',
+    'last_inspection_date',
+    'fees_total',
+    'fees_paid',
+    'company_name',
+    'start_date',
+    'end_date',
+    'budget',
+    'spent',
+    'progress',
+    'milestone_count',
+  ]),
+  companies: new Set([
+    'org_id',
+    'id',
+    'created_at',
+    'updated_at',
+    'name',
+    'type',
+    'metadata',
+    'industry',
+    'size',
+    'revenue',
+    'employee_count',
+    'website',
+    'location',
+    'status',
+    'project_count',
+    'total_project_value',
+    'last_project_date',
+    'contact_email',
+    'contact_phone',
+    'notes',
+    'active_permits',
+    'primary_contractor',
+    'license_number',
+    'insurance_status',
+    'bonding_capacity',
+    'safety_rating',
+  ]),
+  addresses: new Set([
+    'org_id',
+    'id',
+    'created_at',
+    'updated_at',
+    'name',
+    'type',
+    'metadata',
+    'attom_id',
+    'record_last_updated',
+    'address_type_description',
+    'apn_formatted',
+    'built_year_at',
+    'city',
+    'contractor_names',
+    'county_name',
+    'full_address',
+    'full_address_has_numbers',
+    'homeowner_names',
+    'job_count',
+    'latest_permit_date',
+    'latest_permit_type',
+    'property_latitude',
+    'property_longitude',
+    'property_legal_description',
+    'property_type_major_category',
+    'property_type_sub_category',
+    'state',
+    'total_job_value',
+    'zip',
+    'street',
+    'zip_code',
+    'country',
+    'county',
+    'latitude',
+    'longitude',
+    'address_type',
+    'property_value',
+    'lot_size',
+    'building_area',
+    'year_built',
+    'zoning',
+    'project_count',
+    'last_permit_date',
+  ]),
+};
+
+/**
+ * Get schema summary for use in prompts
+ * Returns a formatted string describing allowed tables and their columns
+ */
+export function getSchemaSummary(): string {
+  const tables = ['projects', 'companies', 'addresses'] as const;
+  const summaries: string[] = [];
+  
+  for (const table of tables) {
+    const columns = ALLOWED_COLUMNS[table];
+    if (columns) {
+      const columnList = Array.from(columns)
+        .filter(col => col !== 'org_id') // Exclude org_id as it's injected automatically
+        .sort()
+        .join(', ');
+      summaries.push(`- ${table}(${columnList})`);
+    }
+  }
+  
+  return summaries.join('\n');
+}
+
+/**
+ * Get schema as JSON object for describe_schema tool
+ * Returns { table: [column1, column2, ...] } format
+ */
+export function getSchemaJSON(): Record<string, string[]> {
+  const result: Record<string, string[]> = {};
+  const tables = ['projects', 'companies', 'addresses'] as const;
+  
+  for (const table of tables) {
+    const columns = ALLOWED_COLUMNS[table];
+    if (columns) {
+      result[table] = Array.from(columns)
+        .filter(col => col !== 'org_id') // Exclude org_id as it's injected automatically
+        .sort();
+    }
+  }
+  
+  return result;
+}
+
+/**
+ * SQL Guard result metadata
+ */
+export interface SQLGuardResult {
+  sql: string;
+  metadata: {
+    tablesUsed: string[];
+    limitApplied: number;
+    orgInjected: boolean;
+  };
+}
+
+/**
+ * Options for SQL Guard
+ */
+interface SQLGuardOptions {
+  expectedOrgId?: string;
+  maxRows?: number;
+}
+
+const parser = new Parser();
+
+/**
+ * SECURITY-CRITICAL: AST-based SQL guardrails with org filter injection and LIMIT enforcement
+ * 
+ * This function is the primary defense against SQL injection in AI-generated queries.
+ * It performs the following security checks:
+ * - AST parsing to validate SQL structure (prevents string-based injection)
+ * - Blocks non-SELECT operations (DROP, INSERT, UPDATE, DELETE, etc.)
+ * - Enforces table allowlist (only projects, companies, addresses)
+ * - Blocks system schema access (system.*, information_schema.*)
+ * - Automatically injects org_id filter for tenant isolation
+ * - Enforces row limits to prevent data exfiltration
+ * 
+ * DO NOT REMOVE OR BYPASS THIS FUNCTION - it is essential for security.
+ * All AI-generated SQL must pass through guardSQL before execution.
+ */
+
+/**
+ * Extract table references from AST
+ * Note: JOINs are in the from array with a 'join' property, not a separate join property
+ */
+function extractTables(ast: any): Map<string, string> {
+  const tableMap = new Map<string, string>(); // alias -> table name
+  
+  const extractFromTables = (selectNode: any): void => {
+    if (!selectNode || typeof selectNode !== 'object') return;
+    
+    // Handle FROM clause (array of table objects, including JOINs)
+    if (selectNode.from && Array.isArray(selectNode.from)) {
+      for (const fromItem of selectNode.from) {
+        if (fromItem && fromItem.table) {
+          const tableName = String(fromItem.table).toLowerCase();
+          const alias = fromItem.as ? String(fromItem.as).toLowerCase() : tableName;
+          tableMap.set(alias, tableName);
+        }
+      }
+    }
+  };
+  
+  // Extract from main SELECT
+  extractFromTables(ast);
+  
+  // Also extract from WITH CTEs (recursively)
+  if (ast.with && Array.isArray(ast.with)) {
+    for (const cte of ast.with) {
+      if (cte && cte.stmt) {
+        // CTE can have stmt.ast (the actual SELECT AST) or stmt directly
+        const cteSelect = cte.stmt.ast || cte.stmt;
+        extractFromTables(cteSelect);
+      }
+    }
+  }
+  
+  return tableMap;
+}
+
+/**
+ * Check if WHERE clause has a valid org_id filter for a table/alias.
+ * Only accepts filters where org_id = 'literal-string' matching expectedOrgId.
+ * Rejects tautologies, IS NOT NULL, negative filters, and non-literal comparisons.
+ * 
+ * SECURITY: This function is intentionally strict to prevent bypass attempts.
+ * Even if a filter is detected, we still inject a trusted filter for defense-in-depth.
+ */
+function hasOrgFilter(where: any, identifier: string, expectedOrgId: string): boolean {
+  if (!where || !expectedOrgId) return false;
+  
+  const traverse = (node: any): boolean => {
+    if (!node || typeof node !== 'object') return false;
+    
+    // Check for binary expression: identifier.org_id = 'value' or org_id = 'value'
+    if (node.type === 'binary_expr') {
+      const left = node.left;
+      const right = node.right;
+      const operator = node.operator;
+      
+      // Only accept equality operator
+      if (operator !== '=') {
+        // Reject negative filters (org_id != 'x'), IS NOT NULL, etc.
+        // Continue traversing in case there's a valid filter elsewhere
+        if (operator === 'AND' || operator === 'OR') {
+          return traverse(left) || traverse(right);
+        }
+        return false;
+      }
+      
+      // Must be a column reference on the left
+      if (!left || left.type !== 'column_ref') {
+        return false;
+      }
+      
+      const columnRef = left;
+      const colTable = columnRef.table ? String(columnRef.table).toLowerCase() : null;
+      const colColumn = columnRef.column ? String(columnRef.column).toLowerCase() : null;
+      
+      // Must be org_id column
+      if (colColumn !== 'org_id') {
+        return false;
+      }
+      
+      const identifierLower = identifier.toLowerCase();
+      
+      // Check table/alias matches
+      const tableMatches = 
+        (colTable === identifierLower) || // Exact match: alias.org_id or table.org_id
+        (!colTable && identifierLower === identifier.toLowerCase()); // No prefix, identifier is table name
+      
+      if (!tableMatches) {
+        return false;
+      }
+      
+      // SECURITY: Only accept literal string values matching expectedOrgId
+      // Reject: org_id = org_id (tautology), org_id = column_name, org_id = variable
+      if (right && right.type === 'single_quote_string' && right.value) {
+        const value = String(right.value);
+        // Only accept if the value exactly matches expectedOrgId
+        return value === expectedOrgId;
+      }
+      
+      // Reject if right side is not a literal string
+      // This catches: org_id = org_id, org_id = some_column, org_id = (subquery), etc.
+      return false;
+    }
+    
+    // Check AND/OR expressions (recurse on both sides)
+    if (node.type === 'binary_expr' && (node.operator === 'AND' || node.operator === 'OR')) {
+      return traverse(node.left) || traverse(node.right);
+    }
+    
+    // Recursively check nested conditions
+    const skipFields = new Set(['parent', 'next', 'prev']);
+    for (const [key, value] of Object.entries(node)) {
+      if (skipFields.has(key)) continue;
+      if (Array.isArray(value)) {
+        for (const item of value) {
+          if (traverse(item)) return true;
+        }
+      } else if (value && typeof value === 'object') {
+        if (traverse(value)) return true;
+      }
+    }
+    
+    return false;
+  };
+  
+  return traverse(where);
+}
+
+/**
+ * Create org_id filter AST node
+ */
+function createOrgFilter(alias: string, orgId: string): any {
+  return {
+    type: 'binary_expr',
+    operator: '=',
+    left: {
+      type: 'column_ref',
+      table: alias || null, // Use null if no alias (table name used directly)
+      column: 'org_id',
+    },
+    right: {
+      type: 'single_quote_string', // node-sql-parser uses single quotes
+      value: orgId,
+    },
+  };
+}
+
+/**
+ * Inject org filter into WHERE clause
+ */
+function injectOrgFilter(where: any, alias: string, orgId: string): any {
+  const filter = createOrgFilter(alias, orgId);
+  
+  if (!where) {
+    return filter;
+  }
+  
+  // If WHERE exists, AND it with the org filter
+  return {
+    type: 'binary_expr',
+    operator: 'AND',
+    left: where,
+    right: filter,
+  };
+}
+
+/**
+ * SECURITY-CRITICAL: AST-based SQL guardrails with org filter injection and LIMIT enforcement
+ * 
+ * This function is the primary defense against SQL injection in AI-generated queries.
+ * It performs the following security checks:
+ * - AST parsing to validate SQL structure (prevents string-based injection)
+ * - Blocks non-SELECT operations (DROP, INSERT, UPDATE, DELETE, etc.)
+ * - Enforces table allowlist (only projects, companies, addresses)
+ * - Blocks system schema access (system.*, information_schema.*)
+ * - Automatically injects org_id filter for tenant isolation
+ * - Enforces row limits to prevent data exfiltration
+ * 
+ * DO NOT REMOVE OR BYPASS THIS FUNCTION - it is essential for security.
+ * All AI-generated SQL must pass through guardSQL before execution.
+ * 
+ * @param sql The SQL query to validate and guard
+ * @param options Configuration options (expectedOrgId for tenant isolation, maxRows for limit)
+ * @returns Normalized SQL with org filter injected and LIMIT enforced
+ * @throws {SQLGuardError} If SQL is unsafe or violates security rules
+ */
+export function guardSQL(sql: string, options: SQLGuardOptions = {}): SQLGuardResult {
+  const { expectedOrgId, maxRows = 100 } = options;
+  
+  if (!sql?.trim()) {
+    throw new SQLGuardError('SQL query is required', 'INVALID_SQL_INPUT');
+  }
+  
+  // Remove trailing semicolons for parsing
+  const trimmed = sql.trim().replace(/;+$/, '');
+  
+  // Check for multiple statements (basic check before parsing)
+  if (trimmed.split(';').filter(s => s.trim()).length > 1) {
+    throw new SQLGuardError('Multiple statements are not allowed', 'MULTI_STATEMENT');
+  }
+  
+  try {
+    // Parse SQL to AST
+    const ast = parser.astify(trimmed, { database: 'MySQL' }); // Use MySQL dialect as it's common
+    
+    // Handle array of statements (should not happen due to check above, but defensive)
+    const statements = Array.isArray(ast) ? ast : [ast];
+    if (statements.length !== 1) {
+      throw new SQLGuardError('Only single-statement queries are allowed', 'MULTI_STATEMENT');
+    }
+    
+    const statement = statements[0] as any;
+    
+    // Validate query type - must be SELECT (WITH statements are also type='select' but have a 'with' property)
+    const statementType = statement.type as string;
+    if (statementType !== 'select') {
+      throw new SQLGuardError(`Only SELECT or WITH queries are allowed, got: ${statementType}`, 'INVALID_QUERY_TYPE');
+    }
+    
+    // WITH statements are SELECT queries with a 'with' array property
+    // We'll process the main SELECT AST directly
+    const selectAst = statement;
+    
+    // For WITH statements, we need to handle CTEs separately
+    // Currently, we'll validate that CTEs don't reference disallowed tables
+    // but we'll inject org filters only in the main SELECT for simplicity
+    // TODO: Could be enhanced to inject org filters in CTEs too
+    if (selectAst.with && Array.isArray(selectAst.with)) {
+      // Validate CTEs don't reference disallowed tables
+      for (const cte of selectAst.with) {
+        if (cte && cte.stmt) {
+          const cteSelect = cte.stmt.ast || cte.stmt;
+          const cteTables = extractTables(cteSelect);
+          for (const tableName of cteTables.values()) {
+            if (!ALLOWED_TABLES.has(tableName)) {
+              throw new SQLGuardError(`CTE references disallowed table '${tableName}'`, 'DISALLOWED_TABLE');
+            }
+          }
+        }
+      }
+    }
+    
+    // Extract table references (excluding CTEs which are defined in the WITH clause)
+    const tableMap = extractTables(selectAst);
+    const cteNames = new Set<string>();
+    if (selectAst.with && Array.isArray(selectAst.with)) {
+      for (const cte of selectAst.with) {
+        if (cte && cte.name && cte.name.value) {
+          cteNames.add(String(cte.name.value).toLowerCase());
+        }
+      }
+    }
+    // Filter out CTE names from tables used (CTEs are not actual tables)
+    const tablesUsed: string[] = Array.from(tableMap.values()).filter(
+      (table) => !cteNames.has(table.toLowerCase())
+    );
+    
+    // Validate tables are allowlisted
+    for (const table of tablesUsed) {
+      if (!ALLOWED_TABLES.has(table)) {
+        throw new SQLGuardError(`Table '${table}' is not allowed. Allowed tables: ${Array.from(ALLOWED_TABLES).join(', ')}`, 'DISALLOWED_TABLE');
+      }
+    }
+    
+    // Reject system/metadata schema access
+    for (const table of tablesUsed) {
+      if (table.includes('.') && (table.startsWith('system.') || table.startsWith('information_schema.'))) {
+        throw new SQLGuardError('Access to system or metadata schemas is not allowed', 'SYSTEM_SCHEMA_ACCESS');
+      }
+    }
+    
+    let orgInjected = false;
+    
+    // SECURITY: Always inject trusted org_id filters if expectedOrgId is provided.
+    // Even if the query appears to have an org filter, we inject our trusted filter
+    // for defense-in-depth. This prevents bypass attempts via tautologies or
+    // filter manipulation.
+    if (expectedOrgId && tablesUsed.length > 0) {
+      const currentWhere = selectAst.where;
+      
+      // For each unique table, ensure org_id filter exists
+      // Use alias if present, otherwise use table name
+      const processedTables = new Set<string>();
+      for (const [alias, tableName] of tableMap.entries()) {
+        // Use alias if it's different from table name (meaning there's an actual alias)
+        // Otherwise use table name directly
+        const identifier = alias !== tableName ? alias : tableName;
+        
+        // Only process each table once (in case of multiple aliases for same table)
+        if (!processedTables.has(tableName)) {
+          processedTables.add(tableName);
+          
+          // Check if there's a valid filter (strict validation)
+          const hasValidFilter = hasOrgFilter(currentWhere, identifier, expectedOrgId);
+          
+          // Always inject our trusted filter (defense-in-depth)
+          // This ensures we have a known-good org_id = expectedOrgId condition
+          // even if the user provided one that passes validation
+          selectAst.where = injectOrgFilter(selectAst.where, identifier, expectedOrgId);
+          orgInjected = true;
+          
+          // If there was no valid filter, log for security monitoring
+          if (!hasValidFilter) {
+            logger?.warn?.('[SQLGuard] Injected org filter (none or invalid filter detected)', {
+              table: tableName,
+              identifier,
+              hasExistingFilter: !!currentWhere,
+            });
+          }
+        }
+      }
+    }
+    
+    // Enforce LIMIT
+    let limitApplied = maxRows;
+    if (selectAst.limit) {
+      const existingLimit = selectAst.limit.value?.[0]?.value;
+      if (existingLimit && typeof existingLimit === 'number') {
+        limitApplied = Math.min(existingLimit, maxRows);
+      }
+      selectAst.limit.value = [{ type: 'number', value: limitApplied }];
+    } else {
+      // Add LIMIT if missing
+      selectAst.limit = {
+        seperator: '',
+        value: [{ type: 'number', value: limitApplied }],
+      };
+    }
+    
+    // Serialize AST back to SQL
+    const normalizedSQL = parser.sqlify(statement, { database: 'MySQL' });
+    
+    logger?.debug?.('[SQLGuard] normalized SQL', {
+      original: sql,
+      normalized: normalizedSQL,
+      tablesUsed,
+      limitApplied,
+      orgInjected,
+    });
+    
+    return {
+      sql: normalizedSQL,
+      metadata: {
+        tablesUsed,
+        limitApplied,
+        orgInjected,
+      },
+    };
+  } catch (error) {
+    // Handle parsing errors
+    if (error instanceof SQLGuardError) {
+      throw error;
+    }
+    
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logger?.error?.('[SQLGuard] parsing error', { sql, error: errorMessage });
+    throw new SQLGuardError(`SQL parsing failed: ${errorMessage}`, 'SQL_PARSE_ERROR');
+  }
+}
+

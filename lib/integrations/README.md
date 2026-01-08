@@ -1,14 +1,50 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+title: "Integrations"
+last_updated: "2026-01-07"
 category: "library"
+status: "active"
+description: "External service integrations (ClickHouse, OpenAI, Supabase)."
 ---
-# Repository Scripts & Docs
 
-This README is generated from a single template (`README.scripts.hbs`).
+# Integrations
 
-- Directory: `lib/integrations`
-- Last updated: `2025-10-29`
+External service integrations (ClickHouse, OpenAI, Supabase).
 
-> Edit the template or the generator context to change all READMEs consistently.
+## Runtime
+
+**Runtime**: server ✅
+
+*server-only import detected*
+
+**Signals detected:**
+- import 'server-only'
+
+## Directory Structure
+
+```
+lib/integrations/
+├── clickhouse/
+│   ├── client.ts
+│   ├── concurrency.ts
+│   ├── entity-query.server.ts
+│   ├── index.ts
+│   ├── security.ts
+│   ├── server.ts
+│   └── utils.ts
+├── database/
+│   ├── scope.ts
+│   └── sql-guard.ts
+├── env/
+│   └── index.ts
+├── mockdb/
+│   ├── duckdb.ts
+│   ├── index.ts
+│   └── init-server.ts
+├── openai/
+│   ├── chat-logging.ts
+│   ├── responses.ts
+│   └── server.ts
+├── supabase/
+│   └── server.ts
+```
 

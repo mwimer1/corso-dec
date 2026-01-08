@@ -18,9 +18,15 @@ export { clickhouse, clickhouseQuery } from '@/lib/integrations/clickhouse';
 // SQL scope helpers (server facade)
 // Note: validateSQLScope moved to direct imports from '@/lib/integrations/database/scope'
 
+// Database (tenant-scoped Supabase client)
+export { getTenantScopedSupabaseClient, withTenantClient } from './db/supabase-tenant-client';
+export { getTenantContext, type TenantContext } from './db/tenant-context';
+
 // Error types (server facade)
 export { ApplicationError, ErrorCategory, ErrorSeverity } from '@/lib/shared';
-export * from './errors/api-error';
+// Re-export api-error types from edge-safe location (for backward compatibility)
+export { fail } from '@/lib/api/api-error';
+export type { ApiError, ApiErrorCode } from '@/lib/api/api-error';
 export * from './errors/error-utils';
 
 // OpenAI (server) exports
@@ -28,7 +34,7 @@ export * from './errors/error-utils';
 // directly from their new locations if required.
 
 // Streaming exports
-export * from './streaming/ndjson';
+// ndjson removed - was empty/unused
 
 // Shared (server utils) exports
 export * from './shared/query-utils';
@@ -44,15 +50,19 @@ export { logger } from '@/lib/monitoring';
 export { currentRuntime, isEdge, isNode, type NextRuntime } from './runtime';
 
 // Performance monitoring
-export * from './performance/database-metrics';
+// database-metrics removed - was empty/unused
 
 // Feature flags (server-only)
 export * from './feature-flags/builder';
-export * from './feature-flags/feature-flag-validator';
+// feature-flag-validator removed - was empty/unused
 export * from './feature-flags/feature-flags';
 export * from './feature-flags/resolvers';
 
 // Env re-exports live only here; avoid duplicate re-exports elsewhere
 export * from './env';
+
+// Subscription tier limits (server-only)
+export { getUserPricingTier, getDeepResearchLimit, DEEP_RESEARCH_LIMITS } from './subscription/tier-limits';
+export type { PricingTier } from './subscription/tier-limits';
 
 

@@ -1,8 +1,11 @@
 // app/not-found.tsx
 import Link from 'next/link';
 
+/** @knipignore */
 export const runtime = 'nodejs';
+/** @knipignore */
 export const dynamic = 'force-dynamic';
+/** @knipignore */
 export const revalidate = 0;
 
 export default function NotFound() {

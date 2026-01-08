@@ -1,0 +1,38 @@
+/**
+ * Animated pill width clamp
+ * Consumes --pill-target-width written by the component's measurement routine.
+ * Falls back to a readable width if the var is absent.
+ */
+.animatedPill {
+  /* Prevent jitter: width grows only up to the measured first-line width
+     plus a tiny overscan to counteract sub-pixel kerning differences. */
+  --pill-overscan: var(--pill-overscan, 2px);
+
+  max-width: calc(var(--pill-target-width, 48ch) + var(--pill-overscan));
+  width: max-content;
+
+  /* Encourage consistent glyph spacing; safe no-op where unsupported */
+  font-kerning: normal;
+
+  /* Note: border-radius is handled by the component's Tailwind classes (rounded-2xl on LinkTrack) */
+}
+
+/**
+ * Width clamp utility for animated pill centering
+ * Centers the pill and constrains its width appropriately
+ * Note: Display is handled by Tailwind classes (inline-flex) on the component
+ */
+.widthClamp {
+  margin-left: auto;
+  margin-right: auto;
+  /* Display handled by Tailwind: inline-flex items-center justify-center */
+}
+
+/* Respect reduced motion: the JS already gates RAF/lerp; this ensures any
+ * CSS-driven animation (if present) is paused as well. Safe no-op otherwise. */
+@media (prefers-reduced-motion: reduce) {
+  .animatedPill {
+    animation: none;
+    transition: none;
+  }
+}

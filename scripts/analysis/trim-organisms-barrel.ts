@@ -11,7 +11,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { SourceFile } from "ts-morph";
-import { Project, SyntaxKind } from "ts-morph";
+import { SyntaxKind } from "ts-morph";
+import { backupFile, createProject, loadJson } from "../utils/barrel-trim";
 
 type Usage = {
   allExports: number;
@@ -48,20 +49,12 @@ const ALLOW = path.join(
   ROOT,
   argVal(
     "allowlist",
-    "scripts/analysis/data/organisms-keep-allowlist.json"
+    "scripts/analysis/organisms-keep-allowlist.json"
   )!
 );
 const WRITE = argFlag("write");
 
-function readJson<T>(p: string): T {
-  return JSON.parse(fs.readFileSync(p, "utf8")) as T;
-}
-
-function backupFile(p: string): string {
-  const bak = `${p}.bak`;
-  fs.copyFileSync(p, bak);
-  return bak;
-}
+// Using shared utilities from barrel-trim.ts
 
 function plural(n: number, one: string, many: string) {
   return `${n} ${n === 1 ? one : many}`;
@@ -114,8 +107,8 @@ function main() {
     process.exit(1);
   }
 
-  const usage = readJson<Usage>(USAGE);
-  const allow = new Set(readJson<string[]>(ALLOW));
+  const usage = loadJson<Usage>(USAGE, ROOT);
+  const allow = new Set(loadJson<string[]>(ALLOW, ROOT));
 
   const toRemove = usage.unusedNames.filter((n) => !allow.has(n)).sort();
   if (toRemove.length === 0) {
@@ -123,10 +116,7 @@ function main() {
     return;
   }
 
-  const project = new Project({
-    tsConfigFilePath: path.join(ROOT, "tsconfig.json"),
-    skipAddingFilesFromTsConfig: true
-  });
+  const project = createProject(path.join(ROOT, "tsconfig.json"), { skipAddingFilesFromTsConfig: true });
   const source = project.addSourceFileAtPath(SOURCE);
 
   type Change = { module?: string; names: string[]; kind: "reexport" | "declaration" };

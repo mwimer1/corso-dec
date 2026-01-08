@@ -1,12 +1,24 @@
 #!/usr/bin/env tsx
+/**
+ * Validates consistency between Node.js version specifications.
+ * 
+ * Ensures that package.json engines.node, package.json packageManager, and
+ * .node-version file all specify compatible Node.js versions to prevent
+ * environment mismatches.
+ * 
+ * Intent: Ensure Node.js version consistency across configuration files
+ * Files: package.json, .node-version
+ * Invocation: pnpm lint:versions
+ */
 import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
-import { readJsonSync } from '../utils/fs';
+import { resolveFromRepo } from './_utils';
+import { readJsonSync } from '../utils/fs/read';
+import { createLintResult } from './_utils';
 
 type PackageJson = { engines?: { node?: string }, packageManager?: string };
 
-const pkgPath = resolve(process.cwd(), 'package.json');
-const nodeVersionPath = resolve(process.cwd(), '.node-version');
+const pkgPath = resolveFromRepo('package.json');
+const nodeVersionPath = resolveFromRepo('.node-version');
 
 const pkg = readJsonSync(pkgPath) as PackageJson;
 const packageManager = pkg.packageManager || '';
@@ -31,29 +43,37 @@ function normalizeNode(version: string): string {
 const engineNorm = normalizeNode(enginesNode);
 const fileNorm = normalizeNode(nodeFile);
 
-const errors: string[] = [];
-const warnings: string[] = [];
+const result = createLintResult();
 
 if (!packageManager.startsWith('pnpm@')) {
-  errors.push(`package.json.packageManager must pin pnpm, e.g. "pnpm@10.15.0" (found "${packageManager || 'missing'}")`);
+  result.addError(`package.json.packageManager must pin pnpm, e.g. "pnpm@10.15.0" (found "${packageManager || 'missing'}")`);
 }
 
 if (!enginesNode) {
-  warnings.push('package.json.engines.node is missing (recommend pinning to match .node-version).');
+  result.addWarning('package.json.engines.node is missing (recommend pinning to match .node-version).');
 }
 
 if (engineNorm && fileNorm && engineNorm.split('.')[0] !== fileNorm.split('.')[0]) {
-  warnings.push(`Node major mismatch: engines.node="${enginesNode}" vs .node-version="${nodeFile}". Recommend aligning.`);
+  result.addWarning(`Node major mismatch: engines.node="${enginesNode}" vs .node-version="${nodeFile}". Recommend aligning.`);
 }
 
-if (errors.length) {
-  console.error('versions-guard: FAIL');
-  for (const e of errors) console.error(' - ' + e);
-  process.exit(1);
-} else {
-  console.log('versions-guard: OK');
-  for (const w of warnings) console.log(' - ' + w);
+function main() {
+  // Preserve existing output format
+  if (result.hasErrors()) {
+    console.error('versions-guard: FAIL');
+    for (const e of result.getErrors()) console.error(' - ' + e);
+    if (result.hasWarnings()) {
+      console.error('\nWarnings:');
+      for (const w of result.getWarnings()) console.error(' - ' + w);
+    }
+    process.exitCode = 1;
+  } else {
+    console.log('versions-guard: OK');
+    for (const w of result.getWarnings()) console.log(' - ' + w);
+  }
 }
+
+main();
 
 
 

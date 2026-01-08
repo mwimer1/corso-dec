@@ -8,5 +8,7 @@ export function isChatEntity(x: string): x is 'chat' {
   return x === 'chat';
 }
 
-
+// All entity types (for type safety and validation)
+export const ALL_ENTITIES = ['projects', 'companies', 'addresses', 'chat'] as const;
+export type EntityType = typeof ALL_ENTITIES[number];
 

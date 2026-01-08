@@ -1,7 +1,9 @@
 ---
 status: "draft"
-last_updated: "2025-11-03"
+last_updated: "2026-01-07"
 category: "documentation"
+title: "Reference"
+description: "Documentation and resources for documentation functionality. Located in reference/."
 ---
 # Edge vs Node API: Boundaries & Guardrails
 
@@ -52,3 +54,9 @@ git commit -m "chore(boundary): add ESLint restriction, runtime-boundary tests, 
 git push -u origin chore/edge-boundary-guards
 ```
 
+## 📚 Related Documentation
+
+- [Runtime Boundaries](../architecture/runtime-boundaries.md) - Detailed Edge vs Node.js runtime patterns
+- [API Design Guide](../api/api-design-guide.md) - Runtime selection for API routes
+- [Route Configuration](../development/route-config.md) - Next.js route configuration patterns
+- [ESLint Runtime Boundaries](../development/eslint-runtime-boundaries.md) - ESLint rules for runtime boundaries

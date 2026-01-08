@@ -6,6 +6,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { globby } from 'globby';
+import { COMMON_IGNORE_GLOBS } from '../../../utils/constants';
 import type { MarkdownFile, FileSelection } from '../types';
 import { DEFAULT_GLOB_PATTERNS, EXCLUDE_PATTERNS } from '../constants';
 
@@ -16,8 +17,10 @@ export async function scanMarkdownFiles(
   patterns: string[] = [...DEFAULT_GLOB_PATTERNS],
   exclude: string[] = [...EXCLUDE_PATTERNS]
 ): Promise<MarkdownFile[]> {
+  // Merge common ignore patterns with provided excludes
+  const allExcludes = [...COMMON_IGNORE_GLOBS, ...exclude];
   const files = await globby(patterns, {
-    ignore: exclude,
+    ignore: allExcludes,
     absolute: true,
     gitignore: true,
   });

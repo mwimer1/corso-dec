@@ -1,29 +1,94 @@
 ---
-status: "stable"
-last_updated: "2025-11-03"
+status: "draft"
+last_updated: "2026-01-07"
 category: "documentation"
+title: "Ui"
+description: "Documentation and resources for documentation functionality. Located in ui/."
 ---
+# Dashboard Table UI Updates
+
 This doc summarizes the recent updates to the dashboard table UI:
 
-Key changes
+## Key Changes
 
-- Icon-only toolbar: Views, Filters, Export, Columns, Refresh/Retry. All controls are keyboard accessible and have `aria-label` attributes. Buttons use a minimum 44x44 hit target via `h-8 w-8` utility and focus rings.
-- Refresh animates and calls `refetch()`; Retry appears only when an error exists and calls `refetch()` once.
-- Sticky header: headers use `position: sticky; top: 0; z-index: 20` via the `tableHeadBase({ sticky: true })` variant to remain above virtualized rows and spacer.
-- Compact error handling: large destructive banners removed in favor of a compact inline `AlertBox` status; Retry control moved to toolbar.
-- Spacing tokens: page padding uses `--space-4px` (4px token) applied via `px-[var(--space-4px)]` to ensure consistent spacing across breakpoints.
+- **Professional toolbar design**: Clean, organized toolbar with proper visual hierarchy, borders, and consistent spacing. Uses design system Button components for "Saved Searches" and "Tools" dropdowns.
+- Icon-only action buttons: Export (CSV/Excel), Refresh, Reset, Save/Save As, Fullscreen. All controls are keyboard accessible and have `aria-label` attributes. Buttons use focus rings for keyboard navigation.
+  - **Note:** Excel export requires AG Grid Enterprise to be enabled (license required). If enterprise features are not available, the Excel export option is not shown in the menu.
+- **Grouped actions**: Action buttons are visually grouped with separators (Export/Reset/Refresh group, Save As/Save group) for better organization.
+- **Enhanced results count**: Results count displays with improved visual treatment, showing the number prominently with a muted "results" label.
+- Refresh calls `refreshServerSide()` to reload grid data.
+- **Error handling**: Error alert appears above the toolbar (not inline) when data load fails, with retry button. Error state is tracked and cleared on successful reload.
+- Sticky header: Headers remain visible via AG Grid's native sticky positioning.
+- Spacing: Grid content uses consistent padding (`px-6 md:px-8`) to align with top bar spacing. Toolbar uses standardized spacing tokens (`px-4 py-2`, `gap-3`, `gap-4`).
+- Link rendering: URL columns can be configured with `format: 'link'` to render as clickable anchors.
+- **Numeric column alignment**: Numeric columns (currency, number formats) are right-aligned for better readability and easier comparison. See [Numeric Alignment & Formatting](#numeric-alignment--formatting) section.
 
-Accessibility
+## Accessibility
 
-- All icon buttons have `aria-label` and visible focus styles. The toolbar maintains logical tab order with the Search input first, then action icons, then user menu.
-- Error region uses `AlertBox` (role=alert) to announce errors. Table region uses `aria-busy` when loading.
+- All icon buttons have `aria-label` and `title` attributes for tooltips, with visible focus styles (focus-visible:ring-2 with ring token). The toolbar maintains logical tab order: Saved Searches menu, Tools menu, then action icons.
+- Error region uses `role="alert"` to announce errors to screen readers. Error alert appears above toolbar with retry button and proper focus handling.
+- Button components (Saved Searches, Tools) use design system Button with proper accessibility attributes.
+- Sidebar navigation items have focus rings and proper ARIA labels for keyboard navigation.
+- Skip navigation link is available at the top of the page for keyboard users.
 
-Developer notes
+## Numeric Alignment & Formatting
 
-- Use `EntityGrid` (`@/components/dashboard/entity`) for new dashboards. Avoid deep imports.
+### Right-Alignment for Numeric Columns
+
+Numeric columns (currency and number formats) are automatically right-aligned for better readability and easier value comparison.
+
+**Implementation:**
+- Column adapter (`lib/entities/adapters/aggrid.ts`) applies `cellClass: 'corso-numeric-cell'` for columns with `format: 'currency'` or `format: 'number'`
+- CSS styling (`styles/tokens/ag-grid.css`) contains `.corso-numeric-cell` rules:
+  - `text-align: right` on the cell
+  - `justify-content: flex-end` on the cell value wrapper
+
+**Supported formats:**
+- `currency`: Right-aligned with currency formatting (e.g., `$12,345.67`)
+- `number`: Right-aligned with number formatting (e.g., `12,345`)
+
+**Formatting patterns:**
+- **Currency formatting**: Uses `Intl.NumberFormat` for consistent formatting with currency symbol, thousand separators, and decimal places
+- **Number formatting**: Standard number formatting with thousand separators
+- **CSV export**: Uses raw numeric values (unformatted) for data export, preserving precision
+
+**To add numeric formatting to a column:**
+```typescript
+// lib/entities/[entity]/columns.config.ts
+{
+  accessor: 'total_value',
+  label: 'Total Value',
+  format: 'currency', // Automatically right-aligned
+  // ... other config
+}
+```
+
+## Developer Notes
+
+- Use `EntityGridHost` (`@/components/dashboard/entities`) for new entity pages. Avoid deep imports.
 - Sticky header, virtualization, pinning, and sorting are handled natively by AG Grid.
+- Styling source of truth: `lib/vendors/ag-grid.theme.ts` (themeQuartz.withParams) for theme configuration, `styles/tokens/ag-grid.css` for custom overrides (selection column, density modes, numeric alignment). Uses AG Grid Theming API with design system tokens.
+- To add link rendering to a column, add `format: 'link'` to the column config in `lib/entities/[entity]/columns.config.ts`.
+- To add numeric formatting (with right-alignment), add `format: 'currency'` or `format: 'number'` to the column config.
+- Error state is automatically tracked and displayed above the toolbar when data loading fails.
+- Toolbar styling uses design system tokens: `border-b border-border` for separation, `px-4 py-2` for padding, `gap-3`/`gap-4` for spacing.
+- Action buttons are grouped with visual separators (`border-l border-border`) for better organization.
 
-Changelog
+## Changelog
 
+- feat(dashboard-table): professional toolbar redesign with design system integration
+- feat(dashboard-table): grouped action buttons with visual separators
+- feat(dashboard-table): enhanced results count display
+- feat(dashboard-table): error alert moved above toolbar for better UX
 - feat(dashboard-table): icon-only toolbar, refresh/retry, sticky header
+- feat(dashboard-table): focus ring styles for keyboard navigation
+- feat(dashboard-table): link format support for URL columns
+- fix(dashboard-table): consistent padding alignment with top bar
+- refactor(dashboard-table): convert dropdown triggers to Button components
 
+## 📚 Related Documentation
+
+- [Entity Grid Architecture](../../.cursor/rules/entity-grid-architecture.mdc) - Entity grid implementation patterns
+- [Dashboard UI Standards](../architecture-design/dashboard-ui-standards.md) - Dashboard component standards
+- [UI Design Guide](../architecture-design/ui-design-guide.md) - Component design patterns
+- [Warehouse Query Hooks](../analytics/warehouse-query-hooks.md) - Data fetching patterns

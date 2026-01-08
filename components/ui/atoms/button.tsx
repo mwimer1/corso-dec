@@ -44,16 +44,21 @@ function useButton({
 
   const isDisabled = disabled || loading;
 
-  const buttonProps = React.useMemo(
-    () => ({
+  const buttonProps = React.useMemo(() => {
+    const p: Record<string, unknown> = {
       className: classes,
       disabled: isDisabled,
       "aria-disabled": isDisabled,
       "aria-busy": loading,
-      "aria-label": ariaLabel,
-    }),
-    [classes, isDisabled, loading, ariaLabel],
-  );
+    };
+
+    const label = typeof ariaLabel === "string" ? ariaLabel.trim() : "";
+    if (label) {
+      p["aria-label"] = label;
+    }
+
+    return p;
+  }, [classes, isDisabled, loading, ariaLabel]);
 
   return { buttonProps, isDisabled, variant: variant ?? "default" } as const;
 }
@@ -108,6 +113,7 @@ export const Button = React.forwardRef<ButtonOrAnchor, ButtonProps>(
       className: props.className ?? "",
       loading,
       disabled: "disabled" in props ? !!props.disabled : false,
+      ...(props["aria-label"] !== undefined && { "aria-label": props["aria-label"] }),
     });
 
     const content = (
@@ -127,7 +133,7 @@ export const Button = React.forwardRef<ButtonOrAnchor, ButtonProps>(
         // Do not leak non-DOM props
         ...buttonProps,
         className:
-          `${buttonProps.className} ${(childElement.props as any).className || ""}`.trim(),
+          `${buttonProps['className']} ${(childElement.props as any).className || ""}`.trim(),
         ref,
       });
     }
@@ -150,13 +156,19 @@ export const Button = React.forwardRef<ButtonOrAnchor, ButtonProps>(
       return (
         <Link
           href={asLink ?? ""}
-          className={buttonProps.className}
+          className={buttonProps['className'] as string | undefined}
           onClick={(e) => {
             if (buttonProps["aria-disabled"]) e.preventDefault();
           }}
-          aria-disabled={buttonProps["aria-disabled"]}
-          aria-busy={buttonProps["aria-busy"]}
-          aria-label={buttonProps["aria-label"]}
+          {...(buttonProps["aria-disabled"] !== undefined && {
+            "aria-disabled": buttonProps["aria-disabled"] as boolean | "true" | "false",
+          })}
+          {...(buttonProps["aria-busy"] !== undefined && {
+            "aria-busy": buttonProps["aria-busy"] as boolean | "true" | "false",
+          })}
+          {...(buttonProps["aria-label"] !== undefined && {
+            "aria-label": buttonProps["aria-label"] as string,
+          })}
           {...omitUndefinedProps(anchorProps)}
           ref={ref as React.Ref<HTMLAnchorElement>}
         >

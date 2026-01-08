@@ -1,14 +1,31 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+title: "Auth"
+last_updated: "2026-01-07"
 category: "library"
+status: "active"
+description: "Authentication and authorization utilities using Clerk."
 ---
-# Repository Scripts & Docs
 
-This README is generated from a single template (`README.scripts.hbs`).
+# Auth
 
-- Directory: `lib/auth`
-- Last updated: `2025-10-29`
+Authentication and authorization utilities using Clerk.
 
-> Edit the template or the generator context to change all READMEs consistently.
+## Runtime
+
+**Runtime**: universal ⚠️
+
+*No runtime-specific signals detected (likely universal/isomorphic)*
+
+**Signals detected:**
+- No runtime signals detected
+
+## Directory Structure
+
+```
+lib/auth/
+├── clerk-appearance.ts
+├── client.ts
+├── roles.ts
+└── server.ts
+```
 

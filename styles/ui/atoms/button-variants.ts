@@ -1,4 +1,4 @@
-import { tv, type VariantProps } from '@/styles/utils';
+import { tv, type VariantProps } from '@/styles';
 import { navDesktopClasses, navMobileCtaClasses, navMobileItemClasses } from "../shared/navbar-sizes";
 
 // Consistent solid-light button on surface backgrounds (token-first; no hardcoded white)
@@ -10,7 +10,7 @@ const SOLID_SURFACE_WITH_BORDER =
 /** 🟢 Atom Variant: Button (variant · size · fullWidth). */
 const buttonVariants = tv({
   base: [
-    'inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-sm max-lg:text-base font-medium ring-offset-background transition-colors duration-400 ease-in-out hover:duration-150 active:duration-50',
+    'inline-flex items-center justify-center whitespace-nowrap rounded-button text-sm max-lg:text-base font-medium ring-offset-background transition-colors duration-400 ease-in-out hover:duration-150 active:duration-50',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
     'disabled:pointer-events-none disabled:opacity-50',
     'gap-x-1.5 max-lg:gap-x-2', // Added gap handling with responsive behavior

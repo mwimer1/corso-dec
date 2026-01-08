@@ -7,7 +7,8 @@ const intentCache = new Map<string, QueryIntent>();
 /**
  * Detects the user's intent from a query string.
  *
- * (Async to allow future integration of LLM-based detection; retains a dummy await to satisfy lint rules.)
+ * @deprecated Simple keyword-based implementation. Intent detection is now handled by the chat API endpoint using OpenAI.
+ * This function is kept for backward compatibility but may be removed in a future version.
  */
 export async function detectQueryIntentWithCache(message: string): Promise<QueryIntent> {
   const key = message.trim().toLowerCase();
@@ -39,6 +40,9 @@ export async function detectQueryIntentWithCache(message: string): Promise<Query
 
 /**
  * Infers table context from a query string.
+ *
+ * @deprecated Simple keyword-based implementation. Table inference is now handled by the chat API endpoint.
+ * This function is kept for backward compatibility but may be removed in a future version.
  */
 export function inferTableIntent(message: string): TableIntent {
   const key = message.trim().toLowerCase();

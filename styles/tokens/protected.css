@@ -1,23 +1,30 @@
 /* FILE: styles/tokens/protected.css */
 
-/* Protected area specific tokens - e.g. dashboard, settings */
+/**
+ * Route Theme: Protected
+ * 
+ * Purpose: Authenticated dashboard and settings pages with neutral, professional styling.
+ * 
+ * Override Policy:
+ * - ✅ ALLOWED: Color tokens (--primary, --secondary, --background, --foreground, --surface)
+ * - ✅ ALLOWED: Semantic color aliases (--success, --warning, --danger, etc.)
+ * - ❌ FORBIDDEN: Structural tokens (--space-*, --text-*, --radius-*, --shadow-*, --duration-*)
+ * 
+ * Rationale: Route themes should only customize colors to maintain visual identity while
+ * preserving consistent spacing, typography, and interaction patterns across the app.
+ */
 :root[data-route-theme="protected"] {
   /* Use default tokens for protected areas - more neutral than marketing/auth */
   --background: 0 0% 100%;
   --foreground: 222.2 47.4% 11.2%;
+
+  /* Protected theme uses a dark neutral primary (225 6% 13%) instead of brand blue
+     for a more subdued, professional appearance in dashboard/settings contexts */
   --primary: 225 6% 13%;
   --primary-foreground: 0 0% 98%;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root[data-route-theme="protected"] {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    /* other tokens can remain the same in dark mode or adjust if needed */
-  }
-}
-
+/* Dark mode overrides (via .dark class) */
 .dark[data-route-theme="protected"],
 .dark [data-route-theme="protected"] {
   --background: 222.2 84% 4.9%;

@@ -17,8 +17,9 @@ const DOC_HINTS: Record<string, string> = {
     '// 📚 Docs: ./docs/BESTPRACTICES.md#barrel-export-management',
   'lib/index.ts': '// 📚 Docs: ./docs/BESTPRACTICES.md#environment-access-patterns',
   'types/index.ts': '// 📚 Docs: ./docs/BESTPRACTICES.md#type-safety-patterns',
-  'hooks/index.ts': '// 📚 Docs: ./docs/BESTPRACTICES.md#hook-composition',
-  'actions/index.ts': '// 📚 Docs: ./docs/security/security-policy.md#server-actions',
+  // Note: hooks/index.ts no longer exists - hooks have been moved to domain homes (components/ui/hooks/, components/chat/hooks/, etc.)
+  // Note: actions/index.ts was removed in PR5.2 - Server Actions are now feature-colocated
+  // 'actions/index.ts': '// 📚 Docs: ./docs/security/security-policy.md#server-actions',
   'styles/index.ts': '// 📚 Docs: ./docs/VARIANTS.md#design-tokens',
 };
 

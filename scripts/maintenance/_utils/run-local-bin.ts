@@ -8,9 +8,11 @@ export async function runLocalBin(
   options: { cwd?: string; timeoutMs?: number } = {}
 ): Promise<RunResult> {
   try {
+    // Default timeout: 5 minutes (prevents hung subprocesses)
+    const timeout = options.timeoutMs ?? 5 * 60 * 1000;
     const subprocess = await execa(cmd, args, {
       cwd: options.cwd as any,
-      timeout: options.timeoutMs,
+      timeout,
       preferLocal: true,
       all: false as any,
       stdout: 'pipe',

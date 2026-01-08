@@ -4,8 +4,8 @@ param(
 
 $ErrorActionPreference = "SilentlyContinue"
 
-# Processes that often linger: Next, Storybook, Vitest, tsc, tsx
-$pattern = '(next\s+dev|storybook|vitest|tsc\s+-w|tsx\s+watch|nodemon)'
+# Processes that often linger: Next, Vitest, tsc, tsx
+$pattern = '(next\s+dev|vitest|tsc\s+-w|tsx\s+watch|nodemon)'
 
 # Parents we consider "active" dev sessions
 $keepParents = @('Code.exe','cursor.exe','pwsh.exe','powershell.exe','WindowsTerminal.exe','conhost.exe','git-bash.exe')

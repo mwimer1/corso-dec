@@ -22,7 +22,7 @@ export * from './client';
  *
  * ✅ CLIENT-SIDE: Import from '@/lib/core' for client-safe functionality
  * ✅ SERVER-SIDE: Import directly from domain-specific modules
- * ✅ AUTH & SESSION: Import from '@/lib/auth' modules (requires Node.js crypto)
+ * ✅ AUTH & SESSION: Import from '@/lib/auth/server' or '@clerk/nextjs/server' (requires Node.js crypto)
  * ✅ DIRECT IMPORTS: Use specific paths like '@/lib/monitoring' when needed
  *
  * Examples:

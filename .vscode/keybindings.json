@@ -36,12 +36,6 @@
     "when": "workspaceFolderCount != 0"
   },
   {
-    "key": "ctrl+shift+s",
-    "command": "workbench.action.tasks.runTask",
-    "args": "🎨 Start Storybook",
-    "when": "workspaceFolderCount != 0"
-  },
-  {
     "key": "ctrl+shift+r",
     "command": "workbench.action.tasks.runTask",
     "args": "🧪 Run All Tests",

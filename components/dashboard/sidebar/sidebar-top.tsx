@@ -4,7 +4,7 @@
 import { cn } from "@/styles";
 import Image from "next/image";
 import { memo } from "react";
-import styles from './sidebar.module.css';
+import { SidebarTooltip } from "./sidebar-tooltip";
 
 type Props = {
   isOpen: boolean;
@@ -20,26 +20,44 @@ export const SidebarTop = memo(function SidebarTop({
   return (
     <div
       className={cn(
-        styles['top'],
-        "flex h-14 items-center px-4",
+        "flex h-14 items-center",
+        "border-b border-[var(--sb-border)]",
+        "px-3", // 0.75rem padding
         isOpen ? "gap-18 justify-between" : "justify-center"
       )}
       data-state={isOpen ? "open" : "closed"}
       role="banner"
     >
       {/* Logo (acts as toggle) */}
-      <button
-        type="button"
-        onClick={onToggle}
-        aria-label={isOpen ? "Collapse sidebar" : "Expand sidebar"}
-        aria-controls="sidebar-nav"
-        aria-expanded={isOpen}
-        className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-black/5 transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-        data-testid="sidebar-toggle"
-      >
-        <Image src="/favicon.ico" alt="Corso" width={24} height={24} />
-        <span className="sr-only">{isOpen ? 'Collapse sidebar' : 'Expand sidebar'}</span>
-      </button>
+      {!isOpen ? (
+        <SidebarTooltip label="Expand sidebar" side="right">
+          <button
+            type="button"
+            onClick={onToggle}
+            aria-label="Expand sidebar"
+            aria-controls="sidebar-nav"
+            aria-expanded={isOpen}
+            className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-black/5 transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            data-testid="sidebar-toggle"
+          >
+            <Image src="/favicon.ico" alt="Corso" width={24} height={24} />
+            <span className="sr-only">Expand sidebar</span>
+          </button>
+        </SidebarTooltip>
+      ) : (
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-label="Collapse sidebar"
+          aria-controls="sidebar-nav"
+          aria-expanded={isOpen}
+          className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-black/5 transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          data-testid="sidebar-toggle"
+        >
+          <Image src="/favicon.ico" alt="Corso" width={24} height={24} />
+          <span className="sr-only">Collapse sidebar</span>
+        </button>
+      )}
 
       {/* Secondary control visible only when open (restores previous UI) */}
       {isOpen && (
@@ -57,7 +75,7 @@ export const SidebarTop = memo(function SidebarTop({
             viewBox="0 0 24 24"
             aria-hidden="true"
             focusable="false"
-            className="w-5 h-5 text-gray-600"
+            className="w-5 h-5 text-[var(--sb-ink-muted)]"
             xmlns="http://www.w3.org/2000/svg"
             stroke="currentColor"
             strokeWidth="1.5"

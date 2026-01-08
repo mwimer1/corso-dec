@@ -1,24 +1,31 @@
-import * as pageExports from '@/app/(marketing)/insights/page';
+// Avoid importing the page module directly as it triggers client component imports
+// that require React in the Node test environment
 import { describe, expect, it } from 'vitest';
 
 describe('insights page runtime', () => {
-  it('declares Node runtime for file system operations', () => {
-    expect(pageExports.runtime).toBe('nodejs');
-    expect(pageExports.dynamic).toBe('force-static');
+  it('declares Node runtime for file system operations', async () => {
+    // Check the source file directly to avoid importing client components
+    const fs = await import('fs');
+    const path = await import('path');
+    const pagePath = path.resolve(__dirname, '../../app/(marketing)/insights/page.tsx');
+    const pageSource = fs.readFileSync(pagePath, 'utf8');
+    
+    // Verify runtime exports
+    expect(pageSource).toContain('export const runtime = "nodejs"');
+    // Changed to ISR with revalidation for better performance while supporting URL query params
+    expect(pageSource).toContain('export const revalidate = 300');
   });
 
   it('imports no server-only modules in client components', async () => {
-    // Import CategoryFilter and verify no server-only imports
-    const CategoryFilter = (await import('@/components/insights/category-filter')).CategoryFilter;
-    expect(CategoryFilter).toBeDefined();
-
     // Verify the component doesn't import from @/lib/server/**
-    // Check the source file directly
+    // Check the source file directly (avoid importing client component in Node test)
     const fs = await import('fs');
     const path = await import('path');
     const componentPath = path.resolve(__dirname, '../../components/insights/category-filter.tsx');
     const componentSource = fs.readFileSync(componentPath, 'utf8');
     expect(componentSource).not.toContain('@/lib/server/');
+    // Verify it's a client component
+    expect(componentSource).toContain("'use client'");
   });
 });
 

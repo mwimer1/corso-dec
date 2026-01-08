@@ -1,4 +1,4 @@
-import { TableColumnConfigSchema, TableColumnFormatEnum } from '@/lib/validators/tableColumnConfig';
+import { TableColumnConfigSchema, TableColumnFormatEnum } from '@/lib/entities/types';
 import { describe, expect, it } from 'vitest';
 
 describe('TableColumnConfigSchema', () => {
@@ -16,6 +16,7 @@ describe('TableColumnConfigSchema', () => {
       label: 'Name',
       accessor: 'name',
       sortable: false, // default value
+      hidden: false, // default value
     });
   });
 
@@ -64,7 +65,7 @@ describe('TableColumnConfigSchema', () => {
   });
 
   it('validates all supported formats', () => {
-    const formats = ['text', 'number', 'currency', 'date', 'datetime', 'badge', 'link'];
+    const formats = ['text', 'number', 'currency', 'date', 'datetime', 'badge', 'link', 'companyName', 'description', 'pillList', 'loading'];
 
     formats.forEach(format => {
       const config = {
@@ -82,7 +83,7 @@ describe('TableColumnConfigSchema', () => {
 
 describe('TableColumnFormatEnum', () => {
   it('accepts all valid format values', () => {
-    const validFormats = ['text', 'number', 'currency', 'date', 'datetime', 'badge', 'link'];
+    const validFormats = ['text', 'number', 'currency', 'date', 'datetime', 'badge', 'link', 'companyName', 'description', 'pillList', 'loading'];
 
     validFormats.forEach(format => {
       const result = TableColumnFormatEnum.safeParse(format);

@@ -50,9 +50,8 @@ export type { SkeletonSuiteVariants } from './skeleton-suite-variants';
 
 // Tabs (removed - no longer used)
 
-// Tab switcher
-export { tabButtonVariants, tabSwitcherVariants } from './tab-switcher';
-export type { TabSwitcherVariantProps } from './tab-switcher';
+// Tab switcher variants moved to components/landing/sections/product-showcase/tab-switcher.variants.ts
+// (component-specific to ProductShowcase section)
 
 
 

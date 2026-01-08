@@ -1,21 +1,17 @@
-*.bak
-reports/
-!reports/.gitkeep
 # ================================
 # Corso Next.js Application
 # ================================
-REFERENCE-TO-IMPLEMENT
+
 # Dependencies
 node_modules/
 .pnp/
 .pnp.js
 .pnpm-store/
-grid-reference/
+
 # Next.js
 .next/
 out/
-**/*.bak
-
+next-env.d.ts
 
 # Build outputs
 build/
@@ -30,8 +26,8 @@ tsconfig.tsbuildinfo
 config/typescript/*.tsbuildinfo
 config/typescript/tsconfig.app.tsbuildinfo
 config/typescript/tsconfig.dev.tsbuildinfo
-next-env.d.ts
 
+# Documentation
 docs/audit/
 
 # Logs
@@ -62,23 +58,17 @@ coverage/
 # Testing
 test-results/
 test-reports/
-# Reports (generated) — keep folder visible but ignore contents
-full-deps.json
-shared-deps.json
-remaining-clones.json
-skip-list.json
-orphan-report.json
+__test_lib_structure__/
 playwright-report/
-# CI reports
-reports/ci/
+.playwright/
 playwright/.cache/
 jest-coverage/
 tests/failures.json
 
-# Storybook build output
-storybook-static/
-build-storybook.log
-
+# Reports (generated)
+reports/
+reports/**
+!reports/.gitkeep
 # Caches
 .npm
 .yarn/cache
@@ -110,11 +100,15 @@ Thumbs.db
 *.swp
 *.swo
 *~
+# VS Code workspace files (personal preference)
+*.code-workspace
 
 # Temporary files
 tmp/
 temp/
 .tmp/
+supabase/.temp/
+.clerk/.tmp/
 
 # Package manager files
 .yarn-integrity
@@ -126,7 +120,7 @@ yarn.lock
 *.tar.gz
 tree-sitter-windows-x64.gz
 
-# patch-package output
+# patch-package output (created by patch-package tool)
 patches/
 
 # Vercel
@@ -136,9 +130,6 @@ patches/
 dependency-graph.dot
 dependency-graph.svg
 
-# Reports (generated)
-/reports/
-
 # Tailwind generated CSS (root-level build artefact)
 styles/tailwind.css
 
@@ -147,30 +138,23 @@ styles/tailwind.css
 
 # Type declarations emitted by types project
 .typegen/
+*.d.ts.map
 
 # Optional REPL history
 .node_repl_history
 
-# Audit Reports
-/audits/
-
 v8-compile-cache-*/
 
-# Vitest reports are now covered by reports/ directory exclusion above
-
-# Generated artefacts
-.test-results.json
-violation-files.txt
-
 # ---------------------------------
-# styles/build – track generated CSS
+# styles/build – generated CSS artifacts (do not track)
 # ---------------------------------
-# Ignore everything under styles/build…
+# Generated build artifacts - do not commit
 styles/build/*
-# …but keep the directory itself and any CSS files within it
+# Keep directory structure (but not files)
 !styles/build/
-!styles/build/*.css
+!styles/build/.gitkeep
 
+# scripts/build – allow if it exists (currently doesn't, but kept for future use)
 !scripts/build/
 
 # Environment files
@@ -192,3 +176,8 @@ styles/build/*
 debug-*.txt
 knip-baseline-*.json
 bundle-size-current.json
+# Clerk configuration (can include secrets)
+/.clerk/
+
+# OpenAPI temporary files
+api/openapi.base.json

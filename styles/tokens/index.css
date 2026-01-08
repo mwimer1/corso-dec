@@ -4,17 +4,9 @@
 @import './shadows.css';
 @import './radius.css';
 @import './border.css';
-@import './breakpoints.css';
 @import './auth.css';
 @import './animation.css';
 @import './marketing.css';
 @import './protected.css';
-@import './storybook.css';
-@import './hero.css';
 @import './compat.css';
 @import './sidebar.css';
-
-/* Table token */
-:root {
-  --table-max-h: 80vh;
-}

@@ -4,6 +4,7 @@
 import { cn } from "@/styles";
 import Image from "next/image";
 import * as React from "react";
+import styles from "./logo.module.css";
 
 interface LogoProps {
   /** Whether to show only the icon (collapsed state) or full logo */
@@ -32,12 +33,8 @@ export const Logo = React.forwardRef<HTMLDivElement, LogoProps>(
             alt="Corso"
             width={width || 32}
             height={height || 32}
-            className="object-contain"
-            style={{
-              // Crop to show only the left portion (icon) of the logo
-              objectPosition: "left center",
-              clipPath: "inset(0 70% 0 0)", // Show only the left 30% of the logo
-            }}
+            className={cn("object-contain", styles['logoCropped'])}
+            {...(width && width >= 32 ? { priority: true } : {})}
           />
         </div>
       );
@@ -52,6 +49,7 @@ export const Logo = React.forwardRef<HTMLDivElement, LogoProps>(
           width={width || 120}
           height={height || 32}
           className="object-contain"
+          {...(width && width >= 180 ? { priority: true } : {})}
         />
       </div>
     );

@@ -1,6 +1,6 @@
 // styles/components/ui/atoms/select.ts
-import type { VariantProps } from '@/styles/utils';
-import { tv } from '@/styles/utils';
+import type { VariantProps } from '@/styles';
+import { tv } from '@/styles';
 
 const selectVariants = tv({
   base: [

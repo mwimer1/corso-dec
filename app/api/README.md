@@ -1,8 +1,15 @@
 ---
-status: "active"
-last_updated: "2025-11-03"
+title: "Api"
+last_updated: "2026-01-07"
 category: "documentation"
+status: "draft"
 ---
+## Overview
+
+This directory contains HTTP API routes for the Corso application. All public endpoints are versioned under `/api/v1/*` and documented in the OpenAPI specification.
+
+**Related:** For server actions (form submissions), see [Actions vs API Routes](../../docs/architecture/actions-vs-api-routes.md). Server Actions are feature-colocated (not in a top-level directory).
+
 ## API Structure
 
 ```text
@@ -23,45 +30,77 @@ app/api/
 │   │       ├── query/route.ts   # POST /api/v1/entity/[entity]/query (Entity queries)
 │   │       └── export/route.ts   # GET /api/v1/entity/[entity]/export (Entity exports)
 │   ├── ai/                      # AI helper endpoints
-│   │   ├── generate-sql/route.ts # POST /api/v1/ai/generate-sql (SQL generation)
-│   │   └── generate-chart/route.ts # POST /api/v1/ai/generate-chart (Chart generation)
+│   │   └── generate-sql/route.ts # POST /api/v1/ai/generate-sql (SQL generation)
 │   └── user/
 │       └── route.ts             # POST /api/v1/user (User profile operations)
-├── internal/                    # Internal endpoints (webhooks, privileged ops)
-│   ├── README.md                # Internal API documentation (webhook details)
-│   └── auth/
-│       └── route.ts             # POST /api/internal/auth (Clerk webhooks)
-└── test/
-    └── route.ts                 # Test endpoint (Edge runtime)
+└── internal/                    # Internal endpoints (webhooks, privileged ops)
+    ├── README.md                # Internal API documentation (webhook details)
+    └── auth/
+        └── route.ts             # POST /api/internal/auth (Clerk webhooks)
 ```
 
-## v1 Endpoints
+## API Reference
 
-| Domain | Method | Path | Purpose | Runtime | Rate Limit |
-|--------|--------|------|---------|---------|------------|
-| Entity | POST | `/api/v1/entity/[entity]/query` | Query entity with pagination/filtering | Node.js | None |
-| Entity | GET | `/api/v1/entity/[entity]/export` | Export entity data (CSV/XLSX) | Node.js | None |
-| Entity | GET | `/api/v1/entity/[entity]` | Entity base operations | Node.js | 60/min |
-| AI | POST | `/api/v1/ai/generate-chart` | AI chart configuration | Node.js | 30/min |
-| AI | POST | `/api/v1/ai/generate-sql` | AI SQL generation | Node.js | 30/min |
-| Security | POST | `/api/v1/csp-report` | CSP violation reports | Node.js | 30/min |
-| User | POST | `/api/v1/user` | User profile operations | Node.js | 30/min |
+> **📘 Source of Truth**: The complete, authoritative API specification is in [OpenAPI format](../../api/openapi.yml). All endpoint details, request/response schemas, authentication requirements, and rate limits are documented there.
+
+### Quick Reference
+
+### API Versioning
+
+All public endpoints are versioned under `/api/v1/*`:
+- **Versioning strategy**: URL-based versioning (`/api/v1/...`)
+- **Breaking changes**: Require a new version (`/api/v2/...`)
+- **OpenAPI documented**: All `/api/v1/*` endpoints are in `api/openapi.yml`
+
+### Public vs Internal Endpoints
+
+**Public API (`/api/v1/*`):**
+- Documented in OpenAPI specification
+- Available to external clients
+- Require authentication (unless marked `x-public: true`)
+- Examples:
+  - `/api/v1/query` - Generic SQL queries (client-side ClickHouse)
+  - `/api/v1/entity/[entity]/query` - Entity queries
+  - `/api/v1/ai/chat` - AI chat processing
+  - `/api/v1/ai/generate-sql` - SQL generation
+  - `/api/v1/user` - User operations
+  - `/api/v1/csp-report` - CSP violation reports
+
+**Internal API (`/api/internal/*`):**
+- **Not** included in public OpenAPI spec
+- Webhooks and privileged operations
+- Require signature validation (e.g., Clerk webhooks)
+- Examples:
+  - `/api/internal/auth` - Clerk webhook handler
+- See [Internal API README](internal/README.md) for details
+
+**Health Endpoints (`/api/health/*`):**
+- Public, unauthenticated endpoints
+- Marked `x-public: true` in OpenAPI
+- **Canonical paths** (documented in OpenAPI, used by CI/CD):
+  - `/api/health` - Service health check
+  - `/api/health/clickhouse` - ClickHouse connectivity check
+- **Implementation location**: `/api/health/*` (canonical implementation)
+- See [Health Endpoints README](health/README.md) for details
 
 > **Note**: Routes under `/api/v1/dashboard/**` were removed as of October 2025. Use `/api/v1/entity/**` for resource operations and `/api/v1/ai/**` for AI helpers.
 
-## Internal Endpoints
+### Viewing the API Specification
 
-| Domain | Method | Path | Purpose | Runtime | Rate Limit |
-|--------|--------|------|---------|---------|------------|
-| Auth | POST | `/api/internal/auth` | Clerk webhook processing | Node.js | 100/min |
+```bash
+# Generate and view OpenAPI spec
+pnpm openapi:gen
 
-## Public Endpoints
+# View in browser (if using OpenAPI UI tools)
+# Or use your IDE's OpenAPI viewer for api/openapi.yml
+```
 
-| Domain | Method | Path | Purpose | Runtime | Rate Limit |
-|--------|--------|------|---------|---------|------------|
-| Status | GET, HEAD | `/api/health` | Canonical health check with metadata | Edge | N/A |
-| Health | GET, HEAD | `/api/health/clickhouse` | ClickHouse database connectivity | Node.js | N/A |
-| Security | POST | `/api/v1/csp-report` | CSP violation reporting | Edge | 30/min |
+The OpenAPI spec includes:
+- Complete endpoint definitions with methods, paths, and descriptions
+- Request/response schemas with validation rules
+- Authentication and RBAC requirements
+- Rate limiting information
+- Error response formats
 
 ## Architecture & Standards
 
@@ -85,18 +124,70 @@ All API responses follow standardized format:
 ```
 
 ### CORS Policy
-Browser-facing endpoints implement OPTIONS handlers with:
-- Origin validation via `handleCors()`
-- Standardized headers (`Access-Control-Allow-Origin`, `Access-Control-Allow-Methods`, etc.)
-- Production-hardened origin allowlist
+
+All browser-facing API endpoints implement CORS preflight handling via standardized OPTIONS handlers.
+
+#### Standard OPTIONS Handler
+
+**For Node.js routes**, use the shared `handleOptions` helper:
+
+```typescript
+import { handleOptions } from '@/lib/middleware';
+
+export async function OPTIONS(req: Request) {
+  return handleOptions(req);
+}
+```
+
+**Behavior:**
+- Handles CORS preflight requests (OPTIONS method)
+- Returns 204 No Content with appropriate CORS headers
+- Validates origin against `CORS_ORIGINS` environment variable (or `CORS_ALLOWED_ORIGINS` alias)
+- Always includes `Access-Control-Allow-Origin` header (backward compatibility)
+- Edge-safe and Node.js compatible
+
+**Location:** `lib/middleware/shared/cors.ts` - `handleOptions()` function
+
+#### Edge Runtime Routes
+
+Edge routes may use custom CORS handling when needed:
+
+```typescript
+// Example: Edge route with custom CORS
+import { handleCors, http } from '@/lib/api/edge';
+
+export const OPTIONS = (req: Request) => {
+  const res = handleCors(req);
+  return res ?? http.noContent();
+};
+```
+
+#### Health Check Endpoints
+
+Health check endpoints (`/api/health`, `/api/health/clickhouse`) use simple 204 responses without CORS headers, as they don't require browser preflight handling.
+
+#### CORS Configuration
+
+- **Environment variable:** `CORS_ORIGINS` (primary, comma-separated list)
+- **Alias:** `CORS_ALLOWED_ORIGINS` is supported for backward compatibility but `CORS_ORIGINS` is preferred
+- **Default behavior:** When unconfigured, all origins are allowed (dev-friendly)
+- **Production:** Set `CORS_ORIGINS` to restrict allowed origins
+
+#### Standardized Headers
+
+All OPTIONS responses include:
+- `Vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers`
+- `Access-Control-Allow-Origin: <origin>` or `*` (when no origin provided)
+- `Access-Control-Allow-Methods: <requested-method>` or default methods
+- `Access-Control-Allow-Headers: Content-Type, Authorization`
 
 ### Adding New Routes
 1. Create route file with proper runtime declaration
 2. Add Zod validation for inputs
 3. Implement authentication/RBAC where needed
-4. Update OpenAPI spec (`api/openapi.yml`)
+4. **Update OpenAPI spec (`api/openapi.yml`)** - This is the source of truth
 5. Add tests for new functionality
-6. Update this README with route details
+6. Run `pnpm openapi:gen` to regenerate types and validate spec
 
 ### Development Guidelines
 - **Input validation**: All request bodies use Zod `.strict()` schemas
@@ -107,7 +198,7 @@ Browser-facing endpoints implement OPTIONS handlers with:
 
 ## Security
 
-- **Auth:** Protected routes use Clerk; handlers call `requireUserId()`
+- **Auth:** Protected routes use Clerk; handlers call `auth()` from `@clerk/nextjs/server`
 - **Tenant isolation:** SQL validated with `validateSQLScope()`
 - **Input validation:** Zod schemas for all request bodies
 - **Rate limits:** AI endpoints 30/min; ClickHouse queries 60/min; entity queries 60/min; internal auth webhooks 100/min
@@ -124,57 +215,121 @@ Browser-facing endpoints implement OPTIONS handlers with:
 
 ## Streaming (NDJSON)
 
-- Use `makeEdgeRoute` for typed, rate-limited route composition
-- Content type: `application/x-ndjson`
+Some endpoints return streaming responses in NDJSON format for real-time data delivery.
+
+### Streaming Endpoints
+
+- **`/api/v1/ai/chat`** - Streams AI chat responses as NDJSON chunks
+  - Content-Type: `application/x-ndjson`
+  - Each line is a JSON object: `{ assistantMessage: {...}, detectedTableIntent: null, error: null }`
+  - See `app/api/v1/ai/chat/route.ts` for implementation
+
+### NDJSON Format
+
+- **Content-Type**: `application/x-ndjson`
+- **Format**: Each line is a complete JSON object, newline-separated
+- **Example**:
+  ```json
+  {"data": "chunk1"}\n
+  {"data": "chunk2"}\n
+  {"data": "chunk3"}\n
+  ```
+
+### Client Usage
+
+```typescript
+const response = await fetch('/api/v1/ai/chat', {
+  method: 'POST',
+  body: JSON.stringify({ content: 'Hello', preferredTable: 'projects' }),
+});
+
+const reader = response.body.getReader();
+const decoder = new TextDecoder();
+let buffer = '';
+
+while (true) {
+  const { value, done } = await reader.read();
+  if (done) break;
+  
+  buffer += decoder.decode(value, { stream: true });
+  const lines = buffer.split('\n');
+  buffer = lines.pop() || '';
+  
+  for (const line of lines) {
+    if (line.trim()) {
+      const chunk = JSON.parse(line);
+      // Process chunk
+    }
+  }
+}
+```
 
 ## Quick File References
 
 - Entity query: `app/api/v1/entity/[entity]/query/route.ts`
-- Entity export: `app/api/v1/entity/[entity]/export/route.ts`
+- Entity export: `app/api/v1/entity/[entity]/export/route.ts` (⚠️ **PERMANENTLY REMOVED** - returns 410 Gone as permanent stub, use `/api/v1/entity/{entity}/query` instead)
 - Entity base operations: `app/api/v1/entity/[entity]/route.ts`
 - AI generate SQL: `app/api/v1/ai/generate-sql/route.ts`
-- AI generate chart: `app/api/v1/ai/generate-chart/route.ts`
 - User operations: `app/api/v1/user/route.ts`
 - CSP reports: `app/api/v1/csp-report/route.ts`
 
 ## Usage Examples
 
 ```bash
-# Entity query with pagination/filtering
-curl -X POST http://localhost:3000/api/v1/entity/permits/query \
+# Entity query with pagination/filtering (replaces deprecated export endpoint)
+curl -X POST http://localhost:3000/api/v1/entity/projects/query \
   -H "Content-Type: application/json" \
-  -d '{"page":{"index":0,"size":10},"filter":[{"field":"status","op":"eq","value":"active"}]}'
+  -H "Authorization: Bearer <token>" \
+  -H "X-Corso-Org-Id: <org-id>" \
+  -d '{"page":{"index":0,"size":10},"filter":{},"sort":[]}'
+
+# Permanently removed export endpoint (returns 410 Gone as permanent stub)
+curl -X GET http://localhost:3000/api/v1/entity/projects/export?format=csv \
+  -H "Authorization: Bearer <token>" \
+  # Response: 410 Gone with Deprecation and Link headers pointing to /query endpoint
 
 # AI SQL generation
 curl -X POST http://localhost:3000/api/v1/ai/generate-sql \
   -H "Content-Type: application/json" \
   -d '{"question":"Top 10 cities by permits in 2024"}'
 
-# AI chart generation
-curl -X POST http://localhost:3000/api/v1/ai/generate-chart \
+# AI chat (streaming)
+curl -X POST http://localhost:3000/api/v1/ai/chat \
   -H "Content-Type: application/json" \
-  -d '{"question":"Show permits by status","results":[{"status":"active","count":100}]}'
+  -d '{"content":"Show me active projects","preferredTable":"projects"}'
 ```
 
 ## OpenAPI Management
 
+The OpenAPI specification (`api/openapi.yml`) is the **single source of truth** for all API documentation. It generates:
+- `api/openapi.json` - Bundled JSON specification
+- `types/api/generated/openapi.d.ts` - TypeScript types for API clients (AUTO-GENERATED)
+
+### Commands
+
 ```bash
-pnpm openapi:gen      # Generate types and docs from api/openapi.yml
-pnpm openapi:rbac:check # Validate RBAC annotations
+pnpm openapi:gen          # Complete pipeline: bundle → lint → generate types
+pnpm openapi:lint         # Validate YAML with Spectral
+pnpm openapi:rbac:check   # Validate RBAC annotations and security
+pnpm openapi:diff         # Compare spec changes
 ```
 
-Single source: `api/openapi.yml` → generates `api/openapi.json` + TypeScript types.
+### RBAC & Security
 
-**RBAC enforcement:**
-- `x-corso-rbac: [role...]` required for bearer-auth endpoints
-- `x-public: true` for public endpoints (no auth required)
-- Public endpoints are accessible without authentication (middleware configured)
-- `OrgIdHeader` parameter for tenant-scoped operations
-- CI fails if RBAC/tenant scope missing or invalid roles used
+The OpenAPI spec enforces security through vendor extensions:
+- `x-corso-rbac: [role...]` - Required for bearer-auth endpoints (defines minimum role)
+- `x-public: true` - Marks public endpoints (no auth required)
+- `OrgIdHeader` parameter - Required for tenant-scoped operations
+- CI validation - `pnpm openapi:rbac:check` fails if RBAC/tenant scope missing
 
-**Note:** Health endpoints (`/health`, `/api/status/health`) are public but located in `/app/api/status/` for organizational clarity, separate from `/app/api/public/` which contains browser-reporting endpoints.
+For complete OpenAPI documentation, see [api/README.md](../../api/README.md).
+
+## Related Documentation
+
+- [Actions vs API Routes](../../docs/architecture/actions-vs-api-routes.md) - Decision guide (includes Server Actions)
+- [OpenAPI Specification](../../api/README.md) - Complete API specification
+- [Security Standards](../../.cursor/rules/security-standards.mdc) - Security patterns
 
 ---
 
-**Last updated:** 2025-10-04
-
+**Last updated:** 2025-01-03

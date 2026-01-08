@@ -30,13 +30,13 @@ interface PricingPageProps extends React.HTMLAttributes<HTMLDivElement> {
   onPlanSelect?: (_planSlug: string) => void;
 }
 
-/** PricingPage – Complete pricing page with toggle, tiers, and FAQ. */
+/** PricingPage – Complete pricing page with tiers and FAQ. */
 export const PricingPage = React.forwardRef<HTMLDivElement, PricingPageProps>(
   ({ plans, faqs, headerTitle, headerSubtitle, onPlanSelect, className, ...props }, ref) => {
     // Local PLANS constant (derived from props) so we can map consistently
     const PLANS: ExtendedPricingPlan[] = plans;
 
-    // Adapter: map ExtendedPricingPlan -> PricingCardProps (pricing shown as monthly)
+    // Adapter: map ExtendedPricingPlan -> PricingCardProps (always shows monthly pricing)
     function toPricingCardProps(plan: ExtendedPricingPlan): PricingCardProps {
       const slug = (plan as any).slug ?? plan.title ?? "plan";
       const priceText = plan.priceText;
@@ -52,7 +52,7 @@ export const PricingPage = React.forwardRef<HTMLDivElement, PricingPageProps>(
         priceNote,
         description: description ?? '',
         features: plan.features ?? [],
-        ctaText: 'Select',
+        ctaText: 'Start free',
       };
 
       const props: PricingCardProps = {
@@ -72,15 +72,12 @@ export const PricingPage = React.forwardRef<HTMLDivElement, PricingPageProps>(
 
     return (
       <div ref={ref} id="pricing" className={cn(className)} {...props}>
-        {/* Header Section */}
+        {/* Header Section - Top padding for space above H1, bottom padding for space after subtitle */}
         <FullWidthSection
-          padding="sm"
+          padding="none"
+          className="pt-16 pb-8"
           containerMaxWidth="7xl"
           containerPadding="lg"
-          showVerticalGuidelines
-          guidesVisibility="always"
-          opacity="none"
-          guidelineColor="bg-border"
         >
           <PricingHeader
             {...(headerTitle ? { title: headerTitle } : {})}
@@ -88,18 +85,16 @@ export const PricingPage = React.forwardRef<HTMLDivElement, PricingPageProps>(
           />
         </FullWidthSection>
 
-        {/* Pricing Tiers Section (mapped from PLANS) */}
+        {/* Pricing Tiers Section - No top padding (tight to header), bottom padding only for space before FAQ */}
         <FullWidthSection
+          padding="none"
+          className="pb-12"
           containerMaxWidth="7xl"
           containerPadding="lg"
-          showVerticalGuidelines
-          guidesVisibility="always"
-          opacity="none"
-          guidelineColor="bg-border"
         >
           <section id="tiers">
-            <div className="mt-0">
-              <div className="flex flex-wrap items-stretch justify-center gap-6">
+            <h2 className="sr-only">Plans & Pricing</h2>
+            <div className="grid grid-cols-1 lg:grid-cols-3 items-stretch justify-center gap-6">
                 {PLANS.map((plan, idx) => {
                   const props = toPricingCardProps(plan);
                   // Middle card (index 1) keeps dark button; left/right use the standard white-outline (secondary)
@@ -107,7 +102,6 @@ export const PricingPage = React.forwardRef<HTMLDivElement, PricingPageProps>(
                   return <PricingCard key={props.plan.slug} {...props} />;
                 })}
               </div>
-            </div>
           </section>
         </FullWidthSection>
 
@@ -115,13 +109,9 @@ export const PricingPage = React.forwardRef<HTMLDivElement, PricingPageProps>(
         <FullWidthSection
           containerMaxWidth="7xl"
           containerPadding="lg"
-          showVerticalGuidelines
-          guidesVisibility="always"
-          opacity="none"
-          guidelineColor="bg-border"
         >
           <FaqSectionFrame>
-            <PricingFAQ faqs={faqs} />
+            <PricingFAQ faqs={faqs} columns={2} columnsAt="lg" />
           </FaqSectionFrame>
         </FullWidthSection>
 

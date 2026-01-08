@@ -1,14 +1,34 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+title: "Chat"
+last_updated: "2026-01-07"
 category: "types"
+status: "active"
+description: "TypeScript type definitions for types, ensuring type safety across the platform. Located in chat/."
 ---
-# Repository Scripts & Docs
+# Chat
 
-This README is generated from a single template (`README.scripts.hbs`).
+The chat directory contains TypeScript type definitions for the Corso platform.
 
-- Directory: `types/chat`
-- Last updated: `2025-10-29`
+TypeScript type definitions for types, ensuring type safety across the platform. Located in chat/.
 
-> Edit the template or the generator context to change all READMEs consistently.
+## Directory Structure
+
+```
+types/chat/
+index.ts
+message/
+  message/types.ts
+query/
+  query/types.ts
+response/
+  response/types.ts
+```
+
+## Usage
+
+Import types from the appropriate subdirectory:
+
+```typescript
+import type { TypeName } from '@/types/chat/subdirectory';
+```
 

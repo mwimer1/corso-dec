@@ -1,7 +1,9 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+title: "Setup"
+description: "Documentation and resources for documentation functionality. Located in setup/."
+last_updated: "2026-01-07"
 category: "documentation"
+status: "active"
 ---
 # Test Setup Configuration
 
@@ -53,7 +55,7 @@ The `tests/setup/` directory contains the core configuration files that set up t
 
 ### Basic Test Setup
 ```typescript
-import { ensureAgGridRegistered } from '@/lib/vendors/ag-grid';
+import { ensureAgGridRegistered } from '@/lib/vendors/ag-grid.client';
 import { vi } from 'vitest';
 import { ApplicationError, ErrorCategory, ErrorSeverity } from '@/lib/shared/errors';
 
@@ -229,4 +231,3 @@ it('setup provides expected test utilities', () => {
 ---
 
 _Last updated: 2025-01-16_
-

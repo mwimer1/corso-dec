@@ -18,8 +18,7 @@
     "../../app/**/*.tsx",
     "../../actions/**/*.ts",
     "../../config/**/*.ts",
-    "../../middleware.ts",
-    "../../middleware/**/*.ts",
+    "../../proxy.ts",
     "../../next-env.d.ts",
     "../../.next/types/**/*.ts"
   ],

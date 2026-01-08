@@ -17,6 +17,17 @@ last_reviewed: "2025-10-13"
 summary: New/changed server actions and API routes must apply standardized rate limiting and tests.
 ---
 
+# Server Actions & API — Rate Limiting Required
+
+**Prevent abuse and protect upstream dependencies through standardized rate limiting.**
+
+## TL;DR
+- **Rate limiting**: Use shared limiter utilities from `@/lib/server/` (do not roll your own)
+- **Testing**: Add one happy-path and one rate-limit test per route/action
+- **Error handling**: Propagate limiter headers via repo HTTP helpers
+- **Coverage**: All unauthenticated, write-capable routes must have limiters
+- **CI validation**: Tests must demonstrate limiter is wired correctly
+
 ### Why
 Prevent abuse and protect upstream dependencies.
 

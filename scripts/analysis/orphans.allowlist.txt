@@ -1,2 +1,0 @@
-^styles/ui/shared/component-variants\.ts$
-^types/api/openapi\.d\.ts$

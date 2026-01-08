@@ -1,7 +1,9 @@
 ---
-status: "active"
-last_updated: "2025-11-03"
+description: "Documentation and resources for documentation functionality. Located in (protected)/."
+last_updated: "2026-01-07"
 category: "documentation"
+status: "active"
+title: "(protected)"
 ---
 ## Overview
 
@@ -15,7 +17,6 @@ app/(protected)/
 ├── layout.tsx                 # Auth guards + onboarding gate
 ├── loading.tsx                # Loading fallback
 ├── error.tsx                  # Global error boundary
-├── route.config.ts            # Protected access, no-cache config
 ├── dashboard/
 │   ├── layout.tsx             # Dashboard auth + providers
 │   ├── error.tsx              # Dashboard error boundary
@@ -69,18 +70,20 @@ export default async function ProtectedLayout({ children }: PropsWithChildren) {
 
 ### Route Configuration
 
+Route configuration is handled via inline exports in layout and page files:
+
 ```typescript
-// route.config.ts - Security metadata
-export const route = {
-  access: 'protected',
-  cache: 'no-store',
-  revalidate: 0,
-  seo: {
-    index: false,
-  },
-  owners: ['dashboard', 'account', 'subscription'],
-} as const;
+// app/(protected)/layout.tsx
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 ```
+
+**Configuration details:**
+- **Runtime**: Node.js (required for Clerk compatibility and data operations)
+- **Dynamic**: Force dynamic rendering (no static generation for protected content)
+- **Revalidate**: No revalidation (always dynamic)
+- **SEO**: Protected routes are not indexed (no SEO metadata)
 
 ### Client Wrapper
 
@@ -150,7 +153,6 @@ export default function DashboardSubscriptionPage() {
 | Component | Location | Purpose |
 |-----------|----------|---------|
 | `DashboardLayout` | `@/components/dashboard` | Main dashboard shell |
-| `DashboardProvider` | `@/contexts/dashboard` | State management |
 | `AuthCard` | `@/components/ui` | Consistent card styling |
 | `RouteLoading` | `@/components/ui` | Loading states |
 | `AppErrorBoundary` | `@/organisms` | Error recovery |
@@ -194,4 +196,3 @@ pnpm vitest run            # Test components
 ---
 
 **Last updated: 2025-10-07**
-

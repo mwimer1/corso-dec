@@ -21,8 +21,6 @@ tags:
     description: Security-related endpoints
   - name: Content
     description: Public content and insights
-  - name: Internal
-    description: Internal system endpoints and webhooks
   - name: Users
     description: User/profile APIs
   - name: Dashboard
@@ -107,17 +105,18 @@ paths:
       responses:
         "204":
           description: ClickHouse is healthy
-  /api/insights/search:
+  /api/v1/insights/search:
     get:
       operationId: insights_search
       tags:
         - Content
       summary: Search insights content
-      description: Public search endpoint for insights and articles
+      description: Public search endpoint for insights and articles with pagination support
       x-public: true
       parameters:
         - name: q
           in: query
+          required: true
           description: Search query string
           schema:
             type: string
@@ -130,6 +129,21 @@ paths:
             type: string
             minLength: 1
             maxLength: 50
+        - name: limit
+          in: query
+          description: Maximum number of results to return
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+        - name: offset
+          in: query
+          description: Number of results to skip (for pagination)
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
       responses:
         "200":
           description: Search results
@@ -163,6 +177,10 @@ paths:
                               slug:
                                 type: string
                                 example: market-analysis
+                        url:
+                          type: string
+                          description: Relative URL path to the insight article
+                          example: /insights/market-trends-2024
               example:
                 results:
                   - slug: market-trends-2024
@@ -171,6 +189,7 @@ paths:
                     categories:
                       - name: Market Analysis
                         slug: market-analysis
+                    url: /insights/market-trends-2024
         "400":
           description: Invalid query parameters
           content:
@@ -183,7 +202,19 @@ paths:
       tags:
         - Security
       summary: CSP violation report intake
-      description: Public Edge-safe endpoint for receiving CSP violation reports
+      description: |
+        Public Edge-safe endpoint for receiving CSP violation reports.
+        
+        **Supported Content Types:**
+        - `application/reports+json` - Reporting API batch format
+        - `application/csp-report` - Legacy wrapped format `{ "csp-report": {...} }`
+        - `application/json` - Permissive format (accepts direct violation body or legacy wrapped format)
+        
+        **Behavior:**
+        - Always returns 204 No Content on success (to avoid browser retries)
+        - Invalid JSON returns 204 (no spam/retries)
+        - Invalid CSP report structure returns 400
+        - Optional forwarding to `CSP_FORWARD_URI` (non-blocking)
       x-public: true
       requestBody:
         required: true
@@ -205,6 +236,9 @@ paths:
                     example: csp-violation
                   body:
                     $ref: "#/components/schemas/CspViolation"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CspViolation"
       responses:
         "204":
           description: Report accepted
@@ -271,6 +305,8 @@ paths:
         - bearerAuth: []
       x-corso-rbac:
         - member
+        - admin
+        - owner
       x-rate-limit:
         limit: 60
         window: 1m
@@ -302,6 +338,8 @@ paths:
         - bearerAuth: []
       x-corso-rbac:
         - member
+        - admin
+        - owner
       x-rate-limit:
         limit: 30
         window: 1m
@@ -330,6 +368,74 @@ paths:
           $ref: "#/components/responses/InternalError"
       parameters:
         - $ref: "#/components/parameters/OrgIdHeader"
+  /api/v1/ai/chat/usage-limits:
+    get:
+      operationId: ai_chat_usageLimits
+      tags:
+        - Chat
+      summary: Get Deep Research usage limits
+      description: |
+        Returns current Deep Research usage limits for the authenticated user.
+        
+        **Response Format:**
+        - `remaining`: Number of Deep Research requests remaining in the current period
+        - `limit`: Total limit for the current period
+        - `currentUsage`: Current usage count in the period
+        
+        **Rate Limits:**
+        - Endpoint: 30 requests per minute
+        - Deep Research feature: Configurable per user/org (check response for limits)
+      security:
+        - bearerAuth: []
+      x-corso-rbac:
+        - member
+        - admin
+        - owner
+      x-rate-limit:
+        limit: 30
+        window: 1m
+      parameters:
+        - $ref: "#/components/parameters/OrgIdHeader"
+      responses:
+        "200":
+          description: Usage limits retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      remaining:
+                        type: integer
+                        description: Number of Deep Research requests remaining
+                        example: 5
+                      limit:
+                        type: integer
+                        description: Total Deep Research limit for current period
+                        example: 10
+                      currentUsage:
+                        type: integer
+                        description: Current usage count in period
+                        example: 5
+              example:
+                success: true
+                data:
+                  remaining: 5
+                  limit: 10
+                  currentUsage: 5
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
   /api/v1/entity/{entity}/query:
     post:
       operationId: entity_query
@@ -446,13 +552,93 @@ paths:
           $ref: "#/components/responses/RateLimited"
         "500":
           $ref: "#/components/responses/InternalError"
+  /api/v1/query:
+    post:
+      operationId: query_execute
+      tags:
+        - Dashboard
+      summary: Execute SQL query
+      description: Generic SQL query endpoint for client-side ClickHouse queries with tenant isolation
+      security:
+        - bearerAuth: []
+      x-corso-rbac:
+        - member
+        - admin
+        - owner
+      x-rate-limit:
+        limit: 60
+        window: 1m
+      parameters:
+        - $ref: "#/components/parameters/OrgIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sql:
+                  type: string
+                  description: SQL SELECT query string
+                  minLength: 1
+                  maxLength: 10000
+                  example: "SELECT * FROM projects WHERE org_id = ? LIMIT 10"
+                params:
+                  type: object
+                  description: Query parameters (key-value pairs)
+                  additionalProperties: true
+                  example:
+                    org_id: "org_123"
+                cacheTtl:
+                  type: integer
+                  description: Cache TTL in seconds (0-3600)
+                  minimum: 0
+                  maximum: 3600
+              required:
+                - sql
+      responses:
+        "200":
+          description: Query results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+                    example:
+                      - id: "proj_123"
+                        name: "Project A"
+                        status: "active"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
   /api/v1/entity/{entity}/export:
     get:
       operationId: entity_export
       tags:
         - Dashboard
-      summary: Export entity data
-      description: Export entity data in CSV or XLSX format
+      summary: Export entity data (Permanently Removed)
+      description: |
+        **⚠️ PERMANENTLY REMOVED** - This endpoint has been permanently removed.
+        It returns 410 Gone with guidance to use `/api/v1/entity/{entity}/query` instead.
+        
+        Export functionality was removed during the entity grid migration (2025-01-15).
+        Use the entity query endpoint for data access with filtering, sorting, and pagination.
+      deprecated: true
       parameters:
         - name: entity
           in: path
@@ -495,6 +681,32 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "410":
+          description: Gone - Export feature permanently removed. Use `/api/v1/entity/{entity}/query` instead.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+              example:
+                success: false
+                error:
+                  code: "EXPORT_REMOVED"
+                  message: "Gone - Export feature no longer available"
+                  timestamp: "2025-01-15T00:00:00Z"
+                  details:
+                    message: "Export functionality was permanently removed during the entity grid migration. Use entity query endpoints for data access."
+                    removedDate: "2025-01-15"
+                    alternativeEndpoint: "/api/v1/entity/{entity}/query"
+          headers:
+            Deprecation:
+              schema:
+                type: string
+                example: "true"
+            Link:
+              schema:
+                type: string
+                description: Link to alternative endpoint
+                example: '</api/v1/entity/{entity}/query>; rel="alternate"; type="application/json"'
         "429":
           $ref: "#/components/responses/RateLimited"
         "500":
@@ -510,6 +722,8 @@ paths:
         - bearerAuth: []
       x-corso-rbac:
         - member
+        - admin
+        - owner
       x-rate-limit:
         limit: 30
         window: 1m
@@ -583,44 +797,6 @@ paths:
           $ref: "#/components/responses/InternalError"
       parameters:
         - $ref: "#/components/parameters/OrgIdHeader"
-  /api/internal/auth:
-    post:
-      operationId: internal_auth_webhook
-      tags:
-        - Internal
-      summary: Clerk authentication webhook
-      description: Process Clerk authentication events and user management webhooks
-      x-public: false
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              description: Clerk webhook payload (varies by event type)
-            example:
-              type: user.created
-              data:
-                id: user_123
-                email_addresses:
-                  - email_address: user@example.com
-                first_name: John
-                last_name: Doe
-      responses:
-        "200":
-          description: Webhook processed successfully
-        "400":
-          description: Invalid webhook payload or signature
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorEnvelope"
-        "429":
-          description: Rate limited
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorEnvelope"
 components:
   securitySchemes:
     bearerAuth:
@@ -880,27 +1056,6 @@ components:
       example:
         content: What are the key insights from recent project data?
         preferredTable: projects
-    GenerateChartRequest:
-      type: object
-      properties:
-        question:
-          type: string
-        results:
-          type: array
-          items: {}
-      required:
-        - question
-        - results
-    ChartConfig:
-      type: object
-      properties:
-        chartType:
-          type: string
-        title:
-          type: string
-        explanation:
-          type: string
-      additionalProperties: true
     GenerateSqlRequest:
       type: object
       properties:

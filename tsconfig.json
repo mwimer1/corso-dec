@@ -26,41 +26,11 @@
       "@/lib/*": [
         "lib/*"
       ],
-      "@/lib": [
-        "lib/index.ts"
-      ],
-      "@/contexts/*": [
-        "contexts/*"
-      ],
-      "@/contexts": [
-        "contexts/index.ts"
-      ],
       "@/styles": [
         "styles/index.ts"
       ],
       "@/styles/*": [
         "styles/*"
-      ],
-      "@/hooks/*": [
-        "hooks/*"
-      ],
-      "@/hooks": [
-        "hooks/index.ts"
-      ],
-      "@/actions": [
-        "actions/index.ts"
-      ],
-      "@/actions/*": [
-        "actions/*"
-      ],
-      "@/molecules": [
-        "components/ui/molecules/index.ts"
-      ],
-      "@/organisms": [
-        "components/ui/organisms/index.ts"
-      ],
-      "@/atoms": [
-        "components/ui/atoms/index.ts"
       ],
       "@/components/auth": [
         "components/auth/index.ts"
@@ -73,9 +43,6 @@
       ],
       "@/scripts/*": [
         "scripts/*"
-      ],
-      "@/tools": [
-        "tools/index.ts"
       ]
     }
   },
@@ -84,52 +51,35 @@
   },
   "exclude": [
     "node_modules",
-    ".next",
     "scripts/codemods/_archive/**/*",
     "**/*.spec.tsx",
     "**/*.spec.ts",
     "**/*.test.tsx",
     "**/*.test.ts",
-    "**/*.stories.tsx",
-    "**/*.stories.ts",
-    "**/*.story.tsx",
     "components/auth/examples/**/*.example.tsx",
-    "**/*.story.ts",
     "grid-reference",
     "docs/examples/**/*"
   ],
   "include": [
-    ".storybook/**/*",
-    "actions/**/*.ts",
-    "actions/**/*.tsx",
     "app/**/*.ts",
     "app/**/*.tsx",
     "components/**/*.ts",
     "components/**/*.tsx",
     "config/**/*.ts",
-    "contexts/**/*.ts",
-    "contexts/**/*.tsx",
     "eslint-plugin-corso/**/*",
-    "hooks/**/*.ts",
-    "hooks/**/*.tsx",
     "lib/**/*.ts",
     "lib/**/*.tsx",
-    "middleware.ts",
+    "proxy.ts",
     "next-env.d.ts",
     "scripts/**/*.ts",
     "scripts/**/*.tsx",
-    "stories/**/*.ts",
-    "stories/**/*.tsx",
     "styles/**/*.ts",
     "styles/**/*.tsx",
-    "tools/**/*.ts",
-    "tools/**/*.tsx",
     "types/**/*.d.ts",
     "types/**/*.ts",
     "types/**/*.tsx",
     ".next/types/**/*.ts",
-    "assets/**/*.ts",
-    "assets/**/*.tsx"
+    "tailwind.config.ts"
   ]
 }
 

@@ -22,13 +22,8 @@
  * - Third-party service keys (Stripe, Clerk) are acceptable for client use
  */
 
-/**
- * Client-safe fetch wrapper that respects CORS and browser security policies
- * @param args - Standard fetch parameters
- * @returns Promise<Response> - Browser-compatible fetch response
- */
-export const httpFetch: typeof fetch = (...args: Parameters<typeof fetch>) =>
-  fetch(...args);
+// Removed: httpFetch - unused per dead code audit
+// Use native fetch() directly in client code
 
 /**
  * Client-safe logger that maps to browser console APIs
@@ -48,7 +43,7 @@ export const logger = {
  * All other environment variables are server-only and will be undefined.
  *
  * Hidden Dependencies:
- * - USE_MOCK_DB: Enables CSV-backed mock database for development
+ * - CORSO_USE_MOCK_DB: Enables mock database mode using JSON fixtures in public/__mockdb__/ for development
  * - NEXT_PUBLIC_APP_URL: Required for proper client-side navigation
  * - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: Required for client-side authentication
  * - NEXT_PUBLIC_SUPABASE_URL/KEY: Required for client-side database access
@@ -91,9 +86,16 @@ const PublicEnvSchema = z.object({
   NEXT_PUBLIC_PLACEHOLDER_IMAGE_BASE: z.string().optional(),
 
   // AG Grid Enterprise license (public by design)
-  NEXT_PUBLIC_AG_GRID_LICENSE_KEY: z.string().min(1).optional(),
+  // Accept both NEXT_PUBLIC_AGGRID_LICENSE_KEY (canonical) and NEXT_PUBLIC_AG_GRID_LICENSE_KEY (legacy)
+  NEXT_PUBLIC_AGGRID_LICENSE_KEY: z.string().min(1).optional(),
   // Accept both NEXT_PUBLIC_AGGRID_ENTERPRISE and NEXT_PUBLIC_AG_GRID_ENTERPRISE (legacy)
   NEXT_PUBLIC_AGGRID_ENTERPRISE: z.string().optional(),
+
+  // Mock AI mode for development/testing (bypasses real API calls)
+  NEXT_PUBLIC_USE_MOCK_AI: z.string().optional(),
+
+  // Auth mode: 'strict' (default) requires org membership, 'relaxed' allows any signed-in user
+  NEXT_PUBLIC_AUTH_MODE: z.enum(['strict', 'relaxed']).optional(),
 }).strict();
 
 type PublicEnv = z.infer<typeof PublicEnvSchema>;
@@ -195,9 +197,16 @@ export const publicEnv: PublicEnv = (() => {
     NEXT_PUBLIC_PLACEHOLDER_IMAGE_BASE: safeGetEnv('NEXT_PUBLIC_PLACEHOLDER_IMAGE_BASE'),
 
     // AG Grid Enterprise license (public by design)
-    NEXT_PUBLIC_AG_GRID_LICENSE_KEY: safeGetEnv('NEXT_PUBLIC_AG_GRID_LICENSE_KEY'),
+    // Accept both NEXT_PUBLIC_AGGRID_LICENSE_KEY (canonical) and NEXT_PUBLIC_AG_GRID_LICENSE_KEY (legacy)
+    NEXT_PUBLIC_AGGRID_LICENSE_KEY: safeGetEnv('NEXT_PUBLIC_AGGRID_LICENSE_KEY') ?? safeGetEnv('NEXT_PUBLIC_AG_GRID_LICENSE_KEY'),
     // Accept both NEXT_PUBLIC_AGGRID_ENTERPRISE and NEXT_PUBLIC_AG_GRID_ENTERPRISE (legacy)
     NEXT_PUBLIC_AGGRID_ENTERPRISE: safeGetEnv('NEXT_PUBLIC_AGGRID_ENTERPRISE') ?? safeGetEnv('NEXT_PUBLIC_AG_GRID_ENTERPRISE') ?? safeGetEnv('AGGRID_ENTERPRISE') ?? safeGetEnv('AG_GRID_ENTERPRISE'),
+
+    // Mock AI mode for development/testing
+    NEXT_PUBLIC_USE_MOCK_AI: safeGetEnv('NEXT_PUBLIC_USE_MOCK_AI'),
+
+    // Auth mode
+    NEXT_PUBLIC_AUTH_MODE: safeGetEnv('NEXT_PUBLIC_AUTH_MODE'),
   };
 
   _cache = PublicEnvSchema.parse(obj);
@@ -205,7 +214,6 @@ export const publicEnv: PublicEnv = (() => {
 })();
 
 export default {
-  fetch: httpFetch,
   logger,
   publicEnv,
 };

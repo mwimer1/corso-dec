@@ -1,7 +1,6 @@
-import { containerMaxWidthVariants } from '@/styles/ui/shared/container-base';
-import type { VariantProps } from '@/styles/utils';
-import { tv } from '@/styles/utils';
-import { containerWithPaddingVariants } from "../shared/container-helpers";
+import { containerMaxWidthVariants, containerWithPaddingVariants } from '@/styles/ui/shared';
+import type { VariantProps } from '@/styles';
+import { tv } from '@/styles';
 /**
  * PricingGrid variant factory – for responsive pricing plan layouts.
  * Supports different grid configurations and spacing options.
@@ -14,6 +13,7 @@ const pricingGridVariants = tv({
       single: 'grid-cols-1',
       double: 'grid-cols-1 sm:grid-cols-2',
       triple: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
+      tripleNoWrap: 'grid-cols-1 lg:grid-cols-3', // Skip sm 2-col breakpoint to prevent 2+1 layout for exactly 3 cards
       quad: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4',
     },
     spacing: {

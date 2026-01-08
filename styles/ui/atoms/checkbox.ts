@@ -1,5 +1,5 @@
-import type { VariantProps } from '@/styles/utils';
-import { tv } from '@/styles/utils';
+import type { VariantProps } from '@/styles';
+import { tv } from '@/styles';
 
 // Inlined from input-control-base.ts and input-variants.ts
 const inputControlBase = tv({

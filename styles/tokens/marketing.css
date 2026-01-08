@@ -1,4 +1,18 @@
 /* styles/tokens/marketing.css */
+
+/**
+ * Route Theme: Marketing
+ * 
+ * Purpose: Public marketing pages (landing, pricing, features) with brand-focused styling.
+ * 
+ * Override Policy:
+ * - ✅ ALLOWED: Color tokens (--primary, --secondary, --background, --foreground, --surface)
+ * - ✅ ALLOWED: Semantic color aliases (--success, --warning, --danger, etc.)
+ * - ❌ FORBIDDEN: Structural tokens (--space-*, --text-*, --radius-*, --shadow-*, --duration-*)
+ * 
+ * Rationale: Route themes should only customize colors to maintain visual identity while
+ * preserving consistent spacing, typography, and interaction patterns across the app.
+ */
 :root[data-route-theme="marketing"] {
   --background: 0 0% 100%;
   --foreground: 240 10% 3.9%;
@@ -6,19 +20,11 @@
   /* Use unified primary (brand blue) and secondary (light blue tint) */
   
   /* No need for separate marketing-cta tokens - primary handles CTAs */
-  --accent: var(--secondary);
-  --accent-foreground: var(--secondary-foreground);
+
+  /* Note: accent tokens removed - use secondary tokens directly via Tailwind */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root[data-route-theme="marketing"] {
-    --background: 222.2 84% 4.9%; /* base dark background (near-black) */
-    --foreground: 210 40% 98%; /* base dark-mode foreground (near-white) */
-
-    /* primary and accent remain as in light mode for now */
-  }
-}
-
+/* Dark mode overrides (via .dark class) */
 .dark[data-route-theme="marketing"],
 .dark [data-route-theme="marketing"] {
   --background: 222.2 84% 4.9%;

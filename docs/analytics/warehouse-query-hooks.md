@@ -1,9 +1,10 @@
 ---
-status: "stable"
-last_updated: "2025-11-03"
+description: "Documentation and resources for documentation functionality. Located in analytics/."
+last_updated: "2026-01-07"
 category: "documentation"
+status: "draft"
 ---
-> Refer to the canonical warehouse query rules: [`docs/codebase-apis/warehouse-queries.md`](../codebase-apis/warehouse-queries.md).
+> Refer to the canonical warehouse query rules: [`docs/architecture/warehouse-queries.md`](../architecture/warehouse-queries.md).
 
 ## Overview
 
@@ -35,8 +36,8 @@ These hooks consume the canonical warehouse endpoints/patterns. Avoid duplicatin
 
 ### Hook Hierarchy
 
-1. **Base Hooks** (`@/hooks/shared/analytics`) - Core functionality (`useWarehouseQueryBase`, `executeWarehouseQuery`)
-2. **Domain Hooks** (`@/hooks`) - Pre-configured for common use cases (no separate "core" file)
+1. **Base Hooks** - Core functionality would be domain-colocated if implemented
+2. **Domain Hooks** - Pre-configured for common use cases, domain-colocated (e.g., `components/dashboard/hooks/`)
 3. **UI Components** - Consume hooks for data rendering
 
 ---
@@ -64,7 +65,8 @@ function useWarehouseQueryBase<T = unknown>(options: WarehouseQueryBaseOptions<T
 ### Basic Usage
 
 ```typescript
-import { useWarehouseQueryBase } from '@/hooks/shared/analytics';
+// Note: Warehouse query hooks would be domain-colocated if implemented
+// import { useWarehouseQueryBase } from '@/components/dashboard/hooks/use-warehouse-query-base';
 
 interface Project {
   id: string;
@@ -119,7 +121,8 @@ Pre-configured hooks for common use cases. These wrap the base hook with sensibl
 For simple queries where you want automatic cache key generation based on the SQL.
 
 ```typescript
-import { useWarehouseQuery } from '@/hooks';
+// Note: Warehouse query hooks would be domain-colocated if implemented
+// import { useWarehouseQuery } from '@/components/dashboard/hooks/use-warehouse-query';
 
 const { data, isLoading, error } = useWarehouseQuery<Project>(
   'SELECT * FROM projects',
@@ -134,7 +137,8 @@ const { data, isLoading, error } = useWarehouseQuery<Project>(
 For complex queries with custom cache keys and 1-hour default stale time.
 
 ```typescript
-import { useWarehouseQueryCached } from '@/hooks';
+// Note: Warehouse query hooks would be domain-colocated if implemented
+// import { useWarehouseQueryCached } from '@/components/dashboard/hooks/use-warehouse-query-cached';
 
 const { data, isLoading, error } = useWarehouseQueryCached<Project>(
   ['projects', filters], // Custom cache key
@@ -151,7 +155,8 @@ const { data, isLoading, error } = useWarehouseQueryCached<Project>(
 For pre-configured dashboard grids that map to specific ClickHouse tables.
 
 ```typescript
-import { useDynamicGridData } from '@/hooks';
+// Note: Warehouse query hooks would be domain-colocated if implemented
+// import { useDynamicGridData } from '@/components/dashboard/hooks/use-dynamic-grid-data';
 
 const { data, isLoading, error } = useDynamicGridData('projects');
 
@@ -172,7 +177,8 @@ const { data, isLoading, error } = useDynamicGridData('companies', {
 Create custom warehouse query hooks with pre-configured behavior.
 
 ```typescript
-import { createWarehouseQueryHook } from '@/hooks/shared/analytics';
+// Note: Warehouse query hooks would be domain-colocated if implemented
+// import { createWarehouseQueryHook } from '@/components/dashboard/hooks/create-warehouse-query-hook';
 
 const useAnalyticsQuery = createWarehouseQueryHook({
   staleTime: 10 * 60 * 1000, // 10 minutes
@@ -514,6 +520,25 @@ function useInfiniteProjects() {
 }
 ```
 
+### Factory Pattern for Reusable Hooks
+
+```typescript
+// ✅ CORRECT: Create domain-specific hook factories
+import { createWarehouseQueryHook } from '@/hooks/shared/analytics';
+
+const useAnalyticsQuery = createWarehouseQueryHook({
+  staleTime: 10 * 60 * 1000, // 10 minutes
+  autoLimit: true,
+  makeKey: ({ sql, cacheKey = [] }) => ['analytics', ...cacheKey, sql],
+});
+
+function useDashboardMetrics() {
+  return useAnalyticsQuery<MetricRow>(
+    'SELECT * FROM metrics'
+  );
+}
+```
+
 ---
 
 ## Migration Guide
@@ -688,29 +713,72 @@ const { data, isLoading, error } = useWarehouseQuery(
 #### Network Inspection
 ```typescript
 // Check browser network tab for:
-// - API endpoint: /api/v1/dashboard/query
-// - Request payload: { sql: "SELECT..." }
-// - Response: { data: [...], columns: [...], executionTimeMs: 123 }
+// - API endpoint: /api/v1/entity/{entity}/query (for entity queries)
+// - Request payload: { page: { index: 0, size: 50 }, sort: [...], filter: {...} }
+// - Response: { success: true, data: { rows: [...], columns: [...], total: 100 } }
 ```
+
+---
+
+## Enforcement
+
+### AST-Grep Rules
+
+The following AST-Grep patterns can be used to detect common issues:
+
+```yaml
+# Detect missing type parameters
+rule: |
+  useWarehouseQuery($ARGS)
+  where:
+    $ARGS not contains "<"
+
+# Detect string interpolation in SQL
+rule: |
+  useWarehouseQuery($SQL)
+  where:
+    $SQL contains "`" or $SQL contains "+" or $SQL contains "${"
+
+# Detect missing error handling
+rule: |
+  const { data } = useWarehouseQuery($SQL)
+  where:
+    not contains "error" or not contains "isLoading"
+```
+
+### ESLint Integration
+
+The following ESLint rules are planned for future implementation:
+
+```javascript
+{
+  "rules": {
+    "@corso/warehouse-query-type-safety": "error",
+    "@corso/warehouse-query-error-handling": "error",
+    "@corso/warehouse-query-sql-injection": "error"
+  }
+}
+```
+
+**Note**: These rules are not yet implemented in `eslint-plugin-corso`. Enforcement is currently handled via TypeScript types and code review.
 
 ---
 
 ## Related Documentation
 
-- [Shared Hooks](../../hooks/shared/README.md) - Hook implementation details
-- [Dashboard Hooks](../../hooks/dashboard/README.md) - Domain-specific usage
 - [ClickHouse Performance Guide](./clickhouse-recommendations.md) - Database optimization
+- [Warehouse Queries API](../architecture/warehouse-queries.md) - Canonical warehouse query patterns
 - [Security Standards](../security/README.md) - Security implementation
 
 ---
 
 ## Mock backend (development setup)
 
-When `CORSO_USE_MOCK_DB` is enabled, warehouse queries are served by a mock backend that reads from `db/*.csv` and `db/*.xlsx`.
+When `CORSO_USE_MOCK_DB` is enabled, warehouse queries are served by a mock backend that reads from checked-in JSON fixtures in `public/__mockdb__/`.
 
-- API route: `app/api/v1/dashboard/query/route.ts`
+- API route: `app/api/v1/entity/{entity}/query/route.ts` (for entity queries)
 - Reader: `lib/integrations/clickhouse/server.ts`
-- Data and usage: see `db/README.md`
+- Data source: Mock JSON files in `public/__mockdb__/{companies,projects,addresses}.json` (canonical source, edit directly to change mock data)
 
 ---
 
@@ -723,4 +791,3 @@ When `CORSO_USE_MOCK_DB` is enabled, warehouse queries are served by a mock back
 - Prefer `| type` over `| cat` when piping query results in Windows terminals
 
 Last updated: 2025-09-01
-

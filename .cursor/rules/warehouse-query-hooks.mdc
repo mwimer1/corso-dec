@@ -13,6 +13,7 @@ related_rules:
   - code-quality-standards
 alwaysApply: true
 globs: ["hooks/**", "app/**", "components/**"]
+summary: Secure, performant React hooks for ClickHouse queries with React Query integration and type safety.
 ---
 
 # Warehouse Query Hooks & Best Practices
@@ -25,6 +26,9 @@ globs: ["hooks/**", "app/**", "components/**"]
 - **Handle states**: Always manage loading, error, and empty data states
 - **Type safety**: Always specify generic types for query results
 - **Performance**: Use appropriate `staleTime` and cache keys
+
+## Purpose
+Provide secure, performant React hooks for ClickHouse data warehouse queries with React Query integration, type safety, and proper error handling.
 
 ## Core Hook Patterns
 
@@ -48,24 +52,6 @@ const { data, isLoading, error } = useWarehouseQueryCached<ProjectRow>(
 );
 ```
 
-### ✅ CORRECT: Base Hook for Advanced Use Cases
-
-```typescript
-// Advanced configuration with useWarehouseQueryBase
-import { useWarehouseQueryBase } from '@/hooks/shared/analytics';
-
-const { data, isLoading, error } = useWarehouseQueryBase<ProjectRow>({
-  sql: 'SELECT * FROM projects',
-  queryKey: ['projects'],
-  staleTime: 5 * 60 * 1000,
-  autoLimit: false, // Custom limit handling
-  options: {
-    refetchOnWindowFocus: false,
-    retry: 2
-  }
-});
-```
-
 ### ❌ INCORRECT: Direct SQL Construction
 
 ```typescript
@@ -74,376 +60,74 @@ const sql = `SELECT * FROM projects WHERE status = '${status}'`;
 const { data } = useWarehouseQuery(sql);
 ```
 
-### ❌ INCORRECT: Missing Type Parameters
-
-```typescript
-// Always specify generic types
-const { data } = useWarehouseQuery('SELECT * FROM projects'); // ❌ No type safety
-const { data } = useWarehouseQuery<ProjectRow>('SELECT * FROM projects'); // ✅ Type safe
-```
-
 ## Security & SQL Injection Prevention
 
 ### SQL Injection Prevention
-
-```typescript
-// ✅ CORRECT: Parameterized queries (server-side)
-const { data } = useWarehouseQueryCached(
-  ['projects', projectId],
-  'SELECT * FROM projects WHERE id = ?'
-);
-
-// ❌ INCORRECT: String interpolation (vulnerable)
-const sql = `SELECT * FROM projects WHERE id = '${projectId}'`;
-```
+- ✅ **MUST** use parameterized queries (server-side)
+- ❌ **NEVER** use string interpolation in SQL
 
 ## Performance Optimization
 
 ### Cache Key Strategy
-
-```typescript
-// ✅ CORRECT: Meaningful cache keys
-const { data } = useWarehouseQueryCached(
-  ['projects', { status, priority }], // Specific, stable keys
-  'SELECT * FROM projects WHERE status = ? AND priority = ?'
-);
-
-// ❌ INCORRECT: Too broad keys
-const { data } = useWarehouseQueryCached(
-  ['all-projects'], // Cache never invalidates appropriately
-  'SELECT * FROM projects'
-);
-```
+- Use meaningful, stable cache keys
+- Avoid changing keys on every render (causes infinite loops)
 
 ### Stale Time Configuration
-
-```typescript
-// ✅ CORRECT: Appropriate stale times
-const { data: realtime } = useWarehouseQuery( // Default: no stale time
-  'SELECT * FROM user_sessions'
-);
-
-const { data: dashboard } = useWarehouseQueryCached(
-  ['dashboard-metrics'],
-  'SELECT * FROM metrics',
-  { staleTime: 5 * 60 * 1000 } // 5 minutes for dashboard data
-);
-
-const { data: config } = useWarehouseQueryCached(
-  ['app-config'],
-  'SELECT * FROM config',
-  { staleTime: 60 * 60 * 1000 } // 1 hour for static config
-);
-```
+- Realtime data: no stale time (default)
+- Dashboard data: 5 minutes
+- Static config: 1 hour
 
 ### Auto-Limit Behavior
-
-```typescript
-// ✅ CORRECT: Let auto-limit protect against large queries
-const { data } = useWarehouseQuery(
-  'SELECT * FROM projects' // Automatically becomes: LIMIT 1000
-);
-
-// ✅ CORRECT: Disable for intentional large queries
-const { data } = useWarehouseQueryBase({
-  sql: 'SELECT * FROM projects',
-  queryKey: ['all-projects'],
-  autoLimit: false // Explicit large query
-});
-```
+- Default: auto-limit to 1000 rows
+- Disable with `autoLimit: false` for intentional large queries
 
 ## Error Handling & State Management
 
 ### Complete State Handling
-
-```typescript
-// ✅ CORRECT: Handle all states
-function ProjectsList() {
-  const { data, isLoading, error } = useWarehouseQuery<ProjectRow>(
-    'SELECT * FROM projects'
-  );
-
-  if (isLoading) {
-    return <div>Loading projects...</div>;
-  }
-
-  if (error) {
-    return <div>Error loading projects: {error.message}</div>;
-  }
-
-  if (!data || data.length === 0) {
-    return <div>No projects found</div>;
-  }
-
-  return (
-    <div>
-      {data.map(project => (
-        <ProjectCard key={project.id} project={project} />
-      ))}
-    </div>
-  );
-}
-```
-
-### Error Recovery
-
-```typescript
-// ✅ CORRECT: Error boundaries and retry logic
-const { data, error, refetch } = useWarehouseQuery(
-  'SELECT * FROM projects',
-  {
-    retry: 2,
-    onError: (err) => {
-      console.error('Query failed:', err);
-      // Optional: Send to error reporting
-    }
-  }
-);
-
-// Manual retry
-if (error) {
-  return (
-    <div>
-      <p>Error: {error.message}</p>
-      <button onClick={() => refetch()}>Retry</button>
-    </div>
-  );
-}
-```
+Always handle `isLoading`, `error`, and empty data states. See [extended examples](../../docs/analytics/warehouse-query-hooks.md#error-handling).
 
 ## Type Safety
 
 ### Generic Type Usage
+- **MUST** specify generic types: `useWarehouseQuery<ProjectRow>(...)`
+- TypeScript provides full type safety for query results
 
-```typescript
-// ✅ CORRECT: Full type safety
-interface Project {
-  id: string;
-  name: string;
-  status: 'active' | 'archived';
-  created_at: Date;
-}
+## Rules
 
-const { data } = useWarehouseQuery<Project>(
-  'SELECT id, name, status, created_at FROM projects'
-);
-
-// TypeScript knows: data is Project[] | undefined
-data?.forEach(project => {
-  console.log(project.name); // ✅ Type safe
-  console.log(project.unknownField); // ❌ TypeScript error
-});
-```
-
-### Union Types for Complex Queries
-
-```typescript
-// ✅ CORRECT: Union types for mixed results
-type SearchResult = Project | Company | Contact;
-
-const { data } = useWarehouseQuery<SearchResult>(
-  'SELECT * FROM search_results WHERE query = ?'
-);
-```
+- **MUST** use parameterized queries (never string interpolation)
+- **MUST** specify generic types for query results
+- **MUST** handle loading, error, and empty states
+- **MUST** use stable cache keys
+- **MUST** use appropriate `staleTime` for data freshness
+- **SHOULD** use `useWarehouseQueryCached` for complex caching scenarios
 
 ## Advanced Patterns
 
-### Conditional Queries
-
-```typescript
-// ✅ CORRECT: Enabled/disabled queries
-const { data } = useWarehouseQuery(
-  'SELECT * FROM projects',
-  {
-    enabled: isReady, // Only run when conditions met
-  }
-);
-```
-
-### Optimistic Updates
-
-```typescript
-// ✅ CORRECT: Optimistic updates with mutations
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-
-function useCreateProject() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: createProject,
-    onMutate: async (newProject) => {
-      // Cancel outgoing refetches
-      await queryClient.cancelQueries({ queryKey: ['projects'] });
-
-      // Snapshot previous value
-      const previousProjects = queryClient.getQueryData(['projects']);
-
-      // Optimistically update
-      queryClient.setQueryData(['projects'], (old) => [...old, newProject]);
-
-      return { previousProjects };
-    },
-    onError: (err, newProject, context) => {
-      // Revert on error
-      queryClient.setQueryData(['projects'], context.previousProjects);
-    },
-    onSettled: () => {
-      // Always refetch
-      queryClient.invalidateQueries({ queryKey: ['projects'] });
-    },
-  });
-}
-```
-
-### Factory Pattern for Reusable Hooks
-
-```typescript
-// ✅ CORRECT: Create domain-specific hook factories
-import { createWarehouseQueryHook } from '@/hooks/shared/analytics';
-
-const useAnalyticsQuery = createWarehouseQueryHook({
-  staleTime: 10 * 60 * 1000, // 10 minutes
-  autoLimit: true,
-  makeKey: ({ sql, cacheKey = [] }) => ['analytics', ...cacheKey, sql],
-});
-
-function useDashboardMetrics() {
-  return useAnalyticsQuery<MetricRow>(
-    'SELECT * FROM metrics'
-  );
-}
-```
+For optimistic updates, factory patterns, conditional queries, and migration guides, see [extended documentation](../../docs/analytics/warehouse-query-hooks.md#advanced-patterns).
 
 ## Common Pitfalls
 
-### Infinite Loops
-
-```typescript
-// ❌ INCORRECT: Changing query keys cause infinite loops
-const { data } = useWarehouseQueryCached(
-  ['projects', Date.now()], // ❌ New key every render
-  'SELECT * FROM projects'
-);
-
-// ✅ CORRECT: Stable cache keys
-const { data } = useWarehouseQueryCached(
-  ['projects'], // ✅ Stable key
-  'SELECT * FROM projects'
-);
-```
-
-### Memory Leaks
-
-```typescript
-// ❌ INCORRECT: Not cleaning up subscriptions
-const { data } = useWarehouseQuery('SELECT * FROM large_table', {
-  staleTime: Infinity, // ❌ Never refetches, never cleans up
-});
-
-// ✅ CORRECT: Appropriate stale times
-const { data } = useWarehouseQuery('SELECT * FROM large_table', {
-  staleTime: 30 * 60 * 1000, // 30 minutes
-});
-```
-
-### Race Conditions
-
-```typescript
-// ❌ INCORRECT: Multiple concurrent queries
-function SearchComponent() {
-  const [query, setQuery] = useState('');
-  const { data } = useWarehouseQuery(
-    `SELECT * FROM items WHERE name LIKE '%${query}%'` // ❌ Race conditions
-  );
-}
-
-// ✅ CORRECT: Debounced queries with proper keys
-function SearchComponent() {
-  const [debouncedQuery] = useDebounce(query, 300);
-  const { data } = useWarehouseQueryCached(
-    ['search', debouncedQuery],
-    'SELECT * FROM items WHERE name LIKE ?',
-    { enabled: debouncedQuery.length > 2 }
-  );
-}
-```
-
-## Migration from Legacy Patterns
-
-### From Direct Fetch
-
-```typescript
-// ❌ OLD: Direct fetch (no caching, no error handling)
-const [data, setData] = useState(null);
-useEffect(() => {
-  fetch('/api/query', { body: JSON.stringify({ sql }) })
-    .then(res => res.json())
-    .then(setData);
-}, [sql]);
-
-// ✅ NEW: Warehouse hooks (caching, error handling, type safety)
-const { data, isLoading, error } = useWarehouseQuery<MyData>(
-  'SELECT * FROM my_table'
-);
-```
-
-### From Custom Hooks
-
-```typescript
-// ❌ OLD: Custom hook without proper caching
-function useCustomData() {
-  return useSWR('/api/custom', fetcher);
-}
-
-// ✅ NEW: Consistent warehouse pattern
-function useCustomData() {
-  return useWarehouseQueryCached(
-    ['custom-data'],
-    'SELECT * FROM custom_table',
-    { staleTime: 5 * 60 * 1000 }
-  );
-}
-```
+For detailed examples of infinite loops, memory leaks, and race conditions, see [extended documentation](../../docs/analytics/warehouse-query-hooks.md#troubleshooting).
 
 ## Enforcement
 
-### AST-Grep Rules
+### ESLint Rules (Planned)
+The following ESLint rules are planned for future implementation:
+- `@corso/warehouse-query-type-safety`: Enforce type parameters
+- `@corso/warehouse-query-error-handling`: Enforce error handling
+- `@corso/warehouse-query-sql-injection`: Prevent SQL injection
 
-```yaml
-# Detect missing type parameters
-rule: |
-  useWarehouseQuery($ARGS)
-  where:
-    $ARGS not contains "<"
+**Note**: These rules are not yet implemented in `eslint-plugin-corso`. Enforcement is currently handled via TypeScript types and code review.
 
-# Detect string interpolation in SQL
-rule: |
-  useWarehouseQuery($SQL)
-  where:
-    $SQL contains "`" or $SQL contains "+" or $SQL contains "${"
+For AST-Grep rules and ESLint configuration, see [extended documentation](../../docs/analytics/warehouse-query-hooks.md#enforcement).
 
-# Detect missing error handling
-rule: |
-  const { data } = useWarehouseQuery($SQL)
-  where:
-    not contains "error" or not contains "isLoading"
-```
+## Windows-first tips
 
-### ESLint Integration
+See the canonical guidance in
+[ai-agent-development-environment.mdc](mdc:.cursor/rules/ai-agent-development-environment.mdc#windows-first-tips).
 
-```javascript
-{
-  "rules": {
-    "@corso/warehouse-query-type-safety": "error",
-    "@corso/warehouse-query-error-handling": "error",
-    "@corso/warehouse-query-sql-injection": "error"
-  }
-}
-```
+## Related Rules
 
-## Windows-First Tips
-
-- Use `pnpm typecheck` to quickly validate warehouse query usage
-- Run `ast-grep scan --rule tools/ast-grep/warehouse-query-hooks.yml` for pattern validation
-- Use `git --no-pager log --oneline --grep="warehouse"` to track query-related changes
-- Prefer `| type` over `| cat` when piping query results in Windows terminals
+- `cursor/security-standards` - SQL injection prevention
+- `cursor/runtime-boundaries` - Server/Edge import safety
+- `cursor/code-quality-standards` - TypeScript standards

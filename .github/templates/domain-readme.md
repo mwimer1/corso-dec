@@ -1,7 +1,7 @@
 ---
 title: "{Domain} Domain (`lib/{domain}`)"
 description: "Brief description of domain responsibilities and scope."
-last_updated: 2025-09-12
+last_updated: "2025-12-13"
 owner: "team@corso"
 category: "domain"
 runtime: "client|server|edge|mixed"
@@ -335,9 +335,9 @@ describe('functionToTest', () => {
 ## Related Documentation
 
 - [Parent Domain Documentation](../README.md)
-- [Shared Utilities](../../shared/README.md)
-- [Testing Standards](../../../docs/codebase/tests.md)
-- [Security Standards](../../../docs/codebase/security.md)
+- [Shared Utilities](../../lib/shared/README.md)
+- [Testing Standards](../../docs/quality/testing-strategy.md)
+- [Security Standards](../../docs/security/security-policy.md)
 
 ---
 

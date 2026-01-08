@@ -1,5 +1,5 @@
-import { containerMaxWidthVariants } from '@/styles/ui/shared/container-base';
-import { tv } from '@/styles/utils';
+import { containerMaxWidthVariants } from '@/styles/ui/shared';
+import { tv } from '@/styles';
 
 /**
  * dashboardShellVariants

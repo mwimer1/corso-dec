@@ -1,9 +1,11 @@
 #!/usr/bin/env tsx
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { checkFilesWithPattern, checkPublicRouteHasMetadata, reportCheckFailures } from './check-common';
+import type { CheckResult } from './check-common';
+import { checkFilesWithPattern, checkPublicRouteHasMetadata } from './check-common';
+import { printCheckResults, setExitFromResults } from '../utils/report-helpers';
 
-async function fileHasMetadataExports(content: string, filePath: string): Promise<{ success: boolean; message: string; details?: string[] }> {
+async function fileHasMetadataExports(content: string, filePath: string): Promise<CheckResult> {
   const hasMetadata = /export\s+const\s+metadata\s*=/.test(content) || /export\s+async\s+function\s+generateMetadata\s*\(/.test(content);
   
   if (hasMetadata) {
@@ -38,12 +40,13 @@ async function main() {
     }
   );
 
-  reportCheckFailures(results, 'Metadata check');
+  printCheckResults(results, 'Metadata check');
+  setExitFromResults(results);
 }
 
 main().catch((err) => {
   console.error(err);
-  process.exit(1);
+  process.exitCode = 1;
 });
 
 

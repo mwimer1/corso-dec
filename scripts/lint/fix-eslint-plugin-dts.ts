@@ -1,20 +1,19 @@
 #!/usr/bin/env tsx
+/**
+ * Post-build fixer for eslint-plugin-corso TypeScript declaration files.
+ * 
+ * Eliminates namespace alias exports (e.g., `rules_1 as rules`) inside configs
+ * namespaces by converting them into concrete value declarations. This ensures
+ * proper TypeScript type exports for the ESLint plugin.
+ * 
+ * Intent: Fix TypeScript declaration file generation issues
+ * Files: eslint-plugin-corso/dist/index.d.ts
+ * Invocation: pnpm plugin:dts:fix
+ */
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { readTextSync, writeTextSync } from '../utils/fs';
-
-/**
- * Post-build fixer for eslint-plugin-corso d.ts
- *
- * Goal: eliminate namespace alias exports like `rules_1 as rules` inside
- * configs namespaces by converting them into concrete value declarations.
- *
- * Effectively transforms patterns like:
- *   let rules_1: { ... };
- *   export { rules_1 as rules };
- * into:
- *   export let rules: { ... };
- */
+import { readTextSync } from '../utils/fs/read';
+import { writeTextSync } from '../utils/fs/write';
 
 function main(): void {
   // Prefer local package dist when running from eslint-plugin-corso
@@ -26,7 +25,7 @@ function main(): void {
     src = readTextSync(dtsPath);
   } catch (e) {
     console.error(`[fix-eslint-plugin-dts] Unable to read ${dtsPath}:`, (e as Error).message);
-    process.exit(1);
+    process.exitCode = 1;
     return;
   }
 

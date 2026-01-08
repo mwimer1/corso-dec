@@ -1,0 +1,196 @@
+/* FILE: styles/tokens/ag-grid.css */
+
+/**
+ * AG Grid Theme Overrides for Corso
+ * 
+ * Component theme override for AG Grid tables used in dashboard entity grids.
+ * This file contains only custom overrides that cannot be controlled via
+ * the theme system (themeQuartz.withParams). Most styling is now handled
+ * in lib/vendors/ag-grid.theme.ts.
+ * 
+ * Keep this file minimal - only add overrides for:
+ * - Selection column custom styling (centering, padding)
+ * - Density mode adjustments (font size and spacing)
+ * - Component-specific tweaks
+ * - Visual hierarchy enhancements
+ * 
+ * Note: Theme params are implemented as --ag-* CSS custom properties,
+ * so they can be overridden here when needed (e.g., for density modes).
+ */
+
+/* Ensure AG Grid uses the app font family */
+.corso-ag-grid {
+  font-family: var(--font-sans, inter, system-ui, sans-serif);
+}
+
+/* Density modes: Comfortable (default) and Compact */
+
+/* 
+ * Override theme params for density modes.
+ * Uses --ag-spacing (replaces legacy --ag-grid-size) per AG Grid Theming API.
+ */
+.corso-ag-grid.ag-density-comfortable {
+  --ag-font-size: 13px;
+  --ag-spacing: 6px; /* Replaces legacy --ag-grid-size */
+}
+
+.corso-ag-grid.ag-density-compact {
+  --ag-font-size: 12px;
+  --ag-spacing: 4px; /* Replaces legacy --ag-grid-size */
+}
+
+/* --- Header Visual Hierarchy --- */
+
+/* Subtle header background for better visual separation */
+.corso-ag-grid .ag-header {
+  background-color: hsl(var(--surface, 0 0% 100%));
+  border-bottom: 1px solid hsl(var(--border, 214.3 31.8% 89%));
+}
+
+/* --- Vertical Centering Fix --- */
+
+/* 
+ * Fix vertical centering when rowHeight/headerHeight are set via grid options.
+ * This preserves ellipsis behavior and avoids rewriting AG Grid layout.
+ */
+.corso-ag-grid .ag-cell-wrapper {
+  height: 100%;
+}
+
+/* Center typical cell value content WITHOUT breaking editors */
+.corso-ag-grid .ag-cell:not(.ag-cell-inline-editing, .ag-cell-popup-editing) .ag-cell-value {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  min-width: 0; /* keep ellipsis working in flex contexts */
+}
+
+/* --- Focus States --- */
+
+/* Use design system ring token for focus outlines */
+.corso-ag-grid .ag-cell:focus,
+.corso-ag-grid .ag-header-cell:focus {
+  outline: 2px solid hsl(var(--ring, 221.2 83.2% 53.3%));
+  outline-offset: -2px;
+}
+
+/* --- Row Separators --- */
+
+/* Ensure row borders use subtle border color */
+.corso-ag-grid .ag-row {
+  border-bottom-color: hsl(var(--border, 214.3 31.8% 89%));
+}
+
+/* --- Selection Column Styling --- */
+
+/* Center body checkbox - target the cell itself */
+.corso-ag-grid .corso-selection-column-cell.ag-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* give breathing room from the grid edge; scales with your density modes via --ag-spacing */
+  padding: 0 calc(var(--ag-spacing) * 1.5);
+  box-sizing: border-box;
+}
+
+/* Ensure wrapper also centers content */
+.corso-ag-grid .corso-selection-column-cell .ag-cell-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center !important;
+  align-items: center;
+  padding: 0;
+}
+
+/* AG Grid adds LTR/RTL padding on the selection checkbox container.
+   Remove it in the dedicated selection column so the checkbox is truly centered.
+   Use margin-inline: auto for centering (works with flex or block layout). */
+.corso-ag-grid .corso-selection-column-cell .ag-selection-checkbox {
+  padding: 0 !important;
+  margin-inline: auto;
+}
+
+.corso-ag-grid .corso-selection-column-header .ag-selection-checkbox {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.corso-ag-grid .corso-selection-column-header .ag-header-select-all {
+  padding: 0 !important;
+}
+
+/* Center header checkbox - target the header cell wrappers */
+.corso-ag-grid .corso-selection-column-header.ag-header-cell {
+  padding: 0 calc(var(--ag-spacing) * 1.5);
+  box-sizing: border-box;
+}
+
+.corso-ag-grid .corso-selection-column-header .ag-header-cell-comp-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center !important;
+  align-items: center;
+  padding: 0;
+}
+
+.corso-ag-grid .corso-selection-column-header .ag-header-cell-label {
+  width: 100%;
+  display: flex;
+  justify-content: center !important;
+  align-items: center;
+  padding: 0;
+}
+
+/* 1px nudge: header select-all is slightly left vs body checkboxes */
+.corso-ag-grid.ag-ltr .corso-selection-column-header .ag-header-select-all {
+  transform: translateX(1px);
+}
+
+/* RTL-safe mirror */
+.corso-ag-grid.ag-rtl .corso-selection-column-header .ag-header-select-all {
+  transform: translateX(-1px);
+}
+
+/* 
+ * Pinned column border is now controlled via theme param (pinnedColumnBorder: false).
+ * This CSS rule is kept as a fallback but should not be needed.
+ * Removed to avoid brittle DOM selector dependencies.
+ */
+
+/* --- Numeric Cell Alignment --- */
+
+/* Right-align numeric columns (currency, number formats) */
+.corso-ag-grid .corso-numeric-cell.ag-cell {
+  text-align: right;
+}
+
+.corso-ag-grid .corso-numeric-cell .ag-cell-value {
+  justify-content: flex-end;
+}
+
+/* --- Badge Cell Styling --- */
+
+/* Badge cell styling - prevents pills from spanning full row height */
+.corso-ag-grid .corso-badge-cell.ag-cell {
+  /* Ensure cell content doesn't stretch to full height */
+  align-items: center;
+  /* Add subtle padding for better visual spacing */
+  padding: 2px 4px;
+}
+
+.corso-ag-grid .corso-badge-cell .ag-cell-value {
+  /* Prevent badge from stretching vertically - allow natural height */
+  height: auto !important;
+  align-items: center;
+  display: flex;
+  /* Add gap for multiple badges if any */
+  gap: 4px;
+}
+
+.corso-ag-grid .corso-badge-cell .ag-cell-wrapper {
+  /* Center badge vertically without stretching */
+  align-items: center;
+  height: auto;
+  display: flex;
+}

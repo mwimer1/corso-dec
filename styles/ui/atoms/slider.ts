@@ -1,6 +1,6 @@
 // styles/components/ui/atoms/slider.ts
-import type { VariantProps } from '@/styles/utils';
-import { tv } from '@/styles/utils';
+import type { VariantProps } from '@/styles';
+import { tv } from '@/styles';
 
 const sliderVariants = tv({
   base: ['relative flex w-full touch-none select-none items-center'],
@@ -31,6 +31,7 @@ const sliderThumbVariants = tv({
       sm: 'h-3 w-3',
       md: 'h-4 w-4',
       lg: 'h-5 w-5',
+      xl: 'h-6 w-6',
     },
     variant: {
       slider: '',
@@ -43,6 +44,7 @@ const sliderThumbVariants = tv({
 });
 
 export type SliderVariantProps = VariantProps<typeof sliderVariants>;
+export type SliderThumbVariantProps = VariantProps<typeof sliderThumbVariants>;
 export { sliderThumbVariants, sliderVariants };
 
 

@@ -1,0 +1,72 @@
+%% Domain Dependency Graph
+%% Generated from config/domain-map.ts
+%% This diagram shows the allowed dependency relationships between domains
+
+graph TD
+    %% Core application domains
+    Dashboard["`**dashboard**<br/>Business intelligence<br/>and analytics`"]
+    Billing["`**billing**<br/>Billing and subscription<br/>management`"]
+    Chat["`**chat**<br/>AI chat and conversation<br/>management`"]
+    Auth["`**auth**<br/>Authentication and<br/>access control`"]
+    Marketing["`**marketing**<br/>Landing pages and<br/>marketing content`"]
+    API["`**api**<br/>API routes and<br/>server-side logic`"]
+    
+    %% Foundation domains
+    UI["`**ui**<br/>Design system and<br/>UI primitives`"]
+    Security["`**security**<br/>Security utilities and<br/>authentication`"]
+    Integrations["`**integrations**<br/>Third-party service<br/>integrations`"]
+    Monitoring["`**monitoring**<br/>Observability and<br/>error tracking`"]
+    Shared["`**shared**<br/>Shared utilities and<br/>cross-cutting concerns`"]
+    
+    %% Application domain dependencies
+    Dashboard --> UI
+    Dashboard --> Shared
+    Dashboard --> Security
+    Dashboard --> Monitoring
+    Dashboard --> Integrations
+    
+    Billing --> UI
+    Billing --> Shared
+    Billing --> Security
+    Billing --> Monitoring
+    Billing --> Integrations
+    
+    Chat --> UI
+    Chat --> Shared
+    Chat --> Security
+    Chat --> Monitoring
+    Chat --> Integrations
+    
+    Auth --> UI
+    Auth --> Shared
+    Auth --> Security
+    Auth --> Monitoring
+    
+    Marketing --> UI
+    Marketing --> Shared
+    Marketing --> Security
+    Marketing --> Monitoring
+    
+    API --> Shared
+    API --> Security
+    API --> Monitoring
+    API --> Integrations
+    
+    %% Foundation domain dependencies
+    UI --> Shared
+    
+    Security --> Shared
+    
+    Integrations --> Shared
+    Integrations --> Security
+    
+    Monitoring --> Shared
+    
+    %% Styling
+    classDef appDomain fill:#e1f5ff,stroke:#01579b,stroke-width:2px,color:#000
+    classDef foundationDomain fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000
+    classDef sharedDomain fill:#fff3e0,stroke:#e65100,stroke-width:3px,color:#000
+    
+    class Dashboard,Billing,Chat,Auth,Marketing,API appDomain
+    class UI,Security,Integrations,Monitoring foundationDomain
+    class Shared sharedDomain

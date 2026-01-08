@@ -1,7 +1,9 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+description: "Documentation and resources for documentation functionality."
+last_updated: "2026-01-07"
 category: "documentation"
+status: "draft"
+title: ".husky"
 ---
 # 🤖 Husky Git Hooks Configuration
 
@@ -9,10 +11,11 @@ category: "documentation"
 
 ## 📋 Quick Reference
 
-**Active Hooks** (3/3 enabled):
+**Active Hooks** (4/4 enabled):
 - ✅ **pre-commit**: Documentation maintenance and validation
 - ✅ **commit-msg**: Conventional commit message validation
 - ✅ **pre-rebase**: Lockfile refresh during rebases
+- ✅ **pre-push**: Style checks and fast test suite
 
 **Key Features:**
 - 🔄 **Documentation-first**: Automated README updates and freshness validation
@@ -32,7 +35,7 @@ category: "documentation"
 | `post-merge` | ⚪ **Git LFS** | Large file checkout | `git lfs post-merge` |
 | `post-commit` | ⚪ **Git LFS** | Large file commit | `git lfs post-commit` |
 | `post-checkout` | ⚪ **Git LFS** | Large file checkout | `git lfs post-checkout` |
-| `pre-push` | ⚪ **Git LFS** | Large file push | `git lfs pre-push` |
+| `pre-push` | ✅ **Active** | Style checks and fast test suite | Style contract checks + `pnpm test:fast` |
 
 ---
 
@@ -44,21 +47,38 @@ category: "documentation"
 
 **Execution Flow**:
 ```bash
-# 1. Update documentation timestamps
-pnpm tsx scripts/docs/refresh-last-updated.ts
+# 1. Validate package.json (prevents duplicate scripts)
+pnpm validate:package
 
-# 2. Refresh documentation index
-pnpm docs:index
+# 2. Validate environment (prevents broken deployments)
+NODE_ENV=development pnpm validate:env
 
-# 3. Lint and validate documentation
-pnpm docs:lint && pnpm docs:check
+# 3. Typecheck staged files only (performance optimization)
+pnpm typecheck:staged
+
+# 4. Lint staged files (ESLint --fix on .ts/.tsx and binary font validation)
+pnpm lint-staged
+
+# 5. Validate documentation freshness (skips if no docs changed)
+pnpm tsx scripts/maintenance/validate-docs-on-commit.ts
 ```
 
 **Key Scripts**:
-- **`update-dates.ts`**: Updates `last_updated` frontmatter in documentation files
-- **`docs:index`**: Regenerates documentation table of contents and indexes
-- **`docs:lint`**: Validates documentation structure and formatting
-- **`docs:check`**: Comprehensive documentation freshness and link validation
+- **`validate:package`**: Validates package.json structure and prevents duplicate scripts
+- **`validate:env`**: Validates environment variables are properly configured
+- **`typecheck:staged`**: Typechecks only staged TypeScript files (fast incremental typecheck)
+- **`lint-staged`**: Runs ESLint --fix on staged .ts/.tsx files and validates binary fonts
+- **`validate-docs-on-commit.ts`**: Regenerates docs index only if docs files changed (performance optimization)
+
+**Performance Optimizations** (Phases 1-3):
+- ✅ **Staged-only typecheck**: Only checks staged TypeScript files instead of full project
+- ✅ **Conditional docs validation**: Skips docs index regeneration when no docs files changed
+- ✅ **Removed double linting**: Removed full project lint (`pnpm lint`) - `lint-staged` already lints staged files
+- ✅ **File change detection**: Skips validation checks when relevant files haven't changed:
+  - `validate:package` skipped if `package.json` not staged
+  - `validate:env` skipped if no env-related config files changed
+- ✅ **Caching**: `validate:package` uses file hash-based caching to skip re-validation when `package.json` unchanged
+- ✅ **Parallelization**: Independent checks (package/env validation) run concurrently using background jobs
 
 ### ✅ Commit Message Hook (`commit-msg`)
 
@@ -71,9 +91,13 @@ pnpm exec commitlint --edit "$1"
 
 **Validates Against**:
 - Conventional commit format: `type(scope): description`
-- Commit types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
+- Commit types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `perf`, `ci`, `build`, `revert`
+- **Scopes**: Strictly enforced list of 22 allowed scopes (see `commitlint.config.cjs` for authoritative list):
+  - `auth`, `dashboard`, `chat`, `components`, `hooks`, `api`, `types`, `stripe`, `openai`, `supabase`, `clickhouse`, `build`, `config`, `styles`, `docs`, `tests`, `infrastructure`, `subscription`, `organization`, `deps`, `db`, `security`
 - Maximum line length and formatting standards
 - Breaking change indicators and scope validation
+
+**See**: `docs/development/commit-conventions.md` for complete commit message guidelines and scope usage.
 
 ### ✅ Pre-rebase Hook (`pre-rebase`)
 
@@ -133,6 +157,7 @@ pnpm install  # Runs prepare script which installs Husky hooks
 **Temporary bypass** (use sparingly):
 ```bash
 git commit --no-verify  # Skip all pre-commit hooks
+git push --no-verify    # Skip pre-push hooks (tests, style checks)
 ```
 
 ### CI/CD Integration
@@ -141,8 +166,10 @@ git commit --no-verify  # Skip all pre-commit hooks
 
 | Layer | Purpose | Speed | Scope |
 |-------|---------|-------|-------|
-| **Local Hooks** | Fast feedback, documentation maintenance | ~5-10 seconds | Focused validation |
+| **Local Hooks** | Fast feedback, documentation maintenance | 1-3 seconds* | Focused validation |
 | **CI Pipeline** | Comprehensive testing, security scans | ~8-10 minutes | Full validation suite |
+
+\* **Performance optimized**: Runtime varies based on changes (see Performance & Metrics section)
 
 ---
 
@@ -152,16 +179,22 @@ git commit --no-verify  # Skip all pre-commit hooks
 
 All hooks follow consistent patterns:
 ```bash
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"  # Load Husky utilities
+#!/usr/bin/env sh
+. "$(dirname "$0")/husky.sh"  # Load Husky utilities
 
 # Hook logic here
 command1 && command2 && command3
 ```
 
+**Note**: Hooks run in POSIX `sh` for cross-platform compatibility. On Windows, Git Bash is recommended for best performance when executing hooks, as it avoids shell spawning overhead from PowerShell/CMD.
+
+**Note**: When adding new hooks, source `.husky/husky.sh` (not `._/husky.sh`). The `_/` directory is generated by Husky and should not be referenced.
+
+**Important**: The `_/` directory is automatically created by `husky install` (which runs via the `prepare` script on `pnpm install`). This is normal Husky v8 behavior and cannot be prevented. The directory is properly ignored in `.gitignore` and will not be committed. If you see it in your IDE, hide ignored files in your IDE settings.
+
 ### Utility Scripts
 
-**Husky Shell (`_/husky.sh`)**:
+**Husky Shell (`husky.sh`)**:
 - Debug logging support (`HUSKY_DEBUG=1`)
 - Exit code handling and error reporting
 - Cross-platform compatibility layer
@@ -217,9 +250,23 @@ pnpm install
 
 | Hook | Typical Runtime | Frequency |
 |------|-----------------|-----------|
-| `pre-commit` | 5-10 seconds | Every commit |
+| `pre-commit` | 1-3 seconds* | Every commit |
 | `commit-msg` | <1 second | Every commit |
 | `pre-rebase` | 2-3 seconds | During rebases |
+| `pre-push` | 10-30 seconds | Before push |
+
+\* **Performance optimized** (4 phases of optimization):
+- **Code commits** (with TS changes): 1.5-2.5 seconds (staged typecheck + lint in parallel, parallel validations)
+- **Code commits** (no TS/config changes): 1-2 seconds (lint only, validations skipped/cached)
+- **Docs-only commits**: 1-2 seconds (docs validation only, other checks skipped)
+- **Config-only commits**: 0.5-1 second (minimal validation, most checks skipped)
+- **Cached commits**: <1 second (when package.json unchanged and cached)
+
+**Optimization phases implemented**:
+- Phase 1: Removed double linting, staged-only typecheck, conditional docs validation
+- Phase 2: File change detection, hash-based caching for package validation
+- Phase 3: Parallel execution of independent checks (package/env validations)
+- Phase 4: Parallel execution of typecheck and lint when both are needed (20-30% faster on code commits)
 
 ### Quality Impact
 
@@ -256,7 +303,7 @@ pnpm install
 - [Scripts Directory](../scripts/README.md) - Detailed documentation of maintenance scripts used by hooks
 - [CI/CD Pipeline](../.github/README.md) - How hooks complement comprehensive CI validation
 -- [Development Environment](../docs/development/setup-guide.md) - Local development workflow integration
--- [Git Workflow Standards](../docs/codebase-apis/import-patterns.md) - Conventional commit and branching standards
+-- [Git Workflow Standards](../docs/architecture/import-patterns.md) - Conventional commit and branching standards
 
 ---
 
@@ -267,4 +314,3 @@ pnpm install
 ---
 
 **Last Updated**: 2025-09-10 | **Next Review**: Monthly hook effectiveness audit
-

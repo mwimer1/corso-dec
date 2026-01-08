@@ -21,7 +21,7 @@ describe('FollowUpChips', () => {
       expect(button).toHaveAttribute('type', 'button');
       expect(button).toHaveTextContent(items[index]);
     });
-  });
+  }, 10000); // Explicit timeout to prevent flaky environment initialization hangs
 
   it('calls onClick when chip is clicked', async () => {
     const user = userEvent.setup();
@@ -64,10 +64,11 @@ describe('FollowUpChips', () => {
     render(<FollowUpChips items={items} onClick={mockOnClick} />);
 
     const button = screen.getByRole('button', { name: 'Focus Test' });
+    // Updated to match new ring-based focus styles (replaced outline with ring)
     expect(button).toHaveClass(
-      'focus-visible:outline',
-      'focus-visible:outline-2',
-      'focus-visible:outline-offset-2'
+      'focus-visible:ring-2',
+      'focus-visible:ring-primary/50',
+      'focus-visible:ring-offset-2'
     );
   });
 

@@ -1,9 +1,9 @@
-import type { VariantProps } from '@/styles/utils';
-import { tv } from '@/styles/utils';
+import type { VariantProps } from '@/styles';
+import { tv } from '@/styles';
 
 // Badge styles: small pill with color variants.
 const badgeVariants = tv({
-  base: 'inline-block rounded-[10px] px-2 py-0.5 text-xs font-semibold',
+  base: 'inline-block rounded-lg px-2.5 py-1 text-xs font-semibold',
   variants: {
     color: {
       default: 'bg-muted text-muted-foreground',

@@ -7,7 +7,7 @@
  */
 
 import type { Row } from '../../shared/core/entity/types';
-import type { ISODateString } from '../../shared/utils/dates/types';
+import type { ISODateString } from '../../shared/dates/types';
 
 /** Common audit columns returned by the warehouse */
 export interface BaseRow extends Row {

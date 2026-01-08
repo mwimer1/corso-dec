@@ -13,8 +13,9 @@ globs:
 related_rules:
   - documentation-standards
   - code-quality-standards
-last_reviewed: "2025-10-13"
-summary: Keep agent/rules artifacts versioned, indexed, and validated in CI.
+last_reviewed: "2025-12-15"
+summary: Windows-first development environment, workflow standards, and quality gates for Corso applications.
+# Reviewed in Dec 2025 - Development workflow and tooling standards current
 ---
 # 🚀 Development Environment & Workflow (Consolidated)
 
@@ -22,8 +23,9 @@ summary: Keep agent/rules artifacts versioned, indexed, and validated in CI.
 
 ## TL;DR
 - **Setup**: Run `pnpm install`, then `pnpm run verify:ai-tools`, then `pnpm run setup:branch` (each sequentially).
-- **Development**: Use `pnpm typecheck` for fast feedback on type errors; avoid using `pnpm -s` (silent) so you don't miss output. For UI changes, run `pnpm dev` in a separate terminal to get instant feedback on edits.
+- **Development**: Use `pnpm typecheck` for fast feedback on type errors; avoid using `pnpm -s` (silent) so you don't miss output. For UI changes, run `pnpm dev` in a separate terminal to get instant feedback on edits. The `predev` hook automatically cleans ports (3000, 9323) and orphaned processes (>30min old) before starting.
 - **Quality gates**: Run `pnpm typecheck → pnpm lint → pnpm test → pnpm validate:cursor-rules` sequentially (don't chain with &&) to ensure all standards pass.
+- **Lint performance**: `pnpm lint` uses ESLint cache for faster reruns. Use `pnpm lint:full` for CI-grade validation (rebuilds plugin + lint scripts + lint).
 - **Environment**: Use the provided `getEnv()` helper for config (never access `process.env` directly in app code).
 - **Windows-safe**: Favor Windows-compatible commands (no Unix-only pipes, use `git --no-pager`, etc.) and run tasks from the repo root without relying on `cd` for navigation.
 - **Git Workflow**: Use conventional commits, feature branches, and rebase workflow
@@ -48,7 +50,9 @@ pnpm quality:local
 - **Env vars**: `pnpm validate:env` (ensures all required env vars are set and type-safe).
 - **Quality gates**: Run in order – `pnpm typecheck`, then `pnpm lint`, then `pnpm test`, then `pnpm validate:cursor-rules`. All must pass locally before committing.
 
-### Windows-friendly Examples
+## Windows-first tips
+
+### Git Commands
 ```bash
 # Git: Windows-friendly log (no pager)
 git --no-pager log --oneline
@@ -59,6 +63,13 @@ git --no-pager show -s --format=%H HEAD
 # Git: View log piped safely on Windows
 git --no-pager log --oneline | type
 ```
+
+### Command Execution
+- **Avoid Unix-only operations**: Don't use Unix-specific shell features like `pbcopy` or `cat` in examples; use `type` or native PowerShell equivalents if needed
+- **Run commands sequentially**: Execute commands one-by-one rather than chaining with `&&` for easier debugging
+- **No `pnpm -s/--silent`**: Avoid silent mode – it suppresses output that could contain important warnings
+- **Don't rely on `cd` for scripts**: Run commands from the repository root or use subshells/`--prefix` flags to execute in subdirs (avoids path issues on Windows shells)
+- **Use forward slashes**: Prefer forward slashes in file paths for consistency across platforms
 
 ## Git Workflow & Conventional Commits
 
@@ -83,6 +94,7 @@ pnpm typecheck && pnpm lint && pnpm test && pnpm quality:local
 - **Descriptive titles** using Conventional Commits format
 - **CI must pass** before review
 - **Force push with lease**: `git push --force-with-lease` for updates
+- **Bypass pre-push hooks**: `git push --no-verify` (use sparingly, skips tests and style checks)
 
 ### Post-merge Cleanup
 ```bash
@@ -96,14 +108,16 @@ git remote prune origin
 type(scope): description
 ```
 
-**Types**: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `perf`, `style`
-**Scopes**: `auth`, `dashboard`, `chat`, `components`, `api`, `hooks`, `types`, `docs`, `dev-tools`, `tooling`
+**Types**: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `perf`, `style`, `ci`, `build`, `revert`
+**Scopes** (see `commitlint.config.cjs` for authoritative list): `auth`, `dashboard`, `chat`, `components`, `hooks`, `api`, `types`, `stripe`, `openai`, `supabase`, `clickhouse`, `build`, `config`, `styles`, `docs`, `tests`, `infrastructure`, `subscription`, `organization`, `deps`, `db`, `security`
 **Subject**: imperative, ≤ 50 chars
 
 **Examples**:
 - `feat(api): add rate limit to chat generation`
-- `fix(billing): handle missing webhook signature`
+- `fix(stripe): handle missing webhook signature`
 - `refactor(api): replace NextResponse.json with http.*`
+- `docs(docs): update commit conventions documentation`
+- `feat(dashboard): add entity grid feature`
 
 **Breaking changes**: append `!` after the type or scope: `feat!: drop deprecated endpoint`
 
@@ -181,26 +195,67 @@ const opts = {
 | Use Case | Script | Frequency |
 |----------|--------|-----------|
 | Daily Development | `typecheck` | Every few minutes |
-| Pre-commit | `typecheck` | Before commits |
+| Pre-commit | Automatic (git hooks) | Before commits (1-3 seconds, optimized) |
 | CI/CD | `typecheck` | Every build |
 | Troubleshooting | `typecheck:clean` | When experiencing slowdowns |
 | Quick Feedback | `typecheck:fast` | During development |
 
-### Quality Gates
+**Note**: Pre-commit hooks (`.husky/pre-commit`) automatically run optimized validation:
+- **Performance**: 1-3 seconds (optimized with caching, conditional execution, and parallelization)
+- **Optimizations**: Staged-only typecheck, conditional validations, file hash caching
+- See `.husky/README.md` for full hook performance details
 
-#### Development Workflow
+## Quality gates and validation commands
+
+### Development Workflow
 ```bash
 # Fast feedback during development
 pnpm typecheck
 
-# Full validation before commit (local)
-pnpm typecheck && pnpm lint && pnpm test
+# Full validation before commit (run sequentially, not chained)
+pnpm typecheck
+pnpm lint
+pnpm test
+pnpm validate:cursor-rules
 ```
 
-#### CI/CD Pipeline
+### CI/CD Pipeline
 ```bash
-# Complete validation (CI)
-pnpm typecheck && pnpm lint && pnpm test && pnpm validate:cursor-rules
+# Complete validation (CI - run sequentially)
+pnpm typecheck
+pnpm lint
+pnpm test
+pnpm validate:cursor-rules
+```
+
+### Common Validation Commands
+```bash
+# Type checking (fast feedback)
+pnpm typecheck
+
+# Linting (ESLint-based, uses cache)
+pnpm lint
+
+# Testing (unit, integration, components)
+pnpm test
+
+# Cursor rules validation
+pnpm validate:cursor-rules
+
+# Full quality gates (local development)
+pnpm quality:local
+```
+
+### Domain-Specific Validation
+```bash
+# Runtime boundaries
+pnpm validate:runtime-boundaries
+
+# OpenAPI RBAC
+pnpm openapi:rbac:check
+
+# Environment validation
+pnpm validate:env
 ```
 
 ## Development Best Practices
@@ -211,7 +266,7 @@ pnpm typecheck && pnpm lint && pnpm test && pnpm validate:cursor-rules
 - **Run setup scripts in order**: Execute setup steps one after another (as in **TL;DR**). Do not concatenate long sequences with `&&` – run each step separately for clarity and easier debugging.
 - **Leverage search tools**: Start with broad semantic code searches, then refine with exact symbol searches. Use the repository search (`rg`/`sg`) scoped to relevant folders to gather context in parallel.
 - **Make targeted edits**: Apply minimal necessary changes (preserve formatting and import style). Use a small TODO list for multi-step fixes, marking the first task as `in_progress` before editing.
-- **Use the PNPM dev server for UI feedback**: If working on frontend or UI-related tasks, keep the development server running (`pnpm dev`) to catch errors or UI regressions immediately as you make changes.
+- **Use the PNPM dev server for UI feedback**: If working on frontend or UI-related tasks, keep the development server running (`pnpm dev`) to catch errors or UI regressions immediately as you make changes. The `predev` hook automatically cleans ports and orphaned processes before starting, ensuring clean startup without conflicts.
 - **Favor GitHub CLI for context**: Use `gh` commands to retrieve PR details, issues, or to check out branches as needed for context instead of manual web navigation.
 - **Post-edit validation**: After making changes, always run the full suite: type-checking, linting, tests, then `pnpm validate:cursor-rules` to catch any rule violations.
 

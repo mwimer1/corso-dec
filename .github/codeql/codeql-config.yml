@@ -1,0 +1,18 @@
+# CodeQL Configuration for Corso
+# This configuration file customizes the CodeQL security analysis
+# Documentation: https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/customizing-your-advanced-setup-for-code-scanning
+
+# Use default security and quality queries for JavaScript/TypeScript
+# This provides comprehensive security vulnerability detection
+queries:
+  - uses: security-and-quality
+
+# Future: Add custom queries when needed
+# Example structure for custom queries:
+# queries:
+#   - uses: security-and-quality
+#   - ./custom/
+
+# Disable default query suites (we explicitly specify above)
+# disable-default-queries: false
+

@@ -1,18 +1,15 @@
-// Expose only client-safe public env from shared barrel. Server-only env helpers
-// must be imported from `@/lib/server/env` directly in server code.
-// REMOVED: publicEnv, getPublicEnv - Users import directly from @/lib/shared/config/client
-
-// lib/shared/index.ts
+/**
+ * @fileoverview Shared library barrel - client-safe exports only
+ * @description Exports only client-safe utilities to maintain runtime boundary safety.
+ *              Server-only helpers must be imported directly from @/lib/server/* modules.
+ *              Re-exports were reduced to prevent accidental server-only imports in client code.
+ */
 
 /**
  * Exports all shared cache utilities (shared, server/client-safe).
  */
 export * from './cache/lru-cache';
 export * from './cache/simple-cache';
-/**
- * Exports clientLogger, httpFetch for client-safe logging and environment access.
- * REMOVED: clientLogger, httpFetch - Users import directly from @/lib/shared/config/client
- */
 /**
  * NOTE: `metricsCfg` is server-only and must not be re-exported from the
  * shared barrel. Import `metricsCfg` directly from `lib/shared/config/runtime`
@@ -23,17 +20,17 @@ export * from './cache/simple-cache';
  * Exports all shared constants (shared, server/client-safe).
  */
 export * from './constants/links';
-// Environment types
-export type { ValidatedEnv as Env, ValidatedEnv } from '@/types/shared/config/base/types';
+// Removed: ValidatedEnv re-export - import directly from @/types/shared/config/types
+// Removed: Env alias - unused per dead code audit
 /**
  * Exports all shared error classes and utilities (shared, server/client-safe).
  */
 export * from './errors/application-error';
-export * from './errors/browser';
 export * from './errors/error-utils';
 export * from './errors/reporting';
 export * from './errors/security-validation-error';
-export { ErrorCategory, ErrorCode, ErrorSeverity } from './errors/types';
+export { ErrorCategory, ErrorSeverity } from './errors/types';
+// Removed: ErrorCode - unused per dead code audit
 export type { AppError, ErrorContext } from './errors/types';
 // Server-only performance module moved to lib/server/performance
 // (Removed) Event bus utilities were deprecated and removed.
@@ -71,14 +68,10 @@ export * from './format/numbers';
 /**
  * Exports all shared utility functions (shared, server/client-safe).
  */
-export * from './utils/layout';
-/**
- * Exports shared form utilities (shared, server/client-safe).
- * REMOVED: useZodForm, InferForm - Utilities removed as unused (no React Hook Form adoption)
- */
+// Removed: export * from './utils/layout'; - all exports were unused per dead code audit
 /**
  * Exports client-safe validation helpers and schemas only.
- * Server-only validation utilities are available via @/lib/shared/server
+ * Server-only validation utilities are available via @/lib/server/shared/server
  */
 export { assertZodSchema } from './validation/assert';
 // NOTE: primitive-schemas and client.ts re-exports removed to eliminate unused exports
@@ -89,19 +82,13 @@ export { assertZodSchema } from './validation/assert';
 // Marketing pricing facades should be imported from marketing domain directly
 
 // Align shared types consumed by lib/index.ts re-exports
-// REMOVED: ValidationResult - Users import directly from @/lib/validators/shared/types
 
-// Note: For backwards compatibility with direct file imports,
-// compatibility stubs are available in the deprecated/ directory.
-// These will be removed in a future version - use the barrel exports above instead.
+// Note: Direct file imports are supported. Use barrel exports when possible for better tree-shaking.
 
 /** Misc config helpers */
-// REMOVED: createConfig, configOwnership - Users import directly from @/lib/shared/config-utils
 
 // Additional public surface (edge/client-safe)
 // Analytics client-safe facade removed; import dashboard types directly if needed
-// REMOVED: SortLike, entityTableKey - Users import directly from @/lib/shared/table/query-keys
-// REMOVED: Visibility, usePersistedColumnVisibility - Users import directly from @/lib/shared/table/use-persisted-column-visibility
 
 // Asset resolver exports (Supabase-only canonical resolver)
 export * from './assets/cdn';
@@ -110,7 +97,10 @@ export * from './assets/cdn';
 export { trackEvent, trackNavClick } from './analytics/track';
 
 // Re-export public client env to avoid deep imports
-// Re-export client-safe env, logger and fetch to avoid deep imports from callers
-export { httpFetch, logger, publicEnv } from './config/client';
+// Re-export client-safe env and logger to avoid deep imports from callers
+export { logger, publicEnv } from './config/client';
+// Re-export auth mode config (client+server safe)
+export { isRelaxedAuthMode } from './config/auth-mode';
+// Removed: httpFetch - unused per dead code audit
 
 

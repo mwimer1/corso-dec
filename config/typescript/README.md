@@ -1,7 +1,9 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+description: "Documentation and resources for documentation functionality. Located in typescript/."
+last_updated: "2026-01-07"
 category: "documentation"
+status: "active"
+title: "Typescript"
 ---
 # TypeScript Configuration
 
@@ -49,7 +51,7 @@ tsconfig.json (root)
 ├── tsconfig.base.json (shared options & aliases)
 ├── tsconfig.app.json (Next.js application)
 ├── tsconfig.styles.json (styles/design system)
-├── tsconfig.lib.json (libraries: lib/hooks/contexts/validators)
+├── tsconfig.lib.json (libraries: lib/hooks/validators)
 ├── tsconfig.components.json (UI components)
 ├── tsconfig.testing.json (test files)
 ├── tsconfig.tooling.json (build tools)
@@ -85,13 +87,14 @@ tsconfig.json (root)
 
 | Configuration | Purpose | Includes | Key Settings |
 |---------------|---------|----------|--------------|
-| `tsconfig.app.json` | Next.js application code | `app/**/*`, `middleware.ts` | Next.js plugin, composite |
+| `tsconfig.app.json` | Next.js application code | `app/**/*`, `proxy.ts` | Next.js plugin, composite |
 | `tsconfig.styles.json` | Styles and design system | `styles/**/*` | Emits .d.ts to `.typegen/styles` |
 || `tsconfig.lib.json` | Libraries (lib/hooks/contexts/validators) | `lib/**/*`, `hooks/**/*`, `contexts/**/*`, `types/**/*` | Emits .d.ts to `.typegen/lib` |
 | `tsconfig.components.json` | UI components (atoms, molecules, organisms) | `components/**/*` | Emits .d.ts to `.typegen/components` |
 | `tsconfig.testing.json` | Test files and utilities | `tests/**/*`, `**/*.stories.tsx`, `vitest*.ts` | Composite, comprehensive coverage |
 | `tsconfig.tooling.json` | Build tools and scripts | `scripts/**/*`, `config/**/*`, `eslint-plugin-corso/**/*` | Composite, tool-specific settings |
 | `tsconfig.eslint.json` | ESLint comprehensive coverage | All TypeScript files | Full project coverage for linting |
+| `tsconfig.prod.json` | Production strictness checks | All source files (excludes tests/stories) | Enhanced unused variable/parameter checks |
 
 ## Individual Configurations
 
@@ -127,7 +130,7 @@ tsconfig.json (root)
 
 **Includes**:
 - `app/**/*.ts` - Next.js app directory
-- `middleware.ts` - Next.js middleware
+- `proxy.ts` - Next.js proxy (formerly middleware in Next.js 16+)
 - `.next/types/**/*.ts` - Next.js generated types
 
 **Key Settings**:
@@ -184,7 +187,6 @@ tsconfig.json (root)
 
 **Includes**:
 - `tests/**/*.ts` - Test files
-- `**/*.stories.tsx` - Storybook stories
 - `vitest*.ts` - Vitest configuration
 - `vitest.base.ts` - Base Vitest config (moved to root)
 - All source files for testing
@@ -202,7 +204,6 @@ tsconfig.json (root)
 - `scripts/**/*.ts` - Build and utility scripts
 - `config/**/*.ts` - Configuration files
 - `eslint-plugin-corso/**/*.ts` - Custom ESLint plugin
-- `.storybook/**/*` - Storybook configuration
 - `styles/**/*.ts` - Style utilities
 
 **Key Settings**:
@@ -225,6 +226,26 @@ tsconfig.json (root)
 - ESLint-specific optimizations
 - Comprehensive file inclusion
 
+### `tsconfig.prod.json` - Production Strictness
+
+**Purpose**: Enhanced type checking for production code with stricter unused variable/parameter detection.
+
+**Includes**:
+- All source files (`app/`, `components/`, `lib/`, `hooks/`, `actions/`, `contexts/`, `styles/`, `types/`)
+- Excludes test files, stories, scripts, and documentation
+
+**Key Settings**:
+- Extends `tsconfig.json` (solution config)
+- `noUnusedLocals: true` - Flags unused local variables
+- `noUnusedParameters: true` - Flags unused function parameters
+- Used by `pnpm typecheck:prod` for production code validation
+
+**Usage**:
+```bash
+# Run production strictness checks
+pnpm typecheck:prod
+```
+
 ## Path Alias System
 
 ### Core Aliases
@@ -239,8 +260,6 @@ The path alias system provides consistent import resolution across all configura
   "@/app/*": ["./app/*"],
   "@/components/*": ["./components/*"],
   "@/hooks/*": ["./hooks/*"],
-  "@/actions/*": ["./actions/*"],
-  "@/contexts/*": ["./contexts/*"],
   "@/tests/*": ["./tests/*"]
 }
 ```
@@ -261,7 +280,8 @@ The path alias system provides consistent import resolution across all configura
   "@/lib/shared": ["./lib/shared/index.ts"],
   "@/lib/security": ["./lib/security/index.ts"],
   "@/lib/monitoring": ["./lib/monitoring/index.ts"],
-  "@/lib/auth": ["./lib/auth/index.ts"],
+  "@/lib/auth/server": ["./lib/auth/server.ts"],
+  "@/lib/auth/client": ["./lib/auth/client.ts"],
   "@/lib/chat": ["./lib/chat/index.ts"],
   "@/lib/dashboard": ["./lib/dashboard/index.ts"]
 }
@@ -270,10 +290,8 @@ The path alias system provides consistent import resolution across all configura
 **Type Aliases**:
 ```json
 {
-  "@/types/auth": ["./types/auth/index.ts"],
   "@/types/chat": ["./types/chat/index.ts"],
   "@/types/dashboard": ["./types/dashboard/index.ts"],
-  "@/types/security": ["./types/security/index.ts"]
 }
 ```
 
@@ -471,4 +489,3 @@ npx tsc --traceResolution | grep "@/lib"
 ---
 
 _Last updated: 2025-01-16_
-

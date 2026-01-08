@@ -10,12 +10,10 @@ type Props = {
 
 export function InsightsHero({ title, eyebrow = 'Insights', description, className }: Props) {
   return (
-    <section
+    <div
       aria-label="Insights overview"
       className={cn(
-        'relative py-12 md:py-16',
-        'bg-muted/20 rounded-3xl border border-border',
-        'overflow-hidden',
+        'relative overflow-hidden',
         className
       )}
     >
@@ -27,13 +25,13 @@ export function InsightsHero({ title, eyebrow = 'Insights', description, classNa
         <div className="absolute -top-24 left-1/2 h-48 w-[120%] -translate-x-1/2 rounded-full blur-3xl opacity-40 bg-gradient-to-r from-primary/30 via-primary/10 to-transparent" />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-6xl px-4 md:px-6">
+      <div className="relative z-10">
         {eyebrow ? (
           <p className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
             {eyebrow}
           </p>
         ) : null}
-        <h2 className="text-2xl md:text-4xl font-semibold tracking-tight text-foreground">
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground">
           {title}
         </h2>
         {description ? (
@@ -42,6 +40,6 @@ export function InsightsHero({ title, eyebrow = 'Insights', description, classNa
           </p>
         ) : null}
       </div>
-    </section>
+    </div>
   );
 }

@@ -1,10 +1,11 @@
 'use client';
 
-import { ErrorFallback } from "@/components/ui/organisms";
+import { createErrorBoundary } from '@/app/shared/create-error-boundary';
 
-export default function AuthError({ error, reset }: { error: Error; reset: () => void }) {
-  console.error(error);
-  return <ErrorFallback error={error} resetErrorBoundary={reset} />;
-}
+/**
+ * Error boundary for authentication routes.
+ * Catches errors within the auth section and provides recovery UI.
+ */
+export default createErrorBoundary({ context: 'Auth' });
 
 

@@ -17,6 +17,14 @@ const nextConfig = {
   serverExternalPackages: [
     'import-in-the-middle',
     'require-in-the-middle',
+    // DuckDB native bindings must be externalized (not bundled)
+    '@duckdb/node-api',
+    '@duckdb/node-bindings',
+    '@duckdb/node-bindings-win32-x64',
+    '@duckdb/node-bindings-linux-x64',
+    '@duckdb/node-bindings-linux-arm64',
+    '@duckdb/node-bindings-darwin-x64',
+    '@duckdb/node-bindings-darwin-arm64',
   ],
   async rewrites() {
     return [
@@ -29,6 +37,40 @@ const nextConfig = {
   },
   async headers() {
     return [
+      {
+        // Global security headers for all routes
+        source: '/:path*',
+        headers: [
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on',
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload',
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()',
+          },
+        ],
+      },
       {
         // Fix Cache-Control headers for proxied Clerk JavaScript files
         source: '/clerk-js/:path*',
@@ -49,8 +91,8 @@ const nextConfig = {
     return [
       // API: redirect legacy/unversioned paths to versioned/internal equivalents (308)
       { source: '/api/user', destination: '/api/v1/user', permanent: true },
-      { source: '/api/dashboard/query', destination: '/api/v1/dashboard/query', permanent: true },
-      { source: '/api/dashboard/generate-sql', destination: '/api/v1/dashboard/generate-sql', permanent: true },
+      // Removed: /api/dashboard/query → migrated to /api/v1/entity/{entity}/query
+      // Removed: /api/dashboard/generate-sql → migrated to /api/v1/ai/generate-sql
       { source: '/api/subscription/products', destination: '/api/v1/subscription/products', permanent: true },
       { source: '/api/subscription/portal', destination: '/api/v1/subscription/portal', permanent: true },
       // Internal billing routes consolidated under /api/v1
@@ -59,9 +101,7 @@ const nextConfig = {
       { source: '/api/internal/billing/subscription-status', destination: '/api/v1/billing/subscription-status', permanent: true },
       { source: '/api/billing/test-success', destination: '/api/internal/billing/test-success', permanent: true },
 
-      // Streams
-      { source: '/api/v1/chat/process', destination: '/api/v1/dashboard/chat/process', permanent: true },
-      { source: '/api/dashboard/generate-sql/stream', destination: '/api/v1/dashboard/generate-sql/stream', permanent: true },
+      // Removed: Legacy chat/SQL redirects - endpoints migrated to /api/v1/ai/*
 
       // App: promote Chat as default dashboard landing
       { source: '/dashboard', destination: '/dashboard/chat', permanent: true },
@@ -72,6 +112,10 @@ const nextConfig = {
   },
   images: {
     formats: ['image/avif', 'image/webp'],
+    // Next.js 16 defaults changed - explicitly set if current behavior is important
+    // minimumCacheTTL: 60, // Default changed from 60s to 14400s (4 hours) in v16
+    // qualities: [75, 50, 25], // Default changed from range to [75] in v16
+    maximumRedirects: 3, // Explicitly set (default changed from unlimited to 3 in v16)
     remotePatterns: [
       {
         protocol: 'https',
@@ -82,12 +126,22 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'www.google.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'images.pexels.com',
+      },
     ],
     dangerouslyAllowSVG: true,
     // When allowing remote SVGs via next/image, restrict evaluated SVGs via this CSP
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    // Note: images.domains is deprecated in Next.js 16, use remotePatterns (already done)
+    // Note: If using local images with query strings, add:
+    // localPatterns: { search: true },
   },
   // experimental options removed: instrumentationHook is enabled by default in Next 15+
+  // Turbopack is now the default bundler in Next.js 16
+  // Note: Custom webpack config below will be ignored when using Turbopack (default)
+  // Use --webpack flag for builds if webpack config is required temporarily
   turbopack: {
     rules: {
       '*.svg': {
@@ -95,10 +149,6 @@ const nextConfig = {
         as: '*.js',
       },
     },
-  },
-  eslint: {
-    // We lint via dedicated scripts/CI; skip during Next build to avoid false warnings
-    ignoreDuringBuilds: true,
   },
   typescript: {
     // We run a separate typecheck step via package.json scripts
@@ -108,7 +158,13 @@ const nextConfig = {
   productionBrowserSourceMaps: isCI,
   experimental: {
     serverSourceMaps: isCI,
+    // Enable Turbopack file system cache for faster dev builds
+    turbopackFileSystemCacheForDev: true,
   },
+  // Webpack config: Note that Next.js 16 uses Turbopack as default bundler
+  // This webpack config will be ignored when using Turbopack (default behavior)
+  // To use webpack instead, run: pnpm build --webpack
+  // TODO: Migrate webpack-specific rules to Turbopack equivalents when ready
   webpack: (config, { dev, isServer }) => {
     // Only disable persistent cache in CI; keep it locally to speed rebuilds
     if (!dev && isCI) {

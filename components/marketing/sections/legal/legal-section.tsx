@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { LegalContentWrapper } from "./legal-content-wrapper";
 
 interface LegalSectionProps {
-  as?: keyof JSX.IntrinsicElements;
+  as?: keyof React.JSX.IntrinsicElements;
   className?: string;
   children: ReactNode;
   [key: string]: any;
@@ -24,7 +24,7 @@ export function LegalSection({ as, className, children, ...rest }: LegalSectionP
     );
   }
 
-  const Tag = as as keyof JSX.IntrinsicElements;
+  const Tag = as as keyof React.JSX.IntrinsicElements;
   return (
     <Tag>
       <LegalContentWrapper className={cn(className)} {...rest}>

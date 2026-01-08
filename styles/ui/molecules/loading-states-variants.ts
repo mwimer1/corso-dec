@@ -1,4 +1,4 @@
-import { tv, type VariantProps } from '@/styles/utils';
+import { tv, type VariantProps } from '@/styles';
 import { textTri } from '@/styles/shared-variants';
 
 export const loadingStates = tv({

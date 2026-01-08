@@ -1,4 +1,4 @@
-import { tv } from '@/styles/utils';
+import { tv } from '@/styles';
 
 // Underline accent for headings: animated scaleX underline
 /** @public — animated underline accent used in hero and headers */

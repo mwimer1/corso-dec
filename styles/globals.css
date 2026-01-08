@@ -2,34 +2,10 @@
 
 /* IMPORTS MUST BE FIRST (besides @charset / empty @layer) */
 @import './tokens/index.css' layer(tokens);
-@import './ui/shared/patterns.css' layer(components);
 
 :root {
   --nav-border: hsl(var(--border));
   --nav-shadow: 0 1px 3px hsl(0deg 0% 0% / 5%);
-
-  /* Optional button palette mapping (kept here for future alignment) */
-  --btn-outline-bg:    hsl(var(--background));
-  --btn-outline-border:hsl(var(--border));
-  --btn-outline-text:  hsl(var(--text-high));
-  --btn-outline-bg-hover:    hsl(var(--muted));
-  --btn-outline-border-hover:hsl(var(--border));
-  --btn-outline-text-hover:  hsl(var(--text-high));
-  --btn-primary-bg:    hsl(var(--primary));
-  --btn-primary-border:hsl(var(--primary));
-  --btn-primary-text:  hsl(var(--primary-foreground));
-  --btn-primary-bg-hover:    hsl(var(--primary) / 90%);
-  --btn-primary-border-hover:hsl(var(--primary) / 90%);
-  --btn-primary-text-hover:  hsl(var(--primary-foreground));
-  --btn-link-bg: transparent;
-  --btn-link-border: transparent;
-  --btn-link-text: hsl(var(--text-high));
-  --btn-link-bg-hover: hsl(var(--muted));
-  --btn-link-border-hover: transparent;
-  --btn-link-text-hover: hsl(var(--text-high));
-  --radius-default: 11px;
-  --radius-link: 13px;
-  --radius-cta: 14px;
 }
 
 /* Component overrides moved into Tailwind components layer */
@@ -88,6 +64,19 @@ html, body {
 
   /* Text size adjustment for mobile */
   text-size-adjust: 100%;
+
+  /* Font rendering optimization */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Avoid optimizeLegibility globally—can reduce text crispness on Windows for small UI text. */
+}
+
+/* Subpixel antialiasing utility for improved text crispness on Windows */
+@layer utilities {
+  .subpixel-antialiased {
+    -webkit-font-smoothing: subpixel-antialiased;
+    -moz-osx-font-smoothing: auto;
+  }
 }
 
 /* Global focus styles for accessibility */
@@ -126,7 +115,7 @@ html, body {
   box-sizing: border-box;
   user-select: text;
   padding: 6px 8px;
-  border-radius: var(--rounded-lg);
+  border-radius: var(--radius-lg);
 }
 
 /* Dialog backdrop filter with vendor prefixes */
@@ -150,24 +139,74 @@ html, body {
   to { height: 0 }
 }
 
-/* Missing keyframes used by animated-pill sheen */
-@keyframes sheen-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+
+/* Fade in animation for industry tab transitions */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
-/* Navbar scroll shadow class toggle */
-.navbar.scrolled {
-  box-shadow: var(--nav-shadow);
-  border-bottom: 1px solid var(--nav-border);
+@media (prefers-reduced-motion: reduce) {
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
 }
 
-/* Hide FAQ under 901px (CSS-only) */
+/* Fade in up animation for content transitions */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+@layer utilities {
+  .animate-fadeInUp {
+    animation: fade-in-up var(--duration-200) var(--easing-ease-out, cubic-bezier(0, 0, 0.2, 1)) both;
+  }
+}
+
+/* Component-specific utility classes
+ * Note: These are kept in globals.css as they're applied conditionally via className.
+ * Consider moving to component-specific CSS files if they grow in scope.
+ */
+
+/* Hide FAQ under 901px (CSS-only utility for navbar) */
 @media (width <= 900px) {
   .hide-faq-901 { display: none !important; }
 }
 
-/* Ensure mobile overlay item borders use nav token color */
+/* Mobile menu border color utility (uses nav token) */
 .mobile-menu .border-b {
   border-color: var(--nav-border) !important;
 } 

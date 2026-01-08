@@ -1,4 +1,6 @@
-import { APP_LINKS  } from '@/lib/shared';
+import { APP_LINKS } from '@/lib/shared';
+import { cn } from "@/styles";
+import { containerWithPaddingVariants } from "@/styles/ui/shared";
 import Link from "next/link";
 import React from "react";
 
@@ -6,8 +8,8 @@ export const FooterLegal: React.FC = () => {
   const year = new Date().getFullYear();
 
   return (
-    <div className="w-full bg-[hsl(var(--footer-legal))] text-background border-t border-white/10">
-      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center sm:justify-between py-2 gap-2 text-xs text-background/70">
+    <div data-footer-legal className="w-full bg-[hsl(var(--footer-legal))] text-background border-t border-white/10">
+      <div className={cn(containerWithPaddingVariants({ maxWidth: "7xl", padding: "lg" }), "flex flex-col sm:flex-row items-center sm:justify-between py-2 gap-2 text-xs text-background/70")}>
         <div className="whitespace-nowrap">
           © {year} Corso Inc. All rights reserved.
         </div>

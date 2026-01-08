@@ -24,11 +24,11 @@ jobs:
           corepack enable
           corepack prepare pnpm@10 --activate
 
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: pnpm/action-setup@c5ba7f7862a0f64c1b1a05fbac13e0b8e86ba08c # v4
         with:
           version: 10.15.0
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 20
           cache: 'pnpm'
@@ -72,7 +72,7 @@ jobs:
         run: pnpm docs:stale:check
 
       - name: Build
-        run: pnpm build:offline
+        run: pnpm build
 
       - name: Upload artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -105,8 +105,17 @@ jobs:
       - name: Set NODE_ENV for production builds
         run: echo "NODE_ENV=production" >> $GITHUB_ENV
 
+      - name: 'Guard: No hardcoded scan-root directory lists'
+        run: pnpm ci:check:no-hardcoded-scan-roots
+
+      - name: Style contract checks
+        run: pnpm check:styles
+
+      - name: Validate inline styles and hardcoded tokens
+        run: pnpm validate:styles:inline
+
       - name: Run Linting
-        run: pnpm lint && pnpm lint:css
+        run: pnpm lint:full && pnpm lint:css
 
       - name: Validate lib/ structure and barrels
         run: pnpm validate:lib
@@ -124,10 +133,16 @@ jobs:
         run: pnpm docs:aliases:check
 
       - name: Verify no deprecated dependencies
-        run: pnpm verify:deps:deprecations
+        run: pnpm audit:ci
 
       - name: 'Guard: Dependency health (cycles, orphans, unused exports)'
         run: pnpm validate:dead-code:ci
+
+      - name: 'Guard: Deprecated path references'
+        run: pnpm validate:deprecated-paths
+
+      - name: 'Check: Documentation duplication (<5% threshold)'
+        run: pnpm jscpd:docs || echo "⚠️ Documentation duplication check completed (non-blocking)"
 
       - name: Validate Commit Messages
         if: github.event_name == 'pull_request'
@@ -174,8 +189,14 @@ jobs:
       - name: Set NODE_ENV for production builds
         run: echo "NODE_ENV=production" >> $GITHUB_ENV
 
+      - name: Enforce Test Patterns
+        run: pnpm test:patterns
+
       - name: Run Test Suite & Generate Coverage
         run: pnpm test:ci
+
+      - name: Check Architecture Drift
+        run: pnpm check:drift
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -232,14 +253,63 @@ jobs:
         with:
           name: coverage-report
           path: coverage/
-      - name: Fail if total line-coverage < 80 %
+      # Coverage thresholds (must match vitest.config.ts):
+      # - Lines: 80%, Functions: 75%, Branches: 70%, Statements: 80%
+      - name: Check Coverage Thresholds
         run: |
-          # Wait for coverage report to be available, since artifact download can be slow
-          while [ ! -f coverage/coverage-summary.json ]; do sleep 1; done
-          pct=$(jq '.total.lines.pct' coverage/coverage-summary.json)
-          echo "Coverage ${pct}%"
-          # Use bc for floating point comparison
-          if (( $(echo "$pct < 80" | bc -l) )); then
-            echo "❌ Coverage below 80 %" && exit 1
+          echo "=== Coverage Threshold Check ==="
+          if [ -f coverage/coverage-summary.json ]; then
+            echo "Coverage thresholds:"
+            echo "- Lines: ≥ 80%"
+            echo "- Functions: ≥ 75%"
+            echo "- Branches: ≥ 70%"
+            echo "- Statements: ≥ 80%"
+            echo ""
+            echo "Actual coverage:"
+            jq -r '.total | "Lines: \(.lines.pct)%\nFunctions: \(.functions.pct)%\nBranches: \(.branches.pct)%\nStatements: \(.statements.pct)%"' coverage/coverage-summary.json
+            echo ""
+            echo "Threshold check:"
+            LINES=$(jq -r '.total.lines.pct | floor' coverage/coverage-summary.json)
+            FUNCTIONS=$(jq -r '.total.functions.pct | floor' coverage/coverage-summary.json)
+            BRANCHES=$(jq -r '.total.branches.pct | floor' coverage/coverage-summary.json)
+            STATEMENTS=$(jq -r '.total.statements.pct | floor' coverage/coverage-summary.json)
+            
+            FAILED=0
+            if [ "$LINES" -lt 80 ]; then
+              echo "❌ Lines coverage: ${LINES}% (threshold: 80%)"
+              FAILED=1
+            else
+              echo "✅ Lines coverage: ${LINES}% (threshold: 80%)"
+            fi
+            
+            if [ "$FUNCTIONS" -lt 75 ]; then
+              echo "❌ Functions coverage: ${FUNCTIONS}% (threshold: 75%)"
+              FAILED=1
+            else
+              echo "✅ Functions coverage: ${FUNCTIONS}% (threshold: 75%)"
+            fi
+            
+            if [ "$BRANCHES" -lt 70 ]; then
+              echo "❌ Branches coverage: ${BRANCHES}% (threshold: 70%)"
+              FAILED=1
+            else
+              echo "✅ Branches coverage: ${BRANCHES}% (threshold: 70%)"
+            fi
+            
+            if [ "$STATEMENTS" -lt 80 ]; then
+              echo "❌ Statements coverage: ${STATEMENTS}% (threshold: 80%)"
+              FAILED=1
+            else
+              echo "✅ Statements coverage: ${STATEMENTS}% (threshold: 80%)"
+            fi
+            
+            if [ $FAILED -eq 1 ]; then
+              echo ""
+              echo "❌ Coverage thresholds not met. See coverage report artifact for details."
+              exit 1
+            fi
+          else
+            echo "❌ Coverage summary file not found"
+            exit 1
           fi
 

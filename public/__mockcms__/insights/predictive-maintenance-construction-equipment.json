@@ -1,0 +1,25 @@
+{
+  "id": "predictive-maintenance-construction-equipment",
+  "slug": "predictive-maintenance-construction-equipment",
+  "title": "Predictive Maintenance in Construction Equipment: Cutting Costs and Downtime",
+  "description": "Predictive maintenance for construction equipment – how IoT sensors and data analytics predict machine failures and help reduce costly downtime on site.",
+  "publishDate": "2025-10-12T09:00:00Z",
+  "imageUrl": "/demos/corso-ai-interface.png",
+  "categories": [
+    {
+      "slug": "technology",
+      "name": "Technology"
+    },
+    {
+      "slug": "operations",
+      "name": "Operations"
+    }
+  ],
+  "readingTime": 5,
+  "author": {
+    "name": "Data Analytics Team",
+    "avatar": null
+  },
+  "content": "<p>Equipment breakdowns on construction sites cause costly delays and disrupt project schedules. Predictive maintenance uses IoT sensors and data analytics to forecast equipment failures before they occur, enabling proactive repairs and minimizing downtime.</p>\n<p>This article examines how construction firms are implementing predictive maintenance programs, the technologies involved, and the cost and productivity benefits they're achieving.</p>"
+}
+

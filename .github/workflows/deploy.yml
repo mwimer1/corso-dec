@@ -1,0 +1,229 @@
+name: Deployment
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+permissions:
+  contents: read
+  deployments: write
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # Pre-deployment validation
+  validate:
+    name: Pre-Deployment Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup-node-pnpm
+        with:
+          run-install: 'true'
+
+      - name: Validate Environment Variables
+        run: pnpm validate:env
+        env:
+          NODE_ENV: production
+
+      - name: Type Check
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint:full
+
+      - name: Set NODE_ENV for tests
+        run: echo "NODE_ENV=production" >> $GITHUB_ENV
+
+      - name: Create reports directory
+        run: mkdir -p reports
+
+      - name: Enforce Test Patterns
+        run: pnpm test:patterns
+
+      - name: Test Suite
+        run: |
+          echo "Running test suite with coverage..."
+          pnpm test:ci || (echo "❌ Test suite failed - check output above for details" && exit 1)
+
+      # Coverage thresholds (must match vitest.config.ts):
+      # - Lines: 80%
+      # - Functions: 75%
+      # - Branches: 70%
+      # - Statements: 80%
+      - name: Show Coverage Summary
+        if: always()
+        run: |
+          echo "=== Coverage Summary ==="
+          if [ -f coverage/coverage-summary.json ]; then
+            echo "Coverage thresholds:"
+            echo "- Lines: ≥ 80%"
+            echo "- Functions: ≥ 75%"
+            echo "- Branches: ≥ 70%"
+            echo "- Statements: ≥ 80%"
+            echo ""
+            echo "Actual coverage:"
+            jq -r '.total | "Lines: \(.lines.pct)%\nFunctions: \(.functions.pct)%\nBranches: \(.branches.pct)%\nStatements: \(.statements.pct)%"' coverage/coverage-summary.json
+            echo ""
+            echo "Threshold check:"
+            LINES=$(jq -r '.total.lines.pct | floor' coverage/coverage-summary.json)
+            FUNCTIONS=$(jq -r '.total.functions.pct | floor' coverage/coverage-summary.json)
+            BRANCHES=$(jq -r '.total.branches.pct | floor' coverage/coverage-summary.json)
+            STATEMENTS=$(jq -r '.total.statements.pct | floor' coverage/coverage-summary.json)
+            
+            FAILED=0
+            if [ "$LINES" -lt 80 ]; then
+              echo "❌ Lines coverage: ${LINES}% (threshold: 80%)"
+              FAILED=1
+            else
+              echo "✅ Lines coverage: ${LINES}% (threshold: 80%)"
+            fi
+            
+            if [ "$FUNCTIONS" -lt 75 ]; then
+              echo "❌ Functions coverage: ${FUNCTIONS}% (threshold: 75%)"
+              FAILED=1
+            else
+              echo "✅ Functions coverage: ${FUNCTIONS}% (threshold: 75%)"
+            fi
+            
+            if [ "$BRANCHES" -lt 70 ]; then
+              echo "❌ Branches coverage: ${BRANCHES}% (threshold: 70%)"
+              FAILED=1
+            else
+              echo "✅ Branches coverage: ${BRANCHES}% (threshold: 70%)"
+            fi
+            
+            if [ "$STATEMENTS" -lt 80 ]; then
+              echo "❌ Statements coverage: ${STATEMENTS}% (threshold: 80%)"
+              FAILED=1
+            else
+              echo "✅ Statements coverage: ${STATEMENTS}% (threshold: 80%)"
+            fi
+            
+            if [ $FAILED -eq 1 ]; then
+              echo ""
+              echo "❌ Coverage thresholds not met. See coverage report for details."
+              exit 1
+            fi
+          else
+            echo "⚠️  Coverage summary file not found"
+          fi
+
+      - name: Upload Coverage Reports
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: coverage-reports
+          path: |
+            coverage/
+            reports/
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Display Coverage Report Location
+        if: always()
+        run: |
+          echo "📊 Coverage reports available in artifact 'coverage-reports':"
+          echo "- HTML report: coverage/index.html"
+          echo "- LCOV report: coverage/lcov.info"
+          echo "- JSON summary: coverage/coverage-summary.json"
+          echo "- JUnit test results: reports/vitest-junit.xml"
+
+      - name: Build Verification
+        run: pnpm build
+
+      - name: Security Headers Check
+        run: |
+          # Verify security headers are configured
+          if ! grep -q "Strict-Transport-Security" config/next.config.mjs; then
+            echo "❌ Security headers missing"
+            exit 1
+          fi
+          echo "✅ Security headers configured"
+
+  # Deployment status tracking
+  deploy:
+    name: Deploy to ${{ github.event.inputs.environment || 'production' }}
+    needs: validate
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.environment || 'production' }}
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+
+      - name: Create Deployment
+        id: deploy
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1d3799cdea # v7
+        with:
+          script: |
+            const environment = '${{ github.event.inputs.environment || 'production' }}';
+            const deployment = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.sha,
+              environment: environment,
+              auto_merge: false,
+              required_contexts: []
+            });
+            
+            return {
+              deployment_id: deployment.data.id,
+              url: `https://${context.repo.owner}.github.io/${context.repo.repo}`
+            };
+
+      - name: Update Deployment Status
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1d3799cdea # v7
+        if: always()
+        with:
+          script: |
+            const state = '${{ job.status }}' === 'success' ? 'success' : 'failure';
+            await github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: ${{ steps.deploy.outputs.deployment_id }},
+              state: state,
+              description: `Deployment ${state === 'success' ? 'completed' : 'failed'}`
+            });
+
+  # Post-deployment health check
+  health-check:
+    name: Post-Deployment Health Check
+    needs: deploy
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Wait for Deployment
+        run: sleep 30
+
+      - name: Health Check
+        run: |
+          # Note: Replace with actual production URL
+          URL="${DEPLOYMENT_URL:-https://your-domain.com}"
+          response=$(curl -s -o /dev/null -w "%{http_code}" "$URL/api/health")
+          
+          if [ "$response" != "200" ]; then
+            echo "❌ Health check failed: HTTP $response"
+            exit 1
+          fi
+          
+          echo "✅ Health check passed"
+        env:
+          DEPLOYMENT_URL: ${{ secrets.DEPLOYMENT_URL }}
+

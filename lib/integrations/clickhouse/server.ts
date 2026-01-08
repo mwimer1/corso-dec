@@ -2,11 +2,11 @@ import 'server-only';
 
 import { createClient, type ClickHouseClient, type ClickHouseClientConfigOptions } from '@clickhouse/client';
 import { getEnv } from '@/lib/server/env';
+import { createSemaphore } from './concurrency';
 
 declare global {
   // Singleton to avoid multiple TCP pools in dev/test
   // (augments the global type; safe on server-only modules)
-  // eslint-disable-next-line no-var
   var __corso_clickhouse__: ClickHouseClient | undefined;
 }
 
@@ -48,7 +48,24 @@ export function clickhouse(): ClickHouseClient {
 }
 
 /**
+ * Semaphore to limit concurrent ClickHouse queries
+ * Uses CLICKHOUSE_CONCURRENCY_LIMIT from environment (default: 8)
+ * Uses Promise-based semaphore (Turbopack-compatible, no Node.js async_hooks)
+ */
+let querySemaphore: ReturnType<typeof createSemaphore> | null = null;
+
+function getQuerySemaphore(): ReturnType<typeof createSemaphore> {
+  if (!querySemaphore) {
+    const env = getEnv();
+    const limit = env.CLICKHOUSE_CONCURRENCY_LIMIT ?? 8;
+    querySemaphore = createSemaphore(limit);
+  }
+  return querySemaphore;
+}
+
+/**
  * Execute a ClickHouse query with security validation and parameter sanitization
+ * Concurrency is limited via semaphore based on CLICKHOUSE_CONCURRENCY_LIMIT env var
  */
 export async function clickhouseQuery(_sql: string): Promise<unknown[]>;
 export async function clickhouseQuery<T>(_sql: string, _params?: Record<string, unknown>): Promise<T[]>;
@@ -106,15 +123,22 @@ export async function clickhouseQuery<T = unknown>(
 
   const sanitizedParams = sanitizeClickParams(params);
 
+  // Execute query through semaphore to enforce concurrency limit
+  const semaphore = getQuerySemaphore();
+  
   try {
-    const client = getClient();
-    const result = await client.query({
-      query: finalSql,
-      query_params: sanitizedParams,
+    const data = await semaphore(async () => {
+      const client = getClient();
+      const result = await client.query({
+        query: finalSql,
+        query_params: sanitizedParams,
+      });
+
+      const jsonResult = (await result.json()) as T[] | { data: T[] };
+      return Array.isArray(jsonResult) ? jsonResult : (jsonResult as { data: T[] }).data;
     });
 
-    const data = (await result.json()) as T[] | { data: T[] };
-    return Array.isArray(data) ? data : (data as { data: T[] }).data;
+    return data;
   } catch (error) {
     logger.error('[ClickHouse] Query failed', {
       error: error instanceof Error ? error.message : String(error),
@@ -136,7 +160,7 @@ export async function clickhouseQuery<T = unknown>(
 import { validateSQLSecurity } from '@/lib/integrations/database/scope';
 import { logger } from '@/lib/monitoring';
 import { ApplicationError, ErrorCategory, ErrorSeverity } from '@/lib/shared';
-import { normalizeSql } from '../../server/shared/query-utils';
+import { normalizeSql } from '@/lib/server/shared/query-utils';
 import { sanitizeClickParams } from './utils';
 
 // Error codes (copied from deleted errors.ts)
@@ -162,6 +186,5 @@ function mapInternalToSecCode(
   }
 }
 
-// (keep any existing exports below that are still valid)
 
 

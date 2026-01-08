@@ -1,5 +1,5 @@
 // styles/ui/shared/surface-interactive.ts
-import { tv } from '@/styles/utils';
+import { tv } from '@/styles';
 
 /** @public — hover/elevation utility used in market-insights */
 export const surfaceInteractive = tv({

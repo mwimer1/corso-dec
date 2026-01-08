@@ -254,13 +254,12 @@ function main() {
     console.log('   1. Restarting your terminal/shell');
     console.log('   2. Using DevContainer for consistent environment');
     console.log('   3. Checking installation logs for errors');
-    process.exit(1);
+    process.exitCode = 1;
   } else {
     console.log('\n🎉 All required AI agent tools are working correctly!');
     if (!hasDevContainer) {
       console.log('💡 Consider using DevContainer for the most comprehensive AI agent environment.');
     }
-    process.exit(0);
   }
 }
 

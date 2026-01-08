@@ -49,6 +49,9 @@ class LibStructureValidator {
   async validate(): Promise<ValidationResult[]> {
     console.log('🔍 Validating lib/ directory structure...');
 
+    // Check for forbidden directories
+    this.checkForbiddenDirectories();
+
     const domains = this.getDomains();
     const results: ValidationResult[] = [];
 
@@ -78,6 +81,20 @@ class LibStructureValidator {
     // Exclude special directories that aren't domains
     const excluded = ['__tests__', 'node_modules', '.git'];
     return excluded.includes(name) || name.startsWith('.');
+  }
+
+  private checkForbiddenDirectories(): void {
+    // lib/services/ was removed in favor of direct domain structure (lib/entities/, etc.)
+    const servicesPath = join(this.libPath, 'services');
+    if (existsSync(servicesPath)) {
+      this.issues.push({
+        type: 'error',
+        domain: 'lib',
+        file: 'services/',
+        message: 'lib/services/ directory is forbidden. Domains should live directly under lib/ (e.g., lib/entities/).',
+        suggestion: 'Move any content from lib/services/ to appropriate domain directories (e.g., lib/entities/).'
+      });
+    }
   }
 
   private async validateDomain(domain: string): Promise<ValidationResult> {
@@ -447,7 +464,24 @@ class LibStructureValidator {
 
   async run(): Promise<void> {
     const results = await this.validate();
+    
+    // Add forbidden directory issues to results if any
+    if (this.issues.length > 0) {
+      const libResult: ValidationResult = {
+        domain: 'lib',
+        issues: this.issues,
+        score: Math.max(0, 100 - (this.issues.length * 10))
+      };
+      results.unshift(libResult);
+    }
+    
     this.printResults(results);
+    
+    // Exit with error code if there are any errors
+    const hasErrors = results.some(r => r.issues.some(i => i.type === 'error'));
+    if (hasErrors) {
+      process.exit(1);
+    }
   }
 }
 

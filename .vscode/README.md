@@ -1,7 +1,8 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+description: "Documentation and resources for documentation functionality."
+last_updated: "2026-01-07"
 category: "documentation"
+status: "draft"
 ---
 # Corso Development Workflow Accessibility
 
@@ -31,7 +32,7 @@ This VS Code workspace is configured with enhanced accessibility for repetitive 
 
 ### Method 3: Windows Interactive Menu
 ```bash
-scripts/dev-workflows.bat
+scripts/windows/dev-workflows.bat
 ```
 
 ## 📋 Available Tasks
@@ -44,7 +45,6 @@ scripts/dev-workflows.bat
 
 ### ⚡ **Development**
 - Quick Dev Start
-- Start Storybook
 - OpenAPI Generate/Validate
 
 ### 🔍 **Quality & Testing**
@@ -61,7 +61,6 @@ scripts/dev-workflows.bat
 
 ### 🔧 **Build & Cleanup**
 - Build Project
-- Build Storybook
 - Clean Cache
 - Clean All Caches
 
@@ -105,4 +104,3 @@ Tasks and shortcuts can be customized by editing:
 ---
 
 **Happy coding! 🎉**
-

@@ -1,7 +1,8 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+description: "Documentation and resources for documentation functionality. Located in rules/."
+last_updated: "2026-01-07"
 category: "documentation"
+status: "draft"
 ---
 # Cursor AI Rules
 
@@ -34,7 +35,7 @@ category: "documentation"
 
 ## Overview
 
-This directory contains **13 comprehensive rules** plus supporting files that guide Cursor AI development, ensuring consistent code quality, security, and development practices across the Corso platform. These rules are designed to be enforced through CI/CD pipelines, linting tools, and development workflows.
+This directory contains **16 comprehensive rules** plus supporting files that guide Cursor AI development, ensuring consistent code quality, security, and development practices across the Corso platform. These rules are designed to be enforced through CI/CD pipelines, linting tools, and development workflows.
 
 ### Architecture
 
@@ -130,12 +131,51 @@ globs: ["**/*"]
 | Field | Purpose | Example |
 |-------|---------|---------|
 | `rule_id` | Unique identifier | `cursor/security-standards` |
+| `summary` | Brief description (<120 chars) | `"Zero-trust security with Clerk auth, Zod validation..."` |
 | `owners` | Responsible teams | `["security@corso.io", "platform@corso.io"]` |
-| `last_reviewed` | Last validation date | `2025-09-06` |
+| `last_reviewed` | Last validation date | `2025-12-15` |
 | `domains` | Applicable areas | `["security", "api"]` |
-| `enforcement` | Validation methods | `["ast-grep:withErrorHandlingEdge"]` |
+| `enforcement` | Validation level | `advise`, `warn`, or `block` |
 | `alwaysApply` | Global vs. targeted | `true` for security rules |
 | `globs` | File patterns | `["app/api/**", "actions/**"]` |
+
+### Rule Content Structure
+
+Each rule must include:
+1. **Frontmatter** with `summary` field (<120 chars)
+2. **TL;DR section** (3–7 bullets) at the top of the body
+3. **Purpose/Why section** (2–6 lines) explaining the rule's rationale
+4. **Content sections** as needed for the rule's domain
+5. **Windows-first tips** (if needed): Reference [`ai-agent-development-environment.mdc`](ai-agent-development-environment.mdc#windows-first-tips), don't duplicate
+6. **Quality gates** (if needed): Reference [`ai-agent-development-environment.mdc`](ai-agent-development-environment.mdc#quality-gates-and-validation-commands), don't duplicate
+
+**Note**: Rules must reference canonical Windows-first tips and quality gates sections rather than duplicating content. See [`.cursor/templates/rule-templates.md`](../templates/rule-templates.md) for authoring templates.
+
+## Token Budget & Evergreen Policy
+
+### Policy Overview
+Rules are optimized for token efficiency and long-term maintainability:
+- **Target**: Individual rules < 2,500 tokens (except canonical `ai-agent-development-environment.mdc` < 3,500)
+- **Always-apply rules**: Target < 1,200 tokens each (except canonical)
+- **Total reduction goal**: 20%+ token reduction across all rules
+- **Longform content**: Extended examples, migration guides, and detailed patterns live in `docs/ai/rules/`
+
+### Longform Content Location
+Extended documentation for rules is located in `docs/ai/rules/`:
+- `docs/ai/rules/security-standards.md` - Extended code examples, webhook verification patterns
+- `docs/analytics/warehouse-query-hooks.md` - Advanced patterns, migration guides, enforcement rules
+- `docs/ai/rules/analytics-tracking.md` - Provider integration, testing patterns
+- `docs/ai/rules/entity-grid-architecture.md` - Future enhancements backlog
+- `docs/ai/rules/component-design-system.md` - Extended import examples, theming patterns
+- `docs/ai/rules/dashboard-components.md` - Chat implementation details
+- `docs/ai/rules/openapi-vendor-extensions.md` - Workflow integration, common issues
+
+Rules link to these docs rather than embedding large content blocks.
+
+### Canonical Sections
+- **Windows-first tips**: Canonical home is [`ai-agent-development-environment.mdc`](ai-agent-development-environment.mdc#windows-first-tips)
+- **Quality gates**: Canonical home is [`ai-agent-development-environment.mdc`](ai-agent-development-environment.mdc#quality-gates-and-validation-commands)
+- Other rules must link to these sections, not duplicate them
 
 ## Enforcement
 
@@ -155,17 +195,19 @@ globs: ["**/*"]
 | Design System | INFO | Manual review |
 
 ### **Windows-First Guidelines**
-- Prefer `git --no-pager` for Windows compatibility
-- Avoid Unix-only pipes; use `| type` when piping is needed
-- Run validation commands sequentially, not chained with `&&`
-- Use forward slashes in file paths for consistency
+
+See the canonical guidance in [`ai-agent-development-environment.mdc`](ai-agent-development-environment.mdc#windows-first-tips).
+
+### **Quality Gates and Validation Commands**
+
+See the canonical command set in [`ai-agent-development-environment.mdc`](ai-agent-development-environment.mdc#quality-gates-and-validation-commands).
 
 ## Usage Examples
 
 ### **API Route with Security Standards**
 ```typescript
 // ✅ CORRECT: makeEdgeRoute with Zod validation + rate limiting
-import { makeEdgeRoute } from '@/lib/api/shared/edge-route';
+import { makeEdgeRoute } from '@/lib/api/edge-route';
 import { http } from '@/lib/api';
 import { z } from 'zod';
 
@@ -319,7 +361,10 @@ pnpm validate:cursor-rules --verbose
 | Resource | Purpose | Location |
 |----------|---------|----------|
 | **Canonical Snippets** | Reusable code examples | [`_snippets.mdc`](_snippets.mdc) |
-| **Rule Index** | Complete rule registry | [`_index.json`](_index.json) |
+| **Rule Templates** | Rule authoring templates | [`.cursor/templates/rule-templates.md`](../templates/rule-templates.md) |
+| **Windows-first Tips** | Canonical Windows guidance | [`ai-agent-development-environment.mdc`](ai-agent-development-environment.mdc#windows-first-tips) |
+| **Quality Gates** | Canonical validation commands | [`ai-agent-development-environment.mdc`](ai-agent-development-environment.mdc#quality-gates-and-validation-commands) |
+| **Rule Index** | Complete rule registry (generated) | [`_index.json`](_index.json) |
 | **Security Standards** | API & authentication patterns | [`security-standards.mdc`](security-standards.mdc) |
 | **Component Architecture** | Design system guidelines | [`component-design-system.mdc`](component-design-system.mdc) |
 | **Code Quality** | TypeScript & testing standards | [`code-quality-standards.mdc`](code-quality-standards.mdc) |
@@ -364,7 +409,7 @@ pnpm validate:cursor-rules --verbose
 
 ### 📊 Rule Consolidation & Optimization
 **Major consolidation reduced rule count and improved maintainability:**
-- **Rule count update**: 13 comprehensive rules (accurate count)
+- **Rule count update**: 16 comprehensive rules (accurate count as of 2026-01-07)
 - **Consolidated rules**: Component design system, dashboard components, documentation standards
 - **Metadata standardization**: All rules updated to current date (2025-09-27)
 - **Enforcement coverage**: Added enforcement mechanisms to previously unenforced rules
@@ -379,12 +424,13 @@ pnpm validate:cursor-rules --verbose
 - ✅ **Dead code removal**: Eliminated deprecated company-name-renderer.tsx file
 - ✅ **Documentation accuracy**: Updated entity implementation status across all docs
 
-### 📋 Shared Templates Created
-**New `templates/rule-templates.mdc` provides standardized patterns:**
-- ✅ **Frontmatter templates**: Standard and security-specific rule headers
-- ✅ **Common sections**: Windows-first tips, quality gates, enforcement patterns
-- ✅ **Content templates**: Do/don't patterns, code examples, testing templates
-- ✅ **Validation commands**: Standardized command patterns and Windows compatibility
+### 📋 Shared Templates & Canonical Sections
+**Rule templates and canonical content locations:**
+- ✅ **Template location**: `.cursor/templates/rule-templates.md` (not inside `.cursor/rules/`)
+- ✅ **Canonical Windows-first tips**: [`ai-agent-development-environment.mdc`](ai-agent-development-environment.mdc#windows-first-tips)
+- ✅ **Canonical quality gates**: [`ai-agent-development-environment.mdc`](ai-agent-development-environment.mdc#quality-gates-and-validation-commands)
+- ✅ **Rule generation**: `corso-assistant.mdc` is canonical; `_index.json` and `.agent/corso-dev.md` are generated by `pnpm rules:sync`
+- ✅ **Authoring guidelines**: TL;DR required, summary required, keep rules evergreen, avoid duplicating Windows/quality-gate content
 
 ### 🎯 Quality Improvements
 - **Maintainability**: Easier to create new rules using shared templates
@@ -395,4 +441,3 @@ pnpm validate:cursor-rules --verbose
 ---
 
 **Last Updated:** 2025-10-06 | **Rules:** 13 | **Templates:** 1 | **Enforced:** STRICT
-

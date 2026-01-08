@@ -1,4 +1,4 @@
-import { tv, type VariantProps } from '@/styles/utils';
+import { tv, type VariantProps } from '@/styles';
 
 const authCardVariants = tv({
   base: '',

@@ -1,8 +1,11 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+title: "Route Configuration"
+last_updated: "2026-01-07"
 category: "documentation"
+status: "draft"
 ---
+# Route Configuration Guide
+
 Short guidance for route authors:
 
 - Prefer named exports for route config: `export const runtime = 'edge'`, `export const dynamic = 'force-dynamic'`, `export const revalidate = 0`.
@@ -13,7 +16,8 @@ Short guidance for route authors:
 
 New repository checks:
 
-- `scripts/rules/ast-grep/routes-config-hardening.yml` — errors on `export const config =` and `as const` usage for route config exports in `app/**` files.
+- ESLint rule `@corso/require-runtime-exports` — requires runtime configuration in API route files.
+- ESLint rule `@corso/no-edge-runtime-on-pages` — blocks Edge runtime on pages/layouts.
 
 If you need to make a route Node runtime (for ClickHouse, Stripe, streaming), declare:
 
@@ -25,3 +29,9 @@ export const revalidate = 0;
 
 Run `pnpm validate:cursor-rules` locally to validate these rules during development.
 
+## 📚 Related Documentation
+
+- [Runtime Boundaries](../architecture/runtime-boundaries.md) - Edge vs Node.js runtime patterns
+- [API Design Guide](../api/api-design-guide.md) - Runtime selection for API routes
+- [Edge Runtime Reference](../reference/edge-runtime.md) - Edge runtime boundaries and guardrails
+- [ESLint Runtime Boundaries](./eslint-runtime-boundaries.md) - ESLint rules for runtime boundaries

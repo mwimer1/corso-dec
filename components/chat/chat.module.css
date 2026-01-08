@@ -1,0 +1,186 @@
+/* Chat interface component styles */
+
+/* Component-specific design tokens */
+:root {
+  /* Chat spacing */
+  --chat-message-gap: 1rem; /* 16px - vertical gap between messages */
+  --chat-composer-padding-x: 1.5rem; /* 24px - horizontal padding for composer container */
+  --chat-composer-padding-y: 1.25rem; /* 20px - vertical padding for composer container */
+
+  /* Chat container widths */
+  --chat-container-max-w-sm: 48rem; /* 768px - max-width for small screens */
+  --chat-container-max-w-md: 56rem; /* 896px - max-width for medium screens (lg) */
+  --chat-container-max-w-lg: 64rem; /* 1024px - max-width for large screens (2xl) */
+
+  /* Chat border radius */
+  --chat-composer-radius: 1rem; /* 16px - border radius for composer container */
+}
+
+/* Chat window container */
+.chatWindow {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  position: relative;
+  overflow: visible;
+}
+
+/* Messages container */
+.messagesContainer {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  background: hsl(var(--background));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+/* Messages container - centered for new chat mode */
+.messagesContainerCentered {
+  flex: 1;
+  min-height: 0;
+  overflow-y: visible;
+  overflow-x: hidden;
+  background: hsl(var(--background));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: clamp(var(--space-xl), 15vh, var(--space-5xl));
+  padding-bottom: var(--space-lg);
+  padding-left: var(--space-lg);
+  padding-right: var(--space-lg);
+}
+
+/* Messages list wrapper */
+.messagesList {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: var(--chat-container-max-w-sm);
+  padding: var(--space-md) var(--space-lg);
+}
+
+@media (min-width: 1024px) {
+  .messagesList {
+    max-width: var(--chat-container-max-w-md);
+  }
+}
+
+@media (min-width: 1400px) {
+  .messagesList {
+    max-width: var(--chat-container-max-w-lg);
+  }
+}
+
+/* NEW: Centered content wrapper for new chat mode - wraps welcome + composer + scope buttons */
+.newChatCenteredWrapper {
+  width: 100%;
+  max-width: var(--chat-container-max-w-sm);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+@media (min-width: 1024px) {
+  .newChatCenteredWrapper {
+    max-width: var(--chat-container-max-w-md);
+  }
+}
+
+@media (min-width: 1400px) {
+  .newChatCenteredWrapper {
+    max-width: var(--chat-container-max-w-lg);
+  }
+}
+
+/* Welcome screen container */
+.welcomeContainer {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: var(--chat-container-max-w-sm);
+  padding-top: var(--space-md);
+  padding-bottom: var(--space-ms);
+  padding-left: var(--space-lg);
+  padding-right: var(--space-lg);
+}
+
+@media (min-width: 768px) {
+  .welcomeContainer {
+    padding-top: var(--space-lg);
+  }
+}
+
+@media (min-width: 1024px) {
+  .welcomeContainer {
+    max-width: var(--chat-container-max-w-md);
+  }
+}
+
+@media (min-width: 1400px) {
+  .welcomeContainer {
+    max-width: var(--chat-container-max-w-lg);
+  }
+}
+
+/* Composer container - active chat mode (positioned at bottom) */
+.composerContainer {
+  background: hsl(var(--background));
+  padding-left: var(--chat-composer-padding-x);
+  padding-top: var(--chat-composer-padding-y);
+  padding-bottom: calc(3px + env(safe-area-inset-bottom));
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  /* Removed border-top for cleaner look */
+}
+
+/* Composer container - for new chat mode (inside centered wrapper) */
+.composerContainerCentered {
+  background: transparent;
+  padding: 0;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: visible;
+}
+
+/* Composer placeholder (server-side hydration) */
+.composerPlaceholder {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: var(--chat-container-max-w-sm);
+  border-radius: var(--chat-composer-radius);
+  background: hsl(var(--surface));
+  padding: var(--space-ms);
+  box-shadow: var(--shadow-xs);
+}
+
+@media (min-width: 1024px) {
+  .composerPlaceholder {
+    max-width: var(--chat-container-max-w-md);
+  }
+}
+
+@media (min-width: 1400px) {
+  .composerPlaceholder {
+    max-width: var(--chat-container-max-w-lg);
+  }
+}
+
+/* Messages list */
+.messagesListUl {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--chat-message-gap);
+}

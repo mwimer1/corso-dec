@@ -1,5 +1,5 @@
-import { tv } from '@/styles/utils';
-import type { VariantProps } from '@/styles/utils';
+import { tv } from '@/styles';
+import type { VariantProps } from '@/styles';
 
 /**
  * SkipNavLink variant factory – for accessibility skip navigation links.

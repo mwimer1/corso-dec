@@ -1,4 +1,4 @@
-import { tv } from '@/styles/utils';
+import { tv } from '@/styles';
 
 const navbarStyleVariants = tv({
   slots: {
@@ -7,7 +7,7 @@ const navbarStyleVariants = tv({
       'transition-all duration-200 ease-in-out',
       'relative z-40'
     ],
-    navbarScrolled: 'shadow-[0_1px_3px_0_rgb(0_0_0/0.1),0_1px_2px_-1px_rgb(0_0_0/0.1)]',
+    navbarScrolled: 'shadow-sm',
     container: [
       'flex h-[calc(var(--space-4xl)+0.5rem)] items-center justify-between',
       'max-w-7xl mx-auto'
@@ -24,15 +24,20 @@ const navbarStyleVariants = tv({
     mobile: 'ml-auto md:hidden',
     desktopNav: 'hidden md:flex items-center gap-md',
     navItem: [
-      'text-foreground',
-      'text-base font-medium',
-      'px-md py-sm min-h-[44px]',
-      'transition-all duration-150 ease-in-out',
-      'no-underline rounded-full',
-      'hover:bg-muted/40 hover:text-foreground hover:underline hover:underline-offset-3',
+      // Button-like container (match CTA geometry) but visually "invisible" by default
+      'inline-flex items-center justify-center whitespace-nowrap',
+      'text-foreground text-base font-medium',
+      'min-h-[44px] px-md py-sm',
+      'rounded-[10px]',
+      'border-2 border-transparent',
+      'bg-transparent',
+      'transition-colors duration-150 ease-in-out',
+      'no-underline',
+      // Hover affordance (light grey)
+      'hover:bg-muted hover:text-foreground',
       'active:bg-muted-foreground/12',
-      'focus-visible:text-foreground focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2',
-      'focus-visible:no-underline focus-visible:shadow-[0_0_0_3px_rgb(var(--ring)/0.25)]'
+      // Accessible focus ring (match Button focus pattern)
+      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:no-underline',
     ],
     mobileMenu: [
       'absolute left-0 top-[70px] w-full',
@@ -57,7 +62,7 @@ const navbarStyleVariants = tv({
       'min-h-[44px] px-md py-sm',
       'text-base font-medium',
       'focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2',
-      'focus-visible:shadow-[0_0_0_3px_rgb(var(--ring)/0.25)]'
+      'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
     ]
   },
   variants: {
@@ -75,7 +80,7 @@ const navbarStyleVariants = tv({
     {
       scrolled: true,
       class: {
-        navbar: 'shadow-[0_1px_3px_0_rgb(0_0_0/0.1),0_1px_2px_-1px_rgb(0_0_0/0.1)]'
+        navbar: 'shadow-sm'
       }
     }
   ],

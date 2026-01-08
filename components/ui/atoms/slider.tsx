@@ -2,12 +2,33 @@
 
 import { cn } from "@/styles";
 import {
-    sliderThumbVariants,
-    sliderVariants,
-    type SliderVariantProps,
+  sliderThumbVariants,
+  sliderVariants,
+  type SliderVariantProps,
+  type SliderThumbVariantProps,
 } from "@/styles/ui/atoms";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import * as React from "react";
+
+/**
+ * Slider component props.
+ */
+export interface SliderProps
+  extends Omit<React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>, "value" | "onValueChange">,
+    SliderVariantProps {
+  /** Controlled slider value (array of numbers, one per thumb). */
+  value: number[];
+  /** Handler for value change (controlled usage). Optional for read-only. */
+  onValueChange?: (_value: number[]) => void;
+  /** Handler fired when the user finishes interaction (commit). */
+  onValueCommit?: (_value: number[]) => void;
+  /** If true, shows numeric value labels above thumbs. */
+  showTooltips?: boolean;
+  /** Optional label formatter for tooltip text (e.g., (n) => `${n}\u00B0F`). */
+  formatValue?: (value: number, index: number) => string;
+  /** Optional size override for the thumb only (lets us keep a skinny track with larger knobs). */
+  thumbSize?: SliderThumbVariantProps["size"];
+}
 
 /**
  * Slider – a controlled range slider input with tooltips.
@@ -15,37 +36,8 @@ import * as React from "react";
  */
 export const Slider = React.forwardRef<
   React.ElementRef<typeof SliderPrimitive.Root>,
-  Omit<React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>, "value" | "onValueChange"> & SliderVariantProps & {
-    /** Controlled slider value (array of numbers, one per thumb). */
-    value: number[];
-    /** Handler for value change (controlled usage). Optional for read-only. */
-    onValueChange?: (_value: number[]) => void;
-    /** Handler fired when the user finishes interaction (commit). */
-    onValueCommit?: (_value: number[]) => void;
-    /** If true, shows numeric value labels above thumbs. */
-    showTooltips?: boolean;
-    /** Optional label formatter for tooltip text (e.g., (n) => `${n}\u00B0F`). */
-    formatValue?: (value: number, index: number) => string;
-    /** Optional size override for the thumb only (lets us keep a skinny track with larger knobs). */
-    thumbSize?: SliderVariantProps["size"];
-  }
->(function Slider(
-  props: Omit<React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>, "value" | "onValueChange"> & SliderVariantProps & {
-    /** Controlled slider value (array of numbers, one per thumb). */
-    value: number[];
-    /** Handler for value change (controlled usage). Optional for read-only. */
-    onValueChange?: (_value: number[]) => void;
-    /** Handler fired when the user finishes interaction (commit). */
-    onValueCommit?: (_value: number[]) => void;
-    /** If true, shows numeric value labels above thumbs. */
-    showTooltips?: boolean;
-    /** Optional label formatter for tooltip text (e.g., (n) => `${n}\u00B0F`). */
-    formatValue?: (value: number, index: number) => string;
-    /** Optional size override for the thumb only (lets us keep a skinny track with larger knobs). */
-    thumbSize?: SliderVariantProps["size"];
-  },
-  ref: React.ForwardedRef<React.ElementRef<typeof SliderPrimitive.Root>>,
-) {
+  SliderProps
+>(function Slider(props: SliderProps, ref) {
   const {
     className,
     size = "md",
@@ -94,13 +86,21 @@ export const Slider = React.forwardRef<
           "data-[orientation=vertical]:w-full",
         )}
       />
-      {value.map((val, i) => (
-        <SliderPrimitive.Thumb
-          key={`thumb-${val}`}
-          className={cn(
-            sliderThumbVariants({ size: thumbSize ?? size, variant: 'slider' }),
-            "relative bg-background border border-border shadow-sm focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          )}
+      {value.map((val, i) => {
+        // Use index-based key that remains stable during drag operations
+        // Value-based keys cause React to unmount/remount thumbs during drag
+        const stableKey = `thumb-${i}`;
+        return (
+          <SliderPrimitive.Thumb
+            key={stableKey}
+            className={cn(
+              sliderThumbVariants({ size: thumbSize ?? size, variant: 'slider' }),
+              "block relative bg-white border-2 border-primary shadow-lg rounded-full",
+              "cursor-grab active:cursor-grabbing",
+              "hover:shadow-xl hover:scale-110 active:scale-105",
+              "transition-[box-shadow,transform] duration-200",
+              "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            )}
         >
           {showTooltips && (
             <span
@@ -110,8 +110,9 @@ export const Slider = React.forwardRef<
               {formatValue ? formatValue(val, i) : val}
             </span>
           )}
-        </SliderPrimitive.Thumb>
-      ))}
+          </SliderPrimitive.Thumb>
+        );
+      })}
     </SliderPrimitive.Root>
   );
 });

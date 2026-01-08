@@ -57,26 +57,45 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
     }
 
     // Internal route – Next.js Link (forward select safe props)
-    const onClick = (rest as any)?.onClick as React.MouseEventHandler<HTMLAnchorElement> | undefined;
-    const onMouseEnter = (rest as any)?.onMouseEnter as React.MouseEventHandler<HTMLAnchorElement> | undefined;
-    const onMouseLeave = (rest as any)?.onMouseLeave as React.MouseEventHandler<HTMLAnchorElement> | undefined;
-    const titleProp = (rest as any)?.title as string | undefined;
-    const ariaLabel = (rest as any)?.["aria-label"] as string | undefined;
-    type AriaCurrent = React.AriaAttributes["aria-current"];
-    const ariaCurrent = (rest as any)?.["aria-current"] as AriaCurrent;
+    // Since we're in the internal branch, rest is Omit<InternalLinkProps, "href" | "external" | "className" | "children">
+    // which extends AnchorHTMLAttributes, so it includes onClick, onMouseEnter, etc.
+    // Extract only the props we need to pass to NextLink, avoiding undefined values for exactOptionalPropertyTypes
+    const anchorProps = rest as Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "href" | "target" | "rel" | "className" | "children">;
+    const { 
+      onClick, 
+      onMouseEnter, 
+      onMouseLeave, 
+      title: titleProp, 
+      "aria-label": ariaLabel, 
+      "aria-current": ariaCurrent,
+      id,
+      tabIndex,
+      role,
+      "aria-describedby": ariaDescribedBy,
+      "aria-labelledby": ariaLabelledBy,
+    } = anchorProps;
+
+    // Build props object only with defined values to satisfy exactOptionalPropertyTypes
+    const nextLinkProps: React.ComponentProps<typeof NextLink> = {
+      href,
+      className: classNames,
+      ref,
+    };
+    
+    if (onClick) nextLinkProps.onClick = onClick;
+    if (onMouseEnter) nextLinkProps.onMouseEnter = onMouseEnter;
+    if (onMouseLeave) nextLinkProps.onMouseLeave = onMouseLeave;
+    if (titleProp) nextLinkProps.title = titleProp;
+    if (ariaLabel) nextLinkProps["aria-label"] = ariaLabel;
+    if (ariaCurrent) nextLinkProps["aria-current"] = ariaCurrent;
+    if (id) nextLinkProps.id = id;
+    if (tabIndex !== undefined) nextLinkProps.tabIndex = tabIndex;
+    if (role) nextLinkProps.role = role;
+    if (ariaDescribedBy) nextLinkProps["aria-describedby"] = ariaDescribedBy;
+    if (ariaLabelledBy) nextLinkProps["aria-labelledby"] = ariaLabelledBy;
 
     return (
-      <NextLink
-        href={href}
-        className={classNames}
-        ref={ref}
-        {...(onClick ? { onClick } : undefined)}
-        {...(onMouseEnter ? { onMouseEnter } : undefined)}
-        {...(onMouseLeave ? { onMouseLeave } : undefined)}
-        {...(titleProp ? { title: titleProp } : undefined)}
-        {...(ariaLabel ? { ["aria-label"]: ariaLabel } : undefined)}
-        {...(ariaCurrent ? { ["aria-current"]: ariaCurrent } : undefined)}
-      >
+      <NextLink {...nextLinkProps}>
         {children}
       </NextLink>
     );

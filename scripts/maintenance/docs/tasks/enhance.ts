@@ -138,7 +138,8 @@ function inferDomainFromPath(filePath: string): string {
   // Find the domain (e.g., 'lib', 'components', 'types', etc.)
   for (let i = 0; i < parts.length - 1; i++) {
     const part = parts[i];
-    if (part && ['lib', 'components', 'types', 'hooks', 'contexts', 'styles', 'actions'].includes(part)) {
+    // Note: hooks/ and contexts/ directories no longer exist at root level
+    if (part && ['lib', 'components', 'types', 'styles', 'actions'].includes(part)) {
       return part;
     }
   }
@@ -154,8 +155,6 @@ function inferCategoryFromDomain(domain: string): string {
     lib: 'library',
     components: 'components',
     types: 'types',
-    hooks: 'hooks',
-    contexts: 'contexts',
     styles: 'styling',
     actions: 'actions',
   };
@@ -192,8 +191,6 @@ function generateDescriptionFromPath(filePath: string, domain: string, category:
     lib: `Core ${domain} utilities and functionality for the Corso platform.`,
     components: `UI components for the ${domain} system, following atomic design principles.`,
     types: `TypeScript type definitions for ${domain}, ensuring type safety across the platform.`,
-    hooks: `React hooks providing state management and functionality for ${domain}.`,
-    contexts: `React context providers for ${domain} state and configuration.`,
     styles: `Styling system for ${domain}, using Tailwind CSS and design tokens.`,
     actions: `Server-side actions for ${domain}, handling data mutations and business logic.`,
   };

@@ -4,7 +4,13 @@
 
 :root {
   /* Font families */
-  --font-sans: lato, system-ui, -apple-system, blinkmacsystemfont, 'Segoe UI', roboto, sans-serif;
+  /* NOTE: Next/font/google sets `--font-sans` when the font variable class is applied on <html>
+   * (see styles/fonts.ts). We still define a default fallback here so the token↔Tailwind
+   * contract check can validate consistently, and so non-Next contexts have a sane default.
+   * Next/font will override this value at runtime. */
+  --font-sans:
+    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
   --font-mono:
     ui-monospace, sfmono-regular, 'SF Mono', consolas, 'Liberation Mono', menlo, monospace;
 

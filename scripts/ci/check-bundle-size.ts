@@ -75,10 +75,15 @@ function compressBrotli(buf: Buffer) {
 }
 
 function main() {
+  const jsonOutput = process.argv.includes('--json');
   const dir = path.resolve(cfg.dir);
   if (!fs.existsSync(dir)) {
-    console.log(`Bundle dir not found: ${dir}. Skipping bundle size check (run 'next build' to enable).`);
-    process.exit(0);
+    if (jsonOutput) {
+      console.log(JSON.stringify({ totalSize: 0, totalGzippedSize: 0, files: [] }));
+    } else {
+      console.log(`Bundle dir not found: ${dir}. Skipping bundle size check (run 'next build' to enable).`);
+    }
+    return;
   }
 
   let   files = walk(dir).filter((f) => cfg.extensions.includes(path.extname(f)));
@@ -90,8 +95,12 @@ function main() {
   ];
   files = files.filter((f) => !defaultExcludePatterns.some((re) => re.test(f)));
   if (!files.length) {
-    console.log(`No ${cfg.extensions.join(', ')} files under ${dir}. Skipping bundle size check.`);
-    process.exit(0);
+    if (jsonOutput) {
+      console.log(JSON.stringify({ totalSize: 0, totalGzippedSize: 0, files: [] }));
+    } else {
+      console.log(`No ${cfg.extensions.join(', ')} files under ${dir}. Skipping bundle size check.`);
+    }
+    return;
   }
 
   let totalBrotli = 0;
@@ -105,6 +114,26 @@ function main() {
     rows.push({ file: path.relative(process.cwd(), f), raw: buf.length, gzip: gz.length, br: br.length });
     totalGzip += gz.length;
     totalBrotli += br.length;
+  }
+
+  // JSON output format for CI
+  if (jsonOutput) {
+    const jsonData = {
+      totalSize: rows.reduce((sum, r) => sum + r.raw, 0),
+      totalGzippedSize: totalGzip,
+      totalBrotliSize: totalBrotli,
+      files: rows.map(r => ({
+        name: path.basename(r.file),
+        path: r.file,
+        size: r.raw,
+        rawSize: r.raw,
+        gzippedSize: r.gzip,
+        gzipSize: r.gzip,
+        brotliSize: r.br
+      }))
+    };
+    console.log(JSON.stringify(jsonData, null, 2));
+    return;
   }
 
   // Report
@@ -137,7 +166,7 @@ function main() {
 
   if (violations.length) {
     console.error('\n❌ Bundle size violations:\n- ' + violations.join('\n- '));
-    process.exit(1);
+    process.exitCode = 1;
   } else {
     console.log('\n✅ Bundle size within limits.');
   }

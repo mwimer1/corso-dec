@@ -25,7 +25,7 @@ vi.mock('@/lib/integrations/clickhouse/utils', () => ({
 }));
 
 // Mock the grid config loading
-vi.mock('@/lib/services/entity/config', () => ({
+vi.mock('@/lib/entities/config', () => ({
   loadGridConfig: vi.fn().mockResolvedValue({
     tableName: 'test_table',
     primaryKey: 'id',
@@ -40,15 +40,9 @@ vi.mock('@/lib/services/entity/config', () => ({
 describe('Entity Service Actions', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockGetEntityPage.mockResolvedValue({
-      data: [
-        { id: 1, name: 'Test Project', status: 'active' },
-        { id: 2, name: 'Another Project', status: 'inactive' },
-      ],
-      total: 150,
-      page: 0,
-      pageSize: 10,
-    });
+    // Make getEntityPage fail so the code falls through to the real DB path
+    // This allows us to test the ClickHouse query path
+    mockGetEntityPage.mockRejectedValue(new Error('Mock DB not available'));
     mockQueryEntityData.mockResolvedValue([
       { id: 1, name: 'Test Project', status: 'active' },
       { id: 2, name: 'Another Project', status: 'inactive' },
@@ -58,7 +52,7 @@ describe('Entity Service Actions', () => {
 
   describe('fetchEntityData', () => {
     it('should fetch entity data successfully', async () => {
-      const { fetchEntityData } = await import('@/lib/services/entity/actions');
+      const { fetchEntityData } = await import('@/lib/entities/actions');
 
       const result = await fetchEntityData('projects', undefined, {
         page: 0,
@@ -92,8 +86,8 @@ describe('Entity Service Actions', () => {
       );
     });
 
-    it('should handle search parameters', async () => {
-      const { fetchEntityData } = await import('@/lib/services/entity/actions');
+    it('should handle search parameters for companies with correct fields', async () => {
+      const { fetchEntityData } = await import('@/lib/entities/actions');
 
       await fetchEntityData('companies', undefined, {
         page: 0,
@@ -102,16 +96,93 @@ describe('Entity Service Actions', () => {
         search: 'test company',
       });
 
+      // Verify SQL contains OR condition for company_name and company_description
       expect(mockQueryEntityData).toHaveBeenCalledWith(
-        expect.stringContaining('SELECT'),
+        expect.stringMatching(/company_name LIKE.*OR.*company_description LIKE/),
         expect.objectContaining({
           p1: '%test company%', // search parameter
         })
       );
     });
 
+    it('should handle search parameters for projects with correct fields', async () => {
+      const { fetchEntityData } = await import('@/lib/entities/actions');
+
+      await fetchEntityData('projects', undefined, {
+        page: 0,
+        pageSize: 10,
+        sort: { column: 'id', direction: 'asc' },
+        search: 'test project',
+      });
+
+      // Verify SQL contains OR condition for description, building_permit_id, and city
+      expect(mockQueryEntityData).toHaveBeenCalledWith(
+        expect.stringMatching(/description LIKE.*OR.*building_permit_id LIKE.*OR.*city LIKE/),
+        expect.objectContaining({
+          p1: '%test project%', // search parameter
+        })
+      );
+    });
+
+    it('should handle search parameters for addresses with correct fields', async () => {
+      const { fetchEntityData } = await import('@/lib/entities/actions');
+
+      await fetchEntityData('addresses', undefined, {
+        page: 0,
+        pageSize: 10,
+        sort: { column: 'id', direction: 'asc' },
+        search: '123 main',
+      });
+
+      // Verify SQL contains OR condition for full_address, city, state, and zipcode
+      expect(mockQueryEntityData).toHaveBeenCalledWith(
+        expect.stringMatching(/full_address LIKE.*OR.*city LIKE.*OR.*state LIKE.*OR.*zipcode LIKE/),
+        expect.objectContaining({
+          p1: '%123 main%', // search parameter
+        })
+      );
+    });
+
+    it('should ignore search when search query is empty', async () => {
+      const { fetchEntityData } = await import('@/lib/entities/actions');
+
+      await fetchEntityData('projects', undefined, {
+        page: 0,
+        pageSize: 10,
+        sort: { column: 'id', direction: 'asc' },
+        search: '', // empty search
+      });
+
+      // Verify SQL does NOT contain LIKE conditions for search
+      expect(mockQueryEntityData).toHaveBeenCalledWith(
+        expect.not.stringMatching(/LIKE/),
+        expect.not.objectContaining({
+          p1: expect.stringContaining('%'),
+        })
+      );
+    });
+
+    it('should ignore search when search query is only whitespace', async () => {
+      const { fetchEntityData } = await import('@/lib/entities/actions');
+
+      await fetchEntityData('projects', undefined, {
+        page: 0,
+        pageSize: 10,
+        sort: { column: 'id', direction: 'asc' },
+        search: '   ', // whitespace only
+      });
+
+      // Verify SQL does NOT contain LIKE conditions for search
+      expect(mockQueryEntityData).toHaveBeenCalledWith(
+        expect.not.stringMatching(/LIKE/),
+        expect.not.objectContaining({
+          p1: expect.stringContaining('%'),
+        })
+      );
+    });
+
     it('should handle different filter operators', async () => {
-      const { fetchEntityData } = await import('@/lib/services/entity/actions');
+      const { fetchEntityData } = await import('@/lib/entities/actions');
 
       await fetchEntityData('addresses', undefined, {
         page: 0,
@@ -133,9 +204,11 @@ describe('Entity Service Actions', () => {
     });
 
     it('should handle database errors gracefully', async () => {
+      // Reset the mock to fail so we hit the real DB path
+      mockGetEntityPage.mockRejectedValue(new Error('Mock DB not available'));
       mockQueryEntityData.mockRejectedValue(new Error('Database connection failed'));
 
-      const { fetchEntityData } = await import('@/lib/services/entity/actions');
+      const { fetchEntityData } = await import('@/lib/entities/actions');
 
       await expect(
         fetchEntityData('projects', undefined, {
@@ -147,9 +220,11 @@ describe('Entity Service Actions', () => {
     });
 
     it('should handle count query failures gracefully', async () => {
+      // Reset the mock to fail so we hit the real DB path
+      mockGetEntityPage.mockRejectedValue(new Error('Mock DB not available'));
       mockQueryEntityCount.mockRejectedValue(new Error('Count query failed'));
 
-      const { fetchEntityData } = await import('@/lib/services/entity/actions');
+      const { fetchEntityData } = await import('@/lib/entities/actions');
 
       const result = await fetchEntityData('projects', undefined, {
         page: 0,

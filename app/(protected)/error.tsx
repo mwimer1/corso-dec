@@ -1,10 +1,9 @@
 'use client';
 
-import { ErrorFallback } from "@/components/ui/organisms";
+import { createErrorBoundary } from '@/app/shared/create-error-boundary';
 
-export default function ProtectedError({ error, reset }: { error: Error; reset: () => void }) {
-  console.error(error);
-  return <ErrorFallback error={error} resetErrorBoundary={reset} />;
-}
-
-
+/**
+ * Error boundary for protected routes.
+ * Catches errors within the (protected) route group and provides recovery UI.
+ */
+export default createErrorBoundary({ context: 'Protected' });

@@ -1,8 +1,8 @@
 /* Sidebar tokens - single source of truth for sidebar design variables */
 :root {
   /* Sidebar tokens */
-  --sb-width-expanded: 280px;
-  --sb-width-collapsed: 64px;
+  --sb-width-expanded: 240px;
+  --sb-width-collapsed: 72px; /* Icon-only width for collapsed state */
   --sb-item-h: 44px; /* Slightly reduced for better density */
   --sb-border: hsl(0deg 0% 90%);
   --sb-border-hover: hsl(0deg 0% 85%);
@@ -14,30 +14,22 @@
   --sb-icon-size: 1.25rem; /* 20px */
   --sb-icon-active: hsl(211deg 100% 50%);
   --sb-radius: 0.5rem;
-  --sb-inner-pad: 0.75rem;
-  --sb-hover: color-mix(in srgb, var(--sb-bg), black 6%);
-  --sb-active: color-mix(in srgb, var(--sb-bg), black 12%);
-  --sb-ring: hsl(var(--ring));
 
   /* Tooltip tokens for collapsed sidebar tooltips */
-  --sb-tip-bg: var(--color-elevated-bg, rgb(15 23 42));
-  --sb-tip-fg: var(--color-elevated-fg, rgb(255 255 255));
+  --sb-tip-bg: hsl(var(--surface, 0 0% 100%));
+  --sb-tip-fg: hsl(var(--foreground, 222.2 47.4% 11.2%));
+  --sb-tip-border: hsl(var(--border, 214.3 31.8% 89%));
   --sb-tip-radius: var(--sb-radius, 0.5rem);
-  --sb-tip-pad-x: 0.5rem;
-  --sb-tip-pad-y: 0.375rem;
-  --sb-tip-gap: 0.5rem;
-  --sb-tip-shadow: var(--shadow-lg, rgb(0 0 0 / 10%), rgb(0 0 0 / 10%));
+  --sb-tip-pad-x: 0.625rem; /* 10px - slightly increased for better readability */
+  --sb-tip-pad-y: 0.5rem; /* 8px - increased for better balance */
+  --sb-tip-gap: 0.75rem; /* 12px - increased for better visibility */
+  --sb-tip-shadow: var(--shadow-xl); /* Enhanced shadow for better prominence */
   --sb-tip-z: 60;
   --sb-tip-font: var(--font-sans, ui-sans-serif);
   --sb-tip-size: 0.875rem; /* 14px */
   --sb-tip-line: 1.25rem;  /* 20px */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --sb-hover: color-mix(in srgb, var(--sb-bg), white 8%);
-    --sb-active: color-mix(in srgb, var(--sb-bg), white 14%);
-  }
-}
+/* Dark mode sidebar color adjustments handled via CSS custom properties above */
 
 

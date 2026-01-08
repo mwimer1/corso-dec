@@ -6,18 +6,24 @@
    • Generates SEO metadata from fetched article
    • Uses safe, local interface to avoid mismatch with auto-generated types
 ------------------------------------------------------------------- */
-import { InsightDetail, InsightsLayout } from "@/components/insights";
-import { getAllInsights, getInsightBySlug } from "@/lib/marketing/server";
+import { PublicLayout } from "@/components";
+import { InsightDetail } from "@/components/insights";
+import { getInsightsNavItems } from "@/components/insights/layout/nav.config";
+import { resolveInsightImageUrl } from "@/components/insights/utils/image-resolver";
+import { getInsightBySlug, getRelatedInsights } from "@/lib/marketing/server";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+/** @knipignore */
 export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+// Use ISR for static content - revalidate every 5 minutes
+/** @knipignore */
+export const revalidate = 300; // 5 minutes
 
 // Client component; dynamic not required
 
 /** Build <title> + <meta> from fetched article. */
+/** @knipignore */
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const item = await getInsightBySlug(slug);
@@ -26,6 +32,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const description = item.description ?? `Read ${item.title} on Corso Insights`;
     const url = `https://getcorso.com/insights/${slug}`;
     const canonicalUrl = new URL(url, 'https://getcorso.com').toString();
+    // Resolve image URL using shared resolver for consistency
+    const resolvedImage = resolveInsightImageUrl(item);
 
     return {
       title: `${item.title} | Corso Insights`,
@@ -36,7 +44,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         description,
         url: canonicalUrl,
         type: 'article',
-        images: item.imageUrl ? [{ url: item.imageUrl, alt: item.title }] : [{ url: '/logo.svg', alt: 'Corso Logo' }],
+        images: [{ url: resolvedImage, alt: item.title }],
         publishedTime: item.publishDate,
         authors: item.author?.name ? [item.author.name] : undefined,
         section: item.categories?.map((cat: { name: string }) => cat.name).join(', '),
@@ -46,7 +54,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         card: 'summary_large_image',
         title: item.title,
         description,
-        images: item.imageUrl ? [item.imageUrl] : ['/logo.svg'],
+        images: [resolvedImage],
       },
     };
   }
@@ -60,18 +68,26 @@ export default async function InsightPage({ params }: { params: Promise<{ slug: 
 
   if (!item) notFound();
 
-  // Get related articles based on categories
-  const allInsights = await getAllInsights();
-  const relatedArticles = allInsights
-    .filter(insight =>
-      insight.slug !== slug && // Exclude current article
-      insight.categories?.some((cat: { slug: string }) =>
-        item.categories?.some((itemCat: { slug: string }) => itemCat.slug === cat.slug)
-      )
-    )
-    .slice(0, 3); // Limit to 3 related articles
+  // Get related articles using the content service's unified logic
+  // This ensures consistent scoring by category overlap and recency
+  const relatedInsights = await getRelatedInsights(item, { limit: 3 });
+  
+  // Transform InsightPreview[] to match InsightDetail's expected shape
+  const relatedArticles = relatedInsights.map(insight => ({
+    slug: insight.slug,
+    title: insight.title,
+    ...(insight.description && { excerpt: insight.description }),
+    ...(insight.imageUrl && { imageUrl: insight.imageUrl }),
+    ...(insight.categories && { categories: insight.categories.map(cat => ({ name: cat.name, slug: cat.slug })) }),
+    ...(insight.publishDate && { publishDate: insight.publishDate }),
+    ...(insight.author && { author: { name: insight.author.name, slug: insight.author.name.toLowerCase().replace(/\s+/g, '-') } }),
+    ...(insight.readingTime !== undefined && { readingTime: insight.readingTime }),
+  }));
 
   const canonicalUrl = new URL(`/insights/${slug}`, 'https://getcorso.com').toString();
+
+  // Resolve image URL using shared resolver for consistency
+  const resolvedImage = resolveInsightImageUrl(item);
 
   // Generate structured data for SEO
   const jsonLd = {
@@ -79,9 +95,9 @@ export default async function InsightPage({ params }: { params: Promise<{ slug: 
     '@type': 'Article',
     headline: item.title,
     description: item.description ?? `Read ${item.title} on Corso Insights`,
-    image: item.imageUrl ? [item.imageUrl] : ['/logo.svg'],
+    image: [resolvedImage],
     datePublished: item.publishDate,
-    dateModified: item.publishDate,
+    dateModified: item.updatedDate ?? item.publishDate, // Use updatedDate if available, fallback to publishDate
     author: item.author?.name ? {
       '@type': 'Person',
       name: item.author.name,
@@ -137,13 +153,23 @@ export default async function InsightPage({ params }: { params: Promise<{ slug: 
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
-      <InsightsLayout
+      <PublicLayout
+        navMode="insights"
+        navItems={getInsightsNavItems()}
         showReadingProgress={true}
       >
-        <div className="mx-auto max-w-4xl px-4 md:px-6">
-          <InsightDetail initialData={item} relatedArticles={relatedArticles} />
+        <div className="py-8">
+          <InsightDetail
+            initialData={item}
+            relatedArticles={relatedArticles}
+            breadcrumbs={[
+              { label: 'Home', href: '/' },
+              { label: 'Insights', href: '/insights' },
+              { label: item.title, href: `/insights/${slug}` },
+            ]}
+          />
         </div>
-      </InsightsLayout>
+      </PublicLayout>
     </>
   );
 }

@@ -1,18 +1,14 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+title: "Runtime Boundary"
+description: "Documentation and resources for documentation functionality. Located in runtime-boundary/."
+last_updated: "2026-01-07"
 category: "documentation"
+status: "active"
 ---
 ## Public Exports
 | Test File | Type | Description |
 |-----------|------|-------------|
 | `not-found.runtime` | Unit test |  |
-| `sign-in.runtime` | Unit test |  |
-| `sign-up.runtime` | Unit test |  |
-
-## Public Exports
-| Test File | Type | Description |
-|-----------|------|-------------|
 | `sign-in.runtime` | Unit test |  |
 | `sign-up.runtime` | Unit test |  |
 
@@ -41,7 +37,7 @@ category: "documentation"
 
 ## Overview
 
-The `tests/unit/runtime-boundary/` directory contains tests that validate runtime configurations for specific critical routes, particularly authentication routes. These tests ensure that:
+The `tests/runtime-boundary/` directory contains tests that validate runtime configurations for specific critical routes, particularly authentication routes. These tests ensure that:
 
 - Authentication routes use appropriate runtime configurations
 - Dynamic rendering is properly configured for auth flows
@@ -139,4 +135,3 @@ describe('authentication runtime boundaries', () => {
 ---
 
 _Last updated: 2025-01-16_
-

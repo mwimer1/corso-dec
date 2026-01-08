@@ -1,54 +1,41 @@
-import { EntityGridHost, getEntityConfig } from '@/components/dashboard/entity';
+import { DashboardTopBar } from '@/components/dashboard/layout/dashboard-top-bar';
+import { EntityGridHost, getEntityConfig } from '@/components/dashboard/entities';
+import { getDashboardBreadcrumbs } from '@/lib/dashboard/breadcrumbs';
 import { isChatEntity, isGridEntity } from '@/lib/entities/registry';
 import { EntityParamSchema } from '@/lib/validators/entity';
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import React from "react";
 
 // Route config: use plain literals (no `as const`) so Next.js static analysis can read them.
+/** @knipignore */
 export const runtime = 'nodejs';
+/** @knipignore */
 export const dynamic = 'force-dynamic';
+/** @knipignore */
 export const revalidate = 0;
 
-type EntitySlug = string;
+// Helper to derive title from entity ID (capitalize first letter)
+function getEntityTitle(entity: string): string {
+  return entity.charAt(0).toUpperCase() + entity.slice(1);
+}
 
-const ENTITY_CONFIG: Record<string, { title: string; subtitle: string; loadingText: string; pageSize: number }> = {
-  addresses: {
-    title: "Addresses",
-    subtitle: "Browse and manage all addresses.",
-    loadingText: "Loading addresses table...",
-    pageSize: 10,
-  },
-  companies: {
-    title: "Companies",
-    subtitle: "Browse and manage all companies.",
-    loadingText: "Loading companies table...",
-    pageSize: 10,
-  },
-  projects: {
-    title: "Projects",
-    subtitle: "Browse and manage all projects.",
-    loadingText: "Loading projects table...",
-    pageSize: 10,
-  },
-  chat: {
-    title: "Chat",
-    subtitle: "AI-powered data exploration.",
-    loadingText: "Loading chat interface...",
-    pageSize: 10,
-  },
-};
-
-
-export async function generateMetadata({ params }: { params: Promise<{ entity: EntitySlug }> }): Promise<Metadata> {
+/** @knipignore */
+export async function generateMetadata({ params }: { params: Promise<{ entity: string }> }): Promise<Metadata> {
   const data = EntityParamSchema.safeParse(await params);
   if (!data.success) notFound();
 
   const { entity } = data.data;
-  const config = ENTITY_CONFIG[entity];
-  if (!config) notFound();
+  // Validate entity exists in registry via getEntityConfig
+  try {
+    getEntityConfig(entity as 'projects' | 'addresses' | 'companies');
+  } catch {
+    notFound();
+  }
 
+  const title = getEntityTitle(entity);
   return {
-    title: `${config.title} | Dashboard | Corso`,
+    title: `${title} | Dashboard | Corso`,
     description: `View and manage all ${entity} in your dashboard.`,
   };
 }
@@ -59,20 +46,30 @@ export default async function EntityPage({ params }: { params: Promise<{ entity:
 
   const { entity } = parsed.data;
 
+  // Chat entity is handled separately at /dashboard/chat
   if (isChatEntity(entity)) {
-    const { ChatPage } = await import('@/components/chat/sections/chat-page');
-    return <ChatPage /> as unknown as JSX.Element;
+    return notFound();
   }
 
   if (isGridEntity(entity)) {
-    const config = ENTITY_CONFIG[entity];
-    if (!config) return notFound();
-
+    // Use registry as single source of truth
     const gridConfig = getEntityConfig(entity as 'projects' | 'addresses' | 'companies');
-    return <EntityGridHost config={gridConfig} /> as unknown as JSX.Element;
+    const title = getEntityTitle(entity);
+    const pathname = `/dashboard/${entity}`;
+    const breadcrumbs = getDashboardBreadcrumbs(pathname);
+    
+    return (
+      <div className="flex flex-col h-full mx-[2px]">
+        {/* Top Bar with breadcrumbs (Corso > [Entity]) and page title */}
+        <DashboardTopBar currentPage={title} breadcrumbs={breadcrumbs} variant="default" />
+        {/* Grid content */}
+        <div className="flex-1 min-h-0">
+          <EntityGridHost config={gridConfig} />
+        </div>
+      </div>
+    ) as unknown as React.JSX.Element;
   }
 
   return notFound();
 }
-
 

@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import type { PropsWithChildren } from 'react';
 import RouteThemeMarketing from './_theme';
 
+/** @knipignore */
 export const metadata: Metadata = {
   title: "Corso | Construction Intelligence Platform",
   description:
@@ -19,8 +20,11 @@ export const metadata: Metadata = {
 };
 
 // Add missing Node runtime flags for consistency with repo rules
+/** @knipignore */
 export const runtime = 'nodejs';
+/** @knipignore */
 export const dynamic = 'force-dynamic';
+/** @knipignore */
 export const revalidate = 0;
 
 export default function MarketingLayout({ children }: PropsWithChildren) {

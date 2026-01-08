@@ -1,0 +1,19 @@
+/* PricingHeader styles - matches landing hero typography */
+.title {
+  font-size: clamp(1.7rem, 8vw, 4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+  margin: 0 auto;
+  color: hsl(var(--text-high));
+}
+
+.subtitle {
+  font-size: clamp(1.125rem, 2.5vw, 2rem);
+  line-height: 1.4;
+  margin: 0.5rem auto;
+  text-align: center;
+  font-weight: 400;
+  color: hsl(var(--text-medium));
+  letter-spacing: -0.2px;
+}

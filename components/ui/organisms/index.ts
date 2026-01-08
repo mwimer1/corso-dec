@@ -8,11 +8,8 @@
  * @see {@link ./README.md} for detailed documentation and usage examples
  */
 
-// Server-safe components (can be used in server components - no client dependencies)
-export * from './server-only';
-
 // Layout utilities (shared layout helpers for responsive design)
-export * from './layout-utils';
+// layout-utils removed - use @/lib/shared/utils/layout instead
 
 // Core organism components (alphabetized for consistency)
 
@@ -40,6 +37,7 @@ export * from './navbar/navbar';
 
 
 export * from './full-width-section'; // Full-width layout sections with backgrounds
+export * from './section-shell'; // Section layout shell with optional guidelines
 
 // 💬 User Interaction
 export * from './faq'; // Collapsible FAQ section with variants
@@ -53,8 +51,6 @@ export * from './faq'; // Collapsible FAQ section with variants
 export * from './app-error-boundary'; // React error boundary wrapper with logging
 export * from './error-fallback'; // User-friendly error state display
 
-
-export * from './footer';
 export * from './site-footer-shell';
 
 

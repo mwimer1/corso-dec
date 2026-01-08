@@ -1,7 +1,9 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+status: "active"
+last_updated: "2026-01-07"
 category: "documentation"
+title: "Api"
+description: "Documentation and resources for documentation functionality. Located in api/."
 ---
 # API Route Tests
 
@@ -43,14 +45,20 @@ API route tests validate Next.js API handlers for correct behavior, error handli
 | Route | File | Status | Notes |
 |-------|------|--------|-------|
 | `/api/health` | `health.test.ts` | ✅ | Runtime boundary, response format |
-| `/api/v1/chat/generate-chart` | `v1/chat-generate-chart.test.ts` | ✅ | Response validation, timeout handling |
-| `/api/v1/chat/generate-sql` | `v1/chat-generate-sql.test.ts` | ✅ | Route module loading, response type |
-| `/api/v1/dashboard/[entity]/query` | `v1/dashboard-entity-mock.test.ts` | ✅ | Mock DB integration, pagination |
-| `/api/v1/dashboard/[entity]/query` | `v1/dashboard-entity-validate.test.ts` | ✅ | Input validation, error responses |
-| `/api/v1/dashboard/query` | `v1/dashboard-query-tenant-isolation.test.ts` | ✅ | Multi-tenant security, SQL injection |
+| `/api/health/clickhouse` | `health-clickhouse.test.ts` | ✅ | ClickHouse health check |
+| `/api/health` | `health.test.ts` | ✅ | Public health endpoint |
+| `/api/health/clickhouse` | `health-clickhouse.test.ts` | ✅ | Public ClickHouse health |
+| `/api/v1/ai/chat` | `chat-streaming.test.ts` | ✅ | AI chat streaming, auth, RBAC |
+| `/api/v1/ai/generate-sql` | `../chat/generate-sql.route.*.test.ts` | ✅ | SQL generation (split into 6 test files) |
+| `/api/v1/entity/{entity}` | `entity.get.test.ts` | ✅ | Entity base operations, pagination, filtering |
+| `/api/v1/entity/{entity}/query` | `v1/entity-query.test.ts` | ✅ | Entity queries, pagination, filtering |
+| `/api/v1/entity/{entity}/export` | `export.cors.test.ts` | ✅ | Entity exports, CORS handling |
+| `/api/v1/query` | `v1/query.test.ts` | ✅ | Generic SQL query endpoint, auth, RBAC, tenant isolation |
+| `/api/v1/user` | `v1/user.test.ts` | ✅ | User profile operations, validation |
+| `/api/v1/csp-report` | `csp-report.cors.test.ts` | ✅ | Content Security Policy validation, CORS |
+| `/api/v1/insights/search` | `v1/insights-search.test.ts` | ✅ | Search functionality, response format |
 | `/api/v1/subscription/status` | `v1/subscription-status.test.ts` | ✅ | Route module loading, response type |
-| `/api/insights/search` | `insights-search.test.ts` | ✅ | Search functionality, response format |
-| `/api/public/csp-report` | `public/csp-report.test.ts` | ✅ | Content Security Policy validation |
+| `/api/internal/auth` | `internal/auth.webhook.test.ts` | ✅ | Clerk webhook handling, signature validation |
 
 ## Testing Patterns
 
@@ -183,4 +191,3 @@ vi.mock('@/lib/ai/service', () => ({
 ---
 
 _Last updated: 2025-01-16_
-

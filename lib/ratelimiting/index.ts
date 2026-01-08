@@ -8,17 +8,17 @@ export * from './core';
 export * from './types';
 
 // Adapters
-export { createMemoryStore } from './adapters/memory';
-export { createRedisStore } from './adapters/redis';
+export { createMemoryStore } from './memory';
+export { createRedisStore } from './redis';
 
 // Algorithms
-export { fixedWindowRateLimit } from './algorithms/fixed-window';
+export { fixedWindowRateLimit } from './fixed-window';
 
 // Stores
 export { getDefaultStore, resetDefaultStore } from './store';
 
 // Domain configurations
-export { ACTION_RATE_LIMITS } from './domains/actions';
+export { ACTION_RATE_LIMITS } from './actions';
 
 
 // Ensure key util is exported to avoid orphan warning

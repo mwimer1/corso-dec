@@ -1,44 +1,83 @@
 {
-  // Entries that represent what actually runs/ships/tests in this monorepo
-  "entry": [
-    "app/**/*",
-    "scripts/**/*",
-    "tools/**/*",
-    "components/**/*",
-    "lib/**/*",
-    "types/**/*",
-    "styles/**/*",
-    "tests/**/*",
-    "vitest.config.*",
-    "eslint.config.*",
-    "next.config.*",
-    "package.json"
-  ],
-  "ignoreExports": [
-    // Next.js framework exports & route handlers
-    "runtime",
-    "dynamic",
-    "revalidate",
-    "metadata",
-    "viewport",
-    "generateMetadata",
-    "generateStaticParams",
-    "dynamicParams",
-    "GET",
-    "POST",
-    "PUT",
-    "PATCH",
-    "DELETE",
-    "OPTIONS",
-    "HEAD"
-  ],
-  "tsConfigFile": "tsconfig.json",
+  "$schema": "https://unpkg.com/knip@5/schema-jsonc.json",
+
+  // Workspace configuration: mirror pnpm-workspace.yaml structure
+  "workspaces": {
+    ".": {
+      // Entries that represent what actually runs/ships/tests in this monorepo
+      "entry": [
+        "app/**/*",
+        "scripts/**/*",
+        "components/**/*",
+        "lib/**/*",
+        "types/**/*",
+        "styles/**/*",
+        "tests/**/*",
+        "vitest.config.*",
+        "eslint.config.*",
+        "next.config.*",
+        "package.json"
+      ]
+    },
+    "eslint-plugin-corso": {
+      // Workspace package: no overrides needed (uses defaults)
+    }
+  },
+
+  // Tag-based filtering: exclude exports tagged with @knipignore (Next.js framework exports)
+  "tags": ["-knipignore"],
+
+  // Narrow ignoreIssues: only for truly framework-only files if needed
+  "ignoreIssues": {},
+
+  // TypeScript configuration
+  "typescript": {
+    "config": ["tsconfig.json"]
+  },
+
+  // GitHub Actions plugin enabled: workflow YAML is now valid, so we can parse workflow references
+  // This provides more accurate repo-wide usage detection (includes CI/CD script references)
+  // "github-actions": true, // Default: enabled when .github/workflows exists
+
   // Treat public types as API; they'll be allowlisted here over time.
+  // Exclude .github workflows and YAML files from analysis (not TypeScript/JavaScript)
   "ignore": [
-    "types/**"
+    "types/**",
+    ".github/**",
+    "**/*.yml",
+    "**/*.yaml"
   ],
-  "reporter": [
-    "json"
+
+  // Ignore tool config files from unused-file detection (they're used via filesystem paths, not imports)
+  "ignoreFiles": [
+    ".prettierrc.js",
+    "config/.stylelintrc.cjs",
+    "config/domain-map.ts",
+    "docs/index.ts"
+  ],
+
+  // Ignore dependencies that are intentionally kept but not directly imported
+  // - stylelint-* packages: Used via config strings in config/.stylelintrc.cjs
+  // - sharp: May be needed by Next.js for image optimization (listed in onlyBuiltDependencies)
+  // - @corso/eslint-plugin: Workspace package used via TypeScript path mappings
+  // - @ts-morph/common: Transitive dependency of ts-morph (used in 15+ scripts)
+  // - esbuild: Required by vite, vitest, tsx, and listed in onlyBuiltDependencies
+  // - lint-staged: Used in package.json lint-staged config and .husky/pre-commit hooks
+  // - minimatch: Transitive dependency of 50+ packages (eslint, glob, typescript-eslint, etc.)
+  // - msw: Peer dependency of vitest mocker and listed in onlyBuiltDependencies
+  "ignoreDependencies": [
+    "stylelint-config-standard",
+    "stylelint-config-tailwindcss",
+    "stylelint-order",
+    "sharp",
+    "@corso/eslint-plugin",
+    "@ts-morph/common",
+    "esbuild",
+    "lint-staged",
+    "minimatch",
+    "msw"
   ]
+
+  // reporter intentionally omitted; use CLI --reporter json
 }
 

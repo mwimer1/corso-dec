@@ -1,6 +1,6 @@
 ---
 status: "active"
-last_updated: "2025-11-03"
+last_updated: "2026-01-07"
 category: "documentation"
 ---
 ## Overview
@@ -19,14 +19,14 @@ app/api/internal/
 ## Security & Access Control
 
 ### Authentication Requirements
-- **All routes require authentication:** Clerk JWT tokens via `requireUserId()`
-- **Organization context validation** where applicable
+- **Webhook signature verification:** All routes use webhook signature verification (Svix/Clerk)
+- **No user authentication:** Webhooks are authenticated via cryptographic signatures, not user tokens
 - **Rate limiting** applied per endpoint
 
 ### Webhook Security
-- **Stripe Webhooks:** Signature verification using `stripe.webhooks.constructEvent()`
-- **Clerk Webhooks:** Signature verification via Svix headers (`svix-id`, `svix-timestamp`, `svix-signature`) against `CLERK_WEBHOOK_SECRET`
+- **Clerk Webhooks:** Signature verification via Svix headers (`svix-id`, `svix-timestamp`, `svix-signature`) or `clerk-signature` header against `CLERK_WEBHOOK_SECRET`
 - **Raw body consumption** (`await req.text()`) to preserve signature integrity before parsing JSON
+- **Signature validation:** Uses `svix.Webhook.verify()` to validate incoming webhook payloads
 
 ### Rate Limiting
 
@@ -49,16 +49,18 @@ export const revalidate = 0;
 
 **Reasoning:**
 - Clerk SDK requires Node.js for server-side operations
-- Stripe webhook signature verification needs Node.js crypto
-- Supabase admin client requires Node.js environment
+- Svix webhook signature verification needs Node.js crypto
 - Webhook processing demands server-side security
 
 ### Implementation Notes (Clerk)
 - Route: `app/api/internal/auth/route.ts`
 - Runtime: `nodejs`; `dynamic = 'force-dynamic'`; `revalidate = 0`
-- Verify signature using Svix `Webhook.verify(rawBody, headers)`
-- Validate payload with Zod (`lib/validators/clerk-webhook.ts`)
-- Dispatch to domain handler `lib/auth/clerk-webhook/handle-event.ts`
+- **Raw body verification**: Read body via `req.text()` (not `req.json()`) to preserve signature integrity
+- Verify signature using Svix `Webhook.verify(rawBody, headers)` with the exact raw body string
+- **Critical**: Signature verification must use the raw body string as received - any re-serialization (JSON.parse/stringify) will invalidate the signature
+- Validate payload with Zod (`lib/validators/clerk-webhook.ts`) after signature verification
+- Error handling: `withErrorHandlingNode` wrapper for consistent error responses (does NOT read body)
+- Rate limiting: `withRateLimitNode` wrapper (100 requests per minute) (does NOT read body)
 - CORS: implement `OPTIONS` using `handleCors()`
 
 ## Endpoint Specifications
@@ -74,60 +76,52 @@ export const revalidate = 0;
 
 ### Webhook Error Handling
 ```typescript
-import { withErrorHandlingEdge } from '@/lib/api';
+import { withErrorHandlingNode, withRateLimitNode } from '@/lib/middleware';
 
-export const POST = withErrorHandlingEdge(async (req: NextRequest) => {
-  // Handler logic with automatic error serialization
-  return handler(req);
-});
+const handler = async (req: NextRequest): Promise<Response> => {
+  // Read raw body for signature verification
+  const payload = await req.text();
+  // ... webhook verification logic
+  return http.noContent();
+};
+
+export const POST = withErrorHandlingNode(
+  withRateLimitNode(handler, { windowMs: 60_000, maxRequests: 100 })
+);
 ```
 
 ### Request Validation
 ```typescript
-const RequestSchema = z.object({
-  stripeCustomerId: z.string().min(1),
-  // ... additional fields
+// Webhook payload validation (after signature verification)
+const ClerkEventEnvelope = z.object({
+  type: z.string(),
+  object: z.string(),
+  id: z.string().optional(),
 });
 
-const parsed = RequestSchema.safeParse(await req.json());
-if (!parsed.success) {
-  return http.badRequest('Invalid input', {
-    code: 'VALIDATION_ERROR',
-    details: parsed.error.flatten()
-  });
-}
+const evt = wh.verify(payload, headers);
+ClerkEventEnvelope.parse({ type: evt.type, object: evt.object, id: evt.id });
 ```
 
 ## Key Dependencies
 
 ### Core Imports
 ```typescript
-// Authentication & User Context
-import { requireUserId } from '@/lib/api/auth';
-import { auth, clerkClient } from '@clerk/nextjs/server';
+// Webhook Signature Verification
+import { Webhook } from 'svix';
+import type { WebhookRequiredHeaders } from 'svix';
 
 // Validation Schemas
-import {
-  CustomerPortalOptionsSchema,
-  CheckoutOptionsSchema,
-  subscriptionSchema
-} from '@/lib/validators/billing';
+import { ClerkEventEnvelope } from '@/lib/validators/clerk-webhook';
 
 // API Response Types
 import { http } from '@/lib/api';
-import type {
-  CustomerPortalOptions,
-  CheckoutOptions,
-  Subscription
-} from '@/lib/validators/billing';
+
+// Middleware
+import { withErrorHandlingNode, withRateLimitNode } from '@/lib/middleware';
 ```
 
 ### Environment Variables
-- `CLERK_SECRET_KEY` - Clerk server operations
-- `STRIPE_SECRET_KEY` - Stripe API access
-- `STRIPE_WEBHOOK_SECRET` - Webhook signature verification
-- `NEXT_PUBLIC_SUPABASE_URL` - Database operations
-- `SUPABASE_SERVICE_ROLE_KEY` - Admin database access
 - `CLERK_WEBHOOK_SECRET` - Clerk webhook signing secret (Svix) used to verify incoming webhooks
 
 ## Testing & Validation
@@ -148,13 +142,13 @@ import type {
 
 ## Related Documentation
 
-- **API Security Patterns**: `docs/security/api.md`
-- **Billing Integration**: `docs/integrations/stripe.md`
-- **Authentication Flow**: `docs/auth/clerk-integration.md`
-- **Webhook Processing**: `docs/api/webhooks.md`
-- **Error Handling**: `docs/api/error-handling.md`
+- [API Overview](../README.md) - Complete API documentation
+- [API v1](../v1/README.md) - Public API v1 routes
+- [Security Standards](../../../.cursor/rules/security-standards.mdc) - Security patterns
+- [Webhook Security](../../../docs/security/README.md) - Webhook verification patterns
 
 ---
 
-**Last updated:** 2025-10-04
-
+**Last Updated**: 2026-01-07  
+**Maintained By**: Platform Team  
+**Status**: Active

@@ -9,13 +9,24 @@ type FooterProps = {
   showCTA?: boolean;
   /** Pass-through props for CTA customization */
   ctaProps?: React.ComponentProps<typeof FooterCTA>;
+  /** Footer shell variant - controls height behavior */
+  variant?: 'fillViewport' | 'hero' | 'content';
 };
 
-const Footer: React.FC<FooterProps> = ({ showCTA = true, ctaProps }) => {
+const Footer: React.FC<FooterProps> = ({
+  showCTA = true,
+  ctaProps,
+  variant = 'fillViewport',
+}) => {
+  const resolvedCtaProps: React.ComponentProps<typeof FooterCTA> = {
+    ...ctaProps,
+    size: ctaProps?.size ?? (variant === 'hero' ? 'tall' : 'default'),
+  };
+
   return (
     <>
-      <SiteFooterShell>
-        {showCTA && <FooterCTA {...ctaProps} />}
+      <SiteFooterShell variant={variant}>
+        {showCTA && <FooterCTA {...resolvedCtaProps} />}
         <FooterMain />
       </SiteFooterShell>
       <FooterLegal />

@@ -1,5 +1,14 @@
-// tools/scripts/audit-breakpoints.ts
-// Read-only audit to find hardcoded breakpoint literals and suggest tokenized replacements
+#!/usr/bin/env tsx
+/**
+ * Audits hardcoded breakpoint literals and suggests tokenized replacements.
+ * 
+ * Scans codebase for hardcoded pixel values (640px, 768px, etc.) and viewport units
+ * that should be replaced with design token utilities (px(BREAKPOINT.sm), mq.up('md'), etc.).
+ * 
+ * Intent: Enforce design token usage for responsive breakpoints
+ * Files: TypeScript, TSX, CSS, and MDX files in app, components, styles, and lib directories
+ * Invocation: pnpm audit:breakpoints
+ */
 import { globby } from 'globby';
 import fs from 'node:fs/promises';
 

@@ -10,6 +10,7 @@ import { limit } from './_utils/concurrency';
 import { normalizeDate, parseMd } from './_utils/frontmatter';
 import { runLocalBin } from './_utils/run-local-bin';
 import { isStable, normalizeDocStatus } from './normalize-doc-status';
+import { validateDocsContent } from './validate-docs-content';
 
 // Simple console-based logger to avoid circular dependencies
 const logger = {
@@ -27,7 +28,11 @@ const logger = {
   }
 };
 
-// --- 1. Link Validation (from validate-documentation-links.js) ---
+// --- 1. Link Validation ---
+// Consolidates:
+// - markdown-link-check tool (external link validation)
+// - filesystem-based link checking (from validate-doc-links.ts)
+// - APP_LINKS route validation (from validate-links.ts)
 
 // Use repository-configured link checker rules
 const LINK_CHECK_CONFIG_PATH = 'config/.markdown-link-check.json';
@@ -97,22 +102,177 @@ async function isMarkdownLinkCheckAvailable(): Promise<boolean> {
 }
 
 /**
+ * Validates filesystem-based markdown links (from validate-doc-links.ts)
+ * Checks if internal file links resolve to existing files
+ */
+async function validateFilesystemLinks(): Promise<void> {
+  logger.info('Validating filesystem-based markdown links...');
+  const { existsSync, readFileSync } = await import('fs');
+  const projectRoot = process.cwd();
+  let hasErrors = false;
+
+  const markdownFiles = await glob([
+    `${projectRoot}/README.md`,
+    `${projectRoot}/docs/**/*.md`,
+    `${projectRoot}/.github/**/*.md`,
+    `${projectRoot}/eslint-plugin-corso/**/*.md`,
+    `${projectRoot}/styles/**/*.md`,
+    `${projectRoot}/.vscode/**/*.md`,
+    `${projectRoot}/public/**/*.md`,
+    `${projectRoot}/.husky/**/*.md`,
+    `${projectRoot}/.cursor/**/*.md`,
+    `${projectRoot}/lib/**/*.md`,
+    `${projectRoot}/components/**/*.md`,
+    `${projectRoot}/app/**/*.md`,
+  ], { ignore: ['**/node_modules/**'] });
+
+  for (const file of markdownFiles) {
+    const content = readFileSync(file, 'utf-8');
+    const links = content.match(/\[([^\]]+)\]\(([^)]+)\)/g) || [];
+
+    for (const link of links) {
+      const match = /\[([^\]]+)\]\(([^)]+)\)/.exec(link);
+      if (match?.[2]) {
+        const original = match[2];
+        // Skip external links, anchors, mailto, and mdc: protocol links
+        if (/^(https?:)?\/\//.test(original) || original.startsWith('#') || original.startsWith('mailto:') || original.startsWith('mdc:')) {
+          continue;
+        }
+        // Strip URL fragments and query strings for filesystem resolution
+        const safe = String(original ?? '');
+        const withoutFragment = (safe && safe.includes('#')) ? (safe.split('#')[0] ?? safe) : safe;
+        const withoutQuery = (withoutFragment && withoutFragment.includes('?')) ? (withoutFragment.split('?')[0] ?? withoutFragment) : withoutFragment;
+        const resolvedTarget: string = withoutQuery;
+        if (!resolvedTarget) continue;
+        // Support root-absolute paths like "/docs/..."
+        const absolutePath = resolvedTarget.startsWith('/')
+          ? path.resolve(projectRoot, resolvedTarget.replace(/^\//, ''))
+          : path.resolve(path.dirname(file), resolvedTarget);
+        if (!existsSync(absolutePath)) {
+          logger.error(`❌ Broken link in ${file}: ${original}`);
+          hasErrors = true;
+        }
+      }
+    }
+  }
+
+  if (hasErrors) {
+    throw new Error('Filesystem link validation failed');
+  }
+  logger.info('✅ All filesystem links are valid');
+}
+
+/**
+ * Validates APP_LINKS constants against actual routes (from validate-links.ts)
+ */
+async function validateAppLinks(): Promise<void> {
+  logger.info('Validating APP_LINKS constants...');
+  const { readFileSync, readdirSync } = await import('fs');
+  const appDir = path.join(process.cwd(), 'app');
+  const linksFile = path.join(process.cwd(), 'lib', 'shared', 'constants', 'links.ts');
+
+  function collectRoutes(dir: string): Set<string> {
+    const routes = new Set<string>();
+    const walk = (d: string, base = '') => {
+      for (const entry of readdirSync(d, { withFileTypes: true })) {
+        if (entry.name.startsWith('_') || entry.name.startsWith('.')) continue;
+        const full = path.join(d, entry.name);
+        if (entry.isDirectory()) {
+          walk(full, path.join(base, entry.name));
+        } else if (entry.isFile() && entry.name === 'page.tsx') {
+          // Convert /(group) and segment folders to public URL
+          let url = '/' + base
+            .replace(/\\/g, '/')
+            .replace(/\(([^)]+)\)\/?/g, '') // remove route groups
+            .replace(/index$/i, '')
+            .replace(/\/page\.tsx$/, '')
+            .replace(/\/$/, '');
+          
+          // Handle catch-all routes: [[...param]] -> matches the base path
+          // e.g., app/(auth)/sign-in/[[...sign-in]]/page.tsx -> /sign-in
+          if (url.includes('[[...')) {
+            url = url.replace(/\/\[\[\.\.\.[^\]]+\]\]/g, '');
+          }
+          
+          // Handle dynamic routes: [param] -> matches any value
+          // e.g., app/(protected)/dashboard/(entities)/[entity]/page.tsx
+          // We need to check if this is a known entity route and add specific paths
+          if (url.includes('/[entity]')) {
+            // Known entity routes from APP_LINKS
+            routes.add('/dashboard/projects');
+            routes.add('/dashboard/companies');
+            routes.add('/dashboard/addresses');
+            // Keep the dynamic route pattern for validation
+            url = url.replace(/\[entity\]/, '[entity]');
+          } else {
+            // Remove other dynamic segments for now (they're valid but we can't enumerate all values)
+            url = url.replace(/\[[^\]]+\]/g, '[param]');
+          }
+          
+          routes.add(url || '/');
+        }
+      }
+    };
+    walk(dir);
+    return routes;
+  }
+
+  function extractAppLinksTargets(src: string): string[] {
+    const targets: string[] = [];
+    const re = /['"]\/[A-Za-z0-9_\-\/]+(?:#[A-Za-z0-9_\-]+)?['"]/g;
+    for (const m of src.matchAll(re)) {
+      const raw = m[0].slice(1, -1);
+      // Filter external-like and anchors
+      if (/^\//.test(raw) && !/^\/#/.test(raw)) targets.push(raw);
+    }
+    return Array.from(new Set(targets));
+  }
+
+  try {
+    const routes = collectRoutes(appDir);
+    const linksSrc = readFileSync(linksFile, 'utf8');
+    const targets = extractAppLinksTargets(linksSrc);
+
+    // Allow known non-page anchors
+    const ignored = new Set(['/pricing#faq']);
+    const missing: string[] = [];
+    for (const t of targets) {
+      if (ignored.has(t)) continue;
+      if (!routes.has(t)) {
+        missing.push(t);
+      }
+    }
+
+    if (missing.length) {
+      logger.warn('⚠️  Missing routes referenced by APP_LINKS:');
+      for (const m of missing) logger.warn(`  - ${m}`);
+      logger.warn('⚠️  APP_LINKS validation found issues (non-blocking)');
+      // Don't throw - make it a warning so other validations can continue
+    } else {
+      logger.info('✅ All APP_LINKS internal targets resolve to existing routes');
+    }
+  } catch (error) {
+    logger.warn('⚠️  APP_LINKS validation skipped (links.ts file not found or error reading routes)');
+  }
+}
+
+/**
  * Runs the markdown-link-check tool across all markdown files.
  */
 async function runLinkChecker(): Promise<void> {
-  logger.info('Running link checker...');
+  logger.info('Running markdown-link-check tool...');
 
   // Check if markdown-link-check is available
   const available = await isMarkdownLinkCheckAvailable();
   if (!available) {
     logger.warn('⚠️  markdown-link-check tool not found. Install with: pnpm add -D markdown-link-check');
-    logger.info('✅ Link validation skipped due to missing tool');
+    logger.info('✅ External link validation skipped due to missing tool');
     return;
   }
 
   try {
     const opts = await loadConfig();
-    const files = await glob('{README.md,docs/**/*.md,.github/**/*.md,eslint-plugin-corso/**/*.md,stories/**/*.md,styles/**/*.md,.vscode/**/*.md,public/**/*.md,.husky/**/*.md,.cursor/**/*.md}', {
+    const files = await glob('{README.md,docs/**/*.md,.github/**/*.md,eslint-plugin-corso/**/*.md,styles/**/*.md,.vscode/**/*.md,public/**/*.md,.husky/**/*.md,.cursor/**/*.md}', {
       ignore: ['**/node_modules/**']
     });
 
@@ -143,10 +303,10 @@ async function runLinkChecker(): Promise<void> {
         }
       }))
     );
-    logger.info('✅ All links validated successfully');
+    logger.info('✅ All external links validated successfully');
   } catch (error) {
-    logger.warn('⚠️  Link validation failed, but continuing with other checks');
-    logger.info('✅ Link validation skipped due to execution error');
+    logger.warn('⚠️  External link validation failed, but continuing with other checks');
+    logger.info('✅ External link validation skipped due to execution error');
   }
 }
 
@@ -244,8 +404,20 @@ async function validateReadmeMetrics(): Promise<void> {
  */
 async function runMarkdownLinting(): Promise<void> {
   logger.info('Running markdown linting...');
-  const res = await runLocalBin('markdownlint', ['docs/**/*.md', 'README.md', '--config', '.markdownlint.jsonc']).catch(() => ({ exitCode: 1, stdout: '', stderr: '' }));
+  const res = await runLocalBin('markdownlint', ['docs/**/*.md', 'README.md', '--config', '.markdownlint.jsonc']).catch((err) => ({ 
+    exitCode: 1, 
+    stdout: err?.message || '', 
+    stderr: String(err) || '' 
+  }));
   if (res.exitCode !== 0) {
+    if (res.stdout) {
+      logger.error('Markdown lint errors (stdout):');
+      console.error(res.stdout);
+    }
+    if (res.stderr) {
+      logger.error('Markdown lint errors (stderr):');
+      console.error(res.stderr);
+    }
     logger.error('❌ Markdown linting failed');
     throw new Error('markdownlint failed');
   }
@@ -305,16 +477,36 @@ async function checkDocsIndex(): Promise<void> {
 // --- Main Orchestrator ---
 
 async function main(): Promise<void> {
-  try {
-    await Promise.all([
-      runLinkChecker(),
-      checkLastUpdated(),
-      validateReadmeMetrics(),
-      runMarkdownLinting(),
-      checkDocsIndex(),
-    ]);
+  const args = process.argv.slice(2);
+  const linksOnly = args.includes('--links-only') || args.includes('--links');
 
-    logger.info('✅ Documentation validation passed successfully!');
+  try {
+    if (linksOnly) {
+      // When --links-only flag is used, only run link validations
+      await Promise.all([
+        validateFilesystemLinks(),
+        validateAppLinks(),
+        runLinkChecker(),
+      ]);
+      logger.info('✅ Link validation passed successfully!');
+    } else {
+      // Full validation (default)
+      await Promise.all([
+        validateFilesystemLinks(),
+        validateAppLinks(),
+        runLinkChecker(),
+        checkLastUpdated(),
+        validateReadmeMetrics(),
+        runMarkdownLinting(),
+        checkDocsIndex(),
+      ]);
+
+      // Content validation (banned patterns, code blocks, env var docs)
+      logger.info('Validating documentation content...');
+      await validateDocsContent();
+
+      logger.info('✅ Documentation validation passed successfully!');
+    }
   } catch (err) {
     logger.error('❌ Documentation validation failed.', { error: (err as Error).message });
     process.exit(1);

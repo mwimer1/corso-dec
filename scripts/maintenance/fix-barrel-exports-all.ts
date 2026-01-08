@@ -11,7 +11,7 @@
 import { glob } from 'glob';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
-import { detectBarrelMode, isInternalToPolicy, isServerOnlyModule, validateBarrelFile } from './barrel-helpers';
+import { detectBarrelMode, isInternalToPolicy, isServerOnlyModuleSync, validateBarrelFileSync } from '../utils/barrel-utils';
 
 const CHECK = process.argv.includes('--check');
 const scopeArg = process.argv.find(a => a.startsWith('--scope='));
@@ -52,7 +52,6 @@ async function main() {
       'scripts/**',
       'tools/**',
       'eslint-plugin-corso/**',
-      'hooks/**',
       'lib/api/**' // manual curation only
     ]
   });
@@ -61,7 +60,7 @@ async function main() {
   for (const indexPath of indexFiles) {
     const dir = path.dirname(indexPath);
     const content = await fs.readFile(indexPath, 'utf8');
-    const result = await validateBarrelFile(indexPath, content);
+    const result = validateBarrelFileSync(indexPath, content);
     if (!result.hasMissingExports) continue;
 
     const additions: string[] = [];
@@ -69,7 +68,7 @@ async function main() {
       const resolved = await resolveModulePath(dir, mod);
       if (!resolved) continue;
       // Never write server-only modules into clientish barrels
-      if (isClientish(dir) && isServerOnlyModule(resolved)) continue;
+      if (isClientish(dir) && isServerOnlyModuleSync(resolved)) continue;
       // Respect policy: skip internal modules
       if (isInternalToPolicy(dir, mod)) continue;
 

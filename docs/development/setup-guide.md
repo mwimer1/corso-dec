@@ -1,11 +1,12 @@
 ---
-status: "stable"
-last_updated: "2025-11-03"
+title: "Development Environment Setup"
+last_updated: "2026-01-07"
 category: "documentation"
+status: "draft"
 ---
 # 🚀 Development Environment & Workflows
 
-> **Windows shell requirement**: Use Git Bash for all repo commands. Avoid PowerShell/CMD; run commands sequentially (no long `&&` chains).
+> **Windows shell requirement**: PowerShell is the default terminal (configured in `.vscode/settings.json`). Git Bash is available as an alternative profile. Run commands sequentially (no long `&&` chains).
 
 This comprehensive guide covers environment setup, workflow accessibility, and development best practices for the Corso platform.
 
@@ -29,6 +30,7 @@ After pulling the repository, complete this checklist to ensure full compliance 
 - [ ] Run `pnpm validate:env` - validates environment variables and setup
 - [ ] Add `.env.local` with required variables (see `.env.example`)
 - [ ] Set `CORSO_USE_MOCK_DB=true` in `.env.local` for dashboard entity queries during development
+- [ ] Set `CORSO_USE_MOCK_CMS=true` in `.env.local` for marketing content (insights) during development (enabled by default in dev/test)
 
 ✅ **Code Quality & Standards**
 - [ ] Run `pnpm validate:cursor-rules` - validates custom Cursor AI rules and runtime boundaries
@@ -43,33 +45,35 @@ After pulling the repository, complete this checklist to ensure full compliance 
 - [ ] Check `docs/development/setup-guide.md` - complete setup guide for hidden dependencies
 
 ✅ **Development Workflow**
-- [ ] Use `pnpm dev` for development server (no Storybook)
-- [ ] Use `pnpm dev:with-storybook` for both Next.js and Storybook
+- [ ] Use `pnpm dev` for development server
 - [ ] Run commands sequentially, avoid `&&` chaining
 - [ ] Never use `pnpm -s/--silent` on Windows
 
 ✅ **Windows-Specific Setup**
 - [ ] Use Git Bash (not PowerShell/CMD) for all repository commands
 - [ ] Run `source dev-env/bootstrap.sh` to enable bracketed-paste support
-- [ ] Use Volta for Node/pnpm version management: `volta install node@20.19.4` and `volta install pnpm@10.15.0`
-- [ ] If commands fail on Windows, ensure Git Bash is your default terminal in VS Code
+- [ ] Use Volta for Node/pnpm version management: `volta install node@20.19.4` and `volta install pnpm@10.17.1`
+- [ ] If commands fail on Windows, ensure PowerShell is your default terminal in VS Code (configured automatically via `.vscode/settings.json`)
 - [ ] For case-sensitive filesystem issues, consider using WSL2 or Git Bash on Windows
 
 ✅ **Required Tools & Dependencies**
 - [ ] Install AI tools if `pnpm run verify:ai-tools` fails (install Spectral, Spellcheck, etc.)
 - [ ] Ensure `tsx` is available (install via `pnpm add -D tsx` if needed)
-- [ ] Verify pnpm version: `pnpm -v` should show 10.15.0 or compatible
+- [ ] Verify pnpm version: `pnpm -v` should show 10.17.1 or compatible (>=10 required)
 
 ✅ **Domain-Specific Setup**
+- [ ] **Dashboard**: See `docs/development/dashboard-setup.md` for complete dashboard setup guide (mock DB, relaxed auth, column config, etc.)
 - [ ] **Analytics Features**: Set `CLICKHOUSE_URL`, `CLICKHOUSE_DATABASE`, `CLICKHOUSE_PASSWORD` in `.env.local` for warehouse queries
 - [ ] **AI Features**: Add `OPENAI_API_KEY` to `.env.local` for AI-powered features
-- [ ] **Mock Database**: Set `CORSO_USE_MOCK_DB=true` in `.env.local` for dashboard entity queries (uses CSV data from `/db` directory)
-- [ ] **Build Mock DB**: Run `pnpm mockdb:build` to generate JSON files for mock mode
+- [ ] **Mock Database**: Set `CORSO_USE_MOCK_DB=true` in `.env.local` for dashboard entity queries (uses checked-in JSON fixtures from `public/__mockdb__/`)
+- [ ] **Mock CMS**: Set `CORSO_USE_MOCK_CMS=true` in `.env.local` for marketing content (uses checked-in JSON fixtures from `public/__mockcms__/`, enabled by default in dev/test)
 
 ### Development Server Commands
-- **`pnpm dev`** - Starts Next.js development server only (no Storybook)
-- **`pnpm dev:stories`** - Starts Storybook development server separately
-- **`pnpm dev:with-storybook`** - Runs both Next.js and Storybook concurrently (if needed)
+- **`pnpm dev`** - Starts Next.js development server
+  - **Automatic Cleanup**: Before starting, automatically:
+    - Clears processes on ports 3000 and 9323 (dev server and Playwright)
+    - Kills orphaned Node.js dev processes older than 30 minutes
+    - Ensures clean startup without port conflicts or accumulated processes
 
 ## 🎮 Workflow Accessibility
 
@@ -88,20 +92,22 @@ Press `Ctrl+Shift+P` → "Tasks: Run Task" → Browse emoji-labeled tasks
 
 ### Windows Batch Script Menu
 ```bash
-scripts/dev-workflows.bat
+scripts/windows/dev-workflows.bat
 ```
 
 ## Volta (Windows-first; local setup)
 
-- Install Volta: `winget install Volta.Volta`, then `volta install node@20.19.4` and `volta install pnpm@10.15.0`.
+- Install Volta: `winget install Volta.Volta`, then `volta install node@20.19.4` and `volta install pnpm@10.17.1`.
 - Check locally: `node -v` should match `.node-version`; `pnpm -v` should match `volta` configuration.
 - Do not enable Corepack locally (CI may use Corepack shims; local uses Volta for pnpm).
 
-Below is a **full drop‑in replacement** that keeps your original focus
-(bracketed‑paste & terminal ergonomics) **and** adds a precise, future‑proof section
-for **environment files**—including the Supabase‑specific `.env` at the repo root,
-plus `.env.local` and `.env.test`. It also bakes in the "unexpected character `#`"
-fix, CI guardrails, and clear onboarding.
+This guide provides a complete setup solution that includes:
+
+- **Bracketed-paste support** for terminal ergonomics
+- **Environment file management** with separate files for different purposes
+- **Supabase CLI configuration** with the `.env` file at repo root
+- **CI guardrails** and clear onboarding instructions
+- **Common pitfalls** and troubleshooting guidance
 
 ---
 
@@ -130,7 +136,7 @@ fix, CI guardrails, and clear onboarding.
     - [`.inputrc` Settings](#inputrc-settings)
     - [VS Code Integration](#vs-code-integration)
   - [🖥️ Platform Support](#️-platform-support)
-    - [Windows (Git Bash/MSYS2)](#windows-git-bashmsys2)
+    - [Windows (PowerShell/Git Bash)](#windows-git-bashpowershell)
     - [Linux/Container](#linuxcontainer)
     - [macOS](#macos)
   - [🧪 Testing \& Validation](#-testing--validation)
@@ -168,13 +174,16 @@ to be copy‑paste friendly and CI‑ready.
 - **VS Code** workspace settings included for consistent terminals
 - **Cleanup script**: `pnpm run cleanup:all` for complete cache/node_modules rebuild
 
-> Mock Mode (CSV-backed tables)
+> Mock Mode (JSON-backed tables)
 >
-> - Set `MOCK_ENTITY_DATA=true` in `.env.local` to serve dashboard entity tables from CSV seeds in `db/*.csv`.
-> - Server-only (Node). Normalizes columns to existing table configs; supports
-> eq/contains/gt/lt/gte/lte/in/between/bool, global search, sorting (numbers/strings/dates),
-> and pagination.
-> - No UI changes; uses the existing `createEntityFetchData()` seam. Not used in production.
+> - Set `CORSO_USE_MOCK_DB=true` in `.env.local` to serve dashboard entity tables from JSON files in `public/__mockdb__/`.
+> - JSON fixtures are checked into the repo under `public/__mockdb__/` (no generation step required).
+> - Set `CORSO_USE_MOCK_CMS=true` in `.env.local` to serve marketing content (insights) from JSON files in `public/__mockcms__/`.
+> - Mock CMS fixtures are checked into the repo under `public/__mockcms__/` (generated via `pnpm port:mockcms:insights`).
+> - Edge-compatible (uses `fetch()` to load JSON, no Node `fs`). Supports
+> eq/contains/gt/lt/gte/lte/in/between/bool filters, global search, sorting (numbers/strings/dates),
+> and pagination via `getEntityPage()` service.
+> - No UI changes required; routes automatically use mock data when flag is enabled. Not used in production.
 
 - **Lightweight clones (save disk/RAM on dev/CI)**
 
@@ -279,7 +288,7 @@ CSP_FONT_DOMAINS='self',fonts.gstatic.com
 CSP_IMG_DOMAINS='self',images.clerk.dev,js.stripe.com
 CSP_CONNECT_DOMAINS='self',api.openai.com,api.stripe.com
 CSP_FRAME_DOMAINS='self',js.stripe.com,accounts.clerk.dev
-CSP_REPORT_URI=http://localhost:3000/api/public/csp-report
+CSP_FORWARD_URI=http://localhost:3000/api/v1/csp-report
 CSP_REPORT_ONLY=false
 ```
 
@@ -310,7 +319,7 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 # Other services: Clerk, Stripe, OpenAI, etc. (see .env.example)
 
 # 🔒 Security & CSP (reports sent to local endpoint)
-CSP_REPORT_URI=http://localhost:3000/api/public/csp-report
+CSP_FORWARD_URI=http://localhost:3000/api/v1/csp-report
 ```
 
 **`.env.test` (Test/CI; loaded by pipeline)**
@@ -326,7 +335,7 @@ SUPABASE_URL=https://YOUR-PROJECT.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=ci-service-role-key
 
 # 🔒 Security & CSP (reports sent to local endpoint for testing)
-CSP_REPORT_URI=http://localhost:3000/api/public/csp-report
+CSP_FORWARD_URI=http://localhost:3000/api/v1/csp-report
 ```
 
 ### Supabase CLI usage
@@ -468,15 +477,28 @@ set keymap emacs
 
 ### VS Code Integration
 
-`.vscode/settings.json`
+`.vscode/settings.json` is pre-configured with:
+
+- **Git Bash (fast) as default terminal** (optimized for Windows performance with Git hooks)
+- **Automation profile** set to PowerShell for tasks and automation
+- **Shell integration disabled** to avoid terminal noise
+- **Bracketed paste mode** enabled for better terminal ergonomics
 
 ```json
 {
+  "terminal.integrated.defaultProfile.windows": "Git Bash (fast)",
+  "terminal.integrated.automationProfile.windows": {
+    "path": "powershell.exe",
+    "args": ["-NoLogo"]
+  },
+  "terminal.integrated.shellIntegration.enabled": false,
   "terminal.integrated.bracketedPasteMode": true,
   "terminal.integrated.enableMultiLinePasteWarning": "auto",
   "terminal.integrated.rightClickBehavior": "paste"
 }
 ```
+
+**Note**: Git Bash (fast) is the default for optimal Git hook performance on Windows. PowerShell and standard Git Bash profiles are still available for manual use if needed.
 
 Disable per‑user if needed:
 
@@ -488,12 +510,13 @@ Disable per‑user if needed:
 
 ## 🖥️ Platform Support
 
-### Windows (Git Bash/MSYS2)
+### Windows (Git Bash/PowerShell)
 
-- ✅ Git Bash 2.14+ supported — Required shell on Windows for repo commands
-- ✅ MSYS2 ok with `.inputrc`
-- ✅ WSL recommended for native Linux behavior
-- ⚠️ Do not use Cmd/PowerShell for project scripts; use Git Bash or VS Code's integrated terminal set to Git Bash
+- ✅ **Git Bash (fast) is the default** — Configured in `.vscode/settings.json` for optimal Git hook performance
+- ✅ PowerShell available as alternative profile — Use for automation and tasks
+- ✅ Standard Git Bash profile available — Use if you need full bash profile initialization
+- ✅ MSYS2 ok with `.inputrc` — For advanced users
+- ✅ WSL recommended for native Linux behavior — Best for Linux-like development experience
 
 #### Shell requirements and usage (Windows)
 
@@ -608,10 +631,10 @@ pnpm dev --turbo  # If available
 # The script checks for: Spectral, Spellcheck, and other AI tools
 
 # Install Spectral (OpenAPI linter)
-npm install -g @stoplight/spectral
+pnpm add -g @stoplight/spectral
 
 # Install Spellcheck (markdown spell checking)
-npm install -g spellchecker-cli
+pnpm add -g spellchecker-cli
 
 # Alternative: Let the script install them automatically
 pnpm run verify:ai-tools --force
@@ -660,7 +683,7 @@ which bash
 
 ### Related Documentation
 
-- Development Tools – `docs/tools-scripts/development-tools.md`
+- Development Tools – `docs/development/development-tools.md`
 - DevContainer Setup – `.devcontainer/README.md`
 - Pattern Library – `docs/pattern-library.md`
 - Database Setup – See Supabase configuration in setup sections above
@@ -711,9 +734,130 @@ After modifying API routes:
 3. All bearer-authenticated operations require `x-corso-rbac` or `x-public` extension
 4. All bearer operations must include `OrgIdHeader` parameter for tenant isolation
 
+## 🔍 Dead Code & Unused Exports Audits
+
+### Source of Truth: CI (Linux)
+
+**Canonical audit results come from GitHub Actions (Linux runners).** This ensures consistent, reproducible results across the team and prevents "works on my machine" issues.
+
+### Windows Limitations
+
+Some audit tools have known Windows compatibility issues:
+
+- **Knip** (`pnpm validate:dead-code`): Fails on Windows due to native bindings blocked by Windows Application Control policy
+- **ts-prune** (`pnpm deadcode:test-only`): Has path issues with `pnpm exec` on Windows
+
+**Workaround for Windows developers:**
+- Use `pnpm validate:dead-code:optimized` (Madge-based, Windows-compatible)
+- Use `pnpm audit:orphans` (ts-morph-based, Windows-compatible)
+- For full analysis, check CI artifacts from the `dead-code-audit` workflow
+
+### Available Audit Commands
+
+#### Cross-Platform (Windows-compatible)
+
+```bash
+# Dead code check (orphans + circular dependencies)
+pnpm validate:dead-code:optimized
+
+# Detailed orphan audit (ts-morph-based)
+pnpm audit:orphans --out reports/orphan/orphan-report.json
+
+# High-signal orphan candidates only
+pnpm audit:orphans:high-signal
+```
+
+#### Linux/CI Only (May fail on Windows)
+
+```bash
+# Full Knip analysis (dead code + unused exports)
+pnpm validate:dead-code
+
+# Unused exports check (Knip-based)
+pnpm quality:exports:check
+
+# Test-only exports check (ts-prune-based)
+pnpm deadcode:test-only
+```
+
+### CI Workflow
+
+The `dead-code-audit` workflow runs automatically on:
+- Pull requests (when code paths change)
+- Pushes to `main`
+- Weekly schedule (Mondays at 2 AM UTC)
+- Manual trigger (`workflow_dispatch`)
+
+**Artifacts:**
+- `reports/orphan/orphan-report.json` - Detailed orphan file analysis
+- `reports/exports/unused-exports.report.json` - Unused exports JSON report
+- `reports/exports/unused-exports.summary.md` - Human-readable summary
+
+Download artifacts from the workflow run to review findings.
+
+### Audit Report Locations
+
+All audit reports are generated in the `reports/` directory:
+
+```
+reports/
+├── orphan/
+│   └── orphan-report.json          # Orphaned files analysis
+└── exports/
+    ├── unused-exports.report.json  # Unused exports (JSON)
+    └── unused-exports.summary.md   # Unused exports (Markdown)
+```
+
+**Note:** Reports are not committed to the repository. They are:
+- Generated locally when running audit commands
+- Uploaded as CI artifacts for each workflow run
+- Available for 30 days in GitHub Actions
+
+### Understanding Audit Results
+
+#### Orphaned Files
+
+Files that are not imported or referenced anywhere in the codebase. The audit tool:
+- Excludes Next.js convention files (`page.tsx`, `layout.tsx`, `route.ts`, etc.)
+- Excludes generated files (`.d.ts`, OpenAPI types)
+- Respects allowlist in `scripts/audit/orphans.allowlist.json`
+
+**Decision tree:**
+1. Is it a Next.js convention file? → Should be excluded (fix tooling config if it appears)
+2. Is it generated/tool-consumed? → Keep + document + allowlist
+3. Is it a barrel file? → Verify if part of public API before deleting
+4. Is it referenced dynamically? → Manual verification required
+5. Otherwise → Candidate for deletion (after typecheck/build/tests pass)
+
+#### Unused Exports
+
+Exports that are never imported. Treat as API surface hygiene:
+
+- **Internal-only exports**: Remove and simplify import sites
+- **Public API exports**: Either keep (with allowlist) or move to appropriate module
+- **Type-only exports**: Easy to clean, low risk
+- **Barrel inconsistencies**: Often create most of the "unused exports" noise
+
+#### Test-Only Exports
+
+Exports only referenced in test files. **Recommended action:**
+- Move helpers to `test-utils/` or colocated test helper modules
+- Stop exporting from production modules
+- Only allowlist if there's a deliberate policy for downstream users
+
+### Contributing Guidelines
+
+When working on dead code cleanup:
+
+1. **Check CI artifacts first** - Review the latest audit results from the workflow
+2. **Run local checks** - Use Windows-compatible commands for quick feedback
+3. **Verify before deleting** - Run `pnpm typecheck`, `pnpm build`, `pnpm test` after deletions
+4. **Update allowlists** - If keeping a file, add it to `scripts/audit/orphans.allowlist.json` with a reason
+5. **Small PRs** - Keep cleanup PRs focused and easy to review
+
 ## 🏷️ Tags
 
-`#development-environment` `#env-files` `#supabase` `#terminal` `#bracketed-paste` `#devcontainer` `#nextjs` `#ci`
+`#development-environment` `#env-files` `#supabase` `#terminal` `#bracketed-paste` `#devcontainer` `#nextjs` `#ci` `#dead-code` `#code-quality`
 
 ---
 
@@ -770,4 +914,3 @@ pnpm run cleanup:all
 - ✅ Git state (no impact on working directory)
 - ✅ Windows environments (cross-platform commands)
 - ✅ Large projects (efficient cleanup sequence)
-

@@ -3,7 +3,7 @@ import path from 'node:path';
 
 const ROOT = process.cwd();
 const FILE = path.join(ROOT, 'styles', 'ui', 'shared', 'component-variants.ts');
-const SRC_DIRS = ['app','components','contexts','hooks','lib','pages','styles','tools'];
+const SRC_DIRS = ['app','components','lib','pages','styles','tools'];
 
 const disallowedImports = [
   "@/styles/ui/shared/component-variants",
@@ -53,7 +53,7 @@ for (const f of files) {
 
 if (violations.length) {
   console.error('❌ Orphaned variant files were reintroduced:\n' + violations.map(v => ' - ' + v).join('\n'));
-  process.exit(1);
+  process.exitCode = 1;
 } else {
   console.log('✅ No orphaned variant files present.');
 }

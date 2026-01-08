@@ -11,9 +11,10 @@ import fs from 'fs';
 import { globbySync } from 'globby';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { readBarrelExports, readBarrelReferencedModules } from '../utils/barrel-utils';
 import { parseMd, stringifyMd } from './_utils/frontmatter';
-import { readBarrelExports, readBarrelReferencedModules } from './barrel-helpers';
 import { LIB_POLICIES } from './barrel.config';
+import { renderReadme } from '../utils/docs-template-engine';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '../..');
@@ -41,44 +42,6 @@ interface DomainConfig {
   getExports: (domainPath: string) => string[];
   buildReadmeTable: (exports: string[], domain: string, kind?: ReadmeKind) => string;
   checkBarrel?: boolean;
-}
-
-
-function readContextsBarrelExports(domainPath: string): string[] {
-  const indexPath = path.join(domainPath, 'index.ts');
-  if (!fs.existsSync(indexPath)) return [];
-  
-  const content = fs.readFileSync(indexPath, 'utf8');
-  const exportRegex = /export\s+\*\s+from\s+'\.\/(.*?)';/g;
-  const exports: string[] = [];
-  let match;
-  
-  while ((match = exportRegex.exec(content))) {
-    const modulePath = match[1] ?? '';
-    if (modulePath) {
-      // Read the actual module to extract exported names
-      const fullModulePath = path.join(domainPath, modulePath + '.tsx');
-      if (fs.existsSync(fullModulePath)) {
-        const moduleContent = fs.readFileSync(fullModulePath, 'utf8');
-        
-        // Extract provider exports
-        const providerRegex = /\b(?:export\s+)?(?:function|const|class)\s+(\w+Provider)\b/g;
-        let pm;
-        while ((pm = providerRegex.exec(moduleContent))) {
-          exports.push(pm[1] ?? '');
-        }
-        
-        // Extract hook exports
-        const hookRegex = /\b(?:export\s+)?(?:function|const)\s+(use[A-Z]\w+)/g;
-        let hm;
-        while ((hm = hookRegex.exec(moduleContent))) {
-          exports.push(hm[1] ?? '');
-        }
-      }
-    }
-  }
-  
-  return exports;
 }
 
 /**
@@ -186,27 +149,28 @@ function isInternalToPolicy(rootDir: string, candidateRelPath: string): boolean 
 
 
 const CONFIGS: DomainConfig[] = [
-    {
-        name: 'Actions',
-        baseDir: path.join(ROOT, 'actions'),
-        // Root-aware: single README and single barrel at actions/index.ts
-        getDomains: () => [''],
-        getExports: (domainPath: string) => {
-            const actionFiles = globbySync(['**/*.ts', '!index.ts', '!**/*.test.ts', '!**/schemas.ts'], { cwd: domainPath });
-            return actionFiles.map((relPath) => {
-                const noExt = relPath.replace(/\.ts$/, '');
-                if (noExt.endsWith('/index')) {
-                    return noExt.replace(/\/index$/, '');
-                }
-                return noExt;
-            });
-        },
-        buildReadmeTable: (exports: string[], _domain: string, kind: ReadmeKind = 'Action') => {
-            const rows = exports.map((a) => `| \`${a}\` |  | \`@/actions\` |`).join('\n');
-            return `| ${kind} | Purpose | Import Path |\n|--------|---------|-------------|\n${rows}`;
-        },
-        checkBarrel: true,
-    },
+    // Note: Actions directory was removed in PR5.2 - Server Actions are now feature-colocated
+    // This entry is commented out but kept for reference
+    // {
+    //     name: 'Actions',
+    //     baseDir: path.join(ROOT, 'actions'),
+    //     getDomains: () => [''],
+    //     getExports: (domainPath: string) => {
+    //         const actionFiles = globbySync(['**/*.ts', '!index.ts', '!**/*.test.ts', '!**/schemas.ts'], { cwd: domainPath });
+    //         return actionFiles.map((relPath) => {
+    //             const noExt = relPath.replace(/\.ts$/, '');
+    //             if (noExt.endsWith('/index')) {
+    //                 return noExt.replace(/\/index$/, '');
+    //             }
+    //             return noExt;
+    //         });
+    //     },
+    //     buildReadmeTable: (exports: string[], _domain: string, kind: ReadmeKind = 'Action') => {
+    //         const rows = exports.map((a) => `| \`${a}\` |  | \`@/actions\` |`).join('\n');
+    //         return `| ${kind} | Purpose | Import Path |\n|--------|---------|-------------|\n${rows}`;
+    //     },
+    //     checkBarrel: true,
+    // },
     {
         name: 'Components',
         baseDir: path.join(ROOT, 'components'),
@@ -221,47 +185,6 @@ const CONFIGS: DomainConfig[] = [
             return `| ${kind} | Purpose | Import Path |\n|-----------|---------|-------------|\n${rows}`;
         },
         checkBarrel: true,
-    },
-    {
-        name: 'Contexts',
-        baseDir: path.join(ROOT, 'contexts'),
-        getDomains: () => [''], // Single root barrel, no subdomain barrels
-        getExports: (domainPath: string) => {
-            // Scan all provider files in subdirectories for the root barrel
-            const allProviderFiles = globbySync(['**/*provider.tsx', '**/*-provider.tsx'], { cwd: path.join(ROOT, 'contexts') });
-            const identifiers = new Set<string>();
-            
-            allProviderFiles.forEach(fileRel => {
-                const fullPath = path.join(ROOT, 'contexts', fileRel);
-                const content = fs.readFileSync(fullPath, 'utf8');
-                
-                // Extract provider exports
-                const providerRegex = /\b(?:export\s+)?(?:function|const|class)\s+(\w+Provider)\b/g;
-                let pm;
-                while ((pm = providerRegex.exec(content))) {
-                    identifiers.add(pm[1] ?? '');
-                }
-                
-                // Extract hook exports
-                const hookRegex = /\b(?:export\s+)?(?:function|const)\s+(use[A-Z]\w+)/g;
-                let hm;
-                while ((hm = hookRegex.exec(content))) {
-                    identifiers.add(hm[1] ?? '');
-                }
-            });
-            
-            return Array.from(identifiers);
-        },
-        buildReadmeTable: (exports: string[], _domain: string, kind: ReadmeKind = 'Provider') => {
-            const rows = exports.map(e => {
-                if (e.endsWith('Provider')) {
-                    return `| \`${e}\` |  | React context provider | \`@/contexts\``;
-                }
-                return `|  | \`${e}\` | React hook | \`@/contexts\``;
-            }).join('\n');
-            return `| ${kind} | Hook | Purpose | Import Path |\n|----------|------|---------|-------------|\n${rows}`;
-        },
-        checkBarrel: false, // No subdomain barrels to validate - single root barrel
     },
 
     {
@@ -589,12 +512,12 @@ function main() {
         const domains = config.getDomains();
 
         domains.forEach(domain => {
-            const domainPath = config.name === 'Contexts' || config.name === 'Actions' ? config.baseDir : path.join(config.baseDir, domain);
+            const domainPath = config.name === 'Actions' ? config.baseDir : path.join(config.baseDir, domain);
             const exports = config.getExports(domainPath);
             
             if (exports.length > 0) {
                 const table = config.buildReadmeTable(exports, domain);
-                const readmePath = (config.name === 'Contexts' || config.name === 'Actions') ? path.join(config.baseDir, 'README.md') : path.join(domainPath, 'README.md');
+                const readmePath = config.name === 'Actions' ? path.join(config.baseDir, 'README.md') : path.join(domainPath, 'README.md');
                 updateReadme(readmePath, table);
                 console.log(`Updated README for ${config.name}${domain ? '/' + domain : ''}`);
             }
@@ -664,18 +587,8 @@ function main() {
                       }
                     }
                 });
-            } else if (config.name === 'Contexts') {
-                // Special handling for contexts: validate root barrel exports
-                const rootBarrelPath = path.join(ROOT, 'contexts', 'index.ts');
-                const rootBarrelExports = readContextsBarrelExports(path.join(ROOT, 'contexts'));
-                
-                exports.forEach(e => {
-                    if (!rootBarrelExports.includes(e)) {
-                        console.warn(`[${config.name}] Root barrel missing export: ${e}`);
-                        hasWarn = true;
-                    }
-                });
             }
+            // Barrel validation skipped for domains without checkBarrel enabled
         });
     });
 
@@ -751,55 +664,24 @@ function generateScriptReadmeData(domain: string, exports: string[]) {
 
 /**
  * Generate script README using template
+ * Uses the Handlebars template engine from docs-template-engine.ts
  */
 function generateScriptReadme(data: any): string {
-  const templatePath = path.join(__dirname, '../docs/templates/README.scripts.md');
-
   try {
-    let template = fs.readFileSync(templatePath, 'utf8');
+    // Use the existing template engine with the correct template
+    // Adapt data structure to match template expectations
+    const templateContext = {
+      directory: `scripts/${data.domain}`,
+      last_updated: data.last_updated,
+      scripts: data.scripts.map((script: any) => ({
+        name: script.file,
+        description: script.purpose || 'Script utility'
+      }))
+    };
 
-    // Simple template replacement
-    template = template.replace(/\{\{title\}\}/g, data.title);
-    template = template.replace(/\{\{description\}\}/g, data.description);
-    template = template.replace(/\{\{last_updated\}\}/g, data.last_updated);
-    template = template.replace(/\{\{category\}\}/g, data.category);
-    template = template.replace(/\{\{domain\}\}/g, data.domain);
-
-    // Handle arrays
-    template = template.replace(/\{\{#exports\}\}[\s\S]*?\{\{\/exports\}\}/g, () => {
-      return data.exports.map((name: string) => `| \`${name}\` | script file | \`@/scripts/${data.domain}\` |`).join('\n');
-    });
-
-    template = template.replace(/\{\{#scripts\}\}[\s\S]*?\{\{\/scripts\}\}/g, () => {
-      return data.scripts.map((script: any) =>
-        `| \`${script.file}\` | ${script.type} | ${script.purpose} | \`${script.execution}\` |`
-      ).join('\n');
-    });
-
-    // Handle simple string replacements
-    template = template.replace(/\{\{overview\}\}/g, data.overview);
-    template = template.replace(/\{\{quick_start\}\}/g, data.quick_start);
-    template = template.replace(/\{\{usage_examples\}\}/g, data.usage_examples);
-    template = template.replace(/\{\{performance\}\}/g, data.performance);
-    template = template.replace(/\{\{dependencies\}\}/g, data.dependencies);
-    template = template.replace(/\{\{related_docs\}\}/g, data.related_docs);
-
-    // Handle array replacements
-    template = template.replace(/\{\{#ci_examples\}\}[\s\S]*?\{\{\/ci_examples\}\}/g, () => {
-      return data.ci_examples.map((example: string) => `${example}`).join('\n');
-    });
-
-    template = template.replace(/\{\{#dev_examples\}\}[\s\S]*?\{\{\/dev_examples\}\}/g, () => {
-      return data.dev_examples.map((example: string) => `${example}`).join('\n');
-    });
-
-    template = template.replace(/\{\{#precommit_examples\}\}[\s\S]*?\{\{\/precommit_examples\}\}/g, () => {
-      return data.precommit_examples.map((example: string) => `${example}`).join('\n');
-    });
-
-    return template;
+    return renderReadme('README.scripts', templateContext);
   } catch (error) {
-    console.warn(`Warning: Could not read template ${templatePath}, using simple format`);
+    console.warn(`Warning: Could not render template, using simple format: ${error instanceof Error ? error.message : String(error)}`);
     return generateSimpleScriptReadme(data);
   }
 }
@@ -879,11 +761,11 @@ function getScriptDomainInfo(domain: string): {
       title: 'Analysis Scripts',
       description: 'Codebase analysis tools for dependency management, unused code detection, and duplication analysis.',
       overview: 'Specialized scripts for maintaining codebase health through automated analysis of dependencies, unused code, and code duplication patterns.',
-      quick_start: 'Run dependency analysis: `pnpm node scripts/analysis/analyze-knip-baseline.cjs --all`',
+      quick_start: 'Run usage scan: `pnpm scan:ui` or `pnpm scan:styles`',
       usage_examples: 'See individual script documentation for detailed usage patterns.',
-      ci_examples: ['pnpm node scripts/analysis/analyze-knip-baseline.cjs --all'],
-      dev_examples: ['pnpm node scripts/analysis/analyze-unused-exports.cjs'],
-      precommit_examples: ['pnpm node scripts/analysis/analyze-knip-baseline.cjs --fast'],
+      ci_examples: [],
+      dev_examples: ['pnpm scan:ui', 'pnpm scan:styles', 'pnpm scan:atoms'],
+      precommit_examples: [],
       performance: 'Analysis scripts typically run in 10-60 seconds depending on scope.',
       dependencies: 'Node.js built-ins, globby, TypeScript compiler API',
       related_docs: 'See [CI Scripts](../ci/) and [Maintenance Scripts](../maintenance/) for related tooling.'
@@ -934,7 +816,7 @@ function getScriptDomainInfo(domain: string): {
       quick_start: 'Setup development: `pnpm tsx scripts/setup/setup-branch.ts`',
       usage_examples: 'See individual script documentation for detailed usage patterns.',
       ci_examples: ['pnpm tsx scripts/setup/validate-env.ts'],
-      dev_examples: ['pnpm tsx scripts/setup/start-dev-server.ts'],
+      dev_examples: ['pnpm tsx scripts/setup/validate-env.ts'],
       precommit_examples: ['pnpm tsx scripts/setup/validate-env.ts'],
       performance: 'Setup scripts typically run in 2-10 seconds.',
       dependencies: 'Node.js built-ins, child_process for system commands',
@@ -944,11 +826,11 @@ function getScriptDomainInfo(domain: string): {
       title: 'Validation Scripts',
       description: 'Runtime and integration validation tools.',
       overview: 'Scripts for runtime boundary enforcement, link validation, and integration testing ensuring system integrity.',
-      quick_start: 'Validate links: `pnpm tsx scripts/validation/validate-links.ts`',
+      quick_start: 'Validate links: `pnpm docs:links` or `pnpm tsx scripts/maintenance/validate-docs.ts --links-only`',
       usage_examples: 'See individual script documentation for detailed usage patterns.',
-      ci_examples: ['pnpm tsx scripts/validation/verify-app-runtime.ts'],
-      dev_examples: ['pnpm tsx scripts/validation/validate-links.ts'],
-      precommit_examples: ['pnpm tsx scripts/validation/verify-app-runtime.ts'],
+      ci_examples: ['pnpm tsx scripts/validation/lib-structure.ts'],
+      dev_examples: ['pnpm docs:links'],
+      precommit_examples: ['pnpm tsx scripts/validation/lib-structure.ts'],
       performance: 'Validation scripts typically run in 2-10 seconds.',
       dependencies: 'Node.js built-ins, globby for file scanning',
       related_docs: 'See [Runtime Boundaries](../codebase/cursor-rules.md) documentation.'

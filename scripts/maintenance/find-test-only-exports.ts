@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env tsx
 /**
  * Find exports that are only referenced from tests.
  * Strategy: run ts-prune twice and diff the outputs.
@@ -32,8 +32,8 @@ const TEST_SKIP_RE =
   '(__tests__|\\\\btests\\\\b|\\\\btest\\\\b|\\\\.test\\\\.|\\\\.spec\\\\.|\\\\.stories\\\\.|\\\\.e2e\\\\.|/tests/|\\\\\\\\tests\\\\\\\\|/test/|\\\\\\\\test\\\\\\\\)';
 
 function runTsPrune(extra: string[]): string[] {
-  // Use pnpm exec to run ts-prune
-  const out = execFileSync('pnpm', ['exec', 'ts-prune', ...projectArgs, ...extra], {
+  // Use pnpm dlx to run ts-prune (no longer in devDependencies)
+  const out = execFileSync('pnpm', ['dlx', 'ts-prune', ...projectArgs, ...extra], {
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'inherit'],
   });

@@ -1,6 +1,7 @@
 // ===== DASHBOARD CONTEXT =====
 // ===== LAYOUT =====
 export * from './layout/dashboard-layout';
+export * from './layout/dashboard-nav';
 export * from './layout/dashboard-sidebar';
 export * from './layout/dashboard-top-bar';
 
@@ -15,8 +16,7 @@ export { SidebarTop } from './sidebar/sidebar-top';
 export { SidebarUserProfile } from './sidebar/sidebar-user-profile';
 
 // ===== HEADER =====
-export * from './corso-ai-mode';
-export * from './header/dashboard-header';
+export * from './layout/dashboard-header';
 
 
 // ===== DATA VISUALIZATION =====
@@ -30,14 +30,12 @@ export * from './header/dashboard-header';
 // ===== ENTITY MANAGEMENT =====
 // NOTE: Entity server-only builders and pages MUST NOT be exported from this
 // client-facing barrel. Exporting server-only modules here would leak server
-// code into client bundles and break Next.js runtime boundaries. Import the
-// server helpers directly where needed, for example:
-//   const { createEntityFetchData } = await import('@/lib/services/entity')
+// code into client bundles and break Next.js runtime boundaries.
 // Client-only helpers (if needed) should be exported from a dedicated client
-// barrel under components/dashboard/entity/client.ts
+// barrel under components/dashboard/entities/client.ts
 
 // ===== UTILITY COMPONENTS =====
-// Chat primitives are provided by `@/components/chat` and `@/hooks/chat`.
+// Chat primitives are provided by `@/components/chat` (includes `useChat` hook).
 
 // ===== SERVER-ONLY COMPONENTS =====
 // Server-only dashboard components and pages are NOT exported here to avoid

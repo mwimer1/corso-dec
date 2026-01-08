@@ -1,44 +1,52 @@
 // Runtime: kept on nodejs due to Clerk keyless telemetry (see app/(marketing)/README.md)
 // FILE: app/(marketing)/page.tsx
 // Server component page; marketing content is static and revalidated periodically.
-import { FullWidthSection } from '@/components';
-import { Hero, IndustryExplorer, LandingLayout, LazyMarketInsightsSection, ProductShowcase } from '@/components/landing';
+import { FullWidthSection, PublicLayout } from '@/components';
+import { Hero, IndustryExplorer, LazyMarketInsightsSection, ProductShowcase } from '@/components/landing';
+import { landingNavItems } from '@/components/landing/layout/nav.config';
 
 
 
+/** @knipignore */
 export const dynamic = "force-static";
+/** @knipignore */
 export const revalidate = 3600; // 1 hour
+/** @knipignore */
 export const runtime = "nodejs";
 
 export default function MarketingHomePage() {
   return (
-    <LandingLayout>
+    <PublicLayout navMode="landing" navItems={landingNavItems}>
+      {/* Hero section: responsive fluid spacing with consistent section system */}
       <FullWidthSection
-        padding="sm"
+        padding="hero"
         containerMaxWidth="7xl"
         containerPadding="lg"
-        opacity="none"
-        guidelineColor="bg-border"
       >
         <Hero />
       </FullWidthSection>
 
+      {/* ProductShowcase: consistent section spacing */}
       <FullWidthSection
-        padding="none"
+        padding="section-sm"
         containerMaxWidth="7xl"
         containerPadding="lg"
-        opacity="none"
-        guidelineColor="bg-border"
+        background="showcase"
+        className="border-t border-border pt-0 sm:pt-0"
       >
         <ProductShowcase />
       </FullWidthSection>
 
+      {/* Industry Use Case section: white background with border-top separator */}
       <FullWidthSection
+        background="default"
+        padding="lg"
         containerMaxWidth="7xl"
         containerPadding="lg"
         guidesVisibility="always"
         opacity="none"
         guidelineColor="bg-border"
+        className="border-t border-border"
       >
         <IndustryExplorer />
       </FullWidthSection>
@@ -47,6 +55,7 @@ export default function MarketingHomePage() {
 
       {/* Market Insights Section - Consolidated market intelligence dashboard */}
       <FullWidthSection
+        padding="lg"
         containerMaxWidth="7xl"
         containerPadding="lg"
         guidesVisibility="always"
@@ -55,6 +64,6 @@ export default function MarketingHomePage() {
       >
         <LazyMarketInsightsSection controlsVariant="dropdown" dense stickyMetrics />
       </FullWidthSection>
-    </LandingLayout>
+    </PublicLayout>
   );
 }

@@ -137,7 +137,5 @@ export function useArticleAnalytics(options: UseArticleAnalyticsOptions): void {
   }, [slug, title, trackTimeMilestone]);
 }
 
-export default useArticleAnalytics;
-
 
 

@@ -1,8 +1,12 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+title: "Security"
+description: "Documentation and resources for documentation functionality. Located in security/."
+last_updated: "2026-01-07"
 category: "documentation"
+status: "draft"
 ---
+# Dependency Policy
+
 We keep all high-severity audit issues at zero.
 
 ## Approach
@@ -13,6 +17,7 @@ We keep all high-severity audit issues at zero.
 ### Current enforced floors
 - `ws >= 8.17.1` — DoS fix
 - `tar-fs >= 3.0.9` — path traversal fixes
+- `glob >= 11.1.0` — Command injection fix (via markdownlint-cli)
 - `npm-run-path = 5.3.0` — exact pin for bin deduplication
 - `unicorn-magic = 0.1.0` — exact pin for bin deduplication
 - `@typescript-eslint/utils>eslint = 9.34.0` — exact pin for bin deduplication
@@ -47,4 +52,3 @@ Rules enforced:
 - Block Node-only globals: `require`, `__dirname`, `__filename`, and non-public `process.env.*`
 - Ignore `Buffer` when referenced in type-only lines
 <!-- Removed duplicate Dependency Security Policy section (consolidated above) -->
-

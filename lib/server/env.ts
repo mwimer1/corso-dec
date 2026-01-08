@@ -1,10 +1,15 @@
 // lib/server/env.ts
 // Canonical server-only environment utilities.
-import type { ValidatedEnv } from '@/types/shared/config/base/types';
+import type { ValidatedEnv } from '@/types/shared/config/types';
 import 'server-only';
 
 const toNum = (v?: string) =>
   v == null || v.trim() === '' || Number.isNaN(Number(v)) ? undefined : Number(v);
+const toBool = (v?: string, defaultValue?: boolean) => {
+  if (v == null || v === '') return defaultValue;
+  const s = String(v).trim().toLowerCase();
+  return s === '1' || s === 'true';
+};
 const toArr = (v?: string) => (v ? v.split(',').map((s) => s.trim()).filter(Boolean) : undefined);
 
 let _cache: ValidatedEnv | null = null;
@@ -15,8 +20,24 @@ export function getEnv(): ValidatedEnv {
   const e = process.env as Record<string, string | undefined>;
   const g = (k: keyof ValidatedEnv) => e[k as string];
 
+  // CRITICAL: Validate relaxed auth mode is not enabled in production
+  const nodeEnv = g('NODE_ENV') as ValidatedEnv['NODE_ENV'];
+  const authMode = e['NEXT_PUBLIC_AUTH_MODE'];
+  const allowRelaxed = e['ALLOW_RELAXED_AUTH'];
+  
+  if (nodeEnv === 'production') {
+    const isRelaxedEnabled = authMode === 'relaxed' && allowRelaxed === 'true';
+    if (isRelaxedEnabled) {
+      throw new Error(
+        'SECURITY ERROR: Relaxed auth mode cannot be enabled in production. ' +
+        'This mode bypasses organization membership and RBAC checks, creating a critical security vulnerability. ' +
+        'Remove NEXT_PUBLIC_AUTH_MODE=relaxed and ALLOW_RELAXED_AUTH=true from production environment variables.'
+      );
+    }
+  }
+
   _cache = {
-    NODE_ENV: g('NODE_ENV') as ValidatedEnv['NODE_ENV'],
+    NODE_ENV: nodeEnv,
     NEXT_RUNTIME: g('NEXT_RUNTIME'),
     NEXT_PHASE: g('NEXT_PHASE'),
     VERCEL_ENV: g('VERCEL_ENV'),
@@ -48,6 +69,7 @@ export function getEnv(): ValidatedEnv {
       const s = String(v).trim().toLowerCase();
       return (s === '1' || s === 'true') ? 'true' : 'false';
     })(),
+    CORSO_MOCK_ORG_ID: g('CORSO_MOCK_ORG_ID') ?? 'demo-org',
 
     CLERK_SECRET_KEY: g('CLERK_SECRET_KEY'),
     TURNSTILE_SECRET_KEY: g('TURNSTILE_SECRET_KEY'),
@@ -61,6 +83,12 @@ export function getEnv(): ValidatedEnv {
     OPENAI_SLOW_THRESHOLD_MS: toNum(g('OPENAI_SLOW_THRESHOLD_MS')),
     OPENAI_RATE_LIMIT_PER_MIN: toNum(g('OPENAI_RATE_LIMIT_PER_MIN')),
     OPENAI_TOKENS_WARN_THRESHOLD: toNum(g('OPENAI_TOKENS_WARN_THRESHOLD')),
+
+    // OpenAI Responses API config (Sprint 0: scaffolding only)
+    AI_USE_RESPONSES: toBool(g('AI_USE_RESPONSES'), false),
+    AI_MAX_TOOL_CALLS: toNum(g('AI_MAX_TOOL_CALLS')) ?? 3,
+    AI_QUERY_TIMEOUT_MS: toNum(g('AI_QUERY_TIMEOUT_MS')) ?? 5000,
+    AI_TOTAL_TIMEOUT_MS: toNum(g('AI_TOTAL_TIMEOUT_MS')) ?? 60000,
 
     CLICKHOUSE_URL: g('CLICKHOUSE_URL'),
     CLICKHOUSE_READONLY_USER: g('CLICKHOUSE_READONLY_USER'),
@@ -106,6 +134,27 @@ export function getEnv(): ValidatedEnv {
     PRESENCE_CACHE_TTL_MS: toNum(g('PRESENCE_CACHE_TTL_MS')),
     PRESENCE_CACHE_CAPACITY: toNum(g('PRESENCE_CACHE_CAPACITY')),
     CLERK_WEBHOOK_SECRET: g('CLERK_WEBHOOK_SECRET'),
+
+    // Content/Insights
+    INSIGHTS_SOURCE: g('INSIGHTS_SOURCE'),
+    
+    // Mock CMS flag (mirrors CORSO_USE_MOCK_DB pattern)
+    CORSO_USE_MOCK_CMS: (() => {
+      const v = g('CORSO_USE_MOCK_CMS') as string | undefined;
+      if (!v) return undefined;
+      const s = String(v).trim().toLowerCase();
+      return (s === '1' || s === 'true') ? 'true' : 'false';
+    })(),
+    
+    // CMS provider selector
+    CORSO_CMS_PROVIDER: g('CORSO_CMS_PROVIDER'),
+    
+    // Directus connection (used only if CORSO_CMS_PROVIDER === "directus")
+    DIRECTUS_URL: g('DIRECTUS_URL'),
+    DIRECTUS_TOKEN: g('DIRECTUS_TOKEN'),
+
+    // AI RBAC Enforcement (default: true/enforced in production)
+    ENFORCE_AI_RBAC: toBool(g('ENFORCE_AI_RBAC'), true),
   } as ValidatedEnv;
 
   return _cache!;
@@ -127,15 +176,8 @@ export function requireServerEnv<K extends keyof ValidatedEnv>(
   return out;
 }
 
-/** Dynamic helper for string keys (returns string). */
-export function requireServerEnvVar(key: string): string {
-  const env = getEnv() as Record<string, unknown>;
-  const v = env[key];
-  if (v == null || (typeof v === 'string' && v.trim() === '')) {
-    throw new Error(`Missing required env var: ${key}`);
-  }
-  return String(v);
-}
+// Removed: requireServerEnvVar - unused per dead code audit
+// Use requireServerEnv<K>(...keys: K[]) for typed access instead
 
 export type { ValidatedEnv };
 

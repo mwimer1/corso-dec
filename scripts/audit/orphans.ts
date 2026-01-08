@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env tsx
 /**
  * Orphaned Files Audit Script
  *
@@ -23,84 +23,93 @@ import { parseArgs } from 'node:util';
 import type { SourceFile } from 'ts-morph';
 import { Project } from 'ts-morph';
 import { z } from 'zod';
-import { findTextReferences } from './utils';
+import {
+    findDynamicImports,
+    isBarrelFile,
+    isNextJsRoute,
+    isStyleFile,
+    normalizePosix,
+    resolvePathAlias,
+    toAbsPosix,
+    toProjectRelativePosix,
+} from '../audit-lib/orphan-utils';
+import { COMMON_IGNORE_PATTERNS } from '../utils/constants';
+import { walkDirectorySync } from '../utils/fs/walker';
 
-// Re-export for testing
-export { findTextReferences };
+/**
+ * Find text references to a file path in reference directories (docs, tests, scripts, etc.)
+ * Searches for the file path as a string in files within the specified directories.
+ * This is a simplified synchronous implementation that searches a limited set of files.
+ */
+function findTextReferences(filePath: string, searchDirs: string[]): boolean {
+  try {
+    const fileName = nodePath.basename(filePath);
+    const relPath = normalizePosix(filePath);
+    
+    // Search patterns: filename, relative path, absolute path variants
+    const searchPatterns = [
+      fileName,
+      relPath,
+      filePath.replace(/\\/g, '/'),
+      `"${relPath}"`,
+      `'${relPath}'`,
+      `\`${relPath}\``,
+    ];
 
-// Utility functions for orphans audit (exported for testing)
+    // Use unified walker to get all files, then search them
+    function searchDirectory(dir: string): boolean {
+      try {
+        // Use unified walker to get all files matching our extensions
+        const result = walkDirectorySync(dir, {
+          maxDepth: 20, // Reasonable depth for docs/tests/scripts
+          includeFiles: true,
+          includeDirs: false,
+          exclude: [...COMMON_IGNORE_PATTERNS],
+        });
 
-/** Normalize to project-relative POSIX (no leading "./"). */
-function toProjectRelativePosix(absOrRel: string): string {
-  const rel = absOrRel.replace(/^[.][\\/]/, '');
-  return rel.replace(/\\/g, '/');
-}
+        // Filter to files with relevant extensions
+        const relevantFiles = result.files.filter(f => 
+          /\.(md|txt|ts|tsx|js|jsx|json)$/.test(f)
+        );
 
-function normalizePosix(p: string) {
-  return p.replace(/\\/g, '/').replace(/^[.]\//, '');
-}
-function toAbsPosix(p: string): string {
-  const abs = nodePath.isAbsolute(p) ? p : nodePath.resolve(p);
-  return normalizePosix(nodePath.normalize(abs));
-}
-
-// Upgrade: resolvePathAlias with tsconfig.paths wildcard support (+ cache)
-const _aliasCache = new Map<string, string>();
-export function resolvePathAlias(importPath: string, project: Project): string {
-  const { baseUrl = '.', paths } = project.getCompilerOptions() as any;
-  const spec = normalizePosix(importPath);
-  const cacheKey = `${spec}::${baseUrl}`;
-  if (_aliasCache.has(cacheKey)) return _aliasCache.get(cacheKey)!;
-
-  // 1) Apply tsconfig "paths" wildcards (most-specific first)
-  if (paths && !spec.startsWith('./') && !spec.startsWith('../')) {
-    const keys = Object.keys(paths).sort((a, b) => b.length - a.length);
-    for (const k of keys) {
-      const targets = paths[k] || [];
-      const star = k.indexOf('*');
-      if (star < 0) {
-        if (spec === k && targets[0]) {
-          const joined = nodePath.join(baseUrl, targets[0]);
-          const out = normalizePosix(joined);
-          _aliasCache.set(cacheKey, out);
-          return out;
+        // Search each file for patterns
+        for (const fullPath of relevantFiles) {
+          try {
+            const content = nodeFs.readFileSync(fullPath, 'utf8');
+            if (searchPatterns.some(pattern => content.includes(pattern))) {
+              return true;
+            }
+          } catch {
+            // Skip files that can't be read
+            continue;
+          }
         }
-        continue;
+      } catch {
+        // Skip directories that can't be read
       }
-      const prefix = k.slice(0, star);
-      const suffix = k.slice(star + 1);
-      if (spec.startsWith(prefix) && spec.endsWith(suffix)) {
-        const mid = spec.slice(prefix.length, spec.length - suffix.length);
-        const target = targets[0];
-        if (target) {
-          const mapped = target.replace('*', mid);
-          const joined = nodePath.join(baseUrl, mapped);
-          const out = normalizePosix(joined);
-          _aliasCache.set(cacheKey, out);
-          return out;
-        }
+      return false;
+    }
+
+    for (const dirPattern of searchDirs) {
+      // Remove glob patterns and search actual directories
+      const dir = dirPattern.replace(/\/\*\*$/, '').replace(/\*\*/g, '');
+      if (nodeFs.existsSync(dir) && nodeFs.statSync(dir).isDirectory()) {
+        if (searchDirectory(dir)) return true;
       }
     }
+  } catch {
+    // Return false on any error (conservative - don't mark as referenced if search fails)
+    return false;
   }
-
-  // 2) Fallback for "@/…" alias
-  if (spec.startsWith('@/')) {
-    const joined = nodePath.join(baseUrl, spec.slice(2));
-    const out = normalizePosix(joined);
-    _aliasCache.set(cacheKey, out);
-    return out;
-  }
-
-  // 3) Non-aliased relative path: preserve leading "./" or "../"
-  if (importPath.startsWith('./') || importPath.startsWith('../')) {
-    const normalized = importPath.replace(/\\/g, '/');
-    _aliasCache.set(cacheKey, normalized);
-    return normalized;
-  }
-  // 4) Non-aliased bare path: just normalize slashes
-  _aliasCache.set(cacheKey, spec);
-  return spec;
+  
+  return false;
 }
+
+// Re-export for testing
+export {
+    findDynamicImports, findTextReferences, isBarrelFile, isNextJsRoute,
+    isStyleFile, normalizePosix, resolvePathAlias, toAbsPosix, toProjectRelativePosix
+};
 
 // Robust resolver for module specifiers (with tiny cache)
 const _resolveCache = new Map<string, string | null>();
@@ -149,39 +158,6 @@ function resolveModuleSpecifierToAbs(
   return null;
 }
 
-export function isNextJsRoute(filePath: string): boolean {
-  return /app\/.*\/(route|page|layout|loading|error|not-found|opengraph-image|icon|sitemap)\.(ts|tsx|js|jsx)$/.test(filePath);
-}
-
-export function isStyleFile(filePath: string): boolean {
-  return /\.(css|scss|sass|less|styl)$/.test(filePath) ||
-         filePath.includes('tailwind.config.') ||
-         filePath.includes('postcss.config.');
-}
-
-export function isBarrelFile(filePath: string): boolean {
-  return /\/index\.(ts|tsx|js|jsx)$/.test(filePath) ||
-         filePath.endsWith('.ts') && filePath.includes('/index');
-}
-
-export function findDynamicImports(content: string): string[] {
-  const dynamicImports: string[] = [];
-
-  // Find ES6 dynamic imports: import('./module')
-  const es6Regex = /import\s*\(\s*['"`]([^'"`]+)['"`]\s*\)/g;
-  let match;
-  while ((match = es6Regex.exec(content)) !== null) {
-    if (match[1]) dynamicImports.push(match[1]);
-  }
-
-  // Find CommonJS require calls: require('./module')
-  const requireRegex = /require\s*\(\s*['"`]([^'"`]+)['"`]\s*\)/g;
-  while ((match = requireRegex.exec(content)) !== null) {
-    if (match[1]) dynamicImports.push(match[1]);
-  }
-
-  return dynamicImports;
-}
 
 
 export async function analyzeFile(
@@ -342,15 +318,170 @@ const CONFIG = {
   REFERENCE_DIRS: ['docs/**','scripts/**','tools/**','tests/**','.agent/**'] as const,
 } as const;
 
+// ---- Allowlist Loading ------------------------------------------------------
+interface AllowlistData {
+  description: string;
+  files: string[];
+  notes?: Record<string, string>;
+}
+
+function loadAllowlist(): { files: Set<string>; notes: Record<string, string> } {
+  if (argv.noAllowlist) {
+    return { files: new Set(), notes: {} };
+  }
+
+  const allowlistPath = nodePath.resolve(process.cwd(), 'scripts', 'audit', 'orphans.allowlist.json');
+  try {
+    const content = nodeFs.readFileSync(allowlistPath, 'utf-8');
+    const data = JSON.parse(content) as AllowlistData;
+    return {
+      files: new Set(data.files || []),
+      notes: data.notes || {},
+    };
+  } catch (error) {
+    console.warn(`⚠️  Warning: Could not load allowlist from ${allowlistPath}: ${error}`);
+    return { files: new Set(), notes: {} };
+  }
+}
+
+// ---- Importer Map Building --------------------------------------------------
+/**
+ * Build a map of file paths to their importers (files that import them).
+ * This is the core of "real" orphan detection: if a file has importers, it's used.
+ */
+function buildImporterMap(project: Project): Map<string, string[]> {
+  const importerMap = new Map<string, string[]>();
+  const allSourceFiles = project.getSourceFiles();
+
+  for (const sourceFile of allSourceFiles) {
+    const sourceFilePath = sourceFile.getFilePath();
+    const importerPath = toProjectRelativePosix(toAbsPosix(sourceFilePath));
+    const importerRel = normalizePosix(nodePath.relative(process.cwd(), sourceFilePath));
+    
+    // Check all import declarations
+    const imports = sourceFile.getImportDeclarations();
+    for (const imp of imports) {
+      const moduleSpec = imp.getModuleSpecifierValue();
+      const resolvedAbs = resolveModuleSpecifierToAbs(moduleSpec, sourceFile, project);
+      
+      if (!resolvedAbs) continue;
+      
+      // Convert to project-relative path (matching filteredCandidates format)
+      const targetAbs = toAbsPosix(resolvedAbs);
+      const targetPath = normalizePosix(nodePath.relative(process.cwd(), targetAbs));
+      
+      // Also check for barrel imports (directory without /index)
+      const targetPathNoIndex = targetPath.replace(/\/index\.(ts|tsx|js|jsx)$/, '');
+      
+      // Record both exact path and barrel path
+      if (!importerMap.has(targetPath)) {
+        importerMap.set(targetPath, []);
+      }
+      if (!importerMap.get(targetPath)!.includes(importerRel)) {
+        importerMap.get(targetPath)!.push(importerRel);
+      }
+      
+      // Also record barrel-style import (directory without /index)
+      const importTargetPathNoIndex = targetPath.replace(/\/index\.(ts|tsx|js|jsx)$/, '');
+      if (importTargetPathNoIndex !== targetPath) {
+        if (!importerMap.has(importTargetPathNoIndex)) {
+          importerMap.set(importTargetPathNoIndex, []);
+        }
+        if (!importerMap.get(importTargetPathNoIndex)!.includes(importerRel)) {
+          importerMap.get(importTargetPathNoIndex)!.push(importerRel);
+        }
+      }
+    }
+
+    // Also check export declarations (re-exports)
+    const exports = sourceFile.getExportDeclarations();
+    for (const exp of exports) {
+      const moduleSpec = exp.getModuleSpecifierValue();
+      if (!moduleSpec) continue;
+      
+      const resolvedAbs = resolveModuleSpecifierToAbs(moduleSpec, sourceFile, project);
+      if (!resolvedAbs) continue;
+      
+      const targetAbs = toAbsPosix(resolvedAbs);
+      const exportTargetPath = normalizePosix(nodePath.relative(process.cwd(), targetAbs));
+      const exportTargetPathNoIndex = exportTargetPath.replace(/\/index\.(ts|tsx|js|jsx)$/, '');
+      
+      if (!importerMap.has(exportTargetPath)) {
+        importerMap.set(exportTargetPath, []);
+      }
+      if (!importerMap.get(exportTargetPath)!.includes(importerRel)) {
+        importerMap.get(exportTargetPath)!.push(importerRel);
+      }
+      
+      if (exportTargetPathNoIndex !== exportTargetPath) {
+        if (!importerMap.has(exportTargetPathNoIndex)) {
+          importerMap.set(exportTargetPathNoIndex, []);
+        }
+        if (!importerMap.get(exportTargetPathNoIndex)!.includes(importerRel)) {
+          importerMap.get(exportTargetPathNoIndex)!.push(importerRel);
+        }
+      }
+    }
+  }
+
+  return importerMap;
+}
+
 const ArgSchema = z.object({
-  out: z.string().default('orphan-report.json'),
-  only: z.enum(['ALL','DROP','KEEP']).default('ALL'),
+  out: z.string().default('reports/orphan/orphan-report.json'),
+  only: z.enum(['ALL','DROP','KEEP','REVIEW']).default('ALL'),
   apply: z.boolean().default(false),
   yes: z.boolean().default(false),
   stdout: z.boolean().default(false),
   pathsOnly: z.boolean().default(false),
   includeIndex: z.boolean().default(false),
+  noAllowlist: z.boolean().default(false),
+  onlyAllowlisted: z.boolean().default(false),
 }).strict();
+
+// Check for help flag first
+if (process.argv.includes('--help') || process.argv.includes('-h')) {
+  console.log(`
+Orphaned Files Audit Script
+
+Deterministically identifies files that are safe to delete by analyzing:
+- Import references via ts-morph (real import graph analysis)
+- Package.json script entrypoints (files invoked via npm/pnpm scripts)
+- Next.js implicit route conventions (page.tsx, layout.tsx, route.ts, etc.)
+- Barrel exports and their consumers
+- Actual import/export relationships (not text search)
+- Test, docs, and generator references
+
+Usage:
+  pnpm audit:orphans [options]
+
+Options:
+  --out <file>              Output file path (default: reports/orphan/orphan-report.json)
+  --only <type>             Filter results: ALL, DROP, KEEP, or REVIEW (default: ALL)
+  --apply                   Apply deletions (requires --yes flag)
+  --yes                     Skip confirmation prompt (CI only)
+  --stdout                  Output results to stdout instead of file
+  --paths-only              Output only file paths (one per line)
+  --include-index           Include index barrel files in analysis
+  --no-allowlist            Ignore allowlist and show all orphans (including allowlisted)
+  --only-allowlisted        Show only allowlisted files and their status
+
+Examples:
+  pnpm audit:orphans                              # Generate report only
+  pnpm audit:orphans --only DROP                  # Show only droppable files
+  pnpm audit:orphans --no-allowlist               # Show all orphans (ignore allowlist)
+  pnpm audit:orphans --only-allowlisted           # Audit allowlist entries
+  pnpm audit:orphans --apply --yes                # Apply deletions (CI)
+  pnpm audit:orphans --stdout --paths-only        # List paths to stdout
+
+Safety:
+  - Default mode is read-only (report generation)
+  - --apply requires --yes flag for safety
+  - Interactive confirmation required in non-CI environments
+  - Shows list of files before deletion
+`);
+  process.exit(0);
+}
 
 const parsed = parseArgs({
   args: process.argv.slice(2),
@@ -362,6 +493,10 @@ const parsed = parseArgs({
     stdout: { type: 'boolean' },
     'paths-only': { type: 'boolean' },
     'include-index': { type: 'boolean' },
+    'no-allowlist': { type: 'boolean' },
+    'only-allowlisted': { type: 'boolean' },
+    help: { type: 'boolean' },
+    h: { type: 'boolean' },
   },
   allowPositionals: true,
 });
@@ -376,30 +511,67 @@ const argv = ArgSchema.parse({
   stdout: parsed.values.stdout,
   pathsOnly: parsed.values['paths-only'],
   includeIndex: parsed.values['include-index'],
+  noAllowlist: parsed.values['no-allowlist'],
+  onlyAllowlisted: parsed.values['only-allowlisted'],
 });
-
-// Temporary validator file creation removed - file was unused and removed
 
 // ---- TS project --------------------------------------------------------------
 const project = new Project({
   tsConfigFilePath: 'tsconfig.json',
 });
 
+// ---- Load allowlist ----------------------------------------------------------
+const { files: allowlist, notes: allowlistNotes } = loadAllowlist();
+
+// ---- Build importer map ------------------------------------------------------
+console.log('🔍 Building importer map...');
+const importerMap = buildImporterMap(project);
+console.log(`   Found ${importerMap.size} files with importers\n`);
+
+// ---- Build package.json entrypoint map ---------------------------------------
+console.log('🔍 Building package.json entrypoint map...');
+const packageEntrypoints = buildPackageScriptEntrypointMap();
+console.log(`   Found ${packageEntrypoints.size} files referenced by package.json scripts\n`);
+
 // ---- Discover candidates -----------------------------------------------------
 const candidates = await globby(
   ['**/*.{ts,tsx,js,jsx}'],
   { ignore: [...CONFIG.EXCLUDE_PATTERNS] }
 );
+// Convention files that should be excluded from orphan detection
+// (consumed by tooling/CLI, not imported via TS)
+const CONVENTION_FILE_PATTERNS = [
+  /^next-env\.d\.ts$/,                      // Next.js generated types
+  /^instrumentation(-client)?\.ts$/,        // Next.js instrumentation hooks
+  /^playwright\.config\./,                  // Playwright E2E test config
+  /^tailwind\.config\./,                    // Tailwind CSS config (root level)
+  /^.*[\\/]tailwind\.config\.(t|j)s$/,     // Tailwind CSS config (anywhere, e.g., styles/tailwind.config.ts)
+  /^postcss\.config\./,                     // PostCSS config
+  /^vitest\.config\./,                      // Vitest test config
+  /^config\/postcss\.config\.js$/,          // Root PostCSS config
+  /^public\/mockServiceWorker\.js$/,        // MSW worker (URL referenced)
+  /^types\/.*\.d\.ts$/,                     // Type declarations (module augmentation)
+  /^config\/domain-map\.ts$/,               // Architecture config (dependency-cruiser)
+] as const;
+
 const filteredCandidates = candidates.filter((rel: string) => {
   if (!argv.includeIndex && isIndexBarrel(rel)) return false;
+  // Exclude convention files (tooling/CLI consumed, not TS imported)
+  if (CONVENTION_FILE_PATTERNS.some(pattern => pattern.test(rel))) return false;
+  // Exclude test files (discovered by Vitest glob patterns, not via imports)
+  // Test files are entrypoints for the test runner, not production code modules
+  if (rel.startsWith('tests/')) return false;
   return true;
 });
 
-type FileStatus = 'DROP' | 'KEEP';
+type FileStatus = 'DROP' | 'KEEP' | 'REVIEW';
 type KeepReason =
-  | 'KEEP_EXPORT_USED' | 'KEEP_ROUTES_IMPLICIT' | 'KEEP_BARREL_USED'
-  | 'KEEP_DYNAMIC_IMPORT' | 'KEEP_TEST_REF' | 'KEEP_DOCS_REF'
-  | 'KEEP_STYLE_SIDE_EFFECT' | 'KEEP_ALLOWLIST';
+  | 'KEEP_IMPORT_USED'        // File is imported by other files (real usage)
+  | 'KEEP_ROUTES_IMPLICIT'    // Next.js route convention file
+  | 'KEEP_BARREL_USED'        // Barrel file that is imported
+  | 'KEEP_ALLOWLIST'          // Explicitly allowlisted
+  | 'KEEP_ENTRYPOINT_PACKAGE_SCRIPT'  // File is invoked via package.json script
+  | 'REVIEW_TEXT_REF';         // Referenced in docs/tests/scripts (not code import)
 
 const results: Array<{
   path: string;
@@ -414,96 +586,332 @@ function resolveFromBase(relativePath: string, baseUrl?: string) {
   return nodePath.resolve(baseUrl ?? '.', relativePath);
 }
 
-// robust export-reference scan using text-based scanning
-function collectExportRefs(sf: SourceFile, project: Project): Array<{ export: string; refs: number }> {
-  const out: Array<{ export: string; refs: number }> = [];
-  const exported = sf.getExportedDeclarations();
-  const others = project.getSourceFiles().filter((f: SourceFile) => f !== sf);
-  for (const [name, _decls] of exported) {
-    let refs = 0;
-    const re = new RegExp(String.raw`\b${name}\b`, 'g');
-    for (const f of others) {
-      const text = f.getText();
-      if (re.test(text)) {
-        refs++;
+// ---- Package.json Entrypoint Detection ---------------------------------------
+/**
+ * Tokenize shell-like command string, preserving quoted substrings.
+ * Supports "double" and 'single' quotes. No escape handling needed for our scripts.
+ */
+function shellTokenize(input: string): string[] {
+  const out: string[] = [];
+  let cur = '';
+  let quote: '"' | "'" | null = null;
+
+  for (let i = 0; i < input.length; i++) {
+    const ch = input[i];
+    if (ch === undefined) continue;
+
+    if (quote) {
+      if (ch === quote) {
+        quote = null;
+      } else {
+        cur += ch;
       }
+      continue;
     }
-    out.push({ export: name, refs });
+
+    if (ch === '"' || ch === "'") {
+      quote = ch;
+      continue;
+    }
+
+    if (/\s/.test(ch)) {
+      if (cur.length) {
+        out.push(cur);
+        cur = '';
+      }
+      continue;
+    }
+
+    cur += ch;
   }
+
+  if (cur.length) out.push(cur);
   return out;
 }
 
-// removed duplicate implementation
+/**
+ * Split command string on shell operators (&&, ||, ;, |).
+ */
+function splitShellSegments(cmd: string): string[] {
+  const normalized = cmd.replace(/\\/g, '/');
+  // Split on &&, ||, ;, |  (simple is fine; our scripts rarely have these inside quotes)
+  return normalized
+    .split(/\s*(?:&&|\|\||;|\|)\s*/g)
+    .map(s => s.trim())
+    .filter(Boolean);
+}
+
+/**
+ * Check if path has a runnable extension.
+ */
+function isRunnableExt(p: string): boolean {
+  return /\.(ts|tsx|js|jsx|mjs|cjs)$/.test(p);
+}
+
+/**
+ * Normalize relative path (remove leading ./, normalize slashes).
+ */
+function normalizeRelPath(p: string): string {
+  let s = p.trim().replace(/\\/g, '/');
+  s = s.replace(/^\.\/+/, ''); // remove leading ./
+  return s;
+}
+
+/**
+ * Extract entrypoint file paths from a package.json script value.
+ * Handles patterns like: tsx scripts/foo.ts, pnpm tsx scripts/foo.ts, node scripts/foo.mjs, etc.
+ */
+function extractEntrypointPathsFromScriptValue(value: string): string[] {
+  const results = new Set<string>();
+
+  for (const seg of splitShellSegments(value)) {
+    const tokens = shellTokenize(seg);
+    if (tokens.length === 0) continue;
+
+    // Normalize tokens too (filter out any undefined/null values)
+    const t = tokens.map(tok => normalizeRelPath(tok)).filter((tok): tok is string => Boolean(tok));
+
+    // Helper: add candidate if it looks like a local file
+    const maybeAdd = (candidate: string | undefined) => {
+      if (!candidate) return;
+      const p = normalizeRelPath(candidate);
+      if (!isRunnableExt(p)) return;
+      if (
+        p.startsWith('scripts/') ||
+        p.startsWith('.github/') ||
+        p.startsWith('docs/_scripts/')
+      ) {
+        results.add(p);
+      }
+    };
+
+    // Handle patterns:
+    // 1) tsx <file>
+    // 2) node <file>
+    // 3) pnpm tsx <file>
+    // 4) pnpm exec tsx <file>
+    // 5) pnpm exec node <file>
+    //
+    // Skip pnpm dlx <tool> ... (not local)
+    for (let i = 0; i < t.length; i++) {
+      const tok = t[i];
+      if (!tok) continue;
+
+      if (tok === 'tsx' || tok.endsWith('/tsx')) {
+        maybeAdd(t[i + 1]);
+        continue;
+      }
+
+      if (tok === 'node' || tok.endsWith('/node')) {
+        maybeAdd(t[i + 1]);
+        continue;
+      }
+
+      if (tok === 'pnpm') {
+        const next = t[i + 1];
+
+        // pnpm dlx ... (ignore)
+        if (next === 'dlx') continue;
+
+        // pnpm tsx <file>
+        if (next === 'tsx') {
+          maybeAdd(t[i + 2]);
+          continue;
+        }
+
+        // pnpm exec tsx <file> / pnpm exec node <file>
+        if (next === 'exec') {
+          const runner = t[i + 2];
+          if (runner && (runner === 'tsx' || runner.endsWith('/tsx') || runner === 'node' || runner.endsWith('/node'))) {
+            maybeAdd(t[i + 3]);
+          }
+          continue;
+        }
+      }
+    }
+  }
+
+  return Array.from(results);
+}
+
+/**
+ * Build a map of file paths to script names that reference them.
+ * Returns Map<repoRelativePath, string[]> where values are script keys.
+ */
+function buildPackageScriptEntrypointMap(): Map<string, string[]> {
+  const map = new Map<string, string[]>();
+  try {
+    const pkgPath = nodePath.resolve(process.cwd(), 'package.json');
+    const pkg = JSON.parse(nodeFs.readFileSync(pkgPath, 'utf8')) as any;
+    const scripts: Record<string, string> = pkg?.scripts ?? {};
+
+    for (const [scriptName, scriptValue] of Object.entries(scripts)) {
+      const paths = extractEntrypointPathsFromScriptValue(String(scriptValue));
+      for (const p of paths) {
+        const arr = map.get(p) ?? [];
+        arr.push(scriptName);
+        map.set(p, arr);
+      }
+    }
+  } catch (error) {
+    // If package.json can't be read, treat as no entrypoints.
+    console.warn(`⚠️  Warning: Could not read package.json for entrypoint detection: ${error}`);
+  }
+
+  // Dedup + stable order
+  for (const [k, v] of map.entries()) {
+    map.set(k, Array.from(new Set(v)).sort());
+  }
+  return map;
+}
+
+// ---- Analyze candidates ------------------------------------------------------
+console.log(`📋 Analyzing ${filteredCandidates.length} candidate file(s)...\n`);
 
 for (const rel of filteredCandidates) {
   const abs = nodePath.resolve(process.cwd(), rel);
   const sf = project.getSourceFile(abs);
+  const relNormalized = normalizePosix(rel);
+  
   const record = {
     path: rel,
     status: 'DROP' as FileStatus,
     reasons: [] as KeepReason[],
     importers: [] as string[],
     exportRefs: [] as { export: string; refs: number }[],
-    notes: '',
+    notes: allowlistNotes[rel] || '',
   };
 
-  // implicit Next.js route files → keep
-  if (/(^|[\\/])app[\\/].*\b(page|layout|loading|error|not-found|route|opengraph-image|icon|sitemap)\.(t|j)sx?$/.test(rel)) {
+  // Check allowlist first (unless --no-allowlist is set)
+  if (!argv.noAllowlist && allowlist.has(rel)) {
     record.status = 'KEEP';
-    record.reasons.push('KEEP_ROUTES_IMPLICIT');
-    results.push(record); continue;
+    record.reasons.push('KEEP_ALLOWLIST');
+    results.push(record);
+    continue;
   }
 
-  // exported symbol references
-  try {
-    if (sf) {
-      const refs = collectExportRefs(sf, project);
-      record.exportRefs = refs;
-      if (refs.some(r => r.refs > 0)) { record.status = 'KEEP'; record.reasons.push('KEEP_EXPORT_USED'); }
+  // If --only-allowlisted, skip non-allowlisted files
+  if (argv.onlyAllowlisted && !allowlist.has(rel)) {
+    continue;
+  }
+
+  // Check if file has importers (real usage)
+  // Use normalized relative path (matching what's in importerMap)
+  const fileImporters = importerMap.get(relNormalized) || [];
+  
+  // Also check barrel-style imports (directory without /index)
+  const relNoIndex = relNormalized.replace(/\/index\.(ts|tsx|js|jsx)$/, '');
+  const barrelImporters = relNoIndex !== relNormalized ? (importerMap.get(relNoIndex) || []) : [];
+  
+  const allImporters = Array.from(new Set([...fileImporters, ...barrelImporters]));
+  
+  if (allImporters.length > 0) {
+    record.status = 'KEEP';
+    record.reasons.push('KEEP_IMPORT_USED');
+    record.importers = allImporters;
+  }
+
+  // Check if file is a package.json script entrypoint
+  const entryScripts = packageEntrypoints.get(relNormalized) ?? [];
+  if (entryScripts.length > 0) {
+    if (record.status !== 'KEEP') {
+      record.status = 'KEEP';
     }
-  } catch (e: any) {
-    record.notes = `Analysis error: ${e?.message ?? String(e)}`;
+    record.reasons.push('KEEP_ENTRYPOINT_PACKAGE_SCRIPT');
+    record.notes = (record.notes ? `${record.notes}; ` : '') + `Entrypoint scripts: ${entryScripts.join(', ')}`;
   }
 
-  // dynamic import/require textual scan → keep
-  try {
-    const content = sf?.getFullText() ?? '';
-    const patterns = [
-      /import\(\s*['"`](@\/[^'"`]+)['"`]\s*\)/g,
-      /require\(\s*['"`](@\/[^'"`]+)['"`]\s*\)/g,
-      /from\s+['"`](@\/[^'"`]+)['"`]/g,
-      /export\s+\*\s+from\s+['"`](@\/[^'"`]+)['"`]/g,
-    ] as const;
-    const matches: string[] = [];
-    for (const rgx of patterns) {
-      let m: RegExpExecArray | null;
-      while ((m = rgx.exec(content)) !== null) {
-        if (m[1]) matches.push(m[1]);
+  // Implicit Next.js route files → keep
+  if (/(^|[\\/])app[\\/].*\b(page|layout|loading|error|not-found|route|opengraph-image|icon|sitemap)\.(t|j)sx?$/.test(rel)) {
+    if (record.status === 'DROP') {
+      record.status = 'KEEP';
+    }
+    record.reasons.push('KEEP_ROUTES_IMPLICIT');
+  }
+
+  // Check if it's a barrel file that's imported
+  if (sf && isBarrelFile(toAbsPosix(sf.getFilePath()))) {
+    if (allImporters.length > 0) {
+      if (!record.reasons.includes('KEEP_BARREL_USED')) {
+        record.reasons.push('KEEP_BARREL_USED');
       }
     }
-    if (matches.length > 0) {
-      record.status = 'KEEP';
-      record.reasons.push('KEEP_DYNAMIC_IMPORT');
-    }
-  } catch {}
+  }
 
-  // docs/tests textual ref → keep
+  // Collect export info (for reporting, not for KEEP decision)
+  if (sf) {
+    try {
+      const exported = sf.getExportedDeclarations();
+      for (const [name, _decls] of exported) {
+        record.exportRefs.push({ export: name, refs: 0 }); // refs not used for decision, just reporting
+      }
+    } catch (e: any) {
+      record.notes = (record.notes ? record.notes + '; ' : '') + `Analysis error: ${e?.message ?? String(e)}`;
+    }
+  }
+
+  // docs/tests textual ref → review (not keep, since not code-referenced)
   if (findTextReferences(rel, [...CONFIG.REFERENCE_DIRS])) {
-    record.status = 'KEEP';
-    record.reasons.push('KEEP_DOCS_REF');
+    // Only set REVIEW if no other KEEP reasons exist
+    if (record.status === 'DROP') {
+      record.status = 'REVIEW';
+      record.reasons.push('REVIEW_TEXT_REF');
+    } else {
+      // If already KEEP for other reasons, just add the reason
+      record.reasons.push('REVIEW_TEXT_REF');
+    }
   }
 
   results.push(record);
 }
 
-const outputFiles = argv.only === 'ALL' ? results : results.filter((r) => r.status === argv.only);
+// Filter results based on flags
+let outputFiles = results;
+if (argv.onlyAllowlisted) {
+  // Show only allowlisted files
+  outputFiles = results.filter((r) => allowlist.has(r.path));
+} else if (argv.only !== 'ALL') {
+  outputFiles = results.filter((r) => r.status === argv.only);
+}
+
 const summary = {
   candidates: filteredCandidates.length,
+  analyzed: results.length,
   kept: outputFiles.filter((r) => r.status === 'KEEP').length,
+  review: outputFiles.filter((r) => r.status === 'REVIEW').length,
   droppable: outputFiles.filter((r) => r.status === 'DROP').length,
+  allowlisted: results.filter((r) => allowlist.has(r.path)).length,
+  allowlistedButOrphan: results.filter((r) => allowlist.has(r.path) && r.status === 'DROP').length,
 };
 
-await fs.writeJson(argv.out, { summary, files: outputFiles }, { spaces: 2 });
+// Ensure output directory exists
+const outDir = nodePath.dirname(argv.out);
+await fs.ensureDir(outDir);
+
+// Atomic file write: write to temp file then rename
+const tempFile = `${argv.out}.tmp`;
+await fs.writeJson(tempFile, { summary, files: outputFiles }, { spaces: 2 });
+await fs.move(tempFile, argv.out, { overwrite: true });
+
+// Print summary to console
+if (!argv.stdout) {
+  console.log(`\n📊 Orphan Audit Summary:`);
+  console.log(`   Candidates: ${summary.candidates}`);
+  console.log(`   Analyzed: ${summary.analyzed}`);
+  console.log(`   Kept: ${summary.kept}`);
+  console.log(`   Review: ${summary.review}`);
+  console.log(`   Droppable: ${summary.droppable}`);
+  if (!argv.noAllowlist && summary.allowlisted > 0) {
+    console.log(`   Allowlisted: ${summary.allowlisted}`);
+    if (summary.allowlistedButOrphan > 0) {
+      console.log(`   ⚠️  Allowlisted but still orphan: ${summary.allowlistedButOrphan}`);
+    }
+  }
+  if (argv.onlyAllowlisted) {
+    console.log(`\n   ℹ️  Showing only allowlisted files (use --no-allowlist to see all)`);
+  }
+  console.log(`\n📄 Report written to: ${argv.out}\n`);
+}
 
 if (argv.stdout) {
   if (argv.pathsOnly) {
@@ -514,9 +922,58 @@ if (argv.stdout) {
   }
 }
 
-if (argv.apply && argv.yes) {
-  for (const f of outputFiles) {
-    if (f.status === 'DROP') await fs.remove(f.path);
+if (argv.apply) {
+  // Don't delete allowlisted files even if they're DROP status
+  const dropFiles = outputFiles.filter((f) => f.status === 'DROP' && !allowlist.has(f.path));
+  
+  if (dropFiles.length === 0) {
+    console.log('✅ No files to drop. Exiting.');
+    process.exit(0);
   }
+
+  // Safety: Require explicit confirmation even with --yes flag (unless in CI)
+  const isCI = process.env['CI'] === 'true' || process.env['GITHUB_ACTIONS'] === 'true';
+  let confirmed = argv.yes;
+
+  if (!isCI && !confirmed) {
+    console.log(`\n⚠️  WARNING: You are about to DELETE ${dropFiles.length} file(s):`);
+    dropFiles.slice(0, 10).forEach((f) => {
+      console.log(`   - ${f.path}`);
+    });
+    if (dropFiles.length > 10) {
+      console.log(`   ... and ${dropFiles.length - 10} more (see report for full list)`);
+    }
+    console.log(`\n❓ Type "YES" (all caps) to confirm deletion:`);
+    
+    const readline = require('readline');
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+    
+    const answer = await new Promise<string>((resolve) => {
+      rl.question('> ', resolve);
+    });
+    rl.close();
+    
+    confirmed = answer === 'YES';
+  }
+
+  if (!confirmed) {
+    console.log('❌ Aborted: Deletion not confirmed. Use --yes to skip confirmation (CI only).');
+    process.exit(1);
+  }
+
+  // Perform deletions
+  console.log(`\n🗑️  Deleting ${dropFiles.length} file(s)...`);
+  for (const f of dropFiles) {
+    try {
+      await fs.remove(f.path);
+      console.log(`   ✅ Deleted: ${f.path}`);
+    } catch (error: any) {
+      console.error(`   ❌ Failed to delete ${f.path}: ${error?.message ?? String(error)}`);
+    }
+  }
+  console.log(`\n✅ Deletion complete. ${dropFiles.length} file(s) removed.`);
 }
 

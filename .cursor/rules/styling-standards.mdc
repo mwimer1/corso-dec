@@ -1,0 +1,426 @@
+---
+rule_id: styling-standards
+title: Styling Standards & CSS Module Guidelines
+owners:
+  - design-system@corso.io
+  - platform@corso.io
+last_reviewed: "2026-01-03"
+status: active
+domains: [styles, components, design-system]
+enforcement: warn
+related_rules:
+  - component-design-system
+  - code-quality-standards
+alwaysApply: false
+globs: ["styles/**", "components/**", "**/*.module.css"]
+summary: Guidelines for when to use CSS modules vs Tailwind utilities, token usage, and styling best practices.
+---
+
+# Styling Standards & CSS Module Guidelines
+
+**Comprehensive guide for styling decisions, CSS module usage, and design token patterns in the Corso codebase.**
+
+## TL;DR
+- **Tailwind-first**: Use Tailwind utilities for 90% of styling needs
+- **CSS modules**: Use for complex component-specific styles, animations, or when Tailwind becomes unwieldy
+- **Design tokens**: Always use tokens for colors, spacing, typography - never hardcode values
+- **Consistency**: Follow existing patterns in hero, market-insights, roi, and chat CSS modules
+
+## 🎯 When to Use CSS Modules vs Tailwind
+
+### ✅ Use Tailwind Utilities (Default Choice)
+
+**Use Tailwind for:**
+- Standard layout (flex, grid, positioning)
+- Common spacing (padding, margin, gap)
+- Typography (font sizes, weights, line heights)
+- Colors (using design tokens via Tailwind classes)
+- Borders and border radius
+- Standard responsive breakpoints
+- Hover/focus states
+- Most component styling
+
+**Example:**
+```tsx
+<div className="flex items-center gap-4 px-6 py-4 border border-border bg-surface rounded-lg hover:bg-surface-hover">
+  <h2 className="text-2xl font-semibold text-foreground">Title</h2>
+</div>
+```
+
+### ✅ Use CSS Modules (Specific Cases)
+
+**Use CSS modules when:**
+1. **Complex animations** that require keyframes or complex transitions
+2. **Component-specific responsive behavior** that's hard to express in Tailwind
+3. **Complex selectors** (e.g., `.parent:hover .child`, pseudo-elements)
+4. **CSS custom properties** that need to be scoped to a component
+5. **Performance-critical styles** that benefit from CSS-in-CSS optimization
+6. **Third-party integration** requiring specific CSS patterns
+
+**Example:**
+```css
+/* components/chat/chat.module.css */
+.messagesContainer {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  background: hsl(var(--background));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.messagesList {
+  max-width: var(--chat-container-max-w-sm);
+  padding: 1rem 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .messagesList {
+    max-width: var(--chat-container-max-w-md);
+  }
+}
+```
+
+## 📁 CSS Module Patterns
+
+### File Naming
+- Use `[component-name].module.css` in the same directory as the component
+- Example: `components/chat/chat.module.css`
+
+### Class Naming
+- Use camelCase for class names: `.chatWindow`, `.messagesContainer`
+- Be descriptive: `.composerContainer` not `.container`
+- **Prefixing**: Prefer component-specific prefixes for clarity (e.g., `.chatWindow`, `.roiHeader`, `.roiTitle`)
+- **Generic names**: Generic names like `.title`, `.subtitle`, `.section` are acceptable in component-specific modules due to CSS module scoping, but prefixes are recommended for better readability
+- **Pattern examples**:
+  - ✅ Good: `.chatWindow`, `.messagesContainer`, `.roiInputCard`, `.logoCropped`
+  - ✅ Acceptable: `.hero`, `.title`, `.subtitle` (scoped to hero.module.css)
+  - ❌ Avoid: `.container`, `.wrapper`, `.content` without context (use prefixes or descriptive names)
+
+### Import Pattern
+```tsx
+import styles from './chat.module.css';
+
+// Use bracket notation for TypeScript compatibility
+<div className={styles['chatWindow']}>
+```
+
+### Token Usage in CSS Modules
+Always use design tokens via CSS custom properties:
+```css
+/* ✅ CORRECT: Use tokens */
+.messagesContainer {
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+  padding: var(--space-md);
+  border-radius: var(--radius-lg);
+}
+
+/* ❌ INCORRECT: Hardcoded values */
+.messagesContainer {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  padding: 16px;
+  border-radius: 8px;
+}
+```
+
+## 🎨 Design Token Usage
+
+### Token Categories
+
+#### Colors
+```css
+/* Use semantic color tokens */
+background: hsl(var(--background));
+color: hsl(var(--foreground));
+border-color: hsl(var(--border));
+```
+
+#### Spacing
+```css
+/* Use spacing tokens */
+padding: var(--space-md);
+gap: var(--space-lg);
+margin-bottom: var(--space-sm);
+```
+
+#### Typography
+```css
+/* Use typography tokens */
+font-size: var(--text-lg);
+line-height: var(--leading-relaxed);
+```
+
+#### Font Rendering
+We avoid `text-rendering: optimizelegibility` for UI text because it can reduce text crispness on Windows, particularly for small UI text. Prefer browser defaults unless a component has a proven, specific need for alternative text rendering.
+
+```css
+/* ✅ CORRECT: Let browser handle text rendering */
+html, body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* No text-rendering: optimizelegibility */
+}
+
+/* ❌ INCORRECT: Global optimizelegibility can reduce crispness on Windows */
+html, body {
+  text-rendering: optimizelegibility; /* Avoid for UI text */
+}
+```
+
+#### Dashboard Top Bar Typography
+**Standard Pattern:**
+- **Font size**: `text-lg` (18px) for all breadcrumb text and page titles
+- **Font weight**: `font-medium` (500) for consistent weight
+- **Color hierarchy**:
+  - Breadcrumb links and page titles: `text-muted-foreground` (light gray)
+  - Separator (`>`): `text-medium` (darker gray)
+  - Hover states: `text-foreground` (dark)
+
+**Entity Pages:**
+```tsx
+// Breadcrumb: "Corso > Projects"
+<nav className="text-lg text-muted-foreground">
+  <Link className="hover:text-foreground">Corso</Link>
+  <span className="text-medium"> &gt; </span>
+</nav>
+<h1 className="text-lg font-medium text-muted-foreground">Projects</h1>
+```
+
+**Chat Page:**
+```tsx
+// Dropdown: "Corso Chat"
+<span className="text-muted-foreground">Corso </span>
+<span className="text-medium">Chat</span>
+```
+
+#### Domain-Specific Tokens
+```css
+/* Sidebar tokens */
+width: var(--sb-width-expanded);
+height: var(--sb-item-h);
+```
+
+#### Component-Specific Tokens
+Component-specific tokens should be defined directly in the component's CSS module file:
+
+```css
+/* components/chat/chat.module.css - component-specific tokens and styles */
+:root {
+  --chat-container-max-w-sm: 48rem;
+  --chat-composer-padding-x: 1.5rem;
+}
+```
+
+### Token Naming Conventions
+- **Global tokens**: `--primary`, `--foreground`, `--space-md`
+- **Domain tokens**: `--sb-*` (sidebar)
+- **Component tokens**: `--chat-*` (chat component-specific tokens, defined in `components/chat/chat.module.css`)
+
+## 📋 Existing CSS Module Examples
+
+### Hero Section (`components/landing/sections/hero/hero.module.css`)
+- **Why CSS module**: Complex responsive min-height calculations with `clamp()`
+- **Pattern**: Uses tokens for colors, custom responsive breakpoints
+- **Key features**: Fluid typography, responsive padding
+
+### Market Insights (`components/landing/sections/market-insights/market-insights.module.css`)
+- **Why CSS module**: Minimal styles, position utilities
+- **Pattern**: Simple module for layout positioning
+
+### ROI Calculator (`components/landing/sections/roi/roi.module.css`)
+- **Why CSS module**: Complex number input stepper styling, sticky stats animations
+- **Pattern**: Uses tokens extensively, complex selectors for stepper buttons
+- **Key features**: Custom input styling, animation states
+
+### Chat Interface (`components/chat/chat.module.css`)
+- **Why CSS module**: Responsive container widths, complex layout structure
+- **Pattern**: Uses chat-specific tokens, responsive max-widths
+- **Key features**: Responsive breakpoints, token-based spacing
+
+## 🚫 Anti-Patterns
+
+### ❌ Don't Mix Inline Styles with CSS Modules
+```tsx
+// ❌ INCORRECT
+<div className={styles.container} style={{ padding: '16px' }}>
+  Content
+</div>
+
+// ✅ CORRECT: Use tokens in CSS module
+// In CSS: .container { padding: var(--space-md); }
+<div className={styles.container}>
+  Content
+</div>
+```
+
+### ❌ Don't Hardcode Values
+```css
+/* ❌ INCORRECT */
+.container {
+  padding: 16px;
+  background: #ffffff;
+  border-radius: 8px;
+}
+
+/* ✅ CORRECT: Use tokens */
+.container {
+  padding: var(--space-md);
+  background: hsl(var(--background));
+  border-radius: var(--radius-lg);
+}
+```
+
+### ❌ Don't Create CSS Modules for Simple Tailwind Cases
+```tsx
+// ❌ INCORRECT: Unnecessary CSS module
+<div className={styles.simpleContainer}>
+  <h2 className={styles.title}>Title</h2>
+</div>
+
+// ✅ CORRECT: Use Tailwind
+<div className="flex items-center gap-4 px-6 py-4">
+  <h2 className="text-2xl font-semibold">Title</h2>
+</div>
+```
+
+## ✅ Decision Tree
+
+```
+Need to style a component?
+│
+├─ Can it be done with Tailwind utilities?
+│  ├─ Yes → Use Tailwind ✅
+│  └─ No → Continue
+│
+├─ Need complex animations/keyframes?
+│  ├─ Yes → Use CSS module ✅
+│  └─ No → Continue
+│
+├─ Need complex responsive behavior?
+│  ├─ Yes → Use CSS module ✅
+│  └─ No → Continue
+│
+├─ Need component-scoped CSS variables?
+│  ├─ Yes → Use CSS module ✅
+│  └─ No → Continue
+│
+└─ Use Tailwind ✅
+```
+
+## 🔍 Code Review Checklist
+
+When reviewing CSS modules or styling changes:
+
+- [ ] Are design tokens used instead of hardcoded values?
+- [ ] Is the CSS module necessary, or could Tailwind work?
+- [ ] Are class names descriptive and follow naming conventions?
+- [ ] Are responsive breakpoints consistent with design system?
+- [ ] Are animations accessible (respect `prefers-reduced-motion`)?
+- [ ] Are tokens properly scoped (domain-specific vs global)?
+- [ ] Is the CSS module file in the correct location (same dir as component)?
+
+## 📝 Real-World Examples
+
+### Example 1: Hero Section (Complex Responsive)
+```css
+/* components/landing/sections/hero/hero.module.css */
+.hero {
+  gap: var(--space-md);
+  padding-top: clamp(1.5rem, 4vh, 2.5rem);
+  padding-bottom: clamp(1rem, 3vh, 2rem);
+  min-height: clamp(400px, 50vh, 650px);
+}
+
+.buttons {
+  gap: var(--space-ms);
+  margin-top: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+```
+
+**Why CSS module**: Complex `clamp()` calculations for responsive sizing that would be unwieldy in Tailwind.
+
+### Example 2: ROI Calculator (Complex Stepper Styling)
+```css
+/* components/landing/sections/roi/roi.module.css */
+.numberField :global([data-stepper]) {
+  right: var(--space-sm);
+  top: var(--space-1-5);
+  gap: var(--space-xs);
+}
+
+.numberField :global(input) {
+  border-radius: var(--radius-lg);
+  padding: var(--space-2-5) 3.25rem var(--space-2-5) var(--space-ms);
+}
+```
+
+**Why CSS module**: Complex selectors for third-party component styling (`:global()`), precise positioning, and component-scoped overrides.
+
+### Example 3: Chat Interface (Responsive Containers)
+```css
+/* components/chat/chat.module.css */
+.messagesList {
+  max-width: var(--chat-container-max-w-sm);
+  padding: var(--space-md) var(--space-lg);
+}
+
+@media (min-width: 1024px) {
+  .messagesList {
+    max-width: var(--chat-container-max-w-md);
+  }
+}
+```
+
+**Why CSS module**: Domain-specific responsive breakpoints using chat tokens, cleaner than multiple Tailwind classes.
+
+### Example 4: Simple Component (Tailwind Only)
+```tsx
+// ✅ CORRECT: Use Tailwind for simple layouts
+<div className="flex items-center gap-4 px-6 py-4 border border-border bg-surface rounded-lg">
+  <h2 className="text-2xl font-semibold text-foreground">Title</h2>
+</div>
+```
+
+**Why Tailwind**: Simple layout, standard spacing, no complex calculations needed.
+
+## 📚 Related Documentation
+
+- [Component Design System](component-design-system.mdc) - Component architecture
+- [Dashboard UI Standards](../../docs/architecture-design/dashboard-ui-standards.md) - Dashboard-specific patterns
+- [UI Design Guide](../../docs/architecture-design/ui-design-guide.md) - General UI principles
+
+## 🔄 Maintenance
+
+This document should be updated when:
+- New CSS module patterns are established
+- Token system evolves
+- Styling conventions change
+- New domain-specific tokens are added
+
+## 🔍 Style Validation
+
+Automated validation is available to catch inline styles and hardcoded design tokens:
+
+```bash
+# Run style validation
+pnpm validate:styles:inline
+```
+
+The validation script (`scripts/ci/validate-styles.ts`) checks for:
+- Inline `style={{...}}` attributes in React components (except for dynamic values like progress bars)
+- Hardcoded hex colors (`#ffffff`, `#000`, etc.)
+- Hardcoded RGB/RGBA colors
+- Hardcoded pixel spacing values (except `0px` and `1px` for borders)
+- Hardcoded rem spacing values that should use tokens
+
+**Allowed inline styles**: Dynamic values like percentage widths, transforms, and opacity are acceptable when they can't be expressed with CSS classes.
+
+The validation runs automatically in CI as part of the quality checks.
+
+---
+
+**Last updated**: 2026-01-07

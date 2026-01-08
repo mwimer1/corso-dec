@@ -2,18 +2,20 @@
 
 # Dependencies and package manager caches
 node_modules/
+.pnp/
+.pnp.js
 .pnpm-store/
-orphan-report.json
 pnpm-lock.yaml
-pnpm-workspace.yaml
+# Note: pnpm-workspace.yaml is intentionally NOT ignored - it's a small, high-signal config file
 
 # Build and framework outputs
 .next/
 out/
 build/
-storybook-static/
+dist/
 .turbo/
 .vite/
+.swc/
 
 # Generated artifacts and caches
 coverage/
@@ -23,70 +25,36 @@ coverage/
 .cache/
 .parcel-cache/
 
+# Generated files
+*.generated.*
+*.d.ts.map
+
+# Large data files
+*.csv
+*.json.gz
+**/data/**/*.sql
+**/dumps/**/*.sql
+
 # Reports and test outputs
 playwright-report/
-reports/
+.playwright/
+# Reports - allow summary reports for AI agents, ignore detailed JSON
+reports/**/*.json
+reports/**/*.txt
+reports/**/*.xml
+!reports/orphan/orphan-report.json
+!reports/orphan-audit-with-allowlist.json
+!reports/exports/unused-exports.summary.md
+!reports/deps-audit.md
 test-results/
 test-reports/
 
 # Logs
 logs/
 *.log
-
-# Misc
-dist/
-
-# Build artifacts
-.next/              # ignore every "build" directory…
-!scripts/build/        # …except this one
-!styles/build/        # …except this one
-
-
-out/
-
-# Dependencies  
-node_modules/
-.pnp/
-.pnp.js
-
-# Generated files
-*.generated.*
-*.d.ts.map
-
-# Large data files (but keep schema files)
-*.csv
-# But allow db directory CSV files (likely schema/data files)
-!db/*.csv
-*.json.gz
-**/data/**/*.sql
-**/dumps/**/*.sql
-
-# Storybook build
-storybook-static/
-
-# Test coverage
-coverage/
-.nyc_output/
-
-# Logs
-*.log
 npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
-
-# Lock files
-package-lock.json
-yarn.lock
-
-# Cache directories
-.cache/
-.turbo/
-.swc/
-
-# Test results
-test-results/
-playwright-report/
-.playwright/
 
 # IDE/Editor files
 .idea/
@@ -97,7 +65,18 @@ playwright-report/
 .DS_Store
 Thumbs.db
 
-# Environment files - explicitly allow example and test files
+# Environment files - NEVER index local env files (contain secrets)
+# Only allow example/test templates
 !.env.example
 !.env.test
-!.env.local
+# NOTE: .env.local is intentionally NOT unignored - it contains secrets
+
+# Deployment and service configs (may contain secrets)
+.vercel/
+.clerk/
+
+# Temporary directories
+tmp/
+temp/
+.tmp/
+supabase/.temp/

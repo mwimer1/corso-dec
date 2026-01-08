@@ -6,8 +6,6 @@ param(
   [Parameter(ParameterSetName='ByNamed')]
   [int]$DevPort = 3000,
   [Parameter(ParameterSetName='ByNamed')]
-  [int]$StorybookPort = 6006,
-  [Parameter(ParameterSetName='ByNamed')]
   [int]$PlaywrightPort = 9323,
 
   [Parameter()]
@@ -17,7 +15,7 @@ param(
 $ErrorActionPreference = "Stop"
 
 if ($PSCmdlet.ParameterSetName -eq 'ByNamed') {
-  $Ports = @($DevPort, $StorybookPort, $PlaywrightPort)
+  $Ports = @($DevPort, $PlaywrightPort)
 }
 
 # Remove duplicates and non-positive values

@@ -1,25 +1,22 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+title: "Security"
+description: "Documentation and resources for documentation functionality. Located in security/."
+last_updated: "2026-01-07"
 category: "documentation"
+status: "active"
 ---
 ## Public Exports
 | Test File | Type | Description |
 |-----------|------|-------------|
-| `ai-secret-masking` | Security test |  |
-| `clickhouse-injection` | Security test |  |
-| `core-sql-guards` | Security test |  |
-| `csp-schema` | Security test |  |
-| `masking-userid-variants` | Security test |  |
-| `rate-limit.edge` | Security test |  |
-| `rate-limit.server` | Security test |  |
-| `sql-guards` | Security test |  |
-
-## Public Exports
-| Test File | Type | Description |
-|-----------|------|-------------|
-| `ai-secret-masking` | Security test |  |
-| `clickhouse-injection` | Security test |  |
+| `ai-security` | Security test | AI integration security and secret masking |
+| `clickhouse-injection` | Security test | SQL injection prevention in ClickHouse queries |
+| `core-sql-guards` | Security test | Core SQL security validation |
+| `csp-schema` | Security test | Content Security Policy validation |
+| `masking-userid-variants` | Security test | User ID masking patterns |
+| `rate-limit.edge` | Security test | Edge runtime rate limiting |
+| `rate-limit.server` | Security test | Server runtime rate limiting |
+| `sql-guards` | Security test | SQL query security guards |
+| `tenant-isolation` | Security test | Multi-tenant data isolation |
 
 
 # Security Tests
@@ -40,7 +37,7 @@ category: "documentation"
   - Secret data masking in logs
 
 ### 🤖 AI Security
-- **File**: `ai-secret-masking.test.ts`
+- **File**: `ai-security.test.ts`
 - **Purpose**: Tests for AI integration security, particularly secret handling
 - **Coverage**:
   - OpenAI API key masking in logs
@@ -59,7 +56,7 @@ pnpm vitest run tests/security/
 ### Run Specific Security Test Files
 ```bash
 pnpm vitest run tests/security/clickhouse-injection.test.ts
-pnpm vitest run tests/security/ai-secret-masking.test.ts
+pnpm vitest run tests/security/ai-security.test.ts
 ```
 
 ### Run Security Tests with Coverage
@@ -171,4 +168,3 @@ Security tests are automatically included in the quality gates:
 - [Security Standards](../../docs/security/)
 - [API Security Patterns](../../docs/security/api-security.md)
 - [Database Security](../../docs/security/database-security.md)
-

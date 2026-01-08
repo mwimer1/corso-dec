@@ -1,9 +1,12 @@
 // Node.js required: ClickHouse client operations
+/** @knipignore */
 export const runtime = 'nodejs';
+/** @knipignore */
 export const dynamic = 'force-dynamic';
+/** @knipignore */
 export const revalidate = 0;
 
-import { http, noContent, ok } from '@/lib/api/response/http';
+import { http, noContent, ok } from '@/lib/api/http';
 import { getClickHouseClient } from '@/lib/integrations/clickhouse/client';
 import { logger } from '@/lib/monitoring';
 import { getEnv } from '@/lib/server/env';
@@ -61,6 +64,7 @@ export async function GET(_req: Request) {
   }
 }
 
+/** @knipignore */
 export async function HEAD() {
   const startTime = performance.now();
 
@@ -87,6 +91,7 @@ export async function HEAD() {
   }
 }
 
+/** @knipignore */
 export async function OPTIONS() {
   return noContent();
 }

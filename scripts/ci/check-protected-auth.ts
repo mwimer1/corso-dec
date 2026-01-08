@@ -1,69 +1,87 @@
 #!/usr/bin/env tsx
-import { globby } from 'globby';
-import fs from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-async function hasAuthCall(file: string): Promise<boolean> {
-  try {
-    const src = await fs.readFile(file, 'utf8');
-    if (/['"]use client['"]/.test(src)) return true; // client files are exempt
-    return /\bauth\s*\(/.test(src);
-  } catch {
-    return false;
-  }
-}
-
-async function nearestProtectedLayoutHasAuth(startDir: string): Promise<boolean> {
-  let dir = startDir;
-  while (true) {
-    const layout = path.join(dir, 'layout.tsx');
-    try {
-      await fs.access(layout);
-      if (await hasAuthCall(layout)) return true;
-    } catch {}
-    const parent = path.dirname(dir);
-    if (parent === dir) break;
-    dir = parent;
-    if (!dir.includes(path.sep + '(protected)')) break;
-  }
-  return false;
-}
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import type { CheckResult } from './check-common';
+import { checkFilesWithPattern, checkLayoutHasExport } from './check-common';
+import { printCheckResults, setExitFromResults } from '../utils/report-helpers';
 
 async function main() {
   const root = path.join('app', '(protected)');
-  const files = await globby(['**/*.tsx'], { cwd: root, absolute: true });
+  const results = await checkFilesWithPattern(
+    [`${root}/**/*.tsx`],
+    async (content, filePath): Promise<CheckResult> => {
+      // Skip client components (they're exempt)
+      if (/['"]use client['"]/.test(content)) {
+        return {
+          success: true,
+          message: `${filePath} is a client component (exempt)`,
+        };
+      }
 
-  const offenders: string[] = [];
-  for (const file of files) {
-    const src = await fs.readFile(file, 'utf8');
-    if (/['"]use client['"]/.test(src)) continue; // skip client components
+      // Only check server pages and layouts
+      const isServerPageOrLayout =
+        /\bexport\s+default\s+function\s+/.test(content) ||
+        /\bexport\s+const\s+runtime\b/.test(content) ||
+        /\bgenerateMetadata\b/.test(content);
 
-    const isServerPageOrLayout = /\bexport\s+default\s+function\s+/.test(src) || /\bexport\s+const\s+runtime\b/.test(src) || /\bgenerateMetadata\b/.test(src);
-    if (!isServerPageOrLayout) continue;
+      if (!isServerPageOrLayout) {
+        return {
+          success: true,
+          message: `${filePath} is not a server page or layout`,
+        };
+      }
 
-    const hasOwnAuth = /\bauth\s*\(/.test(src);
-    if (hasOwnAuth) continue;
+      // Check if file itself has auth
+      const hasOwnAuth = /\bauth\s*\(/.test(content);
+      if (hasOwnAuth) {
+        return {
+          success: true,
+          message: `${filePath} has auth() call`,
+        };
+      }
 
-    const dir = path.dirname(file);
-    const parentHasAuth = await nearestProtectedLayoutHasAuth(dir);
-    if (!parentHasAuth) offenders.push(file);
-  }
+      // Check parent layouts for auth (stop at (protected) boundary)
+      const dir = path.dirname(filePath);
+      const parentHasAuth = await checkLayoutHasExport(
+        dir,
+        /\bauth\s*\(/,
+        {
+          boundaryPredicate: (d) => !d.includes(path.sep + '(protected)'),
+        }
+      );
 
-  if (offenders.length) {
+      if (parentHasAuth) {
+        return {
+          success: true,
+          message: `${filePath} has auth() via parent layout`,
+        };
+      }
+
+      return {
+        success: false,
+        message: `${filePath} missing auth()`,
+      };
+    }
+  );
+
+  // Use standard reporting, but preserve the custom error message format
+  const failures = results.filter((r) => !r.success);
+  if (failures.length > 0) {
     console.error('Protected server components missing auth():');
-    for (const f of offenders) console.error(' -', path.relative(process.cwd(), f));
-    process.exit(1);
+    for (const failure of failures) {
+      // Extract file path from message (format: "filePath missing auth()")
+      const filePath = failure.message.replace(/\s+missing auth\(\)$/, '');
+      console.error(' -', path.relative(process.cwd(), filePath));
+    }
+  } else {
+    console.log('✅ All protected server components are guarded by auth() directly or via parent layout');
   }
-  console.log('✅ All protected server components are guarded by auth() directly or via parent layout');
+  
+  setExitFromResults(results);
 }
 
 main().catch((err) => {
   console.error(err);
-  process.exit(1);
+  process.exitCode = 1;
 });
 
 

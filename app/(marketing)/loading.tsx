@@ -1,5 +1,3 @@
-import { RouteLoading } from "@/components";
+import { createLoading } from '@/app/shared/create-loading';
 
-export default function MarketingLoading() {
-  return <RouteLoading message="Loading page..." />;
-}
+export default createLoading('Loading page...');

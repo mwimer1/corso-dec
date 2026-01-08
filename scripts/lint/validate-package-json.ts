@@ -1,10 +1,19 @@
 #!/usr/bin/env tsx
-// scripts/lint/validate-package-json.ts
-
+/**
+ * Validates package.json for duplicate script keys and other issues.
+ * 
+ * Checks for duplicate script commands, validates script key naming conventions,
+ * and uses caching to optimize performance when package.json hasn't changed.
+ * 
+ * Intent: Ensure package.json scripts are well-organized
+ * Files: package.json
+ * Invocation: pnpm validate:package
+ */
 import { fileURLToPath } from 'node:url';
 import { join } from 'path';
-import { readTextSync } from '../utils/fs';
-import { logger } from '../utils/logger';
+import { readTextSync } from '../utils/fs/read';
+import { logger, createLintResult, resolveFromRepo } from './_utils';
+import { hasStagedFiles, getCachedResult, saveCachedResult } from './_utils/cache';
 
 interface ScriptKey {
   key: string;
@@ -15,7 +24,25 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = join(__filename, '..');
 
 function main() {
-  const packagePath = join(__dirname, '..', '..', 'package.json');
+  const packagePath = resolveFromRepo('package.json');
+  
+  // Performance optimization: Use cache if package.json not staged
+  const isPackageStaged = hasStagedFiles(['package.json']);
+  
+  // If package.json is not staged, try to use cache
+  if (!isPackageStaged) {
+    const cached = getCachedResult('validate-package', [packagePath]);
+    if (cached === true) {
+      logger.success('✅ No duplicate scripts found in package.json (cached)');
+      return; // Cache hit - skip validation
+    }
+    // If cached === false or null, we need to validate (package.json may have been fixed)
+  }
+  
+  // Always validate if package.json is staged (it might have changed)
+  // or if cache is invalid/missing
+
+  const result = createLintResult();
   const packageContent = readTextSync(packagePath);
   const lines = packageContent.split('\n');
   const scriptKeys: ScriptKey[] = [];
@@ -24,7 +51,7 @@ function main() {
   lines.forEach((line, index) => {
     if (line.includes('"scripts"')) {
       inScriptsSection = true;
-    } else if (inScriptsSection && line.trim() === '}') {
+    } else if (inScriptsSection && /^\s*}\s*,?\s*$/.test(line)) {
       inScriptsSection = false;
     }
 
@@ -47,19 +74,28 @@ function main() {
     duplicates[item.key]?.push(item.line);
   });
 
-  let hasDuplicates = false;
   Object.entries(duplicates).forEach(([key, lineNumbers]) => {
     if (lineNumbers.length > 1) {
-      hasDuplicates = true;
-      logger.error(`❌ Duplicate script key "${key}" found on lines: ${lineNumbers.join(', ')}`);
+      result.addError(`Duplicate script key "${key}" found on lines: ${lineNumbers.join(', ')}`);
     }
   });
 
-  if (hasDuplicates) {
+  // Preserve original output format
+  if (result.hasErrors()) {
+    for (const error of result.getErrors()) {
+      logger.error(`❌ ${error}`);
+    }
     logger.error('\n⚠️  Please remove duplicate script definitions from package.json');
-    process.exit(1);
+    
+    // Cache the failure result
+    saveCachedResult('validate-package', [packagePath], false);
+    
+    process.exitCode = 1;
   } else {
     logger.success('✅ No duplicate scripts found in package.json');
+    
+    // Cache the success result
+    saveCachedResult('validate-package', [packagePath], true);
   }
 }
 

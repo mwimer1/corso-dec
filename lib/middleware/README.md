@@ -1,14 +1,63 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+title: "Middleware"
+last_updated: "2026-01-07"
 category: "library"
+status: "active"
+description: "Request middleware for error handling, rate limiting, and CORS."
 ---
-# Repository Scripts & Docs
+# Middleware
 
-This README is generated from a single template (`README.scripts.hbs`).
+Request middleware for error handling, rate limiting, and CORS.
 
-- Directory: `lib/middleware`
-- Last updated: `2025-10-29`
+## Runtime
 
-> Edit the template or the generator context to change all READMEs consistently.
+**Runtime**: universal ⚠️
+
+*No runtime-specific signals detected (likely universal/isomorphic)*
+
+**Signals detected:**
+- No runtime signals detected
+
+## Directory Structure
+
+```
+lib/middleware/
+├── edge/
+│   ├── error-handler.ts
+│   └── rate-limit.ts
+├── node/
+│   ├── with-error-handling-node.ts
+│   └── with-rate-limit-node.ts
+├── shared/
+│   ├── cors.ts
+│   ├── headers.ts
+│   ├── rate-limit.ts
+│   ├── request-id.ts
+│   └── response-types.ts
+├── index.ts
+├── rate-limit-presets.ts
+```
+
+## Public API
+
+**Value exports** from `@/lib/middleware`:
+
+- `addRequestIdHeader`
+- `corsHeaders`
+- `getRequestId`
+- `handleCors`
+- `handleOptions`
+- `RATE_LIMIT_100_PER_MIN`
+- `RATE_LIMIT_30_PER_MIN`
+- `RATE_LIMIT_60_PER_MIN`
+- `withErrorHandlingEdge`
+- `withErrorHandlingNode`
+- `withRateLimitEdge`
+- `withRateLimitNode`
+
+## Usage
+
+```typescript
+import { addRequestIdHeader } from '@/lib/middleware';
+```
 

@@ -12,6 +12,10 @@ export const DEFAULT_USE_CASES: Record<UseCaseKey, UseCase> = {
       'Trigger cadences the same week a permit hits',
     ],
     impact: 'Agencies report 20–35% more qualified conversations and 10–18% higher close rates.',
+    impactMetrics: [
+      '20–35% more qualified conversations',
+      '10–18% higher close rates',
+    ],
   },
   suppliers: {
     title: 'Building Materials Suppliers',
@@ -24,6 +28,10 @@ export const DEFAULT_USE_CASES: Record<UseCaseKey, UseCase> = {
       'Track share‑of‑wallet by contractor and region',
     ],
     impact: 'Suppliers see 6–12% revenue lift and shorter sales cycles.',
+    impactMetrics: [
+      '6–12% revenue lift',
+      'Shorter sales cycles',
+    ],
   },
   construction: {
     title: 'Contractors & Builders',
@@ -36,6 +44,10 @@ export const DEFAULT_USE_CASES: Record<UseCaseKey, UseCase> = {
       'ROI from lead → booked job',
     ],
     impact: 'Teams see 20–30% more leads and 15–25% faster booking.',
+    impactMetrics: [
+      '20–30% more leads',
+      '15–25% faster booking',
+    ],
   },
   developers: {
     title: 'Developers & Real Estate',
@@ -48,6 +60,10 @@ export const DEFAULT_USE_CASES: Record<UseCaseKey, UseCase> = {
       'Property value assessment and investment timing',
     ],
     impact: 'Developers report 25–40% better market timing and 15–30% improved project ROI.',
+    impactMetrics: [
+      '25–40% better market timing',
+      '15–30% improved project ROI',
+    ],
   },
 } as const;
 

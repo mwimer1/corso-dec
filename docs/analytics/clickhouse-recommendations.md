@@ -1,7 +1,9 @@
 ---
-status: "stable"
-last_updated: "2025-11-03"
+title: "Analytics"
+description: "Documentation and resources for documentation functionality. Located in analytics/."
+last_updated: "2026-01-07"
 category: "documentation"
+status: "draft"
 ---
 ## Overview
 
@@ -223,5 +225,4 @@ PREWHERE org_id = {org_id:String} AND day BETWEEN {start:Date} AND {end:Date}
 GROUP BY day, project_type
 ORDER BY day
 LIMIT 1000;
-```bash
-
+```

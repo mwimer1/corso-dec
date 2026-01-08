@@ -14,7 +14,7 @@
 // - Context variants control text prominence and opacity
 // - Icon variants have slightly different opacity patterns optimized for icon visibility
 import { textTri } from '@/styles/shared-variants';
-import { tv } from '@/styles/utils';
+import { tv } from '@/styles';
 
 // Inlined from actions-bar.ts
 const actionsBar = 'mt-lg flex items-center gap-sm sm:gap-lg' as const;

@@ -4,7 +4,7 @@
  * @runtime Server-only (Node.js runtime required)
  */
 
-export { ApplicationError, ErrorCategory, ErrorSeverity, type ErrorContext } from '../shared';
+export { ApplicationError, ErrorCategory, ErrorSeverity, type ErrorContext } from '@/lib/shared';
 // export * from './auth'; // Removed - auth.ts is now empty
 export * from './error-handling';
 export * from './validation';

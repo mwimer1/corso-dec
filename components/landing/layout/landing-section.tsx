@@ -1,4 +1,4 @@
-import { SectionShell } from "@/components/ui/patterns";
+import { SectionShell } from "@/components/ui/organisms/section-shell";
 import * as React from "react";
 
 type LandingSectionTone = "surface" | "muted" | "brand" | "dark";

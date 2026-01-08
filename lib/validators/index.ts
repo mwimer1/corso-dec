@@ -10,12 +10,16 @@ export {
 } from './entityListQuery';
 export type { EntityListQuery, EntityParam, SortDir } from './entityListQuery';
 
+// Entity query validators (POST /api/v1/entity/{entity}/query)
+export { EntityQueryRequestSchema } from './entityQuery';
+export type { EntityQueryRequest } from './entityQuery';
+
 // Auth validators
 export { UserSchema } from './auth/user-validation';
 
 // Entity query validators (only keeping used schemas)
 
-// Mock project validators (CSV processing)
+// Mock project validators (JSON fixtures processing)
 export {
     CanonicalProject,
     CanonicalProjectsFile, RawProjectRow, toISODateOrNullExport

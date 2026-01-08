@@ -158,15 +158,16 @@ function createContextAwareClient(): ClickHouseClientInterface {
         }
       }
 
-      // In client context, make API request
+      // In client context, make API request to generic query endpoint
       if (context.environment === 'client') {
         try {
           const startTime = performance.now();
-          const data = await postJSON<T[]>('/api/v1/dashboard/query', {
+          const response = await postJSON<{ data: T[] }>('/api/v1/query', {
             sql: options.query,
             params: sanitizedParams,
             cacheTtl: options.cacheTtl,
           });
+          const data = response.data || [];
           const executionTime = Math.round(performance.now() - startTime);
 
           return {

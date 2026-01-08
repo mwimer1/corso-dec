@@ -1,0 +1,16 @@
+/* Product Showcase Section Styles */
+
+/* Tab button height for grid layout - matched to white space height for visual consistency */
+/* Natural height calculated from: text-lg (18px) + line-height (~27px) + py-0 = ~30px */
+/* Height is controlled via CSS module to override any variant defaults */
+.showcaseTabButton {
+  height: 54px;
+}
+
+/* Responsive: matched to white space height on mobile for visual consistency */
+@media (max-width: 1279px) {
+  .showcaseTabButton {
+    /* Matches white space height (48px) for balanced proportions */
+    height: 48px;
+  }
+}

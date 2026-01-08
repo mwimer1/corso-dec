@@ -1,14 +1,30 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+title: "Roi"
+last_updated: "2026-01-07"
 category: "components"
+status: "active"
+description: "UI components for the components system, following atomic design principles. Located in landing/sections/roi/."
 ---
-# Repository Scripts & Docs
+# Roi
 
-This README is generated from a single template (`README.scripts.hbs`).
+The roi directory contains UI components for the Corso platform.
 
-- Directory: `components/landing/sections/roi`
-- Last updated: `2025-10-29`
+UI components for the components system, following atomic design principles. Located in landing/sections/roi/.
 
-> Edit the template or the generator context to change all READMEs consistently.
+## Directory Structure
+
+```
+components/landing/sections/roi/
+roi-calculator.tsx
+roi-label-tooltip.tsx
+roi-output-panel.tsx
+```
+
+## Usage
+
+Import components from the appropriate subdirectory:
+
+```typescript
+import { ComponentName } from '@/components/landing/sections/roi/subdirectory';
+```
 

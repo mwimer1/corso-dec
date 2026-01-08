@@ -1,7 +1,8 @@
 // lib/api/data.ts
 // Edge-safe adapter to serve entity page data, sourcing from public/__mockdb__ when mock flag is on.
 import { getEnvEdge } from '@/lib/api/edge';
-import { processQuery, type MockFilter, type MockSort, type MockQueryParams } from '@/lib/mocks/shared';
+import { processQuery, type MockFilter, type MockQueryParams, type MockSort } from '@/lib/mocks/shared';
+import { normalizeAddressRow, normalizeCompanyRow, normalizeProjectRow } from './mock-normalizers';
 
 type Filter = MockFilter;
 type Sort = MockSort;
@@ -19,7 +20,8 @@ export async function getEntityPage(
   opts: { baseUrl: URL }
 ): Promise<{ data: Record<string, unknown>[]; total: number; page: number; pageSize: number }> {
   const env = getEnvEdge();
-  const useMock = (env.CORSO_USE_MOCK_DB ?? 'false') === 'true';
+  // Default to mock in dev/test unless explicitly disabled; production defaults to real DB
+  const useMock = (env.CORSO_USE_MOCK_DB ?? 'false') === 'true' || (env.NODE_ENV !== 'production' && env.CORSO_USE_MOCK_DB !== 'false');
   if (!useMock) {
     // Delegate to existing SQL endpoint for real data
     const { entity, page, pageSize, sort, search, filters } = params;
@@ -50,7 +52,17 @@ export async function getEntityPage(
     const body = await res.text().catch(() => '');
     throw new Error(`Mock DB fetch failed: ${res.status} ${res.statusText} ${body.slice(0, 200)}`);
   }
-  const all = (await res.json()) as Record<string, unknown>[];
+  let all = (await res.json()) as Record<string, unknown>[];
+
+  // Apply normalization for entities to ensure complete, realistic data
+  // This only runs in mock mode and does not affect production data paths
+  if (params.entity === 'companies') {
+    all = all.map((row, index) => normalizeCompanyRow(row, index));
+  } else if (params.entity === 'projects') {
+    all = all.map((row, index) => normalizeProjectRow(row, index));
+  } else if (params.entity === 'addresses') {
+    all = all.map((row, index) => normalizeAddressRow(row, index));
+  }
 
   // Process query using shared utilities
   const queryParams: QueryParams = {

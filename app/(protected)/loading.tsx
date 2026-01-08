@@ -1,5 +1,3 @@
-import { RouteLoading } from "@/components";
+import { createLoading } from '@/app/shared/create-loading';
 
-export default function ProtectedLoading() {
-  return <RouteLoading message="Loading dashboard..." />;
-}
+export default createLoading('Loading dashboard...');

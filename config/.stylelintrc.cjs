@@ -15,6 +15,22 @@ module.exports = {
         ignoreAtRules: ['apply', 'variants', 'responsive', 'tailwind', 'layer', 'screen'],
       },
     ],
+    // Best practices: nesting depth
+    'max-nesting-depth': [
+      3,
+      {
+        ignore: ['blockless-at-rules', 'pseudo-classes'],
+      },
+    ],
+    // Best practices: warn on !important (prefer specificity)
+    'declaration-no-important': 'warn',
+    // Best practices: unknown properties
+    'property-no-unknown': [
+      true,
+      {
+        ignoreProperties: ['composes'],
+      },
+    ],
     // Disallow the invalid ::root selector (should be :root)
     'selector-pseudo-class-no-unknown': [
       true,
@@ -61,6 +77,8 @@ module.exports = {
     }],
     // Disable property ordering for now - vendor prefixes are handled manually
     'order/properties-order': null,
+    // Enforce modern color function notation (rgb(r g b / a) instead of rgba(r, g, b, a))
+    'color-function-notation': 'modern',
   },
   ignoreFiles: ['**/.next/**', '**/build/**', '**/node_modules/**'],
   overrides: [

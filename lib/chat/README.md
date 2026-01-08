@@ -1,14 +1,61 @@
 ---
-status: "draft"
-last_updated: "2025-11-03"
+title: "Chat"
+last_updated: "2026-01-07"
 category: "library"
+status: "active"
+description: "Chat processing utilities for AI chat interface."
 ---
-# Repository Scripts & Docs
+# Chat
 
-This README is generated from a single template (`README.scripts.hbs`).
+Chat processing utilities for AI chat interface.
 
-- Directory: `lib/chat`
-- Last updated: `2025-10-29`
+## Runtime
 
-> Edit the template or the generator context to change all READMEs consistently.
+**Runtime**: universal ⚠️
+
+*No runtime-specific signals detected (likely universal/isomorphic)*
+
+**Signals detected:**
+- No runtime signals detected
+
+## Directory Structure
+
+```
+lib/chat/
+├── client/
+│   ├── mock-stream.ts
+│   └── process.ts
+├── query/
+│   └── intent-detection.ts
+├── rag-context/
+│   └── history-client.ts
+├── types/
+│   └── client-safe.ts
+├── index.ts
+```
+
+## Public API
+
+**Value exports** from `@/lib/chat`:
+
+- `clearLocalChatHistory`
+- `detectQueryIntentWithCache`
+- `inferTableIntent`
+- `loadRecentChatHistory`
+- `processUserMessageStreamClient`
+- `saveChatHistory`
+
+**Type exports** from `@/lib/chat`:
+
+- `SQLStreamChunk` (type)
+
+## Usage
+
+```typescript
+import { clearLocalChatHistory } from '@/lib/chat';
+```
+
+```typescript
+import type { SQLStreamChunk } from '@/lib/chat';
+```
 

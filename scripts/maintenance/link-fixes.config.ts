@@ -93,7 +93,6 @@ const LINK_FIX_CATEGORIES: LinkFixCategory[] = [
     fixes: [
       LinkFixBuilders.selfReference('../../docs/contribution.md', 'Contribution doc exists, keep as is'),
       LinkFixBuilders.selfReference('../../lib/README.md', 'Lib README exists, keep as is'),
-      LinkFixBuilders.selfReference('../../contexts/README.md', 'Contexts README exists, keep as is'),
       LinkFixBuilders.selfReference('../../../styles/README.md', 'Styles README exists, keep as is')
     ]
   },

@@ -2,6 +2,7 @@
 "use client";
 
 import { UserButton } from "@clerk/nextjs";
+import { usePathname } from "next/navigation";
 import * as React from "react";
 
 import { Button, HamburgerIcon, XMarkIcon } from "@/components/ui/atoms";
@@ -11,6 +12,12 @@ import { navbarStyleVariants } from "@/styles/ui/organisms/navbar-variants";
 import type { NavItemData } from "@/types/shared";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Ctas, MenuPrimaryLinks } from './shared';
+
+// Helper to handle both function and string returns from tv() slots
+// (defensive fix for test environment where slots may return strings directly)
+function cls(x: unknown): string | undefined {
+  return typeof x === 'function' ? (x as () => string)() : (x as string | undefined);
+}
 
 interface NavbarMenuProps {
   items: NavItemData[];
@@ -40,8 +47,10 @@ export function NavbarMenu({
   showSignup: _showSignup = true,
 }: NavbarMenuProps) {
   const navbarStyles = navbarStyleVariants();
+  const pathname = usePathname();
 
   // Unified render helpers to avoid duplication between desktop and mobile
+  // Never show UserButton on landing pages - authenticated users should be redirected by middleware
   const renderAuthSection = React.useCallback(
     (opts?: { onItemClick?: () => void; layout?: "desktop" | "mobile" }) => (
       <div
@@ -51,35 +60,80 @@ export function NavbarMenu({
             : "flex items-center gap-sm",
         )}
       >
-        {isSignedIn ? (
+        {/* Landing variant: always show CTAs (authenticated users should be redirected by middleware) */}
+        {/* App variant: show UserButton if signed in, CTAs if not */}
+        {_variant === "landing" ? (
+          <div className={opts?.layout === "mobile" ? "w-full flex items-center gap-2.5" : undefined}>
+            <Ctas className={opts?.layout === "mobile" ? "flex-1" : undefined} />
+          </div>
+        ) : isSignedIn ? (
           <UserButton afterSignOutUrl="/" />
         ) : (
-          // Reuse shared CTAs for desktop/mobile where appropriate
           <div className={opts?.layout === "mobile" ? "w-full flex items-center gap-2.5" : undefined}>
             <Ctas className={opts?.layout === "mobile" ? "flex-1" : undefined} />
           </div>
         )}
       </div>
     ),
-    [isSignedIn],
+    [isSignedIn, _variant],
   );
 
+  // Determine if a nav item is active based on current pathname
+  const isItemActive = React.useCallback((item: NavItemData): boolean => {
+    const itemHref = item.href;
+    // Remove hash from href for comparison
+    const itemPath = itemHref.split('#')[0];
+    
+    // For Pricing link, match if we're on /pricing (with or without hash)
+    if (itemPath === '/pricing') {
+      return pathname === '/pricing';
+    }
+    
+    // For other links, match exact pathname or if pathname starts with the href
+    return pathname === itemPath || pathname.startsWith(itemPath + '/');
+  }, [pathname]);
+
   const renderItem = React.useCallback(
-    (item: NavItemData, onClick?: () => void, size?: 'navLink' | 'mobileItem') => (
-      <NavItem
-        key={String(item.href)}
-        href={item.href}
-        external={item.external === true}
-        {...(onClick && { onClick })}
-        {...(size && { size })}
-        {...(size === 'mobileItem' ? { className: navbarStyles.mobileNavItem() } : undefined)}
-        {...(item.label === 'FAQ' ? { className: 'hide-faq-901' } : undefined)}
-        variant="text"
-      >
-        {item.label}
-      </NavItem>
-    ),
-    [navbarStyles],
+    (item: NavItemData, onClick?: () => void, size?: 'navLink' | 'mobileItem') => {
+      const active = isItemActive(item);
+      const className = size === 'mobileItem' 
+        ? cls(navbarStyles.mobileNavItem)
+        : item.label === 'FAQ' 
+        ? 'hide-faq-901' 
+        : undefined;
+      
+      if (item.external === true) {
+        return (
+          <NavItem
+            key={String(item.href)}
+            href={item.href}
+            external={true}
+            isActive={active}
+            {...(onClick && { onClick })}
+            {...(size && { size })}
+            {...(className && { className })}
+            variant="text"
+          >
+            {item.label}
+          </NavItem>
+        );
+      }
+      
+      return (
+        <NavItem
+          key={String(item.href)}
+          href={item.href}
+          isActive={active}
+          {...(onClick && { onClick })}
+          {...(size && { size })}
+          {...(className && { className })}
+          variant="text"
+        >
+          {item.label}
+        </NavItem>
+      );
+    },
+    [navbarStyles, isItemActive],
   );
 
   return (
@@ -126,11 +180,17 @@ export function NavbarMenu({
             role="dialog"
             aria-modal="true"
             className={cn(
-              navbarStyles.mobileMenu(),
-              isMobileMenuOpen && navbarStyles.mobileMenuOpen()
+              cls(navbarStyles.mobileMenu),
+              isMobileMenuOpen && cls(navbarStyles.mobileMenuOpen)
             )}
           >
-            <nav aria-label="Mobile navigation" className={navbarStyles.mobileNav()}>
+            <DialogPrimitive.Title className="sr-only">
+              Mobile Navigation
+            </DialogPrimitive.Title>
+            <DialogPrimitive.Description className="sr-only">
+              Mobile navigation menu
+            </DialogPrimitive.Description>
+            <nav aria-label="Mobile navigation" className={cls(navbarStyles.mobileNav)}>
               {items.map((i) => renderItem(i, () => setIsMobileMenuOpen(false), 'mobileItem'))}
               {renderAuthSection({ onItemClick: () => setIsMobileMenuOpen(false), layout: "mobile" })}
             </nav>

@@ -1,0 +1,428 @@
+[
+  {
+    "id": "data-driven-decision-making-jobsite",
+    "slug": "data-driven-decision-making-jobsite",
+    "title": "Data-Driven Decision-Making on the Jobsite: How Analytics Improves Project Outcomes",
+    "description": "How data and analytics on the jobsite lead to more informed decisions, improved project outcomes, and a proactive construction management approach.",
+    "publishDate": "2024-08-12T09:00:00Z",
+    "imageUrl": "/demos/projects-interface.png",
+    "categories": [
+      {
+        "slug": "data",
+        "name": "Data & Insights"
+      },
+      {
+        "slug": "operations",
+        "name": "Operations"
+      }
+    ],
+    "readingTime": 6,
+    "author": {
+      "name": "Data Analytics Team",
+      "avatar": null
+    }
+  },
+  {
+    "id": "rise-of-ai-iot-construction",
+    "slug": "rise-of-ai-iot-construction",
+    "title": "The Rise of AI and IoT in Construction: From Hype to Real Value",
+    "description": "How construction teams turn AI and IoT from hype into real results—safer jobsites, more reliable schedules, better equipment uptime, and smarter forecasting.",
+    "publishDate": "2025-12-15T09:00:00Z",
+    "imageUrl": "https://images.pexels.com/photos/8470810/pexels-photo-8470810.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop",
+    "categories": [
+      {
+        "slug": "technology",
+        "name": "Technology"
+      },
+      {
+        "slug": "innovation",
+        "name": "Innovation"
+      },
+      {
+        "slug": "data",
+        "name": "Data & Insights"
+      }
+    ],
+    "readingTime": 8,
+    "author": {
+      "name": "Corso Research",
+      "avatar": null
+    }
+  },
+  {
+    "id": "sustainable-construction-2030",
+    "slug": "sustainable-construction-2030",
+    "title": "Sustainable Construction 2030: Trends in Green Building and Carbon Reduction",
+    "description": "What green building looks like by 2030: embodied carbon targets, electrification, low‑carbon materials, and the data teams need to prove performance.",
+    "publishDate": "2025-08-25T09:00:00Z",
+    "imageUrl": "https://images.pexels.com/photos/27863809/pexels-photo-27863809.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop",
+    "categories": [
+      {
+        "slug": "sustainability",
+        "name": "Sustainability"
+      },
+      {
+        "slug": "market-analysis",
+        "name": "Market Analysis"
+      }
+    ],
+    "readingTime": 8,
+    "author": {
+      "name": "Sustainability Research Team",
+      "avatar": null
+    }
+  },
+  {
+    "id": "leading-indicators-construction-safety",
+    "slug": "leading-indicators-construction-safety",
+    "title": "Leading Indicators in Construction Safety: Moving from Reactive to Proactive",
+    "description": "How tracking leading safety indicators (near misses, training, inspections) helps construction firms shift from reactive to proactive safety management.",
+    "publishDate": "2024-11-10T09:00:00Z",
+    "imageUrl": "/demos/projects-interface.png",
+    "categories": [
+      {
+        "slug": "safety",
+        "name": "Safety"
+      },
+      {
+        "slug": "data",
+        "name": "Data & Insights"
+      }
+    ],
+    "readingTime": 8,
+    "author": {
+      "name": "Safety Innovation Team",
+      "avatar": null
+    }
+  },
+  {
+    "id": "construction-market-outlook-2026",
+    "slug": "construction-market-outlook-2026",
+    "title": "Construction Market Outlook 2026: Navigating Uncertainty in Materials and Labor",
+    "description": "Analysis of the 2026 construction market – covering material price swings, labor shortages, sector trends, and strategies to remain agile amid uncertainty.",
+    "publishDate": "2024-12-08T09:00:00Z",
+    "imageUrl": "/demos/companies-interface.png",
+    "categories": [
+      {
+        "slug": "market-analysis",
+        "name": "Market Analysis"
+      },
+      {
+        "slug": "cost-management",
+        "name": "Cost Management"
+      }
+    ],
+    "readingTime": 9,
+    "author": {
+      "name": "Construction Econ Lead",
+      "avatar": null
+    }
+  },
+  {
+    "id": "controlling-cost-overruns-predictive-analytics",
+    "slug": "controlling-cost-overruns-predictive-analytics",
+    "title": "Controlling Cost Overruns: How Predictive Analytics Mitigates Budget Risks",
+    "description": "How predictive analytics can forecast cost overruns early – using data models to flag budget risks and help keep construction projects on budget.",
+    "publishDate": "2025-01-20T09:00:00Z",
+    "imageUrl": "/demos/corso-ai-interface.png",
+    "categories": [
+      {
+        "slug": "cost-management",
+        "name": "Cost Management"
+      },
+      {
+        "slug": "data",
+        "name": "Data & Insights"
+      }
+    ],
+    "readingTime": 7,
+    "author": {
+      "name": "Construction Econ Lead",
+      "avatar": null
+    }
+  },
+  {
+    "id": "harnessing-field-data-project-operations",
+    "slug": "harnessing-field-data-project-operations",
+    "title": "Harnessing Field Data: Improving Project Operations through Real-Time Insights",
+    "description": "How real-time field data (daily logs, IoT sensors) improves project operations. Using live insights to adjust resources and boost productivity on site.",
+    "publishDate": "2025-02-10T09:00:00Z",
+    "imageUrl": "/demos/projects-interface.png",
+    "categories": [
+      {
+        "slug": "operations",
+        "name": "Operations"
+      },
+      {
+        "slug": "data",
+        "name": "Data & Insights"
+      }
+    ],
+    "readingTime": 6,
+    "author": {
+      "name": "Field Ops Analyst",
+      "avatar": null
+    }
+  },
+  {
+    "id": "construction-forecasting-integrating-schedule-cost",
+    "slug": "construction-forecasting-integrating-schedule-cost",
+    "title": "Construction Forecasting: Integrating Schedule and Cost for Accurate Projections",
+    "description": "Integrating schedule and cost tracking for more accurate project forecasts. Shows how linking time & budget data spots risks early and improves predictability.",
+    "publishDate": "2025-03-16T09:00:00Z",
+    "imageUrl": "/demos/projects-interface.png",
+    "categories": [
+      {
+        "slug": "cost-management",
+        "name": "Cost Management"
+      },
+      {
+        "slug": "operations",
+        "name": "Operations"
+      }
+    ],
+    "readingTime": 6,
+    "author": {
+      "name": "Field Ops Analyst",
+      "avatar": null
+    }
+  },
+  {
+    "id": "streamlining-procurement-digital-tools",
+    "slug": "streamlining-procurement-digital-tools",
+    "title": "Streamlining Construction Procurement: Digital Tools for Supply Chain Efficiency",
+    "description": "Digital procurement tactics that cut lead times and surprises—standardized RFQs, automated approvals, real-time tracking, and supplier performance visibility.",
+    "publishDate": "2025-10-15T09:00:00Z",
+    "imageUrl": "https://images.pexels.com/photos/8470810/pexels-photo-8470810.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop",
+    "categories": [
+      {
+        "slug": "operations",
+        "name": "Operations"
+      },
+      {
+        "slug": "technology",
+        "name": "Technology"
+      }
+    ],
+    "readingTime": 6,
+    "author": {
+      "name": "Field Ops Analyst",
+      "avatar": null
+    }
+  },
+  {
+    "id": "managing-change-orders-agile-project-controls",
+    "slug": "managing-change-orders-agile-project-controls",
+    "title": "Managing Change Orders: Minimizing Impact with Agile Project Controls",
+    "description": "An agile approach to change orders in construction. Emphasizes fast response, clear workflows, and quick integration of changes to minimize project impacts.",
+    "publishDate": "2025-05-19T09:00:00Z",
+    "imageUrl": "/demos/projects-interface.png",
+    "categories": [
+      {
+        "slug": "operations",
+        "name": "Operations"
+      },
+      {
+        "slug": "cost-management",
+        "name": "Cost Management"
+      }
+    ],
+    "readingTime": 5,
+    "author": {
+      "name": "Field Ops Analyst",
+      "avatar": null
+    }
+  },
+  {
+    "id": "sustainable-materials-cost-balance",
+    "slug": "sustainable-materials-cost-balance",
+    "title": "Sustainable Materials and Cost: Balancing Green Building with Budget Constraints",
+    "description": "A cost-smart framework for choosing sustainable materials—life-cycle thinking, carbon metrics, VE strategies, and procurement tips that protect margins.",
+    "publishDate": "2025-11-05T09:00:00Z",
+    "imageUrl": "https://images.pexels.com/photos/27863809/pexels-photo-27863809.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop",
+    "categories": [
+      {
+        "slug": "sustainability",
+        "name": "Sustainability"
+      },
+      {
+        "slug": "cost-management",
+        "name": "Cost Management"
+      }
+    ],
+    "readingTime": 6,
+    "author": {
+      "name": "Sustainability Research Team",
+      "avatar": null
+    }
+  },
+  {
+    "id": "human-side-construction-tech",
+    "slug": "human-side-construction-tech",
+    "title": "The Human Side of Construction Tech: Change Management for Successful Implementation",
+    "description": "Focuses on the human side of adopting construction tech: how training, leadership buy-in, and addressing resistance can ensure new tools are embraced.",
+    "publishDate": "2025-07-22T09:00:00Z",
+    "imageUrl": "/demos/companies-interface.png",
+    "categories": [
+      {
+        "slug": "technology",
+        "name": "Technology"
+      },
+      {
+        "slug": "operations",
+        "name": "Operations"
+      },
+      {
+        "slug": "innovation",
+        "name": "Innovation"
+      }
+    ],
+    "readingTime": 5,
+    "author": {
+      "name": "Corso Research",
+      "avatar": null
+    }
+  },
+  {
+    "id": "breaking-down-data-silos",
+    "slug": "breaking-down-data-silos",
+    "title": "Data Silos in Construction: Breaking Down Barriers for Enterprise Insights",
+    "description": "How construction firms can break down internal data silos by integrating systems and sharing information across departments to enable enterprise-wide insights.",
+    "publishDate": "2025-08-13T09:00:00Z",
+    "imageUrl": "/demos/companies-interface.png",
+    "categories": [
+      {
+        "slug": "data",
+        "name": "Data & Insights"
+      },
+      {
+        "slug": "technology",
+        "name": "Technology"
+      }
+    ],
+    "readingTime": 6,
+    "author": {
+      "name": "Corso Research",
+      "avatar": null
+    }
+  },
+  {
+    "id": "roi-of-safety-proactive-programs",
+    "slug": "roi-of-safety-proactive-programs",
+    "title": "The ROI of Safety: How Proactive Programs Save Time and Money",
+    "description": "Build a clear ROI model for safety: quantify avoided incidents, reduced downtime and rework, lower insurance pressure, and stronger bid competitiveness.",
+    "publishDate": "2025-09-30T09:00:00Z",
+    "imageUrl": "https://images.pexels.com/photos/10739750/pexels-photo-10739750.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop",
+    "categories": [
+      {
+        "slug": "safety",
+        "name": "Safety"
+      },
+      {
+        "slug": "cost-management",
+        "name": "Cost Management"
+      }
+    ],
+    "readingTime": 5,
+    "author": {
+      "name": "Safety Innovation Team",
+      "avatar": null
+    }
+  },
+  {
+    "id": "predictive-maintenance-construction-equipment",
+    "slug": "predictive-maintenance-construction-equipment",
+    "title": "Predictive Maintenance in Construction Equipment: Cutting Costs and Downtime",
+    "description": "Predictive maintenance for construction equipment – how IoT sensors and data analytics predict machine failures and help reduce costly downtime on site.",
+    "publishDate": "2025-10-12T09:00:00Z",
+    "imageUrl": "/demos/corso-ai-interface.png",
+    "categories": [
+      {
+        "slug": "technology",
+        "name": "Technology"
+      },
+      {
+        "slug": "operations",
+        "name": "Operations"
+      }
+    ],
+    "readingTime": 5,
+    "author": {
+      "name": "Data Analytics Team",
+      "avatar": null
+    }
+  },
+  {
+    "id": "data-driven-culture-best-practices",
+    "slug": "data-driven-culture-best-practices",
+    "title": "Building a Data-Driven Culture in Construction Firms: Best Practices",
+    "description": "Tips for building a data-driven culture in construction. Focuses on leadership, training, and tools to encourage employees to rely on data in decision-making.",
+    "publishDate": "2025-11-05T09:00:00Z",
+    "imageUrl": "/demos/companies-interface.png",
+    "categories": [
+      {
+        "slug": "data",
+        "name": "Data & Insights"
+      },
+      {
+        "slug": "operations",
+        "name": "Operations"
+      }
+    ],
+    "readingTime": 6,
+    "author": {
+      "name": "Corso Research",
+      "avatar": null
+    }
+  },
+  {
+    "id": "resilient-construction-strategies",
+    "slug": "resilient-construction-strategies",
+    "title": "Resilient Construction Strategies: A Playbook for Volatile Markets",
+    "description": "A practical playbook for staying profitable through volatility—scenario planning, flexible contracts, supply chain tactics, and cash-flow discipline.",
+    "publishDate": "2025-11-20T09:00:00Z",
+    "imageUrl": "https://images.pexels.com/photos/19915446/pexels-photo-19915446.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop",
+    "categories": [
+      {
+        "slug": "market-analysis",
+        "name": "Market Analysis"
+      },
+      {
+        "slug": "operations",
+        "name": "Operations"
+      }
+    ],
+    "readingTime": 6,
+    "author": {
+      "name": "Construction Econ Lead",
+      "avatar": null
+    }
+  },
+  {
+    "id": "future-of-project-controls-ai-platforms",
+    "slug": "future-of-project-controls-ai-platforms",
+    "title": "The Future of Project Controls: From Spreadsheets to AI-Driven Platforms",
+    "description": "Project controls are moving from spreadsheets to AI-driven platforms. These new tools integrate cost and schedule data, providing predictive insights.",
+    "publishDate": "2025-12-10T09:00:00Z",
+    "imageUrl": "/demos/corso-ai-interface.png",
+    "categories": [
+      {
+        "slug": "cost-management",
+        "name": "Cost Management"
+      },
+      {
+        "slug": "technology",
+        "name": "Technology"
+      },
+      {
+        "slug": "innovation",
+        "name": "Innovation"
+      }
+    ],
+    "readingTime": 7,
+    "author": {
+      "name": "Construction Econ Lead",
+      "avatar": null
+    }
+  }
+]
