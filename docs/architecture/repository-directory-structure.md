@@ -1061,18 +1061,14 @@ status: "draft"
     │   │   ├── check-readme-freshness.ts
     │   │   ├── clean-next-build.ts
     │   │   ├── clean-typescript-cache.ts
-    │   │   ├── cleanup-cursor.ts
     │   │   ├── docs-patterns-common.ts
     │   │   ├── enhance-readmes.ts
     │   │   ├── ensure-ports.ps1
     │   │   ├── ensure-ports.ts
     │   │   ├── extract-docs-rules.ts
     │   │   ├── find-test-only-exports.ts
-    │   │   ├── fix-barrel-exports-all.ts
-    │   │   ├── fix-links.ts
     │   │   ├── gen-variants-index.ts
     │   │   ├── generate-alias-doc.ts
-    │   │   ├── generate-readme.ts
     │   │   ├── inject-frontmatter.ts
     │   │   ├── kill-orphans.ps1
     │   │   ├── kill-orphans.ts
@@ -1086,12 +1082,10 @@ status: "draft"
     │   │   ├── README.md
     │   │   ├── refresh-readmes.ts
     │   │   ├── replace-package-script-references.ts
-    │   │   ├── stale-docs.ts
     │   │   ├── styles-comprehensive-audit.ts
     │   │   ├── sync-rules.mts
     │   │   ├── types-exports-audit.ts
     │   │   ├── validate-dead-code-optimized.ts
-    │   │   ├── validate-docs-on-commit.ts
     │   │   ├── validate-docs.ts
     │   │   ├── validate-mock-schema.ts
     │   ├── openapi

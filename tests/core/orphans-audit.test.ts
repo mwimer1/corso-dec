@@ -161,8 +161,15 @@ describe('Orphaned Files Audit', () => {
         const filePath = 'used-barrel/index.ts';
 
         // This would need actual files in the search directories
-        // For now, we'll test the function exists and returns boolean
-        expect(typeof findTextReferences(filePath, searchDirs)).toBe('boolean');
+        // For now, we'll test the function exists and returns the expected object shape
+        const result = findTextReferences(filePath, searchDirs);
+        expect(typeof result).toBe('object');
+        expect(result).toHaveProperty('found');
+        expect(result).toHaveProperty('refs');
+        expect(result).toHaveProperty('docsOnly');
+        expect(typeof result.found).toBe('boolean');
+        expect(Array.isArray(result.refs)).toBe(true);
+        expect(typeof result.docsOnly).toBe('boolean');
       });
     });
   });

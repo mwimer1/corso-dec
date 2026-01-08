@@ -38,10 +38,10 @@ import { walkDirectorySync } from '../utils/fs/walker';
 
 /**
  * Find text references to a file path in reference directories (docs, tests, scripts, etc.)
- * Searches for the file path as a string in files within the specified directories.
- * This is a simplified synchronous implementation that searches a limited set of files.
+ * Returns list of referencing files and classification (docs-only vs mixed).
  */
-function findTextReferences(filePath: string, searchDirs: string[]): boolean {
+function findTextReferences(filePath: string, searchDirs: string[]): { found: boolean; refs: string[]; docsOnly: boolean } {
+  const refs: string[] = [];
   try {
     const fileName = nodePath.basename(filePath);
     const relPath = normalizePosix(filePath);
@@ -57,7 +57,7 @@ function findTextReferences(filePath: string, searchDirs: string[]): boolean {
     ];
 
     // Use unified walker to get all files, then search them
-    function searchDirectory(dir: string): boolean {
+    function searchDirectory(dir: string): void {
       try {
         // Use unified walker to get all files matching our extensions
         const result = walkDirectorySync(dir, {
@@ -77,7 +77,10 @@ function findTextReferences(filePath: string, searchDirs: string[]): boolean {
           try {
             const content = nodeFs.readFileSync(fullPath, 'utf8');
             if (searchPatterns.some(pattern => content.includes(pattern))) {
-              return true;
+              const relRef = toProjectRelativePosix(fullPath);
+              if (!refs.includes(relRef)) {
+                refs.push(relRef);
+              }
             }
           } catch {
             // Skip files that can't be read
@@ -87,22 +90,26 @@ function findTextReferences(filePath: string, searchDirs: string[]): boolean {
       } catch {
         // Skip directories that can't be read
       }
-      return false;
     }
 
     for (const dirPattern of searchDirs) {
       // Remove glob patterns and search actual directories
       const dir = dirPattern.replace(/\/\*\*$/, '').replace(/\*\*/g, '');
       if (nodeFs.existsSync(dir) && nodeFs.statSync(dir).isDirectory()) {
-        if (searchDirectory(dir)) return true;
+        searchDirectory(dir);
       }
     }
   } catch {
-    // Return false on any error (conservative - don't mark as referenced if search fails)
-    return false;
+    // Return empty on any error (conservative - don't mark as referenced if search fails)
+    return { found: false, refs: [], docsOnly: false };
   }
   
-  return false;
+  // Classify as docs-only if all references are in docs/ or README.md
+  const docsOnly = refs.length > 0 && refs.every(ref => 
+    ref.startsWith('docs/') || ref === 'README.md'
+  );
+  
+  return { found: refs.length > 0, refs, docsOnly };
 }
 
 // Re-export for testing
@@ -851,7 +858,8 @@ for (const rel of filteredCandidates) {
   }
 
   // docs/tests textual ref → review (not keep, since not code-referenced)
-  if (findTextReferences(rel, [...CONFIG.REFERENCE_DIRS])) {
+  const textRefs = findTextReferences(rel, [...CONFIG.REFERENCE_DIRS]);
+  if (textRefs.found) {
     // Only set REVIEW if no other KEEP reasons exist
     if (record.status === 'DROP') {
       record.status = 'REVIEW';
@@ -859,6 +867,15 @@ for (const rel of filteredCandidates) {
     } else {
       // If already KEEP for other reasons, just add the reason
       record.reasons.push('REVIEW_TEXT_REF');
+    }
+    
+    // Add classification note for faster future reviews
+    if (textRefs.docsOnly) {
+      record.notes = (record.notes ? `${record.notes}; ` : '') + 
+        `docs-only reference (${textRefs.refs.length} file(s): ${textRefs.refs.slice(0, 3).join(', ')}${textRefs.refs.length > 3 ? '...' : ''})`;
+    } else {
+      record.notes = (record.notes ? `${record.notes}; ` : '') + 
+        `text reference in ${textRefs.refs.length} file(s): ${textRefs.refs.slice(0, 3).join(', ')}${textRefs.refs.length > 3 ? '...' : ''}`;
     }
   }
 

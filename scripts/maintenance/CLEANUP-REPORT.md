@@ -32,10 +32,9 @@ After comprehensive reference sweeps, the following files are safe to delete (ze
    - Removed archived directory and all contents
    - Files were archived in PR #2 but later permanently removed
 
-4. **generate-readme.ts** - ✅ Kept (Active Use)
-   - Purpose: Generates READMEs for script domains (scripts/analysis, scripts/ci, etc.)
-   - Different from: `docs/tasks/generate.ts` (general markdown generation)
-   - Decision: Keep - serves unique purpose for script domain documentation
+4. **generate-readme.ts** - ✅ Deleted (PR #3)
+   - Reason: No package.json entrypoint, no script imports, only docs references
+   - Status: Removed as part of orphans cleanup batch
 
 ## Reference Sweep Results
 
@@ -82,7 +81,7 @@ After comprehensive reference sweeps, the following files are safe to delete (ze
   - Status: Removed completely
 
 **Files Kept (Active Use):**
-- ✅ `generate-readme.ts` - Script domain README generator (serves unique purpose)
+- (None - all reviewed files have been cleaned up)
 
 ## Validation Checklist
 
@@ -107,6 +106,3 @@ After PR #1, verify:
 - Docs maintenance: `scripts/maintenance/docs/cli.ts` (unified CLI)
   - Commands: `generate`, `enhance`, `normalize`
   - Usage: `pnpm docs:generate`, `pnpm docs:enhance`, `pnpm docs:refresh`
-- Script domain READMEs: `scripts/maintenance/generate-readme.ts` (standalone)
-  - Generates READMEs for script domains (scripts/analysis, scripts/ci, etc.)
-  - Different from unified docs CLI (serves unique purpose)
