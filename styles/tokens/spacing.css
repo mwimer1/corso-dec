@@ -1,0 +1,6 @@
+:root {
+  /* Core spacing tokens - keep only essential ones */
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+}

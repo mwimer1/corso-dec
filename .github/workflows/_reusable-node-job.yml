@@ -1,0 +1,73 @@
+name: _reusable-node-job
+on:
+  workflow_call:
+    inputs:
+      name:
+        description: Human-friendly job name
+        type: string
+        required: false
+        default: "run"
+      fetch_depth:
+        description: checkout fetch-depth
+        type: number
+        required: false
+        default: 0
+      install:
+        description: run pnpm install in setup step
+        type: boolean
+        required: false
+        default: true
+      run:
+        description: shell script to run (bash)
+        type: string
+        required: false
+      upload_artifact:
+        description: whether to upload an artifact (e.g., coverage)
+        type: boolean
+        required: false
+        default: false
+      artifact_name:
+        description: artifact name
+        type: string
+        required: false
+        default: "coverage-report"
+      artifact_path:
+        description: artifact path
+        type: string
+        required: false
+        default: "coverage/"
+    # No secrets required by default for reusable job
+permissions:
+  contents: read
+concurrency:
+  group: ${{ format('{0}-{1}-{2}', github.workflow, github.ref, inputs.name || github.job) }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+jobs:
+  run:
+    name: run
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+        with:
+          fetch-depth: ${{ inputs.fetch_depth }}
+
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup-node-pnpm
+        with:
+          run-install: ${{ inputs.install && 'true' || 'false' }}
+
+      - name: Run
+        if: ${{ inputs.run != '' }}
+        shell: bash
+        run: ${{ inputs.run }}
+        # No Chromatic token injected by default
+
+      - name: Upload artifact
+        if: ${{ inputs.upload_artifact }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ${{ inputs.artifact_name }}
+          path: ${{ inputs.artifact_path }}
+

@@ -1,0 +1,11 @@
+id: forbid-shared-deep-imports
+message: "Use '@/styles/ui/shared' barrel, not deep leaf imports to deleted files."
+severity: error
+language: ts
+rule:
+  kind: import_clause
+  pattern: "from '@/styles/ui/shared/$LEAF'"
+  constraints:
+    not:
+      regex: "^index(\\.ts)?$"
+

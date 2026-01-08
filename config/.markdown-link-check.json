@@ -1,0 +1,70 @@
+{
+  "timeout": "45s",
+  "retryOn429": true,
+  "retryCount": 3,
+  "fallbackRetryDelay": "45s",
+  "aliveStatusCodes": [200, 206, 301, 302, 307, 308, 403, 429],
+  "ignorePatterns": [
+    {
+      "pattern": "^#"
+    },
+    {
+      "pattern": "^mailto:"
+    },
+    {
+      "pattern": "^(?!https?://|mailto:|#)"
+    },
+    {
+      "pattern": "http://localhost"
+    },
+    {
+      "pattern": "http://127.0.0.1"
+    },
+    {
+      "pattern": "https://your-domain.com"
+    },
+    {
+      "pattern": "https://yourdomain.com"
+    },
+    {
+      "pattern": "https://api.yourdomain.com"
+    },
+    {
+      "pattern": "https://dash.cloudflare.com"
+    },
+    {
+      "pattern": "https://dashboard.clerk.com"
+    },
+    {
+      "pattern": "https://supabase.com/dashboard"
+    },
+    {
+      "pattern": "https://console.upstash.com"
+    },
+    {
+      "pattern": "https://platform.openai.com"
+    },
+    {
+      "pattern": "https://dashboard.stripe.com"
+    },
+    {
+      "pattern": "https://github.com/.*/(settings|actions)"
+    },
+    {
+      "pattern": "^\\./.*\\.(env|local)"
+    }
+  ],
+  "httpHeaders": [
+    {
+      "urls": [
+        "https://github.com",
+        "https://docs.github.com",
+        "https://help.github.com"
+      ],
+      "headers": {
+        "User-Agent": "Mozilla/5.0 (compatible; LinkChecker/1.0)",
+        "Accept-Encoding": "zstd, br, gzip, deflate"
+      }
+    }
+  ]
+}

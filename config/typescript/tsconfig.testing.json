@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./tsconfig.base.json",
+  "display": "Testing Configuration",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["vitest/globals", "vitest", "node", "@testing-library/jest-dom"],
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "bundler",
+    "baseUrl": "../../",
+    "tsBuildInfoFile": "../../.cache/tsconfig.testing.tsbuildinfo"
+  },
+  "include": [
+    "../../tests/**/*.ts",
+    "../../tests/**/*.tsx",
+    "../../vitest*.ts",
+    "../../vitest*.mts",
+    "../../vitest*.cts",
+    "../../components/**/*.ts",
+    "../../components/**/*.tsx",
+    "../../components/**/*.spec.ts",
+    "../../components/**/*.spec.tsx",
+    "../../lib/**/*.ts",
+    "../../lib/**/*.tsx",
+    "../../types/**/*.ts",
+    "../../types/**/*.tsx",
+    "../../contexts/**/*.ts",
+    "../../contexts/**/*.tsx",
+    "../../hooks/**/*.ts",
+    "../../hooks/**/*.tsx",
+    "../../actions/**/*.ts",
+    "../../actions/**/*.tsx",
+    "../../scripts/**/*.ts"
+  ],
+  "exclude": [
+    "../../.next",
+    "../../node_modules",
+    "../../dist",
+    "../../build",
+    "../../coverage"
+  ]
+} 

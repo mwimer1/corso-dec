@@ -1,0 +1,121 @@
+/* FILE: styles/tokens/colors.css */
+
+/* Base color system - CSS custom properties for runtime theming */
+:root {
+  /* Brand colors - unified primary as brand blue */
+  --primary: 221 86% 54%; /* Brand blue (#266DF0) */
+  --primary-foreground: 0 0% 98%;
+
+  /* Secondary - light tint of primary for accents */
+  --secondary: 221 86% 90%; /* Light blue tint */
+  --secondary-foreground: 222.2 47.4% 11.2%;
+
+  /* Background and surfaces */
+  --background: 0 0% 100%;
+  --foreground: 222.2 47.4% 11.2%;
+
+  /* High-contrast foreground alias used by components (promoted from compat) */
+  --foreground-strong: var(--foreground);
+  --surface: 0 0% 100%;
+  --surface-contrast: 0 0% 93%; /* Slightly darker for contrast */
+
+  /* Text hierarchy */
+  --text-high: 222.2 47.4% 11.2%;
+  --text-medium: 240 5% 25%;
+  --text-low: 215.4 16.3% 46.9%;
+
+  /* Borders and strokes */
+  --border: 214.3 31.8% 89%;
+  --ring: 221.2 83.2% 53.3%;
+
+  /* Semantic state colors */
+  --success: 142.1 70.6% 35%;
+  --success-foreground: 0 0% 100%;
+  --warning: 37.7 92.1% 50.2%;
+  --warning-foreground: 222.2 47.4% 11.2%;
+  --danger: 0 84.2% 50%;
+  --danger-foreground: 0 0% 98%;
+
+  /* Muted colors - consolidated surface variants */
+  --muted: 0 0% 96%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --info: 217.2 91.2% 59.8%;
+  --overlay: 0 0% 0%;
+  --input: 214.3 31.8% 91.4%;
+  --surface-hover: 0 0% 93%;
+  --surface-selected: 221.2 83.2% 95%;
+}
+
+/* Dark mode color overrides */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary: 221 86% 54%; /* Same brand blue in dark mode */
+    --primary-foreground: 210 40% 98%;
+
+    /* Secondary - darker tint for dark backgrounds */
+    --secondary: 221 86% 20%;
+    --secondary-foreground: 210 40% 98%;
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --surface: 222.2 84% 4.9%;
+    --surface-contrast: 217.2 32.6% 17.5%;
+    --text-high: 210 40% 98%;
+    --text-medium: 215 20.2% 65.1%;
+    --text-low: 215 20.2% 72%;
+    --border: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+
+    /* Extended semantic tokens */
+    --muted: 223 47% 11%;
+    --muted-foreground: 215 20.2% 72%;
+    --info: 217.2 91.2% 59.8%;
+    --overlay: 0 0% 0%;
+    --input: 217.2 32.6% 17.5%;
+    --surface-hover: 222.2 47.4% 11.2%;
+    --surface-selected: 217.2 91.2% 20%;
+
+    /* State colors remain the same in dark mode for accessibility */
+    --success: 142.1 70.6% 35%;
+    --success-foreground: 0 0% 100%;
+    --warning: 37.7 92.1% 50.2%;
+    --warning-foreground: 210 40% 98%;
+    --danger: 0 84.2% 50%;
+    --danger-foreground: 0 0% 98%;
+  }
+}
+
+/* Manual dark mode via NextThemes */
+:root.dark {
+  --primary: 221 86% 54%; /* Same brand blue in dark mode */
+  --primary-foreground: 210 40% 98%;
+
+  /* Secondary - darker tint for dark backgrounds */
+  --secondary: 221 86% 20%;
+  --secondary-foreground: 210 40% 98%;
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --surface: 222.2 84% 4.9%;
+  --surface-contrast: 217.2 32.6% 17.5%;
+  --text-high: 210 40% 98%;
+  --text-medium: 215 20.2% 65.1%;
+  --text-low: 215 20.2% 72%;
+  --border: 217.2 32.6% 17.5%;
+  --ring: 224.3 76.3% 48%;
+
+  /* Extended semantic tokens */
+  --muted: 223 47% 11%;
+  --muted-foreground: 215 20.2% 72%;
+  --info: 217.2 91.2% 59.8%;
+  --overlay: 0 0% 0%;
+  --input: 217.2 32.6% 17.5%;
+  --surface-hover: 222.2 47.4% 11.2%;
+  --surface-selected: 217.2 91.2% 20%;
+
+  /* State colors remain the same in dark mode for accessibility */
+  --success: 142.1 70.6% 35%;
+  --success-foreground: 0 0% 100%;
+  --warning: 37.7 92.1% 50.2%;
+  --warning-foreground: 210 40% 98%;
+  --danger: 0 84.2% 50%;
+  --danger-foreground: 0 0% 98%;
+}

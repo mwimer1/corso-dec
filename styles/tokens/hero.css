@@ -1,0 +1,21 @@
+:root {
+  /* map these to your theme if available; fallbacks keep legacy look */
+  --hero-bg: var(--surface, 0 0% 100%);
+  --hero-fg: var(--foreground, 240 10% 3.9%);
+  --hero-fg-muted: var(--text-medium, 215.4 16.3% 46.9%);
+
+  /* Use brand primary as the default hero accent to ensure visible accents like
+     the hero underline inherit the brand blue by default. Falls back to the
+     legacy secondary value if primary is not present. */
+  --hero-accent: var(--primary, 221 86% 54%);
+  --hero-container-max: 1280px;
+  --hero-gap: 1rem;
+
+  /* Derived full colors for direct usage */
+  --hero-bg-color: hsl(var(--hero-bg));
+  --hero-fg-color: hsl(var(--hero-fg));
+  --hero-fg-muted-color: hsl(var(--hero-fg-muted));
+  --hero-accent-color: hsl(var(--hero-accent));
+}
+
+

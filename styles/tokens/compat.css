@@ -1,0 +1,70 @@
+:root {
+  /* surfaces */
+  --surface-muted: var(--muted, 0 0% 96%);
+  --surface-card: var(--surface, 0 0% 100%);
+
+  /* borders & shadows */
+  --border-subtle: var(--border, 214.3 31.8% 91.4%);
+  --shadow-card: 0 1px 2px 0 hsl(0deg 0% 0% / 6%);
+
+  /* text */
+
+  /* kept as alias; actual definition promoted to colors.css */
+  --foreground-strong: var(--foreground);
+
+  /* radii */
+  --radius-card: var(--radius-lg, 0.5rem);
+  --radius-pill: var(--radius-full, 9999px);
+  --radius-chip: var(--radius-md, 0.375rem);
+
+  /* industry palette (fallbacks) */
+  --industry-emerald-700: 160 84% 39%;
+
+  
+  /* Footer layered backgrounds (marketing dark surfaces): slightly lighter middle band vs. legal strip for layered effect */
+  --footer-middle: var(--foreground-strong, 222.2 47.4% 11.2%);
+  --footer-legal: 220 23% 7%;
+}
+
+
+/* Global compatibility shims and prefix order rules
+   Keep vendor-prefixed first, then the standard property last. */
+
+/* Text size adjust (Chromium/Edge/Safari) */
+html {
+  text-size-adjust: 100%;
+}
+
+/* Selection handling utilities (scoped) */
+.u-no-select {
+  user-select: none;
+}
+
+.u-select-text {
+  user-select: text;
+}
+
+/* Appearance reset (prefix first, then standard) */
+button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+  appearance: none;
+}
+
+/* Backdrop blur (Safari requires -webkit- prefix) */
+[data-backdrop-blur="true"] {
+  backdrop-filter: blur(10px);
+}
+
+/* Mask image (prefix first, then standard) */
+.u-mask-fade-vertical {
+  mask-image: linear-gradient(to bottom, rgb(0 0 0 / 0%) 0%, black 10%);
+}
+
+/* Background clip text (prefix order + text fill for WebKit) */
+.u-bg-clip-text {
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+

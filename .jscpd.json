@@ -1,0 +1,19 @@
+{
+  "threshold": 10,
+  "minTokens": 10,
+  "reporters": ["json"],
+  "output": "reports",
+  "gitignore": true,
+  "ignore": [
+    "**/.next/**",
+    "**/dist/**",
+    "scripts/_archive/**",
+    "stories/**",
+    "**/*.gen.test.tsx"
+  ],
+  "patterns": [
+    "**/*.{ts,tsx}"
+  ]
+}
+
+

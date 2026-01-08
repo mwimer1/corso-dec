@@ -1,0 +1,29 @@
+{
+  "rules": {
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "ignoreRestSiblings": true
+      }
+    ],
+    "import/no-unused-modules": [
+      "error",
+      {
+        "unusedExports": true,
+        "src": ["types/auth/**/*.ts"],
+        "ignoreExports": ["types/auth/index.ts"]
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["types/auth/**/*.ts"],
+      "rules": {
+        "@typescript-eslint/no-unused-vars": "off",
+        "import/no-unused-modules": "off"
+      }
+    }
+  ]
+}

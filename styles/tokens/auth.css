@@ -1,0 +1,22 @@
+/* FILE: styles/tokens/auth.css */
+:root[data-route-theme="auth"] {
+  --background: 0 0% 98%;
+  --foreground: 240 10% 3.9%;
+  --primary: 225 6% 13%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 217 92% 61%;
+  --secondary-foreground: 0 0% 100%;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-route-theme="auth"] {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+  }
+}
+
+.dark[data-route-theme="auth"],
+.dark [data-route-theme="auth"] {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+}

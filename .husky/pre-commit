@@ -1,0 +1,39 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 Running local quality gates..."
+
+# Package.json validation (prevents duplicate scripts)
+echo "1/6 Validating package.json..."
+pnpm validate:package || exit 1
+
+# Environment validation (prevents broken deployments)
+echo "2/6 Validating environment..."
+NODE_ENV=development pnpm validate:env || exit 1
+
+# Type checking (essential for TypeScript projects)
+echo "3/6 Type checking..."
+pnpm typecheck || exit 1
+
+# Linting (code quality and security patterns)
+echo "4/6 Linting code..."
+pnpm lint || exit 1
+
+# Lint staged files (formatting, etc.) - minimal lint-staged config for formatting only
+echo "5/6 Final staged file processing..."
+pnpm lint-staged || exit 1  # Runs ESLint --fix on .ts/.tsx and binary font validation
+
+# Documentation freshness validation
+echo "6/6 Validating documentation freshness..."
+pnpm tsx scripts/maintenance/validate-docs-on-commit.ts || exit 1
+
+# --- Leak Guard ---
+# Fast-fail if critical types are re-exported from shared barrels.
+grep -R "export .*Database" types/shared >/dev/null 2>&1 && {
+  echo "✖ FATAL: Critical type 'Database' is being re-exported from types/shared."
+  echo "  This violates architectural boundaries. Please import it from its source."
+  exit 1;
+}
+# --- End Leak Guard ---
+
+echo "✅ All local quality gates passed! Ready for CI."

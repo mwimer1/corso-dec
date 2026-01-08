@@ -1,0 +1,25 @@
+---
+rule_id: file-organization
+title: File Organization & Placement
+owners: ["@platform", "@web"]
+status: active
+domains: ["ui","api","infra","scripts"]
+enforcement: advise
+alwaysApply: true
+globs:
+  - "app/**"
+  - "components/**"
+  - "lib/**"
+  - "scripts/**"
+  - "styles/**"
+related_rules:
+  - runtime-boundaries
+  - component-design-system
+last_reviewed: "2025-10-13"
+summary: Keep files in their domain homes; avoid cross-domain leaf imports; prefer barrels.
+---
+
+- Routes live under `app/**`; **no** `route.config.ts` (inline runtime exports only).
+- Server-only code under `@/lib/server/**` (and `import 'server-only'`).
+- Cross-domain imports go through barrels (`@/...`), not leaf paths.
+- Generated indexes live in `.agent/**`, `docs/**`, `.cursor/**` — keep them in sync via scripts.

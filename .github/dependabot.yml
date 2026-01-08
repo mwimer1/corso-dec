@@ -1,0 +1,70 @@
+version: 2
+updates:
+  # GitHub Actions - Security-focused updates
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/New_York"
+    commit-message:
+      prefix: "ci(actions)"
+      include: "scope"
+    labels:
+      - "security"
+      - "github-actions"
+      - "dependencies"
+    open-pull-requests-limit: 5
+    rebase-strategy: "auto"
+    versioning-strategy: "increase"
+
+  # Node.js Dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "10:00"
+      timezone: "America/New_York"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "npm"
+    open-pull-requests-limit: 10
+    groups:
+      development-dependencies:
+        dependency-type: "development"
+        patterns:
+          - "@types/*"
+          - "eslint*"
+          - "prettier*"
+          - "@storybook/*"
+          - "vitest*"
+          - "jest*"
+          - "@testing-library/*"
+          - "stylelint*"
+          - "tailwindcss*"
+          - "autoprefixer*"
+          - "postcss*"
+      production-dependencies:
+        dependency-type: "production"
+        patterns:
+          - "@radix-ui/*"
+          - "next*"
+          - "react*"
+          - "@clerk/*"
+          - "@stripe/*"
+          - "@supabase/*"
+          - "stripe*"
+          - "openai*"
+          - "zod*"
+      security-dependencies:
+        dependency-type: "production"
+        patterns:
+          - "@sentry/*"
+          - "jsonwebtoken*"
+          - "jwks-rsa*"
+

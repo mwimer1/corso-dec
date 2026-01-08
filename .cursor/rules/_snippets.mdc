@@ -1,0 +1,132 @@
+---
+rule_id: snippets-helper
+title: Snippets Helper (Non-Rule)
+owners: ["@platform"]
+status: active
+domains: ["docs"]
+enforcement: advise
+alwaysApply: false
+last_reviewed: 2025-10-13
+summary: Shared content fragments for authoring rules. Not enforced.
+---
+
+## Edge-safe Redirect (Request vs NextRequest) {#edge-safe-redirect-request-vs-nextrequest}
+
+```ts
+import { NextResponse } from 'next/server';
+export const runtime = 'edge';
+export async function GET(req: Request) {
+  return NextResponse.redirect(new URL('/api/v1/path', req.url), 308);
+}
+```
+
+## Error Handling Wrapper + http helpers {#error-handling-wrapper--http-helpers}
+
+```ts
+import { withErrorHandlingEdge, http } from '@/lib/api';
+import { ApplicationError, ErrorCategory, ErrorSeverity } from '@/lib/shared';
+
+export const POST = withErrorHandlingEdge(async (req: NextRequest) => {
+  try {
+    return http.ok({ message: 'Success' });
+  } catch (error) {
+    throw new ApplicationError({
+      message: 'Operation failed',
+      code: 'OPERATION_FAILED',
+      category: ErrorCategory.API,
+      severity: ErrorSeverity.ERROR,
+      context: { operation: 'data_processing' },
+    });
+  }
+});
+```
+
+## makeEdgeRoute (Preferred builder)
+
+```ts
+import { http } from '@/lib/api';
+import { makeEdgeRoute } from '@/lib/api/shared/edge-route';
+import { z } from 'zod';
+
+const Body = z.object({
+  id: z.string().min(1),
+}).strict();
+
+export const POST = makeEdgeRoute({
+  schema: Body,
+  rateLimit: { windowMs: 60_000, maxRequests: 30 },
+  handler: async (_req, { id }) => {
+    const data = await fetchData(id);
+    return http.ok({ data });
+  },
+});
+```
+
+## Zero-Trust Security Principles {#zero-trust-security-principles}
+
+- **Always authenticate** - Every protected route must verify user identity
+- **Always authorize** - Check permissions before processing requests
+- **Always validate** - All inputs must be validated with Zod schemas
+- **Always rate limit** - Protect against abuse and resource exhaustion
+- **Always log** - Structured logging for security monitoring
+
+## Zod Request Validation Pattern {#zod-request-validation-pattern}
+
+```ts
+import { z } from 'zod';
+import { withErrorHandlingEdge, http } from '@/lib/api';
+
+const requestSchema = z.object({
+  question: z.string().min(1).max(1000),
+  tableIntent: z.string().optional(),
+}).strict();
+
+export const POST = withErrorHandlingEdge(async (req: NextRequest) => {
+  const body = await req.json();
+  const validated = requestSchema.parse(body);
+  return http.ok({ message: 'Validated successfully', validatedData: validated });
+});
+```
+
+## Dynamic Entity Route (Dashboard entities)
+
+```ts
+// app/(protected)/dashboard/(entities)/[entity]/page.tsx
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+export const runtime = 'nodejs';
+
+type EntitySlug = 'addresses' | 'companies' | 'projects';
+
+const ENTITY_CONFIG: Record<EntitySlug, { title: string; subtitle: string; loadingText: string; pageSize: number }> = {
+  addresses: { title: 'Addresses', subtitle: 'Browse and manage all addresses.', loadingText: 'Loading addresses table...', pageSize: 10 },
+  companies: { title: 'Companies', subtitle: 'Browse and manage all companies.', loadingText: 'Loading companies table...', pageSize: 10 },
+  projects: { title: 'Projects', subtitle: 'Browse and manage all projects.', loadingText: 'Loading projects table...', pageSize: 10 },
+};
+
+export async function generateStaticParams() {
+  return [{ entity: 'addresses' }, { entity: 'companies' }, { entity: 'projects' }];
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ entity: EntitySlug }> }): Promise<Metadata> {
+  const { entity } = await params;
+  if (!(entity in ENTITY_CONFIG)) notFound();
+  const cfg = ENTITY_CONFIG[entity];
+  return { title: `${cfg.title} | Dashboard | Corso`, description: `View and manage all ${entity} in your dashboard.` };
+}
+
+export default async function EntityPage({ params }: { params: Promise<{ entity: EntitySlug }> }) {
+  const { entity } = await params;
+  if (!(entity in ENTITY_CONFIG)) notFound();
+  const { EntityListPage } = await import('@/components/dashboard/server');
+  const cfg = ENTITY_CONFIG[entity];
+  return EntityListPage({ entity, title: cfg.title, subtitle: cfg.subtitle, loadingText: cfg.loadingText, pageSize: cfg.pageSize });
+}
+```
+
+```ts
+// app/(protected)/dashboard/(entities)/[entity]/loading.tsx
+import { EntityTableLoading } from '@/components/dashboard';
+export default function Loading() { return <EntityTableLoading />; }
+```
+

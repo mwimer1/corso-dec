@@ -1,0 +1,71 @@
+name: "Detect CI Context"
+description: "Detect fork status, security context, and execution environment"
+outputs:
+  is-fork:
+    description: "Whether this is a fork PR"
+    value: ${{ steps.detect.outputs.is-fork }}
+  has-secrets:
+    description: "Whether secrets are available"
+    value: ${{ steps.detect.outputs.has-secrets }}
+  is-dependabot:
+    description: "Whether actor is dependabot"
+    value: ${{ steps.detect.outputs.is-dependabot }}
+  security-level:
+    description: "Security level (standard/fork/dependabot)"
+    value: ${{ steps.detect.outputs.security-level }}
+  event-type:
+    description: "GitHub event type"
+    value: ${{ steps.detect.outputs.event-type }}
+runs:
+  using: "composite"
+  steps:
+    - id: detect
+      shell: bash
+      run: |
+        # Consolidated security context detection logic
+        IS_FORK="false"
+        if [ "${{ github.event_name }}" = "pull_request" ] && \
+           [ "${{ github.event.pull_request.head.repo.full_name }}" != "${{ github.repository }}" ]; then
+          IS_FORK="true"
+        fi
+
+        # Secrets heuristic: blocked on forks and for dependabot unless explicitly allowed
+        IS_DEPENDABOT="false"
+        if [ "${{ github.actor }}" = "dependabot[bot]" ]; then
+          IS_DEPENDABOT="true"
+        fi
+        # Assume no secrets on forks or dependabot; allow override via CI_HAS_SECRETS=true
+        HAS_SECRETS="false"
+        if [ "$IS_FORK" = "false" ] && [ "$IS_DEPENDABOT" = "false" ] && [ "${{ env.CI_HAS_SECRETS }}" != "false" ]; then
+          HAS_SECRETS="true"
+        fi
+
+        # Determine security level
+        SECURITY_LEVEL="standard"
+        if [ "$IS_FORK" = "true" ]; then
+          SECURITY_LEVEL="fork"
+        elif [ "${{ github.actor }}" = "dependabot[bot]" ]; then
+          SECURITY_LEVEL="dependabot"
+        fi
+
+        # Capture event type for analytics
+        EVENT_TYPE="${{ github.event_name }}"
+
+        echo "is-fork=$IS_FORK" >> "$GITHUB_OUTPUT"
+        echo "has-secrets=$HAS_SECRETS" >> "$GITHUB_OUTPUT"
+        echo "is-dependabot=$IS_DEPENDABOT" >> "$GITHUB_OUTPUT"
+        echo "security-level=$SECURITY_LEVEL" >> "$GITHUB_OUTPUT"
+        echo "event-type=$EVENT_TYPE" >> "$GITHUB_OUTPUT"
+
+        echo "🔒 CI Context Detection Results:"
+        echo "  - Is Fork: $IS_FORK"
+        echo "  - Has Secrets: $HAS_SECRETS"
+        echo "  - Security Level: $SECURITY_LEVEL"
+        echo "  - Event Type: $EVENT_TYPE"
+        echo "  - Actor: ${{ github.actor }}"
+        echo "  - Repository: ${{ github.repository }}"
+
+        if [ "$IS_FORK" = "true" ]; then
+          echo "  - Fork Source: ${{ github.event.pull_request.head.repo.full_name }}"
+        fi
+

@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Base TypeScript Configuration",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "baseUrl": "../..",
+
+    // Type checking
+    "strict": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+
+    // Module resolution
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": true,
+    "allowJs": true,
+    "resolveJsonModule": true,
+
+    // Emit
+    "noEmit": true,
+    "incremental": true,
+    "assumeChangesOnlyAffectDirectDependencies": true,
+    "disableSourceOfProjectReferenceRedirect": true,
+
+    // Path mapping - consolidated from tsconfig.aliases.json
+      "paths": {
+      "@/*": ["*"],
+      "@/types/*": ["types/*"],
+      "@shared/*": ["types/shared/*"],
+      "@shared": ["types/shared/index.ts"],
+      "@/shared/data": ["types/shared/data/index.ts"],
+      "@shared/data": ["types/shared/data/index.ts"],
+      "@/shared/audit/types": ["types/shared/audit/types.ts"],
+      "@/shared/system/error/types": ["types/shared/system/error/types.ts"],
+      "@shared/utils/dates": ["types/shared/utils/dates/types.ts"],
+      "@/shared/performance/cache-config/types": ["types/shared/performance/cache-config/types.ts"],
+      "@shared/feature-flags": ["types/shared/feature-flags/types.ts"],
+      "@shared/validation/sql-safety": ["types/validators/validation/sql-safety/types.ts"],
+      "@shared/data/status": ["types/shared/data/status/types.ts"],
+      "@/shared/config/base/types": ["types/shared/config/base/types.ts"],
+      "@/types/api": ["types/api/index.ts"],
+      "@/types/api/response": ["types/api/response/types.ts"],
+
+      // Actions (removed orphaned barrel mappings)
+
+      // API
+      "@/api/*": ["app/api/*"],
+
+      // Lib
+      "@/lib": ["lib/*"],
+      "@/lib/server": ["lib/server/index.ts"],
+      "@/lib/*": ["lib/*"],
+      "@/lib/api": ["lib/api/index.ts"],
+      "@/lib/api/auth": ["lib/api/auth.ts"],
+      "@/lib/api/client": ["lib/api/client.ts"],
+      "@/lib/api/response/http": ["lib/api/response/http.ts"],
+      "@/lib/api/streaming/ndjson-route": ["lib/api/streaming/ndjson-route.ts"],
+      "@/lib/auth": ["lib/auth/index.ts"],
+      "@/lib/auth/server": ["lib/auth/server.ts"],
+      "@/lib/auth/client": ["lib/auth/client.ts"],
+      "@/lib/auth/authorization/constants": ["lib/auth/authorization/constants.ts"],
+      "@/lib/auth/authorization/roles": ["lib/auth/authorization/roles.ts"],
+      "@/lib/monitoring/core/logger": ["lib/monitoring/core/logger.ts"],
+      "@/lib/api/data/entity-data": ["lib/api/data/entity-data.ts"],
+      "@/lib/config": ["lib/config/index.ts"],
+      "@/lib/events": ["lib/shared/events/index.ts"],
+      "@/lib/monitoring": ["lib/monitoring/index.ts"],
+      "@/lib/security": ["lib/security/index.ts"],
+      "@/lib/validators": ["lib/validators/index.ts"],
+      "@/lib/shared": ["lib/shared/index.ts"],
+      "@/lib/shared/client": ["lib/shared/client.ts"],
+      "@/lib/shared/*": ["lib/shared/*"],
+      "@/lib/supabase/middleware": ["lib/supabase/middleware/index.ts"],
+      "@/lib/supabase/middleware/*": ["lib/supabase/middleware/*"],
+      "@/integrations": ["lib/integrations/index.ts"],
+      "@/integrations/*": ["lib/integrations/*"],
+      "@/types/integrations/*": ["types/integrations/*"],
+      "@/lib/dashboard": ["lib/dashboard/index.ts"],
+
+      // Hooks
+      "@/hooks/*": ["hooks/*"],
+      "@/hooks/protected": ["hooks/index.ts"],
+      "@/hooks/dashboard/analytics": ["hooks/dashboard/analytics/index.ts"],
+      "@/hooks/dashboard/user-data": ["hooks/dashboard/user-data/index.ts"],
+      "@/hooks/shared": ["hooks/shared/index.ts"],
+
+      // Contexts
+      "@/contexts": ["contexts/index.ts"],
+      "@/contexts/*": ["contexts/*"],
+
+      // Components
+      "@/components/*": ["components/*"],
+      "@/components/ui/*": ["components/ui/*"],
+
+      // UI Facades (atoms, molecules, organisms)
+      "@/atoms": ["components/ui/atoms/index.ts"],
+      "@/atoms/*": ["components/ui/atoms/*"],
+      "@/molecules": ["components/ui/molecules/index.ts"],
+      "@/molecules/*": ["components/ui/molecules/*"],
+      "@/organisms": ["components/ui/organisms/index.ts"],
+      "@/organisms/*": ["components/ui/organisms/*"],
+
+      // Landing domain (moved to component barrel mappings under @/components/*)
+
+      // Styles
+      "@/styles": ["styles/index.ts"],
+      "@/styles/utils": ["styles/utils.ts"],
+      "@/styles/breakpoints": ["styles/breakpoints.ts"],
+      "@/styles/shared-variants": ["styles/shared-variants.ts"],
+      "@/styles/*": ["styles/*"],
+
+      // Tests
+      "@/tests/*": ["tests/*"],
+      "@/tests/utils": ["tests/__setup__/utils/index.ts"],
+      "@/tests/utils/*": ["tests/__setup__/utils/*"],
+      "@/tests/helpers": ["tests/__setup__/helpers/index.ts"],
+      "@/tests/helpers/*": ["tests/__setup__/helpers/*"],
+      "@tests/support/*": ["tests/support/*"],
+
+      // Auth types path mappings
+      "@/types/auth/authorization": ["types/auth/authorization/types.ts"],
+      "@/types/auth/credential": ["types/auth/credential/types.ts"],
+      "@/types/auth/member": ["types/auth/member/types.ts"],
+      "@/types/auth/organization": ["types/auth/organization/types.ts"],
+      "@/types/auth/session": ["types/auth/session/types.ts"],
+      "@/types/auth/user": ["types/auth/user/types.ts"],
+
+      // Chat types path mappings
+      "@/types/chat/message": ["types/chat/message/types.ts"],
+      "@/types/chat/query": ["types/chat/query/types.ts"],
+      "@/types/chat/response": ["types/chat/response/types.ts"],
+      "@/types/chat/visualization": ["types/chat/visualization/types.ts"],
+
+      // Dashboard analytics types path mappings
+      "@/types/dashboard/analytics/clickhouse": ["types/dashboard/analytics/clickhouse/types.ts"],
+      // Security types path mappings
+      "@/types/security/policy": ["types/security/policy/types.ts"],
+      "@/types/security/prompt-guard": ["types/security/prompt-guard/types.ts"],
+
+      // Config types path mappings
+      "@/types/config/security": ["types/config/security/types.ts"],
+      "@/types/config/threat": ["types/config/threat/types.ts"],
+      // Middleware types path mappings (removed orphaned paths)
+
+      // Dashboard table types path mappings
+      "@/types/dashboard/table": ["types/dashboard/table/index.ts"],
+      "@/types/dashboard/table/types": ["types/dashboard/table/types.ts"],
+      "@/types/dashboard/user-data": ["types/dashboard/user-data/index.ts"],
+      "@/types/dashboard/entity": ["types/dashboard/entity/index.ts"],
+
+      // Integrations types path mappings
+      "@/types/integrations/supabase": ["types/integrations/supabase/index.ts"],
+      "@/types/integrations/supabase/core": ["types/integrations/supabase/core/types.ts"],
+      "@/types/integrations/supabase/api": ["types/integrations/supabase/api/types.ts"],
+      // OpenAI types live under types/integrations/openai now; no server/* alias
+
+      // Shared system types path mappings
+      "@/types/shared/system": ["types/shared/system/index.ts"],
+      "@/types/shared/system/error": ["types/shared/system/error/types.ts"],
+      "@/types/shared/system/events": ["types/shared/system/events/types.ts"],
+
+      // Landing and marketing types path mappings
+
+      // ESLint plugin aliases
+      "@corso/eslint-plugin": ["eslint-plugin-corso/dist/index"],
+      "@corso/eslint-plugin/*": ["eslint-plugin-corso/dist/*"]
+    }
+  },
+  "plugins": [
+    { "name": "next" }
+  ]
+}
+

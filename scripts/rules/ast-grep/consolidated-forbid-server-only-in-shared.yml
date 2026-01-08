@@ -1,0 +1,20 @@
+# Consolidated server-only import guard for shared code.
+# Canonical source. Supersedes: scripts/rules/ast-grep/_archive/forbid-server-only-in-shared.yml
+id: consolidated-forbid-server-only-in-shared
+message: "'server-only' or server env cannot be imported within lib/shared/**"
+severity: error
+language: typescript
+paths:
+  include:
+    - lib/shared/**
+rule:
+  all:
+    - kind: program
+    - any:
+        - pattern: "import 'server-only'"
+        - pattern: 'import { $X } from "server-only"'
+        - pattern: 'import { $X } from "@/lib/server/env"'
+        - pattern: "import { $X } from '@/lib/server/env'"
+
+
+

@@ -1,0 +1,17 @@
+{
+  "rules": {
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "group": [
+              "@/lib/monitoring/core/*"
+            ],
+            "message": "Use barrel import from '@/lib/monitoring' instead of direct core imports"
+          }
+        ]
+      }
+    ]
+  }
+}

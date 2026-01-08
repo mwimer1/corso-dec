@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./tsconfig.base.json",
+  "display": "Styles (design system variants and helpers)",
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationMap": true,
+    "outDir": "../../.typegen/styles",
+    "rootDir": "../..",
+    "tsBuildInfoFile": "../../.cache/tsconfig.styles.tsbuildinfo"
+  },
+  "include": [
+    "../../styles/**/*.ts",
+    "../../styles/**/*.tsx"
+  ],
+  "exclude": [
+    "../../node_modules",
+    "../../.next"
+  ]
+}
+
+
+

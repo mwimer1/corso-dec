@@ -1,0 +1,340 @@
+formatter: diagnostic
+options:
+  respectGitignore: true
+  noIgnore: false
+  json: false
+targets:
+  - "app/**/*.{ts,tsx}"
+  - "components/**/*.{ts,tsx}"
+  - "lib/**/*.{ts,tsx}"
+  - "stories/**/*.{ts,tsx,mdx}"
+  - "tests/**/*.{ts,tsx}"
+  - "tools/**/*.ts"
+exclude:
+  - "node_modules/**"
+  - ".next/**"
+  - "dist/**"
+  - "coverage/**"
+  - "scripts/**"
+rules:
+  # Consolidated and optimized rules
+  # Consolidated runtime rules: migrated to ESLint or preserved below
+  # Note: keep only rule files that exist under scripts/rules/ast-grep/
+  - "scripts/rules/ast-grep/consolidated-no-direct-clickhouse-import-outside-integration.yml"
+  - "scripts/rules/ast-grep/consolidated-forbid-security-barrel-in-client-or-edge.yml"
+  - "scripts/rules/ast-grep/consolidated-nextjs15-route-params-async.yml"
+  # - "scripts/rules/ast-grep/consolidated-client-logger-rules.yml"  # Migrated to ESLint: no-client-logger-import
+  # shared-config.yml intentionally omitted; only explicit rule files are listed below
+
+  # Keep individual rules that are unique and not duplicated
+  # The following AST-Grep rules were previously referenced but are no longer present
+  # in scripts/rules/ast-grep/ (migrated to ESLint or archived):
+  # - storybook-v9-imports.yml
+  # - aria-tab-requires-tabpanel.yml
+  # - atomic-ui-missing.yml
+  # Dashboard rules (excluding migrated rules)
+  # - "scripts/rules/ast-grep/dashboard/no-literal-entity-keys.yml"  # Migrated to ESLint: dashboard-literal-entity-keys
+  # - "scripts/rules/ast-grep/no-client-in-icons.yml"  # Migrated to ESLint: no-client-in-icons
+  - "scripts/rules/ast-grep/runtime-boundaries/forbid-at-alias-in-tools.yml"
+  # - "scripts/rules/ast-grep/consolidated-nextjs15-route-params-async.yml"  # Migrated to ESLint: nextjs15-route-params-async
+  # - "scripts/rules/ast-grep/patterns/require-client-directive-for-client-code.yml"  # Migrated to ESLint: require-client-directive-for-client-code
+  # - "scripts/rules/ast-grep/patterns/no-mixed-runtime-exports.yml"  # Migrated to ESLint: no-mixed-runtime-exports
+  # Project-local rule files (exists check): include only if present in scripts/rules/ast-grep/
+  # (these entries were intentionally removed from the active list to avoid false loads)
+  # - "scripts/rules/ast-grep/scripts-shebang.yml"  # Rule file not found - may have been migrated or removed
+  # - "scripts/rules/ast-grep/no-direct-process-env.yml"  # Migrated to ESLint: no-direct-process-env
+  # - "scripts/rules/ast-grep/consolidated-no-server-reexports.yml"  # Migrated to ESLint: no-server-reexports
+  # - "scripts/rules/ast-grep/no-server-reexports.yml"  # Migrated to ESLint: no-server-reexports
+  # - "scripts/rules/ast-grep/require-shared-env-server.yml"  # Migrated to ESLint: require-server-env-imports
+  # - "scripts/rules/ast-grep/no-deprecated-lib-imports.yml"  # Migrated to ESLint: no-deprecated-lib-imports
+  # - "scripts/rules/ast-grep/no-runtime-in-types.yml"  # Migrated to ESLint: no-runtime-in-types
+  # - "scripts/rules/ast-grep/no-await-headers.yml"  # Migrated to ESLint: no-await-headers
+  # - "scripts/rules/ast-grep/no-clerkclient-invoke.yml"  # Migrated to ESLint: no-clerkclient-invoke
+  # - "scripts/rules/ast-grep/contexts-barrel-usage.yml"  # Migrated to ESLint: contexts-barrel-usage
+  # - "scripts/rules/ast-grep/rate-limits-dot-access.yml"  # Migrated to ESLint: rate-limits-bracket-access
+  # - "scripts/rules/ast-grep/forbid-header-spacing-in-dashboard.yml"  # Migrated to ESLint: forbid-header-spacing-in-dashboard
+  # - "scripts/rules/ast-grep/no-clerkprovider-outside-root.yml"  # Migrated to ESLint: no-clerkprovider-outside-root
+  # - "scripts/rules/ast-grep/rules/api-edge-barrel-no-server-exports.yml"  # Migrated to ESLint: api-edge-barrel-no-server-exports
+  # - "scripts/rules/ast-grep/consolidated-nextjs15-route-params-async.yml"  # Migrated to ESLint: nextjs15-route-params-optimization
+
+  # CTA rules (keep as-is, low duplication)
+  - "scripts/rules/ast-grep/cta/*.yml"
+
+  # Marketing/Auth rules (keep as-is)
+  - "scripts/rules/ast-grep/marketing-auth/*.yml"
+
+  # Next.js Script rules (keep as-is)
+  - "scripts/rules/ast-grep/next-script/*.yml"
+
+  # Patterns rules (keep as-is, unique)
+  # - "scripts/rules/ast-grep/patterns/*.yml"  # Migrated to ESLint: require-client-directive-for-client-code, no-mixed-runtime-exports
+
+  # Import boundaries - candidates for ESLint migration
+  - "scripts/rules/ast-grep/import-boundaries/**/*.yml"
+
+  # Guardrail: navbar must not set horizontal padding; use container gutters
+  - id: navbar-no-horizontal-padding
+    language: tsx
+    severity: warning
+    message: "Navbar must not set horizontal padding; use the outer container for gutters."
+    rule:
+      all:
+        - any:
+            - regex:
+                kind: file
+                regex: "^components/.*/navbar.*\\.tsx$"
+            - regex:
+                kind: file
+                regex: "^components/.*/nav/.*\\.tsx$"
+            - regex:
+                kind: file
+                regex: "^styles/ui/organisms/navbar\\.ts$"
+        - regex: "\\bpx-(?:\\d+|px|sm|md|lg|xl|2xl|\\[[^\\]]+\\])\\b"
+
+customRules:
+
+  # Icon component SSR safety
+  - id: no-client-in-icons
+    language: tsx
+    message: "Icon modules under components/ui/atoms/icon/** must be SSR-safe: no 'use client' and no browser globals."
+    severity: error
+    rule:
+      all:
+        - regex:
+            kind: file
+            regex: "^components/ui/atoms/icon/"
+        - any:
+            - regex: "^['\"]use client['\"];?"
+            - regex: "\\b(window|document|matchMedia|navigator|getComputedStyle)\\b"
+
+  # API wrapper enforcement - DEPRECATED
+  # withApiWrappers has been removed in favor of makeEdgeRoute() and individual wrapper composition
+  # - id: ensure-api-wrappers
+  #   language: tsx
+  #   message: "API handlers must be wrapped with withApiWrappers(...)"
+  #   severity: error
+  #   excludes:
+  #     - "app/api/billing/webhook/route.ts"  # raw body verification requires manual X-Request-ID
+  #   rule:
+  #     all:
+  #       - regex:
+  #           kind: file
+  #           regex: "^app/api/.+/route\\.ts$"
+  #       - pattern: |
+  #           export const $METHOD = ($HNDL)
+  #       - not:
+  #         pattern: |
+  #           export const $METHOD = withApiWrappers($HNDL)
+
+  # Server-side safety rules
+  - id: no-client-import-in-server
+    language: ts
+    message: "Server-side code must not import client-side components or hooks."
+    severity: error
+    rule:
+      all:
+        - regex:
+            kind: file
+            regex: "^app/api/|^lib/|^scripts/|^tests/"
+        - any:
+            - regex: "import.*from.*['\"]use client['\"]"
+            - regex: "import.*from.*['\"]@/components/ui/atoms/.*['\"]"
+            - regex: "import.*from.*['\"]@/components/ui/molecules/.*['\"]"
+            - regex: "import.*from.*['\"]@/components/ui/organisms/.*['\"]"
+
+  - id: no-client-aggregator-in-server
+    language: ts
+    message: "Server-side code must not import component barrel files."
+    severity: error
+    rule:
+      all:
+        - regex:
+            kind: file
+            regex: "^app/api/|^lib/|^scripts/|^tests/"
+        - any:
+            - regex: "import.*from.*['\"]@/components/ui/atoms['\"]"
+            - regex: "import.*from.*['\"]@/components/ui/molecules['\"]"
+            - regex: "import.*from.*['\"]@/components/ui/organisms['\"]"
+
+  - id: no-atoms-barrel-in-server
+    language: ts
+    message: "Server-side code must not import atoms barrel files."
+    severity: error
+    rule:
+      all:
+        - regex:
+            kind: file
+            regex: "^app/api/|^lib/|^scripts/|^tests/"
+        - regex: "import.*from.*['\"]@/components/ui/atoms['\"]"
+
+  - id: no-organisms-barrel-in-server
+    language: ts
+    message: "Server-side code must not import organisms barrel files."
+    severity: error
+    rule:
+      all:
+        - regex:
+            kind: file
+            regex: "^app/api/|^lib/|^scripts/|^tests/"
+        - regex: "import.*from.*['\"]@/components/ui/organisms['\"]"
+
+  # Prevent duplicate .githooks directory
+  - id: no-githooks-directory
+    language: yaml
+    message: "Do not create .githooks directory. This project uses Husky exclusively for Git hooks management."
+    severity: error
+    rule:
+      all:
+        - regex:
+            kind: file
+            regex: "^\\.githooks/"
+
+  # Radix UI safety
+  - id: no-radix-in-server
+    language: ts
+    message: "Server-side code must not import Radix UI components."
+    severity: error
+    rule:
+      all:
+        - regex:
+            kind: file
+            regex: "^app/api/|^lib/|^scripts/|^tests/"
+        - regex: "import.*from.*['\"]@radix-ui/"
+
+  # Data validation rules
+  - id: no-raw-internal-fetch
+    language: ts
+    message: "Use lib/api/client.ts (fetchJSON/postJSON) for internal /api calls."
+    severity: error
+    rule:
+      any:
+        - pattern: fetch("/api/$REST", $ARGS)
+        - pattern: fetch('/api/$REST', $ARGS)
+        - pattern: fetch(`/api/$REST`, $ARGS)
+
+  # Runtime policy: forbid Edge runtime on pages/layouts
+  - id: no-edge-runtime-on-pages
+    language: tsx
+    message: "Pages/layouts must not use Edge runtime. Use Node (default) to preserve SSG/ISR."
+    severity: error
+    rule:
+      all:
+        - regex:
+            kind: file
+            regex: "^app/.+/(page|layout)\\.tsx$"
+        - pattern: |
+            export const runtime = 'edge'
+
+  - id: no-string-bool-in-defaultVariants
+    language: ts
+    message: "Use boolean values instead of string booleans in defaultVariants."
+    severity: warning
+    rule:
+      any:
+        - regex: "defaultVariants.*['\"]true['\"]"
+        - regex: "defaultVariants.*['\"]false['\"]"
+
+  # Legal compliance
+  - id: no-title-spread-in-legal
+    language: tsx
+    message: "Legal components must not spread title props for security reasons."
+    severity: error
+    rule:
+      all:
+        - regex:
+            kind: file
+            regex: ".*legal.*|.*terms.*|.*privacy.*"
+        - pattern: |
+            <$COMPONENT {...$PROPS} />
+        - regex: "title.*\\$PROPS"
+
+  # Components barrel consolidation guards
+  # Only block @/components/ui imports that are NOT from within components/
+  - id: no-import-components-ui
+    message: 'Import from "@/components" instead of "@/components/ui".'
+    severity: error
+    language: ts
+    rule:
+      all:
+        - pattern: |
+            import $A from "@/components/ui"$B
+        - not:
+            regex:
+              kind: file
+              regex: "^components/"
+
+  - id: no-import-components-ui-named
+    message: 'Import from "@/components" instead of "@/components/ui".'
+    severity: error
+    language: ts
+    rule:
+      all:
+        - pattern: |
+            import {$C} from "@/components/ui"$D
+        - not:
+            regex:
+              kind: file
+              regex: "^components/"
+
+  - id: no-import-components-ui-wildcard
+    message: 'Do not deep import from "@/components/ui/*". Re-export via "@/components" and import from there.'
+    severity: error
+    language: ts
+    rule:
+      all:
+        - pattern: |
+            import $A from "@/components/ui/$X"$B
+        - not:
+            regex:
+              kind: file
+              regex: "^components/"
+
+  - id: no-import-components-ui-wildcard-named
+    message: 'Do not deep import from "@/components/ui/*". Re-export via "@/components" and import from there.'
+    severity: error
+    language: ts
+    rule:
+      all:
+        - pattern: |
+            import {$C} from "@/components/ui/$X"$D
+        - not:
+            regex:
+              kind: file
+              regex: "^components/"
+
+  # Components barrel deep import guards
+  - id: no-deep-components-atoms
+    message: 'Import from "@/components" (root barrel), not "@/components/atoms".'
+    severity: error
+    language: ts
+    pattern: |
+      import $A from "@/components/atoms"$B
+
+  - id: no-deep-components-molecules
+    message: 'Import from "@/components" (root barrel), not "@/components/molecules".'
+    severity: error
+    language: ts
+    pattern: |
+      import $A from "@/components/molecules"$B
+
+  - id: no-deep-components-organisms
+    message: 'Import from "@/components" (root barrel), not "@/components/organisms".'
+    severity: error
+    language: ts
+    pattern: |
+      import $A from "@/components/organisms"$B
+
+  - id: no-deep-components-patterns
+    message: 'Import from "@/components" (root barrel), not "@/components/patterns".'
+    severity: error
+    language: ts
+    pattern: |
+      import $A from "@/components/patterns"$B
+
+  - id: no-deep-components-shared
+    message: 'Import from "@/components" (root barrel), not "@/components/shared".'
+    severity: error
+    language: ts
+    pattern: |
+      import $A from "@/components/shared"$B
+

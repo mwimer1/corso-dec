@@ -1,0 +1,16 @@
+id: no-direct-ag-grid-module-registry-in-components
+message: >
+  Do not call ModuleRegistry.registerModules in components. Use ensureAgGridRegistered()
+  from lib/vendors/ag-grid/register instead.
+severity: error
+language: typescript
+paths:
+  include:
+    - "components/**/*.ts"
+    - "components/**/*.tsx"
+  exclude:
+    - "lib/vendors/**"
+    - "tests/**"
+rule:
+  pattern: ModuleRegistry.registerModules($ARGS)
+

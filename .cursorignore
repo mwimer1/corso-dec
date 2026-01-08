@@ -1,0 +1,103 @@
+# Exclude heavy artifacts from AI indexing to save memory/compute
+
+# Dependencies and package manager caches
+node_modules/
+.pnpm-store/
+orphan-report.json
+pnpm-lock.yaml
+pnpm-workspace.yaml
+
+# Build and framework outputs
+.next/
+out/
+build/
+storybook-static/
+.turbo/
+.vite/
+
+# Generated artifacts and caches
+coverage/
+.nyc_output/
+.eslintcache
+.stylelintcache
+.cache/
+.parcel-cache/
+
+# Reports and test outputs
+playwright-report/
+reports/
+test-results/
+test-reports/
+
+# Logs
+logs/
+*.log
+
+# Misc
+dist/
+
+# Build artifacts
+.next/              # ignore every "build" directory…
+!scripts/build/        # …except this one
+!styles/build/        # …except this one
+
+
+out/
+
+# Dependencies  
+node_modules/
+.pnp/
+.pnp.js
+
+# Generated files
+*.generated.*
+*.d.ts.map
+
+# Large data files (but keep schema files)
+*.csv
+# But allow db directory CSV files (likely schema/data files)
+!db/*.csv
+*.json.gz
+**/data/**/*.sql
+**/dumps/**/*.sql
+
+# Storybook build
+storybook-static/
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Lock files
+package-lock.json
+yarn.lock
+
+# Cache directories
+.cache/
+.turbo/
+.swc/
+
+# Test results
+test-results/
+playwright-report/
+.playwright/
+
+# IDE/Editor files
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files - explicitly allow example and test files
+!.env.example
+!.env.test
+!.env.local

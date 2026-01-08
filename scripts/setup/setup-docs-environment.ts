@@ -1,0 +1,82 @@
+#!/usr/bin/env tsx
+// scripts/setup/setup-docs-environment.ts
+// Sets up the optimal environment for documentation development
+
+import { logger } from '../utils/logger';
+
+async function setupDocsEnvironment() {
+  logger.info('📚 Setting up documentation development environment...');
+
+  const recommendedSettings = {
+    'markdown.showPreviewToSide': true,
+    'markdown.preview.openMarkdownLinks': 'inEditor',
+    'files.associations': {
+      '*.md': 'markdown',
+    },
+    'markdown.extension.quickStrikethrough': true,
+    'markdown.extension.tableFormatter.enable': true,
+    'workbench.editorAssociations': {
+      '*.md': 'default',
+    },
+    'workbench.startupEditor': 'readme',
+    'files.defaultLanguage': 'markdown',
+    'markdown.extension.toc.updateOnSave': true,
+    'markdown.extension.toc.levels': '2..6',
+    'markdown.extension.bold.indicator': '**',
+    'markdown.extension.italic.indicator': '*',
+  };
+
+  const recommendedKeybindings = [
+    {
+      key: 'ctrl+shift+d',
+      command: 'vscode.open',
+      args: 'docs/README.md',
+      when: 'editorTextFocus',
+    },
+    {
+      key: 'ctrl+shift+h',
+      command: 'vscode.open',
+      args: 'README.md',
+      when: 'editorTextFocus',
+    },
+    {
+      key: 'ctrl+shift+b',
+      command: 'vscode.open',
+      args: 'docs/BESTPRACTICES.md',
+      when: 'editorTextFocus',
+    },
+  ];
+
+  logger.info('📋 VS Code Settings Recommendations:');
+  logger.info('==========================================');
+  logger.info('Add these to your .vscode/settings.json:');
+  console.log(JSON.stringify(recommendedSettings, null, 2));
+
+  logger.info('\n🔨 VS Code Keybindings Recommendations:');
+  logger.info('==========================================');
+  logger.info('Add these to your .vscode/keybindings.json:');
+  console.log(JSON.stringify(recommendedKeybindings, null, 2));
+
+  logger.info('\n⚡ Quick Documentation Commands:');
+  logger.info('==========================================');
+  logger.info('Ctrl+Shift+D - Open docs index');
+  logger.info('Ctrl+Shift+H - Open main README');
+  logger.info('Ctrl+Shift+B - Open best practices');
+
+  logger.info('\n🛠️ Available Scripts:');
+  logger.info('==========================================');
+  logger.info('pnpm docs:index  - Regenerate docs index');
+  logger.info('pnpm docs:check  - Validate docs freshness');
+  logger.info('pnpm docs:extract - Extract rules to JSON');
+  logger.info('pnpm docs:fresh  - Test if docs are up-to-date');
+
+  logger.success('\n✅ Documentation environment setup complete!');
+  logger.info('📖 The documentation system is now active and will:');
+  logger.info('  • Auto-update the docs index on postinstall');
+  logger.info('  • Validate docs freshness in CI');
+  logger.info('  • Check docs before commits');
+  logger.info('  • Provide AI-agent hints in barrel files');
+}
+
+setupDocsEnvironment().catch(console.error);
+

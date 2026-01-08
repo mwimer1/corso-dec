@@ -1,0 +1,223 @@
+---
+rule_id: openapi-vendor-extensions
+title: OpenAPI Vendor Extensions & RBAC Guard
+owners:
+  - security@corso.io
+  - platform@corso.io
+last_reviewed: "2025-10-13"
+status: active
+domains: [api, security, documentation]
+enforcement: warn
+related_rules:
+  - security-standards
+alwaysApply: true
+globs:
+  - "app/api/**"
+  - "api/**"
+  - "docs/api/**"
+---
+
+# OpenAPI Vendor Extensions & RBAC Guard
+
+## 🎯 Purpose
+Enforce consistent RBAC and tenant isolation patterns in the OpenAPI specification through vendor extensions and automated validation.
+
+## 🏷️ Vendor Extensions
+
+### `x-corso-rbac` - Role-Based Access Control
+Required for all bearer-authenticated operations. Defines the minimum role required for access.
+
+```yaml
+paths:
+  /api/v1/dashboard/query:
+    post:
+      security:
+        - bearerAuth: []
+      x-corso-rbac: [member]  # Available: owner, admin, member, viewer, service
+      parameters:
+        - $ref: '#/components/parameters/OrgIdHeader'
+```
+
+**Role Hierarchy:**
+- `owner` - Full administrative access (rare)
+- `admin` - Administrative operations (create, update, delete)
+- `member` - Read/write access to assigned resources
+- `viewer` - Read-only access
+- `service` - Machine-to-machine access for webhooks/services
+
+### `x-public` - Public Endpoints
+Opt-out mechanism for endpoints that don't require authentication.
+
+```yaml
+paths:
+  /api/status/health:
+    get:
+      x-public: true
+      # No security or x-corso-rbac required
+```
+
+## 🛡️ RBAC Guard Implementation
+
+### Guard Script (`tools/scripts/openapi-guard-rbac.ts`)
+Validates OpenAPI spec compliance with RBAC and tenant isolation requirements.
+
+**Checks Performed:**
+1. All `bearerAuth` operations have `x-corso-rbac` or `x-public`
+2. All `bearerAuth` operations include `OrgIdHeader` parameter
+3. Role values match allowed roles defined in the OpenAPI RBAC config (see `api/openapi.yml` and `pnpm openapi:rbac:check`)
+
+**Usage:**
+```bash
+# Run RBAC validation
+pnpm openapi:rbac:check
+
+# Full OpenAPI pipeline with RBAC guard
+pnpm openapi:gen && pnpm openapi:rbac:check
+```
+
+### CI Integration (`.github/workflows/openapi.yml`)
+Automated validation on pull requests affecting API or OpenAPI files.
+
+```yaml
+- run: pnpm openapi:bundle
+- run: pnpm openapi:lint
+- run: pnpm openapi:types
+- run: pnpm openapi:rbac:check  # ← RBAC guard
+- run: git diff --exit-code -- api/openapi.json types/api/openapi.d.ts
+```
+
+## 📋 Workflow Integration
+
+### Local Development
+```bash
+# Edit OpenAPI spec
+vim api/openapi.yml
+
+# Add RBAC annotations to new operations
+x-corso-rbac: [admin]
+parameters:
+  - $ref: '#/components/parameters/OrgIdHeader'
+
+# Validate changes
+pnpm openapi:gen && pnpm openapi:rbac:check
+```
+
+### Adding New Operations
+1. Add operation to `api/openapi.yml`
+2. Include `OrgIdHeader` parameter reference
+3. Set appropriate `x-corso-rbac` role
+4. Run validation: `pnpm openapi:rbac:check`
+
+### Role Assignment Guidelines
+```typescript
+// READ operations (GET)
+x-corso-rbac: [member]
+
+// WRITE operations (POST/PUT/PATCH)
+x-corso-rbac: [admin]
+
+// DESTRUCTIVE operations (DELETE)
+x-corso-rbac: [admin]
+
+// ORGANIZATION operations
+x-corso-rbac: [member]  # Usually read access
+
+// SERVICE operations (webhooks)
+x-corso-rbac: [service]
+```
+
+## 🔍 Validation Patterns
+
+### ESLint Integration
+```javascript
+// .eslintrc.mjs
+{
+  plugins: ['@corso/eslint-plugin'],
+  rules: {
+    '@corso/require-auth': 'error',
+    '@corso/require-validation': 'error',
+    '@corso/require-rate-limit': 'error'
+  }
+}
+```
+
+### AST-Grep Patterns
+```bash
+# Check for missing error handling wrappers
+sg -p 'export const $METHOD = withErrorHandlingEdge' --lang typescript app/api/
+
+# Find operations without RBAC annotations
+sg -p 'security:\n  - bearerAuth: \[\]' --lang yaml api/openapi.yml
+```
+
+## 🚨 Common Issues & Fixes
+
+### Missing OrgIdHeader
+```yaml
+# ❌ INCORRECT
+post:
+  security:
+    - bearerAuth: []
+  x-corso-rbac: [member]
+  # Missing OrgIdHeader!
+
+# ✅ CORRECT
+post:
+  parameters:
+    - $ref: '#/components/parameters/OrgIdHeader'
+  security:
+    - bearerAuth: []
+  x-corso-rbac: [member]
+```
+
+### Invalid Role
+```yaml
+# ❌ INCORRECT
+x-corso-rbac: [superuser]  # Not in config/security/rbac-roles.json
+
+# ✅ CORRECT
+x-corso-rbac: [admin]  # From allowed roles
+```
+
+### Public Endpoint Without Opt-out
+```yaml
+# ❌ INCORRECT
+get:
+  security:
+    - bearerAuth: []  # Should be public but not marked
+
+# ✅ CORRECT
+get:
+  x-public: true  # Explicitly public
+```
+
+## 📊 Quality Gates
+
+### OpenAPI Validation
+- ✅ All bearer operations have `x-corso-rbac` or `x-public`
+- ✅ All bearer operations include `OrgIdHeader`
+- ✅ Role values match `config/security/rbac-roles.json`
+- ✅ Generated types are up-to-date
+
+### Automated Enforcement
+- **RBAC validation**: `pnpm openapi:rbac:check` (runs `tools/scripts/openapi-guard-rbac.ts`)
+- **OpenAPI generation**: `pnpm openapi:gen` (regenerates specs and types)
+- **Full pipeline**: `pnpm openapi:gen && pnpm openapi:rbac:check`
+
+### CI/CD Integration
+- ✅ PR validation runs `pnpm openapi:rbac:check`
+- ✅ Breaking changes detected via `pnpm openapi:diff`
+- ✅ Generated artifacts committed and validated
+
+## 🔗 Related Documentation
+
+- [API Security Patterns](cursor/security-standards) - Authentication & authorization
+- [Security Standards](cursor/security-standards) - Zero-trust principles
+- [OpenAPI Generation](api/openapi.yml) - Spec generation workflow
+
+## Windows-first tips
+
+- Use `pnpm openapi:rbac:check` after `pnpm openapi:gen`
+- Avoid direct `process.env` access; use `getEnv()`
+- Run commands sequentially; avoid long `&&` chains
+- Use `git --no-pager` for commit history reviews

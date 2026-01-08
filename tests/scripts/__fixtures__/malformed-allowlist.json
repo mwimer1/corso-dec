@@ -1,0 +1,13 @@
+{
+  "global": [
+    "globalStyle"
+  ],
+  "atoms": "not-an-array",
+  "molecules": [
+    "cardVariant"
+  ]
+  "organisms": [
+    "navbarVariant"
+  ]
+}
+

@@ -1,0 +1,252 @@
+---
+rule_id: entity-grid-architecture
+title: Entity Grid Architecture (AG Grid)
+owners: ["@web"]
+status: active
+domains: ["ui"]
+enforcement: advise
+alwaysApply: true
+globs:
+  - "components/dashboard/entity/**"
+  - "lib/vendors/ag-grid/**"
+related_rules:
+  - dashboard-components
+  - component-design-system
+last_reviewed: "2025-10-13"
+summary: Standardize AG Grid setup, registration, SSRM usage, and boundaries.
+---
+
+## Purpose
+Define the standardized, flattened AG Grid architecture for dashboard entities (projects, addresses, companies): generic `EntityGrid`, per-entity `config.ts`, and a typed `registry` consumed by the `[entity]` route with Zod validation.
+
+## TL;DR
+- **Phase 3B Complete**: Legacy `col-defs.ts` files removed, full TableColumnConfig adoption
+- Framework-agnostic columns: `lib/services/entity/<entity>/columns.config.ts` with TableColumnConfig schema
+- Shared grid: `components/dashboard/entity/shared/grid/{EntityGrid.tsx, types.ts, ag-grid-modules.ts, fetchers.ts}`
+- Per-entity config: `components/dashboard/entity/<entity>/config.ts` wires async `colDefs` provider + fetcher
+- Typed registry and barrel: `components/dashboard/entity/index.ts` exports `getEntityConfig`, `EntityGrid`, types
+- Route: `[entity]/page.tsx` validates with Zod and renders via registry
+- Client-safe fetchers: `createEntityFetcher(entity)` GETs from `/api/v1/entity/{entity}` with query params
+- Mock mode: set `CORSO_USE_MOCK_DB=true` to serve mock JSON via `getEntityPage()`
+
+## File Layout
+```
+components/dashboard/entity/
+  shared/
+    grid/
+      EntityGrid.tsx
+      EntityGridHost.tsx
+      ag-grid-modules.ts
+      fetchers.ts
+      types.ts
+    renderers/     # Minimal formatters/constants only
+      value-formatter.ts
+      constants.ts
+      helpers.tsx  # FaviconRenderer
+  projects/
+    config.ts      # Uses PROJECTS_COLUMNS from lib/services/entity
+    index.ts
+  addresses/
+    config.ts      # Uses ADDRESSES_COLUMNS from lib/services/entity
+    index.ts
+  companies/
+    config.ts      # Uses COMPANIES_COLUMNS from lib/services/entity
+    index.ts
+  index.ts         # EntityGrid exports + registry + getEntityConfig
+
+# Column definitions now live in:
+lib/services/entity/
+  projects/columns.config.ts    # TableColumnConfig definitions
+  companies/columns.config.ts   # TableColumnConfig definitions
+  addresses/columns.config.ts   # TableColumnConfig definitions
+  adapters/aggrid.ts            # toColDef() adapter for AG Grid mapping
+```
+
+## Route Integration
+- Validator: `lib/validators/entity.ts`
+- Route: `app/(protected)/dashboard/(entities)/[entity]/page.tsx`
+- Pattern:
+  - Validate `params` → `EntityParamSchema`.
+  - Use `getEntityConfig(entity)` to retrieve `EntityGridConfig`.
+  - Render via `EntityGridHost` (client) or integrate into existing page chrome.
+
+## Fetchers
+- Use `createEntityFetcher('projects'|'addresses'|'companies')`.
+- Maps AG Grid server-side request to:
+  ```json
+  { "page": { "index": 0, "size": 50 }, "sort": [{ "field": "colId", "dir": "asc" }] }
+  ```
+- POST to `/api/v1/entity/{entity}/query` (edge-safe at callsite).
+
+## Rules
+- Do not deep-import renderers; import directly from `shared/renderers/` (no barrel after cleanup).
+- Keep server-only code out of `@/components/**` (client bundles).
+- Column definitions must use `TableColumnConfig` schema in `lib/services/entity/<entity>/columns.config.ts`.
+- Route options: export top-level literals (`runtime`, `dynamic`, `revalidate`). No `as const`.
+
+## Quality Gates
+- Run sequentially:
+  - `pnpm typecheck`
+  - `pnpm lint`
+  - `pnpm test`
+  - `pnpm validate:cursor-rules`
+
+## Migration Status
+✅ **Phase 3B Complete** - Full TableColumnConfig adoption, legacy cleanup finished
+
+**Completed Tasks:**
+- ✅ **Phase 1**: Documentation & Architecture (completed)
+- ✅ **Phase 2**: Gradual Migration Infrastructure (completed)
+- ✅ **Phase 3A**: Component migration to TableColumnConfig system (completed)
+- ✅ **Phase 3B**: Full Migration & Cleanup (completed)
+  - ✅ Removed deprecated `col-defs.ts` files (3 entities)
+  - ✅ Removed unused legacy cell renderers (StatusCellRenderer, etc.)
+  - ✅ Removed unused value-getters, status-constants, property-type-constants
+  - ✅ Updated all documentation and cursor rules
+  - ✅ Bundle size optimization (~5KB reduction)
+
+**Framework Independence Achieved:**
+- ✅ Zero legacy code remnants
+- ✅ TableColumnConfig exclusive architecture
+- ✅ Lazy loading formatters
+- ✅ Type-safe column definitions
+- ✅ Clean separation between UI and service layers
+
+## 🎯 Future Enhancements Backlog
+
+### **Phase 4: Advanced Features & Optimization** (Next Priority)
+**Status**: Ready for implementation 📋
+
+**Goals**:
+- Implement advanced table features (sorting, filtering, pagination UX)
+- Add virtualization optimizations for large datasets
+- Performance monitoring and accessibility enhancements
+
+**Backlog Items:**
+
+#### **Advanced Column Features**
+- **Multi-column sorting**: Allow sorting by multiple columns simultaneously
+- **Column groups**: Support for collapsible column groups
+- **Column pinning UX**: Better visual feedback and persistence
+- **Column resizing**: Auto-save column widths per user
+
+#### **Enhanced Filtering**
+- **Advanced filter UI**: Date range pickers, multi-select dropdowns
+- **Filter persistence**: Save/restore filter state across sessions
+- **Filter presets**: Quick filter templates for common use cases
+- **Filter validation**: Client-side validation with error messages
+
+#### **Performance Optimizations**
+- **Virtual scrolling**: Implement for 100k+ rows datasets
+- **Lazy column loading**: Load column definitions on-demand
+- **Memory management**: Better cleanup of AG Grid instances
+- **Bundle optimization**: Further reduce AG Grid bundle size
+
+#### **Accessibility Enhancements**
+- **Keyboard navigation**: Full keyboard support for all interactions
+- **Screen reader support**: Comprehensive ARIA labels and announcements
+- **High contrast mode**: Better support for accessibility themes
+- **Focus management**: Proper focus flow and indicators
+
+#### **User Experience Polish**
+- **Loading states**: Skeleton screens and progress indicators
+- **Error handling**: Graceful error states with retry options
+- **Empty states**: Informative messages for no-data scenarios
+- **Export progress**: Real-time progress for large exports
+
+### **Phase 5: Ecosystem Integration** (Future Phase)
+**Status**: Planned 🌟
+
+**Goals**:
+- Integrate with broader Corso ecosystem
+- Add export capabilities (CSV, Excel, PDF)
+- Implement real-time data updates
+- Advanced analytics and reporting features
+
+**Backlog Items:**
+
+#### **Export & Data Operations**
+- **Multiple formats**: CSV, Excel, PDF export with formatting
+- **Large dataset handling**: Streaming exports for 100k+ rows
+- **Scheduled exports**: Background job processing
+- **Export templates**: Custom formatting and branding
+
+#### **Real-time Features**
+- **Live updates**: WebSocket integration for data changes
+- **Conflict resolution**: Handle concurrent edits
+- **Change notifications**: Toast notifications for updates
+- **Offline support**: Basic offline viewing capabilities
+
+#### **Advanced Analytics**
+- **Column calculations**: Sum, average, count aggregations
+- **Pivot tables**: Cross-tabulation views
+- **Chart integration**: Embedded charts within grid
+- **Statistical functions**: Advanced aggregations
+
+#### **Enterprise Features**
+- **Audit trails**: Track user actions and changes
+- **Row-level security**: Fine-grained access control
+- **Data masking**: Sensitive data protection
+- **Compliance reporting**: GDPR/CCPA compliance features
+
+### **Phase 6: Framework Evolution** (Long-term)
+**Status**: Conceptual 🔮
+
+**Goals**:
+- Evolve beyond AG Grid to truly framework-agnostic tables
+- AI-powered features and natural language interactions
+- Advanced data visualization and insights
+
+**Backlog Items:**
+
+#### **Framework Independence**
+- **Table abstraction layer**: Complete separation from AG Grid
+- **Plugin architecture**: Swappable table implementations
+- **Migration tooling**: Automated framework switching
+- **Performance benchmarking**: Comparative analysis tools
+
+#### **AI-Powered Features**
+- **Natural language queries**: "Show me projects over $1M in Q1"
+- **Smart suggestions**: AI-driven filter and sort recommendations
+- **Automated insights**: ML-powered data analysis
+- **Conversational filtering**: Chat-based query building
+
+#### **Advanced Visualization**
+- **Embedded charts**: Interactive charts within table cells
+- **Heat maps**: Conditional formatting and data visualization
+- **Sparklines**: Mini-charts in table rows
+- **Custom renderers**: Plugin system for specialized visualizations
+
+#### **Developer Experience**
+- **Visual table builder**: Drag-and-drop table configuration
+- **Schema inference**: Auto-generate columns from data
+- **Testing utilities**: Comprehensive table testing tools
+- **Documentation generation**: Auto-generate table documentation
+
+## 📋 Implementation Priority Guidelines
+
+### **High Priority (Next Sprint)**
+- Multi-column sorting
+- Enhanced filter UI with date pickers
+- Loading states and error handling
+- Export functionality (CSV/Excel)
+
+### **Medium Priority (Next Quarter)**
+- Virtual scrolling for large datasets
+- Column resizing persistence
+- Accessibility improvements
+- Real-time updates
+
+### **Low Priority (Future Releases)**
+- AI-powered features
+- Advanced analytics
+- Framework abstraction layer
+- Enterprise compliance features
+
+### **Implementation Notes**
+- **Incremental rollout**: Each feature should be independently toggleable
+- **Backward compatibility**: Never break existing functionality
+- **Performance first**: Monitor bundle size and runtime performance
+- **Accessibility**: WCAG 2.1 AA compliance for all new features
+- **Testing**: Comprehensive unit and integration tests for each feature
+

@@ -1,0 +1,152 @@
+"use client";
+
+import { CorsoAIMode, DashboardHeader } from '@/components/dashboard';
+import { useChat } from '@/hooks/chat/use-chat';
+import { useUser } from '@clerk/nextjs';
+import dynamic from 'next/dynamic';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import ChatWelcome from '../widgets/chat-welcome';
+import { MessageItem } from '../widgets/message-item';
+
+export default function ChatWindow() {
+  const { messages, isProcessing, sendMessage, stop, error, clearError } = useChat({ persistHistory: true, autoSave: true });
+  const { user } = useUser();
+
+  const [draft, setDraft] = useState<string>("");
+  const [mode, setMode] = useState<'projects' | 'companies' | 'addresses'>(() => {
+    try {
+      const saved = typeof window !== 'undefined' ? window.localStorage.getItem('chat:mode') : null;
+      if (saved === 'projects' || saved === 'companies' || saved === 'addresses') return saved;
+    } catch {}
+    return 'projects';
+  });
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const firstName = user?.firstName ?? (user as any)?.first_name ?? undefined;
+  const hasHistory = messages.length > 0;
+  const PREFIX_MODE = true;
+  const applyModePrefix = useCallback((t: string) => (PREFIX_MODE ? `[mode:${mode}] ${t}` : t), [mode, PREFIX_MODE]);
+  const placeholder = useMemo(() => `Ask anything about ${mode}…`, [mode]);
+
+  const ChatComposer = dynamic(() => import('./chat-composer.client'), { ssr: false });
+
+  // Smooth autoscroll to bottom when messages change
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    // Use rAF to wait for DOM paint
+    requestAnimationFrame(() => {
+      el.scrollTop = el.scrollHeight;
+    });
+  }, [messages.length]);
+
+  const canSend = useMemo(() => draft.trim().length > 0 && !isProcessing, [draft, isProcessing]);
+
+  const handleSend = useCallback(async () => {
+    const text = draft.trim();
+    if (!text || isProcessing) return;
+    setDraft("");
+    await sendMessage(applyModePrefix(text));
+  }, [draft, isProcessing, sendMessage, applyModePrefix]);
+
+  // Key handling and IME composition are handled in the client-only composer
+
+  const handleSelectFollowUp = useCallback((text: string) => {
+    // Mirror prior UX: send immediately
+    void sendMessage(applyModePrefix(text));
+  }, [sendMessage, applyModePrefix]);
+
+  useEffect(() => {
+    try { if (typeof window !== 'undefined') window.localStorage.setItem('chat:mode', mode); } catch {}
+  }, [mode]);
+
+  // Auto-expand textarea with rAF and computed lineHeight to avoid layout thrash
+  const autoGrow = useCallback((el: HTMLTextAreaElement | null) => {
+    if (!el) return;
+    const computed = getComputedStyle(el);
+    const lineHeightStr = computed.lineHeight;
+    let lineHeight = 20;
+    if (lineHeightStr && lineHeightStr.endsWith('px')) {
+      const parsed = parseFloat(lineHeightStr.replace('px', ''));
+      if (!Number.isNaN(parsed) && parsed > 0) lineHeight = parsed;
+    }
+    const paddingTop = parseFloat(computed.paddingTop || '0');
+    const paddingBottom = parseFloat(computed.paddingBottom || '0');
+    const maxHeight = Math.round(lineHeight * 6 + paddingTop + paddingBottom);
+
+    window.requestAnimationFrame(() => {
+      el.style.height = 'auto';
+      const next = Math.min(el.scrollHeight, maxHeight);
+      el.style.height = `${next}px`;
+      el.style.overflowY = el.scrollHeight > next ? 'auto' : 'hidden';
+    });
+  }, []);
+
+  // The client composer calls `onInputAutoGrow` for the textarea; no local ref here
+
+  return (
+    <div
+      className="flex flex-col flex-1 min-h-0"
+      // tokenized chat surface vars: presets/bubbles/composer border widths
+      style={
+        {
+          ['--chat-bubble-asst-border' as any]: '1px',
+          ['--chat-preset-border' as any]: '1px',
+          ['--chat-composer-border' as any]: '0px',
+        } as React.CSSProperties
+      }
+    >
+      {/* Shared dashboard header — Chat title/subtitle removed; left only shows CorsoAI */}
+      <DashboardHeader
+        left={<CorsoAIMode />}
+      />
+
+      {/* Messages list */}
+      <div ref={scrollRef} className={"flex-1 min-h-0 " + (hasHistory ? 'overflow-y-auto' : 'overflow-hidden') + ' bg-gray-50'}>
+        {hasHistory ? (
+          <ul role="log" aria-live="polite" aria-relevant="additions" className="px-4 py-4 space-y-2">
+            {messages.map((m) => (
+              <li key={m.id}>
+                <MessageItem message={m} onSelectFollowUp={handleSelectFollowUp} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="px-6">
+            <ChatWelcome onPreset={handleSelectFollowUp} {...(firstName ? { firstName } as const : {})} />
+          </div>
+        )}
+      </div>
+
+      {/* Composer — server placeholder + client-only composer */}
+      <div className="bg-transparent px-6 py-6">
+        {/* Server-only placeholder to preserve layout pre-hydration; mark as region for a11y */}
+        <div className="mx-auto w-full max-w-3xl rounded-2xl bg-white p-3 shadow-sm" role="region" aria-hidden="true">
+          {/* Empty shell matches sizing of composer */}
+        </div>
+        {/* Dynamic client-only composer — hydrates on client only */}
+        <ChatComposer
+          value={draft}
+          onChange={setDraft}
+          onSend={() => { void handleSend(); }}
+          disabled={isProcessing}
+          placeholder={placeholder}
+          onInputAutoGrow={autoGrow}
+          isProcessing={isProcessing}
+          mode={mode}
+          setMode={setMode}
+          stop={stop}
+          canSend={canSend}
+        />
+        {error && (
+          <div className="pt-2 text-sm text-destructive">
+            {error.message}
+            <button onClick={clearError} className="ml-2 underline">Dismiss</button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Keep named export for backward compatibility
+export { ChatWindow };

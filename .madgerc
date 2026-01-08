@@ -1,0 +1,11 @@
+{
+  "tsConfig": "tsconfig.json",
+  "fileExtensions": ["ts", "tsx"],
+  "excludeRegExp": [
+    "(^|/)lib/mocks/.*$",
+    "\\\\.d\\\\.ts$",
+    "(^|/)app/sitemap\\\\.ts$",
+    "(^|/)app/.*?/route\\\\.ts$",
+    "(^|/)app/(?:.*?/)?(page|layout|error|loading|not-found|global-error)\\\\.tsx$"
+  ]
+}

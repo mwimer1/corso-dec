@@ -1,0 +1,417 @@
+---
+rule_id: analytics-tracking
+title: Analytics Tracking & User Insights
+owners:
+  - platform@corso.io
+last_reviewed: "2025-10-13"
+status: active
+domains: [analytics, ux, tracking]
+enforcement: warn
+related_rules:
+  - warehouse-query-hooks
+  - code-quality-standards
+alwaysApply: true
+globs: ["components/**", "lib/shared/analytics/**", "hooks/**"]
+---
+
+# Analytics Tracking & User Insights
+
+**Secure, edge-safe analytics tracking patterns for user behavior insights and navigation analytics.**
+
+## TL;DR
+- **Use shared analytics**: Import from `@/lib/shared/analytics/track` for edge-safe tracking
+- **Graceful degradation**: Analytics failures never break user experience
+- **Privacy-first**: Respect user consent and data minimization
+- **Performance optimized**: Zero-impact tracking with proper error boundaries
+- **Type safety**: Full TypeScript support for tracking events
+
+## Core Tracking Patterns
+
+### ✅ CORRECT: Shared Analytics Usage
+
+```typescript
+// Edge-safe, client-only analytics tracking
+import { trackNavClick } from '@/lib/shared/analytics/track';
+
+// Automatic navigation tracking
+const handleClick = (event) => {
+  // Track click first (never throws)
+  trackNavClick("Features", "/#features");
+
+  // Then handle navigation
+  // ... navigation logic
+};
+```
+
+### ✅ CORRECT: Component Integration
+
+```typescript
+// components/ui/molecules/nav-item.tsx
+const NavItem = ({ href, children, onClick }) => {
+  const handleClick = useCallback((event) => {
+    // Safe tracking with graceful degradation
+    const label = typeof children === 'string' ? children : href;
+    trackNavClick(label, href);
+
+    // Original click handler
+    onClick?.(event);
+  }, [children, href, onClick]);
+
+  return (
+    <Link href={href} onClick={handleClick} prefetch={false}>
+      {children}
+    </Link>
+  );
+};
+```
+
+### ❌ INCORRECT: Direct Analytics Calls
+
+```typescript
+// NEVER do this - breaks edge compatibility
+if (typeof window !== 'undefined') {
+  window.analytics?.track('nav_click', data);
+}
+
+// NEVER do this - synchronous blocking
+try {
+  analytics.track('event', data);
+} catch (error) {
+  console.error('Analytics failed:', error); // Pollutes logs
+}
+```
+
+## Provider Integration Patterns
+
+### Segment Integration
+
+```typescript
+// lib/shared/analytics/providers/segment.ts
+export function initSegment() {
+  if (typeof window === 'undefined') return;
+
+  // Segment initialization
+  window.analytics = window.analytics || [];
+
+  // Load Segment script
+  // ... initialization code
+}
+
+export function trackWithSegment(event: string, data: any) {
+  if (typeof window === 'undefined') return;
+
+  try {
+    const analytics = window.analytics;
+    if (analytics && typeof analytics.track === 'function') {
+      analytics.track(event, data);
+    }
+  } catch {
+    // Silent failure
+  }
+}
+```
+
+### Google Analytics 4 Integration
+
+```typescript
+// lib/shared/analytics/providers/gtag.ts
+export function trackWithGtag(event: string, data: any) {
+  if (typeof window === 'undefined') return;
+
+  try {
+    const gtag = window.gtag;
+    if (typeof gtag === 'function') {
+      gtag('event', event, {
+        event_category: data.category || 'engagement',
+        event_label: data.label,
+        value: data.value,
+        ...data
+      });
+    }
+  } catch {
+    // Silent failure
+  }
+}
+```
+
+## Event Taxonomy
+
+### Navigation Events
+
+```typescript
+// Standard navigation tracking
+trackNavClick("Features", "/#features");
+trackNavClick("Pricing", "/pricing");
+trackNavClick("Docs", "/docs");
+trackNavClick("Sign Up", "/sign-up");
+```
+
+### User Interaction Events
+
+```typescript
+// Form interactions
+trackEvent('form_start', { form_type: 'contact' });
+trackEvent('form_submit', { form_type: 'contact', success: true });
+
+// Button clicks
+trackEvent('button_click', { button_type: 'cta', location: 'hero' });
+
+// Feature usage
+trackEvent('feature_used', { feature: 'data-explorer', action: 'filter_applied' });
+```
+
+### Error Tracking
+
+```typescript
+// User-facing errors (not sensitive system errors)
+trackEvent('user_error', {
+  error_type: 'validation',
+  field: 'email',
+  message: 'Invalid email format'
+});
+```
+
+## Privacy & Compliance
+
+### Consent Management
+
+```typescript
+// Respect user consent preferences
+export function canTrackAnalytics(): boolean {
+  if (typeof window === 'undefined') return false;
+
+  // Check for consent cookie/localStorage
+  const consent = localStorage.getItem('analytics-consent');
+  return consent === 'accepted';
+}
+
+export function trackNavClick(name: string, href: string) {
+  if (!canTrackAnalytics()) return;
+
+  // Proceed with tracking
+  // ... tracking logic
+}
+```
+
+### Data Minimization
+
+```typescript
+// Only track essential data
+const trackingData = {
+  name,           // Navigation label
+  href,           // Target URL
+  timestamp: Date.now(),
+  // NO: IP addresses, personal data, sensitive info
+  // NO: Full URLs with query params containing PII
+};
+```
+
+## Performance Optimization
+
+### Debounced Tracking
+
+```typescript
+// Prevent tracking spam for rapid interactions
+import { debounce } from 'lodash-es';
+
+const debouncedTrack = debounce(trackNavClick, 100);
+
+function handleRapidClicks() {
+  debouncedTrack("Search", "/search");
+}
+```
+
+### Lazy Loading
+
+```typescript
+// Load analytics only when needed
+const trackNavClick = lazy(() =>
+  import('@/lib/shared/analytics/track').then(module => ({
+    default: module.trackNavClick
+  }))
+);
+```
+
+## Testing Patterns
+
+### Mock Analytics for Testing
+
+```typescript
+// tests/support/analytics-mock.ts
+export const mockAnalytics = {
+  track: vi.fn(),
+  identify: vi.fn(),
+  page: vi.fn(),
+};
+
+Object.defineProperty(window, 'analytics', {
+  value: mockAnalytics,
+  writable: true,
+});
+```
+
+### Test Analytics Calls
+
+```typescript
+// tests/unit/ui/navbar.spec.tsx
+import * as analytics from '@/lib/shared/analytics/track';
+
+describe('Navbar', () => {
+  it('tracks navigation clicks', () => {
+    const spy = vi.spyOn(analytics, 'trackNavClick');
+
+    render(<Navbar />);
+    fireEvent.click(screen.getByRole('link', { name: 'Pricing' }));
+
+    expect(spy).toHaveBeenCalledWith('Pricing', '/pricing');
+  });
+});
+```
+
+## Error Handling & Monitoring
+
+### Graceful Degradation
+
+```typescript
+export function trackNavClick(name: string, href: string) {
+  if (typeof window === 'undefined') return;
+
+  try {
+    // Primary tracking
+    const analytics = window.analytics;
+    if (analytics?.track) {
+      analytics.track('nav_click', { name, href });
+      return;
+    }
+
+    // Fallback tracking
+    const gtag = window.gtag;
+    if (gtag) {
+      gtag('event', 'nav_click', {
+        event_category: 'navigation',
+        event_label: name,
+        value: href,
+      });
+      return;
+    }
+
+    // No analytics available - silent success
+  } catch (error) {
+    // Log only in development
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('Analytics tracking failed:', error);
+    }
+    // Never throw - never break user experience
+  }
+}
+```
+
+### Analytics Health Monitoring
+
+```typescript
+// Track analytics system health
+export function trackAnalyticsHealth() {
+  const providers = {
+    segment: !!window.analytics,
+    gtag: !!window.gtag,
+    mixpanel: !!window.mixpanel,
+  };
+
+  // Track which providers are available
+  trackEvent('analytics_health', {
+    providers_available: Object.values(providers).filter(Boolean).length,
+    providers: providers,
+  });
+}
+```
+
+## Migration from Legacy Patterns
+
+### Before (Direct Analytics)
+
+```typescript
+// ❌ Legacy pattern - breaks edge, no error handling
+function handleNavClick(href: string) {
+  if (window.analytics) {
+    window.analytics.track('nav_click', { href });
+  }
+  navigate(href);
+}
+```
+
+### After (Shared Analytics)
+
+```typescript
+// ✅ New pattern - edge-safe, error-resistant
+import { trackNavClick } from '@/lib/shared/analytics/track';
+
+function handleNavClick(href: string) {
+  trackNavClick('Features', href); // Safe, never throws
+  navigate(href);
+}
+```
+
+## Enforcement
+
+### AST-Grep Rules
+
+```yaml
+# Detect direct analytics usage
+rule: |
+  window\.analytics\.track
+  where:
+    not inside: lib/shared/analytics/**
+
+# Detect missing error boundaries
+rule: |
+  analytics\.track\($EVENT, $DATA\)
+  where:
+    not inside: try { ... } catch
+```
+
+### ESLint Integration
+
+```javascript
+// .eslintrc.mjs
+{
+  rules: {
+    '@corso/no-direct-analytics': 'error',
+    '@corso/analytics-error-boundary': 'error',
+    '@corso/analytics-privacy-check': 'error',
+  }
+}
+```
+
+## Quality Gates
+
+### Development Validation
+
+```bash
+# Validate analytics integration
+pnpm test:unit --filter analytics
+pnpm test:components --filter navbar
+
+# Check for direct analytics usage
+pnpm ast-grep run --pattern "window\.analytics" --lang typescript
+```
+
+### Production Readiness
+
+- ✅ **Edge Compatible**: No Node.js dependencies in client code
+- ✅ **Error Resilient**: Graceful degradation on tracking failures
+- ✅ **Privacy Compliant**: Consent-aware, data-minimized tracking
+- ✅ **Performance Optimized**: Zero blocking, lazy-loaded when possible
+- ✅ **Test Coverage**: Unit tests for all tracking functions
+
+## Windows-First Tips
+
+- Use `pnpm test:unit --filter analytics` to validate tracking
+- Avoid `window.analytics` direct access; use shared utilities
+- Test analytics in development with mock providers
+- Ensure fallback tracking works when primary provider fails
+
+## Related Rules
+
+- `cursor/warehouse-query-hooks` - Data fetching patterns
+- `cursor/security-standards` - Secure API patterns (consolidated)
+- `cursor/code-quality-standards` - General code quality

@@ -1,0 +1,33 @@
+{
+  "dir": ".next/static/chunks",
+  "extensions": [".js"],
+  "maxTotalKB": 300,
+  "maxPerFileKB": 150,
+  "excludePatterns": [
+    "**/*.test.*",
+    "**/*.spec.*",
+    "**/*.vitest.*",
+    "**/*.jest.*",
+    "**/*.mock.*",
+    "**/*.fixture.*",
+    "**/*.support.*",
+    "**/*.stories.*",
+    "**/*.story.*",
+    "**/*test*",
+    "**/*spec*",
+    "**/*vitest*",
+    "**/*jest*",
+    "**/*mock*",
+    "**/*fixture*",
+    "**/*support*",
+    "**/*stories*",
+    "**/*story*",
+    "**/tests/**",
+    "**/@tests/**",
+    "**/stories/**",
+    "**/*.stories/**"
+  ]
+}
+
+
+

@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./config/typescript/tsconfig.json",
+  "display": "Root Project Configuration",
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "jsx": "preserve",
+    "tsBuildInfoFile": "./.cache/tsconfig.root.tsbuildinfo",
+    "paths": {
+      "@": [
+        "."
+      ],
+      "@/*": [
+        "*"
+      ],
+      "@/components": [
+        "components/index.ts"
+      ],
+      "@/components/*": [
+        "components/*"
+      ],
+      "@/lib/*": [
+        "lib/*"
+      ],
+      "@/lib": [
+        "lib/index.ts"
+      ],
+      "@/contexts/*": [
+        "contexts/*"
+      ],
+      "@/contexts": [
+        "contexts/index.ts"
+      ],
+      "@/styles": [
+        "styles/index.ts"
+      ],
+      "@/styles/*": [
+        "styles/*"
+      ],
+      "@/hooks/*": [
+        "hooks/*"
+      ],
+      "@/hooks": [
+        "hooks/index.ts"
+      ],
+      "@/actions": [
+        "actions/index.ts"
+      ],
+      "@/actions/*": [
+        "actions/*"
+      ],
+      "@/molecules": [
+        "components/ui/molecules/index.ts"
+      ],
+      "@/organisms": [
+        "components/ui/organisms/index.ts"
+      ],
+      "@/atoms": [
+        "components/ui/atoms/index.ts"
+      ],
+      "@/components/auth": [
+        "components/auth/index.ts"
+      ],
+      "@/components/marketing": [
+        "components/marketing/index.ts"
+      ],
+      "@/types/*": [
+        "types/*"
+      ],
+      "@/scripts/*": [
+        "scripts/*"
+      ],
+      "@/tools": [
+        "tools/index.ts"
+      ]
+    }
+  },
+  "typeAcquisition": {
+    "enable": false
+  },
+  "exclude": [
+    "node_modules",
+    ".next",
+    "scripts/codemods/_archive/**/*",
+    "**/*.spec.tsx",
+    "**/*.spec.ts",
+    "**/*.test.tsx",
+    "**/*.test.ts",
+    "**/*.stories.tsx",
+    "**/*.stories.ts",
+    "**/*.story.tsx",
+    "components/auth/examples/**/*.example.tsx",
+    "**/*.story.ts",
+    "grid-reference",
+    "docs/examples/**/*"
+  ],
+  "include": [
+    ".storybook/**/*",
+    "actions/**/*.ts",
+    "actions/**/*.tsx",
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "components/**/*.ts",
+    "components/**/*.tsx",
+    "config/**/*.ts",
+    "contexts/**/*.ts",
+    "contexts/**/*.tsx",
+    "eslint-plugin-corso/**/*",
+    "hooks/**/*.ts",
+    "hooks/**/*.tsx",
+    "lib/**/*.ts",
+    "lib/**/*.tsx",
+    "middleware.ts",
+    "next-env.d.ts",
+    "scripts/**/*.ts",
+    "scripts/**/*.tsx",
+    "stories/**/*.ts",
+    "stories/**/*.tsx",
+    "styles/**/*.ts",
+    "styles/**/*.tsx",
+    "tools/**/*.ts",
+    "tools/**/*.tsx",
+    "types/**/*.d.ts",
+    "types/**/*.ts",
+    "types/**/*.tsx",
+    ".next/types/**/*.ts",
+    "assets/**/*.ts",
+    "assets/**/*.tsx"
+  ]
+}
+

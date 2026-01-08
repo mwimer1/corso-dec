@@ -1,0 +1,10 @@
+id: no-api-test-routes
+message: "Do not add test routes under app/api/**/test/route.ts"
+severity: error
+language: TypeScript
+files:
+  - "app/api/**/test/route.ts"
+rule:
+  kind: program
+
+

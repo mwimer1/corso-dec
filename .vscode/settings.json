@@ -1,0 +1,211 @@
+{
+  // Prevent automatic import re-ordering on save for this workspace
+  "[typescript]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  },
+  "[typescriptreact]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  },
+
+  // ===== DEVELOPMENT WORKFLOW TASK CONFIGURATION =====
+  // Task configuration for better accessibility
+  "task.quickOpen.history": 20,
+  "task.quickOpen.detail": true,
+  "task.problemMatchers.neverPrompt": {
+    "$tsc": true,
+    "$eslint-stylish": true
+  },
+  "task.showStatusBar": true,
+  "task.allowAutomaticTasks": "off",
+  "task.autoDetect": "off",
+  "task.slowProviderWarning": false,
+
+  // Quick access to development workflows via Ctrl+Shift+P
+  "workbench.action.quickOpen.keybindings": [
+    {
+      "key": "ctrl+shift+p",
+      "command": "workbench.action.quickOpen",
+      "args": ">Tasks: Run Task"
+    }
+  ],
+
+  // ===== TYPESCRIPT & DEVELOPMENT SETTINGS =====
+  "typescript.preferences.includePackageJsonAutoImports": "on",
+  "typescript.suggest.autoImports": true,
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.suggest.paths": false,
+  "typescript.disableAutomaticTypeAcquisition": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.tsserver.useSeparateSyntaxServer": true,
+  "typescript.tsserver.experimental.enableProjectDiagnostics": false,
+  "typescript.tsserver.watchOptions": {
+    "watchFile": "useFsEventsOnParentDirectory",
+    "watchDirectory": "useFsEvents",
+    "fallbackPolling": "dynamicPriority",
+    "synchronousWatchDirectory": false
+  },
+  "typescript.preferences.autoImportFileExcludePatterns": [
+    "**/.next/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/coverage/**",
+    "**/reports/**",
+    "**/storybook-static/**",
+    "**/tests/**",
+    "**/stories/**"
+  ],
+
+  // ===== CODE QUALITY SETTINGS =====
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit"
+  },
+
+  // ===== TAILWIND CSS SETTINGS =====
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "tailwindCSS.includeLanguages": {
+    "typescriptreact": "html"
+  },
+  "tailwindCSS.experimental.classRegex": [
+    ["tv\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  ],
+  "tailwindCSS.experimental.configFile": "./tailwind.config.ts",
+  "tailwindCSS.emmetCompletions": false,
+  "tailwindCSS.files.exclude": [
+    "**/tests/**",
+    "**/stories/**"
+  ],
+
+  // ===== CURSOR AI SETTINGS =====
+  "cursor.ai.autoStart": false,
+  "cursor.ai.devServer": {
+    "enabled": false,
+    "command": "pnpm dev",
+    "port": 3000,
+    "fallbackPort": 3001,
+    "url": "http://localhost"
+  },
+
+  // ===== TERMINAL SETTINGS =====
+  "terminal.integrated.enableMultiLinePasteWarning": "auto",
+  "terminal.integrated.rightClickBehavior": "paste",
+  "terminal.integrated.cwd": "${workspaceFolder}",
+  "terminal.integrated.defaultProfile.windows": "Git Bash (fast)",
+  "terminal.integrated.profiles.windows": {
+    "Git Bash": {
+      "path": "C:\\Program Files\\Git\\bin\\bash.exe",
+      "args": ["--login"],
+      "icon": "terminal-bash"
+    },
+    "Git Bash (fast)": {
+      "path": "C:\\Program Files\\Git\\bin\\bash.exe",
+      "args": ["--noprofile", "--norc"],
+      "icon": "terminal-bash"
+    },
+    "PowerShell": {
+      "path": "powershell.exe",
+      "args": ["-NoLogo"],
+      "icon": "terminal-powershell"
+    },
+    "Command Prompt": {
+      "path": "cmd.exe",
+      "args": ["/k", "cd /d ${workspaceFolder}"],
+      "icon": "terminal-cmd"
+    }
+  },
+  "terminal.integrated.scrollback": 4000,
+  "terminal.integrated.gpuAcceleration": "off",
+  "terminal.integrated.fastScrollSensitivity": 5,
+  "terminal.integrated.mouseWheelScrollSensitivity": 3,
+  "terminal.integrated.enablePersistentSessions": false,
+  "terminal.integrated.shellIntegration.enabled": false,
+
+  // ===== EDITOR SETTINGS =====
+  "editor.codeActions.triggerOnFocusChange": false,
+
+  // ===== FILE WATCHING EXCLUSIONS =====
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "**/.next/**": true,
+    "**/dist/**": true,
+    "**/build/**": true,
+    "**/coverage/**": true,
+    "**/tests/**": true,
+    "**/reports/**": true,
+    "**/test-reports/**": true,
+    "**/test-results/**": true,
+    "**/storybook-static/**": true,
+    "**/.pnpm-store/**": true,
+    "**/supabase/.branches/**": true
+  },
+
+  // ===== TESTING SETTINGS =====
+  "npm.autoDetect": "off",
+
+  // ===== SEARCH EXCLUSIONS =====
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/*.code-search": true,
+    "**/.next/": true,
+    "**/dist/": true,
+    "**/build/": true,
+    "**/coverage/": true,
+    "**/reports/": true,
+    "**/storybook-static": true,
+    "**/.pnpm-store": true,
+    "**/supabase/.branches": true
+  },
+
+  // ===== FILE EXPLORER EXCLUSIONS =====
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/coverage": true,
+    "**/reports": false,
+    "**/test-reports": true,
+    "**/test-results": true,
+    "**/storybook-static": true,
+    "**/*.d.ts.map": true
+  },
+
+  // ===== EXPLORER SETTINGS =====
+  "explorer.excludeGitIgnore": false,
+  "explorer.autoReveal": false,
+
+  // ===== WORKBENCH SETTINGS =====
+  "workbench.editor.enablePreview": false,
+  "workbench.editor.enablePreviewFromQuickOpen": false,
+  "workbench.editor.closeOnFileDelete": true,
+  "workbench.editor.limit.enabled": true,
+  "workbench.editor.limit.value": 8,
+  "workbench.editor.limit.perEditorGroup": true,
+  "workbench.editor.limit.perEditorGroup.value": 4,
+  "workbench.startupEditor": "newUntitledFile",
+  "telemetry.telemetryLevel": "off",
+  "workbench.enableExperiments": false,
+  "breadcrumbs.enabled": false,
+  // ===== GIT INTEGRATION SETTINGS =====
+  "git.autorefresh": false,
+  "gitlens.currentLine.enabled": false,
+  "gitlens.hovers.currentLine.enabled": false,
+  "gitlens.statusBar.enabled": false
+}
+

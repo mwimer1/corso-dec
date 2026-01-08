@@ -1,0 +1,224 @@
+---
+rule_id: ai-agent-development-environment
+title: AI Agent Development Environment
+owners: ["@platform"]
+status: active
+domains: ["infra","devex"]
+enforcement: advise
+alwaysApply: true
+globs:
+  - ".cursor/**"
+  - ".agent/**"
+  - "scripts/**"
+related_rules:
+  - documentation-standards
+  - code-quality-standards
+last_reviewed: "2025-10-13"
+summary: Keep agent/rules artifacts versioned, indexed, and validated in CI.
+---
+# 🚀 Development Environment & Workflow (Consolidated)
+
+**Comprehensive development environment setup, workflow standards, and TypeScript performance optimization for Corso applications.**
+
+## TL;DR
+- **Setup**: Run `pnpm install`, then `pnpm run verify:ai-tools`, then `pnpm run setup:branch` (each sequentially).
+- **Development**: Use `pnpm typecheck` for fast feedback on type errors; avoid using `pnpm -s` (silent) so you don't miss output. For UI changes, run `pnpm dev` in a separate terminal to get instant feedback on edits.
+- **Quality gates**: Run `pnpm typecheck → pnpm lint → pnpm test → pnpm validate:cursor-rules` sequentially (don't chain with &&) to ensure all standards pass.
+- **Environment**: Use the provided `getEnv()` helper for config (never access `process.env` directly in app code).
+- **Windows-safe**: Favor Windows-compatible commands (no Unix-only pipes, use `git --no-pager`, etc.) and run tasks from the repo root without relying on `cd` for navigation.
+- **Git Workflow**: Use conventional commits, feature branches, and rebase workflow
+- **TypeScript Performance**: Use performance-optimized typecheck for daily development
+
+## Development Setup
+
+### Quickstart (Run Sequentially)
+```bash
+pnpm install
+pnpm run verify:ai-tools
+pnpm run setup:branch
+pnpm validate:env
+pnpm typecheck
+pnpm quality:local
+(Run each command one-by-one; ensure each passes before moving on.)
+```
+
+### Verifier Checklist
+- **Tools installed**: `pnpm run verify:ai-tools` (checks for required CLI tools like gh, rg, etc.).
+- **Branch config**: `pnpm run setup:branch` (sets up git hooks, branch naming, etc.).
+- **Env vars**: `pnpm validate:env` (ensures all required env vars are set and type-safe).
+- **Quality gates**: Run in order – `pnpm typecheck`, then `pnpm lint`, then `pnpm test`, then `pnpm validate:cursor-rules`. All must pass locally before committing.
+
+### Windows-friendly Examples
+```bash
+# Git: Windows-friendly log (no pager)
+git --no-pager log --oneline
+
+# Git: Show latest commit hash without pager
+git --no-pager show -s --format=%H HEAD
+
+# Git: View log piped safely on Windows
+git --no-pager log --oneline | type
+```
+
+## Git Workflow & Conventional Commits
+
+### Branching Strategy
+- **Feature branches**: `feat/<scope>/<desc>`; fixes: `fix/<scope>/<desc>`
+- **Prefer PRs for review**: Pushing to `main` only when all quality gates are green per project conventions.
+
+### Rebase Workflow
+```bash
+# Sync with main
+git fetch origin
+git rebase --autosquash --interactive origin/main
+
+# Use fixup commits for follow-ups
+git commit --fixup <hash>
+
+# After rebase, validate changes
+pnpm typecheck && pnpm lint && pnpm test && pnpm quality:local
+```
+
+### Pull Requests
+- **Descriptive titles** using Conventional Commits format
+- **CI must pass** before review
+- **Force push with lease**: `git push --force-with-lease` for updates
+
+### Post-merge Cleanup
+```bash
+git switch main && git pull --ff-only
+git branch -D feat/<scope>/<desc>
+git remote prune origin
+```
+
+### Commit Message Format
+```
+type(scope): description
+```
+
+**Types**: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `perf`, `style`
+**Scopes**: `auth`, `dashboard`, `chat`, `components`, `api`, `hooks`, `types`, `docs`, `dev-tools`, `tooling`
+**Subject**: imperative, ≤ 50 chars
+
+**Examples**:
+- `feat(api): add rate limit to chat generation`
+- `fix(billing): handle missing webhook signature`
+- `refactor(api): replace NextResponse.json with http.*`
+
+**Breaking changes**: append `!` after the type or scope: `feat!: drop deprecated endpoint`
+
+## TypeScript Performance Optimization
+
+### Available Typecheck Scripts
+
+#### Development (Recommended)
+```bash
+pnpm typecheck
+```
+- **Use for**: Daily development, quick feedback
+- **Performance**: ~0.5-1 second (optimized cache)
+- **Features**: Separate build cache, performance flags
+
+#### Standard Validation
+```bash
+pnpm typecheck
+```
+- **Use for**: Pre-commit, CI/CD, full validation
+- **Performance**: ~1-2 seconds (varies with cache size)
+- **Features**: Complete project validation
+
+#### Quick Check
+```bash
+pnpm typecheck:fast
+```
+- **Use for**: Quick development feedback
+- **Performance**: ~0.3-0.5 seconds
+- **Features**: Minimal validation, may miss some errors
+
+#### Troubleshooting
+```bash
+pnpm typecheck:clean
+```
+- **Use for**: Performance issues, cache problems
+- **Performance**: ~2-3 seconds (cache rebuild)
+- **Features**: Clears build cache, resets incremental state
+
+### Performance Optimizations
+
+#### Compiler Options
+- `assumeChangesOnlyAffectDirectDependencies: true` - Faster incremental builds
+- `disableSourceOfProjectReferenceRedirect: true` - Reduced project reference overhead
+- `tsBuildInfoFile: "./.cache/tsconfig.performance.tsbuildinfo"` - Separate cache location
+
+#### exactOptionalPropertyTypes Best Practices
+With `exactOptionalPropertyTypes: true`, object literals must not include `undefined` for keys whose type is plain `string`/`number`/etc.
+
+**Prefer conditional spreads when values may be undefined**:
+```ts
+const opts = {
+  ...(maybeTimeout ? { timeout: maybeTimeout } : undefined),
+  retryOn429: true,
+};
+```
+
+**JSX Component Props**: Use conditional prop spreading to avoid passing `undefined` to optional props:
+```tsx
+// ❌ INCORRECT: Direct prop passing may cause exactOptionalPropertyTypes errors
+<PillGroup
+  selected={selected} // Error if selected could be undefined
+  id={id} // Error if id could be undefined
+/>
+
+// ✅ CORRECT: Conditional spreading prevents undefined prop passing
+<PillGroup
+  {...(selected && { selected })} // Only pass when defined
+  {...(id && { id })} // Only pass when defined
+/>
+```
+
+### Usage Guidelines
+
+| Use Case | Script | Frequency |
+|----------|--------|-----------|
+| Daily Development | `typecheck` | Every few minutes |
+| Pre-commit | `typecheck` | Before commits |
+| CI/CD | `typecheck` | Every build |
+| Troubleshooting | `typecheck:clean` | When experiencing slowdowns |
+| Quick Feedback | `typecheck:fast` | During development |
+
+### Quality Gates
+
+#### Development Workflow
+```bash
+# Fast feedback during development
+pnpm typecheck
+
+# Full validation before commit (local)
+pnpm typecheck && pnpm lint && pnpm test
+```
+
+#### CI/CD Pipeline
+```bash
+# Complete validation (CI)
+pnpm typecheck && pnpm lint && pnpm test && pnpm validate:cursor-rules
+```
+
+## Development Best Practices
+
+### Do
+- **Prefer non-interactive commands**: Use CLI flags or defaults to avoid prompts (e.g. `gh pr create --fill`).
+- **Use Windows-friendly Git commands**: e.g. `git --no-pager log` for logs, and `| type` instead of `| cat` if you must pipe on Windows.
+- **Run setup scripts in order**: Execute setup steps one after another (as in **TL;DR**). Do not concatenate long sequences with `&&` – run each step separately for clarity and easier debugging.
+- **Leverage search tools**: Start with broad semantic code searches, then refine with exact symbol searches. Use the repository search (`rg`/`sg`) scoped to relevant folders to gather context in parallel.
+- **Make targeted edits**: Apply minimal necessary changes (preserve formatting and import style). Use a small TODO list for multi-step fixes, marking the first task as `in_progress` before editing.
+- **Use the PNPM dev server for UI feedback**: If working on frontend or UI-related tasks, keep the development server running (`pnpm dev`) to catch errors or UI regressions immediately as you make changes.
+- **Favor GitHub CLI for context**: Use `gh` commands to retrieve PR details, issues, or to check out branches as needed for context instead of manual web navigation.
+- **Post-edit validation**: After making changes, always run the full suite: type-checking, linting, tests, then `pnpm validate:cursor-rules` to catch any rule violations.
+
+## Don’t  
+- **No `pnpm -s/--silent`**: Avoid silent mode – it suppresses output that could contain important warnings.  
+- **No interactive prompts**: Do not use tools that require user input (everything should be scriptable).  
+- **Avoid Unix-only ops**: Don’t use Unix-specific shell features like `pbcopy` or `cat` in examples; ensure commands work on Windows (use `type` or native PowerShell equivalents if needed).  
+- **Don’t rely on `cd` for scripts**: Do not script directory changes with `cd` as part of multi-step commands – instead, run commands from the repository root or use subshells/`--prefix` flags to execute in subdirs. This avoids path issues on Windows shells.  
+- **No long command chains**: Break down commands; e.g., prefer running `pnpm build` then `pnpm test` as separate steps rather than `pnpm build && pnpm test` in one line (easier to pinpoint failures).  
+- **No watch mode by default**: Unless explicitly needed, avoid watch mode (e.g. `--watch` tests) in automation – it should exit when done.

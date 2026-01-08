@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./tsconfig.base.json",
+  "display": "Libraries (lib, hooks, contexts, validators)",
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationMap": true,
+    "outDir": "../../.typegen/lib",
+    "rootDir": "../..",
+    "plugins": [{ "name": "next" }],
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "tsBuildInfoFile": "../../.cache/tsconfig.lib.tsbuildinfo"
+  },
+  "references": [
+    { "path": "./tsconfig.types.json" },
+    { "path": "./tsconfig.styles.json" }
+  ],
+  "include": [
+    "../../lib/**/*.ts",
+    "../../lib/**/*.tsx",
+    "../../hooks/**/*.ts",
+    "../../hooks/**/*.tsx",
+    "../../contexts/**/*.ts",
+    "../../contexts/**/*.tsx",
+    "../../lib/validators/**/*.ts"
+  ],
+  "files": [
+    "../../package.json"
+  ],
+  "exclude": [
+    "../../node_modules",
+    "../../.next",
+    "**/*.stories.*",
+    "**/*.test.*",
+    "**/*.spec.*",
+    "tests/**"
+  ]
+}
+
+
+

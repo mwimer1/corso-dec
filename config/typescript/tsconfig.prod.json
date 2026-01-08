@@ -1,0 +1,42 @@
+{
+	"extends": "./tsconfig.json",
+	"display": "Production Strictness",
+	"compilerOptions": {
+		"noUnusedLocals": true,
+		"noUnusedParameters": true
+	},
+	"include": [
+		"../../app/**/*.ts",
+		"../../app/**/*.tsx",
+		"../../components/**/*.ts",
+		"../../components/**/*.tsx",
+		"../../lib/**/*.ts",
+		"../../lib/**/*.tsx",
+		"../../hooks/**/*.ts",
+		"../../hooks/**/*.tsx",
+		"../../actions/**/*.ts",
+		"../../contexts/**/*.ts",
+		"../../contexts/**/*.tsx",
+		"../../styles/**/*.ts",
+		"../../types/**/*.ts",
+		"../../middleware.ts"
+	],
+	"exclude": [
+		"../../tests/**",
+		"../../stories/**",
+		"../../**/*.spec.ts",
+		"../../**/*.spec.tsx",
+		"../../**/*.test.ts",
+		"../../**/*.test.tsx",
+		"../../**/*.stories.ts",
+		"../../**/*.stories.tsx",
+		"../../**/*.stories.mdx",
+		"../../.next/**",
+		"../../node_modules/**",
+		"../../eslint-plugin-corso/**",
+		"../../tools/**",
+		"../../scripts/**",
+		"../../docs/**"
+	]
+}
+

@@ -1,0 +1,63 @@
+name: "Setup Node and PNPM (Corso Standard)"
+description: "Sets up PNPM and Node using .node-version and package.json packageManager."
+inputs:
+  pnpm-version:
+    description: "DEPRECATED. Ignored; version is sourced from package.json 'packageManager'."
+    required: false
+    default: ""
+  run-install:
+    description: "Whether to run 'pnpm install --frozen-lockfile' during setup."
+    required: false
+    default: "false"
+runs:
+  using: "composite"
+  steps:
+    - name: Determine pnpm version
+      id: pnpm-version
+      shell: bash
+      env:
+        INPUT_PNPM_VERSION: ${{ inputs.pnpm-version }}
+      run: |
+        set -euo pipefail
+        if [[ -n "${INPUT_PNPM_VERSION}" ]]; then
+          VERSION="${INPUT_PNPM_VERSION}"
+          SOURCE="action input"
+        else
+          PM="$(jq -r '.packageManager // empty' package.json)"
+          if [[ -z "${PM}" || "${PM%%@*}" != "pnpm" ]]; then
+            echo "::error::package.json packageManager must be set to pnpm@<version>" >&2
+            exit 1
+          fi
+          VERSION="${PM#pnpm@}"
+          SOURCE="packageManager"
+        fi
+
+        echo "pnpm source: ${SOURCE}" >&2
+        echo "pnpm version: ${VERSION}" >&2
+        echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
+
+    - name: Prepare pnpm
+      shell: bash
+      env:
+        PNPM_VERSION: ${{ steps.pnpm-version.outputs.version }}
+      run: |
+        set -euo pipefail
+        corepack enable
+        corepack prepare "pnpm@${PNPM_VERSION}" --activate
+
+    - name: Show pnpm version
+      shell: bash
+      run: pnpm --version
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: ".node-version"
+        cache: "pnpm"
+
+    - name: Install dependencies
+      if: ${{ inputs['run-install'] == 'true' }}
+      shell: bash
+      run: pnpm install --frozen-lockfile
+
+

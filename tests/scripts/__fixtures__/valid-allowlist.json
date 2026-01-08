@@ -1,0 +1,16 @@
+{
+  "global": [
+    "globalStyle"
+  ],
+  "atoms": [
+    "buttonVariant",
+    "inputVariant"
+  ],
+  "molecules": [
+    "cardVariant"
+  ],
+  "organisms": [
+    "navbarVariant"
+  ]
+}
+

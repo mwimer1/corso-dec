@@ -1,0 +1,7 @@
+{
+  "//": "Tokens allowed to be unused (storybook-only, marketing-only, etc.). Names are raw CSS variable names without the leading --.",
+  "allowed": [
+    "color-elevated-*"
+  ]
+}
+

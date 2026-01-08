@@ -1,0 +1,137 @@
+name: Force delete all workflow runs (manual)
+permissions:
+  contents: read
+  actions: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: "Type IRREVOCABLE_DELETE to confirm permanent deletion of all workflow runs."
+        required: true
+        default: ""
+      dry_run:
+        description: "If true, list run IDs only (no deletions)."
+        required: false
+        default: "false"
+      concurrency:
+        description: "Parallel deletions (reduce to avoid rate limits)."
+        required: false
+        default: "2"   # safe default; was 8 before
+      min_remaining:
+        description: "Pause when REST core remaining < this value."
+        required: false
+        default: "150" # safety cushion before hitting the cap
+
+jobs:
+  delete-runs:
+    name: Delete workflow runs (irreversible)
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      contents: read
+      actions: write
+
+    steps:
+      - name: Validate confirmation
+        if: ${{ github.event.inputs.confirm != 'IRREVOCABLE_DELETE' }}
+        run: |
+          echo "Confirmation did not match 'IRREVOCABLE_DELETE'. Aborting." >&2
+          exit 1
+
+      - name: Ensure GitHub CLI is available
+        run: |
+          if ! command -v gh >/dev/null 2>&1; then
+            sudo apt-get update && sudo apt-get install -y gh
+          fi
+          gh --version
+
+      - name: Enumerate and (optionally) delete all runs with rate-limit backoff
+        env:
+          # Prefer a PAT to avoid "installation" rate limits. If not provided, falls back to the GITHUB_TOKEN.
+          GH_TOKEN: ${{ secrets.REPO_RW_PAT }}
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+          CONCURRENCY: ${{ github.event.inputs.concurrency }}
+          MIN_REMAINING: ${{ github.event.inputs.min_remaining }}
+        run: |
+          set -euo pipefail
+
+          : "${GH_TOKEN:=${GITHUB_TOKEN}}"
+          export GH_TOKEN
+
+          REPO="${GITHUB_REPOSITORY}"
+          DRY="${DRY_RUN}"
+          PAR="${CONCURRENCY:-2}"
+          THRESH="${MIN_REMAINING:-150}"
+
+          echo "Repository: ${REPO}"
+          echo "Dry run: ${DRY}"
+          echo "Concurrency: ${PAR}"
+          echo "Rate-limit threshold (core.remaining): ${THRESH}"
+
+          # Helper: wait until core remaining is above threshold or until reset time.
+          wait_for_budget () {
+            local remaining reset now wait_s
+            remaining="$(gh api /rate_limit -q '.resources.core.remaining' || echo 0)"
+            reset="$(gh api /rate_limit -q '.resources.core.reset' || echo 0)"
+            now="$(date +%s)"
+            if [ -z "$remaining" ]; then remaining=0; fi
+            if [ -z "$reset" ]; then reset=$((now+60)); fi
+            if [ "$remaining" -lt "$THRESH" ]; then
+              wait_s=$(( reset - now + 5 ))
+              if [ "$wait_s" -lt 5 ]; then wait_s=30; fi
+              echo "Rate budget low (remaining=$remaining). Sleeping ${wait_s}s until reset..." >&2
+              sleep "$wait_s"
+            fi
+          }
+
+          # Helper: delete a single run with exponential backoff and rate-limit awareness
+          delete_one () {
+            local id="$1" attempt=0 max_attempts=10
+            while :; do
+              if gh api -X DELETE "repos/${REPO}/actions/runs/${id}" >/dev/null 2>&1; then
+                echo "OK delete run ${id}"
+                return 0
+              fi
+              attempt=$((attempt+1))
+              # Check if we should pause for rate limit reset
+              wait_for_budget
+              if [ "$attempt" -ge "$max_attempts" ]; then
+                echo "FAILED delete run ${id} after ${max_attempts} attempts" >&2
+                return 1
+              fi
+              # Exponential backoff (bounded)
+              sleep_sec=$(( 2 ** attempt ))
+              if [ "$sleep_sec" -gt 64 ]; then sleep_sec=64; fi
+              echo "Retry ${attempt} for run ${id} in ${sleep_sec}s..." >&2
+              sleep "$sleep_sec"
+            done
+          }
+
+          export -f delete_one
+          export REPO
+          export THRESH
+          export -f wait_for_budget
+
+          if [ "${DRY}" = "true" ]; then
+            echo "Streaming IDs (first 200 shown) and printing progress every 100 IDs..."
+            gh api --paginate -H "Accept: application/vnd.github+json" \
+              "repos/${REPO}/actions/runs?per_page=100" \
+              --jq '.workflow_runs[].id' \
+            | awk 'NR%100==0{printf("Enumerated %d IDs...\n", NR) > "/dev/stderr"}; {print}' \
+            | head -n 200
+            exit 0
+          fi
+
+          echo "Streaming deletes with ${PAR}-way concurrency and adaptive backoff..."
+          # NOTE: We use -P (parallel) and -I for placeholder; NO -n to avoid the xargs warning.
+          gh api --paginate -H "Accept: application/vnd.github+json" \
+            "repos/${REPO}/actions/runs?per_page=100" \
+            --jq '.workflow_runs[].id' \
+          | awk 'NR%100==0{printf("Enumerated %d IDs...\n", NR) > "/dev/stderr"}; {print}' \
+          | xargs -P"${PAR}" -I{} bash -lc 'delete_one "$@"' _ {}
+
+          echo "Done. (Reminder: the current workflow run cannot delete itself; trigger once more to clean up the last one if needed.)"
+

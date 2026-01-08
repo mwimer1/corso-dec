@@ -1,0 +1,15 @@
+extends: ["spectral:oas"]
+rules:
+  operation-description:
+    given: $.paths[*][*]
+    then:
+      field: description
+      function: truthy
+  operation-security-defined:
+    given: $.paths[*][*]
+    then:
+      function: xor
+      functionOptions:
+        properties:
+          - security
+          - x-public

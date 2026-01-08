@@ -1,0 +1,21 @@
+
+rules:
+  - id: missing-rls-policy
+    language: Generic
+    rule:
+      pattern: CREATE TABLE $TABLE
+      not:
+        has:
+          pattern: CREATE POLICY .* ON $TABLE
+    message: Table created without corresponding RLS policy
+    severity: warning
+
+  - id: unrestricted-select
+    language: Generic
+    rule:
+      pattern: SELECT .* FROM $TABLE
+      not:
+        inside:
+          pattern: CREATE POLICY
+    message: Potential unrestricted SELECT statement - ensure RLS is applied
+    severity: warning 
