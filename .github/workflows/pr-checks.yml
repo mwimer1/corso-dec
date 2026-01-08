@@ -12,10 +12,16 @@ on:
       - "tests/**"
       - "styles/**"
       - "public/**"
+      - "docs/**"
+      - "README.md"
+      - "CHANGELOG.md"
       - "package.json"
       - "pnpm-lock.yaml"
       - "next.config.mjs"
       - "tailwind.config.ts"
+      - ".markdownlint.jsonc"
+      - "jscpd.docs.json"
+      - "config/.cspell.json"
   workflow_dispatch:
 
 concurrency:
