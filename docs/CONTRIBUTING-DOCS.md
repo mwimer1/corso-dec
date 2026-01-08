@@ -17,8 +17,16 @@ This guide explains how to contribute to Corso documentation, including where to
 - **`docs/architecture/`** - Architecture explanations, design decisions, codebase structure
 - **`docs/reference/`** - Environment variables, API specs, dependencies, quick references
 - **`docs/audits/`** - Audit reports, baseline snapshots, remediation trackers (date-organized)
-- **`docs/feature-notes/`** - Feature implementation summaries, design docs, ADRs
+- **`docs/feature-notes/`** - Feature implementation summaries, design docs (ADRs moved to docs/decisions/)
 - **`docs/maintenance/`** - Upgrade guides, dependency management, maintenance procedures
+- **`docs/security/`** - Security guidelines, auth patterns, and security policy/implementation docs
+- **`docs/database/`** - Database documentation (ClickHouse, Postgres) – e.g. schema design, backup, retention policies
+- **`docs/analytics/`** - Analytics and warehouse guides (ClickHouse usage, analytics integration)
+- **`docs/typescript/`** - TypeScript configuration, strictness, and type safety best practices
+- **`docs/decisions/`** - Architecture Decision Records (ADRs) and design rationale documents
+- **`docs/operations/`** - Operational guides for deployment, monitoring, and incident response
+- **`docs/performance/`** - Performance optimization and scaling guidelines
+- **`docs/qa/`** - Manual QA test plans and verification checklists
 
 ### Decision Guide
 
@@ -30,6 +38,14 @@ This guide explains how to contribute to Corso documentation, including where to
 5. **Is it a time-bound audit/snapshot?** → `docs/audits/`
 6. **Is it a feature design doc?** → `docs/feature-notes/`
 7. **Is it about upgrades/dependencies?** → `docs/maintenance/`
+8. **Is it about security/auth/security policy?** → `docs/security/`
+9. **Is it about database schema/backup/retention?** → `docs/database/`
+10. **Is it about analytics/warehouse/ClickHouse?** → `docs/analytics/`
+11. **Is it about TypeScript configuration/type safety?** → `docs/typescript/`
+12. **Is it an ADR or design rationale?** → `docs/decisions/`
+13. **Is it about deployment/monitoring/operations?** → `docs/operations/`
+14. **Is it about performance/scaling?** → `docs/performance/`
+15. **Is it a manual QA test plan/checklist?** → `docs/qa/`
 
 ## ✍️ Single Source of Truth Principle
 
