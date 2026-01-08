@@ -342,8 +342,11 @@ ANALYZE=true pnpm build
 1. Create a feature branch: `feat/<scope>/<description>`
 2. Make your changes following the [code quality standards](.cursor/rules/code-quality-standards.mdc)
 3. Run quality gates: `pnpm quality:local`
-4. Commit using conventional commits format
-5. Push and create a PR (CI must pass)
+4. For documentation changes:
+   - Run `pnpm lint:md` locally before pushing to catch markdown formatting issues early
+   - Documentation changes are automatically validated by CI (markdownlint, link checking, duplication detection)
+5. Commit using conventional commits format
+6. Push and create a PR (CI must pass)
 
 ## 📄 License
 
