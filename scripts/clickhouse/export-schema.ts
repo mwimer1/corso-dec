@@ -5,7 +5,7 @@
  * Exports ClickHouse database schema to DDL files for version control.
  * 
  * Usage:
- *   pnpm tsx scripts/clickhouse/export-schema.ts
+ *   pnpm clickhouse:export-schema
  * 
  * Environment Variables Required:
  *   - CLICKHOUSE_URL
