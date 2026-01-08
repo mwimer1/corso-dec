@@ -1,10 +1,3 @@
----
-last_updated: "2026-01-07"
-category: "documentation"
-status: "active"
-title: "README.md"
-description: "Documentation and resources for documentation functionality."
----
 # Corso
 
 Last updated: 2026-01-07

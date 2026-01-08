@@ -22,7 +22,7 @@ export const docs = [
   },
   {
     "path": ".vscode/readme.md",
-    "title": "Corso Development Workflow Accessibility"
+    "title": "VS Code Task Menus"
   },
   {
     "path": "api/readme.md",
@@ -365,8 +365,12 @@ export const docs = [
     "title": "scripts/analysis"
   },
   {
+    "path": "scripts/audit/css/readme.md",
+    "title": "CSS Audit System"
+  },
+  {
     "path": "scripts/audit/readme.md",
-    "title": "scripts/audit"
+    "title": "CSS Audit System"
   },
   {
     "path": "scripts/ci/readme.md",
