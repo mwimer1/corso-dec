@@ -173,9 +173,18 @@ export function updateBaseline(
     entryMap.set(entry.fingerprint, entry);
   }
 
+  // Build a map of existing entries by fingerprint for preserving addedAt
+  const existingEntriesByFingerprint = new Map<string, BaselineEntry>();
+  for (const entry of baseline.entries) {
+    if (toolIds.has(entry.tool)) {
+      // Only track entries for tools that ran (to preserve their addedAt)
+      existingEntriesByFingerprint.set(entry.fingerprint, entry);
+    }
+  }
+
   // Then, process findings from tools that ran:
   // - Add new findings that should be included
-  // - Update existing entries for tools that ran (replaces old entries)
+  // - Update existing entries for tools that ran (preserving addedAt when unchanged)
   for (const finding of findings) {
     const tool = toolMap.get(finding.tool);
     const shouldInclude = tool?.baselineInclude
@@ -183,13 +192,17 @@ export function updateBaseline(
       : defaultBaselineInclude(finding, ctx);
 
     if (shouldInclude) {
+      // Preserve addedAt if entry already exists (reduces baseline churn)
+      const existingEntry = existingEntriesByFingerprint.get(finding.fingerprint);
+      const addedAt = existingEntry?.addedAt ?? now;
+      
       // Add or update entry for this finding
       entryMap.set(finding.fingerprint, {
         fingerprint: finding.fingerprint,
         tool: finding.tool,
         ruleId: finding.ruleId,
         severity: finding.severity,
-        addedAt: now,
+        addedAt,
       });
     } else {
       // Remove from baseline if tool says it shouldn't be included

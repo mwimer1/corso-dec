@@ -13,7 +13,7 @@ pnpm audit:css
 # Check only changed files
 pnpm audit:css:changed
 
-# Update baseline (suppress current findings)
+# Refresh baseline for tools that ran (adds new findings, prunes fixed ones)
 pnpm audit:css:baseline
 
 # Run fix tools (mutating - use with caution)
@@ -28,7 +28,7 @@ The audit uses a baseline file (`css-audit.baseline.json`) to suppress known iss
 
 1. **First run**: Run `pnpm audit:css` to see all findings
 2. **Review findings**: Decide which findings are acceptable (e.g., existing technical debt)
-3. **Update baseline**: Run `pnpm audit:css:baseline` to suppress current findings
+3. **Refresh baseline**: Run `pnpm audit:css:baseline` to refresh baseline entries for tools that ran
 4. **Future runs**: Only new findings will be reported
 
 The baseline file should be committed to the repository so the team shares the same suppressed findings.
@@ -66,7 +66,7 @@ Use `--strict` to fail on warnings, or `--fail-on warn` / `--fail-on info` for s
 --skip-tools <ids>     Skip specific tools (comma-separated)
 --baseline <path>      Baseline file path (default: css-audit.baseline.json)
 --no-baseline          Don't use baseline (check all findings)
---update-baseline      Update baseline with current findings
+--update-baseline      Refresh baseline entries for tools that ran (adds new, prunes fixed, preserves for tools not run)
 --force                Allow --update-baseline with --changed
 --strict               Synonym for --fail-on warn
 --fail-on <level>      Fail on findings at or above level (error|warn|info)
@@ -401,10 +401,23 @@ The baseline should be updated when:
 
 ### Baseline Governance
 
-- **Review periodically**: Remove entries for fixed issues
+- **Review periodically**: Remove entries for fixed issues (handled automatically by `--update-baseline`)
 - **Don't baseline errors**: Only baseline warnings and info-level findings (unless truly acceptable)
 - **Document intent**: Use baseline entry `note` field for context
 - **Keep baseline small**: If baseline grows too large, consider fixing issues incrementally
+
+### Baseline Refresh Semantics
+
+When using `--update-baseline`, the baseline is refreshed for tools that ran:
+
+- **For tools that ran**: Baseline reflects the current set of baseline-eligible findings
+  - New baseline-eligible findings are added
+  - Existing findings that still exist are preserved
+  - Findings that are no longer present (fixed) are automatically pruned
+- **For tools that did NOT run**: Baseline entries are preserved unchanged
+- **Tool-specific refresh**: If running a subset of tools (via `--tools` or `--skip-tools`), only those tools' baseline entries are refreshed; other tools' entries remain untouched
+
+This ensures the baseline accurately reflects the current state while preserving entries for tools that weren't executed in this run.
 
 ## Suppression vs Baseline
 

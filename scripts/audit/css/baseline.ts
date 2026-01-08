@@ -95,7 +95,13 @@ export function filterAgainstBaseline(
 }
 
 /**
- * Update baseline with new findings
+ * Update baseline with new findings from tools
+ * 
+ * Prunes entries for tools that ran (replacing them with current findings),
+ * but preserves entries for tools that did not run.
+ * 
+ * This ensures the baseline reflects the current state of tools that executed,
+ * while maintaining entries for tools that weren't executed in this run.
  */
 export function updateBaseline(
   baseline: Baseline,
@@ -104,9 +110,30 @@ export function updateBaseline(
   ctx: ToolContext
 ): Baseline {
   const toolMap = new Map(tools.map(t => [t.id, t]));
-  const updated = { ...baseline };
-  updated.timestamp = new Date().toISOString();
+  const toolIds = new Set(tools.map(t => t.id));
+  const now = new Date().toISOString();
 
+  // Build a map of findings by fingerprint for quick lookup
+  const findingsByFingerprint = new Map<string, Finding>();
+  for (const finding of findings) {
+    findingsByFingerprint.set(finding.fingerprint, finding);
+  }
+
+  // Start with entries from tools that didn't run (preserve them)
+  const preservedEntries: Record<string, BaselineEntry> = {};
+  for (const [key, entry] of Object.entries(baseline.findings)) {
+    // Keep entries for tools that didn't run in this execution
+    if (!toolIds.has(entry.tool)) {
+      preservedEntries[key] = entry;
+    }
+  }
+
+  // Build updated findings map
+  const updatedFindings: Record<string, BaselineEntry> = { ...preservedEntries };
+
+  // Process findings from tools that ran:
+  // - Add new findings that should be included
+  // - Update existing entries for tools that ran
   for (const finding of findings) {
     const tool = toolMap.get(finding.tool);
     const shouldInclude = tool?.baselineInclude
@@ -115,19 +142,44 @@ export function updateBaseline(
 
     if (shouldInclude) {
       const key = `${finding.tool}:${finding.ruleId}:${finding.fingerprint}`;
-      updated.findings[key] = {
+      const existingEntry = baseline.findings[key];
+      
+      // Preserve lastSeen if entry already exists (reduces churn)
+      const lastSeen = existingEntry?.lastSeen ?? now;
+      
+      updatedFindings[key] = {
         tool: finding.tool,
         ruleId: finding.ruleId,
         ...(finding.file ? { file: finding.file } : {}),
         fingerprint: finding.fingerprint,
         severity: finding.severity,
         message: finding.message,
-        lastSeen: new Date().toISOString(),
+        lastSeen,
       };
+    } else {
+      // Remove from baseline if tool says it shouldn't be included
+      const key = `${finding.tool}:${finding.ruleId}:${finding.fingerprint}`;
+      delete updatedFindings[key];
     }
   }
 
-  return updated;
+  // Prune entries for tools that ran but are no longer present in findings
+  // This handles the case where a finding was fixed and no longer appears
+  for (const [key, entry] of Object.entries(baseline.findings)) {
+    if (toolIds.has(entry.tool)) {
+      // This tool ran - if entry isn't in current findings, it means the issue was resolved
+      if (!findingsByFingerprint.has(entry.fingerprint)) {
+        // Entry was removed (issue fixed) - remove from updated baseline
+        delete updatedFindings[key];
+      }
+    }
+  }
+
+  return {
+    version: baseline.version,
+    timestamp: now,
+    findings: updatedFindings,
+  };
 }
 
 /**
