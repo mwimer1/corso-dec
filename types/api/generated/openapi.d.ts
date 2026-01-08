@@ -606,8 +606,6 @@ export interface components {
         };
     };
     parameters: {
-        /** @description Organization identifier header for tenant scoping */
-        OrgIdHeader: string;
         /** @description Optional organization identifier header for tenant scoping (used for personal-scope routes that support both org-scoped and user-scoped access) */
         OrgIdHeaderOptional: string;
     };

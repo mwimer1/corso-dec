@@ -1189,16 +1189,6 @@
       }
     },
     "parameters": {
-      "OrgIdHeader": {
-        "name": "X-Corso-Org-Id",
-        "in": "header",
-        "description": "Organization identifier header for tenant scoping",
-        "required": true,
-        "schema": {
-          "type": "string",
-          "format": "uuid"
-        }
-      },
       "OrgIdHeaderOptional": {
         "name": "X-Corso-Org-Id",
         "in": "header",
