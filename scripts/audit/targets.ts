@@ -6,7 +6,7 @@
  * Handles changed file detection and filtering.
  */
 
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
 import { glob } from 'glob';
 import { normalize } from 'node:path';
 import type { TargetSet } from './types';
@@ -21,18 +21,56 @@ export interface TargetBuilderOptions {
 }
 
 /**
- * Get changed files from git
+ * Execute git command using execFileSync for security (avoids shell injection)
  */
-function getChangedFiles(rootDir: string, since: string): string[] {
+function git(rootDir: string, args: string[]): string {
   try {
-    const output = execSync(
-      `git diff --name-only --diff-filter=ACMR ${since} HEAD`,
-      {
-        cwd: rootDir,
-        encoding: 'utf8',
-        stdio: ['pipe', 'pipe', 'ignore'],
-      }
-    ).trim();
+    return execFileSync('git', args, {
+      cwd: rootDir,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim();
+  } catch {
+    return '';
+  }
+}
+
+/**
+ * Try to get merge-base commit between since and HEAD
+ * Returns null if merge-base cannot be computed (e.g., not a branch, invalid ref)
+ */
+function tryMergeBase(rootDir: string, since: string): string | null {
+  try {
+    const mb = git(rootDir, ['merge-base', since, 'HEAD']);
+    return mb || null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Get changed files from git
+ * 
+ * For branch comparisons (e.g., --since main), computes the merge-base
+ * to correctly identify files changed only on the current branch.
+ * 
+ * This prevents false positives when comparing against a branch that has
+ * diverged (e.g., main has new commits after your branch was cut).
+ * 
+ * @internal Exported for testing only
+ */
+export function getChangedFiles(rootDir: string, since: string): string[] {
+  try {
+    // Try to find merge-base first (works for branch comparisons)
+    const baseRef = tryMergeBase(rootDir, since) ?? since;
+
+    const output = git(rootDir, [
+      'diff',
+      '--name-only',
+      '--diff-filter=ACMR',
+      baseRef,
+      'HEAD',
+    ]);
 
     if (!output) {
       return [];

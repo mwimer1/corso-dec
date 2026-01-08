@@ -136,6 +136,12 @@ export function filterAgainstBaseline(
 
 /**
  * Update baseline with new findings from tools
+ * 
+ * Prunes entries for tools that ran (replacing them with current findings),
+ * but preserves entries for tools that did not run.
+ * 
+ * This ensures the baseline reflects the current state of tools that executed,
+ * while maintaining entries for tools that weren't executed in this run.
  */
 export function updateBaseline(
   baseline: Baseline,
@@ -144,37 +150,70 @@ export function updateBaseline(
   ctx: ToolContext
 ): Baseline {
   const toolMap = new Map(tools.map(t => [t.id, t]));
-  const existingFingerprints = new Set(baseline.entries.map(e => e.fingerprint));
-  const entries: BaselineEntry[] = [...baseline.entries];
+  const toolIds = new Set(tools.map(t => t.id));
   const now = new Date().toISOString();
 
+  // Build a map of findings by fingerprint for quick lookup
+  const findingsByFingerprint = new Map<string, Finding>();
   for (const finding of findings) {
-    // Skip if already in baseline
-    if (existingFingerprints.has(finding.fingerprint)) {
-      continue;
-    }
+    findingsByFingerprint.set(finding.fingerprint, finding);
+  }
 
-    // Check if tool wants this finding in baseline
+  // Start with entries from tools that didn't run (preserve them)
+  const preservedEntries: BaselineEntry[] = baseline.entries.filter(entry => {
+    // Keep entries for tools that didn't run in this execution
+    return !toolIds.has(entry.tool);
+  });
+
+  // Build entries map for deduplication
+  const entryMap = new Map<string, BaselineEntry>();
+
+  // First, add preserved entries (for tools that didn't run)
+  for (const entry of preservedEntries) {
+    entryMap.set(entry.fingerprint, entry);
+  }
+
+  // Then, process findings from tools that ran:
+  // - Add new findings that should be included
+  // - Update existing entries for tools that ran (replaces old entries)
+  for (const finding of findings) {
     const tool = toolMap.get(finding.tool);
     const shouldInclude = tool?.baselineInclude
       ? tool.baselineInclude(finding, ctx)
       : defaultBaselineInclude(finding, ctx);
 
     if (shouldInclude) {
-      entries.push({
+      // Add or update entry for this finding
+      entryMap.set(finding.fingerprint, {
         fingerprint: finding.fingerprint,
         tool: finding.tool,
         ruleId: finding.ruleId,
         severity: finding.severity,
         addedAt: now,
       });
+    } else {
+      // Remove from baseline if tool says it shouldn't be included
+      entryMap.delete(finding.fingerprint);
+    }
+  }
+
+  // Prune entries for tools that ran but are no longer present in findings
+  // This handles the case where a finding was fixed and no longer appears
+  // We need to explicitly remove old entries that are not in the current findings
+  for (const entry of baseline.entries) {
+    if (toolIds.has(entry.tool)) {
+      // This tool ran - if entry isn't in current findings, it means the issue was resolved
+      if (!findingsByFingerprint.has(entry.fingerprint)) {
+        // Entry was removed (issue fixed) - remove from entryMap if present
+        entryMap.delete(entry.fingerprint);
+      }
     }
   }
 
   return {
     version: baseline.version,
     generatedAt: now,
-    entries,
+    entries: Array.from(entryMap.values()),
   };
 }
 

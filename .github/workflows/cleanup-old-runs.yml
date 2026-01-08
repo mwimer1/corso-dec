@@ -9,7 +9,7 @@ on:
       days_old:
         description: 'Delete runs older than this many days'
         required: false
-        default: '90'
+        default: '30'
         type: number
       dry_run:
         description: 'If true, only list runs (no deletions)'
@@ -40,7 +40,7 @@ jobs:
       - name: Calculate cutoff date
         id: cutoff
         run: |
-          DAYS_OLD="${{ github.event.inputs.days_old || 90 }}"
+          DAYS_OLD="${{ github.event.inputs.days_old || 30 }}"
           CUTOFF=$(date -u -d "${DAYS_OLD} days ago" +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date -u -v-${DAYS_OLD}d +%Y-%m-%dT%H:%M:%SZ)
           echo "cutoff=${CUTOFF}" >> $GITHUB_OUTPUT
           echo "days_old=${DAYS_OLD}" >> $GITHUB_OUTPUT
@@ -141,5 +141,5 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "✅ Cleanup completed successfully" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "This workflow automatically deletes completed workflow runs older than 90 days" >> $GITHUB_STEP_SUMMARY
+          echo "This workflow automatically deletes completed workflow runs older than 30 days" >> $GITHUB_STEP_SUMMARY
           echo "to reduce GitHub Actions storage usage while maintaining recent history." >> $GITHUB_STEP_SUMMARY
