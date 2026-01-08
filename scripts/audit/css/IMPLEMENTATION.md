@@ -19,8 +19,7 @@ scripts/audit/css/
 │   ├── index.ts               # Tool registry
 │   ├── unused-classes.ts      # Unused CSS classes detector
 │   ├── overlapping-rules.ts   # Overlapping rules detector
-│   ├── best-practices.ts      # Best practices checker
-│   └── stylelint-adapter.ts   # Example adapter for existing tools
+│   └── best-practices.ts      # Best practices checker
 ├── README.md                   # User documentation
 └── IMPLEMENTATION.md          # This file
 ```
@@ -69,10 +68,6 @@ scripts/audit/css/
   - Hardcoded colors (hex, RGB)
   - Hardcoded spacing (px, rem)
   - Token usage compliance
-
-#### Stylelint Adapter (`tools/stylelint-adapter.ts`)
-- **Example**: Shows how to wrap existing tools
-- **Note**: Requires stylelint programmatic API integration
 
 ### 4. Reporting (`reporter.ts`)
 - **Pretty**: Human-readable console output with colors

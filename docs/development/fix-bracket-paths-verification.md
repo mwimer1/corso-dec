@@ -18,9 +18,8 @@ This document outlines verification steps for the fix that prevents Windows from
 ## Files Changed
 
 1. `scripts/utils/git.ts` - Core git utility functions (3 functions fixed)
-2. `scripts/maintenance/validate-docs-on-commit.ts` - Documentation validation script
-3. `scripts/assert-no-colocated-tests.cjs` - Test location validation script
-4. `scripts/utils/__tests__/git.test.ts` - New regression test
+2. `scripts/assert-no-colocated-tests.cjs` - Test location validation script
+3. `scripts/utils/__tests__/git.test.ts` - New regression test
 
 ## Verification Steps
 

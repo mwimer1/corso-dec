@@ -216,7 +216,6 @@ All lint scripts validated: lint:scripts ✅, lint:filenames ✅
 3. `pnpm typecheck` (TypeScript)
 4. `pnpm lint` (ESLint + ast-grep)
 5. `pnpm lint-staged` (ESLint --fix on staged files)
-6. `pnpm tsx scripts/maintenance/validate-docs-on-commit.ts` (docs freshness)
 
 **Baseline**: ~15-30 seconds (pre-commit, runs on staged files only)
 

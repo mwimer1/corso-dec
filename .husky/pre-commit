@@ -166,13 +166,9 @@ else
 fi
 
 # Run docs validation (can run in parallel with others, but keeping sequential for cleaner output)
+# Note: validate-docs-on-commit.ts was removed - docs validation is now handled by CI
 if [ "$NEEDS_DOCS_CHECK" = "true" ]; then
-  CHECK_NUM=$((CHECK_NUM + 1))
-  echo "[$CHECK_NUM/$TOTAL_CHECKS] Validating documentation freshness..."
-  pnpm tsx scripts/maintenance/validate-docs-on-commit.ts || EXIT_CODE=$?
-  if [ $EXIT_CODE -ne 0 ]; then
-    exit $EXIT_CODE
-  fi
+  echo "⏭️  Validating documentation freshness... (skipped - validation moved to CI)"
 else
   echo "⏭️  Validating documentation freshness... (skipped - no docs files changed)"
 fi

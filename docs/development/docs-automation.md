@@ -78,7 +78,6 @@ pnpm docs:links --links-only
 
 These scripts are integrated into CI workflows:
 
-- **Pre-commit**: Runs lightweight validation via `validate-docs-on-commit.ts`
 - **CI Pipeline**: Runs full validation including content checks
 - **PR Checks**: Validates documentation changes
 
