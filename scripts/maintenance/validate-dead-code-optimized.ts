@@ -99,6 +99,25 @@ const TOOLING_CONFIG_PATTERN =
 const TEST_FILE_PATTERN =
   /(^|[\\/])(tests?|__tests__)[\\/]|(\.|[\\/])(spec|test)\.(t|j)sx?$|\.test\./;
 
+/**
+ * Importer counting policy for orphan detection.
+ *
+ * Key nuance: Next.js route entrypoints (page/layout/etc.) are excluded from being
+ * REPORTED as orphan candidates, but they MUST still count as IMPORTERS.
+ *
+ * Otherwise, any file imported only by a route file becomes a false-positive orphan.
+ */
+function countsAsOrphanImporter(importerFile: string): boolean {
+  // Test-only importers do NOT rescue an orphan (by design).
+  if (TEST_FILE_PATTERN.test(importerFile)) return false;
+
+  // IMPORTANT: Do NOT exclude Next.js route files here.
+  // Route files are framework entrypoints and are excluded as ORPHAN CANDIDATES,
+  // but they must count as IMPORTERS for dependency liveness.
+
+  return true;
+}
+
 // For the full dependency graph, exclude obvious build output to avoid noisy graph growth
 const FULL_GRAPH_EXCLUDE = [
   MADGE_CONFIG.exclude,
@@ -307,10 +326,18 @@ function computeOrphansAndImporters(
     }
   }
 
-  // Orphans are files with indegree == 0 (no imports from within the graph)
-  const orphansRaw = Object.entries(indegree)
-    .filter(([_, count]) => count === 0)
-    .map(([file]) => file);
+  /**
+   * Orphans are files with *effective* indegree == 0, where "effective"
+   * importers exclude test-only importers but INCLUDE Next.js route entrypoints.
+   *
+   * This prevents false positives where a file is only imported by `page.tsx`
+   * (or other framework entrypoints) which are excluded as orphan candidates.
+   */
+  const orphansRaw = Object.keys(indegree).filter((file) => {
+    const importers = reverseGraph[file] || [];
+    const effectiveImporterCount = importers.filter(countsAsOrphanImporter).length;
+    return effectiveImporterCount === 0;
+  });
 
   // Sort reverse graph arrays for determinism
   for (const key of Object.keys(reverseGraph)) {
@@ -392,12 +419,22 @@ async function runMadgeChecks(): Promise<{
       }
 
       // Compute orphans from graph
+      // IMPORTANT: Use fullGraph for reverse graph to include route files (page.tsx, etc.)
+      // that might not be in orphanGraph. Route files are entrypoints and must count as importers.
       if (Object.keys(orphanGraph).length > 0) {
-        const { orphansRaw, reverseGraph } = computeOrphansAndImporters(orphanGraph);
+        // Build reverse graph from fullGraph (includes all files) but compute orphans
+        // only for files in orphanGraph scope (app/components/lib/types/styles)
+        const { orphansRaw, reverseGraph } = computeOrphansAndImporters(fullGraph);
         orphanReverseGraph = reverseGraph;
         
+        // Filter orphans to only include files in the orphanGraph scope
+        // (we computed from fullGraph to get complete importer info, but only
+        // report orphans from the scoped directories)
+        const orphanGraphFiles = new Set(Object.keys(orphanGraph).map(normalizeMadgePath));
+        const scopedOrphans = orphansRaw.filter(file => orphanGraphFiles.has(normalizeMadgePath(file)));
+        
         // Filter using isReportableOrphan helper
-        orphans = orphansRaw.filter(file => isReportableOrphan(file));
+        orphans = scopedOrphans.filter(file => isReportableOrphan(file));
       }
     } catch {
       // If JSON parsing fails, fallback to empty graph
