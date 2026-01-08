@@ -43,6 +43,18 @@ jobs:
       artifact_path: .next/
     secrets: inherit
 
+  markdown-lint:
+    name: Markdown Lint
+    uses: ./.github/workflows/_reusable-node-job.yml
+    permissions:
+      contents: read
+    with:
+      name: markdown-lint
+      fetch_depth: 0
+      install: true
+      run: pnpm lint:md
+    secrets: inherit
+
   lighthouse:
     name: Performance Audit
     needs: setup
