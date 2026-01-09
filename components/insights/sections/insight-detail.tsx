@@ -79,11 +79,40 @@ export const InsightDetail = React.forwardRef<
         FORBID_TAGS: ["script", "style"],
       });
 
-      // De-dupe: Remove "Key takeaways" section from HTML if keyTakeaways exists
-      if (keyTakeaways && keyTakeaways.length > 0) {
-        try {
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(sanitized, "text/html");
+      // Generate slug from heading text
+      const generateSlug = (text: string): string => {
+        return text
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric with -
+          .replace(/-+/g, '-') // Collapse repeated -
+          .replace(/^-|-$/g, ''); // Strip leading/trailing -
+      };
+
+      // Ensure unique ID within document
+      const ensureUniqueId = (baseId: string, usedIds: Set<string>, index: number): string => {
+        if (!baseId) {
+          return `section-${index}`;
+        }
+        
+        let candidate = baseId;
+        let counter = 2;
+        
+        while (usedIds.has(candidate)) {
+          candidate = `${baseId}-${counter}`;
+          counter++;
+        }
+        
+        usedIds.add(candidate);
+        return candidate;
+      };
+
+      try {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(sanitized, "text/html");
+
+        // De-dupe: Remove "Key takeaways" section from HTML if keyTakeaways exists
+        if (keyTakeaways && keyTakeaways.length > 0) {
           const headings = doc.querySelectorAll("h2");
           
           for (const heading of headings) {
@@ -111,12 +140,49 @@ export const InsightDetail = React.forwardRef<
               break; // Only process first match
             }
           }
-          
-          sanitized = doc.body.innerHTML;
-        } catch {
-          // If DOM parsing fails, fall back to original sanitized content
-          // This ensures we don't break rendering if something goes wrong
         }
+
+        // Track used IDs to ensure uniqueness (after removing Key takeaways)
+        const usedIds = new Set<string>();
+        
+        // Collect existing IDs from remaining elements
+        const allElements = doc.querySelectorAll('[id]');
+        allElements.forEach((el) => {
+          const id = el.getAttribute('id');
+          if (id) {
+            usedIds.add(id);
+          }
+        });
+
+        // Generate IDs for h2 and h3 headings that lack them
+        const headings = doc.querySelectorAll("h2, h3");
+        let headingIndex = 0;
+        
+        headings.forEach((heading) => {
+          const existingId = heading.getAttribute('id');
+          
+          // Only generate ID if missing or empty
+          if (!existingId || existingId.trim() === '') {
+            const text = heading.textContent?.trim() || "";
+            
+            if (text) {
+              const baseSlug = generateSlug(text);
+              const finalId = ensureUniqueId(baseSlug, usedIds, headingIndex);
+              heading.setAttribute('id', finalId);
+              headingIndex++;
+            } else {
+              // Fallback for empty headings
+              const fallbackId = ensureUniqueId('', usedIds, headingIndex);
+              heading.setAttribute('id', fallbackId);
+              headingIndex++;
+            }
+          }
+        });
+        
+        sanitized = doc.body.innerHTML;
+      } catch {
+        // If DOM parsing fails, fall back to original sanitized content
+        // This ensures we don't break rendering if something goes wrong
       }
 
       return sanitized;
@@ -178,8 +244,8 @@ export const InsightDetail = React.forwardRef<
           "prose-h4:text-xl prose-h4:mt-4 prose-h4:mb-2",
           // Paragraphs
           "prose-p:text-foreground/90 prose-p:leading-relaxed prose-p:mb-4",
-          // Links
-          "prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-medium prose-a:transition-colors",
+          // Links - underlined by default for accessibility (not color-only)
+          "prose-a:text-primary prose-a:underline prose-a:underline-offset-2 hover:prose-a:underline-offset-4 prose-a:font-medium prose-a:transition-colors focus-visible:prose-a:outline-none focus-visible:prose-a:ring-2 focus-visible:prose-a:ring-ring focus-visible:prose-a:ring-offset-2 focus-visible:prose-a:rounded-sm",
           // Strong and emphasis
           "prose-strong:text-foreground prose-strong:font-semibold",
           "prose-em:text-foreground prose-em:italic",

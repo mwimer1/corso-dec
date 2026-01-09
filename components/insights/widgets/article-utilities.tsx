@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/atoms/button";
 import { cn } from "@/styles";
 import { ArrowUp, Check, Copy } from "lucide-react";
+import usePrefersReducedMotion from "@/components/landing/hooks/use-prefers-reduced-motion";
 import * as React from "react";
 
 interface CopyLinkButtonProps {
@@ -98,6 +99,7 @@ export function BackToTopButton({
   offset = 0,
 }: BackToTopButtonProps): React.ReactElement {
   const [isVisible, setIsVisible] = React.useState(false);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -117,9 +119,9 @@ export function BackToTopButton({
   const handleClick = React.useCallback(() => {
     window.scrollTo({
       top: offset,
-      behavior: "smooth",
+      behavior: prefersReducedMotion ? "auto" : "smooth",
     });
-  }, [offset]);
+  }, [offset, prefersReducedMotion]);
 
   if (!isVisible) {
     return <></>;

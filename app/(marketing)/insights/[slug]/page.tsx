@@ -10,6 +10,7 @@ import { PublicLayout } from "@/components";
 import { InsightDetail } from "@/components/insights";
 import { getInsightsNavItems } from "@/components/insights/layout/nav.config";
 import { resolveInsightImageUrl } from "@/components/insights/utils/image-resolver";
+import { getEnv } from "@/lib/server/env";
 import { getInsightBySlug, getRelatedInsights } from "@/lib/marketing/server";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -29,11 +30,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const item = await getInsightBySlug(slug);
 
   if (item) {
+    const siteUrl = getEnv().NEXT_PUBLIC_SITE_URL ?? 'https://getcorso.com';
     const description = item.description ?? `Read ${item.title} on Corso Insights`;
-    const url = `https://getcorso.com/insights/${slug}`;
-    const canonicalUrl = new URL(url, 'https://getcorso.com').toString();
-    // Resolve image URL using shared resolver for consistency
+    const canonicalUrl = new URL(`/insights/${slug}`, siteUrl).toString();
+    
+    // Resolve image URL using shared resolver for consistency, then ensure absolute
     const resolvedImage = resolveInsightImageUrl(item);
+    const absoluteImageUrl = new URL(resolvedImage, siteUrl).toString();
 
     return {
       title: `${item.title} | Corso Insights`,
@@ -44,7 +47,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         description,
         url: canonicalUrl,
         type: 'article',
-        images: [{ url: resolvedImage, alt: item.title }],
+        images: [{ url: absoluteImageUrl, alt: item.title }],
         publishedTime: item.publishDate,
         authors: item.author?.name ? [item.author.name] : undefined,
         section: item.categories?.map((cat: { name: string }) => cat.name).join(', '),
@@ -54,7 +57,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         card: 'summary_large_image',
         title: item.title,
         description,
-        images: [resolvedImage],
+        images: [absoluteImageUrl],
       },
     };
   }
@@ -84,10 +87,35 @@ export default async function InsightPage({ params }: { params: Promise<{ slug: 
     ...(insight.readingTime !== undefined && { readingTime: insight.readingTime }),
   }));
 
-  const canonicalUrl = new URL(`/insights/${slug}`, 'https://getcorso.com').toString();
+  const siteUrl = getEnv().NEXT_PUBLIC_SITE_URL ?? 'https://getcorso.com';
+  const canonicalUrl = new URL(`/insights/${slug}`, siteUrl).toString();
 
-  // Resolve image URL using shared resolver for consistency
+  // Resolve image URL using shared resolver for consistency, then ensure absolute
   const resolvedImage = resolveInsightImageUrl(item);
+  const absoluteImageUrl = new URL(resolvedImage, siteUrl).toString();
+
+  // Normalize dates to ISO format (already ISO, but ensure consistency)
+  // Validate dates are valid before converting to ISO string
+  const datePublished = item.publishDate ? (() => {
+    try {
+      const date = new Date(item.publishDate);
+      return isNaN(date.getTime()) ? undefined : date.toISOString();
+    } catch {
+      return item.publishDate; // Fallback to original if conversion fails
+    }
+  })() : undefined;
+  
+  const dateModified = (item.updatedDate ?? item.publishDate) ? (() => {
+    try {
+      const date = new Date(item.updatedDate ?? item.publishDate!);
+      return isNaN(date.getTime()) ? undefined : date.toISOString();
+    } catch {
+      return item.updatedDate ?? item.publishDate; // Fallback to original if conversion fails
+    }
+  })() : undefined;
+
+  // Extract keywords from categories (optional SEO enhancement)
+  const keywords = item.categories?.map((cat: { name: string; slug: string }) => cat.name || cat.slug).filter(Boolean);
 
   // Generate structured data for SEO
   const jsonLd = {
@@ -95,20 +123,21 @@ export default async function InsightPage({ params }: { params: Promise<{ slug: 
     '@type': 'Article',
     headline: item.title,
     description: item.description ?? `Read ${item.title} on Corso Insights`,
-    image: [resolvedImage],
-    datePublished: item.publishDate,
-    dateModified: item.updatedDate ?? item.publishDate, // Use updatedDate if available, fallback to publishDate
+    image: [absoluteImageUrl],
+    datePublished,
+    dateModified,
+    ...(keywords && keywords.length > 0 && { keywords: keywords.join(', ') }),
     author: item.author?.name ? {
       '@type': 'Person',
       name: item.author.name,
-      ...(item.author.avatar && { image: item.author.avatar })
+      ...(item.author.avatar && { image: new URL(item.author.avatar, siteUrl).toString() })
     } : undefined,
     publisher: {
       '@type': 'Organization',
       name: 'Corso',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://getcorso.com/logo.svg'
+        url: new URL('/logo.svg', siteUrl).toString()
       }
     },
     mainEntityOfPage: {
@@ -126,13 +155,13 @@ export default async function InsightPage({ params }: { params: Promise<{ slug: 
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://getcorso.com/'
+        item: new URL('/', siteUrl).toString()
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Insights',
-        item: 'https://getcorso.com/insights'
+        item: new URL('/insights', siteUrl).toString()
       },
       {
         '@type': 'ListItem',

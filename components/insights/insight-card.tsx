@@ -15,6 +15,7 @@ export function InsightCard({
   date,
   readingTime,
   variant = 'standard',
+  onClick,
   className
 }: InsightCardProps & { className?: string }) {
   const displayDate = date ? new Date(date).toLocaleDateString('en-US', {
@@ -50,7 +51,7 @@ export function InsightCard({
       <div className="flex-1 flex flex-col p-5">
         {category && (
           <div className="mb-3 flex items-center gap-2 text-xs text-muted-foreground">
-            <Badge color="secondary" className="rounded-full px-2 py-0 text-xs">
+            <Badge color="secondary">
               {category}
             </Badge>
             {displayDate && (
@@ -71,6 +72,7 @@ export function InsightCard({
         <h3 className="text-lg font-semibold leading-snug flex-1">
           <Link
             href={href}
+            {...(onClick && { onClick })}
             className={cn(
               'block h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm no-underline',
               variant === 'overlay' ? 'text-white hover:text-white/90' : 'text-foreground hover:text-primary'
@@ -109,6 +111,7 @@ export function InsightCard({
         )}>
           <Link
             href={href}
+            {...(onClick && { onClick })}
             className="inline-flex items-center gap-1 transition-transform hover:translate-x-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
           >
             Read more <ArrowRight className="h-4 w-4" />

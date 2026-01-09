@@ -2,6 +2,7 @@
 
 import { cn } from "@/styles";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import usePrefersReducedMotion from "@/components/landing/hooks/use-prefers-reduced-motion";
 import * as React from "react";
 
 export interface TableOfContentsItem {
@@ -31,6 +32,7 @@ export function TableOfContents({
 }: TableOfContentsProps): React.ReactElement | null {
   const [isOpen, setIsOpen] = React.useState(false);
   const [headings, setHeadings] = React.useState<TableOfContentsItem[]>([]);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   // Extract headings from HTML content
   React.useEffect(() => {
@@ -83,7 +85,7 @@ export function TableOfContents({
 
       window.scrollTo({
         top: offsetPosition,
-        behavior: "smooth",
+        behavior: prefersReducedMotion ? "auto" : "smooth",
       });
 
       // Close mobile menu after navigation
@@ -125,7 +127,7 @@ export function TableOfContents({
         {isOpen && (
           <nav
             id="toc-mobile-content"
-            aria-label="Table of contents"
+            aria-label="On this page"
             className={cn(
               "mt-2 rounded-lg border border-border bg-muted/30 p-4",
               "max-h-[60vh] overflow-y-auto"
@@ -165,10 +167,12 @@ export function TableOfContents({
           "max-h-[calc(100vh-8rem)] overflow-y-auto",
           className
         )}
-        aria-label="Table of contents"
       >
-        <nav className="rounded-lg border border-border bg-muted/30 p-4">
-          <h2 className="text-sm font-semibold text-foreground mb-3">On this page</h2>
+        <nav 
+          className="rounded-lg border border-border bg-muted/30 p-4"
+          aria-labelledby="toc-heading"
+        >
+          <h2 id="toc-heading" className="text-sm font-semibold text-foreground mb-3">On this page</h2>
           <ul className="space-y-2">
             {headings.map((heading) => (
               <li key={heading.id}>

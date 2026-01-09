@@ -1,11 +1,25 @@
 // scripts/audit/audit-insights.ts
 // Audit script for Insights mock CMS data validation
+//
+// Validates content conventions and structure for Insights mock CMS data:
+// - Schema validation (Zod)
+// - Content HTML checks (h1, img alt, heading IDs)
+// - Category validation (slug references)
+// - Key takeaways constraints
+//
+// Usage:
+//   pnpm audit:insights
+//
+// Exit codes:
+//   0 = Pass (no errors, warnings allowed)
+//   1 = Fail (errors found)
 import { readFile, readdir } from 'fs/promises';
 import { join } from 'path';
 import { z } from 'zod';
 
 const MOCKCMS_ROOT = join(process.cwd(), 'public', '__mockcms__');
 const INSIGHTS_DIR = join(MOCKCMS_ROOT, 'insights');
+const CATEGORIES_DIR = join(MOCKCMS_ROOT, 'categories');
 
 // Reuse schemas from mockcms-adapter
 const CategorySchema = z
@@ -114,6 +128,45 @@ async function auditInsightFile(filePath: string): Promise<AuditResult> {
         if (hasKeyTakeawaysSection) {
           result.warnings.push('keyTakeaways exists but HTML content also contains "Key takeaways" section (should be removed)');
         }
+
+        // Content HTML validation checks
+        // Fail if content contains <h1 (case-insensitive)
+        if (/<h1\b/i.test(content)) {
+          result.errors.push('Content contains <h1> tag (only h2-h6 should be used; h1 is reserved for page title)');
+        }
+
+        // Fail if any <img> is missing alt attribute
+        const imgMatches = Array.from(content.matchAll(/<img\b[^>]*>/gi));
+        const imagesWithoutAlt = imgMatches.filter((imgMatch) => {
+          const imgTag = imgMatch[0];
+          return !/alt\s*=/i.test(imgTag);
+        });
+        if (imagesWithoutAlt.length > 0) {
+          result.errors.push(`Content contains ${imagesWithoutAlt.length} <img> tag(s) without alt attribute (accessibility requirement)`);
+        }
+
+        // Warn if <h2> or <h3> is missing id attribute (IDs are generated at render-time, but it's better if they exist)
+        const headingMatches = Array.from(content.matchAll(/<(h2|h3)\b[^>]*>/gi));
+        const headingsWithoutId = headingMatches.filter((headingMatch) => {
+          const headingTag = headingMatch[0];
+          return !/id\s*=/i.test(headingTag);
+        });
+        if (headingsWithoutId.length > 0) {
+          const h2Count = headingsWithoutId.filter((m) => m[1]?.toLowerCase() === 'h2').length;
+          const h3Count = headingsWithoutId.filter((m) => m[1]?.toLowerCase() === 'h3').length;
+          const counts = [];
+          if (h2Count > 0) counts.push(`${h2Count} <h2>`);
+          if (h3Count > 0) counts.push(`${h3Count} <h3>`);
+          result.warnings.push(`Content contains ${counts.join(' and ')} tag(s) without id attribute (IDs are generated at render-time, but explicit IDs are preferred for stability)`);
+        }
+      }
+
+      // Warn if description contains < or > (likely unintended HTML)
+      if (parsed.description) {
+        const description = parsed.description as string;
+        if (/[<>]/.test(description)) {
+          result.warnings.push('Description contains < or > characters (likely unintended HTML - should be plain text)');
+        }
       }
     }
 
@@ -142,8 +195,24 @@ async function auditInsightFile(filePath: string): Promise<AuditResult> {
   return result;
 }
 
+async function loadCategories(): Promise<Set<string>> {
+  try {
+    const categoriesPath = join(CATEGORIES_DIR, 'index.json');
+    const raw = await readFile(categoriesPath, 'utf-8');
+    const parsed = JSON.parse(raw);
+    const validated = z.array(CategorySchema).parse(parsed);
+    return new Set(validated.map((cat) => cat.slug));
+  } catch (error) {
+    console.warn('⚠️  Warning: Could not load categories index for validation');
+    return new Set();
+  }
+}
+
 async function main() {
   console.log('Auditing Insights mock CMS data...\n');
+
+  // Load categories for validation
+  const validCategorySlugs = await loadCategories();
 
   const files = await readdir(INSIGHTS_DIR);
   const jsonFiles = files.filter((f) => f.endsWith('.json'));
@@ -153,6 +222,26 @@ async function main() {
   for (const file of jsonFiles) {
     const filePath = join(INSIGHTS_DIR, file);
     const result = await auditInsightFile(filePath);
+
+    // Category validation - check all referenced category slugs exist
+    if (!filePath.endsWith('index.json')) {
+      try {
+        const raw = await readFile(filePath, 'utf-8');
+        const parsed = JSON.parse(raw);
+        
+        if (parsed.categories && Array.isArray(parsed.categories)) {
+          for (const cat of parsed.categories) {
+            const slug = cat?.slug;
+            if (slug && typeof slug === 'string' && validCategorySlugs.size > 0 && !validCategorySlugs.has(slug)) {
+              result.errors.push(`Category slug "${slug}" does not exist in categories index`);
+            }
+          }
+        }
+      } catch {
+        // Skip if file parsing failed (already reported above)
+      }
+    }
+
     results.push(result);
   }
 

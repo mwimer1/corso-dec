@@ -103,7 +103,7 @@ export const InsightsList = React.forwardRef<HTMLDivElement, InsightsListProps>(
           )}
           aria-label="Insights articles"
         >
-          {insights.map((insight) => {
+          {insights.map((insight, index) => {
             const imageSrc = resolveInsightImageUrl(insight);
             return (
               <li key={insight.id} className="m-0 p-0 list-none">
@@ -118,6 +118,7 @@ export const InsightsList = React.forwardRef<HTMLDivElement, InsightsListProps>(
                   author={insight.author ? {
                     name: insight.author.name
                   } : undefined}
+                  {...(onResultClick && { onClick: () => onResultClick(insight.slug, index) })}
                 />
               </li>
             );

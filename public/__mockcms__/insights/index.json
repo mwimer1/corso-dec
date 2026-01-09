@@ -8,8 +8,8 @@
     "imageUrl": "/demos/projects-interface.png",
     "categories": [
       {
-        "slug": "data",
-        "name": "Data & Insights"
+      "slug": "data",
+      "name": "Data"
       },
       {
         "slug": "operations",
@@ -39,8 +39,8 @@
         "name": "Innovation"
       },
       {
-        "slug": "data",
-        "name": "Data & Insights"
+      "slug": "data",
+      "name": "Data"
       }
     ],
     "readingTime": 8,
@@ -85,8 +85,8 @@
         "name": "Safety"
       },
       {
-        "slug": "data",
-        "name": "Data & Insights"
+      "slug": "data",
+      "name": "Data"
       }
     ],
     "readingTime": 8,
@@ -131,8 +131,8 @@
         "name": "Cost Management"
       },
       {
-        "slug": "data",
-        "name": "Data & Insights"
+      "slug": "data",
+      "name": "Data"
       }
     ],
     "readingTime": 7,
@@ -154,8 +154,8 @@
         "name": "Operations"
       },
       {
-        "slug": "data",
-        "name": "Data & Insights"
+      "slug": "data",
+      "name": "Data"
       }
     ],
     "readingTime": 6,
@@ -292,8 +292,8 @@
     "imageUrl": "/demos/companies-interface.png",
     "categories": [
       {
-        "slug": "data",
-        "name": "Data & Insights"
+      "slug": "data",
+      "name": "Data"
       },
       {
         "slug": "technology",
@@ -361,8 +361,8 @@
     "imageUrl": "/demos/companies-interface.png",
     "categories": [
       {
-        "slug": "data",
-        "name": "Data & Insights"
+      "slug": "data",
+      "name": "Data"
       },
       {
         "slug": "operations",

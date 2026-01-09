@@ -5,14 +5,20 @@
 // client component to avoid invoking React hooks in a Server Component context
 // during prerender/build.
 import * as React from "react";
+import usePrefersReducedMotion from "@/components/landing/hooks/use-prefers-reduced-motion";
 
 export default function ScrollToFAQ(): null {
+  const prefersReducedMotion = usePrefersReducedMotion();
+
   const scrollToFAQ = React.useCallback(() => {
     if (typeof window !== "undefined" && window.location.hash === "#faq") {
       const timer = setTimeout(() => {
         const faqElement = document.getElementById("faq");
         if (faqElement) {
-          faqElement.scrollIntoView({ behavior: "smooth", block: "start" });
+          faqElement.scrollIntoView({ 
+            behavior: prefersReducedMotion ? "auto" : "smooth", 
+            block: "start" 
+          });
         }
       }, 100);
 
@@ -20,7 +26,7 @@ export default function ScrollToFAQ(): null {
     }
 
     return undefined;
-  }, []);
+  }, [prefersReducedMotion]);
 
   React.useEffect(() => {
     // Handle initial load with hash

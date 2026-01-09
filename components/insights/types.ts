@@ -9,6 +9,8 @@ export type InsightCardProps = {
   date?: string | undefined; // ISO
   readingTime?: string | undefined;
   variant?: 'standard' | 'overlay';
+  /** Optional click handler for analytics tracking */
+  onClick?: () => void;
 };
 
 export type Category = { key: string; label: string; count?: number };

@@ -1,5 +1,6 @@
 "use client";
 
+import { Badge } from "@/components/ui/atoms";
 import { ArticleImage } from "@/components/insights/widgets/article-image";
 import { ArticleMetadata } from "@/components/insights/widgets/article-metadata";
 import { CopyLinkButton } from "@/components/insights/widgets/article-utilities";
@@ -73,7 +74,7 @@ export function InsightHeaderBlock({
         <nav aria-label="Back">
           <Link
             href={backHref}
-            className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors group"
+            className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
           >
             <span
               aria-hidden="true"
@@ -91,10 +92,12 @@ export function InsightHeaderBlock({
               <Link
                 key={category.slug}
                 href={`/insights/categories/${category.slug}`}
-                className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary hover:bg-primary/20 hover:border-primary/30 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                className="inline-block transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-lg"
                 aria-label={`View articles in ${category.name} category`}
               >
-                {category.name}
+                <Badge color="primary">
+                  {category.name}
+                </Badge>
               </Link>
             ))}
           </div>
