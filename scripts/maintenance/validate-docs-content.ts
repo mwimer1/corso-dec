@@ -325,12 +325,12 @@ function validateReadmeFrontmatter(file: string, content: string): ValidationIss
       }
       
       // Validate last_updated format if present
-      if (data.last_updated) {
-        const normalized = normalizeDate(data.last_updated);
+      if (data['last_updated']) {
+        const normalized = normalizeDate(data['last_updated']);
         if (!normalized) {
           issues.push({
             file,
-            issue: `Invalid last_updated format: ${data.last_updated}. Expected YYYY-MM-DD format`,
+            issue: `Invalid last_updated format: ${data['last_updated']}. Expected YYYY-MM-DD format`,
             severity: isDocsFile ? 'error' : 'warning',
           });
         }
