@@ -39,14 +39,49 @@ is_docs_only_commit() {
   return 1  # No docs files staged
 }
 
+# Helper to check if any docs files are staged (even if code is also staged)
+has_docs_staged() {
+  git diff --cached --name-only --diff-filter=ACMR | grep -qE '(^docs/|README\.md$|^\.husky/.*\.md$|^\.cursor/.*\.md$|^\.github/.*\.md$)'
+}
+
+# Check if this is a mixed commit (docs + code)
+is_mixed_commit() {
+  local staged_files
+  staged_files=$(git diff --cached --name-only --diff-filter=ACMR 2>/dev/null || echo "")
+  
+  if [ -z "$staged_files" ]; then
+    return 1  # No files staged
+  fi
+  
+  # Check if both docs and non-docs files are staged
+  if echo "$staged_files" | grep -qE '(^docs/|README\.md$|^\.husky/.*\.md$|^\.cursor/.*\.md$|^\.github/.*\.md$)' && \
+     echo "$staged_files" | grep -qvE '(^docs/|README\.md$|^\.husky/.*\.md$|^\.cursor/.*\.md$|^\.github/.*\.md$)'; then
+    return 0  # Mixed commit
+  fi
+  
+  return 1  # Not a mixed commit
+}
+
 # Early exit if no docs files changed
-if ! is_docs_only_commit; then
+if ! has_docs_staged; then
   exit 0
+fi
+
+# Warn if this is a mixed commit (docs + code)
+if is_mixed_commit; then
+  echo ""
+  echo "⚠️  WARNING: Mixed commit detected (docs + code files staged)"
+  echo "   Documentation auto-update is running in limited mode."
+  echo "   To ensure docs stay in sync, run these commands manually:"
+  echo "   - pnpm docs:index"
+  echo "   - pnpm docs:generate:readme -- --all"
+  echo "   - pnpm docs:validate"
+  echo ""
 fi
 
 echo "📖 Auto-updating documentation..."
 
-# Update docs index
+# Always update docs index when markdown files are staged (even in mixed commits)
 if has_staged_file '(^docs/|README\.md$)'; then
   echo "  🔄 Updating docs/index.ts..."
   if $PNPM docs:index >/dev/null 2>&1; then
@@ -60,8 +95,9 @@ if has_staged_file '(^docs/|README\.md$)'; then
   fi
 fi
 
-# Update scripts READMEs (if scripts/README.md is staged or any scripts README exists)
-if has_staged_file '^scripts/.*README\.md$' || [ -f "scripts/README.md" ]; then
+# Update scripts READMEs only if this is a docs-only commit (to reduce churn in mixed commits)
+# Scripts READMEs are updated when scripts change, not when docs change
+if is_docs_only_commit && (has_staged_file '^scripts/.*README\.md$' || [ -f "scripts/README.md" ]); then
   echo "  🔄 Updating scripts READMEs..."
   if $PNPM docs:generate:readme -- --all >/dev/null 2>&1; then
     # Stage updated README files in scripts directory (only if they exist and are tracked)
