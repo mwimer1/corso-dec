@@ -459,6 +459,38 @@
           "description": "pnpm openapi:rbac:check"
         }
       ]
+    },
+    {
+      "label": "🔧 CI/GitHub",
+      "alignment": "left",
+      "tooltip": "Git maintenance, GitHub CLI, CI scripts, workflow management",
+      "tasks": [
+        {
+          "label": "🔧 Fetch all & prune",
+          "task": "🔧 Git: Fetch All & Prune",
+          "description": "git fetch --all --prune"
+        },
+        {
+          "label": "🔧 Remote prune origin",
+          "task": "🔧 Git: Remote Prune origin",
+          "description": "git remote prune origin"
+        },
+        {
+          "label": "⚠️ Expire reflog (destructive)",
+          "task": "⚠️ Git: Expire Reflog (destructive)",
+          "description": "git reflog expire --expire=now --all"
+        },
+        {
+          "label": "⚠️ GC prune (destructive)",
+          "task": "⚠️ Git: GC Prune (prune=now, destructive)",
+          "description": "git gc --prune=now"
+        },
+        {
+          "label": "⚠️ Expire reflog & GC prune (destructive)",
+          "task": "⚠️ Git: Expire Reflog & GC Prune (destructive)",
+          "description": "Expire reflog then GC prune (destructive)"
+        }
+      ]
     }
   ]
 }

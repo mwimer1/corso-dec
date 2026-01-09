@@ -1,5 +1,14 @@
 {
   "version": "2.0.0",
+  "inputs": [
+    {
+      "id": "confirmDestructive",
+      "description": "Type 'PRUNE' to confirm this destructive operation",
+      "default": "",
+      "type": "promptString",
+      "password": false
+    }
+  ],
   "tasks": [
     {
       "label": "🚀 Full Setup (Install + Verify + Setup Branch)",
@@ -471,6 +480,87 @@
       "group": {
         "kind": "build",
         "isDefault": true
+      }
+    },
+    {
+      "label": "🔧 Git: Fetch All & Prune",
+      "type": "shell",
+      "command": "git fetch --all --prune",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🔧 Git: Remote Prune origin",
+      "type": "shell",
+      "command": "git remote prune origin",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "⚠️ Git: Expire Reflog (destructive)",
+      "type": "shell",
+      "command": "node",
+      "args": [
+        "-e",
+        "const confirm = process.env.CONFIRM_DESTRUCTIVE || ''; if (confirm !== 'PRUNE') { console.error('❌ Confirmation failed. You must type PRUNE to confirm.'); process.exit(1); } const { execSync } = require('child_process'); execSync('git reflog expire --expire=now --all', { stdio: 'inherit', cwd: process.env.WORKSPACE_FOLDER });"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "CONFIRM_DESTRUCTIVE": "${input:confirmDestructive}",
+          "WORKSPACE_FOLDER": "${workspaceFolder}"
+        }
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "⚠️ Git: GC Prune (prune=now, destructive)",
+      "type": "shell",
+      "command": "node",
+      "args": [
+        "-e",
+        "const confirm = process.env.CONFIRM_DESTRUCTIVE || ''; if (confirm !== 'PRUNE') { console.error('❌ Confirmation failed. You must type PRUNE to confirm.'); process.exit(1); } const { execSync } = require('child_process'); execSync('git gc --prune=now', { stdio: 'inherit', cwd: process.env.WORKSPACE_FOLDER });"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "CONFIRM_DESTRUCTIVE": "${input:confirmDestructive}",
+          "WORKSPACE_FOLDER": "${workspaceFolder}"
+        }
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "⚠️ Git: Expire Reflog & GC Prune (destructive)",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "⚠️ Git: Expire Reflog (destructive)",
+        "⚠️ Git: GC Prune (prune=now, destructive)"
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
       }
     }
   ]

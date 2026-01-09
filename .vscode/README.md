@@ -1,8 +1,8 @@
 # VS Code Task Menus
 
-This repo exposes common workflows as **six status-bar task menus** in VS Code:
+This repo exposes common workflows as **seven status-bar task menus** in VS Code:
 
-**🚀 Setup · ⚡ Dev · 🔍 Quality · 🧪 Tests · 🔧 Build · 📚 Docs**
+**🚀 Setup · ⚡ Dev · 🔍 Quality · 🧪 Tests · 🔧 Build · 📚 Docs · 🔧 CI/GitHub**
 
 Each menu item runs a VS Code task defined in `.vscode/tasks.json`.
 
@@ -18,6 +18,7 @@ Use the status bar menus:
 - **🧪 Tests**: suite + file + domain/security
 - **🔧 Build**: production build
 - **📚 Docs**: OpenAPI + docs generation + validation + maintenance
+- **🔧 CI/GitHub**: git maintenance, GitHub CLI, CI scripts, workflow management
 
 ### 📚 Docs Menu
 
@@ -54,6 +55,23 @@ The Docs menu provides comprehensive documentation maintenance tools:
 - **📋 OpenAPI validate**: Validate RBAC annotations
 
 > **⚠️ Warning**: Refresh suite and Maintenance suite tasks can modify files (README/index artifacts). Review diffs and commit changes as needed.
+
+### 🔧 CI/GitHub Menu
+
+The CI/GitHub menu provides git maintenance, GitHub CLI operations, and CI workflow management:
+
+**Git Maintenance (Safe):**
+- **🔧 Fetch all & prune**: Update remote refs and remove stale tracking branches
+- **🔧 Remote prune origin**: Remove stale remote-tracking branches
+
+**Git Maintenance (Advanced/Destructive):**
+- **⚠️ Expire reflog (destructive)**: Permanently delete all reflog entries (cannot be undone)
+- **⚠️ GC prune (destructive)**: Aggressively prune unreachable objects (cannot be undone)
+- **⚠️ Expire reflog & GC prune (destructive)**: Combined destructive cleanup (cannot be undone)
+
+> **⚠️ Warning**: Destructive git operations (marked with ⚠️) permanently delete git history and cannot be undone. Only use these when you are certain you want to remove reflog entries and unreachable objects. These operations are useful for repository cleanup but should be used with caution.
+>
+> **Safety Feature**: All destructive operations require typing `PRUNE` to confirm before execution. This prevents accidental clicks while maintaining convenience for intentional cleanup.
 
 ## Notes
 Task names must match `.vscode/tasks.json` labels exactly. If you rename a task label, update the Task Menus config in `.vscode/settings.json`.
