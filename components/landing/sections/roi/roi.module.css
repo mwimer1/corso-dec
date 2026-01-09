@@ -33,7 +33,7 @@
   position: relative;
   padding: var(--space-lg);
   padding-top: calc(var(--space-lg) + 0.5rem);
-  box-shadow: 0 4px 12px hsl(0deg 0% 0% / 10%); /* Neutral shadow for consistency with output cards */
+  box-shadow: var(--shadow-md); /* Token-backed shadow for consistency */
   isolation: isolate;
 }
 
