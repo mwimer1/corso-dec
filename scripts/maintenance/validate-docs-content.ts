@@ -337,19 +337,19 @@ function validateReadmeFrontmatter(file: string, content: string): ValidationIss
       }
       
       // Validate status if present
-      if (data.status && !['active', 'draft', 'deprecated', 'stable'].includes(String(data.status))) {
+      if (data['status'] && !['active', 'draft', 'deprecated', 'stable'].includes(String(data['status']))) {
         issues.push({
           file,
-          issue: `Invalid status value: ${data.status}. Expected: active, draft, deprecated, or stable`,
+          issue: `Invalid status value: ${data['status']}. Expected: active, draft, deprecated, or stable`,
           severity: isDocsFile ? 'error' : 'warning',
         });
       }
       
       // Validate category if present
-      if (data.category && typeof data.category !== 'string') {
+      if (data['category'] && typeof data['category'] !== 'string') {
         issues.push({
           file,
-          issue: `Invalid category type. Expected string, got ${typeof data.category}`,
+          issue: `Invalid category type. Expected string, got ${typeof data['category']}`,
           severity: isDocsFile ? 'error' : 'warning',
         });
       }
