@@ -2,47 +2,47 @@
 . "$(dirname -- "$0")/husky.sh"
 
 # Conditional pre-push hook with fast-exit and change-based execution
+# Optimized:
+# - Single git diff for change detection
+# - Parallel style checks
+# - Affected tests (changed test files / vitest --changed) instead of full suite every push
 
 # Get git directory for log storage
 GIT_DIR=$(git rev-parse --git-dir 2>/dev/null || echo ".git")
 LOG_DIR="$GIT_DIR/husky-logs"
 mkdir -p "$LOG_DIR"
 
-# Generate log file name with timestamp
 TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 LOG_FILE="$LOG_DIR/pre-push-$TIMESTAMP.log"
 
 # Verbose mode: stream output instead of logging
-if [ "$HUSKY_VERBOSE" = "1" ]; then
-  LOG_CMD=""
-  LOG_SUFFIX=""
-else
-  LOG_CMD=">> \"$LOG_FILE\" 2>&1"
-  LOG_SUFFIX=" (see $LOG_FILE)"
+if [ "$HUSKY_VERBOSE" != "1" ]; then
+  echo "Pre-push hook started at $(date)" > "$LOG_FILE"
 fi
 
+REMOTE_NAME="${1:-origin}"
+REMOTE_URL="${2:-}"
+
 # Fast-exit: check if there are commits to push
-# Try to get upstream branch
 UPSTREAM=$(git rev-parse --abbrev-ref @{u} 2>/dev/null || echo "")
+CURRENT_BRANCH=$(git symbolic-ref --quiet --short HEAD 2>/dev/null || echo "")
 
 if [ -n "$UPSTREAM" ]; then
-  # Count commits ahead of upstream
-  COMMITS_AHEAD=$(git rev-list --count @{u}..HEAD 2>/dev/null || echo "0")
+  COMMITS_AHEAD=$(git rev-list --count "${UPSTREAM}..HEAD" 2>/dev/null || echo "0")
   if [ "$COMMITS_AHEAD" = "0" ]; then
     echo "⏭️  No commits to push, skipping pre-push checks"
     exit 0
   fi
 else
-  # No upstream set, check if we're pushing to a remote
-  REMOTE_NAME="${1:-origin}"
-  REMOTE_BRANCH="${2:-$(git rev-parse --abbrev-ref HEAD)}"
-  
-  # Try to determine if there are commits to push
-  if git rev-parse --verify "$REMOTE_NAME/$REMOTE_BRANCH" >/dev/null 2>&1; then
-    COMMITS_AHEAD=$(git rev-list --count "$REMOTE_NAME/$REMOTE_BRANCH"..HEAD 2>/dev/null || echo "0")
-    if [ "$COMMITS_AHEAD" = "0" ]; then
-      echo "⏭️  No commits to push, skipping pre-push checks"
-      exit 0
+  # If we don't have an upstream set, best-effort compare against remote tracking branch
+  if [ -n "$CURRENT_BRANCH" ]; then
+    REMOTE_TRACKING="$REMOTE_NAME/$CURRENT_BRANCH"
+    if git rev-parse --verify "$REMOTE_TRACKING" >/dev/null 2>&1; then
+      COMMITS_AHEAD=$(git rev-list --count "${REMOTE_TRACKING}..HEAD" 2>/dev/null || echo "0")
+      if [ "$COMMITS_AHEAD" = "0" ]; then
+        echo "⏭️  No commits to push, skipping pre-push checks"
+        exit 0
+      fi
     fi
   fi
 fi
@@ -55,70 +55,27 @@ if command -v git-lfs >/dev/null 2>&1; then
   fi
 fi
 
-# Determine base for change detection
-if [ -n "$UPSTREAM" ]; then
-  BASE="$UPSTREAM"
-else
-  # Try to find merge base with remote
-  REMOTE_NAME="${1:-origin}"
-  REMOTE_BRANCH="${2:-$(git rev-parse --abbrev-ref HEAD)}"
-  if git rev-parse --verify "$REMOTE_NAME/$REMOTE_BRANCH" >/dev/null 2>&1; then
-    BASE=$(git merge-base HEAD "$REMOTE_NAME/$REMOTE_BRANCH" 2>/dev/null || echo "")
-  else
-    BASE=""
-  fi
-fi
-
-# Determine which checks to run based on changed files
-NEEDS_STYLES=false
-NEEDS_TESTS=false
-
-if [ "$HUSKY_FORCE" = "1" ]; then
-  # Force mode: run all checks
-  NEEDS_STYLES=true
-  NEEDS_TESTS=true
-else
-  if [ -n "$BASE" ]; then
-    # Check changed files since base
-    CHANGED_FILES=$(git diff --name-only "$BASE"..HEAD 2>/dev/null || echo "")
-    
-    # Check for style/token/theme-related files
-    if echo "$CHANGED_FILES" | grep -qE '(styles/|tokens/|theme|\.css|\.scss|tailwind\.config)'; then
-      NEEDS_STYLES=true
-    fi
-    
-    # Check for code/test/config changes
-    if echo "$CHANGED_FILES" | grep -qE '\.(ts|tsx|js|jsx)$|tests/|test/|config/|\.config\.'; then
-      NEEDS_TESTS=true
-    fi
-  else
-    # Base cannot be determined, run both for safety
-    NEEDS_STYLES=true
-    NEEDS_TESTS=true
-  fi
-fi
-
-# Helper to run a check
+# Helper: run a single check (with logging support)
 run_check() {
-  local check_name="$1"
-  local command="$2"
-  local skip_env="$3"
-  
+  check_name="$1"
+  command="$2"
+  skip_env="$3"
+
   if [ "$skip_env" = "1" ]; then
-    echo "⏭️  $check_name... (skipped via $skip_env)"
+    echo "⏭️  $check_name... (skipped)"
     return 0
   fi
-  
+
   echo "🔍 $check_name..."
-  
+
   if [ "$HUSKY_VERBOSE" = "1" ]; then
-    eval "$command"
-    local exit_code=$?
+    sh -c "$command"
+    exit_code=$?
   else
-    eval "$command >> \"$LOG_FILE\" 2>&1"
-    local exit_code=$?
+    sh -c "$command" >> "$LOG_FILE" 2>&1
+    exit_code=$?
   fi
-  
+
   if [ $exit_code -ne 0 ]; then
     echo "❌ $check_name failed"
     if [ "$HUSKY_VERBOSE" != "1" ] && [ -f "$LOG_FILE" ]; then
@@ -126,27 +83,125 @@ run_check() {
     fi
     exit $exit_code
   fi
-  
+
   echo "✅ $check_name"
   return 0
 }
 
-# Initialize log file
-if [ "$HUSKY_VERBOSE" != "1" ]; then
-  echo "Pre-push hook started at $(date)" > "$LOG_FILE"
+# Helper: run two checks in parallel (with logging support)
+run_parallel_checks() {
+  check_name="$1"
+  cmd_a="$2"
+  cmd_b="$3"
+  skip_env="$4"
+
+  if [ "$skip_env" = "1" ]; then
+    echo "⏭️  $check_name... (skipped)"
+    return 0
+  fi
+
+  echo "🔍 $check_name... (parallel)"
+
+  if [ "$HUSKY_VERBOSE" = "1" ]; then
+    sh -c "$cmd_a" & pid_a=$!
+    sh -c "$cmd_b" & pid_b=$!
+  else
+    sh -c "$cmd_a" >> "$LOG_FILE" 2>&1 & pid_a=$!
+    sh -c "$cmd_b" >> "$LOG_FILE" 2>&1 & pid_b=$!
+  fi
+
+  wait $pid_a; rc_a=$?
+  wait $pid_b; rc_b=$?
+
+  if [ $rc_a -ne 0 ] || [ $rc_b -ne 0 ]; then
+    echo "❌ $check_name failed"
+    if [ "$HUSKY_VERBOSE" != "1" ] && [ -f "$LOG_FILE" ]; then
+      echo "📄 View full log: $LOG_FILE"
+    fi
+    exit 1
+  fi
+
+  echo "✅ $check_name"
+  return 0
+}
+
+# Determine base ref for change detection (use refs; triple-dot diff computes merge-base automatically)
+BASE_REF=""
+if [ -n "$UPSTREAM" ]; then
+  BASE_REF="$UPSTREAM"
+elif [ -n "$CURRENT_BRANCH" ] && git rev-parse --verify "$REMOTE_NAME/$CURRENT_BRANCH" >/dev/null 2>&1; then
+  BASE_REF="$REMOTE_NAME/$CURRENT_BRANCH"
 fi
 
-# Run style checks
-if [ "$NEEDS_STYLES" = "true" ]; then
-  if ! run_check "Style checks" "pnpm check:styles" "$HUSKY_SKIP_STYLES"; then
-    exit 1
+NEEDS_STYLES=false
+NEEDS_TESTS=false
+FORCE_FULL_TESTS=false
+CHANGED_FILES=""
+CHANGED_TEST_FILES=""
+
+if [ "$HUSKY_FORCE" = "1" ]; then
+  # Force mode: run all checks
+  NEEDS_STYLES=true
+  NEEDS_TESTS=true
+else
+  if [ -n "$BASE_REF" ]; then
+    # Single diff call, reused for all decisions
+    CHANGED_FILES=$(git diff --name-only --diff-filter=ACMR "$BASE_REF"...HEAD 2>/dev/null || echo "")
+
+    # Style/token/theme-related files
+    if printf "%s\n" "$CHANGED_FILES" | grep -qE '(styles/|tokens/|theme|\.css$|\.scss$|tailwind\.config)'; then
+      NEEDS_STYLES=true
+    fi
+
+    # Code/test/config changes
+    if printf "%s\n" "$CHANGED_FILES" | grep -qE '(\.(ts|tsx|js|jsx)$)|(^|/)(tests?|__tests__)/|(^|/)config/|\.config\.'; then
+      NEEDS_TESTS=true
+    fi
+
+    # Changed test files for the fastest test path
+    CHANGED_TEST_FILES=$(printf "%s\n" "$CHANGED_FILES" | grep -E '(\.test|\.spec)\.(ts|tsx|js|jsx)$' || true)
+
+    # Conservative triggers: run full suite when test infra/config changes
+    if printf "%s\n" "$CHANGED_FILES" | grep -qE \
+      '(^|/)(package\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml)$|(^|/)(vitest|vite)\.config\.(ts|js|mts|mjs|cts|cjs)$|(^|/)tsconfig(\..*)?\.json$|(^|/)\.husky/|(^|/)tests/scripts/'; then
+      FORCE_FULL_TESTS=true
+    fi
+  else
+    # Base cannot be determined, run both for safety
+    NEEDS_STYLES=true
+    NEEDS_TESTS=true
+    FORCE_FULL_TESTS=true
   fi
 fi
 
-# Run tests
+# Run style checks (parallelize token + route-theme checks)
+if [ "$NEEDS_STYLES" = "true" ]; then
+  run_parallel_checks \
+    "Style checks" \
+    "pnpm check:tokens" \
+    "pnpm check:route-themes" \
+    "$HUSKY_SKIP_STYLES"
+fi
+
+# Run tests (affected tests by default; full suite on force/infra changes)
 if [ "$NEEDS_TESTS" = "true" ]; then
-  if ! run_check "Fast test suite" "pnpm test:fast" "$HUSKY_SKIP_TESTS"; then
-    exit 1
+  if [ "$HUSKY_FORCE" = "1" ] || [ "$FORCE_FULL_TESTS" = "true" ] || [ -z "$BASE_REF" ]; then
+    run_check "Fast test suite" "pnpm test:fast" "$HUSKY_SKIP_TESTS"
+  else
+    if [ -n "$CHANGED_TEST_FILES" ]; then
+      # Run only the test files that changed
+      CHANGED_TEST_FILES_LIST=$(printf "%s\n" "$CHANGED_TEST_FILES" | tr '\n' ' ')
+      run_check \
+        "Changed test files" \
+        "pnpm exec vitest --run --bail=5 --reporter=dot $CHANGED_TEST_FILES_LIST" \
+        "$HUSKY_SKIP_TESTS"
+    else
+      # Run tests affected by changes since base ref
+      run_check \
+        "Affected tests" \
+        "pnpm exec vitest --run --bail=5 --reporter=dot --changed \"$BASE_REF\"" \
+        "$HUSKY_SKIP_TESTS"
+    fi
   fi
 fi
 
