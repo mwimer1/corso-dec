@@ -14,7 +14,7 @@
   --radius-card: var(--radius-lg, 0.5rem);
 
   
-  /* Footer layered backgrounds (marketing dark surfaces): slightly lighter middle band vs. legal strip for layered effect */
+  /* Footer backgrounds (marketing dark surfaces): seamless join between main footer and legal strip */
   --footer-middle: var(--foreground-strong, 222.2 47.4% 11.2%);
   --footer-legal: 220 23% 7%;
 }

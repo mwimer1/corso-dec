@@ -8,7 +8,7 @@ export const FooterLegal: React.FC = () => {
   const year = new Date().getFullYear();
 
   return (
-    <div data-footer-legal className="w-full bg-[hsl(var(--footer-legal))] text-background border-t border-border/50">
+    <div data-footer-legal className="w-full bg-[hsl(var(--footer-legal))] text-background">
       <div className={cn(containerWithPaddingVariants({ maxWidth: "7xl", padding: "lg" }), "flex flex-col sm:flex-row items-center sm:justify-between py-2 gap-2 text-xs text-background/70")}>
         <div className="whitespace-nowrap">
           © {year} Corso Inc. All rights reserved.
