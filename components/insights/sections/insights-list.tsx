@@ -8,6 +8,7 @@ import { cn } from "@/styles";
 import { emptyStateVariants } from "@/styles/ui/molecules";
 import { containerMaxWidthVariants } from "@/styles/ui/shared";
 import type { InsightPreview } from "@/types/marketing";
+import { FileText } from "lucide-react";
 import * as React from "react";
 
 /** Props for InsightsList – list of insight previews and loading flag. */
@@ -58,7 +59,9 @@ export const InsightsList = React.forwardRef<HTMLDivElement, InsightsListProps>(
           {...props}
         >
           <section className={emptyStateVariants({ size: "md", context: "default", variant: "default" })}>
-            <div className="flex items-center justify-center text-4xl mb-4 text-muted-foreground">📰</div>
+            <div className="flex items-center justify-center mb-4 text-muted-foreground">
+              <FileText className="h-12 w-12" aria-hidden="true" />
+            </div>
             <div className="space-y-4">
               <div className="space-y-2">
                 <h3 className="font-semibold text-foreground">

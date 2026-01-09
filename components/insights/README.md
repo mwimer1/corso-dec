@@ -1,6 +1,6 @@
 ---
 description: "UI components for the components system, following atomic design principles. Located in insights/."
-last_updated: "2026-01-07"
+last_updated: "2026-01-27"
 category: "documentation"
 status: "draft"
 ---
@@ -9,7 +9,42 @@ status: "draft"
 Components for the Insights landing page and article detail pages.
 
 - Directory: `components/insights`
-- Last updated: `2026-01-07`
+- Last updated: `2026-01-27`
+
+## UI Structure
+
+The `/insights` landing page follows a structured layout:
+
+1. **Hero Section** (`InsightsHero`)
+   - Wrapped in `FullWidthSection` with `padding="hero"`, `containerMaxWidth="7xl"`, `containerPadding="lg"`
+   - Card/panel styling: `rounded-2xl border border-border bg-card/50` with subtle gradient wash
+   - Typography: eyebrow (uppercase), large title, description with max-width for readability
+   - Uses design tokens for spacing and typography
+
+2. **Controls Row** (Search + Sort + Clear)
+   - Wrapped in `FullWidthSection` with `padding="md"`, `containerMaxWidth="7xl"`, `containerPadding="lg"`
+   - Consistent height (`h-10`) across all controls (Input, Select, Button)
+   - Tighter spacing (`gap-2.5`) for CMS-grade toolbar feel
+   - Results summary displays filtered count and active category
+
+3. **Category Chips Row** (`CategoryFilter`)
+   - Sticky positioning with backdrop blur
+   - Horizontal scrollable chips on desktop, dropdown on mobile
+   - Count badges match `badgeVariants` patterns (`rounded-lg px-2.5 py-1 bg-muted`)
+   - No heavy divider lines (clean, minimal appearance)
+
+4. **Card Grid** (`InsightsList`)
+   - Responsive grid: 1 column (mobile), 2 columns (tablet), 3 columns (desktop)
+   - Consistent card heights via `h-full flex flex-col`
+   - Empty state with design system icon (FileText from lucide-react)
+   - Loading state with `ContentListSkeleton`
+
+### Design Token Usage
+
+- **Spacing**: Use token-based classes (`gap-2.5`, `space-y-4`, etc.) instead of arbitrary values
+- **Typography**: Follow design system scale (`text-lg`, `text-sm`, etc.)
+- **Colors**: Use semantic tokens (`text-foreground`, `text-muted-foreground`, `bg-card`, etc.)
+- **FullWidthSection**: Always use `FullWidthSection` for consistent section spacing; never use manual container wrappers (`max-w-7xl px-4 sm:px-6 lg:px-8`)
 
 ## URL Parameters
 
@@ -90,7 +125,12 @@ Responsive category filter:
 
 ### InsightsHero
 
-Compact hero section for the landing page with eyebrow, title, and description.
+Hero section for the landing page with card/panel styling:
+- **Styling**: Rounded corners (`rounded-2xl`), subtle border, calm background (`bg-card/50`)
+- **Layout**: Wrapped in `FullWidthSection` with hero padding
+- **Typography**: Eyebrow (uppercase), large responsive title, description with max-width
+- **Decoration**: Subtle gradient wash behind content (non-interactive)
+- **Ownership**: Hero component owns its internal layout; don't move hero markup to other components
 
 ### InsightsList
 
