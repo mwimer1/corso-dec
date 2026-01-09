@@ -87,7 +87,11 @@ describe('Design System Contract', () => {
 
     it('Tailwind config uses BREAKPOINT correctly', () => {
       // Verify Tailwind config imports and uses BREAKPOINT
-      expect(tailwindSrc).toContain("import { BREAKPOINT } from './styles/breakpoints'");
+      // Accept both formats: with or without .ts extension (Turbopack may require .ts)
+      expect(
+        tailwindSrc.includes("import { BREAKPOINT } from './styles/breakpoints'") ||
+        tailwindSrc.includes("import { BREAKPOINT } from './styles/breakpoints.ts'")
+      ).toBe(true);
       expect(tailwindSrc).toContain('Object.entries(BREAKPOINT)');
       expect(tailwindSrc).toContain('`${value}px`');
     });
