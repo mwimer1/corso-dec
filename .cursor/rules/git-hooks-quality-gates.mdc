@@ -1,3 +1,21 @@
+---
+rule_id: git-hooks-quality-gates
+title: Git Hooks Quality Gates
+owners:
+  - platform@corso.io
+last_reviewed: "2026-01-08"
+status: active
+domains: [workflow, git, ci]
+enforcement: warn
+alwaysApply: false
+globs:
+  - ".husky/**"
+related_rules:
+  - ai-agent-development-environment
+  - security-standards
+summary: Fast, fail-fast, low-noise Git hooks with high-context failures and post-commit receipts.
+---
+
 # Git Hooks Quality Gates
 
 **Fast, fail-fast, low-noise Git hooks with high-context failures and post-commit receipts.**

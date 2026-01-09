@@ -1490,9 +1490,9 @@ status: "draft"
     ├── types
     │   ├── api
     │   │   ├── generated
-    │   │   │   ├── openapi.d.ts
+    │   │   │   ├── openapi.d.ts  # AUTO-GENERATED - use @/types/api barrel instead
     │   │   ├── index.d.ts.map
-    │   │   ├── index.ts
+    │   │   ├── index.ts  # Canonical import: @/types/api
     │   │   ├── README.md
     │   ├── auth
     │   │   ├── authorization
