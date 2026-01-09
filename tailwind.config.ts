@@ -10,7 +10,7 @@
 import typography from '@tailwindcss/typography';
 import type { Config } from 'tailwindcss';
 import animate from 'tailwindcss-animate';
-import { BREAKPOINT } from './styles/breakpoints';
+import { BREAKPOINT } from './styles/breakpoints.ts';
 
 const config: Config = {
   content: [
