@@ -197,7 +197,46 @@ function resolveModuleSpecifierToAbs(
   return null;
 }
 
+/**
+ * Robustly resolve a SourceFile from a project given a file path.
+ * Handles various path formats (absolute, relative, basename-only) and normalizes
+ * paths for cross-platform compatibility (Windows/Unix path separators).
+ * 
+ * @param filePath - Path to the file (can be absolute, relative, or basename)
+ * @param project - ts-morph Project instance
+ * @returns SourceFile if found, null otherwise
+ */
+function resolveSourceFile(filePath: string, project: Project): SourceFile | null {
+  // Try 1: Direct lookup with input path
+  let sf = project.getSourceFile(filePath);
+  if (sf) return sf;
 
+  // Try 2: Resolve to absolute path and try again
+  const absPath = toAbsPosix(nodePath.resolve(process.cwd(), filePath));
+  sf = project.getSourceFile(absPath);
+  if (sf) return sf;
+
+  // Try 3: POSIX-normalized variants
+  const posixPath = normalizePosix(filePath);
+  sf = project.getSourceFile(posixPath);
+  if (sf) return sf;
+
+  const posixAbsPath = normalizePosix(absPath);
+  sf = project.getSourceFile(posixAbsPath);
+  if (sf) return sf;
+
+  // Try 4: Fallback - search by basename match (handles test fixtures)
+  const fileName = nodePath.basename(filePath);
+  for (const candidateSf of project.getSourceFiles()) {
+    const candidatePath = candidateSf.getFilePath();
+    const candidateBasename = nodePath.basename(candidatePath);
+    if (candidateBasename === fileName) {
+      return candidateSf;
+    }
+  }
+
+  return null;
+}
 
 export async function analyzeFile(
   filePath: string,
@@ -229,27 +268,13 @@ export async function analyzeFile(
     return result;
   }
 
-  // Load source file (support relative input)
-  let absPath = toAbsPosix(nodePath.resolve(process.cwd(), filePath));
-  let sf = project.getSourceFile(absPath);
-  // If not found at resolved path, try to find by filename in the project
-  if (!sf) {
-    sf = project.getSourceFile(filePath) ?? project.getSourceFile(toAbsPosix(filePath));
-    if (!sf) {
-      // Last resort: search for file by exact basename match (handles test fixtures)
-      const fileName = nodePath.basename(filePath);
-      for (const candidateSf of project.getSourceFiles()) {
-        if (nodePath.basename(candidateSf.getFilePath()) === fileName) {
-          sf = candidateSf;
-          break;
-        }
-      }
-    }
-  }
+  // Load source file using robust resolution helper
+  const sf = resolveSourceFile(filePath, project);
   if (!sf) {
     return result;
   }
 
+  // Normalize to canonical POSIX path for consistent classification
   const fileAbs = toAbsPosix(sf.getFilePath());
 
 
@@ -259,9 +284,14 @@ export async function analyzeFile(
     result.reasons.push('KEEP_ROUTES_IMPLICIT');
   }
 
-  // Note: Dynamic import detection is now handled in buildImporterMap
-  // This checks if the file CONTAINS dynamic imports (less useful than checking if it's imported dynamically)
-  // Keeping for backward compatibility but the real check is in importerMap
+  // Check if file contains dynamic imports (runtime code that should be kept)
+  // Files with import() or require() are active runtime code, not just static imports
+  const content = sf.getFullText();
+  const dynamicImports = findDynamicImports(content);
+  if (dynamicImports.length > 0) {
+    result.status = 'KEEP';
+    result.reasons.push('KEEP_DYNAMIC_IMPORT');
+  }
 
   const isBarrel = isBarrelFile(fileAbs);
 
