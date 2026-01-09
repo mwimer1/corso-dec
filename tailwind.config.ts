@@ -181,6 +181,7 @@ const config: Config = {
         // Additive tokenized shadows
         'card': 'var(--shadow-card, 0 8px 24px hsl(var(--foreground) / 6%))',
         'elevated': 'var(--shadow-elevated, 0 12px 32px hsl(var(--foreground) / 8%))',
+        'panel': 'var(--shadow-panel, 0 8px 24px hsl(var(--foreground) / 6%))',
       },
       transitionDuration: {
         // Design token mapping for animation

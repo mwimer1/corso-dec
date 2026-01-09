@@ -11,4 +11,7 @@
   /* Additive tokenized shadows (use foreground color for theming) */
   --shadow-card: 0 8px 24px hsl(var(--foreground) / 6%);
   --shadow-elevated: 0 12px 32px hsl(var(--foreground) / 8%);
+
+  /* Panel shadow alias - semantic name for card-like elevated panels */
+  --shadow-panel: var(--shadow-card);
 }
