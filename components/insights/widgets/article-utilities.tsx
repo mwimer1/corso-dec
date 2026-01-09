@@ -21,7 +21,7 @@ interface CopyLinkButtonProps {
 export function CopyLinkButton({
   url,
   className,
-  variant = "header",
+  variant: _variant = "header",
 }: CopyLinkButtonProps): React.ReactElement {
   const [copied, setCopied] = React.useState(false);
 
@@ -58,9 +58,7 @@ export function CopyLinkButton({
         void handleCopy();
       }}
       className={cn(
-        variant === "header"
-          ? "absolute top-6 right-6 sm:top-8 sm:right-8 lg:top-10 lg:right-10"
-          : "inline-flex",
+        "inline-flex",
         className
       )}
       aria-label={copied ? "Link copied!" : "Copy article link"}

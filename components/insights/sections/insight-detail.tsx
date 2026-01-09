@@ -350,7 +350,9 @@ export const InsightDetail = React.forwardRef<
         </article>
 
         {/* Desktop Table of Contents - Sticky sidebar outside article column */}
-        <TableOfContents content={sanitizedContent} variant="desktop" />
+        <aside className="w-64 flex-shrink-0 hidden lg:block">
+          <TableOfContents content={sanitizedContent} variant="desktop" className="w-full" />
+        </aside>
       </div>
 
       {/* Related Articles is intentionally outside the max-w-3xl reading column so cards can use the full container width and match the /insights list layout. */}

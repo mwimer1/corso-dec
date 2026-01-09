@@ -75,14 +75,14 @@ export function ArticleMetadata({
   return (
     <div
       className={cn(
-        "flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 text-sm text-muted-foreground",
+        "flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-2 text-sm text-muted-foreground",
         className
       )}
     >
       {/* Date(s) + reading time */}
-      <div className="flex items-center flex-wrap gap-3 sm:gap-4">
+      <div className="flex items-center flex-wrap gap-x-4 gap-y-2">
         {publishDate && (
-          <time dateTime={publishDate} className="flex items-center gap-1.5">
+          <time dateTime={publishDate} className="inline-flex items-center gap-2">
             <Calendar className="h-4 w-4 shrink-0" aria-hidden="true" />
             <span>{formatArticleDate(publishDate)}</span>
           </time>
@@ -98,7 +98,7 @@ export function ArticleMetadata({
             </span>
             <time
               dateTime={updatedDate}
-              className="flex items-center gap-1.5"
+              className="inline-flex items-center gap-2"
               title={`Updated ${formatArticleDate(updatedDate)}`}
             >
               <span className="sr-only">Updated</span>
@@ -115,7 +115,7 @@ export function ArticleMetadata({
             >
               •
             </span>
-            <span className="flex items-center gap-1.5">
+            <span className="inline-flex items-center gap-2">
               <Clock className="h-4 w-4 shrink-0" aria-hidden="true" />
               <span>{readingTime} min read</span>
             </span>
@@ -133,7 +133,7 @@ export function ArticleMetadata({
             •
           </span>
           <div
-            className="flex items-center gap-2.5"
+            className="inline-flex items-center gap-2"
             itemProp="author"
             itemScope
             itemType="https://schema.org/Person"

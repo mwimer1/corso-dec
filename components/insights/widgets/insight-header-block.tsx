@@ -58,50 +58,53 @@ export function InsightHeaderBlock({
     <header
       className={cn(
         // Hero card container: rounded, border, calm B2B styling matching index hero feel
-        "not-prose relative rounded-2xl border border-border bg-card shadow-sm",
+        "not-prose rounded-2xl border border-border bg-card shadow-sm",
         "p-6 sm:p-8 lg:p-10",
         "space-y-6 sm:space-y-8",
         className
       )}
     >
-      {/* Copy link button - positioned absolutely in top-right */}
-      {articleUrl && (
-        <CopyLinkButton url={articleUrl} variant="header" />
-      )}
-
-      {/* Eyebrow row: back + categories */}
-      <div className="flex flex-wrap items-start gap-3 sm:gap-4">
-        <nav aria-label="Back">
-          <Link
-            href={backHref}
-            className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
-          >
-            <span
-              aria-hidden="true"
-              className="transition-transform group-hover:-translate-x-0.5"
+      {/* Top row: back + categories (left), copy link (right) */}
+      <div className="flex items-start justify-between gap-4">
+        {/* Left: Back link + category pills */}
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <nav aria-label="Back">
+            <Link
+              href={backHref}
+              className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
             >
-              ←
-            </span>
-            <span>Back to Insights</span>
-          </Link>
-        </nav>
-
-        {categories && categories.length > 0 ? (
-          <div className="flex flex-wrap gap-2">
-            {categories.map((category) => (
-              <Link
-                key={category.slug}
-                href={`/insights/categories/${category.slug}`}
-                className="inline-block transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-lg"
-                aria-label={`View articles in ${category.name} category`}
+              <span
+                aria-hidden="true"
+                className="transition-transform group-hover:-translate-x-0.5"
               >
-                <Badge color="primary">
-                  {category.name}
-                </Badge>
-              </Link>
-            ))}
-          </div>
-        ) : null}
+                ←
+              </span>
+              <span>Back to Insights</span>
+            </Link>
+          </nav>
+
+          {categories && categories.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {categories.map((category) => (
+                <Link
+                  key={category.slug}
+                  href={`/insights/categories/${category.slug}`}
+                  className="inline-block transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-lg"
+                  aria-label={`View articles in ${category.name} category`}
+                >
+                  <Badge color="primary">
+                    {category.name}
+                  </Badge>
+                </Link>
+              ))}
+            </div>
+          ) : null}
+        </div>
+
+        {/* Right: Copy link button */}
+        {articleUrl && (
+          <CopyLinkButton url={articleUrl} variant="header" />
+        )}
       </div>
 
       {/* Desktop: Side-by-side layout (title/metadata left, image right) */}

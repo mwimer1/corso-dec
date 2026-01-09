@@ -161,9 +161,8 @@ export function TableOfContents({
       {showDesktop && (
       <aside
         className={cn(
-          "hidden lg:block",
           "sticky top-24 self-start",
-          "w-64 ml-8 xl:ml-12",
+          "w-full",
           "max-h-[calc(100vh-8rem)] overflow-y-auto",
           className
         )}
