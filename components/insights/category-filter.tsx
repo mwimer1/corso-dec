@@ -38,7 +38,7 @@ export function CategoryFilter({
 
   return (
     <div className={cn('sticky z-20 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60', stickyOffsetClassName)}>
-      <div className={cn('mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3 border-b border-border', className)}>
+      <div className={cn('mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3', className)}>
         {/* Mobile: Dropdown Select */}
         <div className="md:hidden">
           <Select
@@ -85,7 +85,7 @@ export function CategoryFilter({
                 >
                   {c.label}
                   {typeof c.count === 'number' ? (
-                    <span className="ml-2 inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-background px-1 text-xs text-muted-foreground border border-border">
+                    <span className="ml-2 inline-flex items-center justify-center rounded-lg bg-muted px-2.5 py-1 text-xs font-semibold text-muted-foreground">
                       {c.count}
                     </span>
                   ) : null}

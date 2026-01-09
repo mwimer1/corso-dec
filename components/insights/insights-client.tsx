@@ -176,8 +176,8 @@ function CategoryFilterClient({ items, categories }: { items: InsightPreview[]; 
   return (
     <>
       {/* Controls Row: Search + Sort + Clear */}
-      <div className="space-y-4">
-        <div className="flex flex-col sm:flex-row gap-3">
+      <div className="space-y-3">
+        <div className="flex flex-col sm:flex-row gap-2.5">
           {/* Search Input */}
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
@@ -187,6 +187,7 @@ function CategoryFilterClient({ items, categories }: { items: InsightPreview[]; 
               value={searchQuery}
               onChange={(e) => handleSearchChange(e.target.value)}
               iconPadding
+              size="md"
               className="w-full pl-9"
               aria-label="Search insights by title or description"
             />
@@ -196,6 +197,7 @@ function CategoryFilterClient({ items, categories }: { items: InsightPreview[]; 
           <Select
             value={sort}
             onChange={(e) => handleSortChange(e.target.value as SortOption)}
+            size="md"
             className="w-full sm:w-[180px]"
             aria-label="Sort articles"
           >
@@ -207,9 +209,10 @@ function CategoryFilterClient({ items, categories }: { items: InsightPreview[]; 
           {/* Clear Button */}
           <Button
             variant="outline"
+            size="default"
             onClick={handleClearFilters}
             disabled={!hasActiveFilters}
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto h-10"
             aria-label="Clear all filters"
           >
             <X className="h-4 w-4 mr-2" />
