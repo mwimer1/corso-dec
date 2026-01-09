@@ -271,7 +271,7 @@ pnpm docs:doctor --full
 ## 📚 Related Documentation
 
 - [Documentation Automation](./docs-automation.md) - Detailed automation scripts
-- [Documentation Standards](../.cursor/rules/documentation-standards.mdc) - Documentation conventions
+- [Documentation Standards](../../.cursor/rules/documentation-standards.mdc) - Documentation conventions
 - [Development Setup](./setup-guide.md) - Environment setup
 - [Coding Standards](./coding-standards.md) - Code quality standards
 
