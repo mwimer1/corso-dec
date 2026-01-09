@@ -8,6 +8,7 @@ import Image from "next/image";
 import React, { useEffect, useRef } from "react";
 import usePrefersReducedMotion from "../../hooks/use-prefers-reduced-motion";
 import { containerWithPaddingVariants } from "@/styles/ui/shared";
+import styles from "./product-showcase.module.css";
 
 interface ProductShowcaseProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -304,6 +305,7 @@ export function ProductShowcase({ className, ...props }: ProductShowcaseProps) {
       ref={sectionRef}
       className={cn(
         "relative",
+        styles["productShowcase"],
         className
       )} 
       {...props}
