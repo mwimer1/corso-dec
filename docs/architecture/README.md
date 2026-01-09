@@ -1,9 +1,8 @@
 ---
-description: "Documentation and resources for documentation functionality. Located in architecture/."
-last_updated: "2026-01-07"
-category: "documentation"
-status: "active"
 title: "Architecture"
+last_updated: "2026-01-09"
+category: "documentation"
+status: "draft"
 ---
 # Architecture & Technical Patterns
 

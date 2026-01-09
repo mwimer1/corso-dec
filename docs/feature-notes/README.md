@@ -1,8 +1,7 @@
 ---
-description: "Design documents and implementation plans for major features and enhancements."
-last_updated: "2026-01-07"
-category: "documentation"
 status: "draft"
+last_updated: "2026-01-09"
+category: "documentation"
 ---
 # Feature Design Notes
 

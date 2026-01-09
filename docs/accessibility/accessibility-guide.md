@@ -1,9 +1,8 @@
 ---
-status: "draft"
-last_updated: "2026-01-07"
-category: "documentation"
-title: "Accessibility"
 description: "Documentation and resources for documentation functionality. Located in accessibility/."
+last_updated: "2026-01-09"
+category: "documentation"
+status: "draft"
 ---
 # Accessibility Guide
 

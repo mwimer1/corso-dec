@@ -1,8 +1,7 @@
 ---
-title: "Chat Remediation Sprint Implementation - Tracking Document"
-description: "Documentation and resources."
-last_updated: "2026-01-07"
 category: "documentation"
+last_updated: "2026-01-09"
+status: "draft"
 ---
 # Chat Remediation Sprint Implementation - Tracking Document
 

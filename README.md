@@ -1,3 +1,9 @@
+---
+title: "Corso"
+description: "Documentation and resources."
+last_updated: "2026-01-09"
+category: "documentation"
+---
 # Corso
 
 Last updated: 2026-01-07

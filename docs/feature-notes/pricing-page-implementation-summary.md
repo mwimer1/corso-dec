@@ -1,9 +1,7 @@
 ---
-title: "Feature Notes"
-description: "Documentation and resources for documentation functionality. Located in feature-notes/."
-last_updated: "2026-01-07"
-category: "documentation"
 status: "stable"
+last_updated: "2026-01-09"
+category: "documentation"
 ---
 # Pricing Page Implementation Summary
 

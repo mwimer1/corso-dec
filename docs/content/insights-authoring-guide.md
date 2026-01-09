@@ -1,9 +1,8 @@
 ---
-status: "active"
-last_updated: "2026-01-07"
-category: "documentation"
-title: "Content"
 description: "Documentation and resources for documentation functionality. Located in content/."
+last_updated: "2026-01-09"
+category: "documentation"
+status: "draft"
 ---
 # Insights Content Authoring Guide
 

@@ -1,7 +1,7 @@
 ---
-status: "active"
-last_updated: "2026-01-07"
 category: "documentation"
+last_updated: "2026-01-09"
+status: "draft"
 ---
 # 🎨 Style Pattern Library
 

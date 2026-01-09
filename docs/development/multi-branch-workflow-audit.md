@@ -1,8 +1,7 @@
 ---
-title: "Development"
-last_updated: "2026-01-07"
-category: "documentation"
 status: "draft"
+last_updated: "2026-01-09"
+category: "documentation"
 ---
 # Multi-Branch Development & Auto-Merge Audit
 

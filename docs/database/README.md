@@ -1,8 +1,7 @@
 ---
-description: "Comprehensive database documentation covering ClickHouse, PostgreSQL, security, performance, backups, and operational procedures."
-last_updated: "2026-01-07"
-category: "documentation"
 status: "draft"
+last_updated: "2026-01-09"
+category: "documentation"
 ---
 # Database Documentation
 

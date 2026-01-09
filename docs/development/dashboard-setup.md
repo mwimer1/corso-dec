@@ -1,9 +1,8 @@
 ---
-title: "Development"
-last_updated: "2026-01-07"
+description: "Documentation and resources for documentation functionality. Located in development/."
+last_updated: "2026-01-09"
 category: "documentation"
 status: "draft"
-description: "Documentation and resources for documentation functionality. Located in development/."
 ---
 # Dashboard Setup & Quickstart
 

@@ -1,9 +1,8 @@
 ---
-status: "draft"
-last_updated: "2026-01-07"
-category: "documentation"
-title: "Decisions"
 description: "Documentation and resources for documentation functionality. Located in decisions/."
+last_updated: "2026-01-09"
+category: "documentation"
+status: "draft"
 ---
 # Decision: Route Theme Duplication (KEEP)
 

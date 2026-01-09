@@ -1,10 +1,11 @@
 ---
 title: "Eslint Plugin Corso"
 description: "Documentation and resources for documentation functionality."
-last_updated: "2026-01-07"
+last_updated: "2026-01-09"
 category: "documentation"
-status: "active"
+status: "draft"
 ---
+
 # Corso ESLint Plugin
 
 > **Comprehensive ESLint plugin enforcing Corso's architectural boundaries, security standards, and code quality rules for Next.js applications.**
@@ -209,4 +210,4 @@ export default [
 
 ---
 
-_This documentation is auto-generated from `eslint-plugin-corso/src/index.js`. Last updated: 2026-01-07_
+_This documentation is auto-generated from `eslint-plugin-corso/src/index.js`. Last updated: 2026-01-09_

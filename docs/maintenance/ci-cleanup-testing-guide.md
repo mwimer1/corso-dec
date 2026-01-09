@@ -4,7 +4,6 @@ last_updated: "2026-01-07"
 category: "maintenance"
 status: "draft"
 ---
-
 # CI Cleanup Workflow Testing Guide
 
 ## Quick Start

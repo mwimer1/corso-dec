@@ -1,8 +1,7 @@
 ---
-title: "ADR 001: Server-Side Chat History Persistence"
-description: "Documentation and resources."
-last_updated: "2026-01-07"
 category: "documentation"
+last_updated: "2026-01-09"
+status: "draft"
 ---
 # ADR 001: Server-Side Chat History Persistence
 

@@ -1,9 +1,8 @@
 ---
-description: "Documentation and resources for documentation functionality. Located in development/."
-last_updated: "2026-01-07"
+title: "Development"
+last_updated: "2026-01-09"
 category: "documentation"
 status: "draft"
-title: "Development"
 ---
 # Verification Checklist: Bracket Path Fix
 

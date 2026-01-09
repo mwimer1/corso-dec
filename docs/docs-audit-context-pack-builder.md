@@ -1,11 +1,9 @@
 ---
-title: "Docs Audit Context Pack Builder"
-last_updated: "2026-01-29"
-category: "documentation"
-status: "active"
 description: "Guide for building context packs in Cursor for comprehensive documentation audits"
+last_updated: "2026-01-09"
+category: "documentation"
+status: "draft"
 ---
-
 # Cursor Ask Context Pack Builder for Docs Audit
 
 This guide provides a complete workflow for building context packs in Cursor to perform comprehensive documentation audits. Use this to prepare all necessary files and prompts for effective AI-assisted documentation review.

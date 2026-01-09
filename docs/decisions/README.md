@@ -1,8 +1,7 @@
 ---
-description: "Architecture Decision Records documenting key technical and architectural decisions for the Corso platform."
-last_updated: "2026-01-07"
-category: "documentation"
 status: "draft"
+last_updated: "2026-01-09"
+category: "documentation"
 ---
 # Architecture Decision Records (ADRs)
 

@@ -226,7 +226,7 @@ export const docs = [
   },
   {
     "path": "docs/architecture-design/readme.md",
-    "title": "Architecture Design"
+    "title": "Architecture Design & UI Standards"
   },
   {
     "path": "docs/architecture/readme.md",
@@ -238,7 +238,7 @@ export const docs = [
   },
   {
     "path": "docs/codebase/readme.md",
-    "title": "Codebase"
+    "title": "Codebase Structure"
   },
   {
     "path": "docs/database/readme.md",
@@ -270,7 +270,7 @@ export const docs = [
   },
   {
     "path": "docs/readme.md",
-    "title": "Docs"
+    "title": "Documentation Index"
   },
   {
     "path": "docs/reference/readme.md",

@@ -1,9 +1,8 @@
 ---
-title: "Docs"
-last_updated: "2026-01-07"
-category: "documentation"
-status: "active"
 description: "Documentation and resources for documentation functionality."
+last_updated: "2026-01-09"
+category: "documentation"
+status: "draft"
 ---
 # Documentation Index
 

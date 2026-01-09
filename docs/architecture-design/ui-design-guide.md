@@ -1,9 +1,8 @@
 ---
-title: "Architecture Design"
-last_updated: "2026-01-07"
+description: "Documentation and resources for documentation functionality. Located in architecture-design/."
+last_updated: "2026-01-09"
 category: "documentation"
 status: "draft"
-description: "Documentation and resources for documentation functionality. Located in architecture-design/."
 ---
 # UI Design Guide
 

@@ -1,9 +1,8 @@
 ---
-description: "Documentation and resources for documentation functionality. Located in development/."
-last_updated: "2026-01-07"
-category: "documentation"
-status: "active"
 title: "Development"
+last_updated: "2026-01-09"
+category: "documentation"
+status: "draft"
 ---
 # Development Guides
 

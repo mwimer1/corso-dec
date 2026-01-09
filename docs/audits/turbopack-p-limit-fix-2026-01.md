@@ -1,8 +1,7 @@
 ---
-title: "Turbopack Build Error Fix: p-limit Compatibility"
-description: "Documentation and resources."
-last_updated: "2026-01-07"
 category: "documentation"
+last_updated: "2026-01-09"
+status: "draft"
 ---
 # Turbopack Build Error Fix: p-limit Compatibility
 

@@ -1,10 +1,8 @@
 ---
-title: "Feature Flags"
-description: "How Corso defines, resolves, and consumes feature flags across server and client."
-last_updated: "2026-01-07"
 category: "architecture"
+last_updated: "2026-01-09"
+status: "draft"
 ---
-
 # Feature Flags
 
 Corso uses feature flags to control rollout, enable optional capabilities, and safely ship experimental work.

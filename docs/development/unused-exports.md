@@ -1,8 +1,7 @@
 ---
-description: "Comprehensive system for identifying, classifying, and safely remediating unused exports across the Corso codebase."
-last_updated: "2026-01-07"
-category: "documentation"
 status: "draft"
+last_updated: "2026-01-09"
+category: "documentation"
 ---
 # Unused Exports Audit & Remediation
 
