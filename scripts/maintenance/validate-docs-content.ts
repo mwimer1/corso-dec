@@ -18,6 +18,7 @@ import { glob } from 'glob';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { checkBannedPatterns, extractCodeBlocks, type CodeBlock, type ValidationIssue } from './validate-docs-content.utils';
+import { parseMd, normalizeDate } from './_utils/frontmatter';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -255,6 +256,110 @@ async function validateEnvVarDocumentation(): Promise<ValidationIssue[]> {
 }
 
 /**
+ * Validate frontmatter for README files
+ */
+function validateReadmeFrontmatter(file: string, content: string): ValidationIssue[] {
+  const issues: ValidationIssue[] = [];
+  const normalizedPath = file.replace(/\\/g, '/');
+  
+  // Skip root README.md (doesn't require frontmatter per docs standards)
+  if (normalizedPath === 'README.md') {
+    return issues;
+  }
+  
+  // Skip CHANGELOG.md (follows Keep a Changelog format)
+  if (normalizedPath === 'CHANGELOG.md') {
+    return issues;
+  }
+  
+  const parsed = parseMd(content);
+  const isDocsFile = normalizedPath.startsWith('docs/');
+  const isReadme = normalizedPath.endsWith('/README.md') || normalizedPath === 'README.md';
+  const isDocsReadme = isDocsFile && isReadme;
+  
+  // Required fields for docs/ directory files
+  const requiredFields = ['title', 'description', 'last_updated', 'category', 'status'];
+  
+  // For docs/ directory files: strict validation (errors)
+  // For READMEs outside docs/: recommended validation (warnings)
+  // For docs/ READMEs: start as warnings (per playbook guidance)
+  const severity = (isDocsFile && !isReadme) ? 'error' : 'warning';
+  
+    if (isDocsFile || isReadme) {
+    // Check if frontmatter exists
+    if (!parsed.hasFrontmatter) {
+      if (isDocsFile && !isReadme) {
+        // Non-README docs/ files: strict requirement
+        issues.push({
+          file,
+          issue: 'Missing frontmatter. docs/ directory files must include frontmatter with title, description, last_updated, category, and status',
+          severity: 'error',
+        });
+        return issues; // Return early if no frontmatter
+      } else {
+        // READMEs (both in docs/ and outside): recommended
+        issues.push({
+          file,
+          issue: 'Missing frontmatter. Recommended fields: title, description, last_updated, category, status',
+          severity: 'warning',
+        });
+        return issues; // Return early if no frontmatter
+      }
+    }
+    
+    if (parsed.hasFrontmatter) {
+      const data = parsed.data;
+      
+      // Check required fields
+      for (const field of requiredFields) {
+        if (!data[field]) {
+          const message = isDocsFile
+            ? `Missing required frontmatter field: ${field}`
+            : `Missing recommended frontmatter field: ${field}`;
+          issues.push({
+            file,
+            issue: message,
+            severity,
+          });
+        }
+      }
+      
+      // Validate last_updated format if present
+      if (data.last_updated) {
+        const normalized = normalizeDate(data.last_updated);
+        if (!normalized) {
+          issues.push({
+            file,
+            issue: `Invalid last_updated format: ${data.last_updated}. Expected YYYY-MM-DD format`,
+            severity: isDocsFile ? 'error' : 'warning',
+          });
+        }
+      }
+      
+      // Validate status if present
+      if (data.status && !['active', 'draft', 'deprecated', 'stable'].includes(String(data.status))) {
+        issues.push({
+          file,
+          issue: `Invalid status value: ${data.status}. Expected: active, draft, deprecated, or stable`,
+          severity: isDocsFile ? 'error' : 'warning',
+        });
+      }
+      
+      // Validate category if present
+      if (data.category && typeof data.category !== 'string') {
+        issues.push({
+          file,
+          issue: `Invalid category type. Expected string, got ${typeof data.category}`,
+          severity: isDocsFile ? 'error' : 'warning',
+        });
+      }
+    }
+  }
+  
+  return issues;
+}
+
+/**
  * Main validation function
  */
 async function validateDocsContent(): Promise<void> {
@@ -265,6 +370,7 @@ async function validateDocsContent(): Promise<void> {
     'README.md',
     '.github/**/*.md',
     'app/**/*.md',
+    '**/README.md',
   ], { 
     cwd: ROOT,
     ignore: ['**/node_modules/**', '**/.next/**'],
@@ -285,6 +391,10 @@ async function validateDocsContent(): Promise<void> {
     const codeBlocks = extractCodeBlocks(content, filePath);
     const codeBlockIssues = validateCodeBlocks(codeBlocks, file);
     allIssues.push(...codeBlockIssues);
+    
+    // Validate frontmatter for READMEs
+    const frontmatterIssues = validateReadmeFrontmatter(file, content);
+    allIssues.push(...frontmatterIssues);
   }
 
   // Validate environment variable documentation
