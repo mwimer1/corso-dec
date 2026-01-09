@@ -84,11 +84,15 @@ export default async function InsightsPage() {
         />
       </FullWidthSection>
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <Suspense fallback={<div className="mt-6 h-12" />}>
+      <FullWidthSection
+        padding="md"
+        containerMaxWidth="7xl"
+        containerPadding="lg"
+      >
+        <Suspense fallback={<div className="h-12" />}>
           <CategoryFilterClient items={rawItems} categories={categoriesWithCounts} />
         </Suspense>
-      </div>
+      </FullWidthSection>
     </PublicLayout>
   );
 }

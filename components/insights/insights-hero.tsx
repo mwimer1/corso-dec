@@ -8,12 +8,12 @@ type Props = {
   className?: string;
 };
 
-export function InsightsHero({ title, eyebrow = 'Insights', description, className }: Props) {
+export function InsightsHero({ title, eyebrow = 'INSIGHTS', description, className }: Props) {
   return (
     <div
       aria-label="Insights overview"
       className={cn(
-        'relative overflow-hidden',
+        'relative overflow-hidden rounded-2xl border border-border bg-card/50 p-6 sm:p-8 lg:p-10 shadow-sm',
         className
       )}
     >
@@ -27,7 +27,7 @@ export function InsightsHero({ title, eyebrow = 'Insights', description, classNa
 
       <div className="relative z-10">
         {eyebrow ? (
-          <p className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          <p className="mb-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
             {eyebrow}
           </p>
         ) : null}
@@ -35,7 +35,7 @@ export function InsightsHero({ title, eyebrow = 'Insights', description, classNa
           {title}
         </h2>
         {description ? (
-          <p className="mt-3 max-w-3xl text-base md:text-lg text-muted-foreground">
+          <p className="mt-4 max-w-3xl text-base md:text-lg text-muted-foreground leading-relaxed">
             {description}
           </p>
         ) : null}

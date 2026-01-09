@@ -176,7 +176,7 @@ function CategoryFilterClient({ items, categories }: { items: InsightPreview[]; 
   return (
     <>
       {/* Controls Row: Search + Sort + Clear */}
-      <div className="mt-6 space-y-4">
+      <div className="space-y-4">
         <div className="flex flex-col sm:flex-row gap-3">
           {/* Search Input */}
           <div className="relative flex-1">
