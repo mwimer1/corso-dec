@@ -85,13 +85,14 @@ This workspace provides clickable task buttons in the VS Code status bar for qui
 - Install the recommended extension: **VSCode Task Buttons** (`spencerwmiles.vscode-task-buttons`)
 - If buttons don't appear: Command Palette → **Developer: Reload Window**
 
-**Six Left-Aligned Menus:**
+**Seven Left-Aligned Menus:**
 - **🚀 Setup** — Install, verify, env checks, branch setup, cleanup
 - **⚡ Dev** — Development server + TypeScript watch
 - **🔍 Quality** — Typecheck, lint, gates, scans
 - **🧪 Tests** — Test suite + file + domain/security
 - **🔧 Build** — Production build
 - **📚 Docs** — OpenAPI + docs generation + validation + maintenance
+- **🔧 CI/GitHub** — Git maintenance, GitHub CLI, CI scripts, workflow management
 
 #### 📚 Docs Menu Details
 

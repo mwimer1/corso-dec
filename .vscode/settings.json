@@ -489,6 +489,56 @@
           "label": "⚠️ Expire reflog & GC prune (destructive)",
           "task": "⚠️ Git: Expire Reflog & GC Prune (destructive)",
           "description": "Expire reflog then GC prune (destructive)"
+        },
+        {
+          "label": "🔍 Check CLI version",
+          "task": "🔍 GitHub: Check CLI Version",
+          "description": "gh --version"
+        },
+        {
+          "label": "🔍 Auth status",
+          "task": "🔍 GitHub: Auth Status",
+          "description": "gh auth status"
+        },
+        {
+          "label": "📋 View current PR",
+          "task": "📋 GitHub: View Current PR",
+          "description": "gh pr view --web"
+        },
+        {
+          "label": "🚀 Create PR (fill)",
+          "task": "🚀 GitHub: Create PR (fill)",
+          "description": "gh pr create --fill --web"
+        },
+        {
+          "label": "📊 List workflow runs (10)",
+          "task": "📊 GitHub: List Workflow Runs (10)",
+          "description": "gh run list -L 10"
+        },
+        {
+          "label": "📈 View workflow status",
+          "task": "📈 GitHub: View Workflow Status",
+          "description": "gh run list -L 1"
+        },
+        {
+          "label": "🔧 CI quality gates",
+          "task": "🔧 CI: Quality Gates",
+          "description": "pnpm quality:ci"
+        },
+        {
+          "label": "🔧 CI validate workflows",
+          "task": "🔧 CI: Validate Workflows",
+          "description": "pnpm lint:workflows:pnpm"
+        },
+        {
+          "label": "🔧 CI gitleaks scan",
+          "task": "🔧 CI: Gitleaks Scan",
+          "description": "pnpm ci:gitleaks"
+        },
+        {
+          "label": "🔧 CI update action SHAs",
+          "task": "🔧 CI: Update Action SHAs",
+          "description": "Update GitHub Action SHA pins"
         }
       ]
     }

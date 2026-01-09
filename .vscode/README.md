@@ -73,5 +73,25 @@ The CI/GitHub menu provides git maintenance, GitHub CLI operations, and CI workf
 >
 > **Safety Feature**: All destructive operations require typing `PRUNE` to confirm before execution. This prevents accidental clicks while maintaining convenience for intentional cleanup.
 
+**GitHub CLI (Preflight):**
+- **🔍 Check CLI version**: Verify GitHub CLI is installed (`gh --version`)
+- **🔍 Auth status**: Check GitHub CLI authentication status (`gh auth status`)
+
+**GitHub CLI (PR Operations):**
+- **📋 View current PR**: Open current pull request in browser (`gh pr view --web`)
+- **🚀 Create PR (fill)**: Create pull request with auto-filled details and open in browser (`gh pr create --fill --web`)
+
+**GitHub CLI (Workflow Operations):**
+- **📊 List workflow runs (10)**: List last 10 workflow runs (`gh run list -L 10`)
+- **📈 View workflow status**: Show latest workflow run status (`gh run list -L 1`)
+
+> **Note**: All GitHub CLI tasks automatically check for CLI installation and authentication before execution. If `gh` is not installed or you're not authenticated, tasks will fail with clear error messages.
+
+**CI Maintenance:**
+- **🔧 CI quality gates**: Run full CI quality gates (`pnpm quality:ci`)
+- **🔧 CI validate workflows**: Validate workflow pnpm setup consistency (`pnpm lint:workflows:pnpm`)
+- **🔧 CI gitleaks scan**: Scan for secrets and sensitive data (`pnpm ci:gitleaks`)
+- **🔧 CI update action SHAs**: Update GitHub Action SHA pins in workflows (`.github/scripts/update-action-shas.mjs`)
+
 ## Notes
 Task names must match `.vscode/tasks.json` labels exactly. If you rename a task label, update the Task Menus config in `.vscode/settings.json`.

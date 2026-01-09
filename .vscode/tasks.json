@@ -562,6 +562,159 @@
         "reveal": "always",
         "panel": "shared"
       }
+    },
+    {
+      "label": "🔍 GitHub: Check CLI Version",
+      "type": "shell",
+      "command": "gh --version",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🔍 GitHub: Auth Status",
+      "type": "shell",
+      "command": "gh auth status",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "📋 GitHub: View Current PR",
+      "type": "shell",
+      "command": "gh pr view --web",
+      "dependsOn": [
+        "🔍 GitHub: Check CLI Version",
+        "🔍 GitHub: Auth Status"
+      ],
+      "dependsOrder": "sequence",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🚀 GitHub: Create PR (fill)",
+      "type": "shell",
+      "command": "gh pr create --fill --web",
+      "dependsOn": [
+        "🔍 GitHub: Check CLI Version",
+        "🔍 GitHub: Auth Status"
+      ],
+      "dependsOrder": "sequence",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "📊 GitHub: List Workflow Runs (10)",
+      "type": "shell",
+      "command": "gh run list -L 10",
+      "dependsOn": [
+        "🔍 GitHub: Check CLI Version",
+        "🔍 GitHub: Auth Status"
+      ],
+      "dependsOrder": "sequence",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "📈 GitHub: View Workflow Status",
+      "type": "shell",
+      "command": "gh run list -L 1",
+      "dependsOn": [
+        "🔍 GitHub: Check CLI Version",
+        "🔍 GitHub: Auth Status"
+      ],
+      "dependsOrder": "sequence",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🔧 CI: Quality Gates",
+      "type": "shell",
+      "command": "pnpm quality:ci",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🔧 CI: Validate Workflows",
+      "type": "shell",
+      "command": "pnpm lint:workflows:pnpm",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🔧 CI: Gitleaks Scan",
+      "type": "shell",
+      "command": "pnpm ci:gitleaks",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "🔧 CI: Update Action SHAs",
+      "type": "shell",
+      "command": "node",
+      "args": [
+        ".github/scripts/update-action-shas.mjs"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
     }
   ]
 }
