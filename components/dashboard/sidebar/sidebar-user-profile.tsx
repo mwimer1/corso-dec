@@ -55,7 +55,7 @@ export function SidebarUserProfile({
               userButtonTrigger: cn(
                 'p-0 m-0 border-2 border-transparent rounded-full',
                 'transition-[border-color] duration-150',
-                'hover:border-[var(--sb-border-hover,rgba(0,0,0,0.1))]'
+                'hover:border-[var(--sb-border-hover)]'
               )
             }
           }}
@@ -83,7 +83,7 @@ export function SidebarUserProfile({
           </p>
           <p className={cn(
             'text-xs leading-4', // 0.75rem, 1rem
-            'text-[var(--sb-ink-muted,rgba(0,0,0,0.6))]',
+            'text-[var(--sb-ink-muted)]',
             'truncate overflow-hidden text-ellipsis whitespace-nowrap'
           )}>
             {planLabel}

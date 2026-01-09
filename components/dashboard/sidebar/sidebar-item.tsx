@@ -59,7 +59,7 @@ export function SidebarItem({ href, label, icon, isActive, className, onClick, .
     // Hover state
     'hover:bg-black/5',
     // Active state - use primary color at 10% opacity
-    active && 'bg-[hsl(var(--primary,221_86%_54%)/0.1)]',
+    active && 'bg-primary/10',
     active && 'text-[var(--sb-ink-active)]',
     active && 'border-l-[3px] border-[var(--sb-ink-active)]',
     active && (collapsed ? 'pl-3' : 'pl-[calc(0.75rem-3px)]'), // Adjust for border (not used in collapsed state)
