@@ -1,6 +1,6 @@
 ---
 title: "scripts/audit/css"
-last_updated: "2026-01-08"
+last_updated: "2026-01-09"
 category: "automation"
 ---
 
@@ -9,7 +9,7 @@ category: "automation"
 This README is generated from a single template (`README.scripts.hbs`).
 
 - Directory: `scripts/audit/css`
-- Last updated: `2026-01-08`
+- Last updated: `2026-01-09`
 
 > Edit the template or the generator context to change all READMEs consistently.
 

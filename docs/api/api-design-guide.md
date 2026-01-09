@@ -1051,10 +1051,6 @@ responses:
 - Security validation included
 - Rate limit: 30/min
 
-**POST `/api/v1/ai/generate-chart`**
-- Generate chart configuration
-- Rate limit: 30/min
-
 ### User Operations
 
 **POST `/api/v1/user`**

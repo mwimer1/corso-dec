@@ -1,6 +1,6 @@
 ---
 title: "scripts/maintenance/docs"
-last_updated: "2026-01-08"
+last_updated: "2026-01-09"
 category: "automation"
 ---
 
@@ -9,13 +9,13 @@ category: "automation"
 This README is generated from a single template (`README.scripts.hbs`).
 
 - Directory: `scripts/maintenance/docs`
-- Last updated: `2026-01-08`
+- Last updated: `2026-01-09`
 
 > Edit the template or the generator context to change all READMEs consistently.
 
 ## Scripts in `scripts/maintenance/docs`
 
-- **autopublish.ts** – default true
+- **autopublish.ts** – Docs Auto-Publish Script
 - **cli.ts** – Command-line interface for documentation generation, enhancement, and normalization
 - **constants.ts** – Shared constants and configuration defaults
 - **generate-readmes.ts** – or
