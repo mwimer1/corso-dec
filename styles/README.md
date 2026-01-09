@@ -83,3 +83,20 @@ utils.ts
    - `globals.css` contains Tailwind directives processed at build time
    - `tokens/` contains CSS custom properties used at runtime
 
+## Component-Specific Tokens
+
+When a self-contained subsystem needs its own color palette or scale, component-specific tokens (prefixed with component names) can be used.
+
+**Preference Order**:
+1. **Use global tokens when possible** - Prefer shared design tokens (`--foreground`, `--surface`, `--border`) for consistency
+2. **Use component tokens when needed** - Use prefixed tokens (e.g., `--sb-*` for sidebar, `--chat-*` for chat) only when a component needs its own isolated palette
+
+**Where to Edit**:
+- **Sidebar tokens**: `styles/tokens/sidebar.css` (prefixed with `--sb-*`)
+- **Chat tokens**: `components/chat/chat.module.css` (prefixed with `--chat-*`)
+
+**When to Use Component Tokens**:
+- Self-contained subsystems that need isolated theming
+- Components with unique visual requirements that don't fit the global token system
+- Legacy components that haven't been migrated to global tokens yet
+
