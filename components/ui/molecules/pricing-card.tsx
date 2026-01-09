@@ -90,7 +90,7 @@ export const PricingCard = React.forwardRef<HTMLDivElement, PricingCardProps>(
           onClick={() => onSelect?.(slug)}
           className={
             buttonVariant === 'whiteSolid'
-              ? `${styles.ctaButton()} bg-[hsl(var(--surface))] border-2 border-border`
+              ? `${styles.ctaButton()} bg-surface border-2 border-border`
               : styles.ctaButton()
           }
         >
