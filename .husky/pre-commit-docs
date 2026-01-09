@@ -1,0 +1,85 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/husky.sh"
+
+# Auto-update documentation hook
+# Detects when only docs/README files are staged and auto-updates them
+
+# Cross-platform pnpm command (Windows uses pnpm.cmd, Unix uses pnpm)
+# Use command -v to detect pnpm.cmd on Windows
+if command -v pnpm.cmd >/dev/null 2>&1; then
+  PNPM="pnpm.cmd"
+else
+  PNPM="pnpm"
+fi
+
+# Helper to check if file pattern is staged
+has_staged_file() {
+  git diff --cached --name-only --diff-filter=ACMR | grep -qE "$1"
+}
+
+# Helper to check if only docs files are staged (no code changes)
+is_docs_only_commit() {
+  local staged_files
+  staged_files=$(git diff --cached --name-only --diff-filter=ACMR 2>/dev/null || echo "")
+  
+  if [ -z "$staged_files" ]; then
+    return 1  # No files staged
+  fi
+  
+  # Check if any non-docs files are staged
+  if echo "$staged_files" | grep -qvE '(^docs/|README\.md$|^\.husky/.*\.md$|^\.cursor/.*\.md$|^\.github/.*\.md$)'; then
+    return 1  # Code files are staged, not docs-only
+  fi
+  
+  # Check if any docs files are staged
+  if echo "$staged_files" | grep -qE '(^docs/|README\.md$|^\.husky/.*\.md$|^\.cursor/.*\.md$|^\.github/.*\.md$)'; then
+    return 0  # Only docs files staged
+  fi
+  
+  return 1  # No docs files staged
+}
+
+# Early exit if no docs files changed
+if ! is_docs_only_commit; then
+  exit 0
+fi
+
+echo "📖 Auto-updating documentation..."
+
+# Update docs index
+if has_staged_file '(^docs/|README\.md$)'; then
+  echo "  🔄 Updating docs/index.ts..."
+  if $PNPM docs:index >/dev/null 2>&1; then
+    # Stage updated docs/index.ts if it was modified
+    if git diff --name-only docs/index.ts 2>/dev/null | grep -q 'docs/index.ts'; then
+      git add docs/index.ts 2>/dev/null || true
+      echo "  ✅ Updated docs/index.ts"
+    fi
+  else
+    echo "  ⚠️  Failed to update docs/index.ts (non-fatal)"
+  fi
+fi
+
+# Update scripts READMEs (if scripts/README.md is staged or any scripts README exists)
+if has_staged_file '^scripts/.*README\.md$' || [ -f "scripts/README.md" ]; then
+  echo "  🔄 Updating scripts READMEs..."
+  if $PNPM docs:generate:readme -- --all >/dev/null 2>&1; then
+    # Stage updated README files in scripts directory (only if they exist and are tracked)
+    git diff --name-only --diff-filter=M 2>/dev/null | grep -E '^scripts/.*README\.md$' | while read -r file; do
+      if [ -n "$file" ] && [ -f "$file" ]; then
+        git add "$file" 2>/dev/null || true
+      fi
+    done || true
+    # Also check for untracked changes in scripts READMEs
+    git diff --name-only 2>/dev/null | grep -E '^scripts/.*README\.md$' | while read -r file; do
+      if [ -n "$file" ] && [ -f "$file" ]; then
+        git add "$file" 2>/dev/null || true
+      fi
+    done || true
+    echo "  ✅ Updated scripts READMEs"
+  else
+    echo "  ⚠️  Failed to update scripts READMEs (non-fatal)"
+  fi
+fi
+
+echo "✅ Documentation auto-update complete"

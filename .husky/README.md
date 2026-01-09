@@ -11,8 +11,9 @@ title: ".husky"
 
 ## 📋 Quick Reference
 
-**Active Hooks** (4/4 enabled):
+**Active Hooks** (5/5 enabled):
 - ✅ **pre-commit**: Fail-fast quality gates with staged-only checks
+- ✅ **pre-commit-docs**: Auto-update documentation before commit
 - ✅ **commit-msg**: Conventional commit message validation
 - ✅ **pre-rebase**: Lockfile refresh during rebases
 - ✅ **pre-push**: Conditional style checks and fast test suite
@@ -34,6 +35,7 @@ title: ".husky"
 | Hook | Status | Purpose | Execution |
 |------|--------|---------|-----------|
 | `pre-commit` | ✅ **Active** | Fail-fast quality gates | Staged-only checks with conditional execution |
+| `pre-commit-docs` | ✅ **Active** | Auto-update documentation | Automatically updates docs when docs files staged |
 | `commit-msg` | ✅ **Active** | Commit message validation | `pnpm exec commitlint --edit "$1"` |
 | `pre-rebase` | ✅ **Active** | Lockfile refresh | Conditional CI-aware execution |
 | `post-merge` | ⚪ **Git LFS** | Large file checkout | `git lfs post-merge` |
@@ -51,6 +53,9 @@ title: ".husky"
 
 **Execution Flow** (gates run in order, fail-fast on first error):
 ```bash
+# 0. Auto-update documentation (only if docs files staged)
+.husky/pre-commit-docs
+
 # 1. Validate package.json (only if package.json staged)
 pnpm validate:package
 
@@ -85,6 +90,44 @@ git grep -nE "export .*Database" -- types/shared
 **Logging**:
 - Logs written to `.git/husky-logs/pre-commit-<timestamp>.log`
 - Set `HUSKY_VERBOSE=1` to stream output instead of logging
+
+### ✅ Pre-commit Docs Hook (`pre-commit-docs`)
+
+**Purpose**: Automatically updates documentation files before commit to prevent stale docs.
+
+**Execution Flow**:
+```bash
+# 1. Detect if only docs/README files are staged (no code changes)
+# 2. Update docs/index.ts (if docs files staged)
+pnpm docs:index
+
+# 3. Update scripts READMEs (if scripts READMEs staged or exist)
+pnpm docs:generate:readme -- --all
+
+# 4. Stage updated files automatically
+git add docs/index.ts scripts/**/*README.md
+```
+
+**Behavior**:
+- **Early exit**: Exits immediately if no docs files are staged
+- **Docs-only detection**: Only runs when docs/README files are staged (no code changes)
+- **Auto-staging**: Automatically stages updated documentation files
+- **Non-fatal**: Errors are non-fatal (warnings only) to avoid blocking commits
+- **Cross-platform**: Works on Windows (Git Bash) and Unix systems
+
+**Updated Files**:
+- `docs/index.ts`: Documentation index (auto-generated from README files)
+- `scripts/**/README.md`: Scripts directory READMEs (auto-generated from templates)
+
+**Integration**:
+- Called automatically by `pre-commit` hook when docs files are staged
+- Can be run independently: `.husky/pre-commit-docs`
+- Skips standard quality gates (typecheck, lint) for docs-only commits
+
+**Performance**:
+- Runtime: <1 second (runs only when docs files staged)
+- Conditional execution: Only runs when relevant files are staged
+- Idempotent: Safe to run multiple times
 
 ### ✅ Commit Message Hook (`commit-msg`)
 
@@ -338,7 +381,7 @@ pnpm install
 \* **Performance optimized** (fail-fast, staged-only):
 - **Code commits** (with TS changes): 1-2 seconds (staged typecheck + lint, conditional validations)
 - **Code commits** (no TS/config changes): 0.5-1 second (lint only, validations skipped)
-- **Docs-only commits**: 0.5-1 second (lint only, other checks skipped)
+- **Docs-only commits**: 0.5-1 second (docs auto-update + lint, other checks skipped)
 - **Config-only commits**: 0.5-1 second (minimal validation, most checks skipped)
 - **No-op commits**: <0.5 second (fast-exit on empty staged files)
 

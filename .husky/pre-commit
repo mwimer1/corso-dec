@@ -84,6 +84,20 @@ if [ "$HUSKY_VERBOSE" != "1" ]; then
   echo "Pre-commit hook started at $(date)" > "$LOG_FILE"
 fi
 
+# Gate 0: Auto-update documentation (if docs files staged)
+if has_staged_file '(^docs/|README\.md$|^\.husky/.*\.md$|^\.cursor/.*\.md$|^\.github/.*\.md$)'; then
+  echo "📖 Auto-updating documentation..."
+  if [ -f "$(dirname -- "$0")/pre-commit-docs" ]; then
+    if "$(dirname -- "$0")/pre-commit-docs"; then
+      echo "✅ Documentation auto-updated"
+    else
+      echo "⚠️  Documentation auto-update completed with warnings (non-fatal)"
+    fi
+  else
+    echo "⚠️  pre-commit-docs hook not found (skipping auto-update)"
+  fi
+fi
+
 # Gate 1: Package validation (only if package.json staged)
 if ! run_gate "Validating package.json" "pnpm validate:package" "has_staged_file '^package.json$'"; then
   show_failure "package.json validation" "pnpm validate:package"
