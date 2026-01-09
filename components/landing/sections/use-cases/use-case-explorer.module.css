@@ -118,18 +118,16 @@
    New Streamlined Cleanup Styles
    ============================================ */
 
-/* Selector Panel Container */
+/* Selector Panel Container - spacing handled by Tailwind in JSX */
 .selectorPanel {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
 }
 
-/* Main Two-Column Layout */
+/* Main Two-Column Layout - spacing handled by Tailwind in JSX */
 .mainLayout {
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
 }
 
 /* Card Grid Container - Left Pane */
@@ -138,10 +136,9 @@
   flex-direction: column;
 }
 
-/* Card Grid */
+/* Card Grid - gap handled by Tailwind in JSX */
 .cardGrid {
   display: grid;
-  gap: var(--space-md);
   grid-template-columns: 1fr;
 }
 
@@ -157,18 +154,16 @@
   }
 }
 
-/* Problem and Help Section */
+/* Problem and Help Section - gap handled by Tailwind in JSX */
 .problemHelpSection {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
 }
 
 @media (min-width: 1024px) {
   .problemHelpSection {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--space-md);
   }
 }
 
@@ -215,11 +210,10 @@
   animation: fadeInUp var(--content-transition-duration) var(--content-transition-easing);
 }
 
-/* Preview Accordion - Mobile */
+/* Preview Accordion - Mobile - padding handled by Tailwind in JSX */
 .previewAccordion {
   border: 1px solid hsl(var(--border));
   border-radius: var(--radius-lg);
-  padding: var(--space-md);
   background: hsl(var(--background));
 }
 
@@ -227,7 +221,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-sm) 0;
   user-select: none;
 }
 
@@ -253,17 +246,14 @@
 }
 
 .previewAccordionContent {
-  padding-top: var(--space-md);
   border-top: 1px solid hsl(var(--border));
-  margin-top: var(--space-md);
 }
 
-/* Desktop Layout: Two Column Grid */
+/* Desktop Layout: Two Column Grid - gap handled by Tailwind in JSX */
 @media (min-width: 1024px) {
   .mainLayout {
     display: grid;
     grid-template-columns: 1fr 400px;
-    gap: var(--space-xl);
     align-items: stretch;
   }
 

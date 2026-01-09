@@ -30,14 +30,12 @@ export function UseCaseCard({
       onClick={onClick}
       className={cn(
         // Base card styles
-        'group relative flex flex-col gap-3 p-4 rounded-xl border transition-all duration-200',
+        'group relative flex flex-col gap-3 p-5 rounded-xl border transition-colors transition-shadow duration-200',
         'text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
         // Selected state: bg-muted + subtle ring
         isSelected
-          ? 'bg-muted border-foreground/20 ring-1 ring-ring/20 shadow-md'
+          ? 'bg-muted/40 border-foreground/20 ring-1 ring-ring/20 shadow-md'
           : 'bg-background border-border hover:border-foreground/30 hover:shadow-md',
-        // Hover elevation (subtle)
-        'hover:shadow-md',
         className
       )}
       aria-pressed={isSelected}
@@ -62,20 +60,24 @@ export function UseCaseCard({
       </p>
 
       {/* Tags */}
-      {tags.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2 mt-auto">
-          {tags.map((tag) => (
-            <Badge key={tag} color="default" className="text-xs">
-              {tag}
-            </Badge>
-          ))}
-          {remainingTagsCount > 0 && (
-            <Badge color="default" className="text-xs">
-              +{remainingTagsCount}
-            </Badge>
-          )}
-        </div>
-      )}
+      <div className="flex flex-wrap items-center gap-2 mt-auto min-h-[1.5rem]">
+        {tags.length > 0 ? (
+          <>
+            {tags.map((tag) => (
+              <Badge key={tag} color="default" className="text-xs rounded-full">
+                {tag}
+              </Badge>
+            ))}
+            {remainingTagsCount > 0 && (
+              <Badge color="default" className="text-xs rounded-full">
+                +{remainingTagsCount} more
+              </Badge>
+            )}
+          </>
+        ) : (
+          <span className="sr-only">No tags</span>
+        )}
+      </div>
     </button>
   );
 }

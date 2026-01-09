@@ -25,6 +25,10 @@ market-insights-section.tsx
 Import components from the appropriate subdirectory:
 
 ```typescript
-import { ComponentName } from '@/components/landing/sections/market-insights/subdirectory';
+import { MarketInsightsSection } from '@/components/landing/sections/market-insights/market-insights-section';
 ```
+
+### Props
+
+- **`withContainer?: boolean`** - Whether to apply internal container wrapper (default: `true`). Set to `false` when used inside a `FullWidthSection` with container props to avoid double containers.
 

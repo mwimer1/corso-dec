@@ -7,10 +7,10 @@ import { cn } from '@/styles';
 
 export default function IndustryExplorer() {
   return (
-    <div className={cn(styles['useCaseExplorer'], 'space-y-md')}>
+    <div className={cn(styles['useCaseExplorer'], 'space-y-6')}>
       {/* Header */}
-      <div className="space-y-3">
-        <h2 id="use-cases-title" className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
+      <div className="space-y-4">
+        <h2 id="use-cases-title" className="text-4xl font-bold text-foreground tracking-tight">
           Workflows that turn permits into{' '}
           <span className="relative inline-block">
             <span className="relative z-10">action</span>
@@ -21,7 +21,7 @@ export default function IndustryExplorer() {
           </span>
           .
         </h2>
-        <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-3xl">
+        <p className="text-base text-muted-foreground leading-relaxed max-w-3xl">
           Pick your industry. Explore the workflows Corso supports—what you'll do, what you'll see, and what you can export.
         </p>
       </div>

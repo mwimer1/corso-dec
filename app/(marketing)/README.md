@@ -153,7 +153,7 @@ export default function MarketingHomePage() {
         opacity="none"
         guidelineColor="bg-border"
       >
-        <LazyMarketInsightsSection controlsVariant="dropdown" dense stickyMetrics />
+        <LazyMarketInsightsSection controlsVariant="dropdown" dense stickyMetrics withContainer={false} />
       </FullWidthSection>
     </PublicLayout>
   );

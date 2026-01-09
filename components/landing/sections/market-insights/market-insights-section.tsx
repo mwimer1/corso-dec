@@ -38,6 +38,8 @@ type Props = {
   dense?: boolean;
   /** Keep statistics visible while adjusting controls (md+ only) */
   stickyMetrics?: boolean;
+  /** Whether to apply internal container wrapper (default: true for backward compatibility) */
+  withContainer?: boolean;
 };
 
 const DEFAULT_TERRITORIES = ["Texas","Austin","Houston","Dallas","Fort Worth","San Antonio"];
@@ -52,6 +54,7 @@ export const MarketInsightsSection: React.FC<Props> = ({
   controlsVariant = "pills",
   dense = false,
   stickyMetrics: _stickyMetrics = false,
+  withContainer = true,
 }) => {
   const minYear = useMemo(() => Math.min(...data.map((d: ChartDataPoint) => d.year)), [data]);
   const maxYear = useMemo(() => Math.max(...data.map((d: ChartDataPoint) => d.year)), [data]);
@@ -185,7 +188,8 @@ export const MarketInsightsSection: React.FC<Props> = ({
   return (
     <section
       className={cn(
-        containerMaxWidthVariants({ maxWidth: '7xl', centered: true, responsive: true }),
+        withContainer && containerMaxWidthVariants({ maxWidth: '7xl', centered: true, responsive: true }),
+        !withContainer && 'w-full',
         styles['section']
       )}
       aria-labelledby="market-insights-title"
@@ -289,7 +293,7 @@ export const MarketInsightsSection: React.FC<Props> = ({
       </div>
 
       <div className={"mt-8 pt-8 " + styles['roiWrap']}>
-        <ROICalculator />
+        <ROICalculator withContainer={false} />
       </div>
     </section>
   );

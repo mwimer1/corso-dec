@@ -6,6 +6,7 @@ import { cn } from '@/styles';
 import { useEffect, useRef, useState } from 'react';
 import type { Industry, PreviewTab } from './types';
 import { UseCaseCard } from './use-case-card';
+import { SegmentedTabs } from './segmented-tabs';
 import styles from './use-case-explorer.module.css';
 import { UseCasePreviewPane } from './use-case-preview-pane';
 
@@ -103,37 +104,26 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
             ))}
           </div>
         </div>
-        {/* Horizontal scrollable tabs */}
-        <div className={cn(styles['industryTabs'], 'flex gap-2 overflow-x-auto pb-2 -mx-1 px-1')}>
-          {validIndustries.map((industry) => (
-            <button
-              key={industry.id}
-              type="button"
-              onClick={() => handleIndustryClick(industry.id)}
-              className={cn(
-                'flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                activeIndustryId === industry.id
-                  ? 'bg-muted/60 border border-foreground/30 text-foreground font-semibold'
-                  : 'bg-background border border-border text-foreground hover:border-foreground/20 hover:bg-muted/60'
-              )}
-              aria-pressed={activeIndustryId === industry.id}
-              aria-label={`Select ${industry.label} industry`}
-            >
-              {industry.label}
-            </button>
-          ))}
+        {/* Industry Tabs - Segmented Control */}
+        <div className={cn(styles['industryTabs'])}>
+          <SegmentedTabs
+            value={activeIndustryId}
+            onValueChange={handleIndustryClick}
+            items={validIndustries.map((ind) => ({ value: ind.id, label: ind.label }))}
+            ariaLabel="Industry selection tabs"
+            scrollable={true}
+          />
         </div>
       </div>
 
       {/* Main Two-Column Layout */}
-      <div className={cn(styles['mainLayout'])}>
+      <div className={cn(styles['mainLayout'], 'gap-6 lg:gap-8')}>
         {/* Left Pane - Industry Card with Workflows */}
         <Card className={cn(styles['cardGridContainer'], 'flex flex-col h-full')}>
-          <CardContent className="p-5 space-y-4 flex-1 flex flex-col min-h-0">
+          <CardContent className="p-5 space-y-4 flex-1 flex flex-col min-h-0 overflow-hidden">
             {/* Section Title/Subtitle */}
             <div className="space-y-2">
-              <h3 className="text-xl sm:text-2xl font-semibold text-foreground">
+              <h3 className="text-2xl font-semibold text-foreground">
                 {activeIndustry.tagline}
               </h3>
               <p className="text-sm text-muted-foreground">
@@ -156,9 +146,9 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
             {/* Problem and Help Sections - Bottom Left (anchored to bottom) */}
             <div className="mt-auto">
               <div className="border-t border-border my-6 opacity-70" aria-hidden="true" />
-              <div className={cn(styles['problemHelpSection'], 'space-y-3 lg:grid lg:grid-cols-2 lg:gap-4')}>
+              <div className={cn(styles['problemHelpSection'], 'gap-4 lg:grid lg:grid-cols-2')}>
                 {/* The Problem */}
-                <div className={cn(styles['problemHelpCard'], 'p-4 rounded-lg bg-muted/30 lg:h-48')}>
+                <div className={cn(styles['problemHelpCard'], 'p-5 rounded-lg bg-muted/30')}>
                   <h4 className="text-sm font-semibold text-foreground mb-2">The problem</h4>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     {activeUseCase.pain}
@@ -166,7 +156,7 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
                 </div>
 
                 {/* How Corso helps */}
-                <div className={cn(styles['problemHelpCard'], 'p-4 rounded-lg bg-muted/30 lg:h-48')}>
+                <div className={cn(styles['problemHelpCard'], 'p-5 rounded-lg bg-muted/30')}>
                   <h4 className="text-sm font-semibold text-foreground mb-2">How Corso helps</h4>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     {activeUseCase.howCorsoHelps}
@@ -189,13 +179,13 @@ export function IndustrySelectorPanel({ industries }: IndustrySelectorPanelProps
       </div>
 
       {/* Preview Pane - Mobile Accordion */}
-      <details className={cn(styles['previewAccordion'], 'lg:hidden')} open={false}>
-        <summary className={cn(styles['previewAccordionSummary'], 'cursor-pointer list-none')}>
+      <details className={cn(styles['previewAccordion'], 'lg:hidden p-4')} open={false}>
+        <summary className={cn(styles['previewAccordionSummary'], 'cursor-pointer list-none py-2')}>
           <span className="text-sm font-semibold text-foreground">
             Preview: {activeUseCase.title}
           </span>
         </summary>
-        <div className={cn(styles['previewAccordionContent'], 'mt-4')}>
+        <div className={cn(styles['previewAccordionContent'], 'pt-4 mt-4')}>
           <UseCasePreviewPane
             useCase={activeUseCase}
             previewTab={previewTab}

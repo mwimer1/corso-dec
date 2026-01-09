@@ -8,6 +8,7 @@ import { LinkTrack } from "@/components/ui/molecules";
 import { calcRoi, clamp } from "@/lib/marketing/client";
 import { APP_LINKS } from '@/lib/shared';
 import { trackNavClick } from "@/lib/shared/analytics/track";
+import { cn } from "@/styles";
 import React, { useId, useMemo, useState } from "react";
 import { RoiOutputPanel } from "./roi-output-panel";
 import { RoiLabelTooltip } from "./roi-label-tooltip";
@@ -18,7 +19,12 @@ import { LandingSection } from "../../layout/landing-section";
 
 // Math & formatting moved to shared util (see imports above)
 
-export const ROICalculator: React.FC = () => {
+interface ROICalculatorProps {
+  /** Whether to apply internal container wrapper (default: true for backward compatibility) */
+  withContainer?: boolean;
+}
+
+export const ROICalculator: React.FC<ROICalculatorProps> = ({ withContainer = true }) => {
   const [leads, setLeads] = useState<number>(100);
   const [closeRate, setCloseRate] = useState<number>(20);
   const [dealSize, setDealSize] = useState<number>(20000);
@@ -45,7 +51,10 @@ export const ROICalculator: React.FC = () => {
         </p>
       </div>
 
-      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className={cn(
+        withContainer && "mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8",
+        !withContainer && "w-full"
+      )}>
         <div
           className="grid gap-y-8 gap-x-8 lg:grid-cols-[minmax(240px,380px)_minmax(300px,480px)] xl:grid-cols-[minmax(280px,480px)_minmax(320px,560px)] justify-center items-stretch"
         >

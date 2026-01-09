@@ -27,6 +27,8 @@ interface LazyMarketInsightsSectionProps {
   dense?: boolean;
   /** Keep statistics visible while adjusting controls (md+ only) */
   stickyMetrics?: boolean;
+  /** Whether to apply internal container wrapper (default: true for backward compatibility) */
+  withContainer?: boolean;
   /** CSS class name for the section wrapper */
   className?: string;
 }
