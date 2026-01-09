@@ -1,7 +1,5 @@
 // styles/ui/molecules/index.ts — explicit, used-only re-exports
 
-// Alert system (doc-only, removed)
-
 // Auth card
 export { authCardVariants } from './auth-card';
 export type { AuthCardVariantProps } from './auth-card';
@@ -9,8 +7,6 @@ export type { AuthCardVariantProps } from './auth-card';
 // Navigation item
 export { navItemVariants } from './nav-item';
 export type { NavItemVariantProps } from './nav-item';
-
-// Category filter (removed - unused)
 
 // Empty state (all parts)
 export {
@@ -37,8 +33,6 @@ export type {
     PricingGridVariantProps
 } from './pricing-grid';
 
-// Progress indicator (removed - no longer used)
-
 // Loading states
 export { loadingStates } from './loading-states-variants';
 export type { LoadingStatesVariants } from './loading-states-variants';
@@ -51,8 +45,6 @@ export type { SkeletonSuiteVariants } from './skeleton-suite-variants';
 // Metric card
 export { metricCardVariants, metricCardValueSizeVariants } from './metric-card';
 export type { MetricCardVariantProps, MetricCardValueSizeVariantProps } from './metric-card';
-
-// Tabs (removed - no longer used)
 
 // Tab switcher variants moved to components/landing/sections/product-showcase/tab-switcher.variants.ts
 // (component-specific to ProductShowcase section)

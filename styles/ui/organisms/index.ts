@@ -25,7 +25,6 @@ export type { ResultPanelVariantProps } from "./result-panel";
 
 // Footer
 export { footerCTA } from "./footer-cta-variants";
-export { footer } from "./footer-variants";
 
 // Full Width Section
 export {
