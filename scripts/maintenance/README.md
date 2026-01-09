@@ -24,6 +24,7 @@ This README is generated from a single template (`README.scripts.hbs`).
 - **clean-next-build.ts** – Cross-platform script to clean .next directory before build
 - **clean-typescript-cache.ts** – scripts/maintenance/clean-typescript-cache.ts
 - **cleanup-branches.ts** – Branch Cleanup Script
+- **docs-doctor.ts** – Provides a comprehensive health summary of documentation
 - **ensure-ports.ts** – Cross-platform script to check and kill processes on specified ports
 - **extract-docs-rules.ts** – scripts/maintenance/extract-docs-rules.ts
 - **find-test-only-exports.ts** – Find exports that are only referenced from tests.
