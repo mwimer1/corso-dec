@@ -138,6 +138,9 @@ jobs:
       - name: 'Guard: Dependency health (cycles, orphans, unused exports)'
         run: pnpm validate:dead-code:ci
 
+      - name: 'Guard: Orphan files (fail CI if DROP > 0)'
+        run: pnpm audit:orphans --ci
+
       - name: 'Guard: Deprecated path references'
         run: pnpm validate:deprecated-paths
 

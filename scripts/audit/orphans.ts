@@ -361,10 +361,8 @@ interface AllowlistData {
 }
 
 function loadAllowlist(): { files: Set<string>; notes: Record<string, string> } {
-  if (argv.noAllowlist) {
-    return { files: new Set(), notes: {} };
-  }
-
+  // Always load allowlist file content (files + notes) regardless of flags
+  // Flags control whether allowlist is USED for KEEP decisions, not whether it's LOADED
   const allowlistPath = nodePath.resolve(process.cwd(), 'scripts', 'audit', 'orphans.allowlist.json');
   try {
     const content = nodeFs.readFileSync(allowlistPath, 'utf-8');
@@ -516,6 +514,8 @@ const ArgSchema = z.object({
   includeIndex: z.boolean().default(false),
   noAllowlist: z.boolean().default(false),
   onlyAllowlisted: z.boolean().default(false),
+  quiet: z.boolean().default(false),
+  ci: z.boolean().default(false),
 }).strict();
 
 // Check for help flag first
@@ -542,16 +542,20 @@ Options:
   --stdout                  Output results to stdout instead of file
   --paths-only              Output only file paths (one per line)
   --include-index           Include index barrel files in analysis
-  --no-allowlist            Ignore allowlist and show all orphans (including allowlisted)
-  --only-allowlisted        Show only allowlisted files and their status
+  --no-allowlist            Don't auto-KEEP allowlisted files (still loads allowlist for filtering/safety)
+  --only-allowlisted        Show only allowlisted files and their status (works with --no-allowlist for auditing)
+  --quiet                   Suppress progress logs (keep errors visible)
+  --ci                      CI mode: implies --quiet, exits 1 if DROP > 0, prints only drop paths to stdout
 
 Examples:
   pnpm audit:orphans                              # Generate report only
   pnpm audit:orphans --only DROP                  # Show only droppable files
-  pnpm audit:orphans --no-allowlist               # Show all orphans (ignore allowlist)
-  pnpm audit:orphans --only-allowlisted           # Audit allowlist entries
+  pnpm audit:orphans --no-allowlist               # Show all orphans (allowlist not used for KEEP)
+  pnpm audit:orphans --no-allowlist --only-allowlisted  # Audit allowlist entries (what would happen without auto-KEEP)
+  pnpm audit:orphans --only-allowlisted           # Show allowlisted files and their status
   pnpm audit:orphans --apply --yes                # Apply deletions (CI)
   pnpm audit:orphans --stdout --paths-only        # List paths to stdout
+  pnpm audit:orphans --ci                         # CI mode: exit 1 if DROP > 0, print only drop paths
 
 Safety:
   - Default mode is read-only (report generation)
@@ -574,6 +578,8 @@ const parsed = parseArgs({
     'include-index': { type: 'boolean' },
     'no-allowlist': { type: 'boolean' },
     'only-allowlisted': { type: 'boolean' },
+    quiet: { type: 'boolean' },
+    ci: { type: 'boolean' },
     help: { type: 'boolean' },
     h: { type: 'boolean' },
   },
@@ -592,6 +598,8 @@ const argv = ArgSchema.parse({
   includeIndex: parsed.values['include-index'],
   noAllowlist: parsed.values['no-allowlist'],
   onlyAllowlisted: parsed.values['only-allowlisted'],
+  quiet: parsed.values.quiet ?? false,
+  ci: parsed.values.ci ?? false,
 });
 
 // ---- TS project --------------------------------------------------------------
@@ -599,9 +607,20 @@ const project = new Project({
   tsConfigFilePath: 'tsconfig.json',
 });
 
+// ---- CI mode: implies quiet --------------------------------------------------
+const isQuiet = argv.quiet || argv.ci;
+
+// Helper to conditionally log (respects quiet/ci flags)
+function log(message: string): void {
+  if (!isQuiet) {
+    console.log(message);
+  }
+}
+
 // ---- Ensure all source files are in project before building importerMap ----
 // This fixes cases where script/test files aren't in ts-morph scope
-console.log('🔍 Adding all source files to project...');
+log('🔍 Adding all source files to project...');
+// Include test files so they can act as importers (e.g., tests importing lib files)
 const allSourceFiles = await globby(
   ['**/*.{ts,tsx,js,jsx}'],
   { ignore: [...CONFIG.EXCLUDE_PATTERNS] }
@@ -617,30 +636,33 @@ for (const relPath of allSourceFiles) {
     }
   }
 }
-console.log(`   Added ${allSourceFiles.length} source files to project\n`);
+log(`   Added ${allSourceFiles.length} source files to project\n`);
 
 // ---- Load allowlist ----------------------------------------------------------
-const { files: allowlist, notes: allowlistNotes } = loadAllowlist();
+// Always load allowlist data (files + notes) for filtering and safety checks
+// Flags control whether allowlist is USED for KEEP decisions (useAllowlistForKeep)
+const { files: allowlistFiles, notes: allowlistNotes } = loadAllowlist();
+const useAllowlistForKeep = !argv.noAllowlist;
 
 // ---- Build importer map ------------------------------------------------------
-console.log('🔍 Building importer map...');
+log('🔍 Building importer map...');
 const importerMap = buildImporterMap(project);
-console.log(`   Found ${importerMap.size} files with importers\n`);
+log(`   Found ${importerMap.size} files with importers\n`);
 
 // ---- Build package.json entrypoint map ---------------------------------------
-console.log('🔍 Building package.json entrypoint map...');
+log('🔍 Building package.json entrypoint map...');
 const packageEntrypoints = buildPackageScriptEntrypointMap();
-console.log(`   Found ${packageEntrypoints.size} files referenced by package.json scripts\n`);
+log(`   Found ${packageEntrypoints.size} files referenced by package.json scripts\n`);
 
 // ---- Build workflow entrypoint map (optional, low-maintenance) ---------------
-console.log('🔍 Building workflow entrypoint map...');
+log('🔍 Building workflow entrypoint map...');
 const workflowEntrypoints = buildWorkflowEntrypointMap();
-console.log(`   Found ${workflowEntrypoints.size} files referenced by workflows\n`);
+log(`   Found ${workflowEntrypoints.size} files referenced by workflows\n`);
 
 // ---- Build script-to-script execution entrypoint map -------------------------
-console.log('🔍 Building script execution entrypoint map...');
+log('🔍 Building script execution entrypoint map...');
 const scriptExecEntrypoints = buildScriptExecEntrypointMap(project);
-console.log(`   Found ${scriptExecEntrypoints.size} files invoked by scripts\n`);
+log(`   Found ${scriptExecEntrypoints.size} files invoked by scripts\n`);
 
 // ---- Discover candidates -----------------------------------------------------
 const candidates = await globby(
@@ -1066,7 +1088,7 @@ function buildScriptExecEntrypointMap(project: Project): Map<string, string[]> {
 }
 
 // ---- Analyze candidates ------------------------------------------------------
-console.log(`📋 Analyzing ${filteredCandidates.length} candidate file(s)...\n`);
+log(`📋 Analyzing ${filteredCandidates.length} candidate file(s)...\n`);
 
 for (const rel of filteredCandidates) {
   const abs = nodePath.resolve(process.cwd(), rel);
@@ -1082,8 +1104,9 @@ for (const rel of filteredCandidates) {
     notes: allowlistNotes[rel] || '',
   };
 
-  // Check allowlist first (unless --no-allowlist is set)
-  if (!argv.noAllowlist && allowlist.has(rel)) {
+  // Check allowlist first (if useAllowlistForKeep is true)
+  // Note: allowlistFiles is always loaded for filtering and safety checks
+  if (useAllowlistForKeep && allowlistFiles.has(rel)) {
     record.status = 'KEEP';
     record.reasons.push('KEEP_ALLOWLIST');
     results.push(record);
@@ -1091,7 +1114,8 @@ for (const rel of filteredCandidates) {
   }
 
   // If --only-allowlisted, skip non-allowlisted files
-  if (argv.onlyAllowlisted && !allowlist.has(rel)) {
+  // This works even when --no-allowlist is set (for auditing allowlist)
+  if (argv.onlyAllowlisted && !allowlistFiles.has(rel)) {
     continue;
   }
 
@@ -1227,8 +1251,8 @@ for (const rel of filteredCandidates) {
 // Filter results based on flags
 let outputFiles = results;
 if (argv.onlyAllowlisted) {
-  // Show only allowlisted files
-  outputFiles = results.filter((r) => allowlist.has(r.path));
+  // Show only allowlisted files (works even with --no-allowlist for auditing)
+  outputFiles = results.filter((r) => allowlistFiles.has(r.path));
 } else if (argv.only !== 'ALL') {
   outputFiles = results.filter((r) => r.status === argv.only);
 }
@@ -1239,8 +1263,8 @@ const summary = {
   kept: outputFiles.filter((r) => r.status === 'KEEP').length,
   review: outputFiles.filter((r) => r.status === 'REVIEW').length,
   droppable: outputFiles.filter((r) => r.status === 'DROP').length,
-  allowlisted: results.filter((r) => allowlist.has(r.path)).length,
-  allowlistedButOrphan: results.filter((r) => allowlist.has(r.path) && r.status === 'DROP').length,
+  allowlisted: results.filter((r) => allowlistFiles.has(r.path)).length,
+  allowlistedButOrphan: results.filter((r) => allowlistFiles.has(r.path) && r.status === 'DROP').length,
 };
 
 // Ensure output directory exists
@@ -1252,8 +1276,29 @@ const tempFile = `${argv.out}.tmp`;
 await fs.writeJson(tempFile, { summary, files: outputFiles }, { spaces: 2 });
 await fs.move(tempFile, argv.out, { overwrite: true });
 
-// Print summary to console
-if (!argv.stdout) {
+// ---- CI mode: fail only if DROP > 0 ------------------------------------------
+// Note: CI mode must run BEFORE stdout/apply logic to handle exit codes correctly
+if (argv.ci) {
+  // CI mode: compute TRUE drop set (respect allowlist protection)
+  // Even in --no-allowlist mode, don't count allowlisted files as drops (safety)
+  const trueDropCount = results.filter((r) => r.status === 'DROP' && !allowlistFiles.has(r.path)).length;
+  
+  if (trueDropCount > 0) {
+    // Print ONLY the drop file paths (one per line) to stdout
+    const dropPaths = results
+      .filter((r) => r.status === 'DROP' && !allowlistFiles.has(r.path))
+      .map((r) => r.path)
+      .sort();
+    process.stdout.write(dropPaths.join('\n') + '\n');
+    process.exit(1);
+  } else {
+    // No drops: exit 0 (no output for cleaner CI logs)
+    process.exit(0);
+  }
+}
+
+// Print summary to console (unless quiet/ci or stdout)
+if (!argv.stdout && !isQuiet) {
   console.log(`\n📊 Orphan Audit Summary:`);
   console.log(`   Candidates: ${summary.candidates}`);
   console.log(`   Analyzed: ${summary.analyzed}`);
@@ -1272,6 +1317,27 @@ if (!argv.stdout) {
   console.log(`\n📄 Report written to: ${argv.out}\n`);
 }
 
+// ---- CI mode: fail only if DROP > 0 ------------------------------------------
+if (argv.ci) {
+  // CI mode: compute TRUE drop set (respect allowlist protection)
+  // Even in --no-allowlist mode, don't count allowlisted files as drops
+  const trueDropCount = results.filter((r) => r.status === 'DROP' && !allowlistFiles.has(r.path)).length;
+  
+  if (trueDropCount > 0) {
+    // Print ONLY the drop file paths (one per line) to stdout
+    const dropPaths = results
+      .filter((r) => r.status === 'DROP' && !allowlistFiles.has(r.path))
+      .map((r) => r.path)
+      .sort();
+    process.stdout.write(dropPaths.join('\n') + '\n');
+    process.exit(1);
+  } else {
+    // No drops: exit 0 (no output, or optional "OK" line)
+    // Prefer no output for cleaner CI logs
+    process.exit(0);
+  }
+}
+
 if (argv.stdout) {
   if (argv.pathsOnly) {
     const lines = outputFiles.filter(f => f.status === 'DROP').map(f => f.path).sort();
@@ -1282,8 +1348,9 @@ if (argv.stdout) {
 }
 
 if (argv.apply) {
-  // Don't delete allowlisted files even if they're DROP status
-  const dropFiles = outputFiles.filter((f) => f.status === 'DROP' && !allowlist.has(f.path));
+  // Safety: Don't delete allowlisted files even if they're DROP status
+  // This protection applies regardless of --no-allowlist flag
+  const dropFiles = outputFiles.filter((f) => f.status === 'DROP' && !allowlistFiles.has(f.path));
   
   if (dropFiles.length === 0) {
     console.log('✅ No files to drop. Exiting.');
