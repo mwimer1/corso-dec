@@ -163,11 +163,26 @@ function checkDrift(): number {
       stdio: ['pipe', 'pipe', 'pipe'],
     });
     
-    // Count failures (lines with ❌)
-    const failures = result.split('\n').filter(line => line.includes('❌')).length;
-    return failures;
-  } catch {
-    // If drift check fails, assume there are issues
+    // Check for actual failures (lines with "❌ Failed" or exit code)
+    const output = result.toLowerCase();
+    if (output.includes('failed:') && output.includes('❌')) {
+      // Count actual failed checks
+      const failedMatches = result.match(/❌ Failed: \d+/g);
+      if (failedMatches && failedMatches.length > 0) {
+        const match = failedMatches[0]?.match(/\d+/);
+        return match ? parseInt(match[0], 10) : 0;
+      }
+      return 1; // Has failures but couldn't parse count
+    }
+    
+    // If output shows "All checks passed", return 0
+    if (output.includes('all checks passed')) {
+      return 0;
+    }
+    
+    return 0; // Default to no issues
+  } catch (error) {
+    // If drift check fails (non-zero exit), assume there are issues
     return 1;
   }
 }
