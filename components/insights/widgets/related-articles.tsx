@@ -47,7 +47,7 @@ export function RelatedArticles({ articles, className, showTrustNote = true }: R
         </p>
       </header>
       
-      <div className="grid gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 sm:gap-8 [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]">
         {articles.slice(0, 3).map((article) => {
           // Map categories to ensure slug is present for resolver
           const categoriesWithSlug = article.categories?.filter((cat): cat is { name: string; slug: string } => !!cat.slug).map(cat => ({ slug: cat.slug }));

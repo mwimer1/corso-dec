@@ -347,20 +347,21 @@ export const InsightDetail = React.forwardRef<
           aria-label="Article content"
           itemProp="articleBody"
         />
-
-        {relatedArticles.length > 0 && (
-          <aside 
-            className={cn("mt-8 sm:mt-12")}
-            aria-label="Related content"
-          >
-            <RelatedArticles articles={relatedArticles} />
-          </aside>
-        )}
         </article>
 
         {/* Desktop Table of Contents - Sticky sidebar outside article column */}
         <TableOfContents content={sanitizedContent} variant="desktop" />
       </div>
+
+      {/* Full-width Related Articles section - outside reading column for proper width */}
+      {relatedArticles.length > 0 && (
+        <section 
+          className="mt-16"
+          aria-label="Related articles"
+        >
+          <RelatedArticles articles={relatedArticles} />
+        </section>
+      )}
 
       {/* Back to top button - fixed position, appears after scrolling */}
       <BackToTopButton />
