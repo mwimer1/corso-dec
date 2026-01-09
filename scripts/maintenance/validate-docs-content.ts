@@ -401,22 +401,43 @@ async function validateDocsContent(): Promise<void> {
   const envIssues = await validateEnvVarDocumentation();
   allIssues.push(...envIssues);
 
-  // Report issues
+  // Report issues in agent-friendly format
   const errors = allIssues.filter(i => i.severity === 'error');
   const warnings = allIssues.filter(i => i.severity === 'warning');
+  const isGitHubActions = process.env['GITHUB_ACTIONS'] === 'true';
 
   if (errors.length > 0) {
-    logger.error(`❌ Found ${errors.length} content validation errors:`);
+    console.error(`\n❌ Found ${errors.length} content validation error(s):\n`);
     for (const issue of errors) {
-      logger.error(`  ${issue.file}:${issue.line || '?'} - ${issue.issue}`);
+      const filePath = issue.file.replace(/\\/g, '/');
+      const lineInfo = issue.line ? `:${issue.line}` : '';
+      const message = `ERROR docs:validation file=${filePath}${lineInfo} issue="${issue.issue}"`;
+      
+      if (isGitHubActions && issue.line) {
+        // GitHub Actions annotation format
+        console.error(`::error file=${filePath},line=${issue.line}::${issue.issue}`);
+      } else {
+        console.error(message);
+      }
     }
+    console.error('\nFIX: Review and fix the issues above, then run: pnpm docs:validate:content\n');
   }
 
   if (warnings.length > 0) {
-    logger.warn(`⚠️  Found ${warnings.length} content validation warnings:`);
+    console.warn(`\n⚠️  Found ${warnings.length} content validation warning(s):\n`);
     for (const issue of warnings) {
-      logger.warn(`  ${issue.file}:${issue.line || '?'} - ${issue.issue}`);
+      const filePath = issue.file.replace(/\\/g, '/');
+      const lineInfo = issue.line ? `:${issue.line}` : '';
+      const message = `WARN docs:validation file=${filePath}${lineInfo} issue="${issue.issue}"`;
+      
+      if (isGitHubActions && issue.line) {
+        // GitHub Actions annotation format
+        console.warn(`::warning file=${filePath},line=${issue.line}::${issue.issue}`);
+      } else {
+        console.warn(message);
+      }
     }
+    console.warn('\nNOTE: Warnings are non-blocking. To fix: pnpm docs:validate:content\n');
   }
 
   if (errors.length > 0) {

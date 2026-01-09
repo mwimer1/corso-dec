@@ -523,7 +523,15 @@ async function main(): Promise<void> {
       logger.info('✅ Documentation validation passed successfully!');
     }
   } catch (err) {
-    logger.error('❌ Documentation validation failed.', { error: (err as Error).message });
+    const errorMessage = (err as Error).message;
+    const isGitHubActions = process.env['GITHUB_ACTIONS'] === 'true';
+    
+    if (isGitHubActions) {
+      console.error(`::error::Documentation validation failed: ${errorMessage}`);
+    } else {
+      logger.error(`❌ Documentation validation failed: ${errorMessage}`);
+    }
+    console.error('\nFIX: Run pnpm docs:validate to see detailed errors\n');
     process.exit(1);
   }
 }
