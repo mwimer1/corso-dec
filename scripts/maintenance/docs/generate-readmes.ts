@@ -3,6 +3,7 @@ import { execSync } from 'node:child_process';
 import { globby } from 'globby';
 import fs from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+import * as fsSync from 'node:fs';
 import path from 'node:path';
 import { renderReadme, writeIfChanged, findReadmes } from '../../utils/docs-template-engine';
 
@@ -180,7 +181,7 @@ async function main() {
       .map(dir => path.join(dir, 'README.md').replace(/\\/g, '/'))
       .filter(file => {
         try {
-          return existsSync(file);
+          return fsSync.existsSync(file);
         } catch {
           return false;
         }

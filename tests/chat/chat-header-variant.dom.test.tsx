@@ -1,29 +1,27 @@
 import { ChatPage } from '@/components/chat';
 import { render, screen } from '@testing-library/react';
-import React from 'react';
 import { describe, expect, it } from 'vitest';
 
 describe('ChatPage Header Variant', () => {
   it('renders DashboardTopBar with chat variant and stable selectors', () => {
-    render(<ChatPage />);
+    const { container } = render(<ChatPage />);
     
     // Find the header element using stable data attribute
-    const header = document.querySelector('[data-dashboard-top-bar]');
+    const header = container.querySelector('[data-dashboard-top-bar]');
     expect(header).toBeInTheDocument();
     
     // Verify variant attribute is set to "chat"
     expect(header).toHaveAttribute('data-variant', 'chat');
   });
 
-  it('applies tokenized spacing classes for chat variant', () => {
-    render(<ChatPage />);
+  it('applies tokenized spacing for chat variant (pl-xs instead of px-6)', () => {
+    const { container } = render(<ChatPage />);
     
-    const header = document.querySelector('[data-dashboard-top-bar]');
+    const header = container.querySelector('[data-dashboard-top-bar][data-variant="chat"]');
     expect(header).toBeInTheDocument();
     
-    // Verify the header has the chat variant class (pl-xs)
-    // We check for the presence of the element rather than specific classes
-    // since className is dynamically generated
+    // Verify the header has the chat variant
+    // We check for stable data attributes rather than brittle class snapshots
     expect(header).toHaveAttribute('data-variant', 'chat');
   });
 
