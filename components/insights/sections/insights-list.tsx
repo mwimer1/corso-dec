@@ -58,7 +58,12 @@ export const InsightsList = React.forwardRef<HTMLDivElement, InsightsListProps>(
           )}
           {...props}
         >
-          <section className={emptyStateVariants({ size: "md", context: "default", variant: "default" })}>
+          <section 
+            className={emptyStateVariants({ size: "md", context: "default", variant: "default" })}
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
             <div className="flex items-center justify-center mb-4 text-muted-foreground">
               <FileText className="h-12 w-12" aria-hidden="true" />
             </div>
@@ -105,6 +110,8 @@ export const InsightsList = React.forwardRef<HTMLDivElement, InsightsListProps>(
             "list-none p-0 m-0"
           )}
           aria-label="Insights articles"
+          aria-live="polite"
+          aria-atomic="false"
         >
           {insights.map((insight, index) => {
             const imageSrc = resolveInsightImageUrl(insight);

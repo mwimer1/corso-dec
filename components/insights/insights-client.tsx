@@ -222,7 +222,12 @@ function CategoryFilterClient({ items, categories }: { items: InsightPreview[]; 
 
         {/* Results Summary */}
         {filtered.length > 0 && (
-          <div className="text-sm text-muted-foreground">
+          <div 
+            className="text-sm text-muted-foreground"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
             {searchQuery.trim() ? (
               <>
                 <span className="font-medium">{filtered.length}</span> article{filtered.length !== 1 ? 's' : ''} matching &quot;{searchQuery}&quot;
