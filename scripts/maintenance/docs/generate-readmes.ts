@@ -180,7 +180,7 @@ async function main() {
       .map(dir => path.join(dir, 'README.md').replace(/\\/g, '/'))
       .filter(file => {
         try {
-          return fs.existsSync(file);
+          return existsSync(file);
         } catch {
           return false;
         }

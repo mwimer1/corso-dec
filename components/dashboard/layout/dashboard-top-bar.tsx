@@ -37,11 +37,16 @@ export function DashboardTopBar({
   const isChatVariant = variant === 'chat';
 
   return (
-    <header className={cn(
-      "py-4 px-6 bg-background",
-      !isChatVariant && "border-b border-border", // Only show border for non-chat variant
-      className
-    )}>
+    <header 
+      data-dashboard-top-bar
+      data-variant={variant}
+      className={cn(
+        "py-4 bg-background",
+        isChatVariant ? "pl-xs pr-6" : "px-6", // Tokenized spacing: pl-xs (4px) for chat, px-6 for default
+        !isChatVariant && "border-b border-border", // Only show border for non-chat variant
+        className
+      )}
+    >
       <div className="flex items-center justify-between w-full">
         {/* Left side: Breadcrumbs + Current Page + (Actions if chat variant) */}
         <div className="flex items-center gap-2 min-w-0 flex-1">
