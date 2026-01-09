@@ -14,13 +14,19 @@ type DashboardHeaderProps = {
   className?: string;
   /** When rendered directly under the global top bar, nudge up a pixel to avoid a stacked double border. */
   stackedUnderTopbar?: boolean;
+  /** Layout variant: 'default' (standard padding) or 'chat' (reduced left padding near sidebar) */
+  variant?: 'default' | 'chat';
 };
 
-export function DashboardHeader({ title, subtitle, left, right, sticky = true, className, stackedUnderTopbar = false }: DashboardHeaderProps) {
+export function DashboardHeader({ title, subtitle, left, right, sticky = true, className, stackedUnderTopbar = false, variant = 'default' }: DashboardHeaderProps) {
+  const isChatVariant = variant === 'chat';
+  
   return (
     <div
       role="region"
       aria-label="Dashboard header"
+      data-dashboard-header
+      data-variant={variant}
       className={cn(
         'w-full border-b bg-white/90 backdrop-blur',
         sticky && 'sticky top-0 z-10',
@@ -28,7 +34,10 @@ export function DashboardHeader({ title, subtitle, left, right, sticky = true, c
         className,
       )}
     >
-      <div className="flex items-center justify-between px-4 py-3">
+      <div className={cn(
+        'flex items-center justify-between py-3',
+        isChatVariant ? 'pl-xs pr-4' : 'px-4'
+      )}>
         <div className="flex items-center gap-3 min-w-0">
           {left ? <div className="shrink-0">{left}</div> : null}
           {(title || subtitle) && (
