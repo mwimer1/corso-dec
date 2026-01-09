@@ -102,6 +102,18 @@ jobs:
     continue-on-error: true
     secrets: inherit
 
+  docs-sync-check:
+    name: Docs Sync Check
+    uses: ./.github/workflows/_reusable-node-job.yml
+    permissions:
+      contents: read
+    with:
+      name: docs-sync-check
+      fetch_depth: 0
+      install: true
+      run: pnpm docs:check:sync
+    secrets: inherit
+
   lighthouse:
     name: Performance Audit
     needs: setup
