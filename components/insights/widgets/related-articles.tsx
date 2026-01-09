@@ -47,6 +47,7 @@ export function RelatedArticles({ articles, className, showTrustNote = true }: R
         </p>
       </header>
       
+      {/* Auto-fit grid prevents squished cards and adapts to available container width */}
       <div className="grid gap-6 sm:gap-8 [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]">
         {articles.slice(0, 3).map((article) => {
           // Map categories to ensure slug is present for resolver

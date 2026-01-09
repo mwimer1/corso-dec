@@ -353,7 +353,7 @@ export const InsightDetail = React.forwardRef<
         <TableOfContents content={sanitizedContent} variant="desktop" />
       </div>
 
-      {/* Full-width Related Articles section - outside reading column for proper width */}
+      {/* Related Articles is intentionally outside the max-w-3xl reading column so cards can use the full container width and match the /insights list layout. */}
       {relatedArticles.length > 0 && (
         <section 
           className="mt-16"
