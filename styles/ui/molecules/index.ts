@@ -48,6 +48,10 @@ export type { LoadingStatesVariants } from './loading-states-variants';
 export { skeletonSuite } from './skeleton-suite-variants';
 export type { SkeletonSuiteVariants } from './skeleton-suite-variants';
 
+// Metric card
+export { metricCardVariants, metricCardValueSizeVariants } from './metric-card';
+export type { MetricCardVariantProps, MetricCardValueSizeVariantProps } from './metric-card';
+
 // Tabs (removed - no longer used)
 
 // Tab switcher variants moved to components/landing/sections/product-showcase/tab-switcher.variants.ts
