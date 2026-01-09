@@ -70,7 +70,7 @@ export function InsightHeaderBlock({
       )}
 
       {/* Eyebrow row: back + categories */}
-      <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+      <div className="flex flex-wrap items-start gap-3 sm:gap-4">
         <nav aria-label="Back">
           <Link
             href={backHref}

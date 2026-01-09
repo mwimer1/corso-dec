@@ -59,7 +59,7 @@ export function CopyLinkButton({
       }}
       className={cn(
         variant === "header"
-          ? "absolute top-4 right-4 lg:top-6 lg:right-6"
+          ? "absolute top-6 right-6 sm:top-8 sm:right-8 lg:top-10 lg:right-10"
           : "inline-flex",
         className
       )}

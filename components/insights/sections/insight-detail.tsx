@@ -4,11 +4,11 @@
 "use client";
 
 import { useArticleAnalytics } from "@/components/insights/hooks/use-article-analytics";
-import { InsightHeaderBlock } from "@/components/insights/widgets/insight-header-block";
+import { resolveInsightImageUrl } from "@/components/insights/utils/image-resolver";
 import { BackToTopButton } from "@/components/insights/widgets/article-utilities";
+import { InsightHeaderBlock } from "@/components/insights/widgets/insight-header-block";
 import { RelatedArticles } from "@/components/insights/widgets/related-articles";
 import { TableOfContents } from "@/components/insights/widgets/table-of-contents";
-import { resolveInsightImageUrl } from "@/components/insights/utils/image-resolver";
 import { cn } from "@/styles";
 import { containerMaxWidthVariants, containerWithPaddingVariants } from "@/styles/ui/shared";
 import type { InsightItem } from "@/types/marketing";
@@ -55,19 +55,23 @@ export const InsightDetail = React.forwardRef<
     keyTakeaways,
   } = initialData;
 
-  const sanitizedContent = React.useMemo(() => {
-    try {
-      // Ensure target="_blank" links get rel="noopener" for security
-      DOMPurify.addHook('afterSanitizeAttributes', (node) => {
-        if ((node as unknown as Element).tagName === 'A') {
-          const el = node as unknown as HTMLAnchorElement;
-          const target = el.getAttribute('target');
-          if (target === '_blank') {
-            el.setAttribute('rel', 'noopener noreferrer nofollow ugc');
-          }
+  // Setup DOMPurify hook once (idempotent - safe to call multiple times)
+  React.useEffect(() => {
+    // Ensure target="_blank" links get rel="noopener" for security
+    DOMPurify.addHook('afterSanitizeAttributes', (node) => {
+      if ((node as unknown as Element).tagName === 'A') {
+        const el = node as unknown as HTMLAnchorElement;
+        const target = el.getAttribute('target');
+        if (target === '_blank') {
+          el.setAttribute('rel', 'noopener noreferrer nofollow ugc');
         }
-      });
+      }
+    });
+  }, []);
 
+  // Base sanitization - deterministic, works on both server and client
+  const baseSanitizedContent = React.useMemo(() => {
+    try {
       let sanitized = DOMPurify.sanitize(content, {
         ALLOWED_TAGS: [
           "p","h1","h2","h3","h4","h5","h6","ul","ol","li","a","strong","em","code","pre","blockquote","br","hr","div","span","img",
@@ -79,6 +83,22 @@ export const InsightDetail = React.forwardRef<
         FORBID_TAGS: ["script", "style"],
       });
 
+      return sanitized;
+    } catch {
+      return content;
+    }
+  }, [content]);
+
+  // Process content with DOM manipulation (client-side only to avoid hydration mismatch)
+  const [sanitizedContent, setSanitizedContent] = React.useState(baseSanitizedContent);
+
+  React.useEffect(() => {
+    // Only process on client-side to avoid hydration mismatch
+    if (typeof window === 'undefined' || !window.DOMParser) {
+      return;
+    }
+
+    try {
       // Generate slug from heading text
       const generateSlug = (text: string): string => {
         return text
@@ -107,89 +127,84 @@ export const InsightDetail = React.forwardRef<
         return candidate;
       };
 
-      try {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(sanitized, "text/html");
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(baseSanitizedContent, "text/html");
 
-        // De-dupe: Remove "Key takeaways" section from HTML if keyTakeaways exists
-        if (keyTakeaways && keyTakeaways.length > 0) {
-          const headings = doc.querySelectorAll("h2");
-          
-          for (const heading of headings) {
-            const text = heading.textContent?.trim() || "";
-            // Case-insensitive match for "Key takeaways" or similar variations
-            if (/key\s+takeaways?/i.test(text)) {
-              // Collect elements to remove: heading + all siblings until next H2
-              const elementsToRemove: Element[] = [heading];
-              let current: Element | null = heading.nextElementSibling;
-              
-              while (current && current.tagName !== "H2") {
-                const next = current.nextElementSibling;
-                elementsToRemove.push(current);
-                current = next;
-              }
-              
-              // Remove all collected elements
-              const parent = heading.parentElement;
-              if (parent) {
-                elementsToRemove.forEach((el) => {
-                  parent.removeChild(el);
-                });
-              }
-              
-              break; // Only process first match
+      // De-dupe: Remove "Key takeaways" section from HTML if keyTakeaways exists
+      if (keyTakeaways && keyTakeaways.length > 0) {
+        const headings = doc.querySelectorAll("h2");
+        
+        for (const heading of headings) {
+          const text = heading.textContent?.trim() || "";
+          // Case-insensitive match for "Key takeaways" or similar variations
+          if (/key\s+takeaways?/i.test(text)) {
+            // Collect elements to remove: heading + all siblings until next H2
+            const elementsToRemove: Element[] = [heading];
+            let current: Element | null = heading.nextElementSibling;
+            
+            while (current && current.tagName !== "H2") {
+              const next = current.nextElementSibling;
+              elementsToRemove.push(current);
+              current = next;
             }
+            
+            // Remove all collected elements
+            const parent = heading.parentElement;
+            if (parent) {
+              elementsToRemove.forEach((el) => {
+                parent.removeChild(el);
+              });
+            }
+            
+            break; // Only process first match
           }
         }
-
-        // Track used IDs to ensure uniqueness (after removing Key takeaways)
-        const usedIds = new Set<string>();
-        
-        // Collect existing IDs from remaining elements
-        const allElements = doc.querySelectorAll('[id]');
-        allElements.forEach((el) => {
-          const id = el.getAttribute('id');
-          if (id) {
-            usedIds.add(id);
-          }
-        });
-
-        // Generate IDs for h2 and h3 headings that lack them
-        const headings = doc.querySelectorAll("h2, h3");
-        let headingIndex = 0;
-        
-        headings.forEach((heading) => {
-          const existingId = heading.getAttribute('id');
-          
-          // Only generate ID if missing or empty
-          if (!existingId || existingId.trim() === '') {
-            const text = heading.textContent?.trim() || "";
-            
-            if (text) {
-              const baseSlug = generateSlug(text);
-              const finalId = ensureUniqueId(baseSlug, usedIds, headingIndex);
-              heading.setAttribute('id', finalId);
-              headingIndex++;
-            } else {
-              // Fallback for empty headings
-              const fallbackId = ensureUniqueId('', usedIds, headingIndex);
-              heading.setAttribute('id', fallbackId);
-              headingIndex++;
-            }
-          }
-        });
-        
-        sanitized = doc.body.innerHTML;
-      } catch {
-        // If DOM parsing fails, fall back to original sanitized content
-        // This ensures we don't break rendering if something goes wrong
       }
 
-      return sanitized;
+      // Track used IDs to ensure uniqueness (after removing Key takeaways)
+      const usedIds = new Set<string>();
+      
+      // Collect existing IDs from remaining elements
+      const allElements = doc.querySelectorAll('[id]');
+      allElements.forEach((el) => {
+        const id = el.getAttribute('id');
+        if (id) {
+          usedIds.add(id);
+        }
+      });
+
+      // Generate IDs for h2 and h3 headings that lack them
+      const headings = doc.querySelectorAll("h2, h3");
+      let headingIndex = 0;
+      
+      headings.forEach((heading) => {
+        const existingId = heading.getAttribute('id');
+        
+        // Only generate ID if missing or empty
+        if (!existingId || existingId.trim() === '') {
+          const text = heading.textContent?.trim() || "";
+          
+          if (text) {
+            const baseSlug = generateSlug(text);
+            const finalId = ensureUniqueId(baseSlug, usedIds, headingIndex);
+            heading.setAttribute('id', finalId);
+            headingIndex++;
+          } else {
+            // Fallback for empty headings
+            const fallbackId = ensureUniqueId('', usedIds, headingIndex);
+            heading.setAttribute('id', fallbackId);
+            headingIndex++;
+          }
+        }
+      });
+      
+      const processed = doc.body.innerHTML;
+      setSanitizedContent(processed);
     } catch {
-      return content;
+      // If DOM parsing fails, keep the base sanitized content
+      // This ensures we don't break rendering if something goes wrong
     }
-  }, [content, keyTakeaways]);
+  }, [baseSanitizedContent, keyTakeaways]);
 
   // Analytics: track view, scroll depth, and time-on-page
   useArticleAnalytics({
