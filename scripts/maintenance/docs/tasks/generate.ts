@@ -251,7 +251,7 @@ function isReadmeEnhanced(content: string): boolean {
 /**
  * Determines which README files are affected by changed paths
  * - docs/index.ts if any markdown changed
- * - scripts/**/README.md only if scripts changed
+ * - scripts READMEs only if scripts changed
  */
 function determineAffectedFiles(changedPaths: string[]): Set<string> {
   const affected = new Set<string>();
