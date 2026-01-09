@@ -20,8 +20,8 @@ export function RoiOutputPanel({ revenueGrowth, newDeals, workdaysSaved }: Props
       <div className="sm:col-span-2 h-full">
         <section
           className="
-            rounded-2xl border border-[hsl(var(--ring))] 
-            bg-[hsl(var(--surface-selected))]/15 
+            rounded-2xl border border-ring 
+            bg-surface-selected/15 
             shadow-sm
             grid items-center
             grid-cols-[56px_1fr_56px] md:grid-cols-[72px_1fr_72px]
@@ -34,7 +34,7 @@ export function RoiOutputPanel({ revenueGrowth, newDeals, workdaysSaved }: Props
           {/* Left gutter: Icon */}
           <div className="flex items-center justify-center">
             <TrendingUp 
-              className="block w-12 h-12 md:w-16 md:h-16 text-[hsl(var(--ring))]" 
+              className="block w-12 h-12 md:w-16 md:h-16 text-ring" 
               aria-hidden="true"
             />
           </div>
@@ -42,7 +42,7 @@ export function RoiOutputPanel({ revenueGrowth, newDeals, workdaysSaved }: Props
           {/* Center column: KPI stack (true centered) */}
           <div className="flex flex-col items-center justify-center text-center">
             {/* Title */}
-            <h3 className="text-sm md:text-base font-semibold tracking-tight text-[hsl(var(--foreground))] text-center mb-1.5 md:mb-2">
+            <h3 className="text-sm md:text-base font-semibold tracking-tight text-foreground text-center mb-1.5 md:mb-2">
               Revenue Growth
             </h3>
             {/* Value - larger size */}
@@ -54,7 +54,7 @@ export function RoiOutputPanel({ revenueGrowth, newDeals, workdaysSaved }: Props
               {formatCurrency(revenueGrowth)}
             </div>
             {/* Helper text */}
-            <p className="text-xs md:text-sm text-[hsl(var(--muted-foreground))] leading-relaxed text-center">
+            <p className="text-xs md:text-sm text-muted-foreground leading-relaxed text-center">
               Estimated annual lift with your current settings.
             </p>
           </div>
