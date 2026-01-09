@@ -48,6 +48,8 @@ export interface BaseOptions {
 export interface GenerateOptions extends BaseOptions {
   domains?: string[];
   skipExisting?: boolean;
+  changed?: boolean;
+  paths?: string[];
 }
 
 export interface EnhanceOptions extends BaseOptions {

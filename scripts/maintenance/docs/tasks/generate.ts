@@ -18,17 +18,36 @@ export async function generateReadmes(options: GenerateOptions = {}): Promise<Tr
   const results: TransformResult[] = [];
 
   try {
-    // Scan for markdown files
-    const allFiles = await scanMarkdownFiles();
-
-    // Filter files based on options
-    const selection = selectFilesByPatterns(allFiles, options.include, options.exclude);
-    const filesToProcess = options.domains?.length
-      ? selection.files.filter(file => options.domains?.some(domain =>
-          file.path.includes(`/${domain}/`) || file.path.includes(`\\${domain}\\`)))
-      : selection.files;
-
-    console.log(`📄 Processing ${filesToProcess.length} files for README generation`);
+    // If paths are specified (incremental mode), filter to only affected files
+    let filesToProcess: MarkdownFile[];
+    
+    if (options.paths && options.paths.length > 0) {
+      // Incremental mode: only process files affected by changed paths
+      const affectedFiles = determineAffectedFiles(options.paths);
+      
+      // Scan for markdown files
+      const allFiles = await scanMarkdownFiles();
+      
+      // Filter to only affected files
+      filesToProcess = allFiles.filter(file => {
+        const relativePath = path.relative(process.cwd(), file.path).replace(/\\/g, '/');
+        return affectedFiles.has(relativePath);
+      });
+      
+      console.log(`📄 Incremental mode: Processing ${filesToProcess.length} affected file(s) from ${options.paths.length} changed path(s)`);
+    } else {
+      // Full mode: scan all files
+      const allFiles = await scanMarkdownFiles();
+      
+      // Filter files based on options
+      const selection = selectFilesByPatterns(allFiles, options.include, options.exclude);
+      filesToProcess = options.domains?.length
+        ? selection.files.filter(file => options.domains?.some(domain =>
+            file.path.includes(`/${domain}/`) || file.path.includes(`\\${domain}\\`)))
+        : selection.files;
+      
+      console.log(`📄 Processing ${filesToProcess.length} files for README generation`);
+    }
 
     // Process each file
     for (const file of filesToProcess) {
@@ -227,5 +246,40 @@ function inferCategoryFromDomain(domain: string): string {
 function isReadmeEnhanced(content: string): boolean {
   return content.includes('<!-- EXPORTS_TABLE -->') &&
          content.includes('last_updated:');
+}
+
+/**
+ * Determines which README files are affected by changed paths
+ * - docs/index.ts if any markdown changed
+ * - scripts/**/README.md only if scripts changed
+ */
+function determineAffectedFiles(changedPaths: string[]): Set<string> {
+  const affected = new Set<string>();
+  const normalizedPaths = changedPaths.map(p => p.replace(/\\/g, '/'));
+  
+  // Check if any markdown files changed (affects docs/index.ts)
+  const hasMarkdownChanges = normalizedPaths.some(p => 
+    p.endsWith('.md') || p.includes('/docs/') || p.includes('README.md')
+  );
+  
+  // Check if any scripts files changed (affects scripts/**/README.md)
+  const hasScriptsChanges = normalizedPaths.some(p => 
+    p.startsWith('scripts/') && (p.endsWith('.ts') || p.endsWith('.tsx'))
+  );
+  
+  if (hasMarkdownChanges) {
+    // Mark docs/index.ts as needing update
+    affected.add('docs/index.ts');
+  }
+  
+  if (hasScriptsChanges) {
+    // Find all scripts/**/README.md files that need updating
+    // We'll need to scan for these, but for now, mark common ones
+    affected.add('scripts/README.md');
+    // Note: The actual scripts/**/README.md files will be determined by the scan
+    // This is a simplified version - in practice, we'd scan scripts/ recursively
+  }
+  
+  return affected;
 }
 

@@ -3,6 +3,7 @@
  * @description Command-line interface for documentation generation, enhancement, and normalization
  */
 
+import { execSync } from 'node:child_process';
 import { isDefined } from '../_utils/guards';
 import { enhanceReadmes } from './tasks/enhance';
 import { generateReadmes } from './tasks/generate';
@@ -63,7 +64,19 @@ async function handleGenerate(args: string[]): Promise<void> {
       }
     } else if (arg === '--skip-existing') {
       options.skipExisting = true;
+    } else if (arg === '--changed') {
+      options.changed = true;
+    } else if (arg === '--paths' && args[i + 1]) {
+      const pathsValue = args[++i]?.split(',').map(s => s.trim()).filter(Boolean);
+      if (isDefined(pathsValue)) {
+        options.paths = pathsValue;
+      }
     }
+  }
+  
+  // If --changed is specified, determine changed files from git
+  if (options.changed) {
+    options.paths = getChangedFiles();
   }
 
   console.log('🚀 Generating README files...');
@@ -165,6 +178,36 @@ function printResultsSummary(results: Array<{ changed: boolean; errors: string[]
 }
 
 /**
+ * Get changed files from git (staged or working directory)
+ */
+function getChangedFiles(): string[] {
+  try {
+    // Try staged files first (pre-commit context)
+    let output: string;
+    try {
+      output = execSync('git diff --cached --name-only --diff-filter=ACMR', {
+        encoding: 'utf8',
+        stdio: ['pipe', 'pipe', 'ignore'],
+      });
+    } catch {
+      // Fall back to working directory changes
+      output = execSync('git diff --name-only --diff-filter=ACMR', {
+        encoding: 'utf8',
+        stdio: ['pipe', 'pipe', 'ignore'],
+      });
+    }
+    
+    return output
+      .split('\n')
+      .map(line => line.trim())
+      .filter(line => line.length > 0);
+  } catch (error) {
+    console.warn('⚠️  Could not determine changed files from git:', error);
+    return [];
+  }
+}
+
+/**
  * Print help information
  */
 function printHelp(): void {
@@ -189,6 +232,8 @@ Options:
 Generate-specific options:
   --domains <domains>   Generate only for specified domains (comma-separated)
   --skip-existing       Skip files that are already enhanced
+  --changed             Only regenerate docs for changed files (incremental mode)
+  --paths <paths>       Specific file paths to process (comma-separated)
 
 Enhance-specific options:
   --skip-existing       Skip files that are already enhanced
@@ -211,6 +256,9 @@ Examples:
 
   # Check specific files only
   tsx scripts/maintenance/docs/cli.ts enhance --check --include "lib/**/README.md"
+  
+  # Incremental generation (only changed files)
+  tsx scripts/maintenance/docs/cli.ts generate --write --changed
   `);
 }
 

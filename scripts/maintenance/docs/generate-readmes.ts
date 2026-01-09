@@ -1,6 +1,8 @@
 #!/usr/bin/env tsx
+import { execSync } from 'node:child_process';
 import { globby } from 'globby';
 import fs from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { renderReadme, writeIfChanged, findReadmes } from '../../utils/docs-template-engine';
 
@@ -21,6 +23,14 @@ import { renderReadme, writeIfChanged, findReadmes } from '../../utils/docs-temp
 const ARGS = process.argv.slice(2);
 const DRY_RUN = ARGS.includes('--dry-run');
 const ALL = ARGS.includes('--all');
+const CHANGED = ARGS.includes('--changed');
+const PATHS = (() => {
+  const pathsIndex = ARGS.indexOf('--paths');
+  if (pathsIndex >= 0 && ARGS[pathsIndex + 1]) {
+    return ARGS[pathsIndex + 1]?.split(',').map(s => s.trim()).filter(Boolean) || [];
+  }
+  return [];
+})();
 
 function normalizePath(p: string): string {
   return p.replace(/\\/g, '/');
@@ -94,6 +104,55 @@ async function collectScripts(dir: string): Promise<Array<{ name: string; descri
   return scriptsData;
 }
 
+/**
+ * Get changed files from git (staged or working directory)
+ */
+function getChangedFilesFromGit(): string[] {
+  try {
+    // Try staged files first (pre-commit context)
+    let output: string;
+    try {
+      output = execSync('git diff --cached --name-only --diff-filter=ACMR', {
+        encoding: 'utf8',
+        stdio: ['pipe', 'pipe', 'ignore'],
+      });
+    } catch {
+      // Fall back to working directory changes
+      output = execSync('git diff --name-only --diff-filter=ACMR', {
+        encoding: 'utf8',
+        stdio: ['pipe', 'pipe', 'ignore'],
+      });
+    }
+    
+    return output
+      .split('\n')
+      .map(line => line.trim())
+      .filter(line => line.length > 0);
+  } catch (error) {
+    console.warn('⚠️  Could not determine changed files from git:', error);
+    return [];
+  }
+}
+
+/**
+ * Determine which scripts directories are affected by changed files
+ */
+function determineAffectedScriptsDirs(changedPaths: string[]): Set<string> {
+  const affectedDirs = new Set<string>();
+  const normalizedPaths = changedPaths.map(p => normalizePath(p));
+  
+  for (const changedPath of normalizedPaths) {
+    // Check if it's a scripts file
+    if (changedPath.startsWith('scripts/') && (changedPath.endsWith('.ts') || changedPath.endsWith('.tsx'))) {
+      // Extract the directory containing this script
+      const dir = path.dirname(changedPath);
+      affectedDirs.add(dir);
+    }
+  }
+  
+  return affectedDirs;
+}
+
 async function main() {
   // pick a single canonical template name: "README.scripts" => template file: README.scripts.hbs
   const template = 'README.scripts';
@@ -104,17 +163,43 @@ async function main() {
     project: 'Corso MVP',
   };
 
-  // Default behavior: scripts-only. (--all still safely filters to scripts-only.)
-  const patterns = ALL ? findReadmes() : ['scripts/**/README.md'];
-  const allFiles = await globby(patterns, { gitignore: true });
-
-  const files = allFiles.filter(isScriptsReadme);
-  const skipped = allFiles.length - files.length;
-  if (skipped > 0) {
-    console.warn(
-      `⚠️  Skipping ${skipped} non-scripts README(s). ` +
-      `This generator is scripts-only (template: README.scripts).`
-    );
+  let files: string[];
+  
+  // Incremental mode: only process affected scripts directories
+  if (CHANGED || PATHS.length > 0) {
+    const changedPaths = PATHS.length > 0 ? PATHS : getChangedFilesFromGit();
+    const affectedDirs = determineAffectedScriptsDirs(changedPaths);
+    
+    if (affectedDirs.size === 0) {
+      console.log('✅ No scripts directories affected by changed files');
+      return;
+    }
+    
+    // Only process READMEs in affected directories
+    files = Array.from(affectedDirs)
+      .map(dir => path.join(dir, 'README.md').replace(/\\/g, '/'))
+      .filter(file => {
+        try {
+          return fs.existsSync(file);
+        } catch {
+          return false;
+        }
+      });
+    
+    console.log(`📄 Incremental mode: Processing ${files.length} affected scripts README(s) from ${affectedDirs.size} directory(ies)`);
+  } else {
+    // Default behavior: scripts-only. (--all still safely filters to scripts-only.)
+    const patterns = ALL ? findReadmes() : ['scripts/**/README.md'];
+    const allFiles = await globby(patterns, { gitignore: true });
+    files = allFiles.filter(isScriptsReadme);
+    
+    const skipped = allFiles.length - files.length;
+    if (skipped > 0) {
+      console.warn(
+        `⚠️  Skipping ${skipped} non-scripts README(s). ` +
+        `This generator is scripts-only (template: README.scripts).`
+      );
+    }
   }
 
   // Files to skip (manually maintained, not auto-generated)
