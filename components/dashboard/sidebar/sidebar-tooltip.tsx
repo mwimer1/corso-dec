@@ -95,7 +95,7 @@ type Props = {
               "absolute top-1/2 -translate-y-1/2 rotate-45",
               "w-2.5 h-2.5", /* 10px - slightly larger for better visibility */
               "bg-[var(--sb-tip-bg)] border border-[var(--sb-tip-border)]",
-              "shadow-[0_1px_2px_0_rgb(0_0_0_/_10%)]",
+              "shadow-xs",
               "z-[-1]", /* Ensure arrow appears behind tooltip content */
               side === 'left' ? "right-[-5px]" : "left-[-5px]" /* Adjusted for larger arrow */
             )} 
