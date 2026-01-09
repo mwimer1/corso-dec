@@ -7,17 +7,12 @@ import * as React from "react";
 
 import { Button, HamburgerIcon, XMarkIcon } from "@/components/ui/atoms";
 import { NavItem } from "@/components/ui/molecules/nav-item";
-import { cn } from "@/styles";
+import { cn, cls } from "@/styles";
 import { navbarStyleVariants } from "@/styles/ui/organisms/navbar-variants";
 import type { NavItemData } from "@/types/shared";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Ctas, MenuPrimaryLinks } from './shared';
 
-// Helper to handle both function and string returns from tv() slots
-// (defensive fix for test environment where slots may return strings directly)
-function cls(x: unknown): string | undefined {
-  return typeof x === 'function' ? (x as () => string)() : (x as string | undefined);
-}
 
 interface NavbarMenuProps {
   items: NavItemData[];

@@ -105,7 +105,7 @@ export const revalidate = 3600; // 1 hour
 // Runtime: kept on nodejs due to Clerk keyless telemetry (see README)
 import { FullWidthSection, PublicLayout } from '@/components';
 import { Hero, IndustryExplorer, LazyMarketInsightsSection, ProductShowcase } from '@/components/landing';
-import { landingNavItems } from '@/components/landing/layout/nav.config';
+import { landingNavItems } from '@/components/ui/organisms/navbar/links';
 
 export const dynamic = "force-static";
 export const revalidate = 3600; // 1 hour

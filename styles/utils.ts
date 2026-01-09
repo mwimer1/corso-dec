@@ -14,4 +14,21 @@ export function cn(...inputs: Array<string | false | null | undefined>) {
 /** Tailwind Variants factory – re-export for convenience */
 export { tv };
 
+/**
+ * Helper to handle both function and string returns from tv() slots.
+ * Defensive fix for test environment where slots may return strings directly.
+ * 
+ * @param x - A value that may be a function returning a string, or a string/undefined
+ * @returns The string value, or undefined if the input is undefined
+ * 
+ * @example
+ * ```tsx
+ * const styles = navbarStyleVariants();
+ * const className = cls(styles.navbar); // Handles both function and string returns
+ * ```
+ */
+export function cls(x: unknown): string | undefined {
+  return typeof x === 'function' ? (x as () => string)() : (x as string | undefined);
+}
+
 

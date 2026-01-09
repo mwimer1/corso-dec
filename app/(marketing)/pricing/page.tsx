@@ -9,7 +9,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 import { formatPriceUSD, PRICING_UI, PublicLayout } from "@/components";
-import { landingNavItems } from "@/components/landing/layout/nav.config";
+import { landingNavItems } from "@/components/ui/organisms/navbar/links";
 import { PricingPage } from "@/components/marketing";
 import { useRouter } from "next/navigation";
 import ScrollToFAQ from "./scroll-to-faq";

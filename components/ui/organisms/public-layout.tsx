@@ -77,7 +77,7 @@ export function PublicLayout({
           // - stickyHeader=true => use `sticky` (also provides positioning context for absolute children)
           // - stickyHeader=false => use `relative` (for absolute children positioning)
           stickyHeader
-            ? "sticky top-0 z-50 border-b border-border bg-surface transition-shadow data-[scrolled=true]:shadow-sm"
+            ? "sticky top-0 z-50 bg-surface transition-shadow data-[scrolled=true]:shadow-sm"
             : "relative",
         )}
       >

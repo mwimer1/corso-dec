@@ -56,8 +56,7 @@ export type {
     AlertDialogTitleVariantProps
 } from "./alert-dialog";
 
-// Dashboard Navbar (layout helpers)
-export { navbarLayout } from "./navbar-layout";
+// Navbar (consolidated styling system)
 export { navbarStyleVariants } from "./navbar-variants";
 
 // Navbar (legacy navbar variants)

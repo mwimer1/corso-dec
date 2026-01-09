@@ -3,7 +3,7 @@
 // Server component page; marketing content is static and revalidated periodically.
 import { FullWidthSection, PublicLayout } from '@/components';
 import { Hero, IndustryExplorer, LazyMarketInsightsSection, ProductShowcase } from '@/components/landing';
-import { landingNavItems } from '@/components/landing/layout/nav.config';
+import { landingNavItems } from '@/components/ui/organisms/navbar/links';
 
 
 

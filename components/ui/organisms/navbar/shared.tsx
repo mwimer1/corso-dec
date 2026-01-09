@@ -4,15 +4,10 @@ import * as React from "react";
 
 import { Button } from "@/components/ui/atoms";
 import { LinkTrack } from "@/components/ui/molecules/link-track";
-import { cn } from "@/styles";
+import { cn, cls } from "@/styles";
 import { navbarStyleVariants } from "@/styles/ui/organisms/navbar-variants";
 import { CTA_LINKS, PRIMARY_LINKS } from './links';
 
-// Helper to handle both function and string returns from tv() slots
-// (defensive fix for test environment where slots may return strings directly)
-function cls(x: unknown): string | undefined {
-  return typeof x === 'function' ? (x as () => string)() : (x as string | undefined);
-}
 
 export const MenuPrimaryLinks: React.FC<{ className?: string }> = ({ className }) => (
   <>
