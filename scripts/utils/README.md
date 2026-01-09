@@ -20,7 +20,7 @@ This README is generated from a single template (`README.scripts.hbs`).
 - **barrel-utils.ts** – Find all barrel files in the project
 - **bundle-analysis-common.ts** – Common utilities for bundle analysis
 - **constants.ts** – Common ignore patterns used across file scanning scripts
-- **docs-template-engine.ts** – /README.md&#x27;,
+- **docs-template-engine.ts** – Normalizes content by removing last_updated from frontmatter for comparison
 - **git.ts** – Check if a path is gitignored
 - **jsinspect-to-sarif.ts** – Convert JSInspect JSON to SARIF 2.1.0 for GitHub code scanning.
 - **logger.ts** – scripts/utils/logger.ts
