@@ -266,33 +266,36 @@ export default function EntityGrid({
     let hasValidatedSchema = false;
     
     api.setGridOption('serverSideDatasource', {
-      async getRows(p: IServerSideGetRowsParams) {
+      getRows(p: IServerSideGetRowsParams) {
         // In relaxed mode, allow API call even if orgId is null
         // In strict mode, the API will return NO_ORG_CONTEXT if no org can be resolved
-        try {
-          // Pass orgId and search to fetcher to include in API request
-          // If orgId is null, fetcher won't set the header, allowing API to use fallback logic
-          const r = await config.fetcher(p.request, posthog.get_distinct_id?.() ?? 'anon', currentOrgId, currentSearch);
-          
-          // Dev-only schema validation (only on first successful load)
-          if (!hasValidatedSchema && r.rows && r.rows.length > 0) {
-            validateSchemaInDev(config.id, colDefs, r.rows[0] as Record<string, unknown>);
-            hasValidatedSchema = true;
+        // Use void to explicitly handle the promise without returning it
+        void (async () => {
+          try {
+            // Pass orgId and search to fetcher to include in API request
+            // If orgId is null, fetcher won't set the header, allowing API to use fallback logic
+            const r = await config.fetcher(p.request, posthog.get_distinct_id?.() ?? 'anon', currentOrgId, currentSearch);
+            
+            // Dev-only schema validation (only on first successful load)
+            if (!hasValidatedSchema && r.rows && r.rows.length > 0) {
+              validateSchemaInDev(config.id, colDefs, r.rows[0] as Record<string, unknown>);
+              hasValidatedSchema = true;
+            }
+            
+            p.success({
+              rowData: r.rows,
+              ...(r.totalSearchCount != null ? { rowCount: r.totalSearchCount } : {}),
+            });
+            setSearchCount(r.totalSearchCount?.toString() ?? '—');
+            onLoadError?.(null);
+          } catch (e) {
+            // Log datasource errors for debugging (development only)
+            devError(`[${config.id}] datasource error`, e);
+            p.fail();
+            const error = e instanceof Error ? e : new Error(String(e));
+            onLoadError?.(error);
           }
-          
-          p.success({
-            rowData: r.rows,
-            ...(r.totalSearchCount != null ? { rowCount: r.totalSearchCount } : {}),
-          });
-          setSearchCount(r.totalSearchCount?.toString() ?? '—');
-          onLoadError?.(null);
-        } catch (e) {
-          // Log datasource errors for debugging (development only)
-          devError(`[${config.id}] datasource error`, e);
-          p.fail();
-          const error = e instanceof Error ? e : new Error(String(e));
-          onLoadError?.(error);
-        }
+        })();
       },
     });
   }, [config, posthog, setSearchCount, onLoadError, colDefs]);

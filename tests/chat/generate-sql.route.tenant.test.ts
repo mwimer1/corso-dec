@@ -1,8 +1,7 @@
-import { ApplicationError, ErrorCategory, ErrorSeverity } from '@/lib/shared';
 import { SecurityError } from '@/lib/shared/errors/types';
 import { beforeEach, describe, expect, it } from "vitest";
 import { resolveRouteModule } from "../support/resolve-route";
-import { setupDefaultMocks, resetAllMocks, mockGetTenantContext, mockValidateSQLScope, mockCreateCompletion } from "./shared-mocks";
+import { setupDefaultMocks, resetAllMocks, mockValidateSQLScope, mockCreateCompletion } from "./shared-mocks";
 import { mockClerkAuth } from '@/tests/support/mocks';
 
 describe("API v1: ai/generate-sql route - Tenant Isolation", () => {

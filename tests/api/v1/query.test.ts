@@ -1,4 +1,3 @@
-import { ApplicationError, ErrorCategory, ErrorSeverity } from '@/lib/shared';
 import { SecurityError } from '@/lib/shared/errors/types';
 import { mockClerkAuth } from '@/tests/support/mocks';
 import { beforeEach, describe, expect, it, vi } from 'vitest';

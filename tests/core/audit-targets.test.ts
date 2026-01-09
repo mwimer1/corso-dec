@@ -10,7 +10,7 @@ import { getChangedFiles, buildTargetSet } from '../../scripts/audit/targets';
 
 // Mock child_process
 vi.mock('child_process', async () => {
-  const actual = await vi.importActual<typeof import('child_process')>('child_process');
+  const actual = await vi.importActual('child_process');
   return {
     ...actual,
     spawnSync: vi.fn(),
@@ -72,9 +72,7 @@ describe('CSS Audit Targets', () => {
 
     it('should fall back to direct diff when merge-base fails', () => {
       // Setup: triple-dot fails, direct diff succeeds
-      let callCount = 0;
       mockSpawnSync.mockImplementation((cmd: string, args: string[]) => {
-        callCount++;
         // Check if any arg contains triple-dot syntax
         if (args && args.some((arg: string) => typeof arg === 'string' && arg.includes('...'))) {
           // Triple-dot syntax fails

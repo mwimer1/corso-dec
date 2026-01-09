@@ -75,8 +75,8 @@ export function UseCasePreviewPane({
                       {preview.headline}
                     </p>
                     <div className="grid grid-cols-3 gap-4">
-                      {preview.kpis.map((kpi, idx) => (
-                        <div key={idx}>
+                      {preview.kpis.map((kpi) => (
+                        <div key={kpi.label}>
                           <p className="text-xs text-muted-foreground mb-1">{kpi.label}</p>
                           <p className="text-xl font-semibold text-foreground">{kpi.value}</p>
                         </div>
@@ -93,8 +93,8 @@ export function UseCasePreviewPane({
                       </Badge>
                     </div>
                     <ul className="space-y-2">
-                      {preview.highlights.map((highlight, idx) => (
-                        <li key={idx} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      {preview.highlights.map((highlight) => (
+                        <li key={highlight} className="flex items-start gap-2 text-sm text-muted-foreground">
                           <span className="text-primary mt-1">•</span>
                           <span>{highlight}</span>
                         </li>
@@ -107,8 +107,8 @@ export function UseCasePreviewPane({
               {/* Sample Record Tab */}
               {previewTab === 'sample' && (
                 <div className="bg-muted/40 p-4 rounded-xl space-y-3">
-                  {preview.sampleRecord.map((field, idx) => (
-                    <div key={idx} className="flex justify-between items-start gap-4">
+                  {preview.sampleRecord.map((field) => (
+                    <div key={field.label} className="flex justify-between items-start gap-4">
                       <p className="text-xs text-muted-foreground font-medium flex-shrink-0">
                         {field.label}
                       </p>

@@ -1,4 +1,3 @@
-import { ApplicationError, ErrorCategory, ErrorSeverity } from '@/lib/shared';
 import { SecurityError } from '@/lib/shared/errors/types';
 import { beforeEach, describe, expect, it } from "vitest";
 import { resolveRouteModule } from "../support/resolve-route";
@@ -36,7 +35,6 @@ describe("API v1: ai/chat route - Tenant Isolation", () => {
     // For streaming responses (200), consume the stream to avoid errors
     if (res.status === 200 && res.body) {
       const reader = res.body.getReader();
-      const decoder = new TextDecoder();
       try {
         while (true) {
           const { done } = await reader.read();
