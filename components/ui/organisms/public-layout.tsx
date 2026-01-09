@@ -8,7 +8,7 @@ import { containerMaxWidthVariants, containerWithPaddingVariants } from "@/style
 import type { NavItemData } from "@/types/shared";
 import { useAuth } from "@clerk/nextjs";
 import type { HTMLAttributes, ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Footer from "./footer-system/footer";
 import { Navbar } from "./navbar/navbar";
 
@@ -50,17 +50,7 @@ export function PublicLayout({
   ...props
 }: PublicLayoutProps): React.ReactElement {
   const { isSignedIn } = useAuth();
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      setScrolled(scrollTop > 10);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const [navbarScrolled, setNavbarScrolled] = useState(false);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -68,7 +58,7 @@ export function PublicLayout({
       <header
         role="banner"
         data-sticky-nav
-        data-scrolled={scrolled ? 'true' : 'false'}
+        data-scrolled={navbarScrolled ? 'true' : 'false'}
         className={cn(
           headerClassName,
           // IMPORTANT:
@@ -76,6 +66,8 @@ export function PublicLayout({
           // With tailwind-merge (or similar), later position utilities win.
           // - stickyHeader=true => use `sticky` (also provides positioning context for absolute children)
           // - stickyHeader=false => use `relative` (for absolute children positioning)
+          // Scroll state is managed by Navbar component (IntersectionObserver)
+          // and synced via onScrolledChange callback
           stickyHeader
             ? "sticky top-0 z-50 bg-surface transition-shadow data-[scrolled=true]:shadow-sm"
             : "relative",
@@ -86,6 +78,7 @@ export function PublicLayout({
             mode={navMode} 
             {...(navItems && { items: navItems })}
             {...(navMode === "insights" || navMode === "landing" ? { forceShowCTAs: true } : {})}
+            onScrolledChange={setNavbarScrolled}
           />
         </div>
         {showReadingProgress && <ReadingProgress />}

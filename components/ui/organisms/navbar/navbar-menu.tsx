@@ -25,9 +25,6 @@ interface NavbarMenuProps {
    * "mobile" for mobile-only menu, or "all" (default) for combined rendering.
    */
   section?: "all" | "items" | "auth" | "mobile";
-  /** Toggle visibility of specific auth actions (desktop and mobile). */
-  showLogin?: boolean;
-  showSignup?: boolean;
 }
 
 export function NavbarMenu({
@@ -37,9 +34,6 @@ export function NavbarMenu({
   isSignedIn,
   variant: _variant,
   section = "all",
-  // Flags currently unused; reserved for future variant controls
-  showLogin: _showLogin = true,
-  showSignup: _showSignup = true,
 }: NavbarMenuProps) {
   const navbarStyles = navbarStyleVariants();
   const pathname = usePathname();

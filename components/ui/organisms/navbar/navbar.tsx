@@ -13,6 +13,7 @@ import { navbarStyleVariants } from "@/styles/ui/organisms/navbar-variants";
 import type { NavItemData } from "@/types/shared";
 import { UserButton } from "@clerk/nextjs";
 import { landingNavItems as defaultLandingNavItems } from './links';
+import { resolveNavItems } from './navbar-helpers';
 import { NavbarMenu } from './navbar-menu';
 import { Ctas } from './shared';
 
@@ -27,6 +28,8 @@ interface NavbarProps extends React.HTMLAttributes<HTMLElement> {
   showBreadcrumbs?: boolean;
   /** Custom breadcrumbs to display */
   breadcrumbs?: NavItemData[] | undefined;
+  /** Callback to sync scroll state to parent (for PublicLayout header styling) */
+  onScrolledChange?: (scrolled: boolean) => void;
 }
 
 export function Navbar({
@@ -35,7 +38,8 @@ export function Navbar({
   items,
   forceShowCTAs = false,
   showBreadcrumbs = false,
-  breadcrumbs
+  breadcrumbs,
+  onScrolledChange
 }: NavbarProps) {
   const { isSignedIn } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
@@ -45,40 +49,61 @@ export function Navbar({
   React.useEffect(() => {
     const el = sentinelRef.current;
     if (!el) return;
+
+    // IntersectionObserver for scroll detection
     const io = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
         if (entry) {
-          setScrolled(!entry.isIntersecting);
+          const newScrolled = !entry.isIntersecting;
+          setScrolled(newScrolled);
+          // Sync scroll state to parent (PublicLayout) for header styling
+          onScrolledChange?.(newScrolled);
         }
       },
       { root: null, threshold: 0, rootMargin: "-150px 0px 0px 0px" }
     );
     io.observe(el);
+
     // Expose nav height as a CSS variable so other components (sticky elements)
     // can position themselves exactly under the navbar. Use a ResizeObserver
     // to update on layout changes (mobile menu, font changes, etc.).
     const header = document.querySelector('header[role="banner"], header');
+    let ro: ResizeObserver | null = null;
+    let applyNavOffset: (() => void) | null = null;
+
     if (header) {
-      const applyNavOffset = () => {
+      applyNavOffset = () => {
         const h = Math.ceil((header as HTMLElement).getBoundingClientRect().height);
         // set --nav-offset for sticky top positioning and --nav-h for full-page layout helpers
         document.documentElement.style.setProperty('--nav-offset', `${h}px`);
         document.documentElement.style.setProperty('--nav-h', `${h}px`);
       };
       applyNavOffset();
-      const ro = new ResizeObserver(applyNavOffset);
+      ro = new ResizeObserver(applyNavOffset);
       ro.observe(header);
       window.addEventListener('resize', applyNavOffset);
-      // cleanup on unmount
-      io.disconnect = ((orig) => () => {
-        try { ro.disconnect(); } catch {}
-        try { window.removeEventListener('resize', applyNavOffset); } catch {}
-        orig();
-      })(io.disconnect.bind(io));
     }
-    return () => io.disconnect();
-  }, []);
+
+    // Standard cleanup function
+    return () => {
+      io.disconnect();
+      if (ro) {
+        try {
+          ro.disconnect();
+        } catch {
+          // Ignore errors during cleanup
+        }
+      }
+      if (applyNavOffset) {
+        try {
+          window.removeEventListener('resize', applyNavOffset);
+        } catch {
+          // Ignore errors during cleanup
+        }
+      }
+    };
+  }, [onScrolledChange]);
 
   // Use canonical landingNavItems from links.ts (single source of truth)
   const landingNavItems = defaultLandingNavItems;
@@ -87,15 +112,19 @@ export function Navbar({
     { href: APP_LINKS.DASHBOARD.PROJECTS.replace('/projects',''), label: "Dashboard" },
   ];
 
-  const navItems = (items && items.length > 0)
-    ? items
-    : (mode === "app" ? appNavItems : (mode === "minimal" ? [] : (mode === "insights" ? landingNavItems : landingNavItems)));
+  const navItems = resolveNavItems({
+    items,
+    mode,
+    appNavItems,
+    landingNavItems,
+  });
 
   const navbarStyles = navbarStyleVariants({ scrolled });
 
   return (
     <>
       <header
+        data-scrolled={scrolled ? 'true' : 'false'}
         className={cn(
           cls(navbarStyles.navbar),
           scrolled && cls(navbarStyles.navbarScrolled),
