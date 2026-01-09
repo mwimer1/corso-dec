@@ -65,7 +65,115 @@ function checkActionsReadme(): CheckResult {
   };
 }
 
-// Check 2: No references to /api/v1/dashboard/query
+// Check 2: No references to /api/v1/ai/generate-chart (endpoint doesn't exist)
+async function checkGenerateChartReferences(): Promise<CheckResult> {
+  const { readdirSync, readFileSync, statSync } = await import('fs');
+  const { join, extname } = await import('path');
+  
+  const extensions = ['.ts', '.tsx', '.md', '.json', '.yml', '.yaml', '.mjs', '.cjs'];
+  const searchPattern = '/api/v1/ai/generate-chart';
+  const foundReferences: string[] = [];
+  
+  function shouldSkipFile(filePath: string): boolean {
+    return (
+      filePath.includes('node_modules') ||
+      filePath.includes('.next') ||
+      filePath.includes('dist') ||
+      filePath.includes('coverage') ||
+      filePath.includes('check-architecture-drift.ts') ||
+      // Allow test files that test for non-existence
+      filePath.includes('generate-chart.route.test.ts')
+    );
+  }
+  
+  function searchInFile(filePath: string): void {
+    try {
+      const content = readFileSync(filePath, 'utf-8');
+      const lines = content.split('\n');
+      
+      lines.forEach((line, index) => {
+        if (line.includes(searchPattern)) {
+          // Allow references in:
+          // - Comments about removal/migration
+          // - Error examples in documentation
+          // - TODO/FIXME comments (check current and previous 5 lines)
+          const trimmed = line.trim();
+          const contextLines = lines.slice(Math.max(0, index - 5), index + 1).join('\n');
+          const isErrorExample = trimmed.startsWith('# Error:') || trimmed.startsWith('// Error:');
+          const isRemovalComment = 
+            trimmed.includes('removed') ||
+            trimmed.includes('migrated') ||
+            trimmed.includes('deprecated') ||
+            trimmed.includes('non-existent') ||
+            trimmed.includes('doesn\'t exist') ||
+            trimmed.includes('does not exist') ||
+            trimmed.includes('// Removed:') ||
+            trimmed.includes('# Removed:') ||
+            trimmed.includes('Removed:');
+          const isTodoComment = contextLines.includes('TODO:') || contextLines.includes('FIXME:');
+          
+          if (!isErrorExample && !isRemovalComment && !isTodoComment) {
+            foundReferences.push(`${filePath}:${index + 1}`);
+          }
+        }
+      });
+    } catch (error) {
+      // Skip files that can't be read (binary, etc.)
+    }
+  }
+  
+  function walkDir(dir: string): void {
+    try {
+      const entries = readdirSync(dir);
+      for (const entry of entries) {
+        const fullPath = join(dir, entry);
+        if (shouldSkipFile(fullPath)) continue;
+        
+        try {
+          const stat = statSync(fullPath);
+          if (stat.isDirectory()) {
+            walkDir(fullPath);
+          } else if (stat.isFile() && extensions.includes(extname(fullPath))) {
+            searchInFile(fullPath);
+          }
+        } catch {
+          // Skip files we can't access
+        }
+      }
+    } catch {
+      // Skip directories we can't access
+    }
+  }
+  
+  // Search in key directories
+  const searchDirs = ['app', 'lib', 'actions', 'docs', 'api', 'config', 'tests'];
+  for (const dir of searchDirs) {
+    const dirPath = join(REPO_ROOT, dir);
+    try {
+      if (statSync(dirPath).isDirectory()) {
+        walkDir(dirPath);
+      }
+    } catch {
+      // Skip if directory doesn't exist
+    }
+  }
+  
+  if (foundReferences.length > 0) {
+    return {
+      name: 'No /api/v1/ai/generate-chart references',
+      passed: false,
+      message: `Found ${foundReferences.length} reference(s) to non-existent endpoint:\n${foundReferences.slice(0, 5).join('\n')}${foundReferences.length > 5 ? '\n...' : ''}\n\nFix: Remove references or update to correct endpoint.`,
+    };
+  }
+  
+  return {
+    name: 'No /api/v1/ai/generate-chart references',
+    passed: true,
+    message: 'No references found',
+  };
+}
+
+// Check 3: No references to /api/v1/dashboard/query
 async function checkDashboardQueryReferences(): Promise<CheckResult> {
   const { readdirSync, readFileSync, statSync } = await import('fs');
   const { join, extname } = await import('path');
@@ -175,7 +283,7 @@ async function checkDashboardQueryReferences(): Promise<CheckResult> {
   };
 }
 
-// Check 3: actions/index.ts exports only existing files
+// Check 4: actions/index.ts exports only existing files
 // Note: actions/ directory was removed in PR5.2 - Server Actions are now feature-colocated
 function checkActionsExports(): CheckResult {
   const indexPath = join(REPO_ROOT, 'actions', 'index.ts');
@@ -226,6 +334,7 @@ function checkActionsExports(): CheckResult {
 // Run all checks (async)
 async function runChecks() {
   checks.push(checkActionsReadme());
+  checks.push(await checkGenerateChartReferences());
   checks.push(await checkDashboardQueryReferences());
   checks.push(checkActionsExports());
   
