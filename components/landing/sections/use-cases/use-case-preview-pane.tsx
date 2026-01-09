@@ -32,7 +32,7 @@ export function UseCasePreviewPane({
 
   return (
     <Card className={cn(styles['previewPane'], 'h-full w-full flex flex-col', className)}>
-      <CardContent className="p-5 flex flex-col flex-1 min-h-0">
+      <CardContent className="p-6 flex flex-col flex-1 min-h-0">
         {/* Header with labels */}
         <div className="mb-4 space-y-2">
           <div className="flex items-center justify-between">
@@ -150,9 +150,8 @@ export function UseCasePreviewPane({
             <div className="flex flex-col sm:flex-row gap-2">
               <Button
                 asChild
-                variant="secondary"
+                variant="default"
                 size="sm"
-                className="bg-foreground text-background hover:bg-foreground/90"
               >
                 <LinkTrack
                   href={APP_LINKS.NAV.SIGNUP}
@@ -166,7 +165,6 @@ export function UseCasePreviewPane({
                 asChild
                 variant="outline"
                 size="sm"
-                className="border-border text-foreground hover:bg-muted/40"
               >
                 <LinkTrack
                   href={APP_LINKS.NAV.BOOK_DEMO}
